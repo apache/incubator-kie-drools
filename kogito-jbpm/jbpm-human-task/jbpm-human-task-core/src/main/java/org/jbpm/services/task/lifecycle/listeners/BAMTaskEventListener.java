@@ -64,10 +64,10 @@ import org.slf4j.LoggerFactory;
  *     <li>InProgress - InProgress</li>
  *     <li>Suspended - Suspended</li>
  *     <li>Completed - Completed</li>
- *     <li>Failed - Obsolete</li>
- *     <li>Error - Obsolete</li>
- *     <li>Exited - Obsolete</li>
- *     <li>Obsolete - Obsolete</li>
+ *     <li>Exited - Exited</li>
+ *     <li>Failed - Error</li>
+ *     <li>Error - Error</li>
+ *     <li>Obsolete - Error</li>
  * </ul>
  */
 
@@ -131,39 +131,34 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     }
 
     /**
-     * When a task is skipped, the status for dashbuilder integration task must be Obsolete.
+     * When a task is skipped, the status for dashbuilder integration task must be Exited.
      *
      * @param ti The task.
      */
     public void afterTaskSkippedEvent(Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
+        createOrUpdateTask(ti, Status.Exited);
     }
 
     /**
-     * When a task is stopped, the status for dashbuilder integration task must be Obsolete.
+     * When a task is stopped, the status for dashbuilder integration task must be Exited.
      *
      * @param ti The task.
      */
     public void afterTaskStoppedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskStoppedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
+        createOrUpdateTask(ti, Status.Exited);
     }
 
     /**
-     * When a task is failed, the status for dashbuilder integration task must be Obsolete.
+     * When a task is failed, the status for dashbuilder integration task must be Exited.
      *
      * @param ti The task.
      */
     public void afterTaskFailedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskFailedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
+        createOrUpdateTask(ti, Status.Error);
     }
 
-    /**
-     * When a task is exited, the status for dashbuilder integration task must be Obsolete.
-     *
-     * @param ti The task.
-     */
     public void afterTaskExitedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskExitedEvent Task ti) {
-        createOrUpdateTask(ti, Status.Obsolete);
+        createOrUpdateTask(ti, Status.Exited);
     }
 
     public void afterTaskReleasedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskReleasedEvent Task ti) {
