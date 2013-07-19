@@ -282,16 +282,23 @@ public class EvalConditionNode extends LeftTupleSource
         
         for ( LeftTuple leftTuple =  it.next(); leftTuple != null; leftTuple = it.next() ) {
             LeftTuple childLeftTuple = leftTuple.getFirstChild();
-            while ( childLeftTuple != null ) {
-                RightTuple rightParent = childLeftTuple.getRightParent();            
-                sink.assertLeftTuple( sink.createLeftTuple( leftTuple, rightParent, childLeftTuple, null, sink, true ),
-                                      context,
-                                      workingMemory );  
-                
-                while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
-                    // skip to the next child that has a different right parent
-                    childLeftTuple = childLeftTuple.getLeftParentNext();
+            if ( childLeftTuple != null ) {
+                while ( childLeftTuple != null ) {
+                    RightTuple rightParent = childLeftTuple.getRightParent();
+                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple, sink, context, true ),
+                                          context,
+                                          workingMemory );
+
+                    while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
+                        // skip to the next child that has a different right parent
+                        childLeftTuple = childLeftTuple.getLeftParentNext();
+                    }
                 }
+            } else {
+                childLeftTuple = sink.createLeftTuple( leftTuple, sink, context, true );
+                sink.assertLeftTuple( childLeftTuple,
+                                      context,
+                                      workingMemory );
             }
         }
     }
