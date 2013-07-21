@@ -114,16 +114,6 @@ public class StepScoreProblemStatistic extends AbstractProblemStatistic {
                         seriesList.get(i).add(timeMillisSpend, levelValues[i]);
                     }
                 }
-                // Draw a horizontal line from the last new step to how long the solver actually ran
-                long timeMillisSpend = singleBenchmark.getTimeMillisSpend();
-                double[] stepScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmark.getScore());
-                for (int i = 0; i < stepScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
-                    if (i >= seriesList.size()) {
-                        seriesList.add(new XYSeries(
-                                singleBenchmark.getSolverBenchmark().getNameWithFavoriteSuffix()));
-                    }
-                    seriesList.get(i).add(timeMillisSpend, stepScoreLevels[i]);
-                }
                 if (singleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
