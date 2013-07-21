@@ -52,7 +52,7 @@ public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
 
     private void validate() {
         if (lateSimulatedAnnealingSize <= 0) {
-            throw new IllegalArgumentException("The lateAcceptanceSize (" + lateSimulatedAnnealingSize
+            throw new IllegalArgumentException("The lateSimulatedAnnealingSize (" + lateSimulatedAnnealingSize
                     + ") cannot be negative or zero.");
         }
     }
