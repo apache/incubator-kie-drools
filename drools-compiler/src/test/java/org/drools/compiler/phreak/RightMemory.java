@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.RightTuple;
@@ -37,7 +37,7 @@ public class RightMemory {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
             RightTuple expectedRightTuple = new RightTuple( fh, node ); //node.createLeftTuple( fh, node, true );
-            expectedRightTuple.setPropagationContext( new PropagationContextImpl() );
+            expectedRightTuple.setPropagationContext( new RetePropagationContext() );
             rightTuples.add( expectedRightTuple );
         }
         

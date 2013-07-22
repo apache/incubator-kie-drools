@@ -92,11 +92,11 @@ public class SchedulerTest extends DroolsTestCase {
 
         rule.setTimer(new DurationTimer(100));
 
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,
-                                                                                    PropagationContext.INSERTION,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0,
+                                                                                PropagationContext.INSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                null);
 
         final RuleTerminalNodeLeftTuple tuple = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                     "cheese"),
@@ -143,11 +143,11 @@ public class SchedulerTest extends DroolsTestCase {
                                  final WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if (data.size() < 3) {
-                    final PropagationContext context2 = pctxFactory.createPropagationContextImpl(0,
-                                                                                                 0,
-                                                                                                 rule,
-                                                                                                 (RuleTerminalNodeLeftTuple) knowledgeHelper.getTuple(),
-                                                                                                 null);
+                    final PropagationContext context2 = pctxFactory.createPropagationContext(0,
+                                                                                             0,
+                                                                                             rule,
+                                                                                             (RuleTerminalNodeLeftTuple) knowledgeHelper.getTuple(),
+                                                                                             null);
                     final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(2,
                                                                                                                  "cheese"),
                                                                                            node,
@@ -172,11 +172,11 @@ public class SchedulerTest extends DroolsTestCase {
             }
         });
 
-        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0,
-                                                                                     PropagationContext.INSERTION,
-                                                                                     null,
-                                                                                     null,
-                                                                                     null);
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0,
+                                                                                 PropagationContext.INSERTION,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null);
 
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                      "cheese"),
@@ -230,11 +230,11 @@ public class SchedulerTest extends DroolsTestCase {
                                  final WorkingMemory workingMemory) {
                 /* on first invoke add another one to the agenda */
                 if (data.size() < 5) {
-                    final PropagationContext context2 = pctxFactory.createPropagationContextImpl(0,
-                                                                                                 0,
-                                                                                                 rule,
-                                                                                                 (RuleTerminalNodeLeftTuple) knowledgeHelper.getTuple(),
-                                                                                                 null);
+                    final PropagationContext context2 = pctxFactory.createPropagationContext(0,
+                                                                                             0,
+                                                                                             rule,
+                                                                                             (RuleTerminalNodeLeftTuple) knowledgeHelper.getTuple(),
+                                                                                             null);
                     final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(2,
                                                                                                                  "cheese"),
                                                                                            node,
@@ -259,11 +259,11 @@ public class SchedulerTest extends DroolsTestCase {
             }
         });
 
-        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0,
-                                                                                     PropagationContext.INSERTION,
-                                                                                     null,
-                                                                                     null,
-                                                                                     null);
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0,
+                                                                                 PropagationContext.INSERTION,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null);
 
         final RuleTerminalNodeLeftTuple tuple1 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1,
                                                                                                      "cheese"),
@@ -315,7 +315,7 @@ public class SchedulerTest extends DroolsTestCase {
     //
     //        final List data = new ArrayList();
     //
-    //        PropagationContext context = new PropagationContextImpl( 0,
+    //        PropagationContext context = new RetePropagationContext( 0,
     //                                                                 PropagationContext.INSERTION,
     //                                                                 null,
     //                                                                 null );

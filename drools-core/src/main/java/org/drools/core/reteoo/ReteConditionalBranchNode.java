@@ -6,7 +6,6 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
@@ -37,8 +36,8 @@ public class ReteConditionalBranchNode extends ConditionalBranchNode {
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
-                                                                                                   null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+                                                                                               null, null, null);
             getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
         }
     }

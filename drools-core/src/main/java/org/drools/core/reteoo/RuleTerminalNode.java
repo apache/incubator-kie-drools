@@ -26,7 +26,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.common.UpdateContext;
@@ -346,7 +345,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
             getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
         }
     }
@@ -526,7 +525,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             }
 
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_REMOVAL, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_REMOVAL, null, null, null);
             TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
                                                                     propagationContext,
                                                                     node.getRule() );

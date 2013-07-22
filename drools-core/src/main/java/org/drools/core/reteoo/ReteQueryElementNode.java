@@ -3,28 +3,34 @@ package org.drools.core.reteoo;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.common.AbstractWorkingMemory.QueryInsertAction;
-import org.drools.core.common.AbstractWorkingMemory.QueryResultInsertAction;
-import org.drools.core.common.AbstractWorkingMemory.QueryResultRetractAction;
-import org.drools.core.common.AbstractWorkingMemory.QueryResultUpdateAction;
-import org.drools.core.common.AbstractWorkingMemory.QueryRetractAction;
-import org.drools.core.common.AbstractWorkingMemory.QueryUpdateAction;
+import org.drools.core.common.TupleStartEqualsConstraint;
+import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.RetePropagationContextFactory;
+import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.RightTupleList;
 import org.kie.api.runtime.rule.Variable;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.List;
 
 public class ReteQueryElementNode extends QueryElementNode {
@@ -176,8 +182,8 @@ public class ReteQueryElementNode extends QueryElementNode {
 
         for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
-                                                                                                   null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+                                                                                               null, null, null);
             this.leftInput.updateSink(this,
                                       propagationContext,
                                       workingMemory);
@@ -380,4 +386,405 @@ public class ReteQueryElementNode extends QueryElementNode {
         }
 
     }
+
+    public static class QueryInsertAction
+            implements
+            WorkingMemoryAction {
+        private PropagationContext context;
+
+        private InternalFactHandle factHandle;
+
+        private LeftTuple        leftTuple;
+        private QueryElementNode node;
+
+        public QueryInsertAction(PropagationContext context) {
+            this.context = context;
+        }
+
+        public QueryInsertAction(PropagationContext context,
+                                 InternalFactHandle factHandle,
+                                 LeftTuple leftTuple,
+                                 QueryElementNode node) {
+            this.context = context;
+            this.factHandle = factHandle;
+            this.leftTuple = leftTuple;
+            this.node = node;
+        }
+
+        public QueryInsertAction(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            // we null this as it blocks this query being called, to avoid re-entrant issues. i.e. scheduling an insert and then an update, before the insert is executed
+            ((DroolsQuery) this.factHandle.getObject()).setAction(null);
+            workingMemory.getEntryPointNode().assertQuery(factHandle,
+                                                          context,
+                                                          workingMemory);
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public String toString() {
+            return "[QueryInsertAction facthandle=" + factHandle + ",\n        leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
+    }
+
+    public static class QueryUpdateAction
+            implements
+            WorkingMemoryAction {
+        private PropagationContext context;
+
+        private InternalFactHandle factHandle;
+
+        private LeftTuple        leftTuple;
+        private QueryElementNode node;
+
+        public QueryUpdateAction(PropagationContext context) {
+            this.context = context;
+        }
+
+        public QueryUpdateAction(PropagationContext context,
+                                 InternalFactHandle factHandle,
+                                 LeftTuple leftTuple,
+                                 QueryElementNode node) {
+            this.context = context;
+            this.factHandle = factHandle;
+            this.leftTuple = leftTuple;
+            this.node = node;
+        }
+
+        public QueryUpdateAction(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            workingMemory.getEntryPointNode().modifyQuery(factHandle,
+                                                          context,
+                                                          workingMemory);
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public String toString() {
+            return "[QueryInsertModifyAction facthandle=" + factHandle + ",\n        leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
+    }
+
+    public static class QueryRetractAction
+            implements
+            WorkingMemoryAction {
+        private PropagationContext context;
+        private LeftTuple          leftTuple;
+        private QueryElementNode   node;
+
+        public QueryRetractAction(PropagationContext context) {
+            this.context = context;
+        }
+
+        public QueryRetractAction(PropagationContext context,
+                                  LeftTuple leftTuple,
+                                  QueryElementNode node) {
+            this.context = context;
+            this.leftTuple = leftTuple;
+            this.node = node;
+        }
+
+        public QueryRetractAction(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            InternalFactHandle factHandle = (InternalFactHandle) leftTuple.getObject();
+            if (node.isOpenQuery()) {
+                // iterate to the query terminal node, as the child leftTuples will get picked up there
+                workingMemory.getEntryPointNode().retractObject(factHandle,
+                                                                context,
+                                                                workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf(workingMemory.getEntryPoint(),
+                                                                                                                                     factHandle.getObject()),
+                                                                workingMemory);
+                //workingMemory.getFactHandleFactory().destroyFactHandle( factHandle );
+            } else {
+                // get child left tuples, as there is no open query
+                if (leftTuple.getFirstChild() != null) {
+                    node.getSinkPropagator().propagateRetractLeftTuple(leftTuple,
+                                                                       context,
+                                                                       workingMemory);
+                }
+            }
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public String toString() {
+            return "[QueryRetractAction leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
+    }
+
+    public static class QueryResultInsertAction
+            implements
+            WorkingMemoryAction {
+
+        private PropagationContext context;
+
+        private LeftTuple leftTuple;
+
+        private InternalFactHandle factHandle;
+
+        private QueryElementNode node;
+
+        public QueryResultInsertAction(PropagationContext context) {
+            this.context = context;
+        }
+
+        public QueryResultInsertAction(PropagationContext context,
+                                       InternalFactHandle factHandle,
+                                       LeftTuple leftTuple,
+                                       QueryElementNode node) {
+            this.context = context;
+            this.factHandle = factHandle;
+            this.leftTuple = leftTuple;
+            this.node = node;
+        }
+
+        public QueryResultInsertAction(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            DroolsQuery query = (DroolsQuery) factHandle.getObject();
+            RightTupleList rightTuples = query.getResultInsertRightTupleList();
+            query.setResultInsertRightTupleList(null); // null so further operations happen on a new stack element
+
+            for (RightTuple rightTuple = rightTuples.getFirst(); rightTuple != null; ) {
+                RightTuple tmp = (RightTuple) rightTuple.getNext();
+                rightTuples.remove(rightTuple);
+                for (LeftTuple childLeftTuple = rightTuple.firstChild; childLeftTuple != null; childLeftTuple = (LeftTuple) childLeftTuple.getRightParentNext()) {
+                    node.getSinkPropagator().doPropagateAssertLeftTuple(context,
+                                                                        workingMemory,
+                                                                        childLeftTuple,
+                                                                        childLeftTuple.getLeftTupleSink());
+                }
+                rightTuple = tmp;
+            }
+
+            // @FIXME, this should work, but it's closing needed fact handles
+            // actually an evaluation 34 appears on the stack twice....
+            //            if ( !node.isOpenQuery() ) {
+            //                workingMemory.getFactHandleFactory().destroyFactHandle( this.factHandle );
+            //            }
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public LeftTuple getLeftTuple() {
+            return this.leftTuple;
+        }
+
+        public String toString() {
+            return "[QueryEvaluationAction leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
+    }
+
+    public static class QueryResultRetractAction
+            implements
+            WorkingMemoryAction {
+        private PropagationContext context;
+        private LeftTuple          leftTuple;
+        private InternalFactHandle factHandle;
+        private QueryElementNode   node;
+
+        public QueryResultRetractAction(PropagationContext context,
+                                        InternalFactHandle factHandle,
+                                        LeftTuple leftTuple,
+                                        QueryElementNode node) {
+            this.context = context;
+            this.factHandle = factHandle;
+            this.leftTuple = leftTuple;
+            this.node = node;
+        }
+
+        public QueryResultRetractAction(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            DroolsQuery query = (DroolsQuery) factHandle.getObject();
+            RightTupleList rightTuples = query.getResultRetractRightTupleList();
+            query.setResultRetractRightTupleList(null); // null so further operations happen on a new stack element
+
+            for (RightTuple rightTuple = rightTuples.getFirst(); rightTuple != null; ) {
+                RightTuple tmp = (RightTuple) rightTuple.getNext();
+                rightTuples.remove(rightTuple);
+                this.node.getSinkPropagator().propagateRetractRightTuple(rightTuple,
+                                                                         context,
+                                                                         workingMemory);
+                rightTuple = tmp;
+            }
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public LeftTuple getLeftTuple() {
+            return this.leftTuple;
+        }
+
+        public String toString() {
+            return "[QueryResultRetractAction leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
+    }
+
+    public static class QueryResultUpdateAction
+            implements
+            WorkingMemoryAction {
+        private PropagationContext context;
+        private LeftTuple          leftTuple;
+        InternalFactHandle factHandle;
+        private QueryElementNode node;
+
+        public QueryResultUpdateAction(PropagationContext context,
+                                       InternalFactHandle factHandle,
+                                       LeftTuple leftTuple,
+                                       QueryElementNode node) {
+            this.context = context;
+            this.factHandle = factHandle;
+            this.leftTuple = leftTuple;
+            this.node = node;
+        }
+
+        public QueryResultUpdateAction(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            DroolsQuery query = (DroolsQuery) factHandle.getObject();
+            RightTupleList rightTuples = query.getResultUpdateRightTupleList();
+            query.setResultUpdateRightTupleList(null); // null so further operations happen on a new stack element
+
+            for (RightTuple rightTuple = rightTuples.getFirst(); rightTuple != null; ) {
+                RightTuple tmp = (RightTuple) rightTuple.getNext();
+                rightTuples.remove(rightTuple);
+                this.node.getSinkPropagator().propagateModifyChildLeftTuple(rightTuple.firstChild,
+                                                                            rightTuple.firstChild.getLeftParent(),
+                                                                            context,
+                                                                            workingMemory,
+                                                                            true);
+                rightTuple = tmp;
+            }
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public LeftTuple getLeftTuple() {
+            return leftTuple;
+        }
+
+        public String toString() {
+            return "[QueryResultUpdateAction leftTuple=" + leftTuple + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
+
+    }
+
 }

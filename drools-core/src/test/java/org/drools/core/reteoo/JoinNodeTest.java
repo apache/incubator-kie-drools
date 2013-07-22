@@ -39,7 +39,6 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -79,7 +78,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         InternalRuleBase rbase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         pctxFactory = rbase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContextImpl(0,  PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
         this.workingMemory = new AbstractWorkingMemory(1, rbase);
 
         this.tupleSource = new MockTupleSource(4);
@@ -253,12 +252,12 @@ public class JoinNodeTest extends DroolsTestCase {
         final LeftTupleImpl tuple0 = new LeftTupleImpl( f0, this.node, true );
 
         this.node.assertObject( f0,
-                                pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
+                                pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
                                 this.workingMemory );
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
                                    this.workingMemory );
 
         assertEquals( 1,
@@ -559,9 +558,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
     @Test
     public void testSlotSpecific() {
-        PropagationContext contextPassAll = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
-        PropagationContext contextPassNothing = pctxFactory.createPropagationContextImpl(0,PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
-        PropagationContext contextPass2And3 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
+        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
+        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
+        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
 
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);

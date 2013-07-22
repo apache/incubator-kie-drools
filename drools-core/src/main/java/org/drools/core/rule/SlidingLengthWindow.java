@@ -26,7 +26,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.spi.PropagationContext;
@@ -109,8 +108,8 @@ public class SlidingLengthWindow
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext expiresPctx = pctxFactory.createPropagationContextImpl(pctx.getPropagationNumber(), PropagationContext.EXPIRATION,
-                                                                                            null, null, previous);
+            final PropagationContext expiresPctx = pctxFactory.createPropagationContext(pctx.getPropagationNumber(), PropagationContext.EXPIRATION,
+                                                                                        null, null, previous);
             ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
             expiresPctx.evaluateActionQueue( workingMemory );
         }

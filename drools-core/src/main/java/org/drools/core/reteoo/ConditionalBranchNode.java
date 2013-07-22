@@ -1,28 +1,19 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.Iterator;
-import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map.Entry;
 
 /**
  * Node which allows to follow different paths in the Rete-OO network,

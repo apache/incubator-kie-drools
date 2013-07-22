@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 import java.beans.IntrospectionException;
 
 import org.drools.core.FactException;
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.AbstractWorkingMemory;
@@ -37,7 +36,6 @@ import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -80,7 +78,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         this.rule = new Rule("test-rule");
         pctxFactory = rbase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
         this.workingMemory = new AbstractWorkingMemory(1, rbase);
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
@@ -424,7 +422,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
                                    this.workingMemory );
 
         assertEquals( 0,

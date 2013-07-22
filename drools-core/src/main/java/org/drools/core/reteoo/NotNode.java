@@ -19,20 +19,13 @@ package org.drools.core.reteoo;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
- 
-import org.drools.core.base.DroolsQuery;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.phreak.RightTupleEntry;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.index.RightTupleList;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 
 import static org.drools.core.util.BitMaskUtil.intersect;

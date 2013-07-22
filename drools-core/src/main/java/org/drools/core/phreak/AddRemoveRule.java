@@ -7,7 +7,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
  import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AbstractTerminalNode;
  import org.drools.core.reteoo.AccumulateNode;
@@ -388,7 +387,7 @@ public class AddRemoveRule {
     private static void insertLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
         // rule added with no sharing
         PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext pctx = pctxFactory.createPropagationContextImpl(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+        final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
         LeftInputAdapterNode lian = (LeftInputAdapterNode) startNode;
         RightTupleSinkAdapter liaAdapter = new RightTupleSinkAdapter(lian);
         lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
@@ -401,7 +400,7 @@ public class AddRemoveRule {
             if (NodeTypeEnums.isBetaNode(lts)) {
                 BetaNode bn = (BetaNode) lts;
                 if (!bn.isRightInputIsRiaNode() ) {
-                    final PropagationContext pctx = pctxFactory.createPropagationContextImpl(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+                    final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
                     bn.getRightInput().updateSink(bn,
                                                   pctx,
                                                   wm);

@@ -6,8 +6,9 @@ import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 
-public interface PropagationContextFactory {
+import java.io.Serializable;
 
+public class PhreakPropagationContextFactory implements PropagationContextFactory, Serializable  {
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final Rule rule,
@@ -16,7 +17,9 @@ public interface PropagationContextFactory {
                                                        final EntryPoint entryPoint,
                                                        final long modificationMask,
                                                        final Class<?> modifiedClass,
-                                                       final MarshallerReaderContext readerContext);
+                                                       final MarshallerReaderContext readerContext) {
+        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint, modificationMask, modifiedClass, readerContext);
+    }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
@@ -24,7 +27,9 @@ public interface PropagationContextFactory {
                                                        final LeftTuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPoint entryPoint,
-                                                       final MarshallerReaderContext readerContext);
+                                                       final MarshallerReaderContext readerContext) {
+        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint, readerContext);
+    }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
@@ -34,19 +39,24 @@ public interface PropagationContextFactory {
                                                        final int activeActivations,
                                                        final int dormantActivations,
                                                        final EntryPoint entryPoint,
-                                                       final long modificationMask);
+                                                       final long modificationMask) {
+        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, activeActivations, dormantActivations, entryPoint, modificationMask);
+    }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final Rule rule,
                                                        final LeftTuple leftTuple,
                                                        final InternalFactHandle factHandle,
-                                                       final EntryPoint entryPoint);
+                                                       final EntryPoint entryPoint) {
+        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint);
+    }
 
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final Rule rule,
                                                        final LeftTuple leftTuple,
-                                                       final InternalFactHandle factHandle);
-
+                                                       final InternalFactHandle factHandle) {
+        return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle);
+    }
 }

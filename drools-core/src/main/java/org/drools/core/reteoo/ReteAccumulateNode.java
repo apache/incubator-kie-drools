@@ -7,8 +7,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.common.RetePropagationContextFactory;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -270,7 +269,7 @@ public class ReteAccumulateNode extends AccumulateNode {
 
         final InternalFactHandle origin = (InternalFactHandle) pctx.getFactHandleOrigin();
         if ( pctx.getType() == PropagationContext.EXPIRATION ) {
-            ((PropagationContextImpl) pctx).setFactHandle(null);
+            ((RetePropagationContext) pctx).setFactHandle(null);
         }
 
         bm.getRightTupleMemory().remove( rightTuple );
@@ -282,7 +281,7 @@ public class ReteAccumulateNode extends AccumulateNode {
                                             rightTuple.firstChild );
 
         if ( pctx.getType() == PropagationContext.EXPIRATION ) {
-            ((PropagationContextImpl) pctx).setFactHandle( origin );
+            ((RetePropagationContext) pctx).setFactHandle( origin );
         }
         rightTuple.unlinkFromRightParent();
 
@@ -648,8 +647,8 @@ public class ReteAccumulateNode extends AccumulateNode {
                 // retract
                 // we can't use the expiration context here, because it wouldn't cancel existing activations. however, isAllowed is false so activations should not fire
                 PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-                PropagationContext cancelContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), org.kie.api.runtime.rule.PropagationContext.DELETION, (Rule) context.getRule(),
-                                                                                            context.getLeftTupleOrigin(), (InternalFactHandle) context.getFactHandle());
+                PropagationContext cancelContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), org.kie.api.runtime.rule.PropagationContext.DELETION, (Rule) context.getRule(),
+                                                                                        context.getLeftTupleOrigin(), (InternalFactHandle) context.getFactHandle());
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      cancelContext,
                                                      workingMemory );

@@ -20,23 +20,22 @@ import org.drools.core.FactHandle;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.WindowTupleList;
-import org.drools.core.rule.*;
+import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.Package;
+import org.drools.core.rule.Rule;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BitMaskUtil;
-import org.drools.core.util.ClassUtils;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PropagationContextImpl
+public class PhreakPropagationContext
         implements
         PropagationContext {
 
@@ -53,33 +52,30 @@ public class PropagationContextImpl
     private long                            propagationNumber;
 
     private EntryPoint                      entryPoint;
-    
-    private int                             originOffset;    
-    
-    private final LinkedList<WorkingMemoryAction> queue1 = new LinkedList<WorkingMemoryAction>(); // for inserts
-    
-    private LinkedList<WorkingMemoryAction> queue2; // for evaluations and fixers
+
+    private int                             originOffset;
 
     private long                            modificationMask = Long.MAX_VALUE;
+
     private long                            originalMask = Long.MAX_VALUE;
 
     private Class<?>                        modifiedClass;
 
     private ObjectType                      objectType;
 
-    // this field is only set for propagations happening during 
+    // this field is only set for propagations happening during
     // the deserialization of a session
     private transient MarshallerReaderContext readerContext;
 
-    public PropagationContextImpl() {
+    public PhreakPropagationContext() {
 
     }
 
-    public PropagationContextImpl(final long number,
-                                   final int type,
-                                   final Rule rule,
-                                   final LeftTuple leftTuple,
-                                   final InternalFactHandle factHandle) {
+    public PhreakPropagationContext(final long number,
+                                    final int type,
+                                    final Rule rule,
+                                    final LeftTuple leftTuple,
+                                    final InternalFactHandle factHandle) {
         this( number,
               type,
               rule,
@@ -92,12 +88,12 @@ public class PropagationContextImpl
         this.originOffset = -1;
     }
 
-    public PropagationContextImpl(final long number,
-                                   final int type,
-                                   final Rule rule,
-                                   final LeftTuple leftTuple,
-                                   final InternalFactHandle factHandle,
-                                   final EntryPoint entryPoint) {
+    public PhreakPropagationContext(final long number,
+                                    final int type,
+                                    final Rule rule,
+                                    final LeftTuple leftTuple,
+                                    final InternalFactHandle factHandle,
+                                    final EntryPoint entryPoint) {
         this( number,
               type,
               rule,
@@ -109,15 +105,15 @@ public class PropagationContextImpl
               null );
     }
 
-    public PropagationContextImpl(final long number,
-                                   final int type,
-                                   final Rule rule,
-                                   final LeftTuple leftTuple,
-                                   final InternalFactHandle factHandle,
-                                   final int activeActivations,
-                                   final int dormantActivations,
-                                   final EntryPoint entryPoint,
-                                   final long modificationMask) {
+    public PhreakPropagationContext(final long number,
+                                    final int type,
+                                    final Rule rule,
+                                    final LeftTuple leftTuple,
+                                    final InternalFactHandle factHandle,
+                                    final int activeActivations,
+                                    final int dormantActivations,
+                                    final EntryPoint entryPoint,
+                                    final long modificationMask) {
         this( number,
               type,
               rule,
@@ -129,13 +125,13 @@ public class PropagationContextImpl
               null );
     }
 
-    public PropagationContextImpl(final long number,
-                                   final int type,
-                                   final Rule rule,
-                                   final LeftTuple leftTuple,
-                                   final InternalFactHandle factHandle,
-                                   final EntryPoint entryPoint,
-                                   final MarshallerReaderContext readerContext) {
+    public PhreakPropagationContext(final long number,
+                                    final int type,
+                                    final Rule rule,
+                                    final LeftTuple leftTuple,
+                                    final InternalFactHandle factHandle,
+                                    final EntryPoint entryPoint,
+                                    final MarshallerReaderContext readerContext) {
         this( number,
               type,
               rule,
@@ -147,15 +143,15 @@ public class PropagationContextImpl
               readerContext );
     }
 
-    public PropagationContextImpl(final long number,
-                                   final int type,
-                                   final Rule rule,
-                                   final LeftTuple leftTuple,
-                                   final InternalFactHandle factHandle,
-                                   final EntryPoint entryPoint,
-                                   final long modificationMask,
-                                   final Class<?> modifiedClass,
-                                   final MarshallerReaderContext readerContext) {
+    public PhreakPropagationContext(final long number,
+                                    final int type,
+                                    final Rule rule,
+                                    final LeftTuple leftTuple,
+                                    final InternalFactHandle factHandle,
+                                    final EntryPoint entryPoint,
+                                    final long modificationMask,
+                                    final Class<?> modifiedClass,
+                                    final MarshallerReaderContext readerContext) {
         this.type = type;
         this.rule = rule;
         this.leftTuple = leftTuple;
@@ -268,53 +264,23 @@ public class PropagationContextImpl
     }
 
     public void addInsertAction(WorkingMemoryAction action) {
-        synchronized (queue1) {
-            queue1.addFirst(action);
-        }
+        throw new UnsupportedOperationException("rete only method");
     }
 
     public void removeInsertAction(WorkingMemoryAction action) {
-        synchronized (queue1) {
-            queue1.remove(action);
-        }
+        throw new UnsupportedOperationException("rete only method");
     }
     
     public LinkedList<WorkingMemoryAction> getQueue1() {
-        return this.queue1;
+        throw new UnsupportedOperationException("rete only method");
     }
 
     public LinkedList<WorkingMemoryAction> getQueue2() {
-        if ( this.queue2 == null ) {
-            this.queue2 = new LinkedList<WorkingMemoryAction>();
-        }
-        return this.queue2;
+        throw new UnsupportedOperationException("rete only method");
     }
 
     public void evaluateActionQueue(InternalWorkingMemory workingMemory) {
-        boolean repeat = true;
-        while(repeat) {
-            synchronized (queue1) {
-                WorkingMemoryAction action;
-                while ( (action = (!queue1.isEmpty()) ? queue1.removeFirst() : null ) != null ) {
-                    action.execute( workingMemory );
-                }
-            }
-
-            repeat = false;
-            if ( this.queue2 != null ) {
-                WorkingMemoryAction action;
-
-                while ( (action = (!queue2.isEmpty()) ? queue2.removeFirst() : null) != null ) {
-                    action.execute( workingMemory );
-                    if ( !this.queue1.isEmpty() ) {
-                        // Queue1 always takes priority and it's contents should be evaluated first
-                        repeat = true;
-                        break;
-                    }
-                }
-            }
-
-        }
+        // return, do nothing, this is for rete only
     }
 
     public long getModificationMask() {
@@ -413,7 +379,7 @@ public class PropagationContextImpl
 
     @Override
     public String toString() {
-        return "PropagationContextImpl [entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
+        return "PhreakPropagationContext [entryPoint=" + entryPoint + ", factHandle=" + factHandle + ", leftTuple=" + leftTuple + ", originOffset="
                + originOffset + ", propagationNumber=" + propagationNumber + ", rule=" + rule + ", type=" + type + "]";
     }
 }

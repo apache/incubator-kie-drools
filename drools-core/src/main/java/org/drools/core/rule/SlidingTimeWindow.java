@@ -28,7 +28,6 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -186,8 +185,8 @@ public class SlidingTimeWindow
                 if( handle.isValid()) {
                     // if not expired yet, expire it
                     PropagationContextFactory pctxFactory = ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-                    final PropagationContext expiresPctx = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
-                                                                                                    null, null, handle);
+                    final PropagationContext expiresPctx = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
+                                                                                                null, null, handle);
                     ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);
                     expiresPctx.evaluateActionQueue( workingMemory );
                 }

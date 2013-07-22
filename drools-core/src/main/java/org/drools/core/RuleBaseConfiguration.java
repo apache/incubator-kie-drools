@@ -30,6 +30,7 @@ import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
@@ -897,34 +898,37 @@ public class RuleBaseConfiguration
                                                               isClassLoaderCacheEnabled());
     }
 
-    private static NodeFactory   reteNodeFactory;
-    private static AgendaFactory agendaFactory;
+    private static NodeFactory               reteNodeFactory;
+    private static AgendaFactory             agendaFactory;
+    private static PropagationContextFactory pctxFactory;
 
     public KieComponentFactory getComponentFactory() {
-////        if (!isPhreakEnabled() && componentFactory == KieComponentFactory.getDefault() ) {
-////            componentFactory = new KieComponentFactory();
-////            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
-////                if (reteNodeFactory == null) {
-////                    try {
-////                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.core.reteoo.builder.ReteNodeFactory").newInstance();
-////                    } catch (Exception e) {
-////                        throw new RuntimeException(e);
-////                    }
-////                }
-////                componentFactory.setNodeFactoryProvider(reteNodeFactory);
-////            }
-////            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
-////                if (agendaFactory == null) {
-////                    try {
-////                        agendaFactory = (AgendaFactory) Class.forName("org.drools.core.common.ReteAgendaFactory").newInstance();
-////                    } catch (Exception e) {
-////                        throw new RuntimeException(e);
-////                    }
-////                }
-////                componentFactory.setAgendaFactory(agendaFactory);
-////            }
-////        }
-        if (!isPhreakEnabled() ) {
+        ////        if (!isPhreakEnabled() && componentFactory == KieComponentFactory.getDefault() ) {
+        ////            componentFactory = new KieComponentFactory();
+        ////            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
+        ////                if (reteNodeFactory == null) {
+        ////                    try {
+        ////                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.core.reteoo.builder.ReteNodeFactory").newInstance();
+        ////                    } catch (Exception e) {
+        ////                        throw new RuntimeException(e);
+        ////                    }
+        ////                }
+        ////                componentFactory.setNodeFactoryProvider(reteNodeFactory);
+        ////            }
+        ////            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
+        ////                if (agendaFactory == null) {
+        ////                    try {
+        ////                        agendaFactory = (AgendaFactory) Class.forName("org.drools.core.common.ReteAgendaFactory").newInstance();
+        ////                    } catch (Exception e) {
+        ////                        throw new RuntimeException(e);
+        ////                    }
+        ////                }
+        ////                componentFactory.setAgendaFactory(agendaFactory);
+        ////            }
+        ////        }
+        if (!isPhreakEnabled()) {
+            ///PhreakPropagationContextFactory
+
             if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
                 if (reteNodeFactory == null) {
                     try {
@@ -934,6 +938,16 @@ public class RuleBaseConfiguration
                     }
                 }
                 componentFactory.setNodeFactoryProvider(reteNodeFactory);
+            }
+            if (!(componentFactory.getPropagationContextFactory().getClass().getName().endsWith("RetePropagationContextFactory"))) {
+                if (pctxFactory == null) {
+                    try {
+                        pctxFactory = (PropagationContextFactory) Class.forName("org.drools.core.common.RetePropagationContextFactory").newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                componentFactory.setPropagationContextFactory(pctxFactory);
             }
             if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
                 if (agendaFactory == null) {

@@ -30,7 +30,6 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.FromNode.FromMemory;
@@ -77,7 +76,7 @@ public class FromNodeTest {
 
     @Test
     public void testAlphaNode() {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
                                                                               ruleBase);
 
@@ -180,7 +179,7 @@ public class FromNodeTest {
 
     @Test
     public void testBetaNode() {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -297,7 +296,7 @@ public class FromNodeTest {
 
     @Test
     public void testRestract() {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
@@ -375,7 +374,7 @@ public class FromNodeTest {
     
     @Test
     public void testAssignable() {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 

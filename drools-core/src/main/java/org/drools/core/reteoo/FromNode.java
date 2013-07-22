@@ -18,19 +18,14 @@ package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
@@ -48,8 +43,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
