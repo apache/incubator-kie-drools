@@ -104,8 +104,8 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
         return extractValuesFromEntity(entity);
     }
 
-    public Collection<Object> extractValuesFromEntity(Object entity) {
-        return (Collection<Object>) rangePropertyAccessor.executeGetter(entity);
+    public Collection<?> extractValuesFromEntity(Object entity) {
+        return (Collection<?>) rangePropertyAccessor.executeGetter(entity);
     }
 
     public long getValueCount(Solution solution, Object entity) {
