@@ -47,6 +47,7 @@ import java.util.Stack;
 
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
+import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
@@ -626,10 +627,13 @@ public class PackageBuilder
             reader = resource.getReader();
             String str = expander.expand( reader );
             if ( expander.hasErrors() ) {
-                this.results.addAll( expander.getErrors() );
+                for (ExpanderException error : expander.getErrors()) {
+                    error.setResource( resource );
+                    this.results.add( error );
+                }
             }
 
-            pkg = parser.parse( str );
+            pkg = parser.parse( resource, str );
             this.results.addAll( parser.getErrors() );
             hasErrors = parser.hasErrors();
         } catch ( IOException e ) {

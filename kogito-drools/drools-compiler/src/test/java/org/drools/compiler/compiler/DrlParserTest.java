@@ -68,7 +68,7 @@ public class DrlParserTest {
                      + "end";
 
         DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
-        PackageDescr pkgDescr = parser.parse( drl );
+        PackageDescr pkgDescr = parser.parse( null, drl );
         TypeDeclarationDescr bean1Type = pkgDescr.getTypeDeclarations().get( 0 );
         assertNull( bean1Type.getSuperTypeName() );
 

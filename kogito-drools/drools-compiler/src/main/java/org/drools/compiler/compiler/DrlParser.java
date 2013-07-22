@@ -66,7 +66,8 @@ public class DrlParser {
     }
 
     /** Parse a rule from text */
-    public PackageDescr parse(final String text) throws DroolsParserException {
+    public PackageDescr parse(final Resource resource, final String text) throws DroolsParserException {
+        this.resource = resource;
         return parse(false, text);
     }
 
