@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.FactException;
@@ -206,4 +207,8 @@ public interface InternalWorkingMemory
     InternalProcessRuntime getProcessRuntime();
 
     void closeLiveQuery(InternalFactHandle factHandle);
+
+    Queue<TimedRuleExecution> getTimedExecutionsQueue();
+
+    void setTimedExecutionsQueue(Queue<TimedRuleExecution> timedExecutionsQueue);
 }
