@@ -2,9 +2,14 @@ package org.drools.core.phreak;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Queue;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
@@ -15,10 +20,12 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.TimerNodeTimer;
 import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.time.Job;
@@ -28,6 +35,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.Timer;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.rule.PropagationContext;
@@ -362,6 +370,59 @@ public class PhreakTimerNode {
             }
 
             pmem.queueRuleAgendaItem( timerJobCtx.getWorkingMemory() );
+
+            Queue<TimedRuleExecution> queue = timerJobCtx.getWorkingMemory().getTimedExecutionsQueue();
+            if (queue != null) {
+                queue.add(new Executor(pmem,
+                                       timerJobCtx.getWorkingMemory(),
+                                       timerJobCtx.getSink(),
+                                       timerJobCtx.getTimerNodeMemory()));
+            }
+        }
+    }
+
+    public static class Executor implements TimedRuleExecution {
+
+        private final PathMemory pmem;
+        private final InternalWorkingMemory wm;
+        private final NetworkNode sink;
+        private final Memory mem;
+
+        public Executor(PathMemory pmem, InternalWorkingMemory wm, NetworkNode sink, Memory mem) {
+            this.pmem = pmem;
+            this.wm = wm;
+            this.sink = sink;
+            this.mem = mem;
+        }
+
+        @Override
+        public void evauateAndFireRule() {
+            SegmentMemory[] smems = pmem.getSegmentMemories();
+            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
+
+            SegmentMemory sm = pmem.getSegmentMemory();
+            int smemIndex = 0;
+            for (SegmentMemory smem : smems) {
+                if (smem == sm) {
+                    break;
+                }
+                smemIndex++;
+            }
+
+            RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
+            rne.outerEval(lian,
+                          pmem,
+                          sink,
+                          mem,
+                          smems,
+                          smemIndex,
+                          sm.getStagedLeftTuples(),
+                          wm,
+                          new LinkedList<StackEntry>(),
+                          new LinkedList<StackEntry>(),
+                          new HashSet<String>(),
+                          true,
+                          pmem.getRuleAgendaItem().getRuleExecutor());
         }
     }
 

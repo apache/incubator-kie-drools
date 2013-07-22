@@ -1,6 +1,5 @@
 package org.drools.compiler.integrationtests;
 
-import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,7 +7,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.Alarm;
@@ -18,10 +19,8 @@ import org.drools.compiler.FactA;
 import org.drools.core.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.core.common.TimedRuleExecution;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
@@ -261,7 +260,57 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
     }
-    
+
+    @Test
+    public void testIntervalTimerWithoutFire() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  timer (int:30s 10s) ";
+        str += "when \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
+        final BlockingQueue<TimedRuleExecution> queue = new LinkedBlockingQueue<TimedRuleExecution>();
+        ((StatefulKnowledgeSessionImpl)ksession).session.setTimedExecutionsQueue(queue);
+
+        Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    while (true) {
+                        queue.take().evauateAndFireRule();
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+
+        List list = new ArrayList();
+
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime(55, TimeUnit.SECONDS);
+        Thread.sleep(1000000L);
+        assertEquals( 3, list.size() );
+    }
+
     @Test(timeout=10000)
     public void testUnknownProtocol() throws Exception {
         wrongTimerExpression("xyz:30");
