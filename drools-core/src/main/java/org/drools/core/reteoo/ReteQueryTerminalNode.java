@@ -1,8 +1,10 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
@@ -73,11 +75,8 @@ public class ReteQueryTerminalNode extends QueryTerminalNode {
         }
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
             getLeftTupleSource().updateSink( this, propagationContext, workingMemory );
         }
     }

@@ -12,7 +12,6 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DrlParser;
@@ -23,6 +22,8 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
@@ -101,7 +102,8 @@ public class MVELConsequenceBuilderTest {
         final MVELConsequenceBuilder builder = new MVELConsequenceBuilder();
         builder.build( context, Rule.DEFAULT_CONSEQUENCE_NAME );
 
-        RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+        InternalRuleBase ruleBase = (InternalRuleBase)  RuleBaseFactory.newRuleBase();
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         ruleBase.addPackage( pkg );
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
@@ -114,14 +116,8 @@ public class MVELConsequenceBuilderTest {
                                                true );
         
 
-        final AgendaItem item = new AgendaItemImpl( 0,
-                                                tuple,
-                                                10,
-                                                new PropagationContextImpl( 1,
-                                                                            1,
-                                                                            null,
-                                                                            tuple,
-                                                                            null ),
+        final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
+                                                pctxFactory.createPropagationContextImpl(1, 1, null, tuple, null),
                                                 new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( (InternalRuleBase) ruleBase, null )), null, null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );

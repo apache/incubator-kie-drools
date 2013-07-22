@@ -24,10 +24,12 @@ import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
@@ -126,11 +128,9 @@ public class AlphaNode extends ObjectSource
         }
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+                                                                                                   null, null, null);
             this.source.updateSink( this,
                                     propagationContext,
                                     workingMemory );

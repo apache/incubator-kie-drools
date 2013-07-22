@@ -24,7 +24,8 @@ import org.drools.core.common.AbstractWorkingMemory.QueryRiaFixerNodeFixer;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
@@ -102,11 +103,9 @@ public class QueryRiaFixerNode extends LeftTupleSource
         }
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+            PropagationContextFactory pctxFactory = context.getComponentFactory().getPropagationContextFactory();
+            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(),  PropagationContext.RULE_ADDITION,
+                                                                                                   null, null, null);
             this.leftInput.updateSink( this,
                                          propagationContext,
                                          workingMemory );

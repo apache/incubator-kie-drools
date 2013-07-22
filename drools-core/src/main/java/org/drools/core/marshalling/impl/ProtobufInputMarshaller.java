@@ -37,12 +37,15 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
+import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.EnvironmentFactory;
@@ -474,15 +477,11 @@ public class ProtobufInputMarshaller {
                                             List<PropagationContextImpl> pctxs) {
         Object object = handle.getObject();
         InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) handle.getEntryPoint();
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(),
-                                                                                                                                                     object );
-        PropagationContextImpl propagationContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                PropagationContext.INSERTION,
-                                                                                null,
-                                                                                null,
-                                                                                handle,
-                                                                                ep.getEntryPoint(),
-                                                                                context );
+        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
+
+        PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+
+        PropagationContextImpl propagationContext = pctxFactory.createPropagationContextImpl(wm.getNextPropagationIdCounter(), PropagationContext.INSERTION, null, null, handle, ep.getEntryPoint(), context);
         // keeping this list for a later cleanup is necessary because of the lazy propagations that might occur
         pctxs.add( propagationContext );
 

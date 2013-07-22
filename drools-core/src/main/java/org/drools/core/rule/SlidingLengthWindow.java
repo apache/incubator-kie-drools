@@ -23,13 +23,12 @@ import java.io.ObjectOutput;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
-import org.drools.core.reteoo.WindowTuple;
-import org.drools.core.reteoo.WindowTupleList;
 import org.drools.core.spi.PropagationContext;
 
 /**
@@ -109,11 +108,9 @@ public class SlidingLengthWindow
         if ( window.handles[window.pos] != null ) {
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext expiresPctx = new PropagationContextImpl( pctx.getPropagationNumber(),
-                                                                               PropagationContext.EXPIRATION,
-                                                                               null,
-                                                                               null,
-                                                                               previous );
+            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            final PropagationContext expiresPctx = pctxFactory.createPropagationContextImpl(pctx.getPropagationNumber(), PropagationContext.EXPIRATION,
+                                                                                            null, null, previous);
             ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
             expiresPctx.evaluateActionQueue( workingMemory );
         }
@@ -121,11 +118,6 @@ public class SlidingLengthWindow
         return true;
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @see org.kie.rule.Behavior#retractRightTuple(java.lang.Object, org.kie.reteoo.RightTuple, org.kie.common.InternalWorkingMemory)
-     */
     public void retractFact(final WindowMemory memory,
                             final Object context,
                             final InternalFactHandle handle,

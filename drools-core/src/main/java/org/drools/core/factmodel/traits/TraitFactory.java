@@ -32,6 +32,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.base.ClassFieldAccessor;
 import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
@@ -42,10 +43,8 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Package;
-import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBase;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
@@ -71,7 +70,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     public static void setMode(VirtualPropertyMode newMode, KnowledgeBase kBase) {
         RuleBase ruleBase = ((KnowledgeBaseImpl) kBase).getRuleBase();
-        ReteooComponentFactory rcf = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory();
+        KieComponentFactory rcf = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory();
         ClassBuilderFactory cbf = rcf.getClassBuilderFactory();
         rcf.getTraitFactory().mode = newMode;
         switch (newMode) {
@@ -219,7 +218,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         String proxyName = getProxyName( tdef, cdef );
         String wrapperName = getPropertyWrapperName( tdef, cdef );
 
-        ReteooComponentFactory rcf = ruleBase.getConfiguration().getComponentFactory();
+        KieComponentFactory rcf = ruleBase.getConfiguration().getComponentFactory();
 
 
         TraitPropertyWrapperClassBuilder propWrapperBuilder = (TraitPropertyWrapperClassBuilder) rcf.getClassBuilderFactory().getPropertyWrapperBuilder();

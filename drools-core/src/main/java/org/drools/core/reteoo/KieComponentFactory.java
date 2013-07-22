@@ -22,6 +22,8 @@ import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.DefaultAgendaFactory;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
@@ -37,7 +39,13 @@ import org.drools.core.spi.FactHandleFactory;
 
 import java.io.Serializable;
 
-public class ReteooComponentFactory implements Serializable {
+public class KieComponentFactory implements Serializable {
+
+    public static KieComponentFactory DEFAULT = new KieComponentFactory();
+
+    public static KieComponentFactory getDefault() {
+        return DEFAULT;
+    }
 
     private FactHandleFactory handleFactory = new ReteooFactHandleFactory();
 
@@ -77,6 +85,15 @@ public class ReteooComponentFactory implements Serializable {
         return new PhreakNodeFactory();
     }
 
+    private PropagationContextFactory propagationFactory = new RetePropagationContextFactory();
+
+    public void setPropagationContextFactory( PropagationContextFactory factory ) {
+        propagationFactory = factory;
+    }
+
+    public  PropagationContextFactory getPropagationContextFactory() {
+        return propagationFactory;
+    }
 
     private RuleBuilderFactory ruleBuilderFactory = new ReteooRuleBuilderFactory();
 
@@ -154,15 +171,13 @@ public class ReteooComponentFactory implements Serializable {
     }
 
 
-
-
     private KnowledgeHelperFactory knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
 
     public KnowledgeHelperFactory getKnowledgeHelperFactory() {
-         return knowledgeHelperFactory;
+        return knowledgeHelperFactory;
     }
 
-    public void setKnowledgeHelperFactory( KnowledgeHelperFactory provider ) {
+    public void setKnowledgeHelperFactory(KnowledgeHelperFactory provider) {
         knowledgeHelperFactory = provider;
     }
 
@@ -175,15 +190,13 @@ public class ReteooComponentFactory implements Serializable {
     }
 
 
-
-
     private LogicTransformerFactory logicTransformerFactory = new DefaultLogicTransformerFactory();
 
     public LogicTransformerFactory getLogicTransformerFactory() {
         return logicTransformerFactory;
     }
 
-    public void setLogicTransformerFactory( LogicTransformerFactory provider ) {
+    public void setLogicTransformerFactory(LogicTransformerFactory provider) {
         logicTransformerFactory = provider;
     }
 

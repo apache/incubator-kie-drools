@@ -45,8 +45,9 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.WorkingMemoryAction;
@@ -1088,12 +1089,13 @@ public class InputMarshaller {
                                      entryPoint );
         }
 
-        PropagationContext pc = new PropagationContextImpl( propagationNumber,
-                                                            type,
-                                                            rule,
-                                                            leftTuple,
-                                                            factHandle,
-                                                            entryPoint );
+        PropagationContextFactory pctxFactory = context.ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        PropagationContext pc = pctxFactory.createPropagationContextImpl(propagationNumber,
+                                                                                           type,
+                                                                                           rule,
+                                                                                           leftTuple,
+                                                                                           factHandle,
+                                                                                           entryPoint);
         context.propagationContexts.put( propagationNumber,
                                          pc );
     }

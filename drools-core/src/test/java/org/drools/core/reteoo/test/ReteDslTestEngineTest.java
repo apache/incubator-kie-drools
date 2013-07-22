@@ -36,7 +36,8 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.Person;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.reteoo.BetaMemory;
@@ -332,13 +333,12 @@ public class ReteDslTestEngineTest {
         JoinNode join1 = (JoinNode) map.get( "join1" );
         assertNotNull( join1 );
 
-        PropagationContext context = new PropagationContextImpl( 0,
-                                                                 PropagationContext.INSERTION,
-                                                                 null,
-                                                                 null,
-                                                                 null );
-        AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
-                                                                     (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
+        ReteooRuleBase rbase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+
+        PropagationContextFactory pctxFactory = rbase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+
+        PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1, rbase );
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( join1 );
 

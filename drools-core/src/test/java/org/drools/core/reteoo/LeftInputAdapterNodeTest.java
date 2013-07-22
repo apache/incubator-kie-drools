@@ -22,7 +22,9 @@ import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
@@ -82,11 +84,8 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
      */
     @Test
     public void testAssertObjectWithoutMemory() throws Exception {
-        final PropagationContext pcontext = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final PropagationContext pcontext = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
         final EntryPointNode entryPoint = new EntryPointNode( -1,

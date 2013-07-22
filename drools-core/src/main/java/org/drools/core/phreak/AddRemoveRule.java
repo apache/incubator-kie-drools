@@ -2,10 +2,12 @@ package org.drools.core.phreak;
 
 
 import org.drools.core.common.InternalFactHandle;
- import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
  import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AbstractTerminalNode;
  import org.drools.core.reteoo.AccumulateNode;
@@ -385,11 +387,8 @@ public class AddRemoveRule {
 
     private static void insertLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
         // rule added with no sharing
-        final PropagationContext pctx = new PropagationContextImpl(wm.getNextPropagationIdCounter(),
-                                                                   PropagationContext.RULE_ADDITION,
-                                                                   null,
-                                                                   null,
-                                                                   null);
+        PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final PropagationContext pctx = pctxFactory.createPropagationContextImpl(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
         LeftInputAdapterNode lian = (LeftInputAdapterNode) startNode;
         RightTupleSinkAdapter liaAdapter = new RightTupleSinkAdapter(lian);
         lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
@@ -397,15 +396,12 @@ public class AddRemoveRule {
 
     private static void insertFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {
         LeftTupleSink lts =  startNode;
+        PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
         while (!NodeTypeEnums.isTerminalNode(lts) && lts.getLeftTupleSource().getType() != NodeTypeEnums.RightInputAdaterNode ) {
             if (NodeTypeEnums.isBetaNode(lts)) {
                 BetaNode bn = (BetaNode) lts;
                 if (!bn.isRightInputIsRiaNode() ) {
-                    final PropagationContext pctx = new PropagationContextImpl(wm.getNextPropagationIdCounter(),
-                                                                               PropagationContext.RULE_ADDITION,
-                                                                               null,
-                                                                               null,
-                                                                               null);
+                    final PropagationContext pctx = pctxFactory.createPropagationContextImpl(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
                     bn.getRightInput().updateSink(bn,
                                                   pctx,
                                                   wm);

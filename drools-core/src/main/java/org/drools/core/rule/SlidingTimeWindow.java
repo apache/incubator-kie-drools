@@ -25,8 +25,10 @@ import java.util.PriorityQueue;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -38,11 +40,8 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
-import org.drools.core.reteoo.WindowTuple;
-import org.drools.core.reteoo.WindowTupleList;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -120,11 +119,6 @@ public class SlidingTimeWindow
         return new SlidingTimeWindowContext();
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @see org.kie.rule.Behavior#assertRightTuple(java.lang.Object, org.kie.reteoo.RightTuple, org.kie.common.InternalWorkingMemory)
-     */
     public boolean assertFact(final WindowMemory memory,
                               final Object context,
                               final InternalFactHandle fact,
@@ -148,11 +142,6 @@ public class SlidingTimeWindow
         return true;
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @see org.kie.rule.Behavior#retractRightTuple(java.lang.Object, org.kie.reteoo.RightTuple, org.kie.common.InternalWorkingMemory)
-     */
     public void retractFact(final WindowMemory memory,
                             final Object context,
                             final InternalFactHandle fact,
@@ -196,11 +185,9 @@ public class SlidingTimeWindow
                 queue.queue.remove();
                 if( handle.isValid()) {
                     // if not expired yet, expire it
-                    final PropagationContext expiresPctx = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                       PropagationContext.EXPIRATION,
-                                                                                       null,
-                                                                                       null,
-                                                                                       handle );
+                    PropagationContextFactory pctxFactory = ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+                    final PropagationContext expiresPctx = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
+                                                                                                    null, null, handle);
                     ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);
                     expiresPctx.evaluateActionQueue( workingMemory );
                 }
@@ -224,10 +211,6 @@ public class SlidingTimeWindow
         return handle.getStartTimestamp() + this.size <= currentTime;
     }
 
-    /**
-     * @param rightTuple
-     * @param workingMemory
-     */
     private static void updateNextExpiration(final InternalFactHandle fact,
                                              final PropagationContext pctx,
                                              final InternalWorkingMemory workingMemory,

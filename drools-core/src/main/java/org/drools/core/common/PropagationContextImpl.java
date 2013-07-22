@@ -76,10 +76,10 @@ public class PropagationContextImpl
     }
 
     public PropagationContextImpl(final long number,
-                                  final int type,
-                                  final Rule rule,
-                                  final LeftTuple leftTuple,
-                                  final InternalFactHandle factHandle) {
+                                   final int type,
+                                   final Rule rule,
+                                   final LeftTuple leftTuple,
+                                   final InternalFactHandle factHandle) {
         this( number,
               type,
               rule,
@@ -93,11 +93,11 @@ public class PropagationContextImpl
     }
 
     public PropagationContextImpl(final long number,
-                                  final int type,
-                                  final Rule rule,
-                                  final LeftTuple leftTuple,
-                                  final InternalFactHandle factHandle,
-                                  final EntryPoint entryPoint) {
+                                   final int type,
+                                   final Rule rule,
+                                   final LeftTuple leftTuple,
+                                   final InternalFactHandle factHandle,
+                                   final EntryPoint entryPoint) {
         this( number,
               type,
               rule,
@@ -110,14 +110,14 @@ public class PropagationContextImpl
     }
 
     public PropagationContextImpl(final long number,
-                                  final int type,
-                                  final Rule rule,
-                                  final LeftTuple leftTuple,
-                                  final InternalFactHandle factHandle,
-                                  final int activeActivations,
-                                  final int dormantActivations,
-                                  final EntryPoint entryPoint,
-                                  final long modificationMask) {
+                                   final int type,
+                                   final Rule rule,
+                                   final LeftTuple leftTuple,
+                                   final InternalFactHandle factHandle,
+                                   final int activeActivations,
+                                   final int dormantActivations,
+                                   final EntryPoint entryPoint,
+                                   final long modificationMask) {
         this( number,
               type,
               rule,
@@ -130,12 +130,12 @@ public class PropagationContextImpl
     }
 
     public PropagationContextImpl(final long number,
-                                  final int type,
-                                  final Rule rule,
-                                  final LeftTuple leftTuple,
-                                  final InternalFactHandle factHandle,
-                                  final EntryPoint entryPoint,
-                                  final MarshallerReaderContext readerContext) {
+                                   final int type,
+                                   final Rule rule,
+                                   final LeftTuple leftTuple,
+                                   final InternalFactHandle factHandle,
+                                   final EntryPoint entryPoint,
+                                   final MarshallerReaderContext readerContext) {
         this( number,
               type,
               rule,
@@ -148,14 +148,14 @@ public class PropagationContextImpl
     }
 
     public PropagationContextImpl(final long number,
-                                  final int type,
-                                  final Rule rule,
-                                  final LeftTuple leftTuple,
-                                  final InternalFactHandle factHandle,
-                                  final EntryPoint entryPoint,
-                                  final long modificationMask,
-                                  final Class<?> modifiedClass,
-                                  final MarshallerReaderContext readerContext) {
+                                   final int type,
+                                   final Rule rule,
+                                   final LeftTuple leftTuple,
+                                   final InternalFactHandle factHandle,
+                                   final EntryPoint entryPoint,
+                                   final long modificationMask,
+                                   final Class<?> modifiedClass,
+                                   final MarshallerReaderContext readerContext) {
         this.type = type;
         this.rule = rule;
         this.leftTuple = leftTuple;

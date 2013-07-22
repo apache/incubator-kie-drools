@@ -36,8 +36,9 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
@@ -62,42 +63,46 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class LogicalAssertionTest extends DroolsTestCase {
-    private ReteooRuleBase ruleBase;
-    private BuildContext   buildContext;
-    private EntryPointNode entryPoint;
+    private PropagationContextFactory pctxFactory;
+
+    private ReteooRuleBase            ruleBase;
+    private BuildContext              buildContext;
+    private EntryPointNode            entryPoint;
 
     @Before
     public void setUp() throws Exception {
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext( ruleBase,
-                                         ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
-        this.entryPoint = new EntryPointNode( 0,
-                                              this.ruleBase.getRete(),
-                                              buildContext );
-        this.entryPoint.attach( buildContext );
+        buildContext = new BuildContext(ruleBase,
+                                        ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
+        this.entryPoint = new EntryPointNode(0,
+                                             this.ruleBase.getRete(),
+                                             buildContext);
+        this.entryPoint.attach(buildContext);
+        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSingleLogicalRelationship() throws Exception {
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
 
         final Rete rete = ruleBase.getRete();
         // create a RuleBase with a single ObjectTypeNode we attach a
         // MockObjectSink so we can detect assertions and retractions
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( idGenerator.getNextId(),
-                                                                  this.entryPoint,
-                                                                  new ClassObjectType( String.class ),
-                                                                  buildContext );
+        final ObjectTypeNode objectTypeNode = new ObjectTypeNode(idGenerator.getNextId(),
+                                                                 this.entryPoint,
+                                                                 new ClassObjectType(String.class),
+                                                                 buildContext);
 
         MockRightTupleSink sink = new MockRightTupleSink();
 
-        final Rule rule1 = new Rule( "test-rule1" );
-        final RuleTerminalNode node = new RuleTerminalNode( idGenerator.getNextId(),
-                                                            new MockTupleSource( idGenerator.getNextId() ),
-                                                            rule1,
-                                                            rule1.getLhs(),
-                                                            0,
-                                                            buildContext );
+        final Rule rule1 = new Rule("test-rule1");
+        final RuleTerminalNode node = new RuleTerminalNode(idGenerator.getNextId(),
+                                                           new MockTupleSource(idGenerator.getNextId()),
+                                                           rule1,
+                                                           rule1.getLhs(),
+                                                           0,
+                                                           buildContext);
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
@@ -107,9 +112,9 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
             public void evaluate(KnowledgeHelper knowledgeHelper,
                                  WorkingMemory workingMemory) {
-                LinkedList< LogicalDependency > list = ((DefaultKnowledgeHelper)knowledgeHelper).getpreviousJustified();
-                if ( list != null ) {
-                    for ( SimpleLogicalDependency dep = ( SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
+                LinkedList<LogicalDependency> list = ((DefaultKnowledgeHelper) knowledgeHelper).getpreviousJustified();
+                if (list != null) {
+                    for (SimpleLogicalDependency dep = (SimpleLogicalDependency ) list.getFirst(); dep != null; dep =  ( SimpleLogicalDependency ) dep.getNext() ){
                         knowledgeHelper.insertLogical( dep.getObject(), dep.getValue() );
                     }
                 }
@@ -136,11 +141,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -267,11 +268,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -379,11 +376,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
@@ -534,11 +527,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       new DefaultFactHandle()  );
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         node.assertLeftTuple( tuple1,
                               context,
@@ -666,11 +655,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
         // get the activation onto the agenda
         node.assertLeftTuple( tuple1,
                               context1,
@@ -692,11 +677,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node2,
                                                                                 true );
 
-        final PropagationContext context2 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context2 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         // get the activations onto the agenda
         node2.assertLeftTuple( tuple2,
@@ -832,11 +813,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         // Assert multiple stated objects
         node.assertLeftTuple( tuple1,
@@ -956,11 +933,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = new PropagationContextImpl( 0,
-                                                                        PropagationContext.INSERTION,
-                                                                        null,
-                                                                        null,
-                                                                        new DefaultFactHandle()  );
+        final PropagationContext context1 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
