@@ -16,7 +16,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.event.ActivationCancelledEvent;
 import org.drools.core.event.AgendaEventListener;
 import org.drools.core.event.DefaultAgendaEventListener;
@@ -233,7 +233,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         };
 
         workingMemory.addEventListener( listener );
-        DefaultAgenda agenda = (DefaultAgenda) workingMemory.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
         assertEquals( 0,
                       agenda.getRuleFlowGroup( "flowgroup-1" ).size() );
 
