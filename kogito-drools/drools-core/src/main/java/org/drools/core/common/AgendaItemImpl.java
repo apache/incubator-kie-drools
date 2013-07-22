@@ -203,7 +203,7 @@ public class AgendaItemImpl
     }
 
     @Override
-    public void removeAllBlockersAndBlocked(DefaultAgenda agenda) {
+    public void removeAllBlockersAndBlocked(InternalAgenda agenda) {
         if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
             for (LinkedListEntry<LogicalDependency> node = blockers.getFirst(); node != null; node = node.getNext()) {
@@ -220,16 +220,7 @@ public class AgendaItemImpl
                 removeBlocked(dep);
                 AgendaItem justified = (AgendaItem) dep.getJustified();
                 if (justified.getBlockers().isEmpty()) {
-                    if (ruleAgendaItem == null) {
-                        // the match is no longer blocked, so stage it
-                        agenda.getStageActivationsGroup().addActivation(justified);
-                    } else {
-                        if (!ruleAgendaItem.isQueued()) {
-                            // Make sure the rule evaluator is on the agenda, to be evaluated
-                            agenda.addActivation(ruleAgendaItem);
-                        }
-                        ruleAgendaItem.getRuleExecutor().addLeftTuple(justified.getTuple());
-                    }
+                    agenda.stageLeftTuple(ruleAgendaItem,justified);
                 }
                 dep = tmp;
             }

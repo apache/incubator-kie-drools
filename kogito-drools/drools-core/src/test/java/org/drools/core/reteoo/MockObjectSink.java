@@ -103,34 +103,31 @@ public class MockObjectSink
     }
 
     public boolean isObjectMemoryEnabled() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void setObjectMemoryEnabled(boolean objectMemoryOn) {
-        // TODO Auto-generated method stub
-        
     }
 
     public int getId() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public RuleBasePartitionId getPartitionId() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
     }
 
     public short getType() {
-        // TODO Auto-generated method stub
         return NodeTypeEnums.JoinNode;
     }
 
@@ -158,12 +155,9 @@ public class MockObjectSink
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
     }
 
     public Map<Rule, RuleComponent> getAssociations() {
-        // TODO Auto-generated method stub
         return null;
     }
 

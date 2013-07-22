@@ -155,7 +155,7 @@ public class Rete extends ObjectSource
         ruleBase.registerAddedEntryNodeCache(node);
     }
 
-    protected void removeObjectSink(final ObjectSink objectSink) {
+    public void removeObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         entryPoints.remove(node.getEntryPoint());
         ruleBase.registeRremovedEntryNodeCache(node);

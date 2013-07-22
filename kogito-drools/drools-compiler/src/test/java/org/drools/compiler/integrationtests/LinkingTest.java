@@ -1662,8 +1662,8 @@ public class LinkingTest {
             wm.insert( new C() );
         }
         wm.insert( new D() );
-        
-        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
+
+        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
         InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
         AgendaItem item = (AgendaItem) group.remove();
         int count = ((RuleAgendaItem)item).getRuleExecutor().evaluateNetworkAndFire(wm, null, 0, -1);

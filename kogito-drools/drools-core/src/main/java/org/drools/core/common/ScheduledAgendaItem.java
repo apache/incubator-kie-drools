@@ -199,7 +199,7 @@ public class ScheduledAgendaItem
         return agendaItem.getSubRule();
     }
 
-    public void removeAllBlockersAndBlocked(DefaultAgenda agenda) {
+    public void removeAllBlockersAndBlocked(InternalAgenda agenda) {
         agendaItem.removeAllBlockersAndBlocked(agenda);
     }
 

@@ -68,13 +68,14 @@ public class CollectBuilder
 
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
+            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextId(),
+                                                                                                                       context.getTupleSource(),
+                                                                                                                       tupleSource,
+                                                                                                                       context );
 
             // attach right input adapter node to convert tuple source into an object source
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      new RightInputAdapterNode( context.getNextId(),
-                                                                                                 context.getTupleSource(),
-                                                                                                 tupleSource,
-                                                                                                 context ) ) );
+                                                                      riaNode ) );
 
             // restore tuple source from before the start of the sub network
             context.setTupleSource( tupleSource );
@@ -101,16 +102,21 @@ public class CollectBuilder
                                                 sourcePattern.getRequiredDeclarations(),
                                                 new Accumulator[] { accumulator },
                                                 false );
+
+        AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
+                                                                                                            context.getTupleSource(),
+                                                                                                            context.getObjectSource(),
+                                                                                                            (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
+                                                                                                            binder, // source binder
+                                                                                                            resultBinder,
+                                                                                                            accumulate,
+                                                                                                            existSubNetwort,
+                                                                                                            context );
+
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    new AccumulateNode( context.getNextId(),
-                                                                                        context.getTupleSource(),
-                                                                                        context.getObjectSource(),
-                                                                                        (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
-                                                                                        binder, // source binder
-                                                                                        resultBinder,
-                                                                                        accumulate,
-                                                                                        existSubNetwort,
-                                                                                        context ) ) );
+                                                                    accNode ) );
+
+
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );

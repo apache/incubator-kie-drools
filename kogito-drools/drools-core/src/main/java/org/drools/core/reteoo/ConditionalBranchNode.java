@@ -9,16 +9,20 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.rule.EvalCondition;
+import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map.Entry;
 
 /**
  * Node which allows to follow different paths in the Rete-OO network,
@@ -28,7 +32,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     private LeftTupleSource tupleSource;
 
-    private ConditionalBranchEvaluator branchEvaluator;
+    protected ConditionalBranchEvaluator branchEvaluator;
 
     protected boolean tupleMemoryEnabled;
 
@@ -74,20 +78,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink(this, context);
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            this.tupleSource.updateSink( this,
-                                         propagationContext,
-                                         workingMemory );
-        }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -96,147 +86,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
 
     public LeftTupleSource getLeftTupleSource() {
         return this.tupleSource;
-    }
-
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        final ConditionalBranchMemory memory = (ConditionalBranchMemory) workingMemory.getNodeMemory( this );
-
-        boolean breaking = false;
-        ConditionalExecution conditionalExecution = branchEvaluator.evaluate( leftTuple, workingMemory, memory.context );
-
-        if ( conditionalExecution != null ) {
-            boolean useLeftMemory = true;
-            if ( !this.tupleMemoryEnabled ) {
-                // This is a hack, to not add closed DroolsQuery objects
-                Object object = leftTuple.get( 0 ).getObject();
-                if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
-                    useLeftMemory = false;
-                }
-            }
-
-            conditionalExecution.getSink().propagateAssertLeftTuple( leftTuple,
-                                                                     context,
-                                                                     workingMemory,
-                                                                     useLeftMemory );
-            breaking = conditionalExecution.isBreaking();
-        }
-
-        if ( !breaking ) {
-            this.sink.propagateAssertLeftTuple( leftTuple,
-                                                context,
-                                                workingMemory,
-                                                this.tupleMemoryEnabled );
-        }
-    }
-
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        if ( leftTuple.getFirstChild() != null ) {
-            this.sink.propagateRetractLeftTuple( leftTuple,
-                                                 context,
-                                                 workingMemory );
-        }
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        final ConditionalBranchMemory memory = (ConditionalBranchMemory) workingMemory.getNodeMemory( this );
-        boolean wasPropagated = leftTuple.getFirstChild() != null;
-
-        ConditionalExecution conditionalExecution = branchEvaluator.evaluate( leftTuple, workingMemory, memory.context );
-
-        if ( wasPropagated ) {
-            LeftTupleSink mainSink = this.sink.getSinks()[0];
-            LeftTupleSink oldSink = leftTuple.getFirstChild().getSink();
-
-            if ( conditionalExecution != null ) {
-                LeftTupleSink newSink = conditionalExecution.getSink().getSinks()[0];
-                if ( oldSink.equals(newSink) ) {
-                    // old and new propagation on the same branch sink -> modify
-                    conditionalExecution.getSink().propagateModifyChildLeftTuple( leftTuple,
-                                                                                  context,
-                                                                                  workingMemory,
-                                                                                  this.tupleMemoryEnabled );
-                    if ( !conditionalExecution.isBreaking() ) {
-                        this.sink.propagateAssertLeftTuple( leftTuple,
-                                                            context,
-                                                            workingMemory,
-                                                            this.tupleMemoryEnabled );
-                    }
-                } else {
-                    if ( oldSink.equals(mainSink) ) {
-                        // old propagation on main sink
-                        if ( conditionalExecution.isBreaking() ) {
-                            // condition is breaking -> retract on main
-                            this.sink.propagateRetractLeftTuple( leftTuple,
-                                                                 context,
-                                                                 workingMemory );
-                        } else {
-                            // condition not breaking -> also modify main
-                            this.sink.propagateModifyChildLeftTuple( leftTuple,
-                                                                     context,
-                                                                     workingMemory,
-                                                                     this.tupleMemoryEnabled );
-                        }
-                    } else {
-                        // old propagation on branch sink -> retract
-                        conditionalExecution.getSink().propagateRetractLeftTuple( leftTuple,
-                                                                                  context,
-                                                                                  workingMemory );
-                   }
-
-                    // new propagation on different branch sink -> assert
-                    conditionalExecution.getSink().propagateAssertLeftTuple( leftTuple,
-                                                                             context,
-                                                                             workingMemory,
-                                                                             this.tupleMemoryEnabled );
-                    if ( !conditionalExecution.isBreaking() && !oldSink.equals(mainSink) ) {
-                        this.sink.propagateAssertLeftTuple( leftTuple,
-                                                            context,
-                                                            workingMemory,
-                                                            this.tupleMemoryEnabled );
-                    }
-                }
-            } else {
-                if ( oldSink.equals(mainSink) ) {
-                    // old and new propagation on main sink -> modify
-                    this.sink.propagateModifyChildLeftTuple( leftTuple,
-                                                             context,
-                                                             workingMemory,
-                                                             this.tupleMemoryEnabled );
-                } else {
-                    // old propagation on branch sink -> retract
-                    this.sink.propagateRetractLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory );
-                    // new propagation on main sink -> assert
-                    this.sink.propagateAssertLeftTuple( leftTuple,
-                                                        context,
-                                                        workingMemory,
-                                                        this.tupleMemoryEnabled );
-                }
-            }
-        } else {
-            // not propagated -> assert
-            boolean breaking = false;
-            if ( conditionalExecution != null ) {
-                conditionalExecution.getSink().propagateAssertLeftTuple( leftTuple,
-                                                                         context,
-                                                                         workingMemory,
-                                                                         this.tupleMemoryEnabled );
-                breaking = conditionalExecution.isBreaking();
-            }
-            if ( !breaking ) {
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
-            }
-        }
     }
 
     /**
@@ -276,46 +125,6 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         peer.initPeer( (BaseLeftTuple) original, this );
         original.setPeer( peer );
         return peer;
-    }
-
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        Iterator<LeftTuple> it = LeftTupleIterator.iterator( workingMemory, this );
-
-        for ( LeftTuple leftTuple =  it.next(); leftTuple != null; leftTuple = it.next() ) {
-            LeftTuple childLeftTuple = leftTuple.getFirstChild();
-            while ( childLeftTuple != null ) {
-                RightTuple rightParent = childLeftTuple.getRightParent();
-                sink.assertLeftTuple( sink.createLeftTuple( leftTuple, rightParent, childLeftTuple, null, sink, true ),
-                                      context,
-                                      workingMemory );
-
-                while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
-                    // skip to the next child that has a different right parent
-                    childLeftTuple = childLeftTuple.getLeftParentNext();
-                }
-            }
-        }
-    }
-
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() ) {
-            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-                for( InternalWorkingMemory workingMemory : workingMemories ) {
-                    workingMemory.clearNodeMemory( this );
-                }
-            }
-            tupleSource.removeTupleSink( this );
-        } else {
-            throw new RuntimeException("ConditionalBranchNode cannot be shared");
-        }
-    }
-
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        this.tupleSource.collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {
@@ -444,4 +253,43 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return tupleSource.getObjectTypeNode();
     }
 
+    @Override
+    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void updateSink(LeftTupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final InternalWorkingMemory[] workingMemories) {
+        if ( !this.isInUse() ) {
+            tupleSource.removeTupleSink( this );
+        } else {
+            throw new RuntimeException("ConditionalBranchNode cannot be shared");
+        }
+    }
+
+    @Override
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
+    }
 }

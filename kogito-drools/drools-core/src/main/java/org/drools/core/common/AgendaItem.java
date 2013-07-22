@@ -44,7 +44,7 @@ public interface AgendaItem extends Activation {
 
     void addBlocked(LogicalDependency dep);
 
-    void removeAllBlockersAndBlocked(DefaultAgenda agenda);
+    void removeAllBlockersAndBlocked(InternalAgenda agenda);
 
     void removeBlocked(LogicalDependency dep);
 

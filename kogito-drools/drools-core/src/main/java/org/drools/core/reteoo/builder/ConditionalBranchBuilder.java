@@ -18,10 +18,12 @@ public class ConditionalBranchBuilder implements ReteooComponentBuilder {
 
         context.pushRuleComponent( rce );
 
-        ConditionalBranchNode node = new ConditionalBranchNode( context.getNextId(),
-                                                                context.getTupleSource(),
-                                                                branchEvaluator,
-                                                                context );
+
+
+        ConditionalBranchNode node = context.getComponentFactory()
+                                            .getNodeFactoryService()
+                                            .buildConditionalBranchNode( context.getNextId(), context.getTupleSource(),
+                                                                         branchEvaluator, context );
 
         context.setTupleSource((LeftTupleSource) utils.attachNode(context, node));
 

@@ -22,7 +22,6 @@ import org.drools.compiler.Pet;
 import org.drools.core.RuleBase;
 import org.drools.compiler.TotalHolder;
 import org.drools.core.WorkingMemory;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
@@ -375,7 +374,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         InternalWorkingMemory wm = ( InternalWorkingMemory )((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory();
 
-        final DefaultAgenda agenda = (DefaultAgenda) ((AgendaImpl)ksession.getAgenda()).getAgenda();
+        final InternalAgenda agenda = (InternalAgenda) ((AgendaImpl)ksession.getAgenda()).getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
         if ( phreak == PhreakOption.DISABLED ) {
             agenda.setFocus( group1 );
@@ -931,7 +930,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 0,
                       list.size() );
 
-        ((DefaultAgenda)((AgendaImpl)ksession.getAgenda()).getAgenda()).activateRuleFlowGroup( "Group1" );
+        ((AgendaImpl) ksession.getAgenda()).getAgenda().activateRuleFlowGroup( "Group1" );
 
         Thread.sleep(1000);
 

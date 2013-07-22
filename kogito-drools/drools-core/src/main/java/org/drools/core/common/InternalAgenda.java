@@ -20,6 +20,7 @@ import org.drools.core.Agenda;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
@@ -28,6 +29,9 @@ import org.drools.core.spi.AgendaGroup;
 import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
+
+import java.util.LinkedList;
+import java.util.Map;
 
 public interface InternalAgenda
     extends
@@ -145,6 +149,9 @@ public interface InternalAgenda
 
     public AgendaGroup getAgendaGroup(String name);
 
+    public AgendaGroup getAgendaGroup(final String name,
+                                      InternalRuleBase ruleBase);
+
     public ActivationGroup getActivationGroup(String name);
 
     public RuleFlowGroup getRuleFlowGroup(String name);
@@ -190,4 +197,26 @@ public interface InternalAgenda
     boolean setFocus(AgendaGroup agendaGroup);
 
     boolean isFireUntilHalt();
+
+    void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
+
+    Map<String, InternalAgendaGroup> getAgendaGroupsMap();
+
+    void addAgendaGroupOnStack(AgendaGroup agendaGroup);
+
+    void evaluateEagerList();
+
+    Map<String,ActivationGroup> getActivationGroupsMap();
+
+    InternalAgendaGroup getNextFocus();
+
+    LinkedList<AgendaGroup> getStackList();
+
+    AgendaGroup getFocus();
+
+    int sizeOfRuleFlowGroup(String s);
+
+    void addItemToActivationGroup(AgendaItem item);
+
+    boolean createPostponedActivation(LeftTuple postponedTuple, PropagationContext propagationContext, InternalWorkingMemory workingMemory, TerminalNode terminalNode);
 }

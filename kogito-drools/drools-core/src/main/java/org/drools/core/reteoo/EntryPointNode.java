@@ -425,7 +425,7 @@ public class EntryPointNode extends ObjectSource
                                   node );
     }
 
-    protected void removeObjectSink(final ObjectSink objectSink) {
+    public void removeObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
     }

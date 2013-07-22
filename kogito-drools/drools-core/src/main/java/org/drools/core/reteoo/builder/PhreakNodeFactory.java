@@ -20,21 +20,32 @@ package org.drools.core.reteoo.builder;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.ConditionalBranchEvaluator;
+import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.EvalConditionNode;
+import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReteConditionalBranchNode;
+import org.drools.core.reteoo.ReteEvalConditionNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
+import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.QueryElement;
@@ -46,7 +57,7 @@ import org.drools.core.time.impl.Timer;
 
 import java.io.Serializable;
 
-public class DefaultNodeFactory implements NodeFactory, Serializable {
+public class PhreakNodeFactory implements NodeFactory, Serializable {
 
 
     public AlphaNode buildAlphaNode( int id, AlphaNodeFieldConstraint constraint, ObjectSource objectSource, BuildContext context ) {
@@ -64,8 +75,34 @@ public class DefaultNodeFactory implements NodeFactory, Serializable {
             return new ObjectTypeNode( id, objectSource, objectType, context );
         }
     }
+
+    public EvalConditionNode buildEvalNode(final int id,
+                                           final LeftTupleSource tupleSource,
+                                           final EvalCondition eval,
+                                           final BuildContext context) {
+        return new EvalConditionNode( id, tupleSource, eval, context );
+    }
+
+    public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context ) {
+        return new RightInputAdapterNode( id, leftInput, startTupleSource, context );
+    }
+
     public JoinNode buildJoinNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
         return new JoinNode( id, leftInput, rightInput, binder, context );
+    }
+
+    public NotNode buildNotNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
+        return new NotNode( id, leftInput, rightInput, binder, context );
+    }
+
+    public ExistsNode buildExistsNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
+        return new ExistsNode( id, leftInput, rightInput, binder, context );
+    }
+
+    public AccumulateNode buildAccumulateNode(int id, LeftTupleSource leftInput, ObjectSource rightInput,
+                                              AlphaNodeFieldConstraint[] resultConstraints, BetaConstraints sourceBinder,
+                                              BetaConstraints resultBinder, Accumulate accumulate, boolean unwrapRightObject, BuildContext context ) {
+        return new AccumulateNode( id, leftInput, rightInput, resultConstraints, sourceBinder,resultBinder, accumulate, unwrapRightObject, context );
     }
 
     public LeftInputAdapterNode buildLeftInputAdapterNode( int id, ObjectSource objectSource, BuildContext context ) {
@@ -91,5 +128,13 @@ public class DefaultNodeFactory implements NodeFactory, Serializable {
                                     LeftTupleSource tupleSource,
                                     BuildContext context ) {
         return new TimerNode( id, tupleSource, timer,calendarNames,declarations,  context );
+    }
+
+    public ConditionalBranchNode buildConditionalBranchNode(int id,
+                                                            LeftTupleSource tupleSource,
+                                                            ConditionalBranchEvaluator branchEvaluator,
+                                                            BuildContext context) {
+        return new ConditionalBranchNode( id, tupleSource, branchEvaluator, context );
+
     }
 }

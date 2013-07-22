@@ -17,20 +17,16 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
-import org.drools.core.util.Iterator;
 import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
@@ -39,30 +35,15 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map.Entry;
 
-/**
- * Node which filters <code>ReteTuple</code>s.
- *
- * <p>
- * Using a semantic <code>Test</code>, this node may allow or disallow
- * <code>Tuples</code> to proceed further through the Rete-OO network.
- * </p>
- *
- * @see EvalConditionNode
- * @see Eval
- * @see LeftTuple
- */
 public class EvalConditionNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
     MemoryFactory {
-    // ------------------------------------------------------------
-    // Instance members
-    // ------------------------------------------------------------
 
     private static final long serialVersionUID = 510l;
 
     /** The semantic <code>Test</code>. */
-    private EvalCondition     condition;
+    protected EvalCondition     condition;
 
     protected boolean         tupleMemoryEnabled;
 
@@ -76,15 +57,6 @@ public class EvalConditionNode extends LeftTupleSource
 
     }
 
-    /**
-     * Construct.
-     *
-     * @param rule
-     *            The rule
-     * @param tupleSource
-     *            The source of incoming <code>Tuples</code>.
-     * @param eval
-     */
     public EvalConditionNode(final int id,
                              final LeftTupleSource tupleSource,
                              final EvalCondition eval,
@@ -114,20 +86,6 @@ public class EvalConditionNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            this.leftInput.updateSink( this,
-                                         propagationContext,
-                                         workingMemory );
-        }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -155,86 +113,7 @@ public class EvalConditionNode extends LeftTupleSource
     // org.kie.reteoo.impl.TupleSink
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /**
-     * Assert a new <code>Tuple</code>.
-     *
-     * @param leftTuple
-     *            The <code>Tuple</code> being asserted.
-     * @param workingMemory
-     *            The working memory seesion.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
-     */
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
 
-        final boolean allowed = this.condition.isAllowed( leftTuple,
-                                                          workingMemory,
-                                                          memory.context );
-
-        if ( allowed ) {
-            boolean useLeftMemory = true;
-            if ( !this.tupleMemoryEnabled ) {
-                // This is a hack, to not add closed DroolsQuery objects
-                Object object = leftTuple.get( 0 ).getObject();
-                if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
-                    useLeftMemory = false;
-                }
-            }
-            
-            this.sink.propagateAssertLeftTuple( leftTuple,
-                                                context,
-                                                workingMemory,
-                                                useLeftMemory );
-        }
-    }
-
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        if ( leftTuple.getFirstChild() != null ) {
-            this.sink.propagateRetractLeftTuple( leftTuple,
-                                                 context,
-                                                 workingMemory );
-        }
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        final EvalMemory memory = (EvalMemory) workingMemory.getNodeMemory( this );
-        boolean wasPropagated = leftTuple.getFirstChild() != null;
-
-        final boolean allowed = this.condition.isAllowed( leftTuple,
-                                                          workingMemory,
-                                                          memory.context );
-
-        if ( allowed ) {
-            if ( wasPropagated ) {
-                // modify
-                this.sink.propagateModifyChildLeftTuple( leftTuple,
-                                                         context,
-                                                         workingMemory,
-                                                         this.tupleMemoryEnabled );
-            } else {
-                // assert
-                this.sink.propagateAssertLeftTuple( leftTuple,
-                                                    context,
-                                                    workingMemory,
-                                                    this.tupleMemoryEnabled );
-            }
-        } else {
-            if ( wasPropagated ) {
-                // retract
-                this.sink.propagateRetractLeftTuple( leftTuple,
-                                                     context,
-                                                     workingMemory );
-            }
-            // else do nothing
-        }
-    }
 
     /**
      * Produce a debug string.
@@ -273,56 +152,6 @@ public class EvalConditionNode extends LeftTupleSource
         peer.initPeer( (BaseLeftTuple) original, this );
         original.setPeer( peer );
         return peer;
-    }    
-
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        Iterator<LeftTuple> it = LeftTupleIterator.iterator( workingMemory, this );
-        
-        for ( LeftTuple leftTuple =  it.next(); leftTuple != null; leftTuple = it.next() ) {
-            LeftTuple childLeftTuple = leftTuple.getFirstChild();
-            if ( childLeftTuple != null ) {
-                while ( childLeftTuple != null ) {
-                    RightTuple rightParent = childLeftTuple.getRightParent();
-                    sink.assertLeftTuple( sink.createLeftTuple( leftTuple, sink, context, true ),
-                                          context,
-                                          workingMemory );
-
-                    while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
-                        // skip to the next child that has a different right parent
-                        childLeftTuple = childLeftTuple.getLeftParentNext();
-                    }
-                }
-            } else {
-                childLeftTuple = sink.createLeftTuple( leftTuple, sink, context, true );
-                sink.assertLeftTuple( childLeftTuple,
-                                      context,
-                                      workingMemory );
-            }
-        }
-    }
-
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() ) {
-            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-                for( InternalWorkingMemory workingMemory : workingMemories ) {
-                    workingMemory.clearNodeMemory( this );
-                }
-            }
-            getLeftTupleSource().removeTupleSink( this );
-        } else {
-            // need to re-wire eval expression to the same one from another rule 
-            // that is sharing this node
-            Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
-            this.condition = (EvalCondition) next.getValue();
-        }
-    }
-
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {
@@ -372,7 +201,9 @@ public class EvalConditionNode extends LeftTupleSource
     public short getType() {
         return NodeTypeEnums.EvalConditionNode;
     }
-    
+
+
+
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
@@ -450,5 +281,50 @@ public class EvalConditionNode extends LeftTupleSource
     protected ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
     }
+
+    @Override
+    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    @Override
+    public void updateSink(LeftTupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
+    }
+
+    protected void doRemove(final RuleRemovalContext context,
+                            final ReteooBuilder builder,
+                            final InternalWorkingMemory[] workingMemories) {
+        if ( !this.isInUse() ) {
+            getLeftTupleSource().removeTupleSink( this );
+        } else {
+            // need to re-wire eval expression to the same one from another rule
+            // that is sharing this node
+            Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
+            this.condition = (EvalCondition) next.getValue();
+        }
+    }
+
 
 }

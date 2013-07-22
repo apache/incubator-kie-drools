@@ -2,7 +2,6 @@ package org.drools.core.phreak;
 
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
@@ -15,6 +14,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Rule;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Salience;
 import org.kie.api.event.rule.MatchCancelledCause;
@@ -61,7 +61,7 @@ public class PhreakRuleTerminalNode {
         }
 
         if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
-            ((DefaultAgenda)wm.getAgenda()).setFocus(ruleAgendaItem.getAgendaGroup());
+            ((InternalAgenda)wm.getAgenda()).setFocus(ruleAgendaItem.getAgendaGroup());
         }
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
@@ -106,7 +106,7 @@ public class PhreakRuleTerminalNode {
             return;
         }
         
-        ((DefaultAgenda)wm.getAgenda()).addItemToActivationGroup( rtnLeftTuple );
+        ((InternalAgenda)wm.getAgenda()).addItemToActivationGroup( rtnLeftTuple );
 
         executor.addLeftTuple(leftTuple);
         leftTuple.increaseActivationCountForEvents(); // increased here, decreased in Agenda's cancelActivation and fireActivation
@@ -123,7 +123,7 @@ public class PhreakRuleTerminalNode {
 
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
         if ( rtnNode.getRule().getAutoFocus() && !ruleAgendaItem.getAgendaGroup().isActive() ) {
-            ((DefaultAgenda)wm.getAgenda()).setFocus(ruleAgendaItem.getAgendaGroup());
+            ((InternalAgenda)wm.getAgenda()).setFocus(ruleAgendaItem.getAgendaGroup());
         }
 
         int salienceInt = 0;
@@ -221,7 +221,19 @@ public class PhreakRuleTerminalNode {
                 // Expiration propagations should not be removed from the list, as they still need to fire
                 executor.removeLeftTuple(leftTuple);
             }
-            rtnNode.retractLeftTuple(leftTuple, leftTuple.getPropagationContext(), wm);
+
+            Activation activation = (Activation) leftTuple;
+            activation.setMatched( false );
+
+            InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
+            agenda.cancelActivation( leftTuple,
+                                     pctx,
+                                     wm,
+                                     activation,
+                                     rtnLt.getTerminalNode() );
+
+            rtnLt.setActivationUnMatchListener(null);
+
             leftTuple.clearStaged();
             leftTuple.setObject(null);
             leftTuple = next;

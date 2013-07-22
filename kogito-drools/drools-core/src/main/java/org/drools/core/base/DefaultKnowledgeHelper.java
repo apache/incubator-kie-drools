@@ -192,25 +192,8 @@ public class DefaultKnowledgeHelper
         
         if ( wasBlocked ) {
             RuleAgendaItem ruleAgendaItem = targetMatch.getRuleAgendaItem();
-            if ( ruleAgendaItem == null ) {
-                // the match is no longer blocked, so stage it
-                ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
-            } else {
-                int salienceInt = 0;
-                Salience salience = ruleAgendaItem.getRule().getSalience();
-                RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) targetMatch;
-                if ( !salience.isDynamic() ) {
-                    salienceInt = ruleAgendaItem.getRule().getSalience().getValue();
-                } else {
-                    salienceInt = salience.getValue( new DefaultKnowledgeHelper(rtnLeftTuple, getWorkingMemory()),
-                                                     null,  getWorkingMemory());
-                }
-                ((RuleTerminalNodeLeftTuple)targetMatch).update(salienceInt, activation.getPropagationContext());
-                targetMatch.getRuleAgendaItem().getRuleExecutor().addLeftTuple( targetMatch.getTuple() );
-                if ( !targetMatch.getRuleAgendaItem().isQueued() ) {
-                    targetMatch.getRuleAgendaItem().getAgendaGroup().add(targetMatch.getRuleAgendaItem());
-                }
-            }
+            InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+            agenda.stageLeftTuple(ruleAgendaItem, targetMatch);
         }
     }
 
@@ -301,21 +284,12 @@ public class DefaultKnowledgeHelper
             for ( LogicalDependency dep = this.previousBlocked.getFirst(); dep != null; ) {
                 LogicalDependency tmp = dep.getNext();
                 this.previousBlocked.remove( dep );
-                
+
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 justified.getBlockers().remove( dep.getJustifierEntry() );
                 if (justified.getBlockers().isEmpty() ) {
                     RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
-                    if ( ruleAgendaItem == null ) {
-                        // the match is no longer blocked, so stage it
-                        ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( justified );
-                    } else {
-                        if ( !ruleAgendaItem.isQueued() ) {
-                            // Make sure the rule evaluator is on the agenda, to be evaluated
-                            ((InternalAgenda) workingMemory.getAgenda()).addActivation(ruleAgendaItem);
-                        }
-                        ruleAgendaItem.getRuleExecutor().addLeftTuple( justified.getTuple() );
-                    }
+                    ((InternalAgenda) workingMemory.getAgenda()).stageLeftTuple(ruleAgendaItem, justified);
                 }
                 dep = tmp;
             }

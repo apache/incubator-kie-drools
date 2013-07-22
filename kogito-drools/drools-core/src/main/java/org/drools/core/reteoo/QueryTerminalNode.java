@@ -50,7 +50,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public static final short type             = 8;
 
     /** The rule to invoke upon match. */
-    private Query             query;
+    protected Query             query;
     private GroupElement      subrule;
     private int               subruleIndex;    
     private Declaration[]     declarations;
@@ -110,8 +110,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         out.writeObject( subrule );
         out.writeInt(subruleIndex);
     }
-   
-    
+
     public Query getQuery() {
         return query;
     }
@@ -120,86 +119,12 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         return this.query;
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.kie.impl.TupleSink
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /**
-     * Assert a new <code>Tuple</code>.
-     *
-     * @param leftTuple
-     *            The <code>Tuple</code> being asserted.
-     * @param workingMemory
-     *            The working memory seesion.
-     */
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        // find the DroolsQuery object
-        LeftTuple entry = leftTuple.getRootLeftTuple();
-        
-        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
-        query.setQuery( this.query );
-
-        // Add results to the adapter
-        query.getQueryResultCollector().rowAdded( this.query,
-                                                  leftTuple,
-                                                  context,
-                                                  workingMemory );
-    }
-
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        // find the DroolsQuery object
-
-        LeftTuple entry = leftTuple.getRootLeftTuple();
-
-        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
-        query.setQuery( this.query );
-
-        // Add results to the adapter
-        query.getQueryResultCollector().rowRemoved( this.query,
-                                                    leftTuple,
-                                                    context,
-                                                    workingMemory );
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        // find the DroolsQuery object
-        LeftTuple entry = leftTuple.getRootLeftTuple();
-
-        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
-        query.setQuery( this.query );
-
-        // Add results to the adapter
-        query.getQueryResultCollector().rowUpdated( this.query,
-                                                    leftTuple,
-                                                    context,
-                                                    workingMemory );
-    }
 
     public String toString() {
         return "[QueryTerminalNode(" + this.getId() + "): query=" + this.query.getName() + "]";
     }
 
-    public void attach( BuildContext context ) {
-        getLeftTupleSource().addTupleSink( this, context );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            getLeftTupleSource().updateSink( this, propagationContext, workingMemory );
-        }
-    }
 
     public void networkUpdated(UpdateContext updateContext) {
         getLeftTupleSource().networkUpdated(updateContext);
@@ -293,7 +218,7 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     public short getType() {
         return NodeTypeEnums.QueryTerminalNode;
     }
-    
+
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
@@ -357,4 +282,23 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         throw new UnsupportedOperationException();
     }
 
+
+    @Override
+    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void attach( BuildContext context ) {
+        getLeftTupleSource().addTupleSink( this, context );
+    }
 }

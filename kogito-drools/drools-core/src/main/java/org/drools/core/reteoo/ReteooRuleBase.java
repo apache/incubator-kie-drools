@@ -468,6 +468,11 @@ public class ReteooRuleBase
         DroolsObjectInput droolsStream;
         boolean isDrools = in instanceof DroolsObjectInputStream;
 
+        boolean wasDrools = in.readBoolean();
+        if( wasDrools && !isDrools) {
+            throw new IllegalArgumentException("The knowledge base was serialized using a DroolsObjectOutputStream. A DroolsObjectInputStream is required for deserialization.");
+        }
+
         if (isDrools) {
             droolsStream = (DroolsObjectInput) in;
         } else {
@@ -549,6 +554,7 @@ public class ReteooRuleBase
         boolean isDrools = out instanceof DroolsObjectOutputStream;
         ByteArrayOutputStream bytes;
 
+        out.writeBoolean( isDrools );
         if (isDrools) {
             droolsStream = out;
             bytes = null;

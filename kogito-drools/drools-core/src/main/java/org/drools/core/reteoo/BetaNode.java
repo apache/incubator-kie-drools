@@ -68,15 +68,6 @@ import org.slf4j.LoggerFactory;
 import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
-/**
- * <code>BetaNode</code> provides the base abstract class for <code>JoinNode</code> and <code>NotNode</code>. It implements
- * both TupleSink and ObjectSink and as such can receive <code>Tuple</code>s and <code>FactHandle</code>s. BetaNode uses BetaMemory
- * to store the propagated instances.
- *
- * @see org.kie.reteoo.LeftTupleSource
- * @see org.kie.reteoo.LeftTupleSink
- * @see org.kie.reteoo.BetaMemory
- */
 public abstract class BetaNode extends LeftTupleSource
         implements
         LeftTupleSinkNode,
@@ -173,10 +164,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     public boolean isUnlinkingEnabled() {
         return unlinkingEnabled;
-    }
-
-    public void setUnlinkingEnabled(boolean unlinkingEnabled) {
-        this.unlinkingEnabled = unlinkingEnabled;
     }
 
     @Override
@@ -317,47 +304,36 @@ public abstract class BetaNode extends LeftTupleSource
                               final InternalWorkingMemory wm ) {
         final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm);
 
-        RightTuple rightTuple = createRightTuple( factHandle,
-                                                  this,
-                                                  pctx );
+        RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
-        if ( isUnlinkingEnabled() ) {
-            boolean stagedInsertWasEmpty = false;
-            if ( streamMode ) {
-                stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-                memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
-                if ( log.isTraceEnabled() ) {
-                    log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString( pctx ), rightTuple );
-                }
-            }  else {
-                stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
-            }
+        boolean stagedInsertWasEmpty = false;
+        if ( streamMode ) {
+            stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
             if ( log.isTraceEnabled() ) {
-                log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
+                log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString( pctx ), rightTuple );
             }
-            if ( memory.getAndIncCounter() == 0 ) {
-                memory.linkNode( wm );
-            } else if ( stagedInsertWasEmpty ) {
-                memory.getSegmentMemory().notifyRuleLinkSegment( wm );
-            }
-
-            if( pctx.getReaderContext() != null ) {
-                // we are deserializing a session, so we might need to evaluate
-                // rule activations immediately
-                MarshallerReaderContext mrc = (MarshallerReaderContext) pctx.getReaderContext();
-                mrc.filter.fireRNEAs( wm );
-            }
-
-            return;
+        }  else {
+            stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
+        }
+        if ( log.isTraceEnabled() ) {
+            log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
+        }
+        if ( memory.getAndIncCounter() == 0 ) {
+            memory.linkNode( wm );
+        } else if ( stagedInsertWasEmpty ) {
+            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
         }
 
-        assertRightTuple(rightTuple, pctx, wm );
+        if( pctx.getReaderContext() != null ) {
+            // we are deserializing a session, so we might need to evaluate
+            // rule activations immediately
+            MarshallerReaderContext mrc = (MarshallerReaderContext) pctx.getReaderContext();
+            mrc.filter.fireRNEAs( wm );
+        }
+
 
     }
-
-    public abstract void assertRightTuple( final RightTuple rightTuple,
-                                           final PropagationContext context,
-                                           final InternalWorkingMemory workingMemory );
 
 
     public void doDeleteRightTuple(final RightTuple rightTuple,
@@ -535,165 +511,15 @@ public abstract class BetaNode extends LeftTupleSource
 
         this.rightInput.addObjectSink( this );
         this.leftInput.addTupleSink( this, context );
-
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
-                    PropagationContext.RULE_ADDITION,
-                    null,
-                    null,
-                    null);
-
-            this.rightInput.updateSink(this,
-                                       propagationContext,
-                                       workingMemory);
-
-            this.leftInput.updateSink(this,
-                                      propagationContext,
-                                      workingMemory);
-        }
-
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
-        //context.getRuleBase().getConfiguration().isPhreakEnabled()
-
-        //context.get
-        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && (!this.isInUse() || context.getCleanupAdapter() != null ) ) {
-            for (InternalWorkingMemory workingMemory : workingMemories) {
-                BetaMemory memory;
-                Object object = workingMemory.getNodeMemory(this);
-
-                // handle special cases for Accumulate to make sure they tidy up their specific data
-                // like destroying the local FactHandles
-                if (object instanceof AccumulateMemory) {
-                    memory = ((AccumulateMemory) object).betaMemory;
-                } else {
-                    memory = (BetaMemory) object;
-                }
-
-                FastIterator it = memory.getLeftTupleMemory().fullFastIterator();
-                for (LeftTuple leftTuple = getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
-                    LeftTuple tmp = (LeftTuple) it.next(leftTuple);
-                    if (context.getCleanupAdapter() != null) {
-                        LeftTuple child;
-                        while ( (child = leftTuple.getFirstChild()) != null ) {
-                            if (child.getLeftTupleSink() == this) {
-                                // this is a match tuple on collect and accumulate nodes, so just unlink it
-                                child.unlinkFromLeftParent();
-                                child.unlinkFromRightParent();
-                            } else {
-                                // the cleanupAdapter will take care of the unlinking
-                                context.getCleanupAdapter().cleanUp(child, workingMemory);
-                            }
-                        }
-                    }
-                    memory.getLeftTupleMemory().remove(leftTuple);
-                    leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
-                    leftTuple = tmp;
-                }
-
-                // handle special cases for Accumulate to make sure they tidy up their specific data
-                // like destroying the local FactHandles
-                if (object instanceof AccumulateMemory) {
-                    ((AccumulateNode) this).doRemove(workingMemory, (AccumulateMemory) object);
-                }
-
-                if (!this.isInUse()) {
-                    it = memory.getRightTupleMemory().fullFastIterator();
-                    for (RightTuple rightTuple = getFirstRightTuple(memory.getRightTupleMemory(), it); rightTuple != null; ) {
-                        RightTuple tmp = (RightTuple) it.next(rightTuple);
-                        if (rightTuple.getBlocked() != null) {
-                            // special case for a not, so unlink left tuple from here, as they aren't in the left memory
-                            for (LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
-                                LeftTuple temp = leftTuple.getBlockedNext();
-
-                                leftTuple.setBlocker(null);
-                                leftTuple.setBlockedPrevious(null);
-                                leftTuple.setBlockedNext(null);
-                                leftTuple.unlinkFromLeftParent();
-                                leftTuple = temp;
-                            }
-                        }
-                        memory.getRightTupleMemory().remove(rightTuple);
-                        rightTuple.unlinkFromRightParent();
-                        rightTuple = tmp;
-                    }
-                    workingMemory.clearNodeMemory(this);
-                }
-            }
-            context.setCleanupAdapter( null );
-        }
-
-        if ( !isInUse() ) {
-            leftInput.removeTupleSink( this );
-            rightInput.removeObjectSink( this );
-        }
-    }
-        
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        this.leftInput.collectAncestors(nodeSet);
-        this.rightInput.collectAncestors(nodeSet);
+    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                        final ModifyPreviousTuples modifyPreviousTuples,
+                                        final PropagationContext context,
+                                        final InternalWorkingMemory workingMemory) {
+        modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
     }
 
-    public void modifyObject(InternalFactHandle factHandle,
-                             ModifyPreviousTuples modifyPreviousTuples,
-                             PropagationContext context,
-                             InternalWorkingMemory wm) {
-        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
-
-        // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
-        while ( rightTuple != null &&
-                (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().before( getRightInputOtnId() ) ) {
-            modifyPreviousTuples.removeRightTuple();
-                        
-            // we skipped this node, due to alpha hashing, so retract now
-            rightTuple.setPropagationContext( context );
-            if ( isUnlinkingEnabled() ) {
-                BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getRightTupleSink(), wm );
-                (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
-            }  else {
-                rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
-                                                                  context,
-                                                                  wm );
-            }
-            rightTuple = modifyPreviousTuples.peekRightTuple();
-        }
-
-        if ( rightTuple != null && (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().equals(getRightInputOtnId()) ) {
-            modifyPreviousTuples.removeRightTuple();
-            rightTuple.reAdd();
-            if ( rightTuple.getStagedType() != LeftTuple.INSERT ) {
-                // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
-                rightTuple.setPropagationContext( context );
-            }
-            if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
-                // RightTuple previously existed, so continue as modify     
-                if ( isUnlinkingEnabled() ) {
-                    BetaMemory bm = getBetaMemory( this, wm );
-                    rightTuple.setPropagationContext( context );
-                    doUpdateRightTuple(rightTuple, wm, bm);                        
-                } else {
-                    modifyRightTuple( rightTuple,
-                                      context,
-                                      wm ); 
-                }
-            }
-        } else {
-            if ( intersect( context.getModificationMask(), rightInferredMask ) ) {
-                // RightTuple does not exist for this node, so create and continue as assert
-                assertObject( factHandle,
-                              context,
-                              wm );
-            }
-        }
-    }
 
     public static BetaMemory getBetaMemory(BetaNode node, InternalWorkingMemory wm) {
         BetaMemory bm;
@@ -705,12 +531,6 @@ public abstract class BetaNode extends LeftTupleSource
         return bm;
     }
     
-    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
-                                        final ModifyPreviousTuples modifyPreviousTuples,
-                                        final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory) {
-        modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
-    }
 
     public boolean isObjectMemoryEnabled() {
         return objectMemory;
@@ -864,15 +684,6 @@ public abstract class BetaNode extends LeftTupleSource
     public RightTuple createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink,
                                        PropagationContext context) {
-//        RightTuple rightTuple = null;
-//        if ( context.getActiveWindowTupleList() == null ) {
-//            rightTuple = new RightTuple( handle,
-//                                         sink );
-//        } else {
-//            rightTuple = new WindowTuple( handle,
-//                                          sink,
-//                                          context.getActiveWindowTupleList() );
-//        }
         RightTuple rightTuple = new RightTuple( handle, sink );
         rightTuple.setPropagationContext( context );
         return rightTuple;
@@ -887,7 +698,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
         
         
-        if ( betaNode.isUnlinkingEnabled() && memory.getSegmentMemory() == null ) {
+        if ( memory.getSegmentMemory() == null ) {
             SegmentUtilities.createSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
         }
         return memory;

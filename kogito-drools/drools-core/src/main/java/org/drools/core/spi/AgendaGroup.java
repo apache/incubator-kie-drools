@@ -16,14 +16,13 @@
 
 package org.drools.core.spi;
 
-import org.drools.core.common.DefaultAgenda;
 import org.kie.api.runtime.rule.Match;
 
 /**
  *  The <code>Agenda</code> can be partitioned into groups, called <code>AgendaGroup</code>s. <code>Rule</code>s can be assigned to
  *  these <code>AgendaGroup</code>s. Only rules in the focus group can fire.
  *
- * @see DefaultAgenda
+ * @see org.drools.core.common.InternalAgenda
  */
 public interface AgendaGroup
     extends

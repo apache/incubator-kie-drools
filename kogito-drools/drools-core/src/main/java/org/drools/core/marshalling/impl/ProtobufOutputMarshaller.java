@@ -33,10 +33,10 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
@@ -216,7 +216,7 @@ public class ProtobufOutputMarshaller {
     private static void writeAgenda(MarshallerWriteContext context,
                                     ProtobufMessages.RuleData.Builder _ksb) throws IOException {
         InternalWorkingMemory wm = context.wm;
-        DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
 
         org.drools.core.marshalling.impl.ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
 

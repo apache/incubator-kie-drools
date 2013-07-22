@@ -137,42 +137,6 @@ public class RightInputAdapterNode extends ObjectSource
         return peer;
     }     
 
-    /**
-     * Takes the asserted <code>ReteTuple</code> received from the <code>TupleSource</code> and
-     * adapts it into a FactHandleImpl
-     *
-     * @param tuple
-     *            The asserted <code>ReteTuple</code>.
-     * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     */
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        // creating a dummy fact handle to wrap the tuple
-        final InternalFactHandle handle = createFactHandle( leftTuple, context, workingMemory );
-        boolean useLeftMemory = true;   
-        if ( !this.tupleMemoryEnabled ) {
-            // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
-            if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
-                useLeftMemory = false;
-            }
-        }         
-        
-        if ( useLeftMemory) {
-            final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
-            // add it to a memory mapping
-            memory.getMap().put( leftTuple, handle );
-        }
-
-        // propagate it
-        this.sink.propagateAssertObject( handle,
-                                         context,
-                                         workingMemory );
-    }
 
     @SuppressWarnings("unchecked")
     public InternalFactHandle createFactHandle(final LeftTuple leftTuple,
@@ -205,54 +169,6 @@ public class RightInputAdapterNode extends ObjectSource
         return handle;
     }
 
-    /**
-     * Retracts the corresponding tuple by retrieving and retracting
-     * the fact created for it
-     */
-    public void retractLeftTuple(final LeftTuple tuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
-        // retrieve handle from memory
-        final InternalFactHandle factHandle = (InternalFactHandle) memory.getMap().remove( tuple );
-
-        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
-            rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
-                                                              context,
-                                                              workingMemory );
-        }
-        factHandle.clearRightTuples();
-
-        for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
-            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                           context,
-                                                           workingMemory );
-        }
-        factHandle.clearLeftTuples();
-    }
-
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException( "This method should never be called" );
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
-        // add it to a memory mapping
-        InternalFactHandle handle = (InternalFactHandle) memory.getMap().get( leftTuple );
-
-        // propagate it
-        for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
-            rightTuple.getRightTupleSink().modifyRightTuple( rightTuple,
-                                                             context,
-                                                             workingMemory );
-        }
-    }
-
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
         if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
@@ -275,38 +191,10 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource.networkUpdated(updateContext);
     }
 
-    public void updateSink(final ObjectSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-
-        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
-
-        final Iterator it = memory.getMap().iterator();
-
-        // iterates over all propagated handles and assert them to the new sink
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            sink.assertObject( (InternalFactHandle) entry.getValue(),
-                               context,
-                               workingMemory );
-        }
-    }
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !this.isInUse() ) {
-            for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
-
-                Iterator it = memory.getMap().iterator();
-                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                    LeftTuple leftTuple = (LeftTuple) entry.getKey();
-                    leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
-                }
-                workingMemory.clearNodeMemory( this );
-            }
-        }
         if ( !isInUse() ) {
             tupleSource.removeTupleSink(this);
         }
@@ -443,7 +331,7 @@ public class RightInputAdapterNode extends ObjectSource
     public long calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
     }
-    
+
     public static class RiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
         private ObjectHashMap map = new ObjectHashMap();
         private RiaPathMemory pathMemory;
@@ -482,6 +370,32 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     public long getLeftInferredMask() {
+        throw new UnsupportedOperationException();
+    }
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException( "This method should never be called" );
+    }
+
+    @Override
+    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void updateSink(ObjectSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException();
     }
 

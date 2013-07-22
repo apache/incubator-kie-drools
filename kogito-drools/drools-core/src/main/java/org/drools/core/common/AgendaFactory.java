@@ -19,8 +19,8 @@ package org.drools.core.common;
 
 public interface AgendaFactory {
 
-    public DefaultAgenda createAgenda( InternalRuleBase ruleBase, boolean initMain );
+    public InternalAgenda createAgenda(InternalRuleBase ruleBase, boolean initMain);
 
-    public DefaultAgenda createAgenda( InternalRuleBase ruleBase );
+    public InternalAgenda createAgenda(InternalRuleBase ruleBase);
 
 }

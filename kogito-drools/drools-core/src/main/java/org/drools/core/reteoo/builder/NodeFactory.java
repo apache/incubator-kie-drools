@@ -20,16 +20,25 @@ package org.drools.core.reteoo.builder;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.ConditionalBranchEvaluator;
+import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.EvalConditionNode;
+import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.QueryElement;
@@ -58,12 +67,27 @@ public interface NodeFactory {
                                                EntryPointNode objectSource,
                                                ObjectType objectType,
                                                BuildContext context );
-    
+
+    public EvalConditionNode buildEvalNode(final int id,
+                                           final LeftTupleSource tupleSource,
+                                           final EvalCondition eval,
+                                           final BuildContext context);
+
+    public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context );
+
     public JoinNode buildJoinNode( final int id,
                                    final LeftTupleSource leftInput,
                                    final ObjectSource rightInput,
                                    final BetaConstraints binder,
                                    final BuildContext context );
+
+    public NotNode buildNotNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context );
+
+    public ExistsNode buildExistsNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context );
+
+    public AccumulateNode buildAccumulateNode(int id, LeftTupleSource leftInput, ObjectSource rightInput,
+                                              AlphaNodeFieldConstraint[] resultConstraints, BetaConstraints sourceBinder,
+                                              BetaConstraints resultBinder, Accumulate accumulate, boolean unwrapRightObject, BuildContext context );
 
     public LeftInputAdapterNode buildLeftInputAdapterNode( int nextId,
                                                            ObjectSource objectSource,
@@ -98,4 +122,7 @@ public interface NodeFactory {
                                     final Declaration[][]   declarations,
                                     LeftTupleSource tupleSource,
                                     BuildContext context  );
+
+    ConditionalBranchNode buildConditionalBranchNode(int id, LeftTupleSource tupleSource,
+                                                     ConditionalBranchEvaluator branchEvaluator, BuildContext context);
 }

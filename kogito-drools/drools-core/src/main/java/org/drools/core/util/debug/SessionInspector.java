@@ -35,6 +35,7 @@ import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
@@ -52,48 +53,50 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 public class SessionInspector {
 
     private ReteooWorkingMemoryInterface                           session;
-    private Map<Class< ? extends NetworkNode>, NetworkNodeVisitor> visitors;
+    private Map<Short, NetworkNodeVisitor> visitors;
 
     // default initializer
     {
-        this.visitors = new HashMap<Class< ? extends NetworkNode>, NetworkNodeVisitor>();
+        this.visitors = new HashMap<Short, NetworkNodeVisitor>();
 
         // terminal nodes
-        this.visitors.put( RuleTerminalNode.class,
+        this.visitors.put( NodeTypeEnums.RuleTerminalNode,
                            RuleTerminalNodeVisitor.INSTANCE );
-        this.visitors.put( QueryTerminalNode.class,
+        this.visitors.put( NodeTypeEnums.QueryTerminalNode,
                            QueryTerminalNodeVisitor.INSTANCE );
 
         // root node
-        this.visitors.put( Rete.class,
+        this.visitors.put( NodeTypeEnums.ReteNode,
                            DefaultNetworkNodeVisitor.INSTANCE );
 
         // object source nodes
-        this.visitors.put( EntryPointNode.class,
+        this.visitors.put( NodeTypeEnums.EntryPointNode,
                            DefaultNetworkNodeVisitor.INSTANCE );
-        this.visitors.put( ObjectTypeNode.class,
+        this.visitors.put( NodeTypeEnums.ObjectTypeNode,
                            ObjectTypeNodeVisitor.INSTANCE );
-        this.visitors.put( AlphaNode.class,
+        this.visitors.put( NodeTypeEnums.AlphaNode,
                            AlphaNodeVisitor.INSTANCE );
-        this.visitors.put( RightInputAdapterNode.class,
+        this.visitors.put( NodeTypeEnums.RightInputAdaterNode,
                            RightInputAdapterNodeVisitor.INSTANCE );
-        this.visitors.put( PropagationQueuingNode.class,
+        this.visitors.put( NodeTypeEnums.PropagationQueueingNode,
                            PropagationQueueingNodeVisitor.INSTANCE );
 
         // left tuple source nodes
-        this.visitors.put( JoinNode.class,
+        this.visitors.put( NodeTypeEnums.JoinNode,
                            BetaNodeVisitor.INSTANCE );
-        this.visitors.put( NotNode.class,
+        this.visitors.put( NodeTypeEnums.BetaNode,
                            BetaNodeVisitor.INSTANCE );
-        this.visitors.put( ExistsNode.class,
+        this.visitors.put( NodeTypeEnums.ExistsNode,
                            BetaNodeVisitor.INSTANCE );
-        this.visitors.put( AccumulateNode.class,
+        this.visitors.put( NodeTypeEnums.NotNode,
+                           BetaNodeVisitor.INSTANCE );
+        this.visitors.put( NodeTypeEnums.AccumulateNode,
                            AccumulateNodeVisitor.INSTANCE );
-        this.visitors.put( EvalConditionNode.class,
+        this.visitors.put( NodeTypeEnums.EvalConditionNode,
                            EvalConditionNodeVisitor.INSTANCE );
-        this.visitors.put( FromNode.class,
+        this.visitors.put( NodeTypeEnums.FromNode,
                            FromNodeVisitor.INSTANCE );
-        this.visitors.put( LeftInputAdapterNode.class,
+        this.visitors.put( NodeTypeEnums.LeftInputAdapterNode,
                            LeftInputAdapterNodeVisitor.INSTANCE );
     }
     
@@ -124,7 +127,7 @@ public class SessionInspector {
                                 StatefulKnowledgeSessionInfo info) {
         if ( !info.visited( parent ) ) {
             nodeStack.push( parent );
-            NetworkNodeVisitor visitor = visitors.get( parent.getClass() );
+            NetworkNodeVisitor visitor = visitors.get( parent.getType() );
             if ( visitor != null ) {
                 visitor.visit( parent,
                                nodeStack,

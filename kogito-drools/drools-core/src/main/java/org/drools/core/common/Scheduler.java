@@ -133,7 +133,7 @@ public final class Scheduler {
 //                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
             }
 
-            ((DefaultAgenda) agenda).createPostponedActivation( postponedTuple,
+            ((InternalAgenda) agenda).createPostponedActivation( postponedTuple,
                                                                 item.getPropagationContext(),
                                                                 (InternalWorkingMemory) agenda.getWorkingMemory(),
                                                                 item.getTerminalNode() );
@@ -223,9 +223,9 @@ public final class Scheduler {
             LeftTuple leftTuple = inCtx.terminalTupleMap.get( leftTupleId  );
             ScheduledAgendaItem item = ( ScheduledAgendaItem ) leftTuple.getObject();
             
-            Trigger trigger = InputMarshaller.readTrigger( inCtx ); 
-            
-            DefaultAgenda agenda = ( DefaultAgenda ) inCtx.wm.getAgenda();
+            Trigger trigger = InputMarshaller.readTrigger( inCtx );
+
+            InternalAgenda agenda = ( InternalAgenda ) inCtx.wm.getAgenda();
             ActivationTimerJob job = new ActivationTimerJob();
             ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                     
@@ -243,9 +243,9 @@ public final class Scheduler {
             ScheduledAgendaItem item = (ScheduledAgendaItem) leftTuple.getObject();
             
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
-                                                                   _activation.getTrigger() ); 
-            
-            DefaultAgenda agenda = ( DefaultAgenda ) inCtx.wm.getAgenda();
+                                                                   _activation.getTrigger() );
+
+            InternalAgenda agenda = ( InternalAgenda ) inCtx.wm.getAgenda();
             ActivationTimerJob job = new ActivationTimerJob();
             ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                     
