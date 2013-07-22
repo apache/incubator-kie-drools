@@ -170,6 +170,8 @@ public class ReteooRuleBase
     private           ReteooBuilder           reteooBuilder;
     private transient Map<Integer, SegmentMemory.Prototype> segmentProtos = new ConcurrentHashMap<Integer, Prototype>();
 
+    private KieComponentFactory kieComponentFactory;
+
 
     /**
      * Default constructor - for Externalizable. This should never be used by a user, as it
@@ -185,13 +187,11 @@ public class ReteooRuleBase
      * @param id The rete network.
      */
     public ReteooRuleBase(final String id,
-                            final RuleBaseConfiguration config,
-                            final FactHandleFactory factHandleFactory) {
+                            final RuleBaseConfiguration config) {
 
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
         createRulebaseId(id);
-        this.factHandleFactory = factHandleFactory;
 
         this.rootClassLoader = this.config.getClassLoader();
 
@@ -204,54 +204,17 @@ public class ReteooRuleBase
         this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
+        kieComponentFactory =  getConfiguration().getComponentFactory();
 
-        this.getConfiguration().getComponentFactory().getTraitFactory().setRuleBase(this);
-        this.getConfiguration().getComponentFactory().getTripleStore().setId(id);
+        this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
+        kieComponentFactory.getTraitFactory().setRuleBase(this);
+        kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
         if (config != null && config.isMBeansEnabled()) {
             DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
         }
 
-    }
-
-    /**
-     * Construct.
-     *
-     * @param id
-     *            The rete network.
-     */
-    public ReteooRuleBase(final String id) {
-        this(id,
-             null,
-             new ReteooFactHandleFactory());
-
-    }
-
-    /**
-     * @param factHandleFactory
-     */
-    public ReteooRuleBase(final String id,
-                            final FactHandleFactory factHandleFactory) {
-        this(id,
-             null,
-             factHandleFactory);
-    }
-
-    public ReteooRuleBase(final String id,
-                            final RuleBaseConfiguration config) {
-        this(id,
-             config,
-             config != null ? config.getComponentFactory().getFactHandleFactoryService() : KieComponentFactory.getDefaultHandleFactoryProvider());
-    }
-
-    /**
-     * @param config
-     */
-    public ReteooRuleBase(final RuleBaseConfiguration config) {
-        this(null,
-             config,
-             config != null ? config.getComponentFactory().getFactHandleFactoryService() : KieComponentFactory.getDefaultHandleFactoryProvider());
     }
 
     public int nextWorkingMemoryCounter() {

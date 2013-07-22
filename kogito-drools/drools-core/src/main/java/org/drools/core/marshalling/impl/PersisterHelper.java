@@ -30,7 +30,7 @@ import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertActio
 import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.TruthMaintenanceSystem.LogicalCallback;
+import org.drools.core.beliefsystem.simple.ReteSimpleBeliefSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;

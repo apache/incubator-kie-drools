@@ -263,30 +263,14 @@ public class AbstractWorkingMemory
         this(id,
              ruleBase,
              ruleBase.newFactHandleFactory(),
-             config,
-             environment);
-        this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(ruleBase);
-        this.agenda.setWorkingMemory(this);
-    }
-
-    public AbstractWorkingMemory(final int id,
-                                 final InternalRuleBase ruleBase,
-                                 final SessionConfiguration config,
-                                 final Environment environment,
-                                 final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport,
-                                 final RuleEventListenerSupport ruleEventListenerSupport) {
-        this(id,
-             ruleBase,
-             ruleBase.newFactHandleFactory(),
+             null,
+             0,
              config,
              environment,
-             workingMemoryEventSupport,
-             agendaEventSupport,
-             ruleEventListenerSupport);
-
-        this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(ruleBase);
-        this.agenda.setWorkingMemory(this);
+             new WorkingMemoryEventSupport(),
+             new AgendaEventSupport(),
+             new RuleEventListenerSupport(),
+             null );
     }
 
     public AbstractWorkingMemory(final int id,
@@ -301,68 +285,15 @@ public class AbstractWorkingMemory
              ruleBase,
              handleFactory,
              initialFactHandle,
-             //ruleBase.newFactHandleFactory(context),
-             propagationContext,
-             config,
-             environment);
-        this.agenda = agenda;
-        this.agenda.setWorkingMemory(this);
-        //        InputPersister.readFactHandles( context );
-        //        super.read( context );
-    }
-
-    public AbstractWorkingMemory(final int id,
-                                 final InternalRuleBase ruleBase,
-                                 final FactHandleFactory handleFactory,
-                                 final SessionConfiguration config,
-                                 final Environment environment) {
-        this(id,
-             ruleBase,
-             handleFactory,
-             null,
-             0,
-             config,
-             environment);
-    }
-
-    public AbstractWorkingMemory(final int id,
-                                 final InternalRuleBase ruleBase,
-                                 final FactHandleFactory handleFactory,
-                                 final SessionConfiguration config,
-                                 final Environment environment,
-                                 final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport,
-                                 final RuleEventListenerSupport ruleEventListenerSupport) {
-        this(id,
-             ruleBase,
-             handleFactory,
-             null,
-             0,
-             config,
-             environment,
-             workingMemoryEventSupport,
-             agendaEventSupport,
-             ruleEventListenerSupport);
-    }
-
-    public AbstractWorkingMemory(final int id,
-                                 final InternalRuleBase ruleBase,
-                                 final FactHandleFactory handleFactory,
-                                 final InternalFactHandle initialFactHandle,
-                                 final long propagationContext,
-                                 final SessionConfiguration config,
-                                 final Environment environment) {
-        this(id,
-             ruleBase,
-             handleFactory,
-             initialFactHandle,
              propagationContext,
              config,
              environment,
              new WorkingMemoryEventSupport(),
              new AgendaEventSupport(),
-             new RuleEventListenerSupport());
+             new RuleEventListenerSupport(),
+             agenda);
     }
+
 
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
@@ -373,7 +304,8 @@ public class AbstractWorkingMemory
                                  final Environment environment,
                                  final WorkingMemoryEventSupport workingMemoryEventSupport,
                                  final AgendaEventSupport agendaEventSupport,
-                                 final RuleEventListenerSupport ruleEventListenerSupport) {
+                                 final RuleEventListenerSupport ruleEventListenerSupport,
+                                 final InternalAgenda agenda) {
         this.id = id;
         this.config = config;
         this.ruleBase = ruleBase;
@@ -436,6 +368,13 @@ public class AbstractWorkingMemory
 
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
+
+        if ( agenda == null ) {
+            this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(ruleBase);
+        }  else {
+            this.agenda = agenda;
+        }
+        this.agenda.setWorkingMemory(this);
 
         initManagementBeans();
     }

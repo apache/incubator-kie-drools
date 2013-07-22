@@ -27,27 +27,10 @@ import org.drools.core.common.TruthMaintenanceSystem;
  */
 public enum BeliefSystemType {
 
-    SIMPLE("simple") {
-        public BeliefSystem createInstance(NamedEntryPoint ep,
-                                           TruthMaintenanceSystem tms) {
-            return new SimpleBeliefSystem(ep, tms);
-        }
-    },
+    SIMPLE("simple"),
+    JTMS("jtms"),
+    DEFEASIBLE("defeasible");
 
-    /**
-     * A Pseudo clock is a clock that is completely controlled by the
-     * client application. It is usually used during simulations or tests
-     */
-    JTMS("jtms") {
-        public BeliefSystem createInstance(NamedEntryPoint ep,
-                                           TruthMaintenanceSystem tms) {
-            return new JTMSBeliefSystem( ep, tms );
-        }
-    };
-
-    public abstract BeliefSystem createInstance(NamedEntryPoint ep,
-                                                TruthMaintenanceSystem tms);
-    
     private String string;
     BeliefSystemType( String string ) {
         this.string = string;

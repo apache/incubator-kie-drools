@@ -49,7 +49,7 @@ public class ReteooBuilderPerformanceTest {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
 
         for (int i = 0; i < reteBuilders.length; i++) {
-            reteBuilders[i] = new ReteooBuilder(new ReteooRuleBase( conf ));
+            reteBuilders[i] = new ReteooBuilder(new ReteooRuleBase( "id1", conf ));
         }
         return reteBuilders;
     }
