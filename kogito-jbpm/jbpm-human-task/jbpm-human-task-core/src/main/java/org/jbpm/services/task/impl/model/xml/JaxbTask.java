@@ -58,6 +58,10 @@ public class JaxbTask implements Task {
     }
     
     public JaxbTask(Task task) { 
+        initialize(task);
+    }
+    
+    public void initialize(Task task) { 
         this.id = task.getId();
         this.priority = task.getPriority();
         this.peopleAssignments = new JaxbPeopleAssignments(task.getPeopleAssignments());
