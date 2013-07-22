@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
@@ -900,8 +901,8 @@ public class RuleBaseConfiguration
                                                               isClassLoaderCacheEnabled());
     }
 
-    private static NodeFactory reteNodeFactory;
-    private static Class agendaCls;
+    private static NodeFactory   reteNodeFactory;
+    private static AgendaFactory agendaFactory;
 
     public ReteooComponentFactory getComponentFactory() {
         if (!isPhreakEnabled()) {
@@ -915,14 +916,16 @@ public class RuleBaseConfiguration
                 }
                 componentFactory.setNodeFactoryProvider(reteNodeFactory);
             }
-            if ( agendaCls == null ) {
-                try {
-                    agendaCls = Class.forName("org.drools.core.common.ReteAgenda" );
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
+                if (agendaFactory == null) {
+                    try {
+                        agendaFactory = (AgendaFactory) Class.forName("org.drools.core.common.ReteAgendaFactory").newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
+                componentFactory.setAgendaFactory(agendaFactory);
             }
-            //componentFactory.setAgendaFactory(agendaCls.newInstance();
         }
         return componentFactory;
     }
