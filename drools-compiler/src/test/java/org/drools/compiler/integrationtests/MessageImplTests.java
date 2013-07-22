@@ -44,7 +44,6 @@ public class MessageImplTests {
     }
 
     @Test
-    @Ignore("See DROOLS-193 (KnowledgeBuilderResult does not always contain a Resource)")
     public void testMessageWithIncrementalBuild() throws Exception {
         //Some suitably duff DSL to generate errors
         String dsl1 = "bananna\n";

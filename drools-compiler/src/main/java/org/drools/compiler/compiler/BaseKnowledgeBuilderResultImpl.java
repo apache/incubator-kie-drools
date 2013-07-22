@@ -27,7 +27,7 @@ import java.util.Arrays;
  */
 public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilderResult {
 
-    private final Resource resource;
+    private Resource resource;
 
     protected BaseKnowledgeBuilderResultImpl(Resource resource) {
         this.resource = resource;
@@ -35,6 +35,10 @@ public abstract class BaseKnowledgeBuilderResultImpl implements KnowledgeBuilder
 
     public Resource getResource() {
         return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public abstract ResultSeverity getSeverity();
