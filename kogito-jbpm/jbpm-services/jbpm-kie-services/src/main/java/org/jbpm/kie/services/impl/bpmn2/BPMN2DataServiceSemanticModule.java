@@ -29,6 +29,8 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     private ProcessGetInputHandler processInputHandler;
     @Inject
     private GetReusableSubProcessesHandler reusableSubprocessHandler;
+    @Inject
+    private DataServiceItemDefinitionHandler itemDefinitionHandler;
     
     public BPMN2DataServiceSemanticModule() {
         super();
@@ -50,7 +52,9 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     public void setReusableSubprocessHandler(GetReusableSubProcessesHandler reusableSubprocessHandler) {
         this.reusableSubprocessHandler = reusableSubprocessHandler;
     }
-    
+    public void setItemDefinitionHandler(DataServiceItemDefinitionHandler itemDefinitionHandler) {
+        this.itemDefinitionHandler = itemDefinitionHandler;
+    }
     
     
     @PostConstruct
@@ -60,10 +64,12 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
         processHandler.setRepositoryHelper(repoHelper);
         processInputHandler.setRepositoryHelper(repoHelper);
         reusableSubprocessHandler.setRepositoryHelper(repoHelper);
+        itemDefinitionHandler.setRepositoryHelper(repoHelper);
         
         addHandler("userTask", taskHandler);
         addHandler("process", processHandler);
         addHandler("property", processInputHandler);
+        addHandler("itemDefinition", itemDefinitionHandler);
         addHandler("callActivity", reusableSubprocessHandler);
     }    
     

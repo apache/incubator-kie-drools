@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.jbpm.kie.services.impl.bpmn2.DataServiceItemDefinitionHandler;
 
 
 public class NoCDISupportProcessTest extends SupportProcessBaseTest {
@@ -123,6 +124,10 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         HumanTaskGetInformationHandler taskHandler = new HumanTaskGetInformationHandler();
         taskHandler.setRepository(repo);
         semanticModule.setTaskHandler(taskHandler);
+      
+        DataServiceItemDefinitionHandler itemDefHandler = new DataServiceItemDefinitionHandler();
+        itemDefHandler.setRepository(repo);
+        semanticModule.setItemDefinitionHandler(itemDefHandler);
 
         semanticModule.init();
 

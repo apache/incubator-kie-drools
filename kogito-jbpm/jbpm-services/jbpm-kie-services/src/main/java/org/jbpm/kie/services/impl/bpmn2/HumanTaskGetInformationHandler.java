@@ -16,17 +16,22 @@
 package org.jbpm.kie.services.impl.bpmn2;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.drools.core.xml.ExtensibleXmlParser;
 
 import org.jbpm.bpmn2.xml.UserTaskHandler;
 import org.jbpm.services.task.impl.model.TaskDefImpl;
+import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 @ApplicationScoped
 public class HumanTaskGetInformationHandler extends UserTaskHandler {
@@ -77,22 +82,39 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
 
         Map<String, String> inputParams = new HashMap<String, String>();
         
-
+        String mainProcessId = repositoryHelper.getProcess().getId();
         for (Map.Entry<String, String> in : dataInputs.entrySet()) {
-            inputParams.put(in.getKey(), in.getValue());
+                inputParams.put(in.getKey(), in.getValue());
 
         }
         Map<String, String> outputParams = new HashMap<String, String>();
         for (Map.Entry<String, String> out : dataOutputs.entrySet()) {
             outputParams.put(out.getKey(), out.getValue());
         }
-        String mainProcessId = repositoryHelper.getProcess().getId();
+        
 
         repository.getProcessDesc(mainProcessId).getTasks().put(task.getName(), task);
         repository.getProcessDesc(mainProcessId).getTaskInputMappings().put(task.getName(), inputParams);
         repository.getProcessDesc(mainProcessId).getTaskOutputMappings().put(task.getName(), outputParams);
     }
 
+    @Override
+    protected void handleNode(final org.jbpm.workflow.core.Node node, final Element element, final String uri, 
+            final String localName, final ExtensibleXmlParser parser) throws SAXException {
+            super.handleNode(node, element, uri, localName, parser);
+        WorkItemNode humanTaskNode = (WorkItemNode) node;
+        Map<String, Object> parameters = humanTaskNode.getWork().getParameters();
+        String mainProcessId = repositoryHelper.getProcess().getId();
+        for(String parameter : parameters.keySet()){
+            if(parameter.equals("GroupId")){
+               repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(),
+                                     humanTaskNode.getWork().getParameter(parameter).toString());     
+            }
+        }
+        
+       
+    }
+    
     @Override
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
         String userOrGroup = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
@@ -101,6 +123,8 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         return userOrGroup;
     }
 
+
+    
     public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
         this.repositoryHelper = repositoryHelper;
     }

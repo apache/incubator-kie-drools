@@ -136,22 +136,63 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
       
-        String theString = "org.jbpm.writedocument";
+        String processId = "org.jbpm.writedocument";
         
 
-        Collection<TaskDefImpl> processTasks = bpmn2Service.getAllTasksDef(theString);
+        Collection<TaskDefImpl> processTasks = bpmn2Service.getAllTasksDef(processId);
         
         assertEquals(3, processTasks.size());
-        Map<String, String> processData = bpmn2Service.getProcessData(theString);
+        Map<String, String> processData = bpmn2Service.getProcessData(processId);
         
         assertEquals(3, processData.keySet().size());
-        Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(theString, "Write a Document" );
+        Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(processId, "Write a Document" );
         
         assertEquals(3, taskInputMappings.keySet().size());
         
-        Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(theString, "Write a Document" );
+        Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, "Write a Document" );
         
         assertEquals(1, taskOutputMappings.keySet().size());
+        
+        Map<String, String> associatedEntities = bpmn2Service.getAssociatedEntities(processId);
+        
+        assertEquals(3, associatedEntities.keySet().size());
+        
+        
+    }
+    
+    @Test
+    public void testHiringProcessData() throws IOException {
+      
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/hr");
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+      
+        String processId = "hiring";
+        
+
+        Collection<TaskDefImpl> processTasks = bpmn2Service.getAllTasksDef(processId);
+        
+        assertEquals(4, processTasks.size());
+        Map<String, String> processData = bpmn2Service.getProcessData(processId);
+        
+        assertEquals(9, processData.keySet().size());
+        Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(processId, "HR Interview" );
+        
+        assertEquals(1, taskInputMappings.keySet().size());
+        
+        Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, "HR Interview" );
+        
+        assertEquals(4, taskOutputMappings.keySet().size());
+        
+        Map<String, String> associatedEntities = bpmn2Service.getAssociatedEntities(processId);
+        
+        assertEquals(4, associatedEntities.keySet().size());
+        
+        
+        
         
     }
     

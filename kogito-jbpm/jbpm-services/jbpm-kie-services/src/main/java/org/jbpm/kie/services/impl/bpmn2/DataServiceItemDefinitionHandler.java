@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc 
+ * Copyright 2013 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,46 +15,40 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.drools.core.xml.Handler;
-import org.jbpm.bpmn2.xml.PropertyHandler;
-import org.jbpm.process.core.context.variable.Variable;
-
+import org.jbpm.bpmn2.core.ItemDefinition;
+import org.jbpm.bpmn2.xml.ItemDefinitionHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
-public class ProcessGetInputHandler extends PropertyHandler implements Handler {
+/**
+ *
+ * @author salaboy
+ */
+@ApplicationScoped
+public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
 
     private ProcessDescRepoHelper repositoryHelper;
     
     @Inject
     private ProcessDescriptionRepository repository;
     
-    public ProcessGetInputHandler() {
-            super();
-            
-    }
-
     @Override
     public Object start(final String uri, final String localName,
-                    final Attributes attrs, final ExtensibleXmlParser parser)
-                    throws SAXException {
-        String mainProcessId = repositoryHelper.getProcess().getId();
-        
-        Object result = super.start(uri, localName, attrs, parser);
-        if(result instanceof Variable){
-            String structureRef = repository.getGlobalItemDefinitions().get((String)((Variable)result).getMetaData("ItemSubjectRef"));
-            if(structureRef != null){
-                repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), structureRef);
-            }else{
-                repository.getProcessDesc(mainProcessId).getInputs().put(((Variable)result).getName(), ((Variable)result).getType().getStringType());
-            }
+            final Attributes attrs, final ExtensibleXmlParser parser)
+            throws SAXException {
+        ItemDefinition item = (ItemDefinition) super.start(uri, localName, attrs, parser);
+        String id = item.getId();
+        String structureRef = item.getStructureRef();
+        String itemDefinitionId = repository.getGlobalItemDefinitions().get(id);
+        if(itemDefinitionId == null){
+            repository.getGlobalItemDefinitions().put(id, structureRef);
         }
         
-        return result;
+        return item;
+
     }
 
     public void setRepositoryHelper(ProcessDescRepoHelper repositoryHelper) {
@@ -64,6 +58,8 @@ public class ProcessGetInputHandler extends PropertyHandler implements Handler {
     public void setRepository(ProcessDescriptionRepository repository) {
         this.repository = repository;
     }
+    
+    
     
     
 }
