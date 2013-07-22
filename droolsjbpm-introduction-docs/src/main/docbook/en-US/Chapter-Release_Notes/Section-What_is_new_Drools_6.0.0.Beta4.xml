@@ -755,7 +755,7 @@
         <para>The basic aspect of the Data Modeller is shown in the following screenshot:</para>
 
         <figure>
-          <title>The Data Modeler screen</title>
+          <title>The Data Modeller screen</title>
 
           <mediaobject>
             <imageobject>
@@ -766,7 +766,7 @@
 
         <para/>
 
-        <para>The Data Modeller screen is divided into the follwing sections:</para>
+        <para>The Data Modeller screen is divided into the following sections:</para>
 
         <itemizedlist>
           <listitem>
@@ -794,7 +794,7 @@
         all its assets (pojo's), which will then become available to the rest of the tools.</para>
 
         <figure>
-          <title>The Data Modeler menu</title>
+          <title>The Data Modeller menu</title>
 
           <mediaobject>
             <imageobject>
@@ -802,6 +802,70 @@
             </imageobject>
           </mediaobject>
         </figure>
+      </section>
+
+      <section>
+        <title>Form Designer</title>
+
+        <para>As well as being able to easily define data structures and their internal relationships, which is possible through the 
+		new Data Modeller utility, providing a tool that empowers analysts and developers to define the graphical interfaces to those data
+		structures is of equal importance.
+		The form designer tool allows non-technical users to configure complex data forms for data capture and visualization a WYSIWYG fashion,
+		define the relationships between those forms and the underlying data structure(s), and execute those forms inside the context of 
+		business processes.</para>
+
+        <section>
+          <title>Key features</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Simple WYSIWYG UI for easy form modelling</para>
+            </listitem>
+
+            <listitem>
+			  <para>Form autogeneration from datamodel/process task or java objects</para>
+            </listitem>
+
+            <listitem>
+              <para>Data binding for java objects</para>
+            </listitem>
+
+            <listitem>
+              <para>Customized form layouts</para>
+            </listitem>
+
+            <listitem>
+              <para>Forms embedding</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+		<section>
+		  <title>Target users:</title>
+
+		  <itemizedlist spacing="compact">
+			<listitem>
+			  <para>Process / data analysts. Designing forms.</para>
+			</listitem>
+
+			<listitem>
+			  <para>Developers. Advanced form configuration, such as adding formulas and expressions for dynamic form recognition.</para>
+			</listitem>
+		  </itemizedlist>
+		</section>
+
+        <figure>
+          <title>The basic aspect of the Form Designer is shown in the following screenshot:</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="left" fileref="images/Chapter-Release_Notes/FD-screen.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para/>
+
       </section>
 
       <section>
