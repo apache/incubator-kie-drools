@@ -1053,7 +1053,7 @@ end</programlisting>
       <title>Build-in hard constraint</title>
 
       <para>Instead of implementing a hard constraint, you can sometimes make it build-in too. For example: If
-      <literal>Course</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRange from
+      <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRangeProvider on
       Solution, the <literal>Solver</literal> will often try to assign it to <literal>Room</literal> X too (only to find
       out that it breaks a hard constraint). Use <link linkend="filteredSelection">filtered selection</link> to define
       that Course A should only be assigned a <literal>Room</literal> other than X.</para>

@@ -403,8 +403,8 @@ public class Queen {
         property changes to another <literal>Row</literal> during planning, no <literal>Row</literal> instance itself is
         changed.</para>
 
-        <para>A planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal> annotation.
-        Furthermore, it needs a <literal>@ValueRange</literal> annotation too.</para>
+        <para>A planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal> annotation,
+        which needs a non-empty <literal>valueRangeProviderRefs</literal> property.</para>
 
         <programlisting language="java">@PlanningEntity
 public class Queen {
@@ -413,8 +413,7 @@ public class Queen {
 
     // ...
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = rowList")
+    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
     public Row getRow() {
         return row;
     }
@@ -424,6 +423,10 @@ public class Queen {
     }
 
 }</programlisting>
+
+        <para>The <literal>valueRangeProviderRefs</literal> property defines what are the possible planning values for
+        this planning variable. It references 1 or more <literal>@ValueRangeProvider</literal>
+        <literal>id</literal>'s.</para>
       </section>
 
       <section xml:id="nullablePlanningVariable">
@@ -437,15 +440,14 @@ public class Queen {
         <para>To allow an initialized planning variable to be <literal>null</literal>, set <literal>nullable</literal>
         to <literal>true</literal>:</para>
 
-        <programlisting language="java">    @PlanningVariable(nullable = true)
-    @ValueRange(...)
+        <programlisting language="java">    @PlanningVariable(..., nullable = true)
     public Worker getWorker() {
         return worker;
     }</programlisting>
 
         <important>
           <para>Planner will automatically add the value <literal>null</literal> to the value range. There is no need to
-          add <literal>null</literal> in a collection used by a <literal>ValueRange</literal>.</para>
+          add <literal>null</literal> in a collection used by a <literal>ValueRangeProvider</literal>.</para>
         </important>
 
         <note>
@@ -459,8 +461,7 @@ public class Queen {
         the null variables again, which can be a huge waste of time. One way to deal with this, is to change when a
         planning entity should be reinitialized with an <literal>reinitializeVariableEntityFilter</literal>:</para>
 
-        <programlisting language="java">    @PlanningVariable(nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
-    @ValueRange(...)
+        <programlisting language="java">    @PlanningVariable(..., nullable = true, reinitializeVariableEntityFilter = ReinitializeTaskFilter.class)
     public Worker getWorker() {
         return worker;
     }</programlisting>
@@ -471,7 +472,8 @@ public class Queen {
 
         <para>A planning variable is considered initialized if its value is not <literal>null</literal> or if the
         variable is <literal>nullable</literal>. So a nullable variable is always considered initialized, even when a
-        custom <literal>reinitializeVariableEntityFilter</literal> triggers a reinitialization.</para>
+        custom <literal>reinitializeVariableEntityFilter</literal> triggers a reinitialization during construction
+        heuristics.</para>
 
         <para>A planning entity is initialized if all of its planning variables are initialized.</para>
 
@@ -492,18 +494,19 @@ public class Queen {
         <para>A planning value range is the set of possible planning values for a planning variable. This set can be a
         discrete (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
         <literal>4</literal>) or continuous (for example any <literal>double</literal> between <literal>0.0</literal>
-        and <literal>1.0</literal>). Continuous planning variables are currently undersupported and require the use of
-        custom moves.</para>
+        and <literal>1.0</literal>).</para>
 
         <para>There are several ways to define the value range of a planning variable with the
-        <literal>@ValueRange</literal> annotation.</para>
+        <literal>@ValueRangeProvider</literal> annotation. A <literal>@ValueRangeProvider</literal> annotation always
+        has a property <literal>id</literal>, which is referenced by the <literal>@PlanningVariable</literal>'s
+        property <literal>valueRangeProviderRefs</literal>.</para>
       </section>
 
       <section>
-        <title>Planning value range</title>
+        <title>Planning value range provider</title>
 
-        <section>
-          <title><literal>ValueRange</literal> from <literal>Solution</literal> property</title>
+        <section xml:id="valueRangeProviderOnSolution">
+          <title><literal>ValueRangeProvider</literal> on a <literal>Solution</literal> property</title>
 
           <para>All instances of the same planning entity class share the same set of possible planning values for that
           planning variable. This is the most common way to configure a value range.</para>
@@ -512,16 +515,17 @@ public class Queen {
           <literal>Collection</literal>. Any value from that <literal>Collection</literal> is a possible planning value
           for this planning variable.</para>
 
-          <programlisting language="java">    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "rowList")
+          <programlisting language="java">    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
     public Row getRow() {
         return row;
     }</programlisting>
 
-          <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+          <programlisting language="java">@PlanningSolution
+public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     // ...
 
+    @ValueRangeProvider(id = "rowRange")
     public List&lt;Row&gt; getRowList() {
         return rowList;
     }
@@ -532,19 +536,19 @@ public class Queen {
           linkend="nullablePlanningVariable">nullable planning variable</link>.</para>
         </section>
 
-        <section xml:id="valueRangeFromPlanningEntity">
-          <title><literal>ValueRange</literal> from planning entity</title>
+        <section xml:id="valueRangeProviderOnPlanningEntity">
+          <title><literal>ValueRangeProvider</literal> on a planning entity</title>
 
           <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
           if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
           department, lectures of that teacher can limit their room value range to the rooms of his department.</para>
 
-          <programlisting language="java">    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "possibleRoomList")
+          <programlisting language="java">    @PlanningVariable(valueRangeProviderRefs = {"possibleRoomRange"})
     public Room getRoom() {
         return room;
     }
 
+    @ValueRangeProvider(id = "possibleRoomRange")
     public List&lt;Room&gt; getPossibleRoomList() {
         return getCourse().getTeacher().getPossibleRoomList();
     }</programlisting>
@@ -555,7 +559,7 @@ public class Queen {
           limited in his room value range (because sometimes there is no other way).</para>
 
           <note>
-            <para>By limiting the value range specifically of 1 planning entity, you are effectively making a
+            <para>By limiting the value range specifically of 1 planning entity, you are effectively creating a
             <emphasis>build-in hard constraint</emphasis>. This can be a very good thing, as the number of possible
             solutions is severely lowered. But this can also be a bad thing because it takes away the freedom of the
             optimization algorithms to temporarily break that constraint in order to escape a local optima.</para>
@@ -565,33 +569,28 @@ public class Queen {
           range. That would only try to make it solve the planning problem itself and interfere with the optimization
           algorithms.</para>
 
-          <para>This value range is not compatible with a <link linkend="chainedPlanningVariable">chained</link>
+          <para>This value range is not (yet) compatible with a <link linkend="chainedPlanningVariable">chained</link>
           variable.</para>
         </section>
 
         <section>
-          <title><literal>ValueRange</literal> undefined</title>
+          <title>Combining ValueRangeProviders</title>
 
-          <para>Leaves the value range undefined. Most optimization algorithms do not support this value range.</para>
+          <para>Value range providers can be combined, for example:</para>
 
-          <programlisting language="java">    @PlanningVariable
-    @ValueRange(type = ValueRangeType.UNDEFINED)
-    public Row getRow() {
-        return row;
-    }</programlisting>
-        </section>
-
-        <section>
-          <title>Combining ValueRanges</title>
-
-          <para>Value ranges can be combined, for example:</para>
-
-          <programlisting language="java">    @PlanningVariable(...)
-    @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "companyCarList"),
-            @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "personalCarList"})
+          <programlisting language="java">    @PlanningVariable(valueRangeProviderRefs = {"companyCarRange", "personalCarRange"})
     public Car getCar() {
         return car;
+    }</programlisting>
+
+          <programlisting language="java">    @ValueRangeProvider(id = "companyCarRange")
+    public List&lt;CompanyCar&gt; getCompanyCarList() {
+        return companyCarList;
+    }
+
+    @ValueRangeProvider(id = "personalCarRange")
+    public List&lt;PersonalCar&gt; getPersonalCarList() {
+        return personalCarList;
     }</programlisting>
         </section>
       </section>
@@ -607,8 +606,7 @@ public class Queen {
         <para>Therefore, you can set a <literal>strengthComparatorClass</literal> to the
         <literal>@PlanningVariable</literal> annotation:</para>
 
-        <programlisting language="java">    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
-    // ...
+        <programlisting language="java">    @PlanningVariable(..., strengthComparatorClass = CloudComputerStrengthComparator.class)
     public CloudComputer getComputer() {
         // ...
     }</programlisting>
@@ -636,8 +634,7 @@ public class Queen {
         <literal>@PlanningVariable</literal> annotation, so you have access to the rest of the problem facts from the
         solution too:</para>
 
-        <programlisting language="java">    @PlanningVariable(strengthWeightFactoryClass = RowStrengthWeightFactory.class)
-    // ...
+        <programlisting language="java">    @PlanningVariable(..., strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     public Row getRow() {
         // ...
     }</programlisting>
@@ -760,10 +757,7 @@ public class Visit ... implements Standstill {
 
     public City getCity() {...}
 
-    @PlanningVariable(chained = true)
-    @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList")})
+    @PlanningVariable(chained = true, valueRangeProviderRefs = {"domicileRange", "visitRange"})
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -774,15 +768,15 @@ public class Visit ... implements Standstill {
 
 }</programlisting>
 
-        <para>Notice how 2 value ranges need to be combined:</para>
+        <para>Notice how 2 value range providers are usually combined:</para>
 
         <itemizedlist>
           <listitem>
-            <para>The value range which holds the anchors, for example <literal>domicileList</literal>.</para>
+            <para>The value range provider which holds the anchors, for example <literal>domicileList</literal>.</para>
           </listitem>
 
           <listitem>
-            <para>The value range which holds the initialized planning entities, for example
+            <para>The value range provider which holds the initialized planning entities, for example
             <literal>visitList</literal>.</para>
           </listitem>
         </itemizedlist>
@@ -807,7 +801,6 @@ public class Visit ... implements Standstill {
 public class Customer ... {
 
     @PlanningVariable(chained = true, ...)
-    @ValueRange...
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -817,7 +810,7 @@ public class Customer ... {
 }</programlisting>
 
         <para>And then annotate the other side as a <literal>@PlanningVariable</literal> with only a
-        <literal>mappedBy</literal> annotation (and no <literal>@ValueRange</literal>).</para>
+        <literal>mappedBy</literal> annotation (and no <literal>valueRangeProviderRefs</literal>).</para>
 
         <programlisting language="java">@PlanningEntity
 public interface Standstill {
@@ -851,7 +844,6 @@ public interface Standstill {
         genuine planning variable(s) that trigger changes in the shadow variable(s):</para>
 
         <programlisting language="java">    @PlanningVariable(..., variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
-    ...
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }</programlisting>

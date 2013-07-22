@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector.value;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;

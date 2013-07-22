@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.domain.value;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
-
-import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {

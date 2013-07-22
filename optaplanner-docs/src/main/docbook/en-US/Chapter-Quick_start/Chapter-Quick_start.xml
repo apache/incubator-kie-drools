@@ -353,8 +353,7 @@ public class CloudProcess ... {
 
     ... // getters
 
-    @PlanningVariable(...)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "computerList")
+    @PlanningVariable(valueRangeProviderRefs = {"computerRange"})
     public CloudComputer getComputer() {
         return computer;
     }
@@ -375,7 +374,7 @@ public class CloudProcess ... {
         <para>The values that Planner can choose from for the field <literal>computer</literal>, are retrieved from a
         method on the <literal>Solution</literal> implementation: <literal>CloudBalance.getComputerList()</literal>
         which returns a list of all computers in the current data set. We tell Planner about this by using the
-        annotation <literal>@ValueRange</literal>.</para>
+        <literal>valueRangeProviderRefs</literal> property.</para>
       </section>
 
       <section>
@@ -400,6 +399,7 @@ public class CloudProcess ... {
 
     private HardSoftScore score;
 
+    @ValueRangeProvider(id = "computerRange")
     public List&lt;CloudComputer&gt; getComputerList() {
         return computerList;
     }

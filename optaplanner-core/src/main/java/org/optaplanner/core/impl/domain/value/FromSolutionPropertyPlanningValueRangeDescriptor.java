@@ -19,11 +19,9 @@ package org.optaplanner.core.impl.domain.value;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.DefaultReadMethodAccessor;
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
