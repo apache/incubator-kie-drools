@@ -506,12 +506,12 @@ public class Queen {
         <title>Planning value range provider</title>
 
         <section xml:id="valueRangeProviderOnSolution">
-          <title><literal>ValueRangeProvider</literal> on a <literal>Solution</literal> property</title>
+          <title><literal>ValueRangeProvider</literal> on a <literal>Solution</literal></title>
 
           <para>All instances of the same planning entity class share the same set of possible planning values for that
           planning variable. This is the most common way to configure a value range.</para>
 
-          <para>The <literal>Solution</literal> implementation has property which returns a
+          <para>The <literal>Solution</literal> implementation has method which returns a
           <literal>Collection</literal>. Any value from that <literal>Collection</literal> is a possible planning value
           for this planning variable.</para>
 
