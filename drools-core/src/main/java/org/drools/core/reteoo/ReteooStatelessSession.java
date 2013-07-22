@@ -96,11 +96,15 @@ public class ReteooStatelessSession
         try {
             InternalWorkingMemory wm = new AbstractWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(),
                                                                this.ruleBase,
+                                                               ruleBase.newFactHandleFactory(),
+                                                               null,
+                                                               0,
                                                                this.sessionConf,
                                                                EnvironmentFactory.newEnvironment(),
                                                                this.workingMemoryEventSupport,
                                                                this.agendaEventSupport,
-                                                               this.ruleEventListenerSupport );
+                                                               this.ruleEventListenerSupport,
+                                                               null );
 
             wm.setGlobalResolver( this.globalResolver );
 

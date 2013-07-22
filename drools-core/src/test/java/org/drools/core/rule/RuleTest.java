@@ -34,7 +34,7 @@ public class RuleTest {
 
     @Test
     public void testDateEffective() {
-        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession();
 
         final Rule rule = new Rule( "myrule" );
 
@@ -59,7 +59,7 @@ public class RuleTest {
 
     @Test
     public void testDateExpires() throws Exception {
-        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession();
         
         final Rule rule = new Rule( "myrule" );
 
@@ -82,7 +82,7 @@ public class RuleTest {
 
     @Test
     public void testDateEffectiveExpires() {
-        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        WorkingMemory wm = new ReteooRuleBase("x",null).newStatefulSession();
         
         final Rule rule = new Rule( "myrule" );
 
@@ -111,7 +111,7 @@ public class RuleTest {
 
     @Test
     public void testRuleEnabled() {
-        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession();
+        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession();
         
         final Rule rule = new Rule( "myrule" );
         rule.setEnabled( EnabledBoolean.ENABLED_FALSE );
@@ -131,7 +131,7 @@ public class RuleTest {
     public void testTimeMachine() {
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        WorkingMemory wm = new ReteooRuleBase("x").newStatefulSession(conf, null);
+        WorkingMemory wm = new ReteooRuleBase("x", null).newStatefulSession(conf, null);
         
         final Calendar future = Calendar.getInstance();
         ((PseudoClockScheduler)wm.getSessionClock()).setStartupTime( future.getTimeInMillis() );

@@ -21,7 +21,9 @@ import org.drools.core.base.FieldFactory;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.core.common.AgendaFactory;
+import org.drools.core.common.BeliefSystemFactory;
 import org.drools.core.common.DefaultAgendaFactory;
+import org.drools.core.common.PhreakBeliefSystemFactory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RetePropagationContextFactory;
@@ -95,6 +97,18 @@ public class KieComponentFactory implements Serializable {
     public PropagationContextFactory getPropagationContextFactory() {
         return propagationFactory;
     }
+
+
+    private BeliefSystemFactory bsFactory = new PhreakBeliefSystemFactory();
+
+    public void setPropagationContextFactory(BeliefSystemFactory factory) {
+        bsFactory = factory;
+    }
+
+    public BeliefSystemFactory getBeliefSystemFactory() {
+        return bsFactory;
+    }
+
 
     private RuleBuilderFactory ruleBuilderFactory = new ReteooRuleBuilderFactory();
 
@@ -208,8 +222,6 @@ public class KieComponentFactory implements Serializable {
     public static LogicTransformerFactory getDefaultLogicTransformerFactory() {
         return new DefaultLogicTransformerFactory();
     }
-
-
 
     private TraitFactory traitFactory = new TraitFactory();
 

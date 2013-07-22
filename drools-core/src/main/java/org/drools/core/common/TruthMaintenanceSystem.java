@@ -63,7 +63,9 @@ public class TruthMaintenanceSystem {
         this.equalityKeyMap = new ObjectHashMap();
         this.equalityKeyMap.setComparator( EqualityKeyComparator.getInstance() );
 
-        beliefSystem = wm.getSessionConfiguration().getBeliefSystemType().createInstance( ep, this );
+
+        InternalRuleBase rbase = ( InternalRuleBase ) wm.getRuleBase();
+        beliefSystem = rbase.getConfiguration().getComponentFactory().getBeliefSystemFactory().createBeliefSystem(wm.getSessionConfiguration().getBeliefSystemType(), ep, this);
     }
 
     public ObjectHashMap getEqualityKeyMap() {
@@ -145,141 +147,6 @@ public class TruthMaintenanceSystem {
             beliefSystem.read( node, beliefSet, context, typeConf );
         } else {
             beliefSystem.insert( node, beliefSet, context, typeConf );
-        }
-    }
-
-    public static class LogicalCallback
-            implements
-            WorkingMemoryAction {
-        
-        private InternalFactHandle     handle;
-        private PropagationContext     context;
-        private Activation             activation;
-        
-        private boolean                update;
-        private boolean                fullyRetract;
-
-        public LogicalCallback() {
-
-        }
-
-        public LogicalCallback(final InternalFactHandle handle,
-                                      final PropagationContext context,
-                                      final Activation activation,
-                                      final boolean update,
-                                      final boolean fullyRetract) {
-            this.handle = handle;
-            this.context = context;
-            this.activation = activation;
-            this.update = update;
-            this.fullyRetract = fullyRetract;
-        }
-
-        public LogicalCallback(MarshallerReaderContext context) throws IOException {
-            this.handle = context.handles.get( context.readInt() );
-            this.context = context.propagationContexts.get( context.readLong() );
-            this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
-        }
-
-        public LogicalCallback(MarshallerReaderContext context,
-                                      Action _action) {
-            LogicalRetract _retract = _action.getLogicalRetract();
-
-            this.handle = context.handles.get( _retract.getHandleId() );
-            this.activation = (Activation) context.filter
-                    .getTuplesCache().get( PersisterHelper.createActivationKey( _retract.getActivation().getPackageName(),
-                                                                                _retract.getActivation().getRuleName(),
-                                                                                _retract.getActivation().getTuple() ) ).getObject();
-            this.context = this.activation.getPropagationContext();
-            this.fullyRetract = _retract.getFullyRetract();
-            this.update = _retract.getUpdate();
-        }
-
-        public void write(MarshallerWriteContext context) throws IOException {
-            context.writeShort( WorkingMemoryAction.LogicalRetractCallback );
-
-            context.writeInt( this.handle.getId() );
-            context.writeLong( this.context.getPropagationNumber() );
-            context.writeInt( context.terminalTupleMap.get( this.activation.getTuple() ) );
-        }
-
-        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
-            LogicalRetract _retract = ProtobufMessages.ActionQueue.LogicalRetract.newBuilder()
-                    .setHandleId( this.handle.getId() )
-                    .setActivation( PersisterHelper.createActivation( this.activation.getRule().getPackageName(),
-                                                                      this.activation.getRule().getName(),
-                                                                      this.activation.getTuple() ) )
-                    .setFullyRetract( fullyRetract )
-                    .setUpdate( update )
-                    .build();
-            return ProtobufMessages.ActionQueue.Action.newBuilder()
-                    .setType( ProtobufMessages.ActionQueue.ActionType.LOGICAL_RETRACT )
-                    .setLogicalRetract( _retract )
-                    .build();
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            handle = (InternalFactHandle) in.readObject();
-            context = (PropagationContext) in.readObject();
-            activation = (Activation) in.readObject();
-            fullyRetract = in.readBoolean();
-            update =  in.readBoolean();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( handle );
-            out.writeObject( context );
-            out.writeObject( activation );
-            out.writeBoolean( fullyRetract );
-            out.writeBoolean( update );
-        }
-        
-        public boolean isUpdate() {
-            return update;
-        }
-
-        public void setUpdate(boolean update) {
-            this.update = update;
-        }
-
-        public boolean isFullyRetract() {
-            return fullyRetract;
-        }
-
-        public void setFullyRetract(boolean fullyRetract) {
-            this.fullyRetract = fullyRetract;
-        }
-
-        public void execute(InternalWorkingMemory workingMemory) {
-            NamedEntryPoint nep = (NamedEntryPoint) handle.getEntryPoint() ;
-            
-            BeliefSet bs = handle.getEqualityKey().getBeliefSet();
-            bs.setWorkingMemoryAction( null );
-            
-            if ( update ) {
-                if ( !bs.isEmpty() ) {
-                    // We need the isEmpty check, in case the BeliefSet was made empty (due to retract) after this was scheduled
-                    ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, Object.class, null );
-                }
-            } else  {
-                if ( fullyRetract ) {
-                    ((NamedEntryPoint) handle.getEntryPoint()).delete( this.handle,
-                                                                        (Rule) context.getRuleOrigin(),
-                                                                        this.activation );                    
-                } else {                
-                    final ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(),
-                                                                                                                handle.getObject() );                
-                    ((NamedEntryPoint) handle.getEntryPoint() ).getEntryPointNode().retractObject( handle, 
-                                                                                                   context, 
-                                                                                                   typeConf, 
-                                                                                                   workingMemory );
-                }
-            }
-        }
-
-        public void execute(InternalKnowledgeRuntime kruntime) {
-            execute( ((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory() );
         }
     }
 

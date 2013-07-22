@@ -3,20 +3,19 @@ package org.drools.core.beliefsystem.jtms;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSet.MODE;
+import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.beliefsystem.simple.ReteSimpleBeliefSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
-import org.drools.core.rule.Rule;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.LinkedListEntry;
 
-public class JTMSBeliefSystem
+public class ReteJTMSBeliefSystem
         implements
         BeliefSystem {
     public static boolean          STRICT = false;
@@ -26,8 +25,8 @@ public class JTMSBeliefSystem
     private NamedEntryPoint        defEP;
     private NamedEntryPoint        negEP;
 
-    public JTMSBeliefSystem(NamedEntryPoint ep,
-                            TruthMaintenanceSystem tms) {
+    public ReteJTMSBeliefSystem(NamedEntryPoint ep,
+                                TruthMaintenanceSystem tms) {
         this.defEP = ep;
         this.tms = tms;
         initMainEntryPoints();
@@ -68,20 +67,13 @@ public class JTMSBeliefSystem
                 fh = jtmsBeliefSet.getNegativeFactHandle();
                 jtmsBeliefSet.setNegativeFactHandle( null );
                 fullyRetract = true; // Only fully retract negatives
-
-                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
             } else {
                 fh = jtmsBeliefSet.getPositiveFactHandle();
                 jtmsBeliefSet.setPositiveFactHandle( null );
                 fullyRetract = false; // Positives only retract from the rete network, handle must remain
-
-                NamedEntryPoint nep = (NamedEntryPoint) fh.getEntryPoint() ;
-
-//                final ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(),
-//                                                                                                            handle.getObject() );
-
-                ((NamedEntryPoint) fh.getEntryPoint() ).getEntryPointNode().retractObject( fh, context, typeConf, nep.getInternalWorkingMemory() );
             }
+
+            retractOrUpdateBelief( node, context, fh, false, fullyRetract );
 
         }
     }
@@ -93,11 +85,11 @@ public class JTMSBeliefSystem
                               boolean wasConflicting) {
         if ( jtmsBeliefSet.isNegated() ) {
             jtmsBeliefSet.setNegativeFactHandle( (InternalFactHandle) negEP.insert( node.getObject() ) );
-            
+
             // As the neg partition is always stated, it'll have no equality key.
             // However the equality key is needed to stop duplicate LogicalCallbacks, so we manually set it
             // @FIXME **MDP could this be a problem during derialization, where the
-            jtmsBeliefSet.getNegativeFactHandle().setEqualityKey( jtmsBeliefSet.getFactHandle().getEqualityKey() ); 
+            jtmsBeliefSet.getNegativeFactHandle().setEqualityKey( jtmsBeliefSet.getFactHandle().getEqualityKey() );
             jtmsBeliefSet.setPositiveFactHandle( null );
             if ( !(wasNegated || wasConflicting) ) {
                 defEP.getObjectStore().removeHandle( jtmsBeliefSet.getFactHandle() ); // Make sure the FH is no longer visible in the default ObjectStore
@@ -119,27 +111,27 @@ public class JTMSBeliefSystem
         }
     }
 
-//    private void retractOrUpdateBelief(LogicalDependency node,
-//                                       PropagationContext context,
-//                                       InternalFactHandle fh,
-//                                       boolean update,
-//                                       boolean fullyRetract) {
-//        JTMSBeliefSet jtmsBeliefSet = ( JTMSBeliefSet ) fh.getEqualityKey().getBeliefSet();
-//        if ( jtmsBeliefSet.getWorkingMemoryAction() == null ) {
-//            // doesn't exist, so create it
-//            WorkingMemoryAction action = new LogicalCallback( fh,
-//                                                                                     context,
-//                                                                                     node.getJustifier(),
-//                                                                                     update,
-//                                                                                     fullyRetract ); // Only negative is fully retracted.
-//            ((NamedEntryPoint) fh.getEntryPoint()).enQueueWorkingMemoryAction( action );
-//        } else {
-//            // it exists (update required due to previous change in prime), so just update it's actions
-//            LogicalCallback callback = ( LogicalCallback ) jtmsBeliefSet.getWorkingMemoryAction();
-//            callback.setFullyRetract( fullyRetract );
-//            callback.setUpdate( update );
-//        }
-//    }
+    private void retractOrUpdateBelief(LogicalDependency node,
+                                       PropagationContext context,
+                                       InternalFactHandle fh,
+                                       boolean update,
+                                       boolean fullyRetract) {
+        JTMSBeliefSet jtmsBeliefSet = ( JTMSBeliefSet ) fh.getEqualityKey().getBeliefSet();
+        if ( jtmsBeliefSet.getWorkingMemoryAction() == null ) {
+            // doesn't exist, so create it
+            WorkingMemoryAction action = new LogicalCallback( fh,
+                                                                                     context,
+                                                                                     node.getJustifier(),
+                                                                                     update,
+                                                                                     fullyRetract ); // Only negative is fully retracted.
+            ((NamedEntryPoint) fh.getEntryPoint()).enQueueWorkingMemoryAction( action );
+        } else {
+            // it exists (update required due to previous change in prime), so just update it's actions
+            LogicalCallback callback = ( LogicalCallback ) jtmsBeliefSet.getWorkingMemoryAction();
+            callback.setFullyRetract( fullyRetract );
+            callback.setUpdate( update );
+        }
+    }
 
     public void read(LogicalDependency node,
                      BeliefSet beliefSet,
@@ -166,17 +158,14 @@ public class JTMSBeliefSystem
         beliefSet.remove( node.getJustifierEntry() );
         if ( beliefSet.isEmpty() ) {
             if ( wasNegated ) {
-                defEP.getObjectStore().addHandle( beliefSet.getFactHandle(), beliefSet.getFactHandle().getObject() ); // was negated, so add back in, so main retract works
-                InternalFactHandle fh = jtmsBeliefSet.getNegativeFactHandle();
-                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
+                defEP.getObjectStore().addHandle( beliefSet.getFactHandle(), beliefSet.getFactHandle().getObject() ); // was negated, so add back in, so main retract works                
+                retractOrUpdateBelief( node, context, jtmsBeliefSet.getNegativeFactHandle(), false, true );
             }
 
             if ( !(context.getType() == PropagationContext.DELETION && context.getFactHandle() == beliefSet.getFactHandle()) ) { // don't start retract, if the FH is already in the process of being retracted
                 // do not if the FH is the root of the context, it means it's already in the process of retraction
-                InternalFactHandle fh = jtmsBeliefSet.getFactHandle();
-                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
+                retractOrUpdateBelief( node, context, (InternalFactHandle) jtmsBeliefSet.getFactHandle(), false, true );
             }
-
         } else if ( wasConflicting && !jtmsBeliefSet.isConflicting() ) {
             insertBelief( node,
                           defEP.getObjectTypeConfigurationRegistry().getObjectTypeConf( defEP.getEntryPoint(), node.getObject() ),
@@ -212,7 +201,8 @@ public class JTMSBeliefSystem
 
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
             ((NamedEntryPoint) handle.getEntryPoint()).getObjectStore().updateHandle( handle, object );
-            ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, Object.class, null );
+
+            retractOrUpdateBelief( node, context, handle, true, false ); // fully retract must be false, as this is an update
         }
     }
 

@@ -61,7 +61,7 @@ public class PackageCompilationDataTest {
     public void testCodeSourceUrl() throws Exception {
         final String className = TestEvalExpression.class.getName();
         
-        ReteooRuleBase rb = new ReteooRuleBase( "xxx" );
+        ReteooRuleBase rb = new ReteooRuleBase( "xxx", null );
         
         Package pkg = new Package( "org.drools" );
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );

@@ -47,7 +47,7 @@ public class ReteooRuleBuilderTest {
     @Before
     public void setUp() throws Exception {
         this.builder = new ReteooRuleBuilder();
-        this.rulebase = new ReteooRuleBase( "default" );
+        this.rulebase = new ReteooRuleBase( "default", null );
     }
 
     /**

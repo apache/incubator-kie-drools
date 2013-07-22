@@ -38,6 +38,7 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.LogicalDependency;
@@ -204,11 +205,24 @@ public class ProtobufOutputMarshaller {
 //            }
 //        }
         // need to evaluate all lazy partially evaluated activations before serializing
-        for ( Activation activation : wm.getAgenda().getActivations() ) {
-            if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
-                // evaluate it
-                ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null, false );
-                ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
+        boolean dirty = true;
+        while ( dirty) {
+            for ( Activation activation : wm.getAgenda().getActivations() ) {
+                if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
+                    // evaluate it
+                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null, false );
+                    ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
+                }
+            }
+            dirty = false;
+            if ( ((InternalRuleBase)wm.getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+                // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
+                for ( Activation activation : wm.getAgenda().getActivations() ) {
+                    if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
+                        dirty = true;
+                        break;
+                    }
+                }
             }
         }
     }
