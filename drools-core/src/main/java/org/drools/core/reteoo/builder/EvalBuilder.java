@@ -37,10 +37,12 @@ public class EvalBuilder
         utils.checkUnboundDeclarations( context,
                                         eval.getRequiredDeclarations() );
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                new EvalConditionNode( context.getNextId(),
-                                                                                       context.getTupleSource(),
-                                                                                       eval,
-                                                                                       context ) ) );
+                                                                    context.getComponentFactory()
+                                                                           .getNodeFactoryService()
+                                                                           .buildEvalNode( context.getNextId(),
+                                                                                           context.getTupleSource(),
+                                                                                           eval,
+                                                                                           context ) ) );
         context.popRuleComponent();
 
     }

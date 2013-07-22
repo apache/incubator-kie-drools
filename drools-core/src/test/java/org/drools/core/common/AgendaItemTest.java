@@ -15,8 +15,8 @@ public class AgendaItemTest {
     public void testAddition() {
         ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         StatefulSession wm = rbase.newStatefulSession();
-        
-        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
+
+        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -54,8 +54,8 @@ public class AgendaItemTest {
     public void testRemoval() {
         ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         StatefulSession wm = rbase.newStatefulSession();
-        
-        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
+
+        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -120,8 +120,8 @@ public class AgendaItemTest {
     public void testUnblockAll() {
         ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         StatefulSession wm = rbase.newStatefulSession();
-        
-        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
+
+        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();
@@ -154,8 +154,8 @@ public class AgendaItemTest {
     public void testKnowledgeHelperUpdate() {
         ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         StatefulSession wm = rbase.newStatefulSession();
-        
-        DefaultAgenda agenda = ( DefaultAgenda ) wm.getAgenda();
+
+        InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
         AgendaItem item1 = new RuleTerminalNodeLeftTuple();
         AgendaItem item2 = new RuleTerminalNodeLeftTuple();
         AgendaItem item3 = new RuleTerminalNodeLeftTuple();

@@ -33,7 +33,6 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
@@ -137,7 +136,7 @@ public class InputMarshaller {
         session.reset( handleId,
                        handleCounter,
                        propagationCounter );
-        DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) session.getAgenda();
 
         readAgenda( context,
                     agenda );
@@ -189,7 +188,7 @@ public class InputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        DefaultAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
+        InternalAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
 
         readAgenda( context,
                     agenda );
@@ -213,10 +212,10 @@ public class InputMarshaller {
     }
 
     public static AbstractWorkingMemory readSession( AbstractWorkingMemory session,
-            DefaultAgenda agenda,
-            long time,
-            boolean multithread,
-            MarshallerReaderContext context ) throws IOException, ClassNotFoundException {
+                                                     InternalAgenda agenda,
+                                                     long time,
+                                                     boolean multithread,
+                                                     MarshallerReaderContext context ) throws IOException, ClassNotFoundException {
         if (session.getTimerService() instanceof PseudoClockScheduler) {
             PseudoClockScheduler clock = (PseudoClockScheduler) session.getTimerService();
             clock.advanceTime( time,
@@ -331,7 +330,7 @@ public class InputMarshaller {
     }
 
     public static void readAgenda( MarshallerReaderContext context,
-            DefaultAgenda agenda ) throws IOException {
+                                   InternalAgenda agenda ) throws IOException {
         ObjectInputStream stream = context.stream;
 
         while (stream.readShort() == PersisterEnums.AGENDA_GROUP) {
@@ -983,14 +982,14 @@ public class InputMarshaller {
             rule.getAgendaGroup().equals( AgendaGroup.MAIN )) {
             // Is the Rule AgendaGroup undefined? If it is use MAIN,
             // which is added to the Agenda by default
-            agendaGroup = (InternalAgendaGroup) ( (DefaultAgenda) wm.getAgenda() ).getAgendaGroup( AgendaGroup.MAIN );
+            agendaGroup = (InternalAgendaGroup) ( (InternalAgenda) wm.getAgenda() ).getAgendaGroup( AgendaGroup.MAIN );
         } else {
             // AgendaGroup is defined, so try and get the AgendaGroup
             // from the Agenda
-            agendaGroup = (InternalAgendaGroup) ( (DefaultAgenda) wm.getAgenda() ).getAgendaGroup( rule.getAgendaGroup() );
+            agendaGroup = (InternalAgendaGroup) ( (InternalAgenda) wm.getAgenda() ).getAgendaGroup( rule.getAgendaGroup() );
         }
 
-        InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ( (DefaultAgenda) wm.getAgenda() ).getRuleFlowGroup( rule.getRuleFlowGroup() );
+        InternalRuleFlowGroup rfg = (InternalRuleFlowGroup) ( (InternalAgenda) wm.getAgenda() ).getRuleFlowGroup( rule.getRuleFlowGroup() );
 
         boolean scheduled = false;
         RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) leftTuple;
@@ -1008,7 +1007,7 @@ public class InputMarshaller {
 
         if (stream.readBoolean()) {
             String activationGroupName = stream.readUTF();
-            ( (DefaultAgenda) wm.getAgenda() ).getActivationGroup( activationGroupName ).addActivation( activation );
+            ( (InternalAgenda) wm.getAgenda() ).getActivationGroup( activationGroupName ).addActivation( activation );
         }
 
         boolean activated = stream.readBoolean();

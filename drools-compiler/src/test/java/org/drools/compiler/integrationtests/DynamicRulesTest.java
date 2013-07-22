@@ -41,7 +41,6 @@ import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Precondition;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.StockTick;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -1175,7 +1174,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
 
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_1.drl" ));
-        ((DefaultAgenda) ((AgendaImpl) session.getAgenda()).getAgenda()).evaluateEagerList();
+        ((AgendaImpl) session.getAgenda()).getAgenda().evaluateEagerList();
 
         // two matching rules were added, so 2 activations should have been created 
         verify( ael, times( 2 ) ).matchCreated(any(MatchCreatedEvent.class));
@@ -1184,7 +1183,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         assertEquals( 2, fireCount );
 
         kbase.addKnowledgePackages( loadKnowledgePackages( "test_JBRULES_2206_2.drl" ));
-        ((DefaultAgenda) ((AgendaImpl) session.getAgenda()).getAgenda()).evaluateEagerList();
+        ((AgendaImpl) session.getAgenda()).getAgenda().evaluateEagerList();
 
         // one rule was overridden and should activate 
         verify( ael, times( 3 ) ).matchCreated(any(MatchCreatedEvent.class));

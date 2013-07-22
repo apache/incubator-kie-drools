@@ -32,10 +32,10 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupQueueImpl;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -109,7 +109,7 @@ public class ProtobufInputMarshaller {
 
         ProtobufMessages.KnowledgeSession _session = loadAndParseSession( context );
 
-        DefaultAgenda agenda = resetSession( session,
+        InternalAgenda agenda = resetSession( session,
                                              context,
                                              _session );
 
@@ -156,17 +156,17 @@ public class ProtobufInputMarshaller {
 
         return readSession( _session,
                             session,
-                            (DefaultAgenda) session.getAgenda(),
+                            (InternalAgenda) session.getAgenda(),
                             context );
     }
 
-    private static DefaultAgenda resetSession(AbstractWorkingMemory session,
+    private static InternalAgenda resetSession(AbstractWorkingMemory session,
                                               MarshallerReaderContext context,
                                               ProtobufMessages.KnowledgeSession _session) {
         session.reset( _session.getRuleData().getLastId(),
                        _session.getRuleData().getLastRecency(),
                        0 );
-        DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) session.getAgenda();
 
         readAgenda( context,
                     _session.getRuleData(),
@@ -189,7 +189,7 @@ public class ProtobufInputMarshaller {
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
 
-        DefaultAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
+        InternalAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
         readAgenda( context,
                     _session.getRuleData(),
                     agenda );
@@ -219,7 +219,7 @@ public class ProtobufInputMarshaller {
 
     public static AbstractWorkingMemory readSession(ProtobufMessages.KnowledgeSession _session,
                                                     AbstractWorkingMemory session,
-                                                    DefaultAgenda agenda,
+                                                    InternalAgenda agenda,
                                                     MarshallerReaderContext context) throws IOException,
                                                                                     ClassNotFoundException {
         GlobalResolver globalResolver = (GlobalResolver) context.env.get( EnvironmentName.GLOBALS );
@@ -394,7 +394,7 @@ public class ProtobufInputMarshaller {
 
     public static void readAgenda(MarshallerReaderContext context,
                                   RuleData _ruleData,
-                                  DefaultAgenda agenda) {
+                                  InternalAgenda agenda) {
         ProtobufMessages.Agenda _agenda = _ruleData.getAgenda();
 
         for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.AgendaGroup _agendaGroup : _agenda.getAgendaGroupList() ) {

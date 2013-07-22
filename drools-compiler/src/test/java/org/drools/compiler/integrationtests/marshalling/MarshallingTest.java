@@ -46,7 +46,6 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalFactHandle;
@@ -1505,8 +1504,7 @@ public class MarshallingTest extends CommonTestMethodBase {
                       ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Person",
                       ((ClassObjectType) ((ObjectTypeNode) nodes.get( 4 )).getObjectType()).getClassType().getSimpleName() );
-        assertEquals( "JoinNode",
-                      nodes.get( 5 ).getClass().getSimpleName() );
+        assertTrue( "Should end with JoinNode",  nodes.get( 5 ).getClass().getSimpleName().endsWith( "JoinNode") );
         assertEquals( "Rule 1",
                       ((RuleTerminalNode) nodes.get( 6 )).getRule().getName() );
 

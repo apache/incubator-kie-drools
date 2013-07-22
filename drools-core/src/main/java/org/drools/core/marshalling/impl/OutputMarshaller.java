@@ -35,7 +35,6 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
@@ -178,7 +177,7 @@ public class OutputMarshaller {
 
     public static void writeAgenda(MarshallerWriteContext context) throws IOException {
         InternalWorkingMemory wm = context.wm;
-        DefaultAgenda agenda = (DefaultAgenda) wm.getAgenda();
+        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
 
         Map<String, ActivationGroup> activationGroups = agenda.getActivationGroupsMap();
 

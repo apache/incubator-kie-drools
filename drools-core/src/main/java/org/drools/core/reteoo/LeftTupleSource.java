@@ -33,7 +33,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
@@ -129,15 +128,6 @@ public abstract class LeftTupleSource extends BaseNode
         this.leftInput = leftInput;
     }
 
-    /**
-    public LeftTupleSource getLeftTupleSource() {
-		return leftInput;
-	}
-
-	public void setLeftTupleSource(LeftTupleSource leftInput) {
-		this.leftInput = leftInput;
-	}
-
 	/**
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
@@ -146,7 +136,7 @@ public abstract class LeftTupleSource extends BaseNode
      *            The <code>TupleSink</code> to receive propagated
      *            <code>Tuples</code>.
      */
-    protected void addTupleSink(final LeftTupleSink tupleSink, final BuildContext context) {
+    public void addTupleSink(final LeftTupleSink tupleSink, final BuildContext context) {
         this.sink = addTupleSink(this.sink, tupleSink, context);
     }
 
@@ -174,7 +164,7 @@ public abstract class LeftTupleSource extends BaseNode
      * @param tupleSink
      *            The <code>TupleSink</code> to remove
      */
-    protected void removeTupleSink(final LeftTupleSink tupleSink) {
+    public void removeTupleSink(final LeftTupleSink tupleSink) {
         if ( this.sink instanceof EmptyLeftTupleSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
@@ -270,58 +260,6 @@ public abstract class LeftTupleSource extends BaseNode
         return leftInput;
     }
 
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        doModifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
-                           (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
-    }
-
-    public static void doModifyLeftTuple(InternalFactHandle factHandle,
-                                         ModifyPreviousTuples modifyPreviousTuples,
-                                         PropagationContext context,
-                                         InternalWorkingMemory workingMemory,
-                                         LeftTupleSink sink,
-                                         ObjectTypeNode.Id leftInputOtnId,
-                                         long leftInferredMask) {
-        LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-        while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() != null &&
-                leftTuple.getLeftTupleSink().getLeftInputOtnId().before( leftInputOtnId ) ) {
-            modifyPreviousTuples.removeLeftTuple();
-
-            // we skipped this node, due to alpha hashing, so retract now
-            ((LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource()).retractLeftTuple( leftTuple,
-                                                                                                         context,
-                                                                                                         workingMemory );
-
-            leftTuple = modifyPreviousTuples.peekLeftTuple();
-        }
-
-        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId() != null &&
-             leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( leftInputOtnId ) ) {
-            modifyPreviousTuples.removeLeftTuple();
-            leftTuple.reAdd();
-            if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
-                // LeftTuple previously existed, so continue as modify, unless it's currently staged
-                sink.modifyLeftTuple( leftTuple,
-                                      context,
-                                      workingMemory );
-            }
-        } else {
-            if ( intersect( context.getModificationMask(), leftInferredMask ) ) {
-                // LeftTuple does not exist, so create and continue as assert
-                LeftTuple newLeftTuple = sink.createLeftTuple( factHandle,
-                                                               sink,
-                                                               true );
-
-                sink.assertLeftTuple( newLeftTuple,
-                                      context,
-                                      workingMemory );
-            }
-        }
-    }
-    
     public long getLeftDeclaredMask() {
         return leftDeclaredMask;
     }

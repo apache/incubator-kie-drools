@@ -20,10 +20,9 @@ import org.drools.core.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.phreak.RuleAgendaItem;
@@ -221,7 +220,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         }
     }
 
-    public void removeAllBlockersAndBlocked(DefaultAgenda agenda) {
+    public void removeAllBlockersAndBlocked(InternalAgenda agenda) {
         if (this.blockers != null) {
             // Iterate and remove this node's logical dependency list from each of it's blockers
             for (LinkedListEntry<LogicalDependency> node = blockers.getFirst(); node != null; node = node.getNext()) {
@@ -238,16 +237,8 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
                 removeBlocked(dep);
                 RuleTerminalNodeLeftTuple justified = (RuleTerminalNodeLeftTuple) dep.getJustified();
                 if (justified.getBlockers().isEmpty()) {
-                    if (ruleAgendaItem == null) {
-                        // the match is no longer blocked, so stage it
-                        agenda.getStageActivationsGroup().addActivation(justified);
-                    } else {
-                        if (!ruleAgendaItem.isQueued()) {
-                            // Make sure the rule evaluator is on the agenda, to be evaluated
-                            agenda.addActivation(ruleAgendaItem);
-                        }
-                        ruleAgendaItem.getRuleExecutor().addLeftTuple(justified.getTuple());
-                    }
+                    agenda.stageLeftTuple(ruleAgendaItem, justified);
+
                 }
                 dep = tmp;
             }

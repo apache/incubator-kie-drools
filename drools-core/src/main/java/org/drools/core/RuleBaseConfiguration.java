@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,9 @@ import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.conflict.DepthConflictResolver;
+import org.drools.core.reteoo.builder.NodeFactory;
+import org.drools.core.reteoo.builder.PhreakNodeFactory;
+import org.drools.core.reteoo.builder.ReteNodeFactory;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.reteoo.ReteooComponentFactory;
@@ -896,7 +900,30 @@ public class RuleBaseConfiguration
                                                               isClassLoaderCacheEnabled());
     }
 
+    private static NodeFactory reteNodeFactory;
+    private static Class agendaCls;
+
     public ReteooComponentFactory getComponentFactory() {
+        if (!isPhreakEnabled()) {
+            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
+                if (reteNodeFactory == null) {
+                    try {
+                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.core.reteoo.builder.ReteNodeFactory").newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                componentFactory.setNodeFactoryProvider(reteNodeFactory);
+            }
+            if ( agendaCls == null ) {
+                try {
+                    agendaCls = Class.forName("org.drools.core.common.ReteAgenda" );
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            //componentFactory.setAgendaFactory(agendaCls.newInstance();
+        }
         return componentFactory;
     }
 
@@ -906,7 +933,7 @@ public class RuleBaseConfiguration
 
     /**
      * Defines if the RuleBase should expose management and monitoring MBeans
-     * 
+     *
      * @param mbeansEnabled true for multi-thread or
      *                     false for single-thread. Default is false.
      */
@@ -917,7 +944,7 @@ public class RuleBaseConfiguration
 
     /**
      * Returns true if the management and monitoring through MBeans is active 
-     * 
+     *
      * @return
      */
     public boolean isMBeansEnabled() {
@@ -925,22 +952,22 @@ public class RuleBaseConfiguration
     }
 
     public static class AssertBehaviour
-        implements
-        Externalizable {
-        private static final long           serialVersionUID = 510l;
+            implements
+            Externalizable {
+        private static final long serialVersionUID = 510l;
 
-        public static final AssertBehaviour IDENTITY         = new AssertBehaviour( 0 );
-        public static final AssertBehaviour EQUALITY         = new AssertBehaviour( 1 );
+        public static final AssertBehaviour IDENTITY = new AssertBehaviour(0);
+        public static final AssertBehaviour EQUALITY = new AssertBehaviour(1);
 
-        private int                         value;
+        private int value;
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                ClassNotFoundException {
             value = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt( value );
+            out.writeInt(value);
         }
 
         public AssertBehaviour() {
@@ -952,8 +979,8 @@ public class RuleBaseConfiguration
         }
 
         public boolean equals(Object obj) {
-            if ( obj == this ) return true;
-            else if ( obj instanceof AssertBehaviour ) {
+            if (obj == this) return true;
+            else if (obj instanceof AssertBehaviour) {
                 AssertBehaviour that = (AssertBehaviour) obj;
 
                 return value == that.value;
@@ -962,23 +989,23 @@ public class RuleBaseConfiguration
         }
 
         public static AssertBehaviour determineAssertBehaviour(final String value) {
-            if ( "IDENTITY".equalsIgnoreCase( value ) ) {
+            if ("IDENTITY".equalsIgnoreCase(value)) {
                 return IDENTITY;
-            } else if ( "EQUALITY".equalsIgnoreCase( value ) ) {
+            } else if ("EQUALITY".equalsIgnoreCase(value)) {
                 return EQUALITY;
             } else {
-                throw new IllegalArgumentException( "Illegal enum value '" + value + "' for AssertBehaviour" );
+                throw new IllegalArgumentException("Illegal enum value '" + value + "' for AssertBehaviour");
             }
         }
 
         private Object readResolve() throws java.io.ObjectStreamException {
-            switch ( this.value ) {
-                case 0 :
+            switch (this.value) {
+                case 0:
                     return IDENTITY;
-                case 1 :
+                case 1:
                     return EQUALITY;
-                default :
-                    throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for AssertBehaviour" );
+                default:
+                    throw new IllegalArgumentException("Illegal enum value '" + this.value + "' for AssertBehaviour");
             }
         }
 
@@ -992,22 +1019,22 @@ public class RuleBaseConfiguration
     }
 
     public static class LogicalOverride
-        implements
-        Externalizable {
-        private static final long           serialVersionUID = 510l;
+            implements
+            Externalizable {
+        private static final long serialVersionUID = 510l;
 
-        public static final LogicalOverride PRESERVE         = new LogicalOverride( 0 );
-        public static final LogicalOverride DISCARD          = new LogicalOverride( 1 );
+        public static final LogicalOverride PRESERVE = new LogicalOverride(0);
+        public static final LogicalOverride DISCARD  = new LogicalOverride(1);
 
-        private int                         value;
+        private int value;
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                ClassNotFoundException {
             value = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt( value );
+            out.writeInt(value);
         }
 
         public LogicalOverride() {
@@ -1019,30 +1046,30 @@ public class RuleBaseConfiguration
         }
 
         public static LogicalOverride determineLogicalOverride(final String value) {
-            if ( "PRESERVE".equalsIgnoreCase( value ) ) {
+            if ("PRESERVE".equalsIgnoreCase(value)) {
                 return PRESERVE;
-            } else if ( "DISCARD".equalsIgnoreCase( value ) ) {
+            } else if ("DISCARD".equalsIgnoreCase(value)) {
                 return DISCARD;
             } else {
-                throw new IllegalArgumentException( "Illegal enum value '" + value + "' for LogicalOverride" );
+                throw new IllegalArgumentException("Illegal enum value '" + value + "' for LogicalOverride");
             }
         }
 
         private Object readResolve() throws java.io.ObjectStreamException {
-            switch ( this.value ) {
-                case 0 :
+            switch (this.value) {
+                case 0:
                     return PRESERVE;
-                case 1 :
+                case 1:
                     return DISCARD;
-                default :
-                    throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for LogicalOverride" );
+                default:
+                    throw new IllegalArgumentException("Illegal enum value '" + this.value + "' for LogicalOverride");
             }
         }
 
         public boolean equals(Object obj) {
-            if ( obj == this ) {
+            if (obj == this) {
                 return true;
-            } else if ( obj instanceof LogicalOverride ) {
+            } else if (obj instanceof LogicalOverride) {
                 return value == ((LogicalOverride) obj).value;
             }
             return false;
@@ -1058,22 +1085,22 @@ public class RuleBaseConfiguration
     }
 
     public static class SequentialAgenda
-        implements
-        Externalizable {
-        private static final long            serialVersionUID = 510l;
+            implements
+            Externalizable {
+        private static final long serialVersionUID = 510l;
 
-        public static final SequentialAgenda SEQUENTIAL       = new SequentialAgenda( 0 );
-        public static final SequentialAgenda DYNAMIC          = new SequentialAgenda( 1 );
+        public static final SequentialAgenda SEQUENTIAL = new SequentialAgenda(0);
+        public static final SequentialAgenda DYNAMIC    = new SequentialAgenda(1);
 
-        private int                          value;
+        private int value;
 
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                ClassNotFoundException {
             value = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeInt( value );
+            out.writeInt(value);
         }
 
         public SequentialAgenda() {
@@ -1085,23 +1112,23 @@ public class RuleBaseConfiguration
         }
 
         public static SequentialAgenda determineSequentialAgenda(final String value) {
-            if ( "sequential".equalsIgnoreCase( value ) ) {
+            if ("sequential".equalsIgnoreCase(value)) {
                 return SEQUENTIAL;
-            } else if ( "dynamic".equalsIgnoreCase( value ) ) {
+            } else if ("dynamic".equalsIgnoreCase(value)) {
                 return DYNAMIC;
             } else {
-                throw new IllegalArgumentException( "Illegal enum value '" + value + "' for SequentialAgenda" );
+                throw new IllegalArgumentException("Illegal enum value '" + value + "' for SequentialAgenda");
             }
         }
 
         private Object readResolve() throws java.io.ObjectStreamException {
-            switch ( this.value ) {
-                case 0 :
+            switch (this.value) {
+                case 0:
                     return SEQUENTIAL;
-                case 1 :
+                case 1:
                     return DYNAMIC;
-                default :
-                    throw new IllegalArgumentException( "Illegal enum value '" + this.value + "' for SequentialAgenda" );
+                default:
+                    throw new IllegalArgumentException("Illegal enum value '" + this.value + "' for SequentialAgenda");
             }
         }
 
@@ -1116,52 +1143,52 @@ public class RuleBaseConfiguration
 
     @SuppressWarnings("unchecked")
     public <T extends SingleValueKieBaseOption> T getOption(Class<T> option) {
-        if ( SequentialOption.class.equals( option ) ) {
+        if (SequentialOption.class.equals(option)) {
             return (T) (this.sequential ? SequentialOption.YES : SequentialOption.NO);
-        } else if ( RemoveIdentitiesOption.class.equals( option ) ) {
+        } else if (RemoveIdentitiesOption.class.equals(option)) {
             return (T) (this.removeIdentities ? RemoveIdentitiesOption.YES : RemoveIdentitiesOption.NO);
-        } else if ( ShareAlphaNodesOption.class.equals( option ) ) {
+        } else if (ShareAlphaNodesOption.class.equals(option)) {
             return (T) (this.shareAlphaNodes ? ShareAlphaNodesOption.YES : ShareAlphaNodesOption.NO);
-        } else if ( ShareBetaNodesOption.class.equals( option ) ) {
+        } else if (ShareBetaNodesOption.class.equals(option)) {
             return (T) (this.shareBetaNodes ? ShareBetaNodesOption.YES : ShareBetaNodesOption.NO);
-        } else if ( IndexLeftBetaMemoryOption.class.equals( option ) ) {
+        } else if (IndexLeftBetaMemoryOption.class.equals(option)) {
             return (T) (this.indexLeftBetaMemory ? IndexLeftBetaMemoryOption.YES : IndexLeftBetaMemoryOption.NO);
-        } else if ( IndexRightBetaMemoryOption.class.equals( option ) ) {
+        } else if (IndexRightBetaMemoryOption.class.equals(option)) {
             return (T) (this.indexRightBetaMemory ? IndexRightBetaMemoryOption.YES : IndexRightBetaMemoryOption.NO);
-        } else if ( IndexPrecedenceOption.class.equals( option ) ) {
+        } else if (IndexPrecedenceOption.class.equals(option)) {
             return (T) getIndexPrecedenceOption();
-        } else if ( EqualityBehaviorOption.class.equals( option ) ) {
+        } else if (EqualityBehaviorOption.class.equals(option)) {
             return (T) ((this.assertBehaviour == AssertBehaviour.IDENTITY) ? EqualityBehaviorOption.IDENTITY : EqualityBehaviorOption.EQUALITY);
-        } else if ( SequentialAgendaOption.class.equals( option ) ) {
+        } else if (SequentialAgendaOption.class.equals(option)) {
             return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
-        } else if ( PermGenThresholdOption.class.equals( option ) ) {
-            return (T) PermGenThresholdOption.get( permGenThreshold );
-        } else if ( AlphaThresholdOption.class.equals( option ) ) {
-            return (T) AlphaThresholdOption.get( alphaNodeHashingThreshold );
-        } else if ( CompositeKeyDepthOption.class.equals( option ) ) {
-            return (T) CompositeKeyDepthOption.get( compositeKeyDepth );
-        } else if ( ConsequenceExceptionHandlerOption.class.equals( option ) ) {
-            Class< ? extends ConsequenceExceptionHandler> handler;
+        } else if (PermGenThresholdOption.class.equals(option)) {
+            return (T) PermGenThresholdOption.get(permGenThreshold);
+        } else if (AlphaThresholdOption.class.equals(option)) {
+            return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
+        } else if (CompositeKeyDepthOption.class.equals(option)) {
+            return (T) CompositeKeyDepthOption.get(compositeKeyDepth);
+        } else if (ConsequenceExceptionHandlerOption.class.equals(option)) {
+            Class<? extends ConsequenceExceptionHandler> handler;
             try {
-                handler = (Class< ? extends ConsequenceExceptionHandler>) Class.forName( consequenceExceptionHandler );
-            } catch ( ClassNotFoundException e ) {
-                throw new RuntimeDroolsException( "Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
-                                                  e );
+                handler = (Class<? extends ConsequenceExceptionHandler>) Class.forName(consequenceExceptionHandler);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeDroolsException("Unable to resolve ConsequenceExceptionHandler class: " + consequenceExceptionHandler,
+                                                 e);
             }
             return (T) ConsequenceExceptionHandlerOption.get(handler);
-        } else if ( EventProcessingOption.class.equals( option ) ) {
+        } else if (EventProcessingOption.class.equals(option)) {
             return (T) getEventProcessingMode();
-        } else if ( MaxThreadsOption.class.equals( option ) ) {
+        } else if (MaxThreadsOption.class.equals(option)) {
             return (T) MaxThreadsOption.get(getMaxThreads());
-        } else if ( MultithreadEvaluationOption.class.equals( option ) ) {
+        } else if (MultithreadEvaluationOption.class.equals(option)) {
             return (T) (this.multithread ? MultithreadEvaluationOption.YES : MultithreadEvaluationOption.NO);
-        } else if ( MBeansOption.class.equals( option ) ) {
+        } else if (MBeansOption.class.equals(option)) {
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
-        } else if ( ClassLoaderCacheOption.class.equals( option ) ) {
+        } else if (ClassLoaderCacheOption.class.equals(option)) {
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
-        } else if ( PhreakOption.class.equals( option ) ) {
+        } else if (PhreakOption.class.equals(option)) {
             return (T) (this.isPhreakEnabled() ? PhreakOption.ENABLED : PhreakOption.DISABLED);
-        } else if ( DeclarativeAgendaOption.class.equals( option )  ) {
+        } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
         return null;
@@ -1169,52 +1196,52 @@ public class RuleBaseConfiguration
     }
 
     public <T extends KieBaseOption> void setOption(T option) {
-        if ( option instanceof SequentialOption ) {
+        if (option instanceof SequentialOption) {
             setSequential(((SequentialOption) option).isSequential());
-        } else if ( option instanceof RemoveIdentitiesOption ) {
+        } else if (option instanceof RemoveIdentitiesOption) {
             setRemoveIdentities(((RemoveIdentitiesOption) option).isRemoveIdentities());
-        } else if ( option instanceof ShareAlphaNodesOption ) {
+        } else if (option instanceof ShareAlphaNodesOption) {
             setShareAlphaNodes(((ShareAlphaNodesOption) option).isShareAlphaNodes());
-        } else if ( option instanceof ShareBetaNodesOption ) {
+        } else if (option instanceof ShareBetaNodesOption) {
             setShareBetaNodes(((ShareBetaNodesOption) option).isShareBetaNodes());
-        } else if ( option instanceof IndexLeftBetaMemoryOption ) {
+        } else if (option instanceof IndexLeftBetaMemoryOption) {
             setIndexLeftBetaMemory(((IndexLeftBetaMemoryOption) option).isIndexLeftBetaMemory());
-        } else if ( option instanceof IndexRightBetaMemoryOption ) {
+        } else if (option instanceof IndexRightBetaMemoryOption) {
             setIndexRightBetaMemory(((IndexRightBetaMemoryOption) option).isIndexRightBetaMemory());
-        } else if ( option instanceof IndexPrecedenceOption ) {
+        } else if (option instanceof IndexPrecedenceOption) {
             setIndexPrecedenceOption((IndexPrecedenceOption) option);
-        } else if ( option instanceof EqualityBehaviorOption) {
+        } else if (option instanceof EqualityBehaviorOption) {
             setAssertBehaviour((option == EqualityBehaviorOption.IDENTITY) ? AssertBehaviour.IDENTITY : AssertBehaviour.EQUALITY);
-        } else if ( option instanceof SequentialAgendaOption ) {
+        } else if (option instanceof SequentialAgendaOption) {
             setSequentialAgenda((option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC);
-        } else if ( option instanceof PermGenThresholdOption ) {
+        } else if (option instanceof PermGenThresholdOption) {
             setPermGenThreshold(((PermGenThresholdOption) option).getThreshold());
-        } else if ( option instanceof AlphaThresholdOption ) {
+        } else if (option instanceof AlphaThresholdOption) {
             setAlphaNodeHashingThreshold(((AlphaThresholdOption) option).getThreshold());
-        } else if ( option instanceof CompositeKeyDepthOption ) {
+        } else if (option instanceof CompositeKeyDepthOption) {
             setCompositeKeyDepth(((CompositeKeyDepthOption) option).getDepth());
-        } else if ( option instanceof ConsequenceExceptionHandlerOption ) {
+        } else if (option instanceof ConsequenceExceptionHandlerOption) {
             setConsequenceExceptionHandler(((ConsequenceExceptionHandlerOption) option).getHandler().getName());
-        } else if ( option instanceof EventProcessingOption ) {
+        } else if (option instanceof EventProcessingOption) {
             setEventProcessingMode((EventProcessingOption) option);
-        } else if ( option instanceof MaxThreadsOption ) {
+        } else if (option instanceof MaxThreadsOption) {
             setMaxThreads(((MaxThreadsOption) option).getMaxThreads());
-        } else if ( option instanceof MultithreadEvaluationOption ) {
+        } else if (option instanceof MultithreadEvaluationOption) {
             setMultithreadEvaluation(((MultithreadEvaluationOption) option).isMultithreadEvaluation());
-        } else if ( option instanceof MBeansOption ) {
+        } else if (option instanceof MBeansOption) {
             setMBeansEnabled(((MBeansOption) option).isEnabled());
-        } else if ( option instanceof ClassLoaderCacheOption ) {
+        } else if (option instanceof ClassLoaderCacheOption) {
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
-        } else if ( option instanceof PhreakOption) {
+        } else if (option instanceof PhreakOption) {
             setPhreakEnabled(((PhreakOption) option).isLRUnlinkingEnabled());
-        } else if ( option instanceof DeclarativeAgendaOption ) {
+        } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }
 
     }
 
     public <T extends MultiValueKieBaseOption> T getOption(Class<T> option,
-                                                                 String key) {
+                                                           String key) {
         return null;
     }
 

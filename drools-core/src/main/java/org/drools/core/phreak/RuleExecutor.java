@@ -146,6 +146,10 @@ public class RuleExecutor {
         return localFireCount;
     }
 
+    public PathMemory getPathMemory() {
+        return pmem;
+    }
+
     public void removeRuleAgendaItemWhenEmpty(InternalWorkingMemory wm) {
         if (!dirty && tupleList.isEmpty()) {
             // dirty check, before doing the synced check and removal

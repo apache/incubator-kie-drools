@@ -167,81 +167,25 @@ public class LeftInputAdapterNode extends LeftTupleSource
     
     public void attach( BuildContext context ) {
         this.objectSource.addObjectSink( this );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
-            return;
-        }
-
-        // we don't call updateSink here yet, as the sink is not yet attached
-//        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-//            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-//                                                                                      PropagationContext.RULE_ADDITION,
-//                                                                                      null,
-//                                                                                      null,
-//                                                                                      null );
-//            this.objectSource.updateSink( this,
-//                                          propagationContext,
-//                                          workingMemory );
-//        }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
         this.objectSource.networkUpdated(updateContext);
     }
 
-    /**
-     * Takes the asserted <code>FactHandleImpl</code> received from the <code>ObjectSource</code> and puts it
-     * in a new <code>ReteTuple</code> before propagating to the <code>TupleSinks</code>
-     *
-     * @param factHandle
-     *            The asserted <code>FactHandle/code>.
-     * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action.
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     */
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
         boolean useLeftMemory = true;
 
-        if ( unlinkingEnabled ) {
-            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
-            if ( lm.getSegmentMemory() == null ) {
-                SegmentUtilities.createSegmentMemory( this, workingMemory );
-            }
-            
-            doInsertObject( factHandle,
-                            context,
-                            this,
-                            workingMemory,
-                            lm,
-                            true, // queries are handled directly, and not through here
-                            useLeftMemory );          
-            return;
-        } 
-            
-        
-        if ( !workingMemory.isSequential() ) {
-            if ( !this.leftTupleMemoryEnabled ) {
-                // This is a hack, to not add closed DroolsQuery objects
-                Object object = factHandle.getObject();
-                if ( object instanceof DroolsQuery ) {
-                    if ( !((DroolsQuery)object).isOpen() ) {
-                        useLeftMemory = false;
-                    }
-                }
-            }
-
-            this.sink.createAndPropagateAssertLeftTuple( factHandle,
-                                                         context,
-                                                         workingMemory,
-                                                         useLeftMemory, 
-                                                         this );
-        } else {
-            workingMemory.addLIANodePropagation( new LIANodePropagation( this,
-                                                                         factHandle,
-                                                                         context ) );
+        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+        if ( lm.getSegmentMemory() == null ) {
+            SegmentUtilities.createSegmentMemory( this, workingMemory );
         }
+
+        doInsertObject( factHandle, context, this, workingMemory,
+                        lm, true, // queries are handled directly, and not through here
+                        useLeftMemory );
     }
 
     public static void doInsertObject(final InternalFactHandle factHandle,
@@ -461,70 +405,50 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void retractLeftTuple(LeftTuple leftTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-        if ( isUnlinkingEnabled() ) {
-            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
-            SegmentMemory smem = lm.getSegmentMemory();
-            if ( smem.getTipNode() == this ) { 
-                // segment with only a single LiaNode in it, skip to next segment
-                // as a liaNode only segment has no staging
-                smem = smem.getFirst();
-            }
-           
-            doDeleteObject( leftTuple, context,
-                            smem,      
-                            workingMemory,
-                            this,
-                            true,
-                            lm );
-               
-            return;
-        }            
-        
-        leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                       context,
-                                                       workingMemory );
-        
+        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+        SegmentMemory smem = lm.getSegmentMemory();
+        if ( smem.getTipNode() == this ) {
+            // segment with only a single LiaNode in it, skip to next segment
+            // as a liaNode only segment has no staging
+            smem = smem.getFirst();
+        }
+
+        doDeleteObject( leftTuple, context, smem, workingMemory,
+                        this, true, lm );
     }
 
     public void modifyObject(InternalFactHandle factHandle,
                              final ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        if ( unlinkingEnabled ) {                              
-            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-            
-            ObjectTypeNode.Id otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
-            while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().before( otnId ) ) {
-                modifyPreviousTuples.removeLeftTuple();
-                
-                LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
-                LiaNodeMemory prevLm = ( LiaNodeMemory ) workingMemory.getNodeMemory( prevLiaNode );
-                SegmentMemory prevSm = (SegmentMemory ) prevLm.getSegmentMemory();                
-                doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
-                
-                leftTuple = modifyPreviousTuples.peekLeftTuple();
-            }
+        LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
 
-            LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
-            if ( lm.getSegmentMemory() == null ) {
-                SegmentUtilities.createSegmentMemory( this, workingMemory );
-            }
-            
-            if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( otnId ) ) {
-                modifyPreviousTuples.removeLeftTuple();
-                leftTuple.reAdd();
-                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), true, lm.getSegmentMemory() );
-                
-            } else {
-                doInsertObject( factHandle, context, this,
-                                workingMemory, 
-                                lm, true, true);
-            }
+        ObjectTypeNode.Id otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
+        while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().before( otnId ) ) {
+            modifyPreviousTuples.removeLeftTuple();
+
+            LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
+            LiaNodeMemory prevLm = ( LiaNodeMemory ) workingMemory.getNodeMemory( prevLiaNode );
+            SegmentMemory prevSm = (SegmentMemory ) prevLm.getSegmentMemory();
+            doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
+
+            leftTuple = modifyPreviousTuples.peekLeftTuple();
+        }
+
+        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+        if ( lm.getSegmentMemory() == null ) {
+            SegmentUtilities.createSegmentMemory( this, workingMemory );
+        }
+
+        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( otnId ) ) {
+            modifyPreviousTuples.removeLeftTuple();
+            leftTuple.reAdd();
+            doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), true, lm.getSegmentMemory() );
+
         } else {
-            this.sink.propagateModifyObject( factHandle,
-                                             modifyPreviousTuples,
-                                             context,
-                                             workingMemory );
+            doInsertObject(factHandle, context, this,
+                           workingMemory,
+                           lm, true, true);
         }
     }
     
@@ -532,36 +456,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {
-        if ( unlinkingEnabled ) {
-            modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
-        } else {
-            this.sink.byPassModifyToBetaNode(factHandle,
-                                             modifyPreviousTuples,
-                                             context,
-                                             workingMemory);
-        }
+        modifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
     }
 
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        final RightTupleSinkAdapter adapter = new RightTupleSinkAdapter( sink,
-                                                                         true );
-        this.objectSource.updateSink( adapter,
-                                      context,
-                                      workingMemory );
-    }
+
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             objectSource.removeObjectSink(this);
-            if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-                for ( InternalWorkingMemory wm : workingMemories ) {
-                    wm.clearNodeMemory( (MemoryFactory) this);
-                }
-            }
         }
     }
 
@@ -572,6 +476,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     public LeftTuple createPeer(LeftTuple original) {
         return null;
+    }
+
+    @Override
+    public void updateSink(LeftTupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -626,85 +535,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
 
         return this.objectSource.equals(other.objectSource);
-    }
-
-    /**
-     * Used with the updateSink method, so that the parent ObjectSource
-     * can  update the  TupleSink
-     */
-    public static class RightTupleSinkAdapter
-        implements
-        ObjectSink {
-        private LeftTupleSink sink;
-        private boolean       leftTupleMemoryEnabled;
-        private LeftInputAdapterNode liaNode;
-
-        public RightTupleSinkAdapter(LeftInputAdapterNode liaNode) {
-            this.liaNode = liaNode;
-        }
-
-        public RightTupleSinkAdapter(final LeftTupleSink sink,
-                                     boolean leftTupleMemoryEnabled) {
-            this.sink = sink;
-            this.leftTupleMemoryEnabled = leftTupleMemoryEnabled;
-        }
-
-        public void assertObject(final InternalFactHandle factHandle,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-            if ( liaNode != null ) {
-                // phreak
-                liaNode.assertObject(factHandle, context, workingMemory);
-            } else {
-                final LeftTuple tuple = this.sink.createLeftTuple( factHandle,
-                                                                   this.sink,
-                                                                   this.leftTupleMemoryEnabled );
-                this.sink.assertLeftTuple( tuple,
-                                           context,
-                                           workingMemory );
-            }
-        }
-
-        public void modifyObject(InternalFactHandle factHandle,
-                                 ModifyPreviousTuples modifyPreviousTuples,
-                                 PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
-        }
-
-        public int getId() {
-            return 0;
-        }
-
-        public RuleBasePartitionId getPartitionId() {
-            return sink.getPartitionId();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            // this is a short living adapter class used only during an update operation, and
-            // as so, no need for serialization code
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            // this is a short living adapter class used only during an update operation, and
-            // as so, no need for serialization code
-        }
-
-        public void byPassModifyToBetaNode(InternalFactHandle factHandle,
-                                           ModifyPreviousTuples modifyPreviousTuples,
-                                           PropagationContext context,
-                                           InternalWorkingMemory workingMemory) {
-            throw new UnsupportedOperationException();
-        }
-
-        public short getType() {
-            return NodeTypeEnums.LeftInputAdapterNode;
-        }
-        
-        public Map<Rule, RuleComponent> getAssociations() {
-            return sink.getAssociations();
-        }        
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
@@ -787,6 +617,85 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return NodeTypeEnums.LeftInputAdapterNode;
         }
 
+    }
+
+    /**
+     * Used with the updateSink method, so that the parent ObjectSource
+     * can  update the  TupleSink
+     */
+    public static class RightTupleSinkAdapter
+            implements
+            ObjectSink {
+        private LeftTupleSink sink;
+        private boolean       leftTupleMemoryEnabled;
+        private LeftInputAdapterNode liaNode;
+
+        public RightTupleSinkAdapter(LeftInputAdapterNode liaNode) {
+            this.liaNode = liaNode;
+        }
+
+        public RightTupleSinkAdapter(final LeftTupleSink sink,
+                                     boolean leftTupleMemoryEnabled) {
+            this.sink = sink;
+            this.leftTupleMemoryEnabled = leftTupleMemoryEnabled;
+        }
+
+        public void assertObject(final InternalFactHandle factHandle,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+            if ( liaNode != null ) {
+                // phreak
+                liaNode.assertObject(factHandle, context, workingMemory);
+            } else {
+                final LeftTuple tuple = this.sink.createLeftTuple( factHandle,
+                                                                   this.sink,
+                                                                   this.leftTupleMemoryEnabled );
+                this.sink.assertLeftTuple( tuple,
+                                           context,
+                                           workingMemory );
+            }
+        }
+
+        public void modifyObject(InternalFactHandle factHandle,
+                                 ModifyPreviousTuples modifyPreviousTuples,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException( "ObjectSinkAdapter onlys supports assertObject method calls" );
+        }
+
+        public int getId() {
+            return 0;
+        }
+
+        public RuleBasePartitionId getPartitionId() {
+            return sink.getPartitionId();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            // this is a short living adapter class used only during an update operation, and
+            // as so, no need for serialization code
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+            // this is a short living adapter class used only during an update operation, and
+            // as so, no need for serialization code
+        }
+
+        public void byPassModifyToBetaNode(InternalFactHandle factHandle,
+                                           ModifyPreviousTuples modifyPreviousTuples,
+                                           PropagationContext context,
+                                           InternalWorkingMemory workingMemory) {
+            throw new UnsupportedOperationException();
+        }
+
+        public short getType() {
+            return NodeTypeEnums.LeftInputAdapterNode;
+        }
+
+        public Map<Rule, RuleComponent> getAssociations() {
+            return sink.getAssociations();
+        }
     }
 
 }

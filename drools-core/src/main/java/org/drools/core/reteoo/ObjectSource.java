@@ -198,7 +198,7 @@ public abstract class ObjectSource extends BaseNode
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
      */
-    protected void removeObjectSink(final ObjectSink objectSink) {
+    public void removeObjectSink(final ObjectSink objectSink) {
         if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }

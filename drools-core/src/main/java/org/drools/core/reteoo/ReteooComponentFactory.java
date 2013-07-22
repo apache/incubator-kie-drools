@@ -22,6 +22,7 @@ import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.DefaultAgendaFactory;
+import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
@@ -29,7 +30,6 @@ import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.reteoo.builder.DefaultNodeFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.DefaultLogicTransformerFactory;
 import org.drools.core.rule.LogicTransformerFactory;
@@ -59,24 +59,22 @@ public class ReteooComponentFactory implements Serializable {
     }
 
 
-
-
-    private NodeFactory nodeFactory = new DefaultNodeFactory();
+    private NodeFactory nodeFactory = new PhreakNodeFactory();
 
     public NodeFactory getNodeFactoryService() {
         return nodeFactory;
     }
 
-    public void setNodeFactoryProvider( NodeFactory provider ) {
+    public void setNodeFactoryProvider(NodeFactory provider) {
         nodeFactory = provider;
     }
 
     public void setDefaultNodeFactoryProvider() {
-        nodeFactory = new DefaultNodeFactory();
+        nodeFactory = new PhreakNodeFactory();
     }
 
-    public static DefaultNodeFactory getDefaultNodeFactoryProvider() {
-        return new DefaultNodeFactory();
+    public static PhreakNodeFactory getDefaultNodeFactoryProvider() {
+        return new PhreakNodeFactory();
     }
 
 
@@ -86,7 +84,7 @@ public class ReteooComponentFactory implements Serializable {
         return ruleBuilderFactory;
     }
 
-    public void setRuleBuilderProvider( RuleBuilderFactory provider ) {
+    public void setRuleBuilderProvider(RuleBuilderFactory provider) {
         ruleBuilderFactory = provider;
     }
 
@@ -99,16 +97,13 @@ public class ReteooComponentFactory implements Serializable {
     }
 
 
-
-
-
     private AgendaFactory agendaFactory = new DefaultAgendaFactory();
 
     public AgendaFactory getAgendaFactory() {
-         return agendaFactory;
+        return agendaFactory;
     }
 
-    public void setAgendaFactory( AgendaFactory provider ) {
+    public void setAgendaFactory(AgendaFactory provider) {
         agendaFactory = provider;
     }
 
@@ -121,14 +116,13 @@ public class ReteooComponentFactory implements Serializable {
     }
 
 
-
     private FieldDataFactory fieldFactory = FieldFactory.getInstance();
 
     public FieldDataFactory getFieldFactory() {
         return fieldFactory;
     }
 
-    public void setFieldDataFactory( FieldDataFactory provider ) {
+    public void setFieldDataFactory(FieldDataFactory provider) {
         fieldFactory = provider;
     }
 
@@ -141,14 +135,13 @@ public class ReteooComponentFactory implements Serializable {
     }
 
 
-
     private TripleFactory tripleFactory = new TripleFactoryImpl();
 
     public TripleFactory getTripleFactory() {
-         return tripleFactory;
+        return tripleFactory;
     }
 
-    public void setTripleFactory( TripleFactory provider ) {
+    public void setTripleFactory(TripleFactory provider) {
         tripleFactory = provider;
     }
 
@@ -201,8 +194,8 @@ public class ReteooComponentFactory implements Serializable {
     public static LogicTransformerFactory getDefaultLogicTransformerFactory() {
         return new DefaultLogicTransformerFactory();
     }
-    
-    
+
+
 
     private TraitFactory traitFactory = new TraitFactory();
 

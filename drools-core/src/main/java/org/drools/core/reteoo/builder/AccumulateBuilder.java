@@ -32,8 +32,8 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 
 public class AccumulateBuilder
-    implements
-    ReteooComponentBuilder {
+        implements
+        ReteooComponentBuilder {
 
     /**
      * @inheritDoc
@@ -62,21 +62,23 @@ public class AccumulateBuilder
         // save tuple source and current pattern offset for later if needed
         LeftTupleSource tupleSource = context.getTupleSource();
         final int currentPatternIndex = context.getCurrentPatternOffset();
-        
+
         // builds the source pattern
         builder.build( context,
                        utils,
-                       source );                 
-        
+                       source );
+
         // if object source is null, then we need to adapt tuple source into a subnetwork
         if ( context.getObjectSource() == null ) {
             // attach right input adapter node to convert tuple source into an object source
+            RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextId(),
+                                                                                                                       context.getTupleSource(),
+                                                                                                                       tupleSource,
+                                                                                                                       context );
+
+            // attach right input adapter node to convert tuple source into an object source
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      new RightInputAdapterNode( context.getNextId(),
-                                                                                                 context.getTupleSource(),
-                                                                                                 tupleSource,
-                                                                                                 context ) ) );
-                
+                                                                      riaNode ) );
 
             // restore tuple source from before the start of the sub network
             context.setTupleSource( tupleSource );
@@ -88,30 +90,32 @@ public class AccumulateBuilder
             context.setBetaconstraints( betaConstraints );
             existSubNetwort = true;
         }
-        
+
         if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
             // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-            context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
-        }          
-        
+            context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
+        }
+
         final BetaConstraints resultsBinder = utils.createBetaNodeConstraint( context,
                                                                               resultBetaConstraints,
                                                                               true );
         final BetaConstraints sourceBinder = utils.createBetaNodeConstraint( context,
                                                                              context.getBetaconstraints(),
                                                                              false );
-        
+
+        AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
+                                                                                                            context.getTupleSource(),
+                                                                                                            context.getObjectSource(),
+                                                                                                            (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
+                                                                                                            sourceBinder,
+                                                                                                            resultsBinder,
+                                                                                                            accumulate,
+                                                                                                            existSubNetwort,
+                                                                                                            context );
+
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    new AccumulateNode( context.getNextId(),
-                                                                                        context.getTupleSource(),
-                                                                                        context.getObjectSource(),
-                                                                                        (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
-                                                                                        sourceBinder,
-                                                                                        resultsBinder,
-                                                                                        accumulate,
-                                                                                        existSubNetwort,
-                                                                                        context ) ) );
-        
+                                                                    accNode ) );
+
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
         context.setCurrentPatternOffset( currentPatternIndex );

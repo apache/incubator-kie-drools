@@ -669,7 +669,15 @@ public class CompositeObjectSinkAdapterTest {
         public MockBetaNode() {
             
         }
-        
+
+        @Override
+        protected void doCollectAncestors(NodeSet nodeSet) {
+        }
+
+        @Override
+        protected void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+        }
+
         MockBetaNode(final int id,
                      final LeftTupleSource leftInput,
                      final ObjectSource rightInput,
@@ -710,9 +718,17 @@ public class CompositeObjectSinkAdapterTest {
                                      final InternalWorkingMemory workingMemory) {
         }
 
+        @Override
+        public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+        }
+
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext pctx,
                                  final InternalWorkingMemory workingMemory) {
+        }
+
+        @Override
+        public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
         }
 
         public void retractRightTuple(final RightTuple rightTuple,

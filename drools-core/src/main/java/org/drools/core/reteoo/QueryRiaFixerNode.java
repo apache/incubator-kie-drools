@@ -30,18 +30,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
 
-/**
- * Node which filters <code>ReteTuple</code>s.
- *
- * <p>
- * Using a semantic <code>Test</code>, this node may allow or disallow
- * <code>Tuples</code> to proceed further through the Rete-OO network.
- * </p>
- *
- * @see QueryRiaFixerNode
- * @see Eval
- * @see LeftTuple
- */
+
 public class QueryRiaFixerNode extends LeftTupleSource
     implements
     LeftTupleSinkNode {
@@ -66,15 +55,6 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     }
 
-    /**
-     * Construct.
-     *
-     * @param rule
-     *            The rule
-     * @param tupleSource
-     *            The source of incoming <code>Tuples</code>.
-     * @param eval
-     */
     public QueryRiaFixerNode(final int id,
                              final LeftTupleSource tupleSource,
                              final BuildContext context) {
@@ -96,6 +76,14 @@ public class QueryRiaFixerNode extends LeftTupleSource
         super.writeExternal( out );
         out.writeObject(   betaNode  );
         out.writeBoolean( tupleMemoryEnabled );
+    }
+
+    public void modifyLeftTuple(InternalFactHandle factHandle,
+                                ModifyPreviousTuples modifyPreviousTuples,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
+                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public BetaNode getBetaNode() {
@@ -129,24 +117,6 @@ public class QueryRiaFixerNode extends LeftTupleSource
         this.leftInput.networkUpdated(updateContext);
     }
 
-    // ------------------------------------------------------------
-    // Instance methods
-    // ------------------------------------------------------------
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.kie.reteoo.impl.TupleSink
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    /**
-     * Assert a new <code>Tuple</code>.
-     *
-     * @param leftTuple
-     *            The <code>Tuple</code> being asserted.
-     * @param workingMemory
-     *            The working memory seesion.
-     * @throws AssertionException
-     *             If an error occurs while asserting.
-     */
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
@@ -319,7 +289,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
     }
 
     @Override
-    protected void removeTupleSink(LeftTupleSink tupleSink) {
+    public void removeTupleSink(LeftTupleSink tupleSink) {
         if (tupleSink != betaNode) {
             throw new IllegalArgumentException( tupleSink + " is not a sink for this node" );
         }

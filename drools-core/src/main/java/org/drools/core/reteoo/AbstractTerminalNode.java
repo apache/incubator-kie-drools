@@ -107,8 +107,8 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                                 ModifyPreviousTuples modifyPreviousTuples,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        LeftTupleSource.doModifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory,
-                                           this, getLeftInputOtnId(), inferredMask);
+        LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
+                                               this, getLeftInputOtnId(), inferredMask);
     }
     
     public abstract Rule getRule();

@@ -51,20 +51,23 @@ public class MockRightTupleSink
     }
 
     public RuleBasePartitionId getPartitionId() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
     }
 
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }
+
 
     public void modifyRightTuple(RightTuple rightTuple,
                                  PropagationContext context,

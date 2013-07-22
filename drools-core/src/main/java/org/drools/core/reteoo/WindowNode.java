@@ -124,6 +124,11 @@ public class WindowNode extends ObjectSource
         return NodeTypeEnums.WindowNode;
     }
 
+    @Override
+    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * Returns the <code>FieldConstraints</code>
      *

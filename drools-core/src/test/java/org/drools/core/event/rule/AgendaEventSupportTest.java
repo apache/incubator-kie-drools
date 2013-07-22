@@ -33,7 +33,6 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
@@ -188,7 +187,7 @@ public class AgendaEventSupportTest {
                                            15 );
         FactHandle cheddarHandle = ksession.insert( cheddar );
 
-        DefaultAgenda agenda = (DefaultAgenda) ((AgendaImpl) ksession.getAgenda()).getAgenda();
+        InternalAgenda agenda = (InternalAgenda) ((AgendaImpl) ksession.getAgenda()).getAgenda();
         agenda.evaluateEagerList();
 
         // should be one MatchCreatedEvent

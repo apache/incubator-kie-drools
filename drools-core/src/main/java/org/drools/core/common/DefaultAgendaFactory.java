@@ -21,11 +21,11 @@ import java.io.Serializable;
 
 public class DefaultAgendaFactory implements AgendaFactory, Serializable {
 
-    public DefaultAgenda createAgenda( InternalRuleBase ruleBase, boolean initMain ) {
+    public InternalAgenda createAgenda(InternalRuleBase ruleBase, boolean initMain) {
         return new DefaultAgenda( ruleBase, initMain );
     }
 
-    public DefaultAgenda createAgenda( InternalRuleBase ruleBase ) {
+    public InternalAgenda createAgenda(InternalRuleBase ruleBase) {
         return new DefaultAgenda( ruleBase );
     }
 

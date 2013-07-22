@@ -8,7 +8,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 public class ActiveActivationIterator
     implements
     Iterator {
-    private DefaultAgenda      agenda;
+    private InternalAgenda    agenda;
 
     private static final int   AGENDA_GROUPS   = 0;
 
@@ -24,7 +24,7 @@ public class ActiveActivationIterator
     }
 
     private ActiveActivationIterator(InternalWorkingMemory wm) {
-        agenda = (DefaultAgenda) wm.getAgenda();
+        agenda = (InternalAgenda) wm.getAgenda();
 
         if ( !agenda.getAgendaGroupsMap().isEmpty() ) {
             groupsIter = agenda.getAgendaGroupsMap().values().iterator();

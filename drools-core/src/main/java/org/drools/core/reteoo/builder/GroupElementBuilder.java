@@ -38,8 +38,8 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 
 public class GroupElementBuilder
-    implements
-    ReteooComponentBuilder {
+        implements
+        ReteooComponentBuilder {
 
     protected final Map<Type, ReteooComponentBuilder> geBuilders = new HashMap<Type, ReteooComponentBuilder>();
 
@@ -63,14 +63,14 @@ public class GroupElementBuilder
         final GroupElement ge = (GroupElement) rce;
 
         final ReteooComponentBuilder builder = this.geBuilders.get( ge.getType() );
-        
+
         context.push( ge );
         context.pushRuleComponent( ge );
 
         builder.build( context,
                        utils,
                        rce );
-        
+
         context.pop();
         context.popRuleComponent();
     }
@@ -87,14 +87,14 @@ public class GroupElementBuilder
         return builder.requiresLeftActivation( utils,
                                                rce );
     }
-    
+
     public static class AndBuilder
-        implements
-        ReteooComponentBuilder {
+            implements
+            ReteooComponentBuilder {
 
         /**
          * @inheritDoc
-         * 
+         *
          * And group elements just iterate over their children
          * selecting and calling the build procedure for each one
          */
@@ -121,8 +121,8 @@ public class GroupElementBuilder
                         source = source.getParentObjectSource();
                     }
                     context.setRootObjectTypeNode( (ObjectTypeNode) source );
-                    
-                    
+
+
                     // adapt it to a Tuple source                    
                     context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                                 context.getComponentFactory().getNodeFactoryService().buildLeftInputAdapterNode( context.getNextId(),
@@ -170,8 +170,8 @@ public class GroupElementBuilder
     }
 
     public static class OrBuilder
-        implements
-        ReteooComponentBuilder {
+            implements
+            ReteooComponentBuilder {
 
         /**
          * @inheritDoc
@@ -189,14 +189,14 @@ public class GroupElementBuilder
     }
 
     public static class NotBuilder
-        implements
-        ReteooComponentBuilder {
+            implements
+            ReteooComponentBuilder {
 
         /**
          * @inheritDoc
-         * 
+         *
          * Not must verify what is the class of its child:
-         * 
+         *
          * If it is a pattern, a simple NotNode is added to the rulebase
          * If it is a group element, than a subnetwork must be created
          */
@@ -223,13 +223,14 @@ public class GroupElementBuilder
 
             // if it is a subnetwork
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
+                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode(context.getNextId(),
+                                                                                                                          context.getTupleSource(),
+                                                                                                                          tupleSource,
+                                                                                                                          context);
 
                 // attach right input adapter node to convert tuple source into an object source
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new RightInputAdapterNode( context.getNextId(),
-                                                                                                     context.getTupleSource(),
-                                                                                                     tupleSource,
-                                                                                                     context ) ) );
+                                                                          riaNode ) );
 
                 // restore tuple source from before the start of the sub network
                 context.setTupleSource( tupleSource );
@@ -242,11 +243,11 @@ public class GroupElementBuilder
                 existSubNetwort = true;
 
             }
-            
+
             if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
                 // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
-            }              
+                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
+            }
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
@@ -255,12 +256,13 @@ public class GroupElementBuilder
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
 
-            NotNode node = new NotNode( context.getNextId(),
-                                        context.getTupleSource(),
-                                        context.getObjectSource(),
-                                        betaConstraints,
-                                        context );
-            
+
+            NotNode node = context.getComponentFactory().getNodeFactoryService().buildNotNode( context.getNextId(),
+                                                                                               context.getTupleSource(),
+                                                                                               context.getObjectSource(),
+                                                                                               betaConstraints,
+                                                                                               context );
+
             node.setEmptyBetaConstraints( context.getBetaconstraints().isEmpty() );
 
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
@@ -279,21 +281,21 @@ public class GroupElementBuilder
     }
 
     public static class ExistsBuilder
-        implements
-        ReteooComponentBuilder {
+            implements
+            ReteooComponentBuilder {
 
         /**
          * @inheritDoc
-         * 
+         *
          * Exists must verify what is the class of its child:
-         * 
+         *
          * If it is a pattern, a simple ExistsNode is added to the rulebase
          * If it is a group element, than a subnetwork must be created
          */
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
-            boolean existSubNetwort = false;            
+            boolean existSubNetwort = false;
             final GroupElement exists = (GroupElement) rce;
 
             // EXISTS must save some context info to restore it later
@@ -313,13 +315,14 @@ public class GroupElementBuilder
 
             // if it is a subnetwork
             if ( context.getObjectSource() == null && context.getTupleSource() != null ) {
+                RightInputAdapterNode riaNode = context.getComponentFactory().getNodeFactoryService().buildRightInputNode( context.getNextId(),
+                                                                                                                           context.getTupleSource(),
+                                                                                                                           tupleSource,
+                                                                                                                           context );
 
                 // attach right input adapter node to convert tuple source into an object source
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new RightInputAdapterNode( context.getNextId(),
-                                                                                                     context.getTupleSource(),
-                                                                                                     tupleSource,
-                                                                                                     context ) ) );
+                                                                          riaNode ) );
 
                 // restore tuple source from before the start of the sub network
                 context.setTupleSource( tupleSource );
@@ -329,28 +332,30 @@ public class GroupElementBuilder
                 final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
-                existSubNetwort = true;                
+                existSubNetwort = true;
 
             }
-            
+
             if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
                 // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );   
-            }             
+                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
+            }
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
                                                                                     false );
 
+            ExistsNode node = context.getComponentFactory().getNodeFactoryService().buildExistsNode(context.getNextId(),
+                                                                                                    context.getTupleSource(),
+                                                                                                    context.getObjectSource(),
+                                                                                                    betaConstraints,
+                                                                                                    context);
+
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
             context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                        new ExistsNode( context.getNextId(),
-                                                                                        context.getTupleSource(),
-                                                                                        context.getObjectSource(),
-                                                                                        betaConstraints,
-                                                                                        context ) ) );
+                                                                        node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 

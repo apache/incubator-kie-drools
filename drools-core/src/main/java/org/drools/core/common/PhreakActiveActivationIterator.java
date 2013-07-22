@@ -14,7 +14,7 @@ import java.util.List;
 public class PhreakActiveActivationIterator
     implements
     Iterator {
-    private DefaultAgenda      agenda;
+    private InternalAgenda     agenda;
 
     List<AgendaItem> items;
 
@@ -25,7 +25,7 @@ public class PhreakActiveActivationIterator
     }
 
     private PhreakActiveActivationIterator(InternalWorkingMemory wm) {
-        agenda = (DefaultAgenda) wm.getAgenda();
+        agenda = (InternalAgenda) wm.getAgenda();
         items = new ArrayList<AgendaItem>();
         for ( InternalAgendaGroup group : agenda.getAgendaGroupsMap().values() ) {
             for ( Activation act : group.getActivations() ) {

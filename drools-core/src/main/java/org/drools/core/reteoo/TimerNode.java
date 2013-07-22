@@ -120,24 +120,6 @@ public class TimerNode extends LeftTupleSource
         return this.leftInput;
     }
 
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Phreak Only Node");
-    }
-
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Phreak Only Node");
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Phreak Only Node");
-    }
-
     /**
      * Produce a debug string.
      *
@@ -223,42 +205,12 @@ public class TimerNode extends LeftTupleSource
         return peer;
     }
 
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        Iterator<LeftTuple> it = LeftTupleIterator.iterator(workingMemory, this);
-
-        for (LeftTuple leftTuple = it.next(); leftTuple != null; leftTuple = it.next()) {
-            LeftTuple childLeftTuple = leftTuple.getFirstChild();
-            while (childLeftTuple != null) {
-                RightTuple rightParent = childLeftTuple.getRightParent();
-                sink.assertLeftTuple(sink.createLeftTuple(leftTuple, rightParent, childLeftTuple, null, sink, true),
-                                     context,
-                                     workingMemory);
-
-                while (childLeftTuple != null && childLeftTuple.getRightParent() == rightParent) {
-                    // skip to the next child that has a different right parent
-                    childLeftTuple = childLeftTuple.getLeftParentNext();
-                }
-            }
-        }
-    }
-
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if (!this.isInUse()) {
-            if (!context.getRuleBase().getConfiguration().isPhreakEnabled()) {
-                for (InternalWorkingMemory workingMemory : workingMemories) {
-                    workingMemory.clearNodeMemory(this);
-                }
-            }
             getLeftTupleSource().removeTupleSink(this);
         }
-    }
-
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
     }
 
     public boolean isLeftTupleMemoryEnabled() {
@@ -380,6 +332,44 @@ public class TimerNode extends LeftTupleSource
         public void setSegmentMemory(SegmentMemory smem) {
             this.memory = smem;
         }
+    }
+
+    @Override
+    protected void doCollectAncestors(NodeSet nodeSet) {
+        getLeftTupleSource().collectAncestors(nodeSet);
+    }
+
+    @Override
+    public void updateSink(final LeftTupleSink sink,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void assertLeftTuple(final LeftTuple leftTuple,
+                                final PropagationContext context,
+                                final InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void retractLeftTuple(final LeftTuple leftTuple,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(LeftTuple leftTuple,
+                                PropagationContext context,
+                                InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException();
     }
 
 }
