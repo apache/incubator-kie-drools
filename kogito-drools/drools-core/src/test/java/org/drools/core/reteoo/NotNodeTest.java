@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.beans.IntrospectionException;
 
 import org.drools.core.FactException;
+import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.AbstractWorkingMemory;
@@ -34,7 +35,9 @@ import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -59,6 +62,8 @@ public class NotNodeTest extends DroolsTestCase {
     BetaMemory              memory;
     BetaNodeFieldConstraint constraint;
 
+    private PropagationContextFactory pctxFactory;
+
     /**
      * Setup the BetaNode used in each of the tests
      * @throws IntrospectionException
@@ -71,14 +76,12 @@ public class NotNodeTest extends DroolsTestCase {
 
         when(constraint.createContextEntry()).thenReturn(c);
 
+        InternalRuleBase rbase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+
         this.rule = new Rule("test-rule");
-        this.context = new PropagationContextImpl(0,
-                                                  PropagationContext.INSERTION,
-                                                  null,
-                                                  null,
-                                                  null);
-        this.workingMemory = new AbstractWorkingMemory(1,
-                                                       (ReteooRuleBase) RuleBaseFactory.newRuleBase());
+        pctxFactory = rbase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        this.workingMemory = new AbstractWorkingMemory(1, rbase);
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
 
@@ -111,12 +114,7 @@ public class NotNodeTest extends DroolsTestCase {
         this.memory = (BetaMemory) this.workingMemory.getNodeMemory( this.node );
     }
 
-    /**
-     * Test assertion with both Objects and Tuples
-     * 
-     * @throws AssertionException
-     */
-    @Test
+
     public void testNotStandard() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ), any( ContextEntry.class ) )).thenReturn(true);
@@ -215,11 +213,6 @@ public class NotNodeTest extends DroolsTestCase {
                       this.sink.getRetracted() );
     }
 
-    /**
-     * Test assertion with both Objects and Tuples
-     * 
-     * @throws AssertionException
-     */
     @Test
     public void testNotWithConstraints() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(false);
@@ -286,8 +279,7 @@ public class NotNodeTest extends DroolsTestCase {
 
     /**
      * Tests memory consistency after insert/update/retract calls
-     * 
-     * @throws AssertionException
+     *
      */
     public void TestNotMemoryManagement() throws FactException {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ), any( InternalFactHandle.class ) )).thenReturn(true);
@@ -386,8 +378,7 @@ public class NotNodeTest extends DroolsTestCase {
 
     /**
      * Test just tuple assertions
-     * 
-     * @throws AssertionException
+     *
      */
     @Test
     public void testAssertTupleSequentialMode() throws Exception {
@@ -433,11 +424,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   new PropagationContextImpl( 0,
-                                                               PropagationContext.INSERTION,
-                                                               null,
-                                                               null,
-                                                               f0 ),
+                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
                                    this.workingMemory );
 
         assertEquals( 0,

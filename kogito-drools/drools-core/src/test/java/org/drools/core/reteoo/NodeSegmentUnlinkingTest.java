@@ -13,7 +13,8 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.phreak.PhreakNotNode;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
@@ -86,7 +87,8 @@ public class NodeSegmentUnlinkingTest {
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
-        context = new PropagationContextImpl( 0, PropagationContext.INSERTION, null, null, null );
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );
 

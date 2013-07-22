@@ -24,7 +24,9 @@ import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.FieldFactory;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AlphaNode.AlphaMemory;
@@ -61,11 +63,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
@@ -138,11 +137,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
@@ -205,11 +201,8 @@ public class AlphaNodeTest extends DroolsTestCase {
         AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
         final Rule rule = new Rule( "test-rule" );
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 

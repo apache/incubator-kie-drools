@@ -28,7 +28,8 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -50,55 +51,54 @@ import org.junit.Test;
 @Ignore("phreak")
 public class AccumulateNodeTest extends DroolsTestCase {
 
-    Rule                    rule;
-    PropagationContext      context;
-    AbstractWorkingMemory     workingMemory;
-    MockObjectSource        objectSource;
-    MockTupleSource         tupleSource;
-    MockLeftTupleSink       sink;
-    BetaNode                node;
-    BetaMemory              memory;
-    MockAccumulator         accumulator;
-    Accumulate              accumulate;
+    Rule                  rule;
+    PropagationContext    context;
+    AbstractWorkingMemory workingMemory;
+    MockObjectSource      objectSource;
+    MockTupleSource       tupleSource;
+    MockLeftTupleSink     sink;
+    BetaNode              node;
+    BetaMemory            memory;
+    MockAccumulator       accumulator;
+    Accumulate            accumulate;
+    private PropagationContextFactory pctxFactory;
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
     @Before
     public void setUp() throws Exception {
-        this.rule = new Rule( "test-rule" );
-        this.context = new PropagationContextImpl( 0,
-                                                   PropagationContext.INSERTION,
-                                                   null,
-                                                   null,
-                                                   null );
+        this.rule = new Rule("test-rule");
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        BuildContext buildContext = new BuildContext( ruleBase,
-                                                      ruleBase.getReteooBuilder().getIdGenerator() );
+        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+
+        BuildContext buildContext = new BuildContext(ruleBase,
+                                                     ruleBase.getReteooBuilder().getIdGenerator());
 
         this.workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
-        this.tupleSource = new MockTupleSource( 4 );
-        this.objectSource = new MockObjectSource( 4 );
+        this.tupleSource = new MockTupleSource(4);
+        this.objectSource = new MockObjectSource(4);
         this.sink = new MockLeftTupleSink();
 
         this.accumulator = new MockAccumulator();
 
-        final ObjectType srcObjType = new ClassObjectType( String.class );
-        final Pattern sourcePattern = new Pattern( 0,
-                                                   srcObjType );
-        this.accumulate = new Accumulate( sourcePattern,
-                                          new Declaration[0],
-                                          new Accumulator[] { this.accumulator },
-                                          false );
+        final ObjectType srcObjType = new ClassObjectType(String.class);
+        final Pattern sourcePattern = new Pattern(0,
+                                                  srcObjType);
+        this.accumulate = new Accumulate(sourcePattern,
+                                         new Declaration[0],
+                                         new Accumulator[]{this.accumulator},
+                                         false);
 
-        this.node = new AccumulateNode( 15,
-                                        this.tupleSource,
-                                        this.objectSource,
-                                        new AlphaNodeFieldConstraint[0],
-                                        EmptyBetaConstraints.getInstance(),
-                                        EmptyBetaConstraints.getInstance(),
+        this.node = new AccumulateNode(15,
+                                       this.tupleSource,
+                                       this.objectSource,
+                                       new AlphaNodeFieldConstraint[0],
+                                       EmptyBetaConstraints.getInstance(),
+                                       EmptyBetaConstraints.getInstance(),
                                         this.accumulate,
                                         false,
                                         buildContext );
@@ -114,9 +114,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
                       this.memory.getRightTupleMemory().size() );
     }
 
-    /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#updateNewNode(InternalWorkingMemory, org.kie.spi.PropagationContext)}.
-     */
     @Test
     public void testUpdateSink() {
         this.node.updateSink( this.sink,
@@ -159,9 +156,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              otherSink.getAsserted().size() );
     }
 
-    /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#assertLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.AbstractWorkingMemory)}.
-     */
     @Test
     public void testAssertTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
@@ -210,9 +204,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.sink.getAsserted().size() );
     }
 
-    /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#assertLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.AbstractWorkingMemory)}.
-     */
     @Test
     public void testAssertTupleWithObjects() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
@@ -270,9 +261,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              this.sink.getAsserted().size() );
     }
 
-    /**
-     * Test method for {@link org.kie.reteoo.AccumulateNode#retractLeftTuple(org.kie.reteoo.LeftTupleImpl, org.kie.spi.PropagationContext, org.kie.reteoo.AbstractWorkingMemory)}.
-     */
     @Test
     public void testRetractTuple() {
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
@@ -333,11 +321,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
-    /**
-     * Test just tuple assertions
-     * 
-     * @throws AssertionException
-     */
     @Test
     public void testAssertTupleSequentialMode() throws Exception {
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
@@ -388,11 +371,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should not add to left memory, since we are in sequential mode
         this.node.assertLeftTuple( tuple0,
-                                   new PropagationContextImpl( 0,
-                                                               PropagationContext.INSERTION,
-                                                               null,
-                                                               null,
-                                                               f0 ),
+                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
                                    this.workingMemory );
         // check memories 
         assertNull( this.memory.getLeftTupleMemory() );
@@ -407,11 +386,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
-                                   new PropagationContextImpl( 0,
-                                                               PropagationContext.INSERTION,
-                                                               null,
-                                                               null,
-                                                               f1 ),
+                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f1),
                                    this.workingMemory );
         assertNull( this.memory.getLeftTupleMemory() );
         assertEquals( "Wrong number of elements in matching objects list ",

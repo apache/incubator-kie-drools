@@ -37,7 +37,9 @@ import org.drools.core.common.DefaultBetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -47,7 +49,6 @@ import org.drools.core.rule.Rule;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class JoinNodeTest extends DroolsTestCase {
@@ -61,6 +62,7 @@ public class JoinNodeTest extends DroolsTestCase {
     BetaNode                node;
     BetaMemory              memory;
     BetaNodeFieldConstraint constraint;
+    private PropagationContextFactory pctxFactory;
 
     /**
      * Setup the BetaNode used in each of the tests
@@ -74,10 +76,11 @@ public class JoinNodeTest extends DroolsTestCase {
         when(constraint.createContextEntry()).thenReturn(c);
 
         this.rule = new Rule("test-rule");
-        this.context = new PropagationContextImpl(0,
-                                                  PropagationContext.INSERTION, null, null, null);
-        this.workingMemory = new AbstractWorkingMemory(1,
-                                                     (ReteooRuleBase) RuleBaseFactory.newRuleBase());
+
+        InternalRuleBase rbase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
+        pctxFactory = rbase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.context = pctxFactory.createPropagationContextImpl(0,  PropagationContext.INSERTION, null, null, null);
+        this.workingMemory = new AbstractWorkingMemory(1, rbase);
 
         this.tupleSource = new MockTupleSource(4);
         this.objectSource = new MockObjectSource(4);
@@ -109,7 +112,7 @@ public class JoinNodeTest extends DroolsTestCase {
     @Test
     public void testAttach() throws Exception {
         when(constraint.isAllowedCachedLeft(any(ContextEntry.class),
-                                            any( InternalFactHandle.class ) ) ).thenReturn( true );
+                                            any(InternalFactHandle.class ) ) ).thenReturn( true );
         when( constraint.isAllowedCachedRight( any( LeftTupleImpl.class ),
                                                any( ContextEntry.class ) ) ).thenReturn( true );
 
@@ -175,11 +178,6 @@ public class JoinNodeTest extends DroolsTestCase {
         assertNotNull( memory );
     }
 
-    /**
-     * Test just tuple assertions
-     *
-     * @throws AssertionException
-     */
     @Test
     public void testAssertTuple() throws Exception {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ),
@@ -217,11 +215,6 @@ public class JoinNodeTest extends DroolsTestCase {
                       leftTuple.getNext() );
     }
 
-    /**
-     * Test just tuple assertions
-     *
-     * @throws AssertionException
-     */
     @Test
     public void testAssertTupleSequentialMode() throws Exception {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ),
@@ -260,14 +253,12 @@ public class JoinNodeTest extends DroolsTestCase {
         final LeftTupleImpl tuple0 = new LeftTupleImpl( f0, this.node, true );
 
         this.node.assertObject( f0,
-                                new PropagationContextImpl( 0,
-                                                            PropagationContext.INSERTION, null, null, f0 ),
+                                pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
                                 this.workingMemory );
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   new PropagationContextImpl( 0,
-                                                               PropagationContext.INSERTION, null, null, f0 ),
+                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
                                    this.workingMemory );
 
         assertEquals( 1,
@@ -391,12 +382,6 @@ public class JoinNodeTest extends DroolsTestCase {
                 .getFirstRightTuple(), this.sink, true ) ) );
     }
 
-    /**
-     * Test Tuple retraction
-     *
-     * @throws Exception
-     * @throws RetractionException
-     */
     @Test
     public void testRetractTuple() throws Exception {
         when( constraint.isAllowedCachedLeft( any( ContextEntry.class ),
@@ -574,12 +559,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
     @Test
     public void testSlotSpecific() {
-        PropagationContext contextPassAll = new PropagationContextImpl(0,
-                PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
-        PropagationContext contextPassNothing = new PropagationContextImpl(0,
-                PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
-        PropagationContext contextPass2And3 = new PropagationContextImpl(0,
-                PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
+        PropagationContext contextPassAll = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
+        PropagationContext contextPassNothing = pctxFactory.createPropagationContextImpl(0,PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
+        PropagationContext contextPass2And3 = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
 
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);

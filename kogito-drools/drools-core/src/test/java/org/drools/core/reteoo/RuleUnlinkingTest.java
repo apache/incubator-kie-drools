@@ -12,7 +12,8 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
@@ -96,7 +97,8 @@ public class RuleUnlinkingTest {
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf);
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
-        context = new PropagationContextImpl( 0, PropagationContext.INSERTION, null, null, null );
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
         liaNode = new LeftInputAdapterNode( 3, otn, buildContext );

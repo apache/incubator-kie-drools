@@ -20,7 +20,8 @@ import org.drools.core.FactException;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -44,11 +45,8 @@ public class EvalConditionNodeTest extends DroolsTestCase {
         this.buildContext = new BuildContext(ruleBase,
                                              ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator());
 
-        this.context = new PropagationContextImpl(0,
-                                                  PropagationContext.INSERTION,
-                                                  null,
-                                                  null,
-                                                  null);
+        PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+        this.context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         this.workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
     }

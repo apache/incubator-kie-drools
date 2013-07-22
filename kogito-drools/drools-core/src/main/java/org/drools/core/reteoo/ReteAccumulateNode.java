@@ -4,18 +4,16 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
-import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.ReteBetaNodeUtils;
 import org.drools.core.rule.Accumulate;
@@ -28,7 +26,6 @@ import org.drools.core.util.Iterator;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map;
 
 public class ReteAccumulateNode extends AccumulateNode {
 
@@ -649,13 +646,10 @@ public class ReteAccumulateNode extends AccumulateNode {
                 }
             } else {
                 // retract
-                // we can't use the expiration context here, because it wouldn't cancel existing activations
-                // however, isAllowed is false so activations should not fire
-                PropagationContext cancelContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                               org.kie.api.runtime.rule.PropagationContext.DELETION,
-                                                                               (Rule) context.getRule(),
-                                                                               context.getLeftTupleOrigin(),
-                                                                               (InternalFactHandle) context.getFactHandle() );
+                // we can't use the expiration context here, because it wouldn't cancel existing activations. however, isAllowed is false so activations should not fire
+                PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+                PropagationContext cancelContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), org.kie.api.runtime.rule.PropagationContext.DELETION, (Rule) context.getRule(),
+                                                                                            context.getLeftTupleOrigin(), (InternalFactHandle) context.getFactHandle());
                 this.sink.propagateRetractLeftTuple( leftTuple,
                                                      cancelContext,
                                                      workingMemory );

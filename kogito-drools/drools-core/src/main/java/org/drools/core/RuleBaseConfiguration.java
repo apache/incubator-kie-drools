@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,12 +31,10 @@ import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.conflict.DepthConflictResolver;
+import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
-import org.drools.core.reteoo.builder.PhreakNodeFactory;
-import org.drools.core.reteoo.builder.ReteNodeFactory;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.kie.api.KieBaseConfiguration;
@@ -65,7 +62,6 @@ import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.internal.utils.ChainedProperties;
-import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.mvel2.MVEL;
@@ -173,7 +169,7 @@ public class RuleBaseConfiguration
 
     private transient ClassLoader classLoader;
 
-    private ReteooComponentFactory componentFactory;
+    private KieComponentFactory componentFactory;
 
     private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
 
@@ -239,7 +235,7 @@ public class RuleBaseConfiguration
         classLoaderCacheEnabled = in.readBoolean();
         phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
-        componentFactory = (ReteooComponentFactory) in.readObject();
+        componentFactory = (KieComponentFactory) in.readObject();
     }
 
     /**
@@ -287,13 +283,13 @@ public class RuleBaseConfiguration
             return;
         }
 
-        if (name.equals(SequentialAgendaOption.PROPERTY_NAME ) ) {
-            setSequentialAgenda( SequentialAgenda.determineSequentialAgenda( StringUtils.isEmpty( value ) ? "sequential" : value ) );
-        } else if ( name.equals( SequentialOption.PROPERTY_NAME ) ) {
-            setSequential( StringUtils.isEmpty( value ) ? false : Boolean.valueOf( value ) );
-        } else if ( name.equals( RemoveIdentitiesOption.PROPERTY_NAME ) ) {
+        if (name.equals(SequentialAgendaOption.PROPERTY_NAME)) {
+            setSequentialAgenda(SequentialAgenda.determineSequentialAgenda(StringUtils.isEmpty(value) ? "sequential" : value));
+        } else if (name.equals(SequentialOption.PROPERTY_NAME)) {
+            setSequential(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+        } else if (name.equals(RemoveIdentitiesOption.PROPERTY_NAME)) {
             setRemoveIdentities(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
-        } else if ( name.equals( ShareAlphaNodesOption.PROPERTY_NAME ) ) {
+        } else if (name.equals(ShareAlphaNodesOption.PROPERTY_NAME)) {
             setShareAlphaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         } else if ( name.equals( ShareBetaNodesOption.PROPERTY_NAME ) ) {
             setShareBetaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
@@ -483,7 +479,7 @@ public class RuleBaseConfiguration
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
 
-        this.componentFactory = new ReteooComponentFactory();
+        this.componentFactory = new KieComponentFactory();
 
     }
 
@@ -904,8 +900,31 @@ public class RuleBaseConfiguration
     private static NodeFactory   reteNodeFactory;
     private static AgendaFactory agendaFactory;
 
-    public ReteooComponentFactory getComponentFactory() {
-        if (!isPhreakEnabled()) {
+    public KieComponentFactory getComponentFactory() {
+////        if (!isPhreakEnabled() && componentFactory == KieComponentFactory.getDefault() ) {
+////            componentFactory = new KieComponentFactory();
+////            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
+////                if (reteNodeFactory == null) {
+////                    try {
+////                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.core.reteoo.builder.ReteNodeFactory").newInstance();
+////                    } catch (Exception e) {
+////                        throw new RuntimeException(e);
+////                    }
+////                }
+////                componentFactory.setNodeFactoryProvider(reteNodeFactory);
+////            }
+////            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
+////                if (agendaFactory == null) {
+////                    try {
+////                        agendaFactory = (AgendaFactory) Class.forName("org.drools.core.common.ReteAgendaFactory").newInstance();
+////                    } catch (Exception e) {
+////                        throw new RuntimeException(e);
+////                    }
+////                }
+////                componentFactory.setAgendaFactory(agendaFactory);
+////            }
+////        }
+        if (!isPhreakEnabled() ) {
             if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
                 if (reteNodeFactory == null) {
                     try {
@@ -930,7 +949,7 @@ public class RuleBaseConfiguration
         return componentFactory;
     }
 
-    public void setComponentFactory(ReteooComponentFactory componentFactory) {
+    public void setComponentFactory(KieComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
 

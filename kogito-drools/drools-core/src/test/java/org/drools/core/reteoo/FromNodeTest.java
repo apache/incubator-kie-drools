@@ -29,7 +29,8 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.FromNode.FromMemory;
@@ -58,52 +59,50 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 
 public class FromNodeTest {
-    ClassFieldAccessorStore      store  = new ClassFieldAccessorStore();
-    private ReteooRuleBase       ruleBase;
-    private BuildContext         buildContext;
+    ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+    private ReteooRuleBase            ruleBase;
+    private BuildContext              buildContext;
+    private PropagationContextFactory pctxFactory;
 
     @Before
     public void setUp() throws Exception {
-        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
-        store.setEagerWire( true );
+        store.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
+        store.setEagerWire(true);
 
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
-        buildContext = new BuildContext( ruleBase,
-                                         new ReteooBuilder.IdGenerator() );
+        buildContext = new BuildContext(ruleBase,
+                                        new ReteooBuilder.IdGenerator());
+        pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
     }
 
     @Test
     public void testAlphaNode() {
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
-        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
-                                                                           ruleBase );
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,PropagationContext.INSERTION, null, null, null);
+        final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
+                                                                              ruleBase);
 
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type",
-                                                            getClass().getClassLoader() );
+        final ClassFieldReader extractor = store.getReader(Cheese.class,
+                                                           "type",
+                                                           getClass().getClassLoader());
 
-        final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
-                                                                      FieldFactory.getInstance().getFieldValue( "stilton" ),
-                                                                      extractor );
+        final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"stilton\"",
+                                                                     FieldFactory.getInstance().getFieldValue("stilton"),
+                                                                     extractor);
 
         final List list = new ArrayList();
-        final Cheese cheese1 = new Cheese( "cheddar",
-                                           20 );
-        final Cheese cheese2 = new Cheese( "brie",
-                                           20 );
-        list.add( cheese1 );
-        list.add( cheese2 );
-        final MockDataProvider dataProvider = new MockDataProvider( list );
-        
-        final Pattern pattern = new Pattern( 0,
-                                             new ClassObjectType( Cheese.class ) );
-        
+        final Cheese cheese1 = new Cheese("cheddar",
+                                          20);
+        final Cheese cheese2 = new Cheese("brie",
+                                          20);
+        list.add(cheese1);
+        list.add(cheese2);
+        final MockDataProvider dataProvider = new MockDataProvider(list);
+
+        final Pattern pattern = new Pattern(0,
+                                            new ClassObjectType(Cheese.class));
+
         From fromCe = new From(dataProvider);
-        fromCe.setResultPattern( pattern ); 
+        fromCe.setResultPattern(pattern );
 
         final FromNode from = new FromNode( 3,
                                             dataProvider,
@@ -181,11 +180,7 @@ public class FromNodeTest {
 
     @Test
     public void testBetaNode() {
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
 
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
@@ -302,11 +297,7 @@ public class FromNodeTest {
 
     @Test
     public void testRestract() {
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            (ReteooRuleBase) RuleBaseFactory.newRuleBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
@@ -384,11 +375,7 @@ public class FromNodeTest {
     
     @Test
     public void testAssignable() {
-        final PropagationContext context = new PropagationContextImpl( 0,
-                                                                       PropagationContext.INSERTION,
-                                                                       null,
-                                                                       null,
-                                                                       null );
+        final PropagationContext context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory( 1,
                                                                            ruleBase );
 

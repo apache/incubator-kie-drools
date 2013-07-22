@@ -17,14 +17,14 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.reteoo.ObjectTypeNode.Id;
+import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
@@ -35,7 +35,6 @@ import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
 
 import java.io.IOException;
@@ -44,8 +43,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used
@@ -154,12 +151,8 @@ public class WindowNode extends ObjectSource
         }
 
         for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
-            final PropagationContext propagationContext = new PropagationContextImpl(
-                    workingMemory.getNextPropagationIdCounter(),
-                    PropagationContext.RULE_ADDITION,
-                    null,
-                    null,
-                    null);
+            PropagationContextFactory pctxFactory = ((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl( workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
             this.source.updateSink(this,
                                    propagationContext,
                                    workingMemory);

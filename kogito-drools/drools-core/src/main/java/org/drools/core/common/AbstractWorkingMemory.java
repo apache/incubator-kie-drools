@@ -70,10 +70,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.reteoo.AccumulateNode;
-import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.AccumulateNode.ActivitySource;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
@@ -213,6 +210,8 @@ public class AbstractWorkingMemory
 
     protected InternalFactHandle initialFactHandle;
 
+    private PropagationContextFactory pctxFactory;
+
     protected SessionConfiguration config;
 
     private InternalKnowledgeRuntime kruntime;
@@ -233,7 +232,7 @@ public class AbstractWorkingMemory
     private InternalProcessRuntime processRuntime;
 
     private transient ObjectMarshallingStrategyStore marshallingStore;
-    private transient List ruleBaseListeners;
+    private transient List                           ruleBaseListeners;
 
     // ------------------------------------------------------------
     // Constructors
@@ -379,6 +378,7 @@ public class AbstractWorkingMemory
         this.config = config;
         this.ruleBase = ruleBase;
         this.handleFactory = handleFactory;
+        this.pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         this.environment = environment;
 
         nodeMemories = new ConcurrentNodeMemories(this.ruleBase);
@@ -483,12 +483,8 @@ public class AbstractWorkingMemory
                                                                           this,
                                                                           this );
 
-            final PropagationContext pCtx = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.INSERTION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      handle,
-                                                                                      getEntryPoint() );
+            final PropagationContext pCtx = pctxFactory.createPropagationContextImpl(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                                                                                    null, null, handle, getEntryPoint());
 
 
             BaseNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx);
@@ -550,12 +546,8 @@ public class AbstractWorkingMemory
                                                                           this,
                                                                           this );
 
-            final PropagationContext pCtx = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.INSERTION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      handle,
-                                                                                      getEntryPoint() );
+            final PropagationContext pCtx = pctxFactory.createPropagationContextImpl(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                                                                                    null, null, handle, getEntryPoint());
 
             BaseNode[] tnodes = evalQuery(queryObject.getName(), queryObject, handle, pCtx);
 
@@ -618,12 +610,8 @@ public class AbstractWorkingMemory
             this.ruleBase.readLock();
             this.lock.lock();
 
-            final PropagationContext pCtx = new PropagationContextImpl( getNextPropagationIdCounter(),
-                                                                                      PropagationContext.INSERTION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      factHandle,
-                                                                                      getEntryPoint() );
+            final PropagationContext pCtx = pctxFactory.createPropagationContextImpl(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                                                                                    null, null, factHandle, getEntryPoint());
 
             if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
                 LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
@@ -1529,12 +1517,10 @@ public class AbstractWorkingMemory
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
+            PropagationContextFactory pctxFactory = ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-            final PropagationContext context = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                           PropagationContext.INSERTION,
-                                                                           this.ruleOrigin,
-                                                                           this.leftTuple,
-                                                                           this.factHandle );
+            final PropagationContext context = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                                                                                       this.ruleOrigin, this.leftTuple, this.factHandle);
             ReteooRuleBase ruleBase = (ReteooRuleBase) workingMemory.getRuleBase();
             ruleBase.assertObject( this.factHandle,
                                    this.factHandle.getObject(),
@@ -1608,12 +1594,11 @@ public class AbstractWorkingMemory
 
         public void execute(InternalWorkingMemory workingMemory) {
             if (this.factHandle.isValid()) {
+                PropagationContextFactory pctxFactory = ((InternalRuleBase) workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+
                 // if the fact is still in the working memory (since it may have been previously retracted already
-                final PropagationContext context = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
-                                                                              PropagationContext.EXPIRATION,
-                                                                              null,
-                                                                              null,
-                                                                              this.factHandle);
+                final PropagationContext context = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
+                                                                                           null, null, this.factHandle);
                 ((EventFactHandle) factHandle).setExpired(true);
                 this.node.retractObject(factHandle,
                                         context,

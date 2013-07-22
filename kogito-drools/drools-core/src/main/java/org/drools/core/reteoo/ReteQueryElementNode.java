@@ -10,10 +10,12 @@ import org.drools.core.common.AbstractWorkingMemory.QueryResultUpdateAction;
 import org.drools.core.common.AbstractWorkingMemory.QueryRetractAction;
 import org.drools.core.common.AbstractWorkingMemory.QueryUpdateAction;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryElement;
@@ -173,11 +175,9 @@ public class ReteQueryElementNode extends QueryElementNode {
         }
 
         for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
-            final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
-                                                                                     PropagationContext.RULE_ADDITION,
-                                                                                     null,
-                                                                                     null,
-                                                                                     null);
+            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
+            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+                                                                                                   null, null, null);
             this.leftInput.updateSink(this,
                                       propagationContext,
                                       workingMemory);

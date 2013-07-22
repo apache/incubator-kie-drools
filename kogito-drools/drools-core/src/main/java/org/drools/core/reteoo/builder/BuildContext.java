@@ -20,11 +20,11 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.ReteooComponentFactory;
 import org.drools.core.rule.EntryPoint;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
@@ -94,7 +94,7 @@ public class BuildContext {
     //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
     // Which we don't want to actually count in the case of forall node linking    
     private boolean                          emptyForAllBetaConstraints;
-    private ReteooComponentFactory           componentFactory;
+    private KieComponentFactory              componentFactory;
     private boolean                          attachPQN;
 
     public BuildContext(final InternalRuleBase rulebase,
@@ -494,11 +494,11 @@ public class BuildContext {
         this.attachPQN = attachPQN;
     }
 
-    public ReteooComponentFactory getComponentFactory() {
+    public KieComponentFactory getComponentFactory() {
         return componentFactory;
     }
 
-    public void setComponentFactory(ReteooComponentFactory componentFactory) {
+    public void setComponentFactory(KieComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
 
