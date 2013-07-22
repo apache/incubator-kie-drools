@@ -53,8 +53,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
         this.nullableOtherValue = nullableOtherValue;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getPrimaryValue() {
         return primaryValue;
     }
@@ -63,8 +62,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
         this.primaryValue = primaryValue;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getSecondaryValue() {
         return secondaryValue;
     }
@@ -73,8 +71,7 @@ public class TestdataMultiVarEntity extends TestdataObject {
         this.secondaryValue = secondaryValue;
     }
 
-    @PlanningVariable(nullable = true)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "otherValueList")
+    @PlanningVariable(valueRangeProviderRefs = "otherValueRange")
     public TestdataOtherValue getNullableOtherValue() {
         return nullableOtherValue;
     }

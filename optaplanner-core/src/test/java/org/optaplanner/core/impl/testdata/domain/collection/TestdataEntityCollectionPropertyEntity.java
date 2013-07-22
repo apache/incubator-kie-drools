@@ -64,8 +64,7 @@ public class TestdataEntityCollectionPropertyEntity extends TestdataObject {
         this.entityMap = entityMap;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getValue() {
         return value;
     }

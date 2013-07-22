@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
@@ -61,6 +62,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
         this.cityList = cityList;
     }
 
+    @ValueRangeProvider(id = "domicileRange")
     public List<Domicile> getDomicileList() {
         return domicileList;
     }
@@ -70,6 +72,7 @@ public class TravelingSalesmanTour extends AbstractPersistable implements Soluti
     }
 
     @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "visitRange")
     public List<Visit> getVisitList() {
         return visitList;
     }

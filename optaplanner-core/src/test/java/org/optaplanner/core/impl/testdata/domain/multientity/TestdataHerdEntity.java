@@ -46,8 +46,7 @@ public class TestdataHerdEntity extends TestdataObject {
         this.leadEntity = leadEntity;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "leadEntityList")
+    @PlanningVariable(valueRangeProviderRefs = "leadEntityRange")
     public TestdataLeadEntity getLeadEntity() {
         return leadEntity;
     }

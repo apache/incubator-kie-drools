@@ -19,7 +19,7 @@ package org.optaplanner.core.config.heuristic.selector.value;
 import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -325,8 +325,8 @@ public class ValueSelectorConfig extends SelectorConfig {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector."
-                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new SortingValueSelector((EntityIndependentValueSelector) valueSelector,
                     resolvedCacheType, sorter);
@@ -358,8 +358,8 @@ public class ValueSelectorConfig extends SelectorConfig {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector."
-                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new ProbabilityValueSelector((EntityIndependentValueSelector) valueSelector,
                     resolvedCacheType, probabilityWeightFactory);
@@ -373,8 +373,8 @@ public class ValueSelectorConfig extends SelectorConfig {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector."
-                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new ShufflingValueSelector((EntityIndependentValueSelector) valueSelector,
                     resolvedCacheType);
@@ -388,8 +388,8 @@ public class ValueSelectorConfig extends SelectorConfig {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector."
-                        + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new CachingValueSelector((EntityIndependentValueSelector) valueSelector, resolvedCacheType,
                     resolvedSelectionOrder.toRandomSelectionBoolean());

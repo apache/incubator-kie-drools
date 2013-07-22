@@ -17,7 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -95,8 +95,8 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig {
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector."
-                    + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new SubChainChangeMoveSelector(subChainSelector, (EntityIndependentValueSelector) valueSelector,
                 randomSelection, selectReversingMoveToo == null ? true : selectReversingMoveToo);

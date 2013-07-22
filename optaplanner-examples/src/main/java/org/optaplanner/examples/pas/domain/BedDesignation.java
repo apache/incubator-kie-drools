@@ -42,8 +42,7 @@ public class BedDesignation extends AbstractPersistable {
         this.admissionPart = admissionPart;
     }
 
-    @PlanningVariable(strengthComparatorClass = BedStrengthComparator.class)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "bedList")
+    @PlanningVariable(valueRangeProviderRefs = {"bedRange"}, strengthComparatorClass = BedStrengthComparator.class)
     public Bed getBed() {
         return bed;
     }

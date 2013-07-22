@@ -21,11 +21,13 @@ import java.lang.annotation.Target;
 import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solution.Solution;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -51,7 +53,17 @@ public @interface PlanningVariable {
     String mappedBy() default "";
 
     /**
-     * A nullable planning variable will automatically add the planning value null to the {@link ValueRange}.
+     * Any {@link ValueRangeProvider} annotation on a {@link PlanningSolution} or {@link PlanningEntity}
+     * will automatically be registered with it's {@link ValueRangeProvider#id()}.
+     * <p/>
+     * There should be at least 1 valueRangeRef (unless {@link #mappedBy()} is true).
+     * @return 1 (or more) registered {@link ValueRangeProvider#id()}
+     */
+    String[] valueRangeProviderRefs() default {};
+
+    /**
+     * A nullable planning variable will automatically add the planning value null
+     * to the {@link ValueRangeProvider}'s range.
      * <p/>
      * In repeated planning use cases, it's recommended to specify a {@link #reinitializeVariableEntityFilter()}
      * for every nullable planning variable too.

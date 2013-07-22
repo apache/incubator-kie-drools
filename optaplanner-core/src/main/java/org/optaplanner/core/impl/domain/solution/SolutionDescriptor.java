@@ -33,10 +33,12 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
@@ -82,22 +84,23 @@ public class SolutionDescriptor {
         entityDescriptorMap.put(entityDescriptor.getPlanningEntityClass(), entityDescriptor);
     }
 
-    public void processAnnotations() {
-        processSolutionAnnotations();
-        processPropertyAnnotations();
+    public void processAnnotations(DescriptorPolicy descriptorPolicy) {
+        processSolutionAnnotations(descriptorPolicy);
+        processMethodAnnotations(descriptorPolicy);
+        processPropertyAnnotations(descriptorPolicy);
     }
 
-    private void processSolutionAnnotations() {
+    private void processSolutionAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningSolution solutionAnnotation = solutionClass.getAnnotation(PlanningSolution.class);
         if (solutionAnnotation == null) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") has been specified as a solution in the configuration," +
                     " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
-        processSolutionCloner(solutionAnnotation);
+        processSolutionCloner(descriptorPolicy, solutionAnnotation);
     }
 
-    private void processSolutionCloner(PlanningSolution solutionAnnotation) {
+    private void processSolutionCloner(DescriptorPolicy descriptorPolicy, PlanningSolution solutionAnnotation) {
         Class<? extends SolutionCloner> solutionClonerClass = solutionAnnotation.solutionCloner();
         if (solutionClonerClass == PlanningSolution.NullSolutionCloner.class) {
             solutionClonerClass = null;
@@ -113,7 +116,16 @@ public class SolutionDescriptor {
         }
     }
 
-    private void processPropertyAnnotations() {
+    private void processMethodAnnotations(DescriptorPolicy descriptorPolicy) {
+        // This only iterates public methods
+        for (Method method : solutionClass.getMethods()) {
+            if (method.isAnnotationPresent(ValueRangeProvider.class)) {
+                descriptorPolicy.addFromSolutionValueRangeProvider(method);
+            }
+        }
+    }
+
+    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         boolean noPlanningEntityPropertyAnnotation = true;
         for (PropertyDescriptor propertyDescriptor : solutionBeanInfo.getPropertyDescriptors()) {
             PropertyAccessor propertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
@@ -141,9 +153,9 @@ public class SolutionDescriptor {
         }
     }
 
-    public void afterAnnotationsProcessed() {
+    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         for (PlanningEntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            entityDescriptor.afterAnnotationsProcessed();
+            entityDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         }
     }
 

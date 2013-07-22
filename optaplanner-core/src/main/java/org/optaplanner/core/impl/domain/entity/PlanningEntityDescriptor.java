@@ -28,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
@@ -66,24 +68,25 @@ public class PlanningEntityDescriptor {
         }
     }
 
-    public void processAnnotations() {
-        processEntityAnnotations();
-        processPropertyAnnotations();
+    public void processAnnotations(DescriptorPolicy descriptorPolicy) {
+        processEntityAnnotations(descriptorPolicy);
+        processMethodAnnotations(descriptorPolicy);
+        processPropertyAnnotations(descriptorPolicy);
     }
 
-    private void processEntityAnnotations() {
+    private void processEntityAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningEntity entityAnnotation = planningEntityClass.getAnnotation(PlanningEntity.class);
         if (entityAnnotation == null) {
             throw new IllegalStateException("The planningEntityClass (" + planningEntityClass
                     + ") has been specified as a planning entity in the configuration," +
                     " but does not have a " + PlanningEntity.class.getSimpleName() + " annotation.");
         }
-        processMovable(entityAnnotation);
+        processMovable(descriptorPolicy, entityAnnotation);
         planningEntitySorter = new PlanningEntitySorter();
-        processDifficulty(entityAnnotation);
+        processDifficulty(descriptorPolicy, entityAnnotation);
     }
 
-    private void processMovable(PlanningEntity entityAnnotation) {
+    private void processMovable(DescriptorPolicy descriptorPolicy, PlanningEntity entityAnnotation) {
         Class<? extends SelectionFilter> movableEntitySelectionFilterClass = entityAnnotation.movableEntitySelectionFilter();
         if (movableEntitySelectionFilterClass == PlanningEntity.NullMovableEntitySelectionFilter.class) {
             movableEntitySelectionFilterClass = null;
@@ -94,7 +97,7 @@ public class PlanningEntityDescriptor {
         }
     }
 
-    private void processDifficulty(PlanningEntity entityAnnotation) {
+    private void processDifficulty(DescriptorPolicy descriptorPolicy, PlanningEntity entityAnnotation) {
         Class<? extends Comparator> difficultyComparatorClass = entityAnnotation.difficultyComparatorClass();
         if (difficultyComparatorClass == PlanningEntity.NullDifficultyComparator.class) {
             difficultyComparatorClass = null;
@@ -126,7 +129,16 @@ public class PlanningEntityDescriptor {
         }
     }
 
-    private void processPropertyAnnotations() {
+    private void processMethodAnnotations(DescriptorPolicy descriptorPolicy) {
+        // This only iterates public methods
+        for (Method method : planningEntityClass.getMethods()) {
+            if (method.isAnnotationPresent(ValueRangeProvider.class)) {
+                descriptorPolicy.addFromEntityValueRangeProvider(method);
+            }
+        }
+    }
+
+    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PropertyDescriptor[] propertyDescriptors = planningEntityBeanInfo.getPropertyDescriptors();
         genuineVariableDescriptorMap = new LinkedHashMap<String, PlanningVariableDescriptor>(propertyDescriptors.length);
         shadowVariableDescriptorMap = new LinkedHashMap<String, ShadowVariableDescriptor>(propertyDescriptors.length);
@@ -145,12 +157,12 @@ public class PlanningEntityDescriptor {
                     PlanningVariableDescriptor variableDescriptor = new PlanningVariableDescriptor(
                             this, propertyDescriptor);
                     genuineVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
-                    variableDescriptor.processAnnotations();
+                    variableDescriptor.processAnnotations(descriptorPolicy);
                 } else {
                     ShadowVariableDescriptor variableDescriptor = new ShadowVariableDescriptor(
                             this, propertyDescriptor);
                     shadowVariableDescriptorMap.put(propertyDescriptor.getName(), variableDescriptor);
-                    variableDescriptor.processAnnotations();
+                    variableDescriptor.processAnnotations(descriptorPolicy);
                 }
             }
         }
@@ -161,12 +173,12 @@ public class PlanningEntityDescriptor {
         }
     }
 
-    public void afterAnnotationsProcessed() {
+    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {
-            variableDescriptor.afterAnnotationsProcessed();
+            variableDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         }
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorMap.values()) {
-            shadowVariableDescriptor.afterAnnotationsProcessed();
+            shadowVariableDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         }
     }
 

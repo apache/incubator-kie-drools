@@ -26,6 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
@@ -71,6 +72,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
     }
 
     @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "vehicleRange")
     public List<VrpVehicle> getVehicleList() {
         return vehicleList;
     }
@@ -80,6 +82,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
     }
 
     @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "customerRange")
     public List<VrpCustomer> getCustomerList() {
         return customerList;
     }

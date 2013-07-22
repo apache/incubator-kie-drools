@@ -65,10 +65,8 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     }
 
     // HACK TODO remove ArrivalTimeUpdatingVariableListener.class and add it only for VrpTimeWindowedCustomer
-    @PlanningVariable(chained = true, variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
-    @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "vehicleList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "customerList")})
+    @PlanningVariable(chained = true, valueRangeProviderRefs = {"vehicleRange", "customerRange"},
+            variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
     public VrpStandstill getPreviousStandstill() {
         return previousStandstill;
     }

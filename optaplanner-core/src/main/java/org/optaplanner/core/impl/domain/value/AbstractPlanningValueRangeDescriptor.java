@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
 
-    protected PlanningVariableDescriptor variableDescriptor;
+    protected final PlanningVariableDescriptor variableDescriptor;
 
     public AbstractPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor) {
         this.variableDescriptor = variableDescriptor;

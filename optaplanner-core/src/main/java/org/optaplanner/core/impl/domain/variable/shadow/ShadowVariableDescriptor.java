@@ -17,15 +17,15 @@
 package org.optaplanner.core.impl.domain.variable.shadow;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Comparator;
 
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.api.domain.value.ValueRanges;
+import org.apache.commons.lang.ArrayUtils;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
@@ -45,23 +45,23 @@ public class ShadowVariableDescriptor {
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
     }
 
-    public void processAnnotations() {
-        processPropertyAnnotations();
+    public void processAnnotations(DescriptorPolicy descriptorPolicy) {
+        processPropertyAnnotations(descriptorPolicy);
     }
 
-    private void processPropertyAnnotations() {
+    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
         // Keep in sync with PlanningVariableDescriptor.processPropertyAnnotations()
-        processMappedBy(planningVariableAnnotation);
-        processNullable(planningVariableAnnotation);
-        processChained(planningVariableAnnotation);
-        processStrength(planningVariableAnnotation);
-        processVariableListeners(planningVariableAnnotation);
-        processValueRangeAnnotation(planningVariableAnnotation);
+        processMappedBy(descriptorPolicy, planningVariableAnnotation);
+        processNullable(descriptorPolicy, planningVariableAnnotation);
+        processChained(descriptorPolicy, planningVariableAnnotation);
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation);
+        processStrength(descriptorPolicy, planningVariableAnnotation);
+        processVariableListeners(descriptorPolicy, planningVariableAnnotation);
     }
 
-    private void processMappedBy(PlanningVariable planningVariableAnnotation) {
+    private void processMappedBy(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         mappedBy = planningVariableAnnotation.mappedBy();
         if (mappedBy.equals("")) {
             throw new IllegalStateException("Impossible state: the " + PlanningEntityDescriptor.class
@@ -70,7 +70,7 @@ public class ShadowVariableDescriptor {
         }
     }
 
-    private void processNullable(PlanningVariable planningVariableAnnotation) {
+    private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         boolean nullable = planningVariableAnnotation.nullable();
         if (nullable) {
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -91,7 +91,7 @@ public class ShadowVariableDescriptor {
         }
     }
 
-    private void processChained(PlanningVariable planningVariableAnnotation) {
+    private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         boolean chained = planningVariableAnnotation.chained();
         if (chained) {
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -102,7 +102,18 @@ public class ShadowVariableDescriptor {
         }
     }
 
-    private void processStrength(PlanningVariable planningVariableAnnotation) {
+    private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
+        String[] valueRangeRefs = planningVariableAnnotation.valueRangeProviderRefs();
+        if (!ArrayUtils.isEmpty(valueRangeRefs)) {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + entityDescriptor.getPlanningEntityClass()
+                    + ") has shadow PlanningVariable annotated property (" + variablePropertyAccessor.getName()
+                    + ") with mappedBy (" + planningVariableAnnotation.mappedBy()
+                    + ") which has a non-empty valueRangeProviderRefs (" + Arrays.toString(valueRangeRefs) + ").");
+        }
+    }
+
+    private void processStrength(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         Class<? extends Comparator> strengthComparatorClass = planningVariableAnnotation.strengthComparatorClass();
         if (strengthComparatorClass != PlanningVariable.NullStrengthComparator.class) {
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -122,7 +133,7 @@ public class ShadowVariableDescriptor {
         }
     }
 
-    private void processVariableListeners(PlanningVariable planningVariableAnnotation) {
+    private void processVariableListeners(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         Class<? extends PlanningVariableListener>[] variableListenerClasses
                 = planningVariableAnnotation.variableListenerClasses();
         if (variableListenerClasses.length != 0) {
@@ -134,25 +145,7 @@ public class ShadowVariableDescriptor {
         }
     }
 
-    private void processValueRangeAnnotation(PlanningVariable planningVariableAnnotation) {
-        Method propertyGetter = variablePropertyAccessor.getReadMethod();
-        if (propertyGetter.isAnnotationPresent(ValueRange.class)) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
-                    + ") has shadow PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                    + ") with mappedBy (" + planningVariableAnnotation.mappedBy()
-                    + ") which has a " + ValueRange.class + " annotation.");
-        }
-        if (propertyGetter.isAnnotationPresent(ValueRanges.class)) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
-                    + ") has shadow PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                    + ") with mappedBy (" + planningVariableAnnotation.mappedBy()
-                    + ") which has a " + ValueRanges.class + " annotation.");
-        }
-    }
-
-    public void afterAnnotationsProcessed() {
+    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         Class<?> masterClass = getVariablePropertyType();
         PlanningEntityDescriptor mappedByEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
                 .getEntityDescriptor(masterClass);

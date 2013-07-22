@@ -47,8 +47,7 @@ public class TestdataLeadEntity extends TestdataObject {
         this.value = value;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "leadEntityList")
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getValue() {
         return value;
     }

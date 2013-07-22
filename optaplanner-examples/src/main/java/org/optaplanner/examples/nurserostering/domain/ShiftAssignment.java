@@ -56,8 +56,8 @@ public class ShiftAssignment extends AbstractPersistable {
         this.indexInShift = indexInShift;
     }
 
-    @PlanningVariable(strengthComparatorClass = EmployeeStrengthComparator.class)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "employeeList")
+    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"},
+            strengthComparatorClass = EmployeeStrengthComparator.class)
     public Employee getEmployee() {
         return employee;
     }

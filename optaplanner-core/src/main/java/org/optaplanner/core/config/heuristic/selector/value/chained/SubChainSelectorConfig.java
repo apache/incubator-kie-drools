@@ -17,7 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.value.chained;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -105,8 +105,8 @@ public class SubChainSelectorConfig extends SelectorConfig {
                 minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector."
-                    + " Check your @" + ValueRange.class.getSimpleName() + " annotations.");
+                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new DefaultSubChainSelector((EntityIndependentValueSelector) valueSelector,
                 inheritedSelectionOrder.toRandomSelectionBoolean(),

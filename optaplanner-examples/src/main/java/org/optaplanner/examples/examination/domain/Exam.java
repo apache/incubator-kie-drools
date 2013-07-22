@@ -66,8 +66,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
         this.examBefore = examBefore;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "periodList")
+    @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
     public Period getPeriod() {
         return period;
     }
@@ -76,8 +75,7 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
         this.period = period;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "roomList")
+    @PlanningVariable(valueRangeProviderRefs = {"roomRange"})
     public Room getRoom() {
         return room;
     }

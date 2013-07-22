@@ -3509,3 +3509,119 @@ After in *.java:
     public VrpStandstill getPreviousStandstill() {...}
 If you used it on a non-chained variable (which is highly unlikely), look into ValueSelector filtering
 and let us know that such use cases exist (by creating a jira in our issue tracker).
+
+[MAJOR] The annotation @ValueRange on a planning variable has been replaced by
+@ValueRangeProvider on the providing method itself and @PlanningVariable(valueRangeProviderRefs) on planning variable.
+ValueRangeType.FROM_SOLUTION_PROPERTY has been removed:
+Before in *.java:
+    @PlanningEntity
+    public class CloudProcess ... {
+        ...
+
+        @PlanningVariable()
+        @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "computerList")
+        public CloudComputer getComputer() {
+            return computer;
+        }
+    }
+    @PlanningSolution
+    public class CloudBalance ... {
+
+        ...
+
+        public List<CloudComputer> getComputerList() {
+            return computerList;
+        }
+    }
+After in *.java:
+    @PlanningEntity
+    public class CloudProcess ... {
+        ...
+
+        @PlanningVariable(valueRangeProviderRefs = {"computerRange"})
+        public CloudComputer getComputer() {
+            return computer;
+        }
+    }
+    @PlanningSolution
+    public class CloudBalance ... {
+        ...
+
+        @ValueRangeProvider(id = "computerRange")
+        public List<CloudComputer> getComputerList() {
+            return computerList;
+        }
+    }
+Consequently, the annotation @ValueRanges has been removed.
+Before in *.java:
+    @PlanningEntity
+    public class Visit ... {
+        ...
+
+        @PlanningVariable(chained = true)
+        @ValueRanges({
+                @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
+                @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList")})
+        public Standstill getPreviousStandstill() {...}
+    }
+    @PlanningSolution
+    public class TravelingSalesmanTour ... {
+        ...
+
+        public List<Domicile> getDomicileList() {...}
+
+        @PlanningEntityCollectionProperty
+        public List<Visit> getVisitList() {...}
+    }
+After in *.java:
+    @PlanningEntity
+    public class Visit ... {
+        ...
+
+        @PlanningVariable(chained = true, valueRangeProviderRefs = {"domicileRange", "visitRange"})
+        public Standstill getPreviousStandstill() {...}
+    }
+    @PlanningSolution
+    public class TravelingSalesmanTour ... {
+        ...
+
+        @ValueRangeProvider(id = "domicileRange")
+        public List<Domicile> getDomicileList() {...}
+
+        @PlanningEntityCollectionProperty
+        @ValueRangeProvider(id = "visitRange")
+        public List<Visit> getVisitList() {...}
+    }
+ValueRangeType.FROM_ENTITY_PROPERTY has been removed too:
+Before in *.java:
+    @PlanningEntity
+    public class Allocation ... {
+        ...
+
+        @PlanningVariable()
+        @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "executionModeRange")
+        public ExecutionMode getExecutionMode() {
+            return executionMode;
+        }
+
+        public List<ExecutionMode> getExecutionModeRange() {
+            return job.getExecutionModeList();
+        }
+    }
+After in *.java:
+    @PlanningEntity
+    public class Allocation ... {
+        ...
+
+        @PlanningVariable(valueRangeProviderRefs = {"executionModeRange"})
+        public ExecutionMode getExecutionMode() {
+            return executionMode;
+        }
+
+        @ValueRangeProvider(id = "executionModeRange")
+        public List<ExecutionMode> getExecutionModeRange() {
+            return job.getExecutionModeList();
+        }
+    }
+
+[MINOR] The ValueRangeType.UNDEFINED has been removed: it is no longer supported.

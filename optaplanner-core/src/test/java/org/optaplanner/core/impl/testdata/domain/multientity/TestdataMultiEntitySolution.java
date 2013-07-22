@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;
@@ -50,6 +51,7 @@ public class TestdataMultiEntitySolution extends TestdataObject implements Solut
         super(code);
     }
 
+    @ValueRangeProvider(id = "valueRange")
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -59,6 +61,7 @@ public class TestdataMultiEntitySolution extends TestdataObject implements Solut
     }
 
     @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "leadEntityRange")
     public List<TestdataLeadEntity> getLeadEntityList() {
         return leadEntityList;
     }

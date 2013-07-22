@@ -57,8 +57,8 @@ public class Lecture extends AbstractPersistable {
         this.lectureIndexInCourse = lectureIndexInCourse;
     }
 
-    @PlanningVariable(strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "periodList")
+    @PlanningVariable(valueRangeProviderRefs = {"periodRange"},
+            strengthWeightFactoryClass = PeriodStrengthWeightFactory.class)
     public Period getPeriod() {
         return period;
     }
@@ -67,8 +67,8 @@ public class Lecture extends AbstractPersistable {
         this.period = period;
     }
 
-    @PlanningVariable(strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "roomList")
+    @PlanningVariable(valueRangeProviderRefs = {"roomRange"},
+            strengthWeightFactoryClass = RoomStrengthWeightFactory.class)
     public Room getRoom() {
         return room;
     }

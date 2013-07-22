@@ -47,8 +47,7 @@ public class TestdataSetBasedEntity extends TestdataObject {
         this.value = value;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueSet")
+    @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getValue() {
         return value;
     }

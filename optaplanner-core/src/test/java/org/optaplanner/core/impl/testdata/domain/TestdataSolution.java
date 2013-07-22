@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;
@@ -44,6 +45,7 @@ public class TestdataSolution extends TestdataObject implements Solution<SimpleS
         super(code);
     }
 
+    @ValueRangeProvider(id = "valueRange")
     public List<TestdataValue> getValueList() {
         return valueList;
     }

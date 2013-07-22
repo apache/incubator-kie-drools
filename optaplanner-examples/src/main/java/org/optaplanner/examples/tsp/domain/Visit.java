@@ -20,9 +20,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.api.domain.value.ValueRangeType;
-import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.solver.LatitudeVisitDifficultyComparator;
@@ -44,10 +41,7 @@ public class Visit extends AbstractPersistable implements Standstill {
         this.city = city;
     }
 
-    @PlanningVariable(chained = true)
-    @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "domicileList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "visitList")})
+    @PlanningVariable(chained = true, valueRangeProviderRefs = {"domicileRange", "visitRange"})
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }

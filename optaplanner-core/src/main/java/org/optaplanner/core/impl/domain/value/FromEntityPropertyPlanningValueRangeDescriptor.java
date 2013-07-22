@@ -16,75 +16,46 @@
 
 package org.optaplanner.core.impl.domain.value;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.impl.domain.common.PropertyAccessor;
-import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.impl.domain.common.DefaultReadMethodAccessor;
+import org.optaplanner.core.impl.domain.common.ReadMethodAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
 
-    private PropertyAccessor rangePropertyAccessor;
+    private ReadMethodAccessor rangeReadMethodAccessor;
 
     public FromEntityPropertyPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
-            ValueRange valueRangeAnnotation) {
+            Method readMethod) {
         super(variableDescriptor);
-        validate(valueRangeAnnotation);
-        processValueRangeAnnotation(valueRangeAnnotation);
-    }
-
-    private void validate(ValueRange valueRangeAnnotation) {
-        if (!valueRangeAnnotation.solutionProperty().equals("")) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
-                    + ") of type (" + valueRangeAnnotation.type() + ") with a non-empty solutionProperty ("
-                    + valueRangeAnnotation.solutionProperty() + ").");
+        rangeReadMethodAccessor = new DefaultReadMethodAccessor(readMethod);
+        ValueRangeProvider valueRangeProviderAnnotation = readMethod.getAnnotation(ValueRangeProvider.class);
+        if (valueRangeProviderAnnotation == null) {
+            throw new IllegalStateException("The readMethod (" + readMethod
+                    + ") must have a valueRangeProviderAnnotation (" + valueRangeProviderAnnotation + ").");
         }
-        if (valueRangeAnnotation.planningEntityProperty().equals("")) {
-            throw new IllegalArgumentException("The planningEntityClass ("
-                    + variableDescriptor.getEntityDescriptor().getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
-                    + ") of type (" + valueRangeAnnotation.type() + ") with an empty planningEntityProperty ("
-                    + valueRangeAnnotation.planningEntityProperty() + ").");
-        }
+        processValueRangeProviderAnnotation(valueRangeProviderAnnotation);
     }
 
-    private void processValueRangeAnnotation(ValueRange valueRangeAnnotation) {
-        processPlanningEntityProperty(valueRangeAnnotation);
-    }
-
-    private void processPlanningEntityProperty(ValueRange valueRangeAnnotation) {
-        String planningEntityProperty = valueRangeAnnotation.planningEntityProperty();
+    private void processValueRangeProviderAnnotation(ValueRangeProvider valueRangeProviderAnnotation) {
         PlanningEntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
-        rangePropertyAccessor = new ReflectionPropertyAccessor(
-                entityDescriptor.getPropertyDescriptor(planningEntityProperty));
-        if (rangePropertyAccessor == null) {
-            String exceptionMessage = "The planningEntityClass ("
-                    + entityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
-                    + ") that refers to a planningEntityProperty (" + planningEntityProperty
-                    + ") that does not exist.";
-            if (planningEntityProperty.length() >= 2 && Character.isUpperCase(planningEntityProperty.charAt(1))) {
-                String correctedPlanningEntityProperty = planningEntityProperty.substring(0, 1).toUpperCase()
-                        + planningEntityProperty.substring(1);
-                exceptionMessage += " But it probably needs to be correctedPlanningEntityProperty ("
-                        + correctedPlanningEntityProperty + ") instead because the JavaBeans spec states" +
-                        " the first letter should be a upper case if the second is upper case.";
-            }
-            throw new IllegalArgumentException(exceptionMessage);
-        }
-        if (!Collection.class.isAssignableFrom(rangePropertyAccessor.getPropertyType())) {
+        if (!Collection.class.isAssignableFrom(rangeReadMethodAccessor.getReturnType())) {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + entityDescriptor.getPlanningEntityClass()
-                    + ") has a PlanningVariable annotated property (" + variableDescriptor.getVariableName()
-                    + ") that refers to a planningEntityProperty (" + planningEntityProperty
-                    + ") that does not return a Collection.");
+                    + ") has a " + PlanningVariable.class.getSimpleName()
+                    + " annotated property (" + variableDescriptor.getVariableName()
+                    + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                    + " annotated method (" + rangeReadMethodAccessor.getReadMethod()
+                    + ") that does not return a " + Collection.class.getSimpleName() + ".");
         }
     }
 
@@ -105,7 +76,7 @@ public class FromEntityPropertyPlanningValueRangeDescriptor extends AbstractPlan
     }
 
     public Collection<?> extractValuesFromEntity(Object entity) {
-        return (Collection<?>) rangePropertyAccessor.executeGetter(entity);
+        return (Collection<?>) rangeReadMethodAccessor.read(entity);
     }
 
     public long getValueCount(Solution solution, Object entity) {

@@ -40,8 +40,7 @@ public class SeatDesignation extends AbstractPersistable {
         this.guest = guest;
     }
 
-    @PlanningVariable
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "seatList")
+    @PlanningVariable(valueRangeProviderRefs = {"seatRange"})
     public Seat getSeat() {
         return seat;
     }

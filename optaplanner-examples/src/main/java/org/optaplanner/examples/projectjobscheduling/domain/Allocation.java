@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -86,8 +87,8 @@ public class Allocation extends AbstractPersistable {
         this.successorAllocationList = successorAllocationList;
     }
 
-    @PlanningVariable(variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
-    @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "executionModeRange")
+    @PlanningVariable(valueRangeProviderRefs = {"executionModeRange"},
+            variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
     public ExecutionMode getExecutionMode() {
         return executionMode;
     }
@@ -96,8 +97,8 @@ public class Allocation extends AbstractPersistable {
         this.executionMode = executionMode;
     }
 
-    @PlanningVariable(variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
-    @ValueRange(type = ValueRangeType.FROM_PLANNING_ENTITY_PROPERTY, planningEntityProperty = "delayRange")
+    @PlanningVariable(valueRangeProviderRefs = {"delayRange"},
+            variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
     public Integer getDelay() {
         return delay;
     }
@@ -144,11 +145,13 @@ public class Allocation extends AbstractPersistable {
     // Ranges
     // ************************************************************************
 
+    @ValueRangeProvider(id = "executionModeRange")
     public List<ExecutionMode> getExecutionModeRange() {
         return job.getExecutionModeList();
     }
 
     private List<Integer> delayRange; // TODO remove this HACK
+    @ValueRangeProvider(id = "delayRange")
     public List<Integer> getDelayRange() {
         // TODO IMPROVE ME
         if (delayRange == null) {

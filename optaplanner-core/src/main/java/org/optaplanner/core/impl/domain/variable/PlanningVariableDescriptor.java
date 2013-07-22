@@ -19,10 +19,14 @@ package org.optaplanner.core.impl.domain.variable;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRanges;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -30,11 +34,11 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionPropertyAccessor;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.value.CompositePlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.FromSolutionPropertyPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.value.UndefinedPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.domain.variable.shadow.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -68,24 +72,24 @@ public class PlanningVariableDescriptor {
         variablePropertyAccessor = new ReflectionPropertyAccessor(propertyDescriptor);
     }
 
-    public void processAnnotations() {
-        processPropertyAnnotations();
+    public void processAnnotations(DescriptorPolicy descriptorPolicy) {
+        processPropertyAnnotations(descriptorPolicy);
     }
 
-    private void processPropertyAnnotations() {
+    private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
         valueSorter = new PlanningValueSorter();
         // Keep in sync with ShadowVariableDescriptor.processPropertyAnnotations()
-        processMappedBy(planningVariableAnnotation);
-        processNullable(planningVariableAnnotation);
-        processChained(planningVariableAnnotation);
-        processStrength(planningVariableAnnotation);
-        processVariableListeners(planningVariableAnnotation);
-        processValueRangeAnnotation(planningVariableAnnotation);
+        processMappedBy(descriptorPolicy, planningVariableAnnotation);
+        processNullable(descriptorPolicy, planningVariableAnnotation);
+        processChained(descriptorPolicy, planningVariableAnnotation);
+        processValueRangeRefs(descriptorPolicy, planningVariableAnnotation);
+        processStrength(descriptorPolicy, planningVariableAnnotation);
+        processVariableListeners(descriptorPolicy, planningVariableAnnotation);
     }
 
-    private void processMappedBy(PlanningVariable planningVariableAnnotation) {
+    private void processMappedBy(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         String mappedBy = planningVariableAnnotation.mappedBy();
         if (!mappedBy.equals("")) {
             throw new IllegalStateException("Impossible state: the " + PlanningEntityDescriptor.class
@@ -94,7 +98,7 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processNullable(PlanningVariable planningVariableAnnotation) {
+    private void processNullable(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         nullable = planningVariableAnnotation.nullable();
         if (nullable && variablePropertyAccessor.getPropertyType().isPrimitive()) {
             throw new IllegalArgumentException("The planningEntityClass ("
@@ -116,7 +120,7 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processChained(PlanningVariable planningVariableAnnotation) {
+    private void processChained(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         chained = planningVariableAnnotation.chained();
         if (chained && !variablePropertyAccessor.getPropertyType().isAssignableFrom(
                 entityDescriptor.getPlanningEntityClass())) {
@@ -135,7 +139,46 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processStrength(PlanningVariable planningVariableAnnotation) {
+    private void processValueRangeRefs(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
+        String[] valueRangeProviderRefs = planningVariableAnnotation.valueRangeProviderRefs();
+        if (ArrayUtils.isEmpty(valueRangeProviderRefs)) {
+            throw new IllegalArgumentException("The planningEntityClass (" + entityDescriptor.getPlanningEntityClass()
+                    + ") has a " + PlanningVariable.class.getSimpleName()
+                    + " annotated property (" + variablePropertyAccessor.getName()
+                    + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
+        }
+        List<PlanningValueRangeDescriptor> valueRangeDescriptorList
+                = new ArrayList<PlanningValueRangeDescriptor>(valueRangeProviderRefs.length);
+        for (String valueRangeProviderRef : valueRangeProviderRefs) {
+            valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef));
+        }
+        if (valueRangeDescriptorList.size() == 1) {
+            valueRangeDescriptor = valueRangeDescriptorList.get(0);
+        } else {
+            valueRangeDescriptor = new CompositePlanningValueRangeDescriptor(this, valueRangeDescriptorList);
+        }
+    }
+
+    private PlanningValueRangeDescriptor buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
+            String valueRangeProviderRef) {
+        if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
+            Method readMethod = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
+            return new FromSolutionPropertyPlanningValueRangeDescriptor(this, readMethod);
+        } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
+            Method readMethod = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
+            return new FromEntityPropertyPlanningValueRangeDescriptor(this, readMethod);
+        } else {
+            throw new IllegalArgumentException("The planningEntityClass ("
+                    + entityDescriptor.getPlanningEntityClass()
+                    + ") has a " + PlanningVariable.class.getSimpleName()
+                    + ") annotated property (" + variablePropertyAccessor.getName()
+                    + ") with a valueRangeProviderRef (" + valueRangeProviderRef
+                    + ") that does not exist on an registered " + PlanningSolution.class.getSimpleName()
+                    + " or " + PlanningEntity.class.getSimpleName() + ".");
+        }
+    }
+
+    private void processStrength(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         Class<? extends Comparator> strengthComparatorClass = planningVariableAnnotation.strengthComparatorClass();
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
@@ -169,7 +212,7 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processVariableListeners(PlanningVariable planningVariableAnnotation) {
+    private void processVariableListeners(DescriptorPolicy descriptorPolicy, PlanningVariable planningVariableAnnotation) {
         Class<? extends PlanningVariableListener>[] variableListenerClasses
                 = planningVariableAnnotation.variableListenerClasses();
         nonMappedByVariableListeners = new ArrayList<PlanningVariableListener>(variableListenerClasses.length);
@@ -179,50 +222,7 @@ public class PlanningVariableDescriptor {
         }
     }
 
-    private void processValueRangeAnnotation(PlanningVariable planningVariableAnnotation) {
-        Method propertyGetter = variablePropertyAccessor.getReadMethod();
-        ValueRange valueRangeAnnotation = propertyGetter.getAnnotation(ValueRange.class);
-        ValueRanges valueRangesAnnotation = propertyGetter.getAnnotation(ValueRanges.class);
-        if (valueRangeAnnotation != null) {
-            if (valueRangesAnnotation != null) {
-                throw new IllegalArgumentException("The planningEntityClass ("
-                        + entityDescriptor.getPlanningEntityClass()
-                        + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                        + ") that has a @ValueRange and @ValueRanges annotation: fold them into 1 @ValueRanges.");
-            }
-            valueRangeDescriptor = buildValueRangeDescriptor(valueRangeAnnotation);
-        } else {
-            if (valueRangesAnnotation == null) {
-                throw new IllegalArgumentException("The planningEntityClass ("
-                        + entityDescriptor.getPlanningEntityClass()
-                        + ") has a PlanningVariable annotated property (" + variablePropertyAccessor.getName()
-                        + ") that has no @ValueRange or @ValueRanges annotation.");
-            }
-            List<PlanningValueRangeDescriptor> valueRangeDescriptorList
-                    = new ArrayList<PlanningValueRangeDescriptor>(valueRangesAnnotation.value().length);
-            for (ValueRange partialValueRangeAnnotation : valueRangesAnnotation.value()) {
-                valueRangeDescriptorList.add(buildValueRangeDescriptor(partialValueRangeAnnotation));
-            }
-            valueRangeDescriptor = new CompositePlanningValueRangeDescriptor(this, valueRangeDescriptorList);
-        }
-    }
-
-    private PlanningValueRangeDescriptor buildValueRangeDescriptor(ValueRange valueRangeAnnotation) {
-        switch (valueRangeAnnotation.type()) {
-            case FROM_SOLUTION_PROPERTY:
-                return new FromSolutionPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
-            case FROM_PLANNING_ENTITY_PROPERTY:
-                return new FromEntityPropertyPlanningValueRangeDescriptor(this, valueRangeAnnotation);
-            case UNDEFINED:
-                return new UndefinedPlanningValueRangeDescriptor(this, valueRangeAnnotation);
-            default:
-                throw new IllegalStateException("The valueRangeType ("
-                        + valueRangeAnnotation.type() + ") is not implemented.");
-        }
-        // TODO Support plugging in other ValueRange implementations
-    }
-
-    public void afterAnnotationsProcessed() {
+    public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
         // Do nothing
     }
 

@@ -19,13 +19,14 @@ package org.optaplanner.core.impl.heuristic.selector.value;
 import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 
 /**
- * Selects values from the {@link ValueRange) for a {@link PlanningVariable} annotated property.
+ * Selects values from the {@link ValueRangeProvider) for a {@link PlanningVariable} annotated property.
  * @see AbstractValueSelector
  */
 public interface ValueSelector extends Selector {

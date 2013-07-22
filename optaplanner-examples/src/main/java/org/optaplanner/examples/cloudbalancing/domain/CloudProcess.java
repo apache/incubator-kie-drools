@@ -20,8 +20,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.api.domain.value.ValueRangeType;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
@@ -62,8 +60,8 @@ public class CloudProcess extends AbstractPersistable {
         this.requiredNetworkBandwidth = requiredNetworkBandwidth;
     }
 
-    @PlanningVariable(strengthComparatorClass = CloudComputerStrengthComparator.class)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "computerList")
+    @PlanningVariable(valueRangeProviderRefs = {"computerRange"},
+            strengthComparatorClass = CloudComputerStrengthComparator.class)
     public CloudComputer getComputer() {
         return computer;
     }

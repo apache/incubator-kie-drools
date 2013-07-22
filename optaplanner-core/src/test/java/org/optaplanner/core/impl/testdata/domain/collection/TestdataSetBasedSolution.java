@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.solution.Solution;
@@ -47,6 +48,7 @@ public class TestdataSetBasedSolution extends TestdataObject implements Solution
         super(code);
     }
 
+    @ValueRangeProvider(id = "valueRange")
     public Set<TestdataValue> getValueSet() {
         return valueSet;
     }

@@ -31,10 +31,7 @@ public class TestdataChainedEntity extends TestdataObject implements TestdataCha
         this.chainedObject = chainedObject;
     }
 
-    @PlanningVariable(chained = true)
-    @ValueRanges({
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "chainedAnchorList"),
-            @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "chainedEntityList")})
+    @PlanningVariable(valueRangeProviderRefs = {"chainedAnchorRange", "chainedEntityRange"}, chained = true)
     public TestdataChainedObject getChainedObject() {
         return chainedObject;
     }

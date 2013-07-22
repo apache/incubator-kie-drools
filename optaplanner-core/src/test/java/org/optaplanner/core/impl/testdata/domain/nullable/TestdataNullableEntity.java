@@ -31,8 +31,7 @@ public class TestdataNullableEntity extends TestdataObject {
         this.value = value;
     }
 
-    @PlanningVariable(nullable = true)
-    @ValueRange(type = ValueRangeType.FROM_SOLUTION_PROPERTY, solutionProperty = "valueList")
+    @PlanningVariable(valueRangeProviderRefs = "valueRange", nullable = true)
     public TestdataValue getValue() {
         return value;
     }

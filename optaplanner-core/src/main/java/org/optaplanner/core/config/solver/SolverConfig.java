@@ -31,6 +31,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.bestsolution.BestSolutionRecaller;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.SolverPhase;
@@ -182,8 +183,9 @@ public class SolverConfig {
         if (solutionClass == null) {
             throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
         }
+        DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
-        solutionDescriptor.processAnnotations();
+        solutionDescriptor.processAnnotations(descriptorPolicy);
         if (CollectionUtils.isEmpty(planningEntityClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <planningEntityClass> in the solver configuration.");
@@ -192,9 +194,9 @@ public class SolverConfig {
             PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, planningEntityClass);
             solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
-            entityDescriptor.processAnnotations();
+            entityDescriptor.processAnnotations(descriptorPolicy);
         }
-        solutionDescriptor.afterAnnotationsProcessed();
+        solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         return solutionDescriptor;
     }
 

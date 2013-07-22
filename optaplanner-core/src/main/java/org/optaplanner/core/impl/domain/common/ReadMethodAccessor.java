@@ -18,18 +18,12 @@ package org.optaplanner.core.impl.domain.common;
 
 import java.lang.reflect.Method;
 
-public interface PropertyAccessor {
+public interface ReadMethodAccessor {
 
-    String getName();
-
-    Class<?> getPropertyType();
+    Class<?> getReturnType();
 
     Method getReadMethod();
 
-    Method getWriteMethod();
-
-    Object executeGetter(Object bean);
-
-    void executeSetter(Object bean, Object value);
+    Object read(Object object);
 
 }

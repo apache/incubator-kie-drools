@@ -27,6 +27,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
+import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
@@ -78,6 +79,7 @@ public class Examination extends AbstractPersistable
         this.topicList = topicList;
     }
 
+    @ValueRangeProvider(id = "periodRange")
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -86,6 +88,7 @@ public class Examination extends AbstractPersistable
         this.periodList = periodList;
     }
 
+    @ValueRangeProvider(id = "roomRange")
     public List<Room> getRoomList() {
         return roomList;
     }

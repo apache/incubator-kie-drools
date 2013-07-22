@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain;
 
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
@@ -24,14 +25,16 @@ public class TestdataUtils {
 
     public static SolutionDescriptor buildSolutionDescriptor(Class<? extends Solution> solutionClass,
             Class<?> ... entityClasses) {
+        DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
-        solutionDescriptor.processAnnotations();
+        solutionDescriptor.processAnnotations(descriptorPolicy);
         for (Class<?> entityClass : entityClasses) {
             PlanningEntityDescriptor entityDescriptor = new PlanningEntityDescriptor(
                     solutionDescriptor, entityClass);
             solutionDescriptor.addPlanningEntityDescriptor(entityDescriptor);
-            entityDescriptor.processAnnotations();
+            entityDescriptor.processAnnotations(descriptorPolicy);
         }
+        solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         return solutionDescriptor;
     }
 
