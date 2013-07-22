@@ -16,10 +16,8 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.PropagationContextImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;

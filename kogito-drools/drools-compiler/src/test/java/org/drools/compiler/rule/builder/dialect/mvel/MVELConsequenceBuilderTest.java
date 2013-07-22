@@ -23,7 +23,6 @@ import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.CompositeObjectSinkAdapterTest;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
@@ -117,7 +116,7 @@ public class MVELConsequenceBuilderTest {
         
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
-                                                pctxFactory.createPropagationContextImpl(1, 1, null, tuple, null),
+                                                pctxFactory.createPropagationContext(1, 1, null, tuple, null),
                                                 new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( (InternalRuleBase) ruleBase, null )), null, null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( wm );
         kbHelper.setActivation( item );

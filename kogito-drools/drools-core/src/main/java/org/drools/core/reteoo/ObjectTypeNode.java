@@ -29,8 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.PropagationContextImpl;
-import org.drools.core.common.RetePropagationContextFactory;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
@@ -426,8 +425,8 @@ public class ObjectTypeNode extends ObjectSource
         // to working memories
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContextImpl propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
-                                                                                                       null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+                                                                                               null, null, null);
             propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );
             this.source.updateSink( this,
                                     propagationContext,
@@ -465,8 +464,6 @@ public class ObjectTypeNode extends ObjectSource
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      *
-     * @inheritDoc
-     * @see org.drools.core.common.BaseNode#remove(RuleRemovalContext, ReteooBuilder, org.drools.core.common.BaseNode, org.drools.core.common.InternalWorkingMemory[])
      */
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,

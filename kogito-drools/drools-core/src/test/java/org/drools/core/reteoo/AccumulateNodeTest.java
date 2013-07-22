@@ -27,9 +27,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -72,7 +70,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         BuildContext buildContext = new BuildContext(ruleBase,
                                                      ruleBase.getReteooBuilder().getIdGenerator());
@@ -371,7 +369,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should not add to left memory, since we are in sequential mode
         this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f0),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
                                    this.workingMemory );
         // check memories 
         assertNull( this.memory.getLeftTupleMemory() );
@@ -386,7 +384,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
-                                   pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, f1),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f1),
                                    this.workingMemory );
         assertNull( this.memory.getLeftTupleMemory() );
         assertEquals( "Wrong number of elements in matching objects list ",

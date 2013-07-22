@@ -22,6 +22,7 @@ import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.KnowledgeHelperFactory;
 import org.drools.core.common.AgendaFactory;
 import org.drools.core.common.DefaultAgendaFactory;
+import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
@@ -81,17 +82,17 @@ public class KieComponentFactory implements Serializable {
         nodeFactory = new PhreakNodeFactory();
     }
 
-    public static PhreakNodeFactory getDefaultNodeFactoryProvider() {
+    public static NodeFactory getDefaultNodeFactoryProvider() {
         return new PhreakNodeFactory();
     }
 
-    private PropagationContextFactory propagationFactory = new RetePropagationContextFactory();
+    private PropagationContextFactory propagationFactory = new PhreakPropagationContextFactory();
 
-    public void setPropagationContextFactory( PropagationContextFactory factory ) {
+    public void setPropagationContextFactory(PropagationContextFactory factory) {
         propagationFactory = factory;
     }
 
-    public  PropagationContextFactory getPropagationContextFactory() {
+    public PropagationContextFactory getPropagationContextFactory() {
         return propagationFactory;
     }
 

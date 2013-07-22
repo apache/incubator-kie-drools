@@ -1,10 +1,9 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.Memory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.PropagationContext;
 
 public class LeftTupleEntry implements TupleEntry {
@@ -38,7 +37,7 @@ public class LeftTupleEntry implements TupleEntry {
     public String toString() {
         return "LeftTupleEntry{" +
                "lt=" + lt +
-               ", pctx=" + PropagationContextImpl.intEnumToString(pctx) +
+               ", pctx=" + RetePropagationContext.intEnumToString(pctx) +
                ", nodeMemory=" + nodeMemory +
                '}';
     }

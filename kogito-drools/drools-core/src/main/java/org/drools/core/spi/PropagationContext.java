@@ -80,4 +80,7 @@ public interface PropagationContext
 
     MarshallerReaderContext getReaderContext();
 
+    void cleanReaderContext();
+
+    void setEntryPoint(EntryPoint entryPoint);
 }

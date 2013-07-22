@@ -28,7 +28,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.ObjectHashMap;
@@ -176,7 +175,7 @@ public class RightInputAdapterNode extends ObjectSource
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
             this.tupleSource.updateSink( this,
                                          propagationContext,
                                          workingMemory );

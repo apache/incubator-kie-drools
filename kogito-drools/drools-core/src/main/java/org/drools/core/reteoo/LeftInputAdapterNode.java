@@ -26,14 +26,13 @@ import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.common.UpdateContext;
@@ -261,7 +260,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst() ));
 
                 if ( log.isTraceEnabled() ) {
-                    log.trace( "LeftInputAdapterNode insert size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PropagationContextImpl.intEnumToString(pctx), leftTuple);
+                    log.trace( "LeftInputAdapterNode insert size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), RetePropagationContext.intEnumToString(pctx), leftTuple);
                 }
             }  else {
                 stagedInsertWasEmpty = sm.getStagedLeftTuples().addInsert( leftTuple );
@@ -321,7 +320,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
             sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
             if ( log.isTraceEnabled() ) {
-                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PropagationContextImpl.intEnumToString( context ), leftTuple );
+                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), RetePropagationContext.intEnumToString(context), leftTuple );
             }
         } else {
             stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);

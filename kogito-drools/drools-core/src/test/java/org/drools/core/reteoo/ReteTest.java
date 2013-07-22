@@ -138,21 +138,21 @@ public class ReteTest extends DroolsTestCase {
         final DefaultFactHandle h1 = new DefaultFactHandle(1,
                                                            new ArrayList());
         rete.assertObject(h1,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         // LinkedList matches two ObjectTypeNodes        
         h1.setObject(new LinkedList());
         rete.assertObject(h1,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         ClassObjectTypeConf conf = (ClassObjectTypeConf) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());
@@ -191,11 +191,11 @@ public class ReteTest extends DroolsTestCase {
                                                            string);
 
         rete.assertObject(h1,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         assertLength(0,
@@ -207,11 +207,11 @@ public class ReteTest extends DroolsTestCase {
                                                            list);
 
         rete.assertObject(h2,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         final List asserted = sink1.getAsserted();
@@ -340,11 +340,11 @@ public class ReteTest extends DroolsTestCase {
                                                            string);
 
         rete.assertObject(h1,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
         assertLength(0,
                      sink1.getAsserted());
@@ -358,19 +358,19 @@ public class ReteTest extends DroolsTestCase {
 
         // need  to assert first, to force it to build  up the cache
         rete.assertObject(h2,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         rete.retractObject(h2,
-                           pctxFactory.createPropagationContextImpl(0,
-                                                                    PropagationContext.INSERTION,
-                                                                    null,
-                                                                    null,
-                                                                    null),
+                           pctxFactory.createPropagationContext(0,
+                                                                PropagationContext.INSERTION,
+                                                                null,
+                                                                null,
+                                                                null),
                            workingMemory);
 
         final List retracted = sink1.getRetracted();
@@ -404,11 +404,11 @@ public class ReteTest extends DroolsTestCase {
                                                            cheese);
 
         rete.assertObject(h1,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         final Object[] results = (Object[]) sink1.getAsserted().get(0);
@@ -450,11 +450,11 @@ public class ReteTest extends DroolsTestCase {
                                                            cheese);
 
         rete.assertObject(h1,
-                          pctxFactory.createPropagationContextImpl(0,
-                                                                   PropagationContext.INSERTION,
-                                                                   null,
-                                                                   null,
-                                                                   null),
+                          pctxFactory.createPropagationContext(0,
+                                                               PropagationContext.INSERTION,
+                                                               null,
+                                                               null,
+                                                               null),
                           workingMemory);
 
         final Object[] results = (Object[]) sink1.getAsserted().get(0);

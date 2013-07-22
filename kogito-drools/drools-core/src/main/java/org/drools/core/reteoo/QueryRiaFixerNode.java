@@ -20,15 +20,23 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.AbstractWorkingMemory.QueryRiaFixerNodeFixer;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.TupleStartEqualsConstraint;
+import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
+import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
 
@@ -104,8 +112,8 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory = context.getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(workingMemory.getNextPropagationIdCounter(),  PropagationContext.RULE_ADDITION,
-                                                                                                   null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+                                                                                               null, null, null);
             this.leftInput.updateSink( this,
                                          propagationContext,
                                          workingMemory );
@@ -293,5 +301,105 @@ public class QueryRiaFixerNode extends LeftTupleSource
             throw new IllegalArgumentException( tupleSink + " is not a sink for this node" );
         }
         betaNode = null;
+    }
+
+    public static class QueryRiaFixerNodeFixer
+            implements
+            WorkingMemoryAction {
+        private PropagationContext context;
+
+        private LeftTuple leftTuple;
+        private BetaNode  node;
+        private boolean   retract;
+
+        public QueryRiaFixerNodeFixer(PropagationContext context) {
+            this.context = context;
+        }
+
+        public QueryRiaFixerNodeFixer(PropagationContext context,
+                                      LeftTuple leftTuple,
+                                      boolean retract,
+                                      BetaNode node) {
+            this.context = context;
+            this.leftTuple = leftTuple;
+            this.retract = retract;
+            this.node = node;
+        }
+
+        public QueryRiaFixerNodeFixer(MarshallerReaderContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void write(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public Action serialize(MarshallerWriteContext context) throws IOException {
+            throw new UnsupportedOperationException("Should not be present in network on serialisation");
+        }
+
+        public void execute(InternalWorkingMemory workingMemory) {
+            leftTuple.setLeftTupleSink(this.node);
+            if (leftTuple.getFirstChild() == null) {
+                this.node.assertLeftTuple(leftTuple,
+                                          context,
+                                          workingMemory);
+            } else {
+                if (retract) {
+                    this.node.getSinkPropagator().propagateRetractLeftTuple(leftTuple,
+                                                                            context,
+                                                                            workingMemory);
+                } else {
+                    this.node.getSinkPropagator().propagateModifyChildLeftTuple(leftTuple,
+                                                                                context,
+                                                                                workingMemory,
+                                                                                true);
+                }
+            }
+
+            if (leftTuple.getLeftParent() == null) {
+                // It's not an open query, as we aren't recording parent chains, so we need to clear out right memory
+
+                Object node = workingMemory.getNodeMemory(this.node);
+
+                RightTupleMemory rightMemory = null;
+                if (node instanceof BetaMemory) {
+                    rightMemory = ((BetaMemory) node).getRightTupleMemory();
+                } else if (node instanceof AccumulateMemory) {
+                    rightMemory = ((AccumulateMemory) node).betaMemory.getRightTupleMemory();
+                }
+
+
+                final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
+                TupleStartEqualsConstraintContextEntry contextEntry = new TupleStartEqualsConstraintContextEntry();
+                contextEntry.updateFromTuple(workingMemory, leftTuple);
+
+                FastIterator rightIt = rightMemory.fastIterator();
+                RightTuple temp = null;
+                for (RightTuple rightTuple = rightMemory.getFirst(leftTuple, (InternalFactHandle) context.getFactHandle(), rightIt); rightTuple != null; ) {
+                    temp = (RightTuple) rightIt.next(rightTuple);
+
+                    if (constraint.isAllowedCachedLeft(contextEntry, rightTuple.getFactHandle())) {
+                        rightMemory.remove(rightTuple);
+                    }
+                    rightTuple = temp;
+                }
+            }
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            execute(((StatefulKnowledgeSessionImpl) kruntime).getInternalWorkingMemory());
+        }
+
+        public String toString() {
+            return "[QueryRiaFixerNodeFixer leftTuple=" + leftTuple + ",\n        retract=" + retract + "]\n";
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+
+        public void readExternal(ObjectInput in) throws IOException,
+                ClassNotFoundException {
+        }
     }
 }

@@ -26,7 +26,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -98,11 +98,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     @Test
     public void testAssertObject() throws Exception {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,
-                                                                                    PropagationContext.INSERTION,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0,
+                                                                                PropagationContext.INSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                null);
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
@@ -149,11 +149,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     @Test
     public void testAssertObjectSequentialMode() {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,
-                                                                                    PropagationContext.INSERTION,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0,
+                                                                                PropagationContext.INSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                null);
 
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         conf.setPhreakEnabled(false);
@@ -249,11 +249,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
     public void testRetractObject() throws Exception {
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,
-                                                                                    PropagationContext.INSERTION,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0,
+                                                                                PropagationContext.INSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                null);
 
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) ruleBase.newStatefulSession();
 
@@ -302,11 +302,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         // Tests that when new child is added only the last added child is
         // updated
         // When the attachingNewNode flag is set
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,
-                                                                                    PropagationContext.INSERTION,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0,
+                                                                                PropagationContext.INSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                null);
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
         final AbstractWorkingMemory workingMemory = new AbstractWorkingMemory(1,
                                                                               (ReteooRuleBase) ruleBase);
@@ -348,7 +348,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
                      sink2.getAsserted().size());
 
         objectTypeNode.updateSink(sink2,
-                                  new PropagationContextImpl(),
+                                  new RetePropagationContext(),
                                   workingMemory);
 
         assertEquals(2,
@@ -415,11 +415,11 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
 
     @Test
     public void testAssertObjectWithShadowEnabledNoDefaultConstr() throws Exception {
-        final PropagationContext context = pctxFactory.createPropagationContextImpl(0,
-                                                                                    PropagationContext.INSERTION,
-                                                                                    null,
-                                                                                    null,
-                                                                                    null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0,
+                                                                                PropagationContext.INSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                null);
 
         ReteooRuleBase ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase();
         IdGenerator idGenerator = ruleBase.getReteooBuilder().getIdGenerator();

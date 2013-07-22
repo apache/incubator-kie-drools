@@ -167,8 +167,8 @@ public class NamedEntryPoint
             }
 
             InternalFactHandle handle = null;
-            final PropagationContext propagationContext = this.pctxFactory.createPropagationContextImpl(this.wm.getNextPropagationIdCounter(), PropagationContext.INSERTION, rule,
-                                                                                                       (activation == null) ? null : activation.getTuple(), handle, entryPoint);
+            final PropagationContext propagationContext = this.pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.INSERTION, rule,
+                                                                                                    (activation == null) ? null : activation.getTuple(), handle, entryPoint);
 
             if ( this.wm.isSequential() ) {
                 handle = createHandle( object,
@@ -246,7 +246,7 @@ public class NamedEntryPoint
                                 
                                 // remove logical dependencies
                                 final InternalFactHandle justifiedHandle = key.getFactHandle();
-                                ((PropagationContextImpl)propagationContext).setFactHandle( justifiedHandle ); // necessary to stop recursive retractions
+                                ((RetePropagationContext)propagationContext).setFactHandle( justifiedHandle ); // necessary to stop recursive retractions
                                 TruthMaintenanceSystemHelper.clearLogicalDependencies( justifiedHandle, propagationContext );
                                 
                                 // now update existing handle to new value
@@ -352,8 +352,8 @@ public class NamedEntryPoint
         }
         PropagationContext propagationContext = pctx;
         if ( pctx == null ) {
-            propagationContext = pctxFactory.createPropagationContextImpl(this.wm.getNextPropagationIdCounter(), PropagationContext.INSERTION,
-                                                                          rule, (activation == null) ? null : activation.getTuple(), handle, entryPoint);
+            propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                                                                      rule, (activation == null) ? null : activation.getTuple(), handle, entryPoint);
         }
 
         this.entryPointNode.assertObject( handle,
@@ -457,9 +457,9 @@ public class NamedEntryPoint
             this.handleFactory.increaseFactHandleRecency( handle );
             Rule rule = activation == null ? null : activation.getRule();
 
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(this.wm.getNextPropagationIdCounter(), PropagationContext.MODIFICATION,
-                                                                                                   rule, (activation == null) ? null : activation.getTuple(),
-                                                                                                   handle, entryPoint, mask, modifiedClass, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.MODIFICATION,
+                                                                                               rule, (activation == null) ? null : activation.getTuple(),
+                                                                                               handle, entryPoint, mask, modifiedClass, null);
             
             if ( typeConf.isTMSEnabled() ) {
                 EqualityKey newKey = tms.get( object );
@@ -579,9 +579,9 @@ public class NamedEntryPoint
                 // release resources so that they can be GC'ed
                 activation.getPropagationContext().releaseResources();
             }
-            final PropagationContext propagationContext = pctxFactory.createPropagationContextImpl(this.wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
-                                                                                                   rule, (activation == null) ? null : activation.getTuple(),
-                                                                                                   handle, this.entryPoint);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(this.wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
+                                                                                               rule, (activation == null) ? null : activation.getTuple(),
+                                                                                               handle, this.entryPoint);
 
             this.entryPointNode.retractObject( handle,
                                                propagationContext,

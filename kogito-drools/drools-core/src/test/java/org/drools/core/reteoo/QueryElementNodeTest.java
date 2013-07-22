@@ -22,7 +22,6 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -51,7 +50,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
         this.buildContext = new BuildContext( ruleBase,
                                               ((ReteooRuleBase) ruleBase).getReteooBuilder().getIdGenerator() );
         PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContextImpl(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
         this.workingMemory = new InstrumentedWorkingMemory( 0,
                                        (InternalRuleBase) this.ruleBase );

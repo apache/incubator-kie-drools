@@ -20,7 +20,6 @@ import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 import java.io.IOException;
@@ -38,14 +37,13 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
-import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.UpdateContext;
@@ -56,7 +54,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -311,7 +308,7 @@ public abstract class BetaNode extends LeftTupleSource
             stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
             if ( log.isTraceEnabled() ) {
-                log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString( pctx ), rightTuple );
+                log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), RetePropagationContext.intEnumToString(pctx), rightTuple );
             }
         }  else {
             stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
@@ -346,7 +343,7 @@ public abstract class BetaNode extends LeftTupleSource
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
             if ( log.isTraceEnabled() ) {
-                log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PropagationContextImpl.intEnumToString( rightTuple.getPropagationContext() ), rightTuple );
+                log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), RetePropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
             }
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );

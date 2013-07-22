@@ -43,9 +43,8 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.PropagationContextImpl;
+import org.drools.core.common.RetePropagationContext;
 import org.drools.core.common.QueryElementFactHandle;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.EnvironmentFactory;
@@ -126,12 +125,6 @@ public class ProtobufInputMarshaller {
 
     /**
      * Create a new session into which to read the stream data
-     * @param context
-     * @param id
-     * @param executor
-     * @return
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
     public static AbstractWorkingMemory readSession(MarshallerReaderContext context,
                                                     int id) throws IOException,
@@ -248,7 +241,7 @@ public class ProtobufInputMarshaller {
         readNodeMemories( context,
                           _session.getRuleData() );
 
-        List<PropagationContextImpl> pctxs = new ArrayList<PropagationContextImpl>();
+        List<PropagationContext> pctxs = new ArrayList<PropagationContext>();
 
         readInitialFactHandle( context,
                                _session.getRuleData(),
@@ -372,7 +365,7 @@ public class ProtobufInputMarshaller {
 
     private static void readInitialFactHandle(MarshallerReaderContext context,
                                               RuleData _session,
-                                              List<PropagationContextImpl> pctxs) {
+                                              List<PropagationContext> pctxs) {
         int ifhId = context.wm.getInitialFactHandle().getId();
         context.handles.put( ifhId,
                              context.wm.getInitialFactHandle() );
@@ -440,7 +433,7 @@ public class ProtobufInputMarshaller {
     public static void readFactHandles(MarshallerReaderContext context,
                                        org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint _ep,
                                        ObjectStore objectStore,
-                                       List<PropagationContextImpl> pctxs) throws IOException,
+                                       List<PropagationContext> pctxs) throws IOException,
                                                                           ClassNotFoundException {
         InternalWorkingMemory wm = context.wm;
 
@@ -474,14 +467,14 @@ public class ProtobufInputMarshaller {
     private static void assertHandleIntoOTN(MarshallerReaderContext context,
                                             InternalWorkingMemory wm,
                                             InternalFactHandle handle,
-                                            List<PropagationContextImpl> pctxs) {
+                                            List<PropagationContext> pctxs) {
         Object object = handle.getObject();
         InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) handle.getEntryPoint();
         ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
 
         PropagationContextFactory pctxFactory =((InternalRuleBase)wm.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-        PropagationContextImpl propagationContext = pctxFactory.createPropagationContextImpl(wm.getNextPropagationIdCounter(), PropagationContext.INSERTION, null, null, handle, ep.getEntryPoint(), context);
+        PropagationContext propagationContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.INSERTION, null, null, handle, ep.getEntryPoint(), context);
         // keeping this list for a later cleanup is necessary because of the lazy propagations that might occur
         pctxs.add( propagationContext );
 
@@ -494,8 +487,8 @@ public class ProtobufInputMarshaller {
         wm.executeQueuedActions();
     }
 
-    private static void cleanReaderContexts(List<PropagationContextImpl> pctxs) {
-        for ( PropagationContextImpl ctx : pctxs ) {
+    private static void cleanReaderContexts(List<PropagationContext> pctxs) {
+        for ( PropagationContext ctx : pctxs ) {
             ctx.cleanReaderContext();
         }
     }
@@ -551,7 +544,7 @@ public class ProtobufInputMarshaller {
     public static void readTruthMaintenanceSystem(MarshallerReaderContext context,
                                                   SessionEntryPoint wmep,
                                                   ProtobufMessages.EntryPoint _ep,
-                                                  List<PropagationContextImpl> pctxs) throws IOException,
+                                                  List<PropagationContext> pctxs) throws IOException,
                                                                                      ClassNotFoundException {
         TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
 
