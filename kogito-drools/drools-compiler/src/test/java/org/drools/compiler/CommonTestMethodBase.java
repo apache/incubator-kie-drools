@@ -41,7 +41,7 @@ import org.kie.api.runtime.conf.KieSessionOption;
  * in drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
-    public static PhreakOption phreak = PhreakOption.DISABLED;
+    public static PhreakOption phreak = PhreakOption.ENABLED;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
