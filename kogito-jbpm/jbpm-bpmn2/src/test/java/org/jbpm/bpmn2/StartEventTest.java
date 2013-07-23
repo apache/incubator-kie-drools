@@ -26,6 +26,7 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -202,7 +203,7 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testSignalStartDynamic() throws Exception {
         KieBase kbase = createKnowledgeBase();
         ksession = createKnowledgeSession(kbase);
