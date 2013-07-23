@@ -104,9 +104,6 @@ public class PropagationQueuingNode extends ObjectSource
         return NodeTypeEnums.PropagationQueuingNode;
     }     
 
-    /**
-     * @see org.kie.reteoo.ObjectSource#updateSink(org.kie.reteoo.ObjectSink, org.kie.spi.PropagationContext, org.kie.common.InternalWorkingMemory)
-     */
     public void updateSink( ObjectSink sink,
                             PropagationContext context,
                             InternalWorkingMemory workingMemory ) {
@@ -129,30 +126,18 @@ public class PropagationQueuingNode extends ObjectSource
         // this node does not require update, so nothing else to do.
     }
 
-    /**
-     * @see org.kie.reteoo.ObjectSinkNode#getNextObjectSinkNode()
-     */
     public ObjectSinkNode getNextObjectSinkNode() {
         return this.nextObjectSinkNode;
     }
 
-    /**
-     * @see org.kie.reteoo.ObjectSinkNode#getPreviousObjectSinkNode()
-     */
     public ObjectSinkNode getPreviousObjectSinkNode() {
         return this.previousObjectSinkNode;
     }
 
-    /**
-     * @see org.kie.reteoo.ObjectSinkNode#setNextObjectSinkNode(org.kie.reteoo.ObjectSinkNode)
-     */
     public void setNextObjectSinkNode( ObjectSinkNode next ) {
         this.nextObjectSinkNode = next;
     }
 
-    /**
-     * @see org.kie.reteoo.ObjectSinkNode#setPreviousObjectSinkNode(org.kie.reteoo.ObjectSinkNode)
-     */
     public void setPreviousObjectSinkNode( ObjectSinkNode previous ) {
         this.previousObjectSinkNode = previous;
     }
@@ -161,9 +146,6 @@ public class PropagationQueuingNode extends ObjectSource
         return true;
     }
 
-    /**
-     * @see org.kie.reteoo.ObjectSink#assertObject(InternalFactHandle, org.kie.spi.PropagationContext, org.kie.common.InternalWorkingMemory)
-     */
     public void assertObject( InternalFactHandle factHandle,
                               PropagationContext context,
                               InternalWorkingMemory workingMemory ) {

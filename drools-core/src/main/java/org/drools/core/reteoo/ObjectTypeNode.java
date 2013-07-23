@@ -416,22 +416,6 @@ public class ObjectTypeNode extends ObjectSource
      */
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled()) {
-            return;
-        }
-
-        // we need to call updateSink on Rete, because someone
-        // might have already added facts matching this ObjectTypeNode
-        // to working memories
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
-                                                                                               null, null, null);
-            propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );
-            this.source.updateSink( this,
-                                    propagationContext,
-                                    workingMemory );
-        }
     }
 
     public void networkUpdated(UpdateContext updateContext) {

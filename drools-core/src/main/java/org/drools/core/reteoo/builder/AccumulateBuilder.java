@@ -91,9 +91,11 @@ public class AccumulateBuilder
             existSubNetwort = true;
         }
 
+        NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
+
         if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
             // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-            context.setTupleSource( (LeftTupleSource) utils.attachNode( context, new QueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
+            context.setTupleSource( (LeftTupleSource) utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
         }
 
         final BetaConstraints resultsBinder = utils.createBetaNodeConstraint( context,
@@ -103,15 +105,15 @@ public class AccumulateBuilder
                                                                              context.getBetaconstraints(),
                                                                              false );
 
-        AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
-                                                                                                            context.getTupleSource(),
-                                                                                                            context.getObjectSource(),
-                                                                                                            (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
-                                                                                                            sourceBinder,
-                                                                                                            resultsBinder,
-                                                                                                            accumulate,
-                                                                                                            existSubNetwort,
-                                                                                                            context );
+        AccumulateNode accNode = nfactory.buildAccumulateNode(context.getNextId(),
+                                                              context.getTupleSource(),
+                                                              context.getObjectSource(),
+                                                              (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray(new AlphaNodeFieldConstraint[resultAlphaConstraints.size()]),
+                                                              sourceBinder,
+                                                              resultsBinder,
+                                                              accumulate,
+                                                              existSubNetwort,
+                                                              context);
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                                                     accNode ) );
