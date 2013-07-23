@@ -40,10 +40,11 @@ public class EntryPointBuilder
         
         EntryPointNode epn = context.getRuleBase().getRete().getEntryPointNode( entry );
         if( epn == null ) {
+            NodeFactory nFactory = context.getComponentFactory().getNodeFactoryService();
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      new EntryPointNode( context.getNextId(),
-                                                                                          context.getRuleBase().getRete(),
-                                                                                          context ) ) );
+                                                                      nFactory.buildEntryPointNode( context.getNextId(),
+                                                                                                    context.getRuleBase().getRete(),
+                                                                                                    context ) ) );
         } else {
             context.setObjectSource( epn );
         }

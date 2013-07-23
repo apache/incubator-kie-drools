@@ -226,8 +226,7 @@ public class ReteQueryElementNode extends QueryElementNode {
         return new ReteUnificationNodeViewChangedEventListener(leftTuple,
                                                                varIndexes,
                                                                this,
-                                                               tupleMemoryEnabled,
-                                                               isUnlinkingEnabled());
+                                                               tupleMemoryEnabled );
     }
 
     public static class ReteUnificationNodeViewChangedEventListener extends UnificationNodeViewChangedEventListener
@@ -237,9 +236,8 @@ public class ReteQueryElementNode extends QueryElementNode {
         public ReteUnificationNodeViewChangedEventListener(LeftTuple leftTuple,
                                                            int[] variables,
                                                            QueryElementNode node,
-                                                           boolean tupleMemoryEnabled,
-                                                           boolean unlinkedEnabled) {
-            super(leftTuple, variables, node, tupleMemoryEnabled, unlinkedEnabled);
+                                                           boolean tupleMemoryEnabled) {
+            super(leftTuple, variables, node, tupleMemoryEnabled);
         }
 
         public void rowAdded(final Rule rule,

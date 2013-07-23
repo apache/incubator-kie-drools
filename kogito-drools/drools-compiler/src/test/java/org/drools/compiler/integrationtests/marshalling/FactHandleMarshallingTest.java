@@ -31,7 +31,12 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
+<<<<<<< HEAD
 import org.drools.core.rule.EntryPointId;
+=======
+import org.drools.core.reteoo.builder.NodeFactory;
+import org.drools.core.rule.EntryPoint;
+>>>>>>> DROOLS-198 Separate Rete and Phreak
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
@@ -57,9 +62,13 @@ public class FactHandleMarshallingTest {
     private InternalFactHandle createEventFactHandle(AbstractWorkingMemory wm, RuleBase ruleBase) { 
         // EntryPointNode
         Rete rete = ((ReteooRuleBase) ruleBase).getRete();
+
+        NodeFactory nFacotry = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory().getNodeFactoryService();
+
         RuleBasePartitionId partionId = new RuleBasePartitionId("P-MAIN");
-        EntryPointNode entryPointNode = new EntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
+        EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
         EntryPoint wmEntryPoint = new NamedEntryPoint(EntryPointId.DEFAULT, entryPointNode, wm);
+
         EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         
         return factHandle;

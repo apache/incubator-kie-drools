@@ -131,6 +131,7 @@ public class MVELPredicateBuilderTest {
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
         final InternalFactHandle f1 = (InternalFactHandle) wm.insert( stilton );
         final LeftTupleImpl tuple = new LeftTupleImpl( f0, sink, true );
+        f0.removeLeftTuple(tuple);
 
         final PredicateContextEntry predicateContext = (PredicateContextEntry) predicate.createContextEntry();
         predicateContext.leftTuple = tuple;

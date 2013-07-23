@@ -104,8 +104,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     private transient ObjectTypeNode objectTypeNode;
 
-    private boolean unlinkingEnabled;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -148,8 +146,6 @@ public abstract class BetaNode extends LeftTupleSource
 
         initMasks(context, leftInput);
 
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
-
         ObjectTypeNode node = null;
 
         if (context.isStreamMode() && getObjectTypeNode().getObjectType().isEvent()) {
@@ -157,10 +153,6 @@ public abstract class BetaNode extends LeftTupleSource
         } else {
             streamMode = false;
         }
-    }
-
-    public boolean isUnlinkingEnabled() {
-        return unlinkingEnabled;
     }
 
     @Override
@@ -236,7 +228,6 @@ public abstract class BetaNode extends LeftTupleSource
         objectMemory = in.readBoolean();
         tupleMemoryEnabled = in.readBoolean();
         concurrentRightTupleMemory = in.readBoolean();
-        unlinkingEnabled = in.readBoolean();
         rightDeclaredMask = in.readLong();
         rightInferredMask = in.readLong();
         rightNegativeMask = in.readLong();
@@ -265,7 +256,6 @@ public abstract class BetaNode extends LeftTupleSource
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
-        out.writeBoolean( unlinkingEnabled );
         out.writeLong( rightDeclaredMask );
         out.writeLong( rightInferredMask );
         out.writeLong( rightNegativeMask );

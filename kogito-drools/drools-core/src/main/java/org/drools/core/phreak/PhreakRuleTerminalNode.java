@@ -211,33 +211,36 @@ public class PhreakRuleTerminalNode {
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-            PropagationContext pctx = leftTuple.getPropagationContext();
-            pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
-
-            RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
-
-            //if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
-            if ( leftTuple.getMemory() != null && (pctx.getType() != PropagationContext.EXPIRATION  ) ) {
-                // Expiration propagations should not be removed from the list, as they still need to fire
-                executor.removeLeftTuple(leftTuple);
-            }
-
-            Activation activation = (Activation) leftTuple;
-            activation.setMatched( false );
-
-            InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
-            agenda.cancelActivation( leftTuple,
-                                     pctx,
-                                     wm,
-                                     activation,
-                                     rtnLt.getTerminalNode() );
-
-            rtnLt.setActivationUnMatchListener(null);
+            doLeftDelete(wm, executor, leftTuple);
 
             leftTuple.clearStaged();
-            leftTuple.setObject(null);
             leftTuple = next;
         }
+    }
+
+    public static void doLeftDelete(InternalWorkingMemory wm, RuleExecutor executor, LeftTuple leftTuple) {PropagationContext pctx = leftTuple.getPropagationContext();
+        pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
+
+        RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
+
+        //if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
+        if ( leftTuple.getMemory() != null && (pctx.getType() != PropagationContext.EXPIRATION  ) ) {
+            // Expiration propagations should not be removed from the list, as they still need to fire
+            executor.removeLeftTuple(leftTuple);
+        }
+
+        Activation activation = (Activation) leftTuple;
+        activation.setMatched( false );
+
+        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
+        agenda.cancelActivation( leftTuple,
+                                 pctx,
+                                 wm,
+                                 activation,
+                                 rtnLt.getTerminalNode() );
+
+        rtnLt.setActivationUnMatchListener(null);
+        leftTuple.setObject(null);
     }
 
     private static boolean blockedByLockOnActive(Rule rule,

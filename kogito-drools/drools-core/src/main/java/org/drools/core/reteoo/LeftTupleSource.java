@@ -290,10 +290,6 @@ public abstract class LeftTupleSource extends BaseNode
         ObjectTypeNode objectTypeNode = getObjectTypeNode();
         return objectTypeNode != null ? objectTypeNode.getObjectType() : null;
     }
-    
-    public boolean isUnlinkingEnabled() {
-        return false;
-    }
 
     public abstract boolean isLeftTupleMemoryEnabled();
 }

@@ -20,6 +20,7 @@ package org.drools.core.reteoo.builder;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -38,6 +39,7 @@ import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.ReteAccumulateNode;
 import org.drools.core.reteoo.ReteConditionalBranchNode;
+import org.drools.core.reteoo.ReteEntryPointNode;
 import org.drools.core.reteoo.ReteEvalConditionNode;
 import org.drools.core.reteoo.ReteExistsNode;
 import org.drools.core.reteoo.ReteFromNode;
@@ -56,6 +58,7 @@ import org.drools.core.reteoo.TraitObjectTypeNode;
 import org.drools.core.reteoo.ReteAlphaNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
@@ -70,6 +73,14 @@ import java.io.Serializable;
 
 public class ReteNodeFactory implements NodeFactory, Serializable {
 
+
+    public EntryPointNode buildEntryPointNode(int id, ObjectSource objectSource, BuildContext context) {
+        return new ReteEntryPointNode(id, objectSource, context);
+    }
+
+    public EntryPointNode buildEntryPointNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, ObjectSource objectSource, EntryPointId entryPoint) {
+        return new ReteEntryPointNode(id, partitionId, partitionsEnabled, objectSource, entryPoint);
+    }
 
     public AlphaNode buildAlphaNode( int id, AlphaNodeFieldConstraint constraint, ObjectSource objectSource, BuildContext context ) {
         return new ReteAlphaNode( id, constraint, objectSource, context );

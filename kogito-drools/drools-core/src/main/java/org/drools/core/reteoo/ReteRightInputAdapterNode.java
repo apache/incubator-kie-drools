@@ -1,8 +1,10 @@
 package org.drools.core.reteoo;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
@@ -122,5 +124,10 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         }
     }
 
+    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+        RiaNodeMemory rianMem = new RiaNodeMemory();
+
+        return rianMem;
+    }
 
 }

@@ -80,8 +80,6 @@ public class EntryPointNode extends ObjectSource
     
     private ObjectTypeNode activationNode;
 
-    private boolean unlinkingEnabled;   
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -111,8 +109,6 @@ public class EntryPointNode extends ObjectSource
                999 ); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;
         this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
-        
-        this.unlinkingEnabled = ((Rete)objectSource).getRuleBase().getConfiguration().isPhreakEnabled();
     }
 
     // ------------------------------------------------------------
@@ -125,14 +121,12 @@ public class EntryPointNode extends ObjectSource
         super.readExternal( in );
         entryPoint = (EntryPointId) in.readObject();
         objectTypeNodes = (Map<ObjectType, ObjectTypeNode>) in.readObject();
-        unlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( entryPoint );
         out.writeObject( objectTypeNodes );
-        out.writeBoolean( unlinkingEnabled );
     }
 
     public short getType() {
@@ -183,7 +177,7 @@ public class EntryPointNode extends ObjectSource
          }
          
          if ( queryNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), unlinkingEnabled );
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
              factHandle.clearLeftTuples();
              factHandle.clearRightTuples();
              
@@ -234,7 +228,7 @@ public class EntryPointNode extends ObjectSource
          }
          
          if ( activationNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), unlinkingEnabled );
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
              factHandle.clearLeftTuples();
              factHandle.clearRightTuples();
              
@@ -287,7 +281,7 @@ public class EntryPointNode extends ObjectSource
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         
         // make a reference to the previous tuples, then null then on the handle
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple(), unlinkingEnabled );
+        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple(), this );
         handle.clearLeftTuples();
         handle.clearRightTuples();
         
@@ -303,15 +297,7 @@ public class EntryPointNode extends ObjectSource
                         (( BetaNode ) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
                     modifyPreviousTuples.removeRightTuple();
 
-                    if ( unlinkingEnabled) {
-                        rightTuple.setPropagationContext( pctx );
-                        BetaMemory bm = BetaNode.getBetaMemory( ( BetaNode ) rightTuple.getRightTupleSink(), wm );
-                        (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
-                    } else {
-                        (( BetaNode ) rightTuple.getRightTupleSink()).retractRightTuple( rightTuple,
-                                                                                         pctx,
-                                                                                         wm );
-                    }
+                    doRightDelete(pctx, wm, rightTuple);
                     
                     rightTuple = modifyPreviousTuples.peekRightTuple();
                 }
@@ -334,23 +320,25 @@ public class EntryPointNode extends ObjectSource
                     if ( otn == null || otn == cachedNodes[i+1] ) break;
 
                     modifyPreviousTuples.removeLeftTuple();
-                    
-                    
-                    if ( unlinkingEnabled ) {
-                        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
-                        LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
-                        LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
-                    } else {
-                        leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
-                                                                     pctx,
-                                                                     wm );                    
-                    }                   
+                    doDeleteObject(pctx, wm, leftTuple);
                 }
             }
         }
         modifyPreviousTuples.retractTuples( pctx, wm );
     }
-    
+
+    public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
+        LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
+        LeftInputAdapterNode.doDeleteObject( leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm );
+    }
+
+    public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
+        rightTuple.setPropagationContext( pctx );
+        BetaMemory bm = BetaNode.getBetaMemory((BetaNode) rightTuple.getRightTupleSink(), wm);
+        (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
+    }
+
     public void modifyObject(InternalFactHandle factHandle,
                                    ModifyPreviousTuples modifyPreviousTuples,
                                    PropagationContext context,

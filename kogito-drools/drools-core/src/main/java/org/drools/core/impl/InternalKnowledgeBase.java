@@ -8,6 +8,4 @@ import org.kie.internal.KnowledgeBase;
 public interface InternalKnowledgeBase extends KnowledgeBase, KieBase {
 
     RuleBase getRuleBase();
-
-    void addProcess(Process process);
 }

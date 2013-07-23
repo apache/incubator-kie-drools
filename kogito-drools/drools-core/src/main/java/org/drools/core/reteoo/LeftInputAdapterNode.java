@@ -70,7 +70,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     protected boolean rootQueryNode;
 
-    protected boolean unlinkingEnabled;
     private   int     segmentMemoryIndex;
 
     public LeftInputAdapterNode() {
@@ -101,8 +100,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         ObjectTypeNode otn = (ObjectTypeNode) current;
         rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(otn.getObjectType());
 
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
-
         if (context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent()) {
             streamMode = true;
         } else {
@@ -116,7 +113,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         objectSource = (ObjectSource) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
         rootQueryNode = in.readBoolean();
-        unlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -124,7 +120,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeObject(objectSource);
         out.writeBoolean(leftTupleMemoryEnabled);
         out.writeBoolean(rootQueryNode);
-        out.writeBoolean(unlinkingEnabled);
     }
 
     public ObjectSource getObjectSource() {
@@ -146,18 +141,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public boolean isRootQueryNode() {
         return this.rootQueryNode;
     }
-    
-    public boolean isUnlinkingEnabled() {
-        return unlinkingEnabled;
-    }
 
     @Override
     public boolean isLeftTupleMemoryEnabled() {
         return leftTupleMemoryEnabled;
-    }
-
-    public void setUnlinkingEnabled(boolean unlinkingEnabled) {
-        this.unlinkingEnabled = unlinkingEnabled;
     }
     
     public ObjectSource getParentObjectSource() {

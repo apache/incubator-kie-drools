@@ -60,8 +60,6 @@ public class QueryElementNode extends LeftTupleSource
     private boolean           tupleMemoryEnabled;
 
     protected boolean           openQuery;
-    
-    private boolean           unlinkedEnabled;
 
     public QueryElementNode() {
         // for serialization
@@ -80,7 +78,6 @@ public class QueryElementNode extends LeftTupleSource
         this.queryElement = queryElement;
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.openQuery = openQuery;
-        this.unlinkedEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
         initMasks( context, tupleSource );
     }
 
@@ -90,7 +87,6 @@ public class QueryElementNode extends LeftTupleSource
         queryElement = (QueryElement) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         openQuery = in.readBoolean();
-        unlinkedEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -98,7 +94,6 @@ public class QueryElementNode extends LeftTupleSource
         out.writeObject( queryElement );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( openQuery );
-        out.writeBoolean( unlinkedEnabled );
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -235,8 +230,7 @@ public class QueryElementNode extends LeftTupleSource
         return new UnificationNodeViewChangedEventListener( leftTuple,
                                                             varIndexes,
                                                             this,
-                                                            tupleMemoryEnabled,
-                                                            this.unlinkedEnabled );
+                                                            tupleMemoryEnabled );
     }
 
     public LeftTupleSource getLeftTupleSource() {
@@ -297,18 +291,14 @@ public class QueryElementNode extends LeftTupleSource
 
         protected boolean            tupleMemoryEnabled;
 
-        protected boolean            unlinkedEnabled;
-
         public UnificationNodeViewChangedEventListener(LeftTuple leftTuple,
                                                        int[] variables,
                                                        QueryElementNode node,
-                                                       boolean tupleMemoryEnabled, 
-                                                       boolean unlinkedEnabled) {
+                                                       boolean tupleMemoryEnabled) {
             this.leftTuple = leftTuple;
             this.variables = variables;
             this.node = node;
             this.tupleMemoryEnabled = tupleMemoryEnabled;
-            this.unlinkedEnabled = unlinkedEnabled;
         }
 
         public InternalFactHandle getFactHandle() {
