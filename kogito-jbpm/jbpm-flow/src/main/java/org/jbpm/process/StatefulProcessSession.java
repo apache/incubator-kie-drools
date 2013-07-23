@@ -38,7 +38,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
@@ -266,11 +266,11 @@ public class StatefulProcessSession implements StatefulKnowledgeSession, Interna
 		throw new UnsupportedOperationException();
 	}
 
-	public SessionEntryPoint getEntryPoint(String name) {
+	public EntryPoint getEntryPoint(String name) {
 		throw new UnsupportedOperationException();
 	}
 
-	public Collection<? extends SessionEntryPoint> getEntryPoints() {
+	public Collection<? extends EntryPoint> getEntryPoints() {
 		throw new UnsupportedOperationException();
 	}
 

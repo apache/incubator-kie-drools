@@ -26,7 +26,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
@@ -167,11 +167,11 @@ public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
         return null;
     }
 
-    public SessionEntryPoint getEntryPoint(String arg0) {
+    public EntryPoint getEntryPoint(String arg0) {
         return null;
     }
 
-    public Collection<? extends SessionEntryPoint> getEntryPoints() {
+    public Collection<? extends EntryPoint> getEntryPoints() {
         return null;
     }
 
