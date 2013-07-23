@@ -208,7 +208,7 @@ public class AbstractWorkingMemory
 
     protected InternalFactHandle initialFactHandle;
 
-    private PropagationContextFactory pctxFactory;
+    protected PropagationContextFactory pctxFactory;
 
     protected SessionConfiguration config;
 
@@ -503,41 +503,32 @@ public class AbstractWorkingMemory
 
     private BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
         BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
-        if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
-            if ( tnodes == null ) {
-                throw new RuntimeException( "Query '" + queryName + "' does not exist");
-            }
+        if ( tnodes == null ) {
+            throw new RuntimeException( "Query '" + queryName + "' does not exist");
+        }
 
-            QueryTerminalNode tnode = ( QueryTerminalNode )  tnodes[0];
-            LeftTupleSource lts = tnode.getLeftTupleSource();
-            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-                lts = lts.getLeftTupleSource();
-            }
-            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) lts;
-            LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lts);
-            SegmentMemory lsmem = lmem.getSegmentMemory();
-            if ( lsmem == null ) {
-                lsmem = SegmentUtilities.createSegmentMemory(lts, this);
-            }
-            LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
+        QueryTerminalNode tnode = ( QueryTerminalNode )  tnodes[0];
+        LeftTupleSource lts = tnode.getLeftTupleSource();
+        while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+            lts = lts.getLeftTupleSource();
+        }
+        LeftInputAdapterNode lian = ( LeftInputAdapterNode ) lts;
+        LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lts);
+        SegmentMemory lsmem = lmem.getSegmentMemory();
+        if ( lsmem == null ) {
+            lsmem = SegmentUtilities.createSegmentMemory(lts, this);
+        }
+        LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
-            List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
-            for ( int i = 0, length = pmems.size(); i < length; i++ ) {
-                PathMemory rm = pmems.get( i );
-
+        List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
+        for ( int i = 0, length = pmems.size(); i < length; i++ ) {
+            PathMemory rm = pmems.get( i );
 
 
-                RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
-                evaluator.getRuleExecutor().setDirty(true);
-                evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
-            }
-        } else {
-            // no need to call retract, as no leftmemory used.
-            getEntryPointNode().assertQuery( handle,
-                                             pCtx,
-                                             this );
 
-            pCtx.evaluateActionQueue( this );
+            RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
+            evaluator.getRuleExecutor().setDirty(true);
+            evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
         }
         return tnodes;
     }
@@ -552,28 +543,20 @@ public class AbstractWorkingMemory
             final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
                                                                                  null, null, factHandle, getEntryPoint());
 
-            if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
-                LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
-                LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lian);
-                SegmentMemory lsmem = lmem.getSegmentMemory();
+            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
+            LiaNodeMemory lmem = (LiaNodeMemory) getNodeMemory( (MemoryFactory) lian);
+            SegmentMemory lsmem = lmem.getSegmentMemory();
 
-                LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
-                LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
+            LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
+            LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
 
-                List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
-                for ( int i = 0, length = pmems.size(); i < length; i++ ) {
-                    PathMemory rm = pmems.get( i );
+            List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
+            for ( int i = 0, length = pmems.size(); i < length; i++ ) {
+                PathMemory rm = pmems.get( i );
 
-                    RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
-                    evaluator.getRuleExecutor().setDirty(true);
-                    evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
-                }
-            } else {
-                getEntryPointNode().retractQuery( factHandle,
-                                                  pCtx,
-                                                  this );
-
-                pCtx.evaluateActionQueue( this );
+                RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
+                evaluator.getRuleExecutor().setDirty(true);
+                evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
             }
 
             getFactHandleFactory().destroyFactHandle( factHandle );
