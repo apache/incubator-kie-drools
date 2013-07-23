@@ -1,6 +1,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -17,6 +18,7 @@ import static junit.framework.Assert.assertEquals;
 
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.*;
 
+@Ignore
 public class SegmentMemoryPrototypeTest {
     private static final String DRL =
             "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +

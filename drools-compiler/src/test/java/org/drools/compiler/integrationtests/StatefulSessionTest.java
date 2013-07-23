@@ -68,7 +68,6 @@ public class StatefulSessionTest extends CommonTestMethodBase {
     @Test
     public void testSequentialException() {
         RuleBaseConfiguration config = new RuleBaseConfiguration();
-        config.setPhreakEnabled( false );
         config.setSequential( true );
         RuleBase ruleBase = RuleBaseFactory.newRuleBase( config );
         
