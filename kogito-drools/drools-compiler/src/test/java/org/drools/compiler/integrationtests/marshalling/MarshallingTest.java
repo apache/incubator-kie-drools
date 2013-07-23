@@ -90,7 +90,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -2764,17 +2764,17 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
-        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
+        EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        SessionEntryPoint bep = ksession.getEntryPoint( "b-ep" );
+        EntryPoint bep = ksession.getEntryPoint( "b-ep" );
         bep.insert( new B() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
 
-        SessionEntryPoint cep = ksession.getEntryPoint( "c-ep" );
+        EntryPoint cep = ksession.getEntryPoint( "c-ep" );
         cep.insert( new C() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2857,7 +2857,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
-        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
+        EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
 
         ksession = marsallStatefulKnowledgeSession( ksession );
@@ -2911,7 +2911,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
+        EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 
@@ -2986,7 +2986,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        SessionEntryPoint aep = ksession.getEntryPoint( "a-ep" );
+        EntryPoint aep = ksession.getEntryPoint( "a-ep" );
         aep.insert( new A() );
         ksession = marsallStatefulKnowledgeSession( ksession );
 

@@ -25,7 +25,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Query;
@@ -72,7 +72,7 @@ public class BuildContext {
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
     // the current entry point
-    private EntryPoint                       currentEntryPoint;
+    private EntryPointId                       currentEntryPoint;
     private boolean                          tupleMemoryEnabled;
     private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
@@ -117,7 +117,7 @@ public class BuildContext {
 
         this.objectTypeNodeMemoryEnabled = true;
 
-        this.currentEntryPoint = EntryPoint.DEFAULT;
+        this.currentEntryPoint = EntryPointId.DEFAULT;
 
         this.nodes = new LinkedList<BaseNode>();
 
@@ -355,14 +355,14 @@ public class BuildContext {
     /**
      * @return the currentEntryPoint
      */
-    public EntryPoint getCurrentEntryPoint() {
+    public EntryPointId getCurrentEntryPoint() {
         return currentEntryPoint;
     }
 
     /**
      * @param currentEntryPoint the currentEntryPoint to set
      */
-    public void setCurrentEntryPoint(EntryPoint currentEntryPoint) {
+    public void setCurrentEntryPoint(EntryPointId currentEntryPoint) {
         this.currentEntryPoint = currentEntryPoint;
     }
 

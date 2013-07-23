@@ -48,7 +48,7 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
 
 /**
@@ -510,7 +510,7 @@ public class DescrBuilderTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( Collections.singletonList( kpkg ) );
         
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        SessionEntryPoint ep = ksession.getEntryPoint( "EventStream" );
+        EntryPoint ep = ksession.getEntryPoint( "EventStream" );
         ep.insert( "Hello World!" );
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );

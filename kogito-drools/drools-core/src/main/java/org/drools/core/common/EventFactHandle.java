@@ -17,7 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.reteoo.WindowTupleList;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 
@@ -54,7 +54,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                            final long recency,
                            final long timestamp,
                            final long duration,
-                           final SessionEntryPoint wmEntryPoint) {
+                           final EntryPoint wmEntryPoint) {
         super( id,
                object,
                recency,

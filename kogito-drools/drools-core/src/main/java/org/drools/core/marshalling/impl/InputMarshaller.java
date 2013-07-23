@@ -80,7 +80,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.SlidingLengthWindow;
@@ -98,7 +98,7 @@ import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class InputMarshaller {
 
@@ -204,7 +204,7 @@ public class InputMarshaller {
                                                                                                  environment );
         new StatefulKnowledgeSessionImpl( session );
 
-        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
+        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPointId.DEFAULT.getEntryPointId() ) );
 
         return readSession( session,
                             agenda,
@@ -243,7 +243,7 @@ public class InputMarshaller {
                 // The following code is as bad as it looks, but since I was so far 
                 // unable to convince Mark that creating OTNs on demand is really bad,
                 // I have to continue doing it :)
-                EntryPointNode defaultEPNode = context.ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT );
+                EntryPointNode defaultEPNode = context.ruleBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
                 BuildContext buildContext = new BuildContext( context.ruleBase,
                                                               context.ruleBase.getReteooBuilder().getIdGenerator() );
                 buildContext.setPartitionId(RuleBasePartitionId.MAIN_PARTITION);
@@ -270,7 +270,7 @@ public class InputMarshaller {
         }
         while ( context.readShort() == PersisterEnums.ENTRY_POINT) {
             String entryPointId = context.stream.readUTF();
-            SessionEntryPoint wmep = context.wm.getEntryPoints().get( entryPointId );
+            EntryPoint wmep = context.wm.getEntryPoints().get( entryPointId );
             readFactHandles( context,
                              ( (NamedEntryPoint) wmep ).getObjectStore() );
         }
@@ -425,7 +425,7 @@ public class InputMarshaller {
         for (InternalFactHandle factHandle : handles) {
             Object object = factHandle.getObject();
 
-            EntryPoint ep = ( (InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint() ).getEntryPoint();
+            EntryPointId ep = ( (InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint() ).getEntryPoint();
 
             ObjectTypeConf typeConf = ( (InternalWorkingMemoryEntryPoint) factHandle.getEntryPoint() ).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
                                                                                                                                                                object );
@@ -478,7 +478,7 @@ public class InputMarshaller {
             object = strategy.read( context.stream );
         }
 
-        SessionEntryPoint entryPoint = null;
+        EntryPoint entryPoint = null;
         if (context.readBoolean()) {
             String entryPointId = context.readUTF();
             if (entryPointId != null && !entryPointId.equals( "" )) {
@@ -733,7 +733,7 @@ public class InputMarshaller {
                                                                    id,
                                                                    parentLeftTuple,
                                                                    recency,
-                                                                   context.wm.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
+                                                                   context.wm.getEntryPoints().get( EntryPointId.DEFAULT.getEntryPointId() ) );
                 memory.put( parentLeftTuple,
                             handle );
 
@@ -1083,9 +1083,9 @@ public class InputMarshaller {
 
         String entryPointId = stream.readUTF();
 
-        EntryPoint entryPoint = context.entryPoints.get( entryPointId );
+        EntryPointId entryPoint = context.entryPoints.get( entryPointId );
         if (entryPoint == null) {
-            entryPoint = new EntryPoint( entryPointId );
+            entryPoint = new EntryPointId( entryPointId );
             context.entryPoints.put( entryPointId,
                                      entryPoint );
         }

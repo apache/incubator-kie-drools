@@ -2,7 +2,7 @@ package org.drools.core.common;
 
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
 
@@ -14,7 +14,7 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final Rule rule,
                                                        final LeftTuple leftTuple,
                                                        final InternalFactHandle factHandle,
-                                                       final EntryPoint entryPoint,
+                                                       final EntryPointId entryPoint,
                                                        final long modificationMask,
                                                        final Class<?> modifiedClass,
                                                        final MarshallerReaderContext readerContext) {
@@ -26,7 +26,7 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final Rule rule,
                                                        final LeftTuple leftTuple,
                                                        final InternalFactHandle factHandle,
-                                                       final EntryPoint entryPoint,
+                                                       final EntryPointId entryPoint,
                                                        final MarshallerReaderContext readerContext) {
         return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint, readerContext);
     }
@@ -38,7 +38,7 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final InternalFactHandle factHandle,
                                                        final int activeActivations,
                                                        final int dormantActivations,
-                                                       final EntryPoint entryPoint,
+                                                       final EntryPointId entryPoint,
                                                        final long modificationMask) {
         return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, activeActivations, dormantActivations, entryPoint, modificationMask);
     }
@@ -48,7 +48,7 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final Rule rule,
                                                        final LeftTuple leftTuple,
                                                        final InternalFactHandle factHandle,
-                                                       final EntryPoint entryPoint) {
+                                                       final EntryPointId entryPoint) {
         return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle, entryPoint);
     }
 

@@ -29,7 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.DroolsTestCase;
@@ -263,7 +263,7 @@ public class ReteTest extends DroolsTestCase {
 
         // double check that the List reference is the same as the one we created, i.e. engine should try and recreate it
         assertSame(listOtn,
-                   rete.getObjectTypeNodes(EntryPoint.DEFAULT).get(new ClassObjectType(List.class)));
+                   rete.getObjectTypeNodes(EntryPointId.DEFAULT).get(new ClassObjectType(List.class)));
 
         // ArrayConf should match two ObjectTypenodes for List and ArrayList
         ClassObjectTypeConf arrayConf = (ClassObjectTypeConf) workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint.getEntryPoint(), new ArrayList());

@@ -26,7 +26,7 @@ import org.drools.core.facttemplates.Fact;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.FactTemplateTypeConf;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 
 public class ObjectTypeConfigurationRegistry implements Serializable {
@@ -52,7 +52,7 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
      * @param object
      * @return
      */
-    public ObjectTypeConf getObjectTypeConf(EntryPoint entrypoint,
+    public ObjectTypeConf getObjectTypeConf(EntryPointId entrypoint,
                                             Object object) {
         
         // first see if it's a ClassObjectTypeConf        

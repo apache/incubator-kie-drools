@@ -69,7 +69,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
 
 public class DynamicRulesTest extends CommonTestMethodBase {
@@ -894,7 +894,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ksession.setGlobal( "results",
                             results );
 
-        SessionEntryPoint ep = ksession.getEntryPoint( "in-channel" );
+        EntryPoint ep = ksession.getEntryPoint( "in-channel" );
         ep.insert( new StockTick( 1,
                                   "RHT",
                                   20,

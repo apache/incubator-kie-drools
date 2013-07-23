@@ -37,7 +37,7 @@ import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.InvalidPatternException;
@@ -130,14 +130,14 @@ public class PatternBuilder
             context.setCurrentPatternOffset( currentOffset );
         } else {
             // default entry point
-            PatternSource source = EntryPoint.DEFAULT;
+            PatternSource source = EntryPointId.DEFAULT;
             ReteooComponentBuilder builder = utils.getBuilderFor( source );
             builder.build( context, utils, source );
         }
 
         if ( pattern.getSource() == null || 
                 ( !( pattern.getSource() instanceof WindowReference ) && 
-                  ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT || ! behaviors.isEmpty() ) ) ){
+                  ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT || ! behaviors.isEmpty() ) ) ){
             attachObjectTypeNode( context,
                                   utils,
                                   pattern );
@@ -330,7 +330,7 @@ public class PatternBuilder
 
         NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
         
-        if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
+        if ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT && context.isAttachPQN() ) {
             if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
                                                                           nfactory.buildPropagationQueuingNode( context.getNextId(),
@@ -338,7 +338,7 @@ public class PatternBuilder
                                                                                                                 context ) ) );
             }
             // the entry-point specific network nodes are attached, so, set context to default entry-point
-            context.setCurrentEntryPoint( EntryPoint.DEFAULT );
+            context.setCurrentEntryPoint( EntryPointId.DEFAULT );
         }
     }
 

@@ -67,7 +67,7 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class DefaultKnowledgeHelper
     implements
@@ -513,7 +513,7 @@ public class DefaultKnowledgeHelper
         this.workingMemory.halt();
     }
 
-    public SessionEntryPoint getEntryPoint(String id) {
+    public EntryPoint getEntryPoint(String id) {
         return this.workingMemory.getEntryPoints().get( id );
     }
 
@@ -521,7 +521,7 @@ public class DefaultKnowledgeHelper
         return this.workingMemory.getChannels().get( id );
     }
 
-    public Map<String, SessionEntryPoint> getEntryPoints() {
+    public Map<String, EntryPoint> getEntryPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getEntryPoints() );
     }
 
@@ -547,7 +547,7 @@ public class DefaultKnowledgeHelper
         FactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-            for ( SessionEntryPoint ep : workingMemory.getEntryPoints().values() ) {
+            for ( EntryPoint ep : workingMemory.getEntryPoints().values() ) {
                 handle = (FactHandle) ep.getFactHandle( object );
                 if ( identityMap != null ) {
                     identityMap.put( object,

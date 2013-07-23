@@ -27,7 +27,7 @@ import org.drools.core.common.TraitFactHandle;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class ReteooFactHandleFactory extends AbstractFactHandleFactory implements Serializable {
 
@@ -51,7 +51,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
                                              final long recency,
                                              final ObjectTypeConf conf,
                                              final InternalWorkingMemory workingMemory,
-                                             final SessionEntryPoint wmEntryPoint) {
+                                             final EntryPoint wmEntryPoint) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;

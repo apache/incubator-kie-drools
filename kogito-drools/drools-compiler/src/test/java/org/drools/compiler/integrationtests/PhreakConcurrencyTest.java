@@ -19,7 +19,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.PhreakOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -151,7 +151,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
             ksession.insert("ACME" + index);
 
-            SessionEntryPoint ep = ksession.getEntryPoint("EP" + index);
+            EntryPoint ep = ksession.getEntryPoint("EP" + index);
 
             for (int i = 0; i < 12; i++) {
                 ep.insert(new StockTick(1, "ACME" + index, i - 50));
@@ -232,7 +232,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         }
 
         public Boolean call() throws Exception {
-            SessionEntryPoint ep = ksession.getEntryPoint("EP" + index);
+            EntryPoint ep = ksession.getEntryPoint("EP" + index);
 
             FactHandle[] fhs = new FactHandle[15];
 
@@ -379,7 +379,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
         }
 
         public Boolean call() throws Exception {
-            SessionEntryPoint ep = ksession.getEntryPoint("EP" + index);
+            EntryPoint ep = ksession.getEntryPoint("EP" + index);
 
             InternalWorkingMemory wm = ((NamedEntryPoint)ep).getInternalWorkingMemory();
             ObjectTypeNode otn = ((NamedEntryPoint)ep).getEntryPointNode().getObjectTypeNodes().values().iterator().next();
@@ -472,7 +472,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
         private FactHandle fh = null;
 
-        private final SessionEntryPoint ep;
+        private final EntryPoint ep;
 
         public EPManipulator4(KieSession ksession, int index, CyclicBarrier barrier) {
             this.ksession = ksession;
@@ -530,7 +530,7 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
             return barrier;
         }
 
-        public SessionEntryPoint getEntryPoiny() {
+        public EntryPoint getEntryPoiny() {
             return ep;
         }
     }

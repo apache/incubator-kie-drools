@@ -29,7 +29,7 @@ import org.drools.core.util.ObjectHashSet.ObjectEntry;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;
@@ -69,7 +69,7 @@ public class EntryPointNode extends ObjectSource
     /**
      * The entry point ID for this node
      */
-    private EntryPoint                      entryPoint;
+    private EntryPointId                      entryPoint;
 
     /**
      * The object type nodes under this node
@@ -103,7 +103,7 @@ public class EntryPointNode extends ObjectSource
                           final RuleBasePartitionId partitionId,
                           final boolean partitionsEnabled,
                           final ObjectSource objectSource,
-                          final EntryPoint entryPoint) {
+                          final EntryPointId entryPoint) {
         super( id,
                partitionId,
                partitionsEnabled,
@@ -123,7 +123,7 @@ public class EntryPointNode extends ObjectSource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        entryPoint = (EntryPoint) in.readObject();
+        entryPoint = (EntryPointId) in.readObject();
         objectTypeNodes = (Map<ObjectType, ObjectTypeNode>) in.readObject();
         unlinkingEnabled = in.readBoolean();
     }
@@ -142,10 +142,10 @@ public class EntryPointNode extends ObjectSource
     /**
      * @return the entryPoint
      */
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return entryPoint;
     }
-    void setEntryPoint(EntryPoint entryPoint) {
+    void setEntryPoint(EntryPointId entryPoint) {
         this.entryPoint = entryPoint;
     }
     

@@ -27,7 +27,7 @@ import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.PatternBuilder;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 
@@ -44,13 +44,13 @@ public class FactTemplateTypeConf
     
     private boolean          tmsEnabled;
     
-    EntryPoint entryPoint;
+    EntryPointId entryPoint;
 
 
     public FactTemplateTypeConf() {
     }
 
-    public FactTemplateTypeConf(final EntryPoint entryPoint,
+    public FactTemplateTypeConf(final EntryPointId entryPoint,
                                 final FactTemplate factTemplate,
                                 final InternalRuleBase ruleBase) {
         this.factTemplate = factTemplate;
@@ -143,7 +143,7 @@ public class FactTemplateTypeConf
         this.tmsEnabled = true;
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return this.entryPoint;
     }
 

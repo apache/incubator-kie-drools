@@ -29,7 +29,7 @@ import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -39,7 +39,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.type.DateFormats;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public interface InternalWorkingMemory
     extends
@@ -72,7 +72,7 @@ public interface InternalWorkingMemory
 
     public FactHandleFactory getFactHandleFactory();
     
-    public EntryPoint getEntryPoint();
+    public EntryPointId getEntryPoint();
     
     public EntryPointNode getEntryPointNode();
     
@@ -126,7 +126,7 @@ public interface InternalWorkingMemory
      */
     public Map< String, Channel> getChannels();
     
-    public Map<String, ? extends SessionEntryPoint> getEntryPoints();
+    public Map<String, ? extends EntryPoint> getEntryPoints();
 
     public SessionConfiguration getSessionConfiguration();
     

@@ -24,7 +24,7 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 
@@ -64,7 +64,7 @@ public class Rete extends ObjectSource
 
     private static final long               serialVersionUID = 510l;
 
-    private Map<EntryPoint, EntryPointNode> entryPoints;
+    private Map<EntryPointId, EntryPointNode> entryPoints;
 
     private transient InternalRuleBase      ruleBase;
 
@@ -78,7 +78,7 @@ public class Rete extends ObjectSource
 
     public Rete(InternalRuleBase ruleBase) {
         super( 0, RuleBasePartitionId.MAIN_PARTITION, ruleBase != null ? ruleBase.getConfiguration().isMultithreadEvaluation() : false );
-        this.entryPoints = Collections.synchronizedMap( new HashMap<EntryPoint, EntryPointNode>() );
+        this.entryPoints = Collections.synchronizedMap( new HashMap<EntryPointId, EntryPointNode>() );
         this.ruleBase = ruleBase;
     }
 
@@ -101,7 +101,7 @@ public class Rete extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        EntryPoint entryPoint = context.getEntryPoint();
+        EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
         ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
                                                                                                                                                                                                        factHandle.getObject() );
@@ -123,7 +123,7 @@ public class Rete extends ObjectSource
     public void retractObject(final InternalFactHandle handle,
                               final PropagationContext context,
                               final InternalWorkingMemory workingMemory) {
-        EntryPoint entryPoint = context.getEntryPoint();
+        EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
         ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint,
                                                                                                                                                                                                        handle.getObject() );
@@ -177,7 +177,7 @@ public class Rete extends ObjectSource
 
     protected void doCollectAncestors(NodeSet nodeSet) { }
 
-    public EntryPointNode getEntryPointNode(final EntryPoint entryPoint) {
+    public EntryPointNode getEntryPointNode(final EntryPointId entryPoint) {
         return this.entryPoints.get( entryPoint );
     }
 
@@ -189,7 +189,7 @@ public class Rete extends ObjectSource
         return allNodes;
     }
 
-    public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes(EntryPoint entryPoint) {
+    public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes(EntryPointId entryPoint) {
         return this.entryPoints.get( entryPoint ).getObjectTypeNodes();
     }
 
@@ -236,9 +236,9 @@ public class Rete extends ObjectSource
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        entryPoints = (Map<EntryPoint, EntryPointNode>) in.readObject();
+        entryPoints = (Map<EntryPointId, EntryPointNode>) in.readObject();
         ruleBase = ((DroolsObjectInputStream)in).getRuleBase();
-        for (Map.Entry<EntryPoint, EntryPointNode> entry : entryPoints.entrySet()) {
+        for (Map.Entry<EntryPointId, EntryPointNode> entry : entryPoints.entrySet()) {
             EntryPointNode node = entry.getValue();
             if (node.getEntryPoint() == null) node.setEntryPoint(entry.getKey());
             ruleBase.registerAddedEntryNodeCache(node);
@@ -246,7 +246,7 @@ public class Rete extends ObjectSource
         super.readExternal( in );
     }
 
-    public Map<EntryPoint,EntryPointNode> getEntryPointNodes() {
+    public Map<EntryPointId,EntryPointNode> getEntryPointNodes() {
         return this.entryPoints;
     }
     

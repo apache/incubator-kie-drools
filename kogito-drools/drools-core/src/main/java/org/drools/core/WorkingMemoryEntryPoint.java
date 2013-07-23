@@ -21,7 +21,7 @@ package org.drools.core;
  * An interface for instances that allow handling of entry-point-scoped
  * facts
  */
-public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.SessionEntryPoint {
+public interface WorkingMemoryEntryPoint extends org.kie.api.runtime.rule.EntryPoint {
     /**
      * Assert a fact.
      * 

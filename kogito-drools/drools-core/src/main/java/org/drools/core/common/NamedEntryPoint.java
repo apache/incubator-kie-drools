@@ -44,7 +44,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
@@ -72,7 +72,7 @@ public class NamedEntryPoint
 
     protected transient InternalRuleBase ruleBase;
 
-    protected EntryPoint     entryPoint;
+    protected EntryPointId     entryPoint;
     protected EntryPointNode entryPointNode;
 
     private ObjectTypeConfigurationRegistry typeConfReg;
@@ -86,7 +86,7 @@ public class NamedEntryPoint
 
     protected Set<InternalFactHandle> dynamicFacts = null;
 
-    public NamedEntryPoint(EntryPoint entryPoint,
+    public NamedEntryPoint(EntryPointId entryPoint,
                            EntryPointNode entryPointNode,
                            AbstractWorkingMemory wm) {
         this(entryPoint,
@@ -95,7 +95,7 @@ public class NamedEntryPoint
              new ReentrantLock());
     }
 
-    public NamedEntryPoint(EntryPoint entryPoint,
+    public NamedEntryPoint(EntryPointId entryPoint,
                            EntryPointNode entryPointNode,
                            AbstractWorkingMemory wm,
                            ReentrantLock lock) {
@@ -721,7 +721,7 @@ public class NamedEntryPoint
         return this.objectStore.getHandleForObject( object );
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return this.entryPoint;
     }
 
@@ -799,7 +799,7 @@ public class NamedEntryPoint
         
         final Rete source = this.ruleBase.getRete();
         final ClassObjectType cot = new ClassObjectType( object.getClass() );
-        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPoint.DEFAULT );
+        final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPointId.DEFAULT );
         final ObjectTypeNode node = map.get( cot );
         final ObjectHashSet memory = ((ObjectTypeNodeMemory) this.wm.getNodeMemory( node )).memory;
       

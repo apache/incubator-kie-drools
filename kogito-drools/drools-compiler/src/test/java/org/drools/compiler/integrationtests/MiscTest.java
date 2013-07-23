@@ -126,7 +126,7 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
@@ -6139,7 +6139,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        final SessionEntryPoint ep = ksession.getEntryPoint( "testep2" );
+        final EntryPoint ep = ksession.getEntryPoint( "testep2" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
@@ -6205,7 +6205,7 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        final SessionEntryPoint ep = ksession.getEntryPoint( "testep" );
+        final EntryPoint ep = ksession.getEntryPoint( "testep" );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",

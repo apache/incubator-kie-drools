@@ -234,7 +234,7 @@ public class AgendaTest extends DroolsTestCase {
 
                 item.setActivationUnMatchListener(new ActivationUnMatchListener() {
 
-                    public void unMatch(org.kie.api.runtime.rule.Session wm,
+                    public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm,
                                         Match activation) {
                         cheese.setPrice(oldPrice);
                     }

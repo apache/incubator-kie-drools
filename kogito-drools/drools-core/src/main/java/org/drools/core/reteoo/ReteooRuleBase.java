@@ -55,7 +55,7 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.Package;
 import org.drools.core.rule.Rule;
@@ -941,7 +941,7 @@ public class ReteooRuleBase
                                                  RuleBasePartitionId.MAIN_PARTITION,
                                                  this.getConfiguration().isMultithreadEvaluation(),
                                                  this.rete,
-                                                 EntryPoint.DEFAULT );
+                                                 EntryPointId.DEFAULT );
         epn.attach();
     }
 

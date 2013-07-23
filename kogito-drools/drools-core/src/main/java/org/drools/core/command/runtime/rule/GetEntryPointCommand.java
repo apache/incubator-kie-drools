@@ -20,11 +20,11 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class GetEntryPointCommand
     implements
-    GenericCommand<SessionEntryPoint> {
+    GenericCommand<EntryPoint> {
 
     private String name;
     
@@ -35,7 +35,7 @@ public class GetEntryPointCommand
         this.name = name;
     }
 
-    public SessionEntryPoint execute(Context context) {
+    public EntryPoint execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         return ksession.getEntryPoint( name );
     }

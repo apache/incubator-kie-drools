@@ -33,7 +33,7 @@ import org.drools.core.phreak.PhreakTimerNode;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
@@ -59,7 +59,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
     public final Map<Integer, ObjectMarshallingStrategy>                           usedStrategies;
     public final Map<ObjectMarshallingStrategy, ObjectMarshallingStrategy.Context> strategyContexts;
 
-    public final Map<String, EntryPoint>                                           entryPoints;
+    public final Map<String, EntryPointId>                                           entryPoints;
 
     public final Map<Integer, TimersInputMarshaller>                               readersByInt;
 
@@ -111,7 +111,7 @@ public class MarshallerReaderContext extends ObjectInputStream {
         this.rightTuples = new HashMap<RightTupleKey, RightTuple>();
         this.terminalTupleMap = new HashMap<Integer, LeftTuple>();
         this.filter = new PBActivationsFilter();
-        this.entryPoints = new HashMap<String, EntryPoint>();
+        this.entryPoints = new HashMap<String, EntryPointId>();
         this.propagationContexts = new HashMap<Long, PropagationContext>();
         if ( resolverStrategyFactory == null ) {
             ObjectMarshallingStrategy[] strats = (ObjectMarshallingStrategy[]) env.get( EnvironmentName.OBJECT_MARSHALLING_STRATEGIES );

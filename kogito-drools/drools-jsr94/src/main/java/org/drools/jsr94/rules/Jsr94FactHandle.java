@@ -43,7 +43,7 @@ package org.drools.jsr94.rules;
 import javax.rules.Handle;
 
 import org.drools.core.common.DefaultFactHandle;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides
@@ -77,7 +77,7 @@ public class Jsr94FactHandle extends DefaultFactHandle
     Jsr94FactHandle(final long id,
                     final Object object,
                     final long recency,
-                    final SessionEntryPoint entryPoint) {
+                    final EntryPoint entryPoint) {
         super( (int) id,
                object,
                recency,

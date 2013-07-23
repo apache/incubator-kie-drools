@@ -19,7 +19,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
@@ -48,7 +48,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
@@ -474,7 +474,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final InternalRuleBase internal = (InternalRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPoint.DEFAULT );
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
 
         assertNotNull( node );
@@ -494,7 +494,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final InternalRuleBase internal = (InternalRuleBase) ((KnowledgeBaseImpl)kbase).ruleBase;
         final TimeIntervalParser parser = new TimeIntervalParser();
 
-        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPoint.DEFAULT );
+        Map<ObjectType, ObjectTypeNode> objectTypeNodes = internal.getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
 
         assertNotNull( node );
@@ -516,7 +516,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
 
-        SessionEntryPoint eventStream = ksession.getEntryPoint( "Event Stream" );
+        EntryPoint eventStream = ksession.getEntryPoint( "Event Stream" );
 
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
@@ -1978,7 +1978,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final StatefulKnowledgeSession ksession = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
         ksession.addEventListener( ael1 );
-        SessionEntryPoint ep1 = ksession.getEntryPoint( "stocktick stream" );
+        EntryPoint ep1 = ksession.getEntryPoint( "stocktick stream" );
 
         FactHandle fh1 = ep1.insert( st1 );
         FactHandle fh1_2 = ep1.insert( st1 );
@@ -2026,7 +2026,7 @@ public class CepEspTest extends CommonTestMethodBase {
         final StatefulKnowledgeSession ksession1 = kbase1.newStatefulKnowledgeSession();
         AgendaEventListener ael1 = mock( AgendaEventListener.class );
         ksession1.addEventListener( ael1 );
-        SessionEntryPoint ep1 = ksession1.getEntryPoint( "stocktick stream" );
+        EntryPoint ep1 = ksession1.getEntryPoint( "stocktick stream" );
 
         FactHandle fh1 = ep1.insert( st1 );
         FactHandle fh1_2 = ep1.insert( st1 );
@@ -2115,7 +2115,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
-        SessionEntryPoint ep = ksession.getEntryPoint( "X" );
+        EntryPoint ep = ksession.getEntryPoint( "X" );
 
         clock.advanceTime( 1000,
                            TimeUnit.SECONDS );
@@ -2158,7 +2158,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
 
-        SessionEntryPoint ep = ksession.getEntryPoint( "X" );
+        EntryPoint ep = ksession.getEntryPoint( "X" );
 
         clock.advanceTime( 1000, TimeUnit.SECONDS );
 
@@ -2383,7 +2383,7 @@ public class CepEspTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( config, str );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        SessionEntryPoint ep = ksession.getEntryPoint( "X" );
+        EntryPoint ep = ksession.getEntryPoint( "X" );
 
         ep.insert( new StockTick( 1,
                                   "RHT",

@@ -49,7 +49,7 @@ public class RetePropagationContext
 
     private long                            propagationNumber;
 
-    private EntryPoint                      entryPoint;
+    private EntryPointId                      entryPoint;
     
     private int                             originOffset;    
     
@@ -83,7 +83,7 @@ public class RetePropagationContext
               rule,
               leftTuple,
               factHandle,
-              EntryPoint.DEFAULT,
+              EntryPointId.DEFAULT,
               Long.MAX_VALUE,
               Object.class,
               null );
@@ -95,7 +95,7 @@ public class RetePropagationContext
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
-                                  final EntryPoint entryPoint) {
+                                  final EntryPointId entryPoint) {
         this( number,
               type,
               rule,
@@ -114,7 +114,7 @@ public class RetePropagationContext
                                   final InternalFactHandle factHandle,
                                   final int activeActivations,
                                   final int dormantActivations,
-                                  final EntryPoint entryPoint,
+                                  final EntryPointId entryPoint,
                                   final long modificationMask) {
         this( number,
               type,
@@ -132,7 +132,7 @@ public class RetePropagationContext
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
-                                  final EntryPoint entryPoint,
+                                  final EntryPointId entryPoint,
                                   final MarshallerReaderContext readerContext) {
         this( number,
               type,
@@ -150,7 +150,7 @@ public class RetePropagationContext
                                   final Rule rule,
                                   final LeftTuple leftTuple,
                                   final InternalFactHandle factHandle,
-                                  final EntryPoint entryPoint,
+                                  final EntryPointId entryPoint,
                                   final long modificationMask,
                                   final Class<?> modifiedClass,
                                   final MarshallerReaderContext readerContext) {
@@ -173,7 +173,7 @@ public class RetePropagationContext
         this.propagationNumber = in.readLong();
         this.rule = (Rule) in.readObject();
         this.leftTuple = (LeftTuple) in.readObject();
-        this.entryPoint = (EntryPoint) in.readObject();
+        this.entryPoint = (EntryPointId) in.readObject();
         this.originOffset = in.readInt();
         this.modificationMask = in.readLong();
     }
@@ -242,14 +242,14 @@ public class RetePropagationContext
     /**
      * @return the entryPoint
      */
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return entryPoint;
     }
 
     /**
      * @param entryPoint the entryPoint to set
      */
-    public void setEntryPoint(EntryPoint entryPoint) {
+    public void setEntryPoint(EntryPointId entryPoint) {
         this.entryPoint = entryPoint;
     }
 

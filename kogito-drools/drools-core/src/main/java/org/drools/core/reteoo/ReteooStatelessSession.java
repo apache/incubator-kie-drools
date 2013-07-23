@@ -33,7 +33,7 @@ import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.GlobalExporter;
 import org.drools.core.spi.GlobalResolver;
@@ -111,7 +111,7 @@ public class ReteooStatelessSession
             wm.setGlobalResolver(this.globalResolver);
 
             final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle(InitialFactImpl.getInstance(),
-                                                                                      wm.getObjectTypeConfigurationRegistry().getObjectTypeConf(EntryPoint.DEFAULT,
+                                                                                      wm.getObjectTypeConfigurationRegistry().getObjectTypeConf(EntryPointId.DEFAULT,
                                                                                                                                                 InitialFactImpl.getInstance()),
                                                                                       wm,
                                                                                       wm);

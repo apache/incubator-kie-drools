@@ -32,7 +32,7 @@ import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.Forall;
 import org.drools.core.rule.From;
@@ -76,7 +76,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                new TimerBuilder() );
         this.utils.addBuilder( Forall.class,
                                new ForallBuilder() );
-        this.utils.addBuilder( EntryPoint.class,
+        this.utils.addBuilder( EntryPointId.class,
                                new EntryPointBuilder() );
         this.utils.addBuilder( WindowReference.class, 
                                new WindowReferenceBuilder() );
@@ -216,7 +216,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         // creates a clean build context for each subrule
         final BuildContext context = new BuildContext( rulebase,
                                                        idGenerator );
-        EntryPoint ep = new EntryPoint( id );
+        EntryPointId ep = new EntryPointId( id );
         ReteooComponentBuilder builder = utils.getBuilderFor( ep );
         builder.build(context,
                 utils,

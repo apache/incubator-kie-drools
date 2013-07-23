@@ -20,14 +20,14 @@ import org.drools.core.FactException;
 import org.drools.core.FactHandle;
 import org.drools.core.RuleBase;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 
 
 import org.drools.core.spi.Activation;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
-public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {
+public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
     RuleBase getRuleBase();
     public void delete(final FactHandle factHandle,
@@ -39,7 +39,7 @@ public interface InternalWorkingMemoryEntryPoint extends SessionEntryPoint {
                        Class<?> modifiedClass,
                        Activation activation) throws FactException;
 
-    public EntryPoint getEntryPoint();
+    public EntryPointId getEntryPoint();
     public InternalWorkingMemory getInternalWorkingMemory();
 
     public FactHandle getFactHandleByIdentity(final Object object);

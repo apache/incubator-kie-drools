@@ -40,7 +40,7 @@ import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -578,7 +578,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         // TODO Auto-generated method stub
         return null;
     }

@@ -394,7 +394,7 @@ public class AbstractWorkingMemory
     }
 
     public String getEntryPointId() {
-        return EntryPoint.DEFAULT.getEntryPointId();
+        return EntryPointId.DEFAULT.getEntryPointId();
     }
 
     public QueryResults getQueryResults(final String queryName,
@@ -585,7 +585,7 @@ public class AbstractWorkingMemory
         }
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return this.defaultEntryPoint.getEntryPoint();
     }
 
@@ -679,8 +679,8 @@ public class AbstractWorkingMemory
     public void updateEntryPointsCache() {
         if (ruleBase.getAddedEntryNodeCache() != null) {
             for (EntryPointNode addedNode : ruleBase.getAddedEntryNodeCache()) {
-                EntryPoint id = addedNode.getEntryPoint();
-                if (EntryPoint.DEFAULT.equals(id)) continue;
+                EntryPointId id = addedNode.getEntryPoint();
+                if (EntryPointId.DEFAULT.equals(id)) continue;
                 WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint(id, addedNode, this);
                 entryPoints.put(id.getEntryPointId(), wmEntryPoint);
             }
@@ -694,9 +694,9 @@ public class AbstractWorkingMemory
     }
 
     private void initTransient() {
-        EntryPointNode epn = this.ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT );
+        EntryPointNode epn = this.ruleBase.getRete().getEntryPointNode( EntryPointId.DEFAULT );
 
-        this.defaultEntryPoint = new NamedEntryPoint( EntryPoint.DEFAULT,
+        this.defaultEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT,
                                                       epn,
                                                       this );
 

@@ -36,7 +36,7 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.PatternBuilder;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ObjectType;
@@ -57,7 +57,7 @@ public class ClassObjectTypeConf
     protected boolean                  shadowEnabled;
 
     private ObjectTypeNode             concreteObjectTypeNode;
-    private EntryPoint                 entryPoint;
+    private EntryPointId                 entryPoint;
 
     private TypeDeclaration            typeDecl;
     
@@ -72,7 +72,7 @@ public class ClassObjectTypeConf
 
     }
 
-    public ClassObjectTypeConf(final EntryPoint entryPoint,
+    public ClassObjectTypeConf(final EntryPointId entryPoint,
                                final Class< ? > clazz,
                                final InternalRuleBase ruleBase) {        
         this.cls = (Activation.class.isAssignableFrom( clazz ) ) ? ClassObjectType.Match_ObjectType.getClassType() : clazz;
@@ -118,7 +118,7 @@ public class ClassObjectTypeConf
         objectTypeNodes = (ObjectTypeNode[]) stream.readObject();
         shadowEnabled = stream.readBoolean();
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
-        entryPoint = (EntryPoint) stream.readObject();
+        entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
         supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
@@ -254,7 +254,7 @@ public class ClassObjectTypeConf
         this.tmsEnabled = true;
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return entryPoint;
     }
 
