@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -261,7 +263,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIntervalTimerWithoutFire() throws Exception {
         String str = "";
         str += "package org.simple \n";
@@ -282,11 +284,18 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         final BlockingQueue<TimedRuleExecution> queue = new LinkedBlockingQueue<TimedRuleExecution>();
         ((StatefulKnowledgeSessionImpl)ksession).session.setTimedExecutionsQueue(queue);
 
+        final CyclicBarrier barrier = new CyclicBarrier(2);
+
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
                     while (true) {
                         queue.take().evauateAndFireRule();
+                        try {
+                            barrier.await();
+                        } catch (BrokenBarrierException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -306,8 +315,19 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
-        timeService.advanceTime(55, TimeUnit.SECONDS);
-        Thread.sleep(1000000L);
+        timeService.advanceTime(35, TimeUnit.SECONDS);
+        barrier.await();
+        barrier.reset();
+        assertEquals( 1, list.size() );
+
+        timeService.advanceTime(10, TimeUnit.SECONDS);
+        barrier.await();
+        barrier.reset();
+        assertEquals( 2, list.size() );
+
+        timeService.advanceTime(10, TimeUnit.SECONDS);
+        barrier.await();
+        barrier.reset();
         assertEquals( 3, list.size() );
     }
 
