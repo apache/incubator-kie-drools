@@ -2,12 +2,25 @@ package org.drools.core.common;
 
 import org.drools.core.FactException;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.base.DroolsQuery;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.LIANodePropagation;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.Environment;
 
 import java.util.ArrayList;
@@ -80,5 +93,41 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
             }
         }
         return 0;
+    }
+
+    public void closeLiveQuery(final InternalFactHandle factHandle) {
+
+        try {
+            startOperation();
+            this.ruleBase.readLock();
+            this.lock.lock();
+
+            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                                                                                 null, null, factHandle, getEntryPoint());
+
+            getEntryPointNode().retractQuery( factHandle,
+                                              pCtx,
+                                              this );
+
+            pCtx.evaluateActionQueue( this );
+
+            getFactHandleFactory().destroyFactHandle( factHandle );
+
+        } finally {
+            this.lock.unlock();
+            this.ruleBase.readUnlock();
+            endOperation();
+        }
+    }
+
+    private BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
+        BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
+        // no need to call retract, as no leftmemory used.
+        getEntryPointNode().assertQuery( handle,
+                                         pCtx,
+                                         this );
+
+        pCtx.evaluateActionQueue( this );
+        return tnodes;
     }
 }
