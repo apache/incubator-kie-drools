@@ -635,7 +635,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "\n" +
                 "import org.drools.core.common.AgendaItem;\n" +
                 "import org.kie.internal.event.rule.ActivationUnMatchListener;\n" +
-                "import org.kie.api.runtime.rule.Session;\n" +
+                "import org.kie.api.runtime.rule.RuleRuntime;\n" +
                 "import org.kie.api.runtime.rule.Match;\n" +
                 "\n" +
                 "global TotalHolder totalHolder;\n" +
@@ -649,11 +649,11 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                 "    final int finalWf = $wf;\n" +
                 "    AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();" +
                 "    if (agendaItem.getActivationUnMatchListener() != null) {\n" +
-                "        Session session = null; // Should not be used by the undoListener anyway\n" +
+                "        RuleRuntime session = null; // Should not be used by the undoListener anyway\n" +
                 "        agendaItem.getActivationUnMatchListener().unMatch(session, agendaItem);\n" +
                 "    }" +
                 "    agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {" +
-                "            public void unMatch(Session session, Match match) {" +
+                "            public void unMatch(RuleRuntime session, Match match) {" +
                 "                finalTotalHolder.subtract(finalWf);" +
                 "            }" +
                 "    });" +
