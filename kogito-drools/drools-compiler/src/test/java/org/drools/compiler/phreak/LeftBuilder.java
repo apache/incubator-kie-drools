@@ -2,7 +2,7 @@ package org.drools.compiler.phreak;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RetePropagationContext;
+import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -27,7 +27,7 @@ public class LeftBuilder {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
             LeftTuple leftTuple = sink.createLeftTuple( fh, sink, true );
-            leftTuple.setPropagationContext( new RetePropagationContext() );
+            leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addInsert( leftTuple );
         }
         return this;
@@ -37,7 +37,7 @@ public class LeftBuilder {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.getFactHandle( object );
             LeftTuple leftTuple = fh.getFirstLeftTuple();
-            leftTuple.setPropagationContext( new RetePropagationContext() );
+            leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addUpdate( leftTuple );
         }
         return this;
@@ -47,7 +47,7 @@ public class LeftBuilder {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.getFactHandle( object );
             LeftTuple leftTuple = fh.getFirstLeftTuple();
-            leftTuple.setPropagationContext( new RetePropagationContext() );
+            leftTuple.setPropagationContext( new PhreakPropagationContext() );
             leftTuples.addDelete( leftTuple );
         }
         return this;

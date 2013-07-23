@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.core.reteoo.builder;
+package org.drools.reteoo.builder;
 
 
 import org.drools.core.base.ValueType;
@@ -28,7 +28,6 @@ import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
-import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -36,14 +35,24 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropagationQueuingNode;
-import org.drools.core.reteoo.QueryRiaFixerNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.QueryRiaFixerNode;
+import org.drools.reteoo.nodes.ReteAccumulateNode;
+import org.drools.reteoo.nodes.ReteConditionalBranchNode;
+import org.drools.reteoo.nodes.ReteEntryPointNode;
+import org.drools.reteoo.nodes.ReteEvalConditionNode;
+import org.drools.reteoo.nodes.ReteExistsNode;
+import org.drools.reteoo.nodes.ReteFromNode;
+import org.drools.reteoo.nodes.ReteJoinNode;
+import org.drools.reteoo.nodes.ReteLeftInputAdapterNode;
+import org.drools.reteoo.nodes.ReteNotNode;
+import org.drools.core.reteoo.ReteObjectTypeNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
+import org.drools.reteoo.nodes.ReteAlphaNode;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -56,33 +65,37 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
+import org.drools.reteoo.nodes.ReteQueryElementNode;
+import org.drools.reteoo.nodes.ReteQueryTerminalNode;
+import org.drools.reteoo.nodes.ReteRightInputAdapterNode;
+import org.drools.reteoo.nodes.ReteRuleTerminalNode;
 
 import java.io.Serializable;
 
-public class PhreakNodeFactory implements NodeFactory, Serializable {
+public class ReteNodeFactory implements NodeFactory, Serializable {
+
 
     public EntryPointNode buildEntryPointNode(int id, ObjectSource objectSource, BuildContext context) {
-        return new EntryPointNode(id, objectSource, context);
+        return new ReteEntryPointNode(id, objectSource, context);
     }
 
     public EntryPointNode buildEntryPointNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, ObjectSource objectSource, EntryPointId entryPoint) {
-        return new EntryPointNode(id, partitionId, partitionsEnabled, objectSource, entryPoint);
+        return new ReteEntryPointNode(id, partitionId, partitionsEnabled, objectSource, entryPoint);
     }
 
-
     public AlphaNode buildAlphaNode( int id, AlphaNodeFieldConstraint constraint, ObjectSource objectSource, BuildContext context ) {
-        return new AlphaNode( id, constraint, objectSource, context );
+        return new ReteAlphaNode( id, constraint, objectSource, context );
     }
 
     public TerminalNode buildTerminalNode( int id, LeftTupleSource source, Rule rule, GroupElement subrule, int subruleIndex, BuildContext context ) {
-        return new RuleTerminalNode( id, source, rule, subrule, subruleIndex, context );
+        return new ReteRuleTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
     public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
         if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
             return new TraitObjectTypeNode( id, objectSource, objectType, context );
         } else {
-            return new ObjectTypeNode( id, objectSource, objectType, context );
+            return new ReteObjectTypeNode( id, objectSource, objectType, context );
         }
     }
 
@@ -90,55 +103,56 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                            final LeftTupleSource tupleSource,
                                            final EvalCondition eval,
                                            final BuildContext context) {
-        return new EvalConditionNode( id, tupleSource, eval, context );
+        return new ReteEvalConditionNode( id, tupleSource, eval, context );
     }
 
+
     public QueryRiaFixerNode buildQueryRiaFixerNode(int id, LeftTupleSource tupleSource, BuildContext context) {
-        throw new UnsupportedOperationException();
+        return new QueryRiaFixerNode(id, tupleSource, context);
     }
 
     public PropagationQueuingNode buildPropagationQueuingNode(final int id,
                                                               final ObjectSource objectSource,
                                                               final BuildContext context) {
-        throw new UnsupportedOperationException();
+        return new PropagationQueuingNode(id, objectSource, context);
     }
 
     public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context ) {
-        return new RightInputAdapterNode( id, leftInput, startTupleSource, context );
+        return new ReteRightInputAdapterNode( id, leftInput, startTupleSource, context );
     }
 
     public JoinNode buildJoinNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
-        return new JoinNode( id, leftInput, rightInput, binder, context );
+        return new ReteJoinNode( id, leftInput, rightInput, binder, context );
     }
 
     public NotNode buildNotNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
-        return new NotNode( id, leftInput, rightInput, binder, context );
+        return new ReteNotNode( id, leftInput, rightInput, binder, context );
     }
 
     public ExistsNode buildExistsNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context ) {
-        return new ExistsNode( id, leftInput, rightInput, binder, context );
+        return new ReteExistsNode( id, leftInput, rightInput, binder, context );
     }
 
     public AccumulateNode buildAccumulateNode(int id, LeftTupleSource leftInput, ObjectSource rightInput,
                                               AlphaNodeFieldConstraint[] resultConstraints, BetaConstraints sourceBinder,
                                               BetaConstraints resultBinder, Accumulate accumulate, boolean unwrapRightObject, BuildContext context ) {
-        return new AccumulateNode( id, leftInput, rightInput, resultConstraints, sourceBinder,resultBinder, accumulate, unwrapRightObject, context );
+        return new ReteAccumulateNode( id, leftInput, rightInput, resultConstraints, sourceBinder,resultBinder, accumulate, unwrapRightObject, context );
     }
 
     public LeftInputAdapterNode buildLeftInputAdapterNode( int id, ObjectSource objectSource, BuildContext context ) {
-        return new LeftInputAdapterNode( id, objectSource, context );
+        return new ReteLeftInputAdapterNode( id, objectSource, context );
     }
 
     public TerminalNode buildQueryTerminalNode(int id, LeftTupleSource source, Rule rule, GroupElement subrule, int subruleIndex, BuildContext context) {
-        return new QueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
+        return new ReteQueryTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
     public QueryElementNode buildQueryElementNode( int id, LeftTupleSource tupleSource, QueryElement qe, boolean tupleMemoryEnabled, boolean openQuery, BuildContext context ) {
-        return new QueryElementNode( id, tupleSource, qe, tupleMemoryEnabled, openQuery, context );
+        return new ReteQueryElementNode( id, tupleSource, qe, tupleMemoryEnabled, openQuery, context );
     }
 
     public BaseNode buildFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
-        return new FromNode( id, dataProvider, tupleSource, alphaNodeFieldConstraints, betaConstraints, tupleMemoryEnabled, context, from );
+        return new ReteFromNode( id, dataProvider, tupleSource, alphaNodeFieldConstraints, betaConstraints, tupleMemoryEnabled, context, from );
     }
 
     public BaseNode buildTimerNode( int id,
@@ -147,14 +161,14 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                     final Declaration[][]   declarations,
                                     LeftTupleSource tupleSource,
                                     BuildContext context ) {
-        return new TimerNode( id, tupleSource, timer,calendarNames,declarations,  context );
+        throw new UnsupportedOperationException();
     }
 
     public ConditionalBranchNode buildConditionalBranchNode(int id,
                                                             LeftTupleSource tupleSource,
                                                             ConditionalBranchEvaluator branchEvaluator,
                                                             BuildContext context) {
-        return new ConditionalBranchNode( id, tupleSource, branchEvaluator, context );
+        return new ReteConditionalBranchNode( id, tupleSource, branchEvaluator, context );
 
     }
 }

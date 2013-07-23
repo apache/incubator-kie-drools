@@ -27,7 +27,6 @@ import org.drools.core.common.PhreakBeliefSystemFactory;
 import org.drools.core.common.PhreakPropagationContextFactory;
 import org.drools.core.common.PhreakWorkingMemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContextFactory;
 import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.util.TripleFactory;

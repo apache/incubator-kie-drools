@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RetePropagationContext;
+import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
@@ -37,7 +37,7 @@ public class LeftMemory {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
             LeftTuple expectedLeftTuple = node.createLeftTuple( fh, node, true );
-            expectedLeftTuple.setPropagationContext( new RetePropagationContext() );
+            expectedLeftTuple.setPropagationContext( new PhreakPropagationContext() );
             list.add( expectedLeftTuple );
            
         }

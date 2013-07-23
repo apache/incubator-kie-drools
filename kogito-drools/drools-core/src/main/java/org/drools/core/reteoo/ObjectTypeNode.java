@@ -24,12 +24,9 @@ import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireActio
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RetePropagationContext;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
