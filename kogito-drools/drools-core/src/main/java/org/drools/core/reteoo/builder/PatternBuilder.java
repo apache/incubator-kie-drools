@@ -327,13 +327,15 @@ public class PatternBuilder
         //so need to preserve, so we can restore after this node is added. LeftMemory  and Terminal remain the same once set.
 
         buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
+
+        NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
         
         if ( context.getCurrentEntryPoint() != EntryPoint.DEFAULT && context.isAttachPQN() ) {
             if ( !context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
                 context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          new PropagationQueuingNode( context.getNextId(),
-                                                                                                      context.getObjectSource(),
-                                                                                                      context ) ) );
+                                                                          nfactory.buildPropagationQueuingNode( context.getNextId(),
+                                                                                                                context.getObjectSource(),
+                                                                                                                context ) ) );
             }
             // the entry-point specific network nodes are attached, so, set context to default entry-point
             context.setCurrentEntryPoint( EntryPoint.DEFAULT );

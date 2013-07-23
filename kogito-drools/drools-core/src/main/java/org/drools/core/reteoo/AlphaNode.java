@@ -122,18 +122,6 @@ public class AlphaNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink( this );
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
-                                                                                               null, null, null);
-            this.source.updateSink( this,
-                                    propagationContext,
-                                    workingMemory );
-        }
     }   
     
     public void assertObject(final InternalFactHandle factHandle,
@@ -176,26 +164,7 @@ public class AlphaNode extends ObjectSource
                                          final InternalWorkingMemory workingMemory) {
         sink.byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
     }
-//        
-//        
-////        for (ObjectSink objectSink : sink.getSinks()) {            
-////            if (objectSink instanceof BetaNode) {
-////                
-////                RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (BetaNode) objectSink );
-////                if ( rightTuple != null ) {
-////                    rightTuple.reAdd();
-////                }
-////                
-////            } else if ( objectSink instanceof LeftInputAdapterNode ) {
-////                ((LeftInputAdapterNode) objectSink).getSinkPropagator().byPassModifyToLeftTupleSink( modifyPreviousTuples );                
-////            } else if (objectSink instanceof AlphaNode) {
-////                ((AlphaNode)objectSink).byPassModifyToBetaNode( factHandle,
-////                                                                modifyPreviousTuples,
-////                                                                context,
-////                                                                workingMemory );
-////            }
-////        }
-//    }
+
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,

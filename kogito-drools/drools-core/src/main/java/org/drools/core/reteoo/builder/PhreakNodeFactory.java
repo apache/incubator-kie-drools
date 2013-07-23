@@ -34,6 +34,8 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PropagationQueuingNode;
+import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.ReteConditionalBranchNode;
 import org.drools.core.reteoo.ReteEvalConditionNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -81,6 +83,16 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                            final EvalCondition eval,
                                            final BuildContext context) {
         return new EvalConditionNode( id, tupleSource, eval, context );
+    }
+
+    public QueryRiaFixerNode buildQueryRiaFixerNode(int id, LeftTupleSource tupleSource, BuildContext context) {
+        throw new UnsupportedOperationException();
+    }
+
+    public PropagationQueuingNode buildPropagationQueuingNode(final int id,
+                                                              final ObjectSource objectSource,
+                                                              final BuildContext context) {
+        throw new UnsupportedOperationException();
     }
 
     public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context ) {

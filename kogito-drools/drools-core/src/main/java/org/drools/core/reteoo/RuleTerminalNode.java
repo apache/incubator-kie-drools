@@ -56,31 +56,31 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     private static final long             serialVersionUID = 510l;
 
     /** The rule to invoke upon match. */
-    private Rule                          rule;
+    protected Rule                          rule;
     
     /**
      * the subrule reference is needed to resolve declarations
      * because declarations may have different offsets in each subrule
      */
-    private GroupElement                  subrule;
-    private int                           subruleIndex;
-    private Declaration[]                 declarations;
-    
-    private Declaration[]                 timerDelayDeclarations;
-    private Declaration[]                 timerPeriodDeclarations;
-    private Declaration[]                 salienceDeclarations;
-    private Declaration[]                 enabledDeclarations;
+    protected GroupElement                  subrule;
+    protected int                           subruleIndex;
+    protected Declaration[]                 declarations;
 
-    private LeftTupleSinkNode             previousTupleSinkNode;
-    private LeftTupleSinkNode             nextTupleSinkNode;
+    protected Declaration[]                 timerDelayDeclarations;
+    protected Declaration[]                 timerPeriodDeclarations;
+    protected Declaration[]                 salienceDeclarations;
+    protected Declaration[]                 enabledDeclarations;
 
-    private boolean                       fireDirect;
+    protected LeftTupleSinkNode             previousTupleSinkNode;
+    protected LeftTupleSinkNode             nextTupleSinkNode;
 
-    private transient ObjectTypeNode.Id   leftInputOtnId;
+    protected boolean                       fireDirect;
 
-    private String                        consequenceName;
+    protected transient ObjectTypeNode.Id   leftInputOtnId;
 
-    private boolean                       unlinkingEnabled;
+    protected String                        consequenceName;
+
+    protected boolean                       unlinkingEnabled;
 
     // ------------------------------------------------------------
     // Constructors
@@ -225,32 +225,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return this.subrule;
     }
 
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        if( unlinkingEnabled ) {
-            context = findMostRecentPropagationContext( leftTuple,
-                                                        context );
-        }
-        
-        //check if the rule is not effective or
-        // if the current Rule is no-loop and the origin rule is the same then return
-        if ( (!this.rule.isEffective( leftTuple,
-                                      this,
-                                      workingMemory )) ||
-             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
-            leftTuple.setObject( Boolean.TRUE );
-            return;
-        }
-
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();        
-
-        boolean fire = agenda.createActivation( leftTuple,  context,
-                                                workingMemory,  this );
-        if( fire && !fireDirect ) {
-            agenda.addActivation( (AgendaItem) leftTuple.getObject() );
-        }
-    }
 
     public static PropagationContext findMostRecentPropagationContext(final LeftTuple leftTuple,
                                                                 PropagationContext context) {
@@ -265,72 +239,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return context;
     }
 
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        if( unlinkingEnabled ) {
-            context = findMostRecentPropagationContext( leftTuple,
-                                                        context );
-        }
-        
-    	InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-    	
-        // we need the inserted facthandle so we can update the network with new Activation
-    	Object o = leftTuple.getObject();
-    	if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
-    		AgendaItem match = (AgendaItem) o;       
-	        if ( match != null && match.isQueued() ) {
-	            // already activated, do nothing
-	            // although we need to notify the inserted Activation, as it's declarations may have changed.
-	            agenda.modifyActivation( match, true );
-	            return;
-	        }
-    	}
-
-        // if the current Rule is no-loop and the origin rule is the same then return
-        if ( (!this.rule.isEffective( leftTuple,
-                                      this,
-                                      workingMemory )) ||
-             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
-            return;
-        }
-
-        // o (AgendaItem) could be null, if this was staged as an insert but not processed, then pushed as a update
-        if ( o == null || o  == Boolean.TRUE ) {
-        	// set to Boolean.TRUE when lock-on-active stops an Activation being created
-        	leftTuple.setObject( null );
-        }
-        boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this );
-        if ( fire && !isFireDirect() ) {
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );
-        }
-    }
-
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        Object obj = leftTuple.getObject();
-
-
-        // activation can be null if the LeftTuple previous propagated into a no-loop
-        // or could be true due to lock-on-active blocking activation creation
-        if ( obj == null || obj == Boolean.TRUE) {
-            return;
-        }
-
-        Activation activation = (Activation) obj;
-        activation.setMatched( false );
-        
-        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
-
-        agenda.cancelActivation( leftTuple, 
-                                 context, 
-                                 workingMemory, 
-                                 activation, 
-                                 this );
-
-        ((RuleTerminalNodeLeftTuple)leftTuple).setActivationUnMatchListener(null);
-    }
 
 
     public String toString() {
@@ -339,15 +247,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink(this, context);
-        if (context == null || context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            PropagationContextFactory pctxFactory =((InternalRuleBase)workingMemory.getRuleBase()).getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
-            getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
-        }
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -587,6 +486,18 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     protected ObjectTypeNode getObjectTypeNode() {
         return getLeftTupleSource().getObjectTypeNode();
-    }         
+    }
+
+    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException("Rete Only");
+    }
+
+    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException("Rete Only");
+    }
+
+    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+        throw new UnsupportedOperationException("Rete Only");
+    }
 
 }

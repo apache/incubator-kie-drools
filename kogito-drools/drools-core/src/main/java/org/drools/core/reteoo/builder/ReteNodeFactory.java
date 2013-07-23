@@ -20,7 +20,6 @@ package org.drools.core.reteoo.builder;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -28,16 +27,15 @@ import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
-import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.ReteAccumulateNode;
 import org.drools.core.reteoo.ReteConditionalBranchNode;
 import org.drools.core.reteoo.ReteEvalConditionNode;
@@ -46,14 +44,16 @@ import org.drools.core.reteoo.ReteFromNode;
 import org.drools.core.reteoo.ReteJoinNode;
 import org.drools.core.reteoo.ReteLeftInputAdapterNode;
 import org.drools.core.reteoo.ReteNotNode;
+import org.drools.core.reteoo.ReteObjectTypeNode;
 import org.drools.core.reteoo.ReteQueryElementNode;
 import org.drools.core.reteoo.ReteQueryTerminalNode;
 import org.drools.core.reteoo.ReteRightInputAdapterNode;
+import org.drools.core.reteoo.ReteRuleTerminalNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
+import org.drools.core.reteoo.ReteAlphaNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EvalCondition;
@@ -72,18 +72,18 @@ public class ReteNodeFactory implements NodeFactory, Serializable {
 
 
     public AlphaNode buildAlphaNode( int id, AlphaNodeFieldConstraint constraint, ObjectSource objectSource, BuildContext context ) {
-        return new AlphaNode( id, constraint, objectSource, context );
+        return new ReteAlphaNode( id, constraint, objectSource, context );
     }
 
     public TerminalNode buildTerminalNode( int id, LeftTupleSource source, Rule rule, GroupElement subrule, int subruleIndex, BuildContext context ) {
-        return new RuleTerminalNode( id, source, rule, subrule, subruleIndex, context );
+        return new ReteRuleTerminalNode( id, source, rule, subrule, subruleIndex, context );
     }
 
     public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
         if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
             return new TraitObjectTypeNode( id, objectSource, objectType, context );
         } else {
-            return new ObjectTypeNode( id, objectSource, objectType, context );
+            return new ReteObjectTypeNode( id, objectSource, objectType, context );
         }
     }
 
@@ -92,6 +92,17 @@ public class ReteNodeFactory implements NodeFactory, Serializable {
                                            final EvalCondition eval,
                                            final BuildContext context) {
         return new ReteEvalConditionNode( id, tupleSource, eval, context );
+    }
+
+
+    public QueryRiaFixerNode buildQueryRiaFixerNode(int id, LeftTupleSource tupleSource, BuildContext context) {
+        return new QueryRiaFixerNode(id, tupleSource, context);
+    }
+
+    public PropagationQueuingNode buildPropagationQueuingNode(final int id,
+                                                              final ObjectSource objectSource,
+                                                              final BuildContext context) {
+        return new PropagationQueuingNode(id, objectSource, context);
     }
 
     public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context ) {

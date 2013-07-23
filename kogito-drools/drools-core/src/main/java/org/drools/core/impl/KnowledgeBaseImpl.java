@@ -123,6 +123,11 @@ public class KnowledgeBaseImpl
         return ruleBase;
     }
 
+    @Override
+    public void addProcess(Process process) {
+        ((ReteooRuleBase)ruleBase).addProcess(process);
+    }
+
     public void addEventListener(KieBaseEventListener listener) {
         if (!mappedKnowledgeBaseListeners.containsKey(listener)) {
             KnowledgeBaseEventListenerWrapper wrapper = new KnowledgeBaseEventListenerWrapper( this, listener );
