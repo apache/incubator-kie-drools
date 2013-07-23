@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,7 +48,7 @@ public class LazyTMSEnablingTest {
         wm = (AbstractWorkingMemory) RuleBaseFactory.newRuleBase()
                 .newStatefulSession();
 
-        tms = ((NamedEntryPoint)wm.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        tms = ((NamedEntryPoint)wm.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
     }
 

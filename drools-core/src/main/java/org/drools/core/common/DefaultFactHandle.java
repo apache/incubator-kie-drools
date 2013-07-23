@@ -22,7 +22,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -58,7 +58,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     private LeftTuple               firstLeftTuple;
     private LeftTuple               lastLeftTuple;
 
-    private SessionEntryPoint entryPoint;
+    private EntryPoint entryPoint;
 
     private boolean                 disconnected;
 
@@ -87,7 +87,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public DefaultFactHandle(final int id,
             final Object object,
             final long recency,
-            final SessionEntryPoint wmEntryPoint) {
+            final EntryPoint wmEntryPoint) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint );
     }
 
@@ -95,7 +95,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             final int identityHashCode,
             final Object object,
             final long recency,
-            final SessionEntryPoint wmEntryPoint) {
+            final EntryPoint wmEntryPoint) {
         this.id = id;
         this.entryPoint = wmEntryPoint;
         this.recency = recency;
@@ -304,11 +304,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return this.lastLeftTuple;
     }
 
-    public SessionEntryPoint getEntryPoint() {
+    public EntryPoint getEntryPoint() {
         return entryPoint;
     }
 
-    public void setEntryPoint( SessionEntryPoint sourceNode ) {
+    public void setEntryPoint( EntryPoint sourceNode ) {
         this.entryPoint = sourceNode;
     }
     

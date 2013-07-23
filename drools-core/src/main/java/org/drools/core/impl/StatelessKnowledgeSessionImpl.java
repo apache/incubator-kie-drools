@@ -40,7 +40,7 @@ import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
 import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.kie.api.command.Command;
@@ -151,7 +151,7 @@ public class StatelessKnowledgeSessionImpl
             }
 
             final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
-                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
+                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPointId.DEFAULT,
                                                                                                                                                   InitialFactImpl.getInstance() ),
                                                                                        wm,
                                                                                        wm );

@@ -65,7 +65,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.rule.Behavior;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingLengthWindow.SlidingLengthWindowContext;
@@ -86,7 +86,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class OutputMarshaller {
 
@@ -130,7 +130,7 @@ public class OutputMarshaller {
         
         
         writeInitialFactHandleRightTuples( context );
-        for ( SessionEntryPoint wmep : wm.getEntryPoints().values() ) {
+        for ( EntryPoint wmep : wm.getEntryPoints().values() ) {
             context.stream.writeShort( PersisterEnums.ENTRY_POINT );
             context.stream.writeUTF( wmep.getEntryPointId() );
             writeFactHandles( context, (( NamedEntryPoint )wmep).getObjectStore() );
@@ -461,7 +461,7 @@ public class OutputMarshaller {
         ObjectOutputStream stream = context.stream;
         InternalRuleBase ruleBase = context.ruleBase;
 
-        ObjectTypeNode initialFactNode = ruleBase.getRete().getEntryPointNode( EntryPoint.DEFAULT ).getObjectTypeNodes().get( ClassObjectType.InitialFact_ObjectType );
+        ObjectTypeNode initialFactNode = ruleBase.getRete().getEntryPointNode( EntryPointId.DEFAULT ).getObjectTypeNodes().get( ClassObjectType.InitialFact_ObjectType );
 
         // do we write the fact to the objecttypenode memory
         if ( initialFactNode != null ) {

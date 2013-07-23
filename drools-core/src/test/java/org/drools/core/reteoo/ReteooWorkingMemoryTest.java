@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 import static org.junit.Assert.*;
 
@@ -51,7 +51,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.GlobalResolver;
 
 public class ReteooWorkingMemoryTest {
@@ -61,7 +61,7 @@ public class ReteooWorkingMemoryTest {
     @Test
     public void testBasicWorkingMemoryActions() {
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) RuleBaseFactory.newRuleBase().newStatefulSession();
-        final TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        final TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         final String string = "test";
 
         workingMemory.insert( string );
@@ -183,14 +183,14 @@ public class ReteooWorkingMemoryTest {
                                                  RuleBasePartitionId.MAIN_PARTITION,
                                                  rbase.getConfiguration().isMultithreadEvaluation(),
                                                  rete,
-                                                 new EntryPoint( "xxx" ) );
+                                                 new EntryPointId( "xxx" ) );
         
         
         rbase.getRete().addObjectSink( epn );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         org.kie.api.runtime.rule.FactHandle f1 = ksession.insert( "f1" );
         
-        SessionEntryPoint ep = ksession.getEntryPoint( "xxx" );
+        EntryPoint ep = ksession.getEntryPoint( "xxx" );
         try {
             ep.update( f1, "s1" );
             fail( "Should throw an exception" );

@@ -5,9 +5,9 @@ import java.util.Collection;
 
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
-public class DisconnectedWorkingMemoryEntryPoint implements SessionEntryPoint, Serializable {
+public class DisconnectedWorkingMemoryEntryPoint implements EntryPoint, Serializable {
     
     private String id;
     

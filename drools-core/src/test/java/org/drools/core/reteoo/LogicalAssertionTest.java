@@ -48,7 +48,7 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.Consequence;
@@ -576,7 +576,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         assertSame( logicalHandle1, logicalHandle2 );
         
-        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         
         // "logical" should only appear once
         assertEquals( 1,
@@ -705,7 +705,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         assertSame( logicalHandle1, logicalHandle2 );
 
-        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         
         // "logical" should only appear once
         assertEquals( 1,
@@ -950,7 +950,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         cheese.setType( "cheddar" );
         cheese.setPrice( 20 );
-        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         
         assertEquals( 1,
                       getLogicalCount( tms ) );

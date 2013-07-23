@@ -42,7 +42,7 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
@@ -63,7 +63,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
@@ -169,7 +169,7 @@ public class StreamsTest extends CommonTestMethodBase {
                                                  50,
                                                  System.currentTimeMillis());
 
-        SessionEntryPoint entry = session.getEntryPoint("StockStream");
+        EntryPoint entry = session.getEntryPoint("StockStream");
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert(tick5);
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert(tick6);
@@ -222,7 +222,7 @@ public class StreamsTest extends CommonTestMethodBase {
                                                  50,
                                                  System.currentTimeMillis());
 
-        SessionEntryPoint entry = session.getEntryPoint("stream1");
+        EntryPoint entry = session.getEntryPoint("stream1");
 
         InternalFactHandle handle5 = (InternalFactHandle) entry.insert(tick5);
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert(tick6);
@@ -275,7 +275,7 @@ public class StreamsTest extends CommonTestMethodBase {
                                                   50,
                                                   System.currentTimeMillis() );
 
-        SessionEntryPoint entry = session.getEntryPoint( "stream1" );
+        EntryPoint entry = session.getEntryPoint( "stream1" );
 
        InternalFactHandle handle5 = (InternalFactHandle) entry.insert( tick5 );
         InternalFactHandle handle6 = (InternalFactHandle) entry.insert( tick6 );
@@ -346,9 +346,9 @@ public class StreamsTest extends CommonTestMethodBase {
         org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep1 = ksession.getEntryPoint("ep1");
-        SessionEntryPoint ep2 = ksession.getEntryPoint("ep2");
-        SessionEntryPoint ep3 = ksession.getEntryPoint("ep3");
+        EntryPoint ep1 = ksession.getEntryPoint("ep1");
+        EntryPoint ep2 = ksession.getEntryPoint("ep2");
+        EntryPoint ep3 = ksession.getEntryPoint("ep3");
 
         ep1.insert(new StockTick(1,
                                  "RHT",
@@ -397,7 +397,7 @@ public class StreamsTest extends CommonTestMethodBase {
         org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep1 = ksession.getEntryPoint("ep1");
+        EntryPoint ep1 = ksession.getEntryPoint("ep1");
 
         ep1.insert(new StockTick(1,
                 "RHT",
@@ -422,11 +422,11 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPointReference.drl");
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
 
-        SessionEntryPoint def = session.getEntryPoint(EntryPoint.DEFAULT.getEntryPointId());
-        SessionEntryPoint s1 = session.getEntryPoint("stream1");
-        SessionEntryPoint s2 = session.getEntryPoint( "stream2" );
-        SessionEntryPoint s3 = session.getEntryPoint( "stream3" );
-        Collection<? extends SessionEntryPoint> eps = session.getEntryPoints();
+        EntryPoint def = session.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
+        EntryPoint s1 = session.getEntryPoint("stream1");
+        EntryPoint s2 = session.getEntryPoint( "stream2" );
+        EntryPoint s3 = session.getEntryPoint( "stream3" );
+        Collection<? extends EntryPoint> eps = session.getEntryPoints();
 
         assertEquals( 4,
                       eps.size() );
@@ -626,7 +626,7 @@ public class StreamsTest extends CommonTestMethodBase {
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep = ksession.getEntryPoint("ticks");
+        EntryPoint ep = ksession.getEntryPoint("ticks");
         ep.insert(new StockTick(1, "ACME", 20, 1000)); // not in the window
         ep.insert(new StockTick(2, "RHT", 20, 1000)); // not > 20
         ep.insert(new StockTick(3, "RHT", 30, 1000));
@@ -677,7 +677,7 @@ public class StreamsTest extends CommonTestMethodBase {
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);
 
-        SessionEntryPoint ep = ksession.getEntryPoint("data");
+        EntryPoint ep = ksession.getEntryPoint("data");
         ep.insert(Double.valueOf( 10 )); 
         ep.insert(Double.valueOf( 11 )); 
         ep.insert(Double.valueOf( 12 )); 

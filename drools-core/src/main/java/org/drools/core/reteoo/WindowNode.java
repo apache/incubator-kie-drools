@@ -29,7 +29,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.BehaviorManager;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
@@ -61,7 +61,7 @@ public class WindowNode extends ObjectSource
     private static final long serialVersionUID = 540l;
     private List<AlphaNodeFieldConstraint> constraints;
     private BehaviorManager                behavior;
-    private EntryPoint                     entryPoint;
+    private EntryPointId                     entryPoint;
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
@@ -106,7 +106,7 @@ public class WindowNode extends ObjectSource
         super.readExternal(in);
         constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
         behavior = (BehaviorManager) in.readObject();
-        entryPoint = (EntryPoint) in.readObject();
+        entryPoint = (EntryPointId) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -395,7 +395,7 @@ public class WindowNode extends ObjectSource
         this.previousRightTupleSinkNode = previous;
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return entryPoint;
     }
 

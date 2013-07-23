@@ -35,7 +35,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.mvel2.MVEL;
 
 @XmlAccessorType(XmlAccessType.NONE)
@@ -68,7 +68,7 @@ public class ModifyCommand
 
     public Object execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        SessionEntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
+        EntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
         
         Object object = wmep.getObject( this.handle );
         MVEL.eval( getMvelExpr(),

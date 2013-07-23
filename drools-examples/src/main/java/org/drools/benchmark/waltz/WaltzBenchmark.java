@@ -16,6 +16,15 @@
 
 package org.drools.benchmark.waltz;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -23,15 +32,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.Session;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -78,7 +78,7 @@ public abstract class WaltzBenchmark {
         System.out.println( "average : " + totalTime / 5 );
     }
 
-    private static void loadLines(Session wm,
+    private static void loadLines(RuleRuntime wm,
                                   String filename) {
         try {
             BufferedReader reader = new BufferedReader( new InputStreamReader( WaltzBenchmark.class.getResourceAsStream( "data/" + filename ) ) );

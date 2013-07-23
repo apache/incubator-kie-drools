@@ -22,7 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -38,14 +38,14 @@ public interface FactHandleFactory {
     public InternalFactHandle newFactHandle(Object object, 
                                             ObjectTypeConf conf, 
                                             InternalWorkingMemory workingMemory, 
-                                            SessionEntryPoint wmEntryPoint );
+                                            EntryPoint wmEntryPoint );
     
     public InternalFactHandle newFactHandle(final int id,
                                             final Object object,
                                             final long recency,
                                             final ObjectTypeConf conf,
                                             final InternalWorkingMemory workingMemory,
-                                            final SessionEntryPoint wmEntryPoint);
+                                            final EntryPoint wmEntryPoint);
     
     /**
      * Increases the recency of the FactHandle

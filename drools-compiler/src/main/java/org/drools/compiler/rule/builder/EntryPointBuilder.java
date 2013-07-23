@@ -2,7 +2,7 @@ package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 
@@ -25,7 +25,7 @@ public class EntryPointBuilder
                                       Pattern prefixPattern) {
         final EntryPointDescr entryDescr = (EntryPointDescr) descr;
 
-        return new EntryPoint( entryDescr.getEntryId() );
+        return new EntryPointId( entryDescr.getEntryId() );
     }
 
 }

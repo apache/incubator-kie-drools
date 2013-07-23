@@ -16,7 +16,7 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {
@@ -48,7 +48,7 @@ public interface ObjectTypeConf {
      * */
     public void enableTMS();
     
-    public EntryPoint getEntryPoint();
+    public EntryPointId getEntryPoint();
     
     public boolean isSupportsPropertyChangeListeners();
 

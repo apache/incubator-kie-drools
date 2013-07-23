@@ -32,17 +32,17 @@ import java.util.Map;
  * and this allows them to safelly run in parallel
  * and concurrent modes.
  */
-public class EntryPoint extends ConditionalElement
+public class EntryPointId extends ConditionalElement
     implements
     PatternSource, Externalizable {
 
-    public static final EntryPoint DEFAULT = new EntryPoint("DEFAULT");
+    public static final EntryPointId DEFAULT = new EntryPointId("DEFAULT");
 
     private static final long serialVersionUID = 510l;
 
     private String entryPointId;
 
-    public EntryPoint() {
+    public EntryPointId() {
 
     }
     /**
@@ -50,7 +50,7 @@ public class EntryPoint extends ConditionalElement
      *
      * @param entryPointId the ID for this entry point
      */
-    public EntryPoint( final String entryPointId ) {
+    public EntryPointId( final String entryPointId ) {
         this.entryPointId = entryPointId;
     }
 
@@ -69,7 +69,7 @@ public class EntryPoint extends ConditionalElement
      * @see org.kie.rule.ConditionalElement#clone()
      */
     @Override
-    public EntryPoint clone() {
+    public EntryPointId clone() {
         return this;
     }
 
@@ -138,7 +138,7 @@ public class EntryPoint extends ConditionalElement
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        final EntryPoint other = (EntryPoint) obj;
+        final EntryPointId other = (EntryPointId) obj;
         if ( entryPointId == null ) {
             if ( other.entryPointId != null ) return false;
         } else if ( !entryPointId.equals( other.entryPointId ) ) return false;

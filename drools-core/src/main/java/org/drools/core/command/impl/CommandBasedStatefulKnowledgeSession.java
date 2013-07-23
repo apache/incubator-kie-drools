@@ -61,7 +61,7 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.command.runtime.rule.UpdateCommand;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
@@ -86,7 +86,7 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleFlowGroup;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
@@ -381,11 +381,11 @@ public class CommandBasedStatefulKnowledgeSession
         return (T) this.commandService.execute( new GetSessionClockCommand() );
     }
 
-    public SessionEntryPoint getEntryPoint(String name) {
+    public EntryPoint getEntryPoint(String name) {
         return this.commandService.execute( new GetEntryPointCommand( name ) );
     }
 
-    public Collection< ? extends SessionEntryPoint> getEntryPoints() {
+    public Collection< ? extends EntryPoint> getEntryPoints() {
         return this.commandService.execute( new GetEntryPointsCommand() );
     }
 
@@ -486,7 +486,7 @@ public class CommandBasedStatefulKnowledgeSession
     }
 
     public String getEntryPointId() {
-        return EntryPoint.DEFAULT.getEntryPointId();
+        return EntryPointId.DEFAULT.getEntryPointId();
     }
 
     public long getFactCount() {

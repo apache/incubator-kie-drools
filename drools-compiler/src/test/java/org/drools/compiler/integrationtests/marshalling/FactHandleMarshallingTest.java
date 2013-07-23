@@ -31,7 +31,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
@@ -42,7 +42,7 @@ import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class FactHandleMarshallingTest {
 
@@ -58,8 +58,8 @@ public class FactHandleMarshallingTest {
         // EntryPointNode
         Rete rete = ((ReteooRuleBase) ruleBase).getRete();
         RuleBasePartitionId partionId = new RuleBasePartitionId("P-MAIN");
-        EntryPointNode entryPointNode = new EntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPoint.DEFAULT);
-        SessionEntryPoint wmEntryPoint = new NamedEntryPoint(EntryPoint.DEFAULT, entryPointNode, wm);
+        EntryPointNode entryPointNode = new EntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
+        EntryPoint wmEntryPoint = new NamedEntryPoint(EntryPointId.DEFAULT, entryPointNode, wm);
         EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         
         return factHandle;

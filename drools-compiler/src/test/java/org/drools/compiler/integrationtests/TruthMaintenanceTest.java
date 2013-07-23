@@ -37,7 +37,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Package;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -513,7 +513,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 0,
                       IteratorToList.convert( workingMemory.iterateObjects() ).size() );
 
-        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
         final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
         field.setAccessible( true );
@@ -578,7 +578,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       1,
                       list.size() );
 
-        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint(EntryPoint.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
         assertTrue(tms.getEqualityKeyMap().isEmpty());
     }
 
@@ -731,7 +731,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 0,
                       list.size() );        
         
-        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)workingMemory.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
 
         final java.lang.reflect.Field field = tms.getClass().getDeclaredField( "equalityKeyMap" );
         field.setAccessible( true );
@@ -1041,7 +1041,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
         assertEquals(2, session.getObjects().size());
 
-        TruthMaintenanceSystem tms =  ((NamedEntryPoint)session.getEntryPoint(EntryPoint.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms =  ((NamedEntryPoint)session.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId()) ).getTruthMaintenanceSystem();
         assertTrue(tms.getEqualityKeyMap().isEmpty());
     }
     
@@ -1193,7 +1193,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         
         kSession.fireAllRules();
                         
-        TruthMaintenanceSystem tms = ((NamedEntryPoint)((StatefulKnowledgeSessionImpl)kSession).session.getWorkingMemoryEntryPoint( EntryPoint.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)((StatefulKnowledgeSessionImpl)kSession).session.getWorkingMemoryEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) ).getTruthMaintenanceSystem();
         
         InternalFactHandle fh = ( InternalFactHandle ) kSession.getFactHandle( key );
         

@@ -61,7 +61,7 @@ import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaFilter;
 import org.drools.core.spi.FactHandleFactory;
@@ -75,7 +75,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 import com.google.protobuf.ExtensionRegistry;
 
@@ -202,7 +202,7 @@ public class ProtobufInputMarshaller {
                                                                                                  environment );
         new StatefulKnowledgeSessionImpl( session );
 
-        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
+        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPointId.DEFAULT.getEntryPointId() ) );
         return session;
     }
 
@@ -250,7 +250,7 @@ public class ProtobufInputMarshaller {
                                pctxs );
 
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
-            SessionEntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
+            EntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
             readFactHandles( context,
                              _ep,
                              ((NamedEntryPoint) wmep).getObjectStore(),
@@ -439,7 +439,7 @@ public class ProtobufInputMarshaller {
                                                                           ClassNotFoundException {
         InternalWorkingMemory wm = context.wm;
 
-        SessionEntryPoint entryPoint = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
+        EntryPoint entryPoint = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
         // load the handles
         for ( ProtobufMessages.FactHandle _handle : _ep.getHandleList() ) {
             InternalFactHandle handle = readFactHandle( context,
@@ -496,7 +496,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context,
-                                                    SessionEntryPoint entryPoint,
+                                                    EntryPoint entryPoint,
                                                     FactHandle _handle) throws IOException,
                                                                        ClassNotFoundException {
         Object object = null;
@@ -544,7 +544,7 @@ public class ProtobufInputMarshaller {
     }
 
     public static void readTruthMaintenanceSystem(MarshallerReaderContext context,
-                                                  SessionEntryPoint wmep,
+                                                  EntryPoint wmep,
                                                   ProtobufMessages.EntryPoint _ep,
                                                   List<PropagationContext> pctxs) throws IOException,
                                                                                      ClassNotFoundException {

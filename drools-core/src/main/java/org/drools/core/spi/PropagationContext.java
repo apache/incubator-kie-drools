@@ -25,7 +25,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.WindowTupleList;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 
 public interface PropagationContext
@@ -60,7 +60,7 @@ public interface PropagationContext
 
     void releaseResources();
 
-    EntryPoint getEntryPoint();
+    EntryPointId getEntryPoint();
     
     void addInsertAction(WorkingMemoryAction action);
     void removeInsertAction(WorkingMemoryAction action);
@@ -82,5 +82,5 @@ public interface PropagationContext
 
     void cleanReaderContext();
 
-    void setEntryPoint(EntryPoint entryPoint);
+    void setEntryPoint(EntryPointId entryPoint);
 }

@@ -46,7 +46,7 @@ import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.ObjectType;
@@ -554,7 +554,7 @@ public class ObjectTypeNode extends ObjectSource
     /**
      * @return the entryPoint
      */
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return ((EntryPointNode) this.source).getEntryPoint();
     }
 
@@ -694,7 +694,7 @@ public class ObjectTypeNode extends ObjectSource
             InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
 
             String entryPointId = inCtx.readUTF();
-            EntryPointNode epn = ((ReteooRuleBase) inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPoint( entryPointId ) );
+            EntryPointNode epn = ((ReteooRuleBase) inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPointId( entryPointId ) );
 
             String className = inCtx.readUTF();
             Class< ? > cls = ((ReteooRuleBase) inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( className );
@@ -719,7 +719,7 @@ public class ObjectTypeNode extends ObjectSource
                                 Timer _timer) throws ClassNotFoundException {
             ExpireTimer _expire = _timer.getExpire();
             InternalFactHandle factHandle = inCtx.handles.get( _expire.getHandleId() );
-            EntryPointNode epn = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPoint( _expire.getEntryPointId() ) );
+            EntryPointNode epn = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRete().getEntryPointNode( new EntryPointId( _expire.getEntryPointId() ) );
             Class<?> cls = ((ReteooRuleBase)inCtx.wm.getRuleBase()).getRootClassLoader().loadClass( _expire.getClassName() );
             ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
             

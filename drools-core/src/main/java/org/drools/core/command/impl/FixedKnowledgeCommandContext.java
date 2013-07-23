@@ -23,7 +23,7 @@ import org.kie.internal.command.World;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public class FixedKnowledgeCommandContext
         implements
@@ -33,7 +33,7 @@ public class FixedKnowledgeCommandContext
     private KnowledgeBuilder         kbuilder;
     private KieBase                  kbase;
     private KieSession               kSession;
-    private SessionEntryPoint        workingMemoryEntryPoint;
+    private EntryPoint        workingMemoryEntryPoint;
     private ExecutionResults         kresults;
 
     public FixedKnowledgeCommandContext(Context context,
@@ -52,7 +52,7 @@ public class FixedKnowledgeCommandContext
                                         KnowledgeBuilder kbuilder,
                                         KieBase kbase,
                                         KieSession statefulKsession,
-                                        SessionEntryPoint workingMemoryEntryPoint,
+                                        EntryPoint workingMemoryEntryPoint,
                                         ExecutionResults kresults) {
         this( context,
               kbuilder,
@@ -82,11 +82,11 @@ public class FixedKnowledgeCommandContext
         return this.kresults;
     }
 
-    public SessionEntryPoint getWorkingMemoryEntryPoint() {
+    public EntryPoint getWorkingMemoryEntryPoint() {
         return workingMemoryEntryPoint;
     }
 
-    public void setWorkingMemoryEntryPoint(SessionEntryPoint workingMemoryEntryPoint) {
+    public void setWorkingMemoryEntryPoint(EntryPoint workingMemoryEntryPoint) {
         this.workingMemoryEntryPoint = workingMemoryEntryPoint;
     }
 

@@ -30,7 +30,7 @@ import org.drools.core.common.RetePropagationContext;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.ReteooBuilder.IdGenerator;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.Cheese;
@@ -82,7 +82,7 @@ public class ObjectTypeNodeTest extends DroolsTestCase {
         assertEquals(id,
                      objectTypeNode.getId());
 
-        Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes(EntryPoint.DEFAULT);
+        Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes(EntryPointId.DEFAULT);
 
         assertEquals(0,
                      map.size());

@@ -6,7 +6,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 
 public interface KnowledgeCommandContext extends Context {
     
@@ -22,6 +22,6 @@ public interface KnowledgeCommandContext extends Context {
 
     public ExecutionResults getExecutionResults();
 
-    public SessionEntryPoint getWorkingMemoryEntryPoint();
+    public EntryPoint getWorkingMemoryEntryPoint();
 
 }

@@ -43,7 +43,7 @@ import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
@@ -558,9 +558,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
     @Test
     public void testSlotSpecific() {
-        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, Long.MAX_VALUE);
-        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 0);
-        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPoint.DEFAULT, 6);
+        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, Long.MAX_VALUE);
+        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, 0);
+        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, 6);
 
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);

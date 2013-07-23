@@ -66,7 +66,7 @@ import org.drools.core.event.rule.impl.RuleFlowGroupDeactivatedEventImpl;
 import org.drools.core.reteoo.DisposedReteooWorkingMemory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.core.rule.EntryPoint;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -97,7 +97,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.SessionEntryPoint;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
@@ -140,11 +140,11 @@ public class StatefulKnowledgeSessionImpl
         return this.session.getId();
     }
 
-    public SessionEntryPoint getEntryPoint(String name) {
+    public EntryPoint getEntryPoint(String name) {
         return session.getWorkingMemoryEntryPoint( name );
     }
 
-    public Collection< ? extends org.kie.api.runtime.rule.SessionEntryPoint> getEntryPoints() {
+    public Collection< ? extends org.kie.api.runtime.rule.EntryPoint> getEntryPoints() {
         return session.getWorkingMemoryEntryPoints();
     }
 
@@ -437,7 +437,7 @@ public class StatefulKnowledgeSessionImpl
                              activation );
     }
 
-    public EntryPoint getEntryPoint() {
+    public EntryPointId getEntryPoint() {
         return session.getEntryPoint();
     }
 
