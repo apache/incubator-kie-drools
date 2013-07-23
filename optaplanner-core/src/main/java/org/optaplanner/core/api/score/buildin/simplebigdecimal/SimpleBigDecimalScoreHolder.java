@@ -18,12 +18,9 @@ package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 
+import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.RuleContext;
-import org.kie.api.runtime.rule.Session;
 
 /**
  * @see SimpleBigDecimalScore

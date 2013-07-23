@@ -29,7 +29,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
-import org.kie.api.runtime.rule.Session;
+import org.kie.api.runtime.rule.RuleRuntime;
 import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatch;
 import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatch;
@@ -73,7 +73,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         if (!constraintMatchEnabled) {
             // Fast code
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                 }
             });
@@ -82,7 +82,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             final IntConstraintMatchTotal constraintMatchTotal = findIntConstraintMatchTotal(kcontext, scoreLevel);
             final IntConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                     constraintMatchTotal.removeConstraintMatch(constraintMatch);
                 }
@@ -109,7 +109,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         if (!constraintMatchEnabled) {
             // Fast code
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                 }
             });
@@ -118,7 +118,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             final LongConstraintMatchTotal constraintMatchTotal = findLongConstraintMatchTotal(kcontext, scoreLevel);
             final LongConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                     constraintMatchTotal.removeConstraintMatch(constraintMatch);
                 }
@@ -145,7 +145,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         if (!constraintMatchEnabled) {
             // Fast code
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                 }
             });
@@ -154,7 +154,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             final DoubleConstraintMatchTotal constraintMatchTotal = findDoubleConstraintMatchTotal(kcontext, scoreLevel);
             final DoubleConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                     constraintMatchTotal.removeConstraintMatch(constraintMatch);
                 }
@@ -181,7 +181,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         if (!constraintMatchEnabled) {
             // Fast code
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                 }
             });
@@ -190,7 +190,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             final BigDecimalConstraintMatchTotal constraintMatchTotal = findBigDecimalConstraintMatchTotal(kcontext, scoreLevel);
             final BigDecimalConstraintMatch constraintMatch = constraintMatchTotal.addConstraintMatch(kcontext, weight);
             agendaItem.setActivationUnMatchListener(new ActivationUnMatchListener() {
-                public void unMatch(Session wm, Match activation) {
+                public void unMatch(RuleRuntime wm, Match activation) {
                     undoListener.run();
                     constraintMatchTotal.removeConstraintMatch(constraintMatch);
                 }
