@@ -7,8 +7,7 @@ import java.util.Queue;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.Memory;
-import org.drools.core.common.NetworkNode;
+import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -294,13 +293,13 @@ public class PhreakTimerNode {
         }
     }
 
-    public void doPropagateChildLeftTuples(TimerNode timerNode,
-                                           TimerNodeMemory tm,
-                                           LeftTupleSink sink,
-                                           InternalWorkingMemory wm,
-                                           LeftTupleSets srcLeftTuples,
-                                           LeftTupleSets trgLeftTuples,
-                                           LeftTupleSets stagedLeftTuples) {
+    public static void doPropagateChildLeftTuples(TimerNode timerNode,
+                                                  TimerNodeMemory tm,
+                                                  LeftTupleSink sink,
+                                                  InternalWorkingMemory wm,
+                                                  LeftTupleSets srcLeftTuples,
+                                                  LeftTupleSets trgLeftTuples,
+                                                  LeftTupleSets stagedLeftTuples) {
         LeftTupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
         synchronized ( leftTuples ) {
             for ( LeftTuple leftTuple = leftTuples.getFirst(); leftTuple != null; ) {
@@ -317,10 +316,10 @@ public class PhreakTimerNode {
         }
     }
 
-    private void doPropagateChildLeftTuple(LeftTupleSink sink,
-                                           LeftTupleSets trgLeftTuples,
-                                           LeftTupleSets stagedLeftTuples,
-                                           LeftTuple leftTuple) {
+    private static void doPropagateChildLeftTuple(LeftTupleSink sink,
+                                                  LeftTupleSets trgLeftTuples,
+                                                  LeftTupleSets stagedLeftTuples,
+                                                  LeftTuple leftTuple) {
         LeftTuple childLeftTuple = leftTuple.getFirstChild();
         if ( childLeftTuple == null ) {
             childLeftTuple = sink.createLeftTuple( leftTuple, sink, leftTuple.getPropagationContext(), true );
@@ -385,14 +384,14 @@ public class PhreakTimerNode {
 
         private final PathMemory pmem;
         private final InternalWorkingMemory wm;
-        private final NetworkNode sink;
-        private final Memory mem;
+        private final LeftTupleSink sink;
+        private final TimerNodeMemory tm;
 
-        public Executor(PathMemory pmem, InternalWorkingMemory wm, NetworkNode sink, Memory mem) {
+        public Executor(PathMemory pmem, InternalWorkingMemory wm, LeftTupleSink sink, TimerNodeMemory tm) {
             this.pmem = pmem;
             this.wm = wm;
             this.sink = sink;
-            this.mem = mem;
+            this.tm = tm;
         }
 
         @Override
@@ -400,7 +399,7 @@ public class PhreakTimerNode {
             SegmentMemory[] smems = pmem.getSegmentMemories();
             LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
 
-            SegmentMemory sm = pmem.getSegmentMemory();
+            SegmentMemory sm = tm.getSegmentMemory();
             int smemIndex = 0;
             for (SegmentMemory smem : smems) {
                 if (smem == sm) {
@@ -409,20 +408,33 @@ public class PhreakTimerNode {
                 smemIndex++;
             }
 
+            LeftTupleSets trgLeftTuples = new LeftTupleSetsImpl();
+            doPropagateChildLeftTuples(null,
+                                       tm,
+                                       sink,
+                                       wm,
+                                       null,
+                                       trgLeftTuples,
+                                       sm.getStagedLeftTuples());
+
             RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
+            LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
+
             rne.outerEval(lian,
                           pmem,
                           sink,
-                          mem,
+                          tm,
                           smems,
                           smemIndex,
-                          sm.getStagedLeftTuples(),
+                          trgLeftTuples,
                           wm,
                           new LinkedList<StackEntry>(),
-                          new LinkedList<StackEntry>(),
+                          outerStack,
                           new HashSet<String>(),
                           true,
                           pmem.getRuleAgendaItem().getRuleExecutor());
+
+            pmem.getRuleAgendaItem().getRuleExecutor().fire(wm, outerStack);
         }
     }
 

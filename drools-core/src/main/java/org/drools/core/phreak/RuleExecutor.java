@@ -65,7 +65,22 @@ public class RuleExecutor {
         reEvaluateNetwork(wm, outerStack, fireUntilHalt);
         wm.executeQueuedActions();
 
-        //int fireCount = 0;
+        return fire(wm, filter, fireCount, fireLimit, outerStack, agenda, fireUntilHalt);
+    }
+
+    public void fire(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
+        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
+        boolean fireUntilHalt = agenda.isFireUntilHalt();
+        fire(wm, null, 0, Integer.MAX_VALUE, outerStack, agenda, fireUntilHalt);
+    }
+
+    private int fire(InternalWorkingMemory wm,
+                     AgendaFilter filter,
+                     int fireCount,
+                     int fireLimit,
+                     LinkedList<StackEntry> outerStack,
+                     InternalAgenda agenda,
+                     boolean fireUntilHalt) {
         int localFireCount = 0;
         if (!tupleList.isEmpty()) {
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
