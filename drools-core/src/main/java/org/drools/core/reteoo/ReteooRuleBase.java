@@ -278,6 +278,7 @@ public class ReteooRuleBase
 
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
         this.config.setClassLoader(droolsStream.getParentClassLoader());
+        kieComponentFactory =  getConfiguration().getComponentFactory();
 
         this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
