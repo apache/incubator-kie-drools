@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValu
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDependentSortingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
@@ -322,14 +323,21 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
                         + ") or a sorterClass (" + sorterClass + ").");
             }
-            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-                throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
-                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+            if (valueSelector.getVariableDescriptor().getValueRangeDescriptor().isEntityDependent()
+                    && resolvedCacheType == SelectionCacheType.STEP) {
+                valueSelector = new EntityDependentSortingValueSelector(valueSelector,
+                        resolvedCacheType, sorter);
+            } else {
+                if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                    throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                            + ") with resolvedCacheType (" + resolvedCacheType
+                            + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
+                            + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                            + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+                }
+                valueSelector = new SortingValueSelector((EntityIndependentValueSelector) valueSelector,
+                        resolvedCacheType, sorter);
             }
-            valueSelector = new SortingValueSelector((EntityIndependentValueSelector) valueSelector,
-                    resolvedCacheType, sorter);
         }
         return valueSelector;
     }
@@ -357,7 +365,8 @@ public class ValueSelectorConfig extends SelectorConfig {
                     "probabilityWeightFactoryClass", probabilityWeightFactoryClass);
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") with resolvedCacheType (" + resolvedCacheType
+                        + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
@@ -372,7 +381,8 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (resolvedSelectionOrder == SelectionOrder.SHUFFLED) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") with resolvedCacheType (" + resolvedCacheType
+                        + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
@@ -387,7 +397,8 @@ public class ValueSelectorConfig extends SelectorConfig {
         if (resolvedCacheType.isCached() && resolvedCacheType.compareTo(valueSelector.getCacheType()) > 0) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
-                        + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
+                        + ") with resolvedCacheType (" + resolvedCacheType
+                        + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
                         + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }

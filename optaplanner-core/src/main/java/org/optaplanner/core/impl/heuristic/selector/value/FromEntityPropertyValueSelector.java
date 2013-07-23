@@ -40,7 +40,7 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
         this.variableDescriptor = valueRangeDescriptor.getVariableDescriptor();
         this.valueRangeDescriptor = valueRangeDescriptor;
         this.randomSelection = randomSelection;
-        if (cacheType.isCached()) {
+        if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The selector (" + this
                     + ") does not support the cacheType (" + cacheType + ").");
         }
