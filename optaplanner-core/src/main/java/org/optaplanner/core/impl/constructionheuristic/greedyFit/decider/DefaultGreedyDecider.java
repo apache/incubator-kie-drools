@@ -87,7 +87,7 @@ public class DefaultGreedyDecider implements GreedyDecider {
                 logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
             }
             moveIndex++;
-            // TODO break when terminator returns false. See DefaultDecider
+            // TODO break when terminator returns false. See LocalSearchDecider
         }
         GreedyMoveScope pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {

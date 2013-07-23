@@ -34,15 +34,12 @@ import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.forager.ForagerConfig;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchSolverPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchSolverPhase;
-import org.optaplanner.core.impl.localsearch.decider.Decider;
-import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
+import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("localSearch")
@@ -104,8 +101,8 @@ public class LocalSearchSolverPhaseConfig extends SolverPhaseConfig {
         return phase;
     }
 
-    private Decider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        DefaultDecider decider = new DefaultDecider();
+    private LocalSearchDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
+        LocalSearchDecider decider = new LocalSearchDecider();
         decider.setTermination(termination);
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
         decider.setMoveSelector(moveSelector);

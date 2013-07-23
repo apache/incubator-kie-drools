@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch;
 
-import org.optaplanner.core.impl.localsearch.decider.Decider;
+import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -30,16 +30,12 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public class DefaultLocalSearchSolverPhase extends AbstractSolverPhase implements LocalSearchSolverPhase,
         LocalSearchSolverPhaseLifecycleListener {
 
-    protected Decider decider;
+    protected LocalSearchDecider decider;
 
     protected boolean assertStepScoreFromScratch = false;
     protected boolean assertExpectedStepScore = false;
-    
-    public Decider getDecider() {
-        return this.decider;
-    }
 
-    public void setDecider(Decider decider) {
+    public void setDecider(LocalSearchDecider decider) {
         this.decider = decider;
     }
 

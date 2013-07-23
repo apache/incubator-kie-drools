@@ -8,6 +8,7 @@ Starting from 5.1.0, every migration change has an indication
 on how likely your code is going to be affected by this change:
 - [MAJOR] Very likely affects your code.
 - [MINOR] Probably does not affect your code (especially if you followed the examples), unless you have hacks.
+- [IMPL_DETAIL] Should not affect your code, unless you have very deep hacks.
 - [RECOMMENDED] Not a backward incompatible change, but you probably want to do this.
 - [README] Read this to better understand why the following MAJOR change was made.
 
@@ -3440,7 +3441,7 @@ Now it simply does:
 Normally this should have no relevant impact on your XML dataset files or your code.
 
 [README] The construction heuristics have been rewritten from scratch to take advantage of the selector architecture.
-The basic configuration hasn't changed much, but power users can do advanced configuration too.
+The basic configuration hasn't changed much, but power users can now optionally do advanced configuration too.
 These advanced options allow you to use construction heuristics with multiple entity classes,
 a higher number of variables, nullable variables, ...
 
@@ -3625,3 +3626,5 @@ After in *.java:
     }
 
 [MINOR] The ValueRangeType.UNDEFINED has been removed: it is no longer supported.
+
+[IMPL_DETAIL] DefaultDecider has been renamed to LocalSearchDecider.

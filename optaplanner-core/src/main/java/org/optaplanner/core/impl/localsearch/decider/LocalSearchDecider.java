@@ -31,10 +31,7 @@ import org.optaplanner.core.impl.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Default implementation of {@link Decider}.
- */
-public class DefaultDecider implements Decider {
+public class LocalSearchDecider {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

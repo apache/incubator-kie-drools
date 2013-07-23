@@ -19,7 +19,6 @@ package org.optaplanner.core.config.solver;
 import java.util.Random;
 
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.localsearch.decider.DefaultDecider;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 

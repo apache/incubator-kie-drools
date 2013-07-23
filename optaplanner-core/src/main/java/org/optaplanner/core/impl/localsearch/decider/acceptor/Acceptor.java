@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor;
 
-import org.optaplanner.core.impl.localsearch.decider.Decider;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
+import org.optaplanner.core.impl.move.Move;
 
 /**
- * An Acceptor accepts or rejects a selected move for the {@link Decider}.
- * Note that the {@link Forager} can still ignore the advice of the Acceptor.
+ * An Acceptor accepts or rejects a selected {@link Move}.
+ * Note that the {@link Forager} can still ignore the advice of the {@link Acceptor}.
  * @see AbstractAcceptor
  */
 public interface Acceptor extends LocalSearchSolverPhaseLifecycleListener {
