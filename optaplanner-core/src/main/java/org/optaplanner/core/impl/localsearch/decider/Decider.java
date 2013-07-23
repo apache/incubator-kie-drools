@@ -32,9 +32,4 @@ public interface Decider extends LocalSearchSolverPhaseLifecycleListener {
      */
     void decideNextStep(LocalSearchStepScope stepScope);
 
-    /**
-     * @return never null
-     */
-    Forager getForager();
-
 }
