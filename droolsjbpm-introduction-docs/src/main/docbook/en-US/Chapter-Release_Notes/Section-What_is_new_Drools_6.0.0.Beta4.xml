@@ -855,11 +855,71 @@
 		</section>
 
         <figure>
-          <title>The basic aspect of the Form Designer is shown in the following screenshot:</title>
+          <title>A peak at the Form Designer aspect is shown in the following screenshot:</title>
 
           <mediaobject>
             <imageobject>
               <imagedata align="left" fileref="images/Chapter-Release_Notes/FD-screen.png"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <para/>
+
+      </section>
+
+      <section>
+        <title>jBPM Dashboard</title>
+
+        <para>The ability to monitor the status of process instances and tasks, is essential to evaluate the correctness of their design and implementation.
+		With this in mind, the workbench integrates a complete process and task dashboard set, based on the "Dashboard Builder" tool 
+		(described below), which provide the views, data providers and key performance indicators that are needed to monitor the status of 
+		processes and tasks in real-time.</para>
+
+        <section>
+          <title>Key features</title>
+
+          <itemizedlist>
+            <listitem>
+			  <para>Visualization of process instances and tasks by process</para>
+            </listitem>
+
+            <listitem>
+			  <para>Visualization of process instances and tasks by user</para>
+            </listitem>
+
+            <listitem>
+              <para>Visualization of process instances and tasks by date</para>
+            </listitem>
+
+            <listitem>
+              <para>Visualization of process instances and tasks by duration</para>
+            </listitem>
+
+            <listitem>
+              <para>Visualization of process instances and tasks by status</para>
+            </listitem>
+
+            <listitem>
+              <para>Filter by process, process status, process version, task, task status, task start- and end-date</para>
+            </listitem>
+
+            <listitem>
+              <para>Chart drill-down by process</para>
+            </listitem>
+
+            <listitem>
+              <para>Chart drill-down by user</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <figure>
+          <title>Example of the jBPM dashboard:</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="left" fileref="images/Chapter-Release_Notes/jBPM_dashboard1.png"/>
             </imageobject>
           </mediaobject>
         </figure>
