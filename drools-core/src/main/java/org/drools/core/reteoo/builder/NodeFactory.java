@@ -20,6 +20,7 @@ package org.drools.core.reteoo.builder;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -40,6 +41,7 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
@@ -51,6 +53,16 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
 
 public interface NodeFactory {
+
+    public EntryPointNode buildEntryPointNode(final int id,
+                                               final ObjectSource objectSource,
+                                               final BuildContext context);
+
+    public EntryPointNode buildEntryPointNode(final int id,
+                                              final RuleBasePartitionId partitionId,
+                                              final boolean partitionsEnabled,
+                                              final ObjectSource objectSource,
+                                              final EntryPointId entryPoint);
 
 
     public AlphaNode buildAlphaNode( final int id,

@@ -58,8 +58,6 @@ public class RightInputAdapterNode extends ObjectSource
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
 
-    private boolean           unlinkingEnabled;
-
     public RightInputAdapterNode() {
     }
 
@@ -81,8 +79,7 @@ public class RightInputAdapterNode extends ObjectSource
                context.getRuleBase().getConfiguration().isMultithreadEvaluation() );
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
-        this.startTupleSource = startTupleSource;        
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
+        this.startTupleSource = startTupleSource;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -93,7 +90,6 @@ public class RightInputAdapterNode extends ObjectSource
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         startTupleSource = ( LeftTupleSource ) in.readObject();
-        unlinkingEnabled = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -103,7 +99,6 @@ public class RightInputAdapterNode extends ObjectSource
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( startTupleSource );
-        out.writeBoolean( unlinkingEnabled );
     }
 
     public LeftTupleSource getStartTupleSource() {
@@ -118,12 +113,10 @@ public class RightInputAdapterNode extends ObjectSource
      */    
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         RiaNodeMemory rianMem = new RiaNodeMemory();
-        
-        if ( this.unlinkingEnabled ) {
-            RiaPathMemory pmem = new RiaPathMemory(this);
-            AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource(), wm, null );
-            rianMem.setRiaPathMemory(pmem);
-        }
+
+        RiaPathMemory pmem = new RiaPathMemory(this);
+        AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource(), wm, null );
+        rianMem.setRiaPathMemory(pmem);
         
         return rianMem;
     }

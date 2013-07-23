@@ -1,7 +1,5 @@
 package org.drools.compiler.phreak;
 
-import java.beans.IntrospectionException;
-
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
@@ -17,21 +15,21 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.reteoo.test.dsl.ReteTesterHelper;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 
+import java.beans.IntrospectionException;
+
 public class BetaNodeBuilder {
     BuildContext buildContext;
-
     int          nodeType;
-    
     Class        leftType;
     Class        rightType;
     String       leftFieldName;
     String       leftVariableName;
-
     String       constraintFieldName;
     String       constraintOperator;
     String       constraintVariableName;
@@ -42,7 +40,7 @@ public class BetaNodeBuilder {
     }
 
     public static BetaNodeBuilder create(int nodeType, BuildContext buildContext) {
-        return new BetaNodeBuilder( nodeType, buildContext );
+        return new BetaNodeBuilder(nodeType, buildContext);
     }
 
     public BetaNodeBuilder setLeftType(Class type) {
@@ -72,62 +70,63 @@ public class BetaNodeBuilder {
     }
 
     public BetaNode build() {
-        EntryPointNode epn = new EntryPointNode( buildContext.getNextId(),
-                                                 buildContext.getRuleBase().getRete(),
-                                                 buildContext );
-        epn.attach( buildContext );
+        NodeFactory nFactory = buildContext.getComponentFactory().getNodeFactoryService();
+        EntryPointNode epn = nFactory.buildEntryPointNode(buildContext.getNextId(),
+                                                          buildContext.getRuleBase().getRete(),
+                                                          buildContext);
+        epn.attach(buildContext);
 
-        ObjectTypeNode otn = new ObjectTypeNode( buildContext.getNextId(),
-                                                 epn,
-                                                 new ClassObjectType( leftType ),
-                                                 buildContext );
+        ObjectTypeNode otn = nFactory.buildObjectTypeNode(buildContext.getNextId(),
+                                                          epn,
+                                                          new ClassObjectType(leftType),
+                                                          buildContext);
 
-        LeftInputAdapterNode leftInput = new LeftInputAdapterNode( buildContext.getNextId(),
-                                                                   otn,
-                                                                   buildContext );
+        LeftInputAdapterNode leftInput = nFactory.buildLeftInputAdapterNode(buildContext.getNextId(),
+                                                                            otn,
+                                                                            buildContext);
 
-        ObjectSource rightInput = new ObjectTypeNode( buildContext.getNextId(),
-                                                      epn,
-                                                      new ClassObjectType( rightType ),
-                                                      buildContext );
+        ObjectSource rightInput = nFactory.buildObjectTypeNode(buildContext.getNextId(),
+                                                               epn,
+                                                               new ClassObjectType(rightType),
+                                                               buildContext);
 
         ReteTesterHelper reteTesterHelper = new ReteTesterHelper();
 
-        Pattern pattern = new Pattern( 0, new ClassObjectType( leftType ) );
+        Pattern pattern = new Pattern(0, new ClassObjectType(leftType));
 
         //BetaNodeFieldConstraint betaConstraint = null;
         BetaConstraints betaConstraints = null;
-        if ( constraintFieldName != null ) {
+        if (constraintFieldName != null) {
             ClassFieldAccessorStore store = (ClassFieldAccessorStore) reteTesterHelper.getStore();
-    
-            InternalReadAccessor extractor = store.getReader( leftType,
-                                                              leftFieldName,
-                                                              getClass().getClassLoader() );
-    
-            Declaration declr = new Declaration( leftVariableName,
-                                                 extractor,
-                                                 pattern );
+
+            InternalReadAccessor extractor = store.getReader(leftType,
+                                                             leftFieldName,
+                                                             getClass().getClassLoader());
+
+            Declaration declr = new Declaration(leftVariableName,
+                                                extractor,
+                                                pattern);
             try {
-                betaConstraints = new SingleBetaConstraints( reteTesterHelper.getBoundVariableConstraint( rightType,
-                                                                              constraintFieldName,
-                                                                              declr,
-                                                                              constraintOperator ),  buildContext.getRuleBase().getConfiguration()  );
-            } catch ( IntrospectionException e ) {
-                throw new RuntimeException( e );
+                betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
+                                                                                                        constraintFieldName,
+                                                                                                        declr,
+                                                                                                        constraintOperator), buildContext.getRuleBase().getConfiguration());
+            } catch (IntrospectionException e) {
+                throw new RuntimeException(e);
             }
         } else {
             betaConstraints = new EmptyBetaConstraints();
         }
-        
-        switch ( nodeType ) {
+
+        switch (nodeType) {
             case NodeTypeEnums.JoinNode:
-                return new JoinNode( 0, leftInput, rightInput, betaConstraints, buildContext );
+                return new JoinNode(0, leftInput, rightInput, betaConstraints, buildContext);
             case NodeTypeEnums.NotNode:
-                return new NotNode( 0, leftInput, rightInput, betaConstraints, buildContext );
+                return new NotNode(0, leftInput, rightInput, betaConstraints, buildContext);
             case NodeTypeEnums.ExistsNode:
-                return new ExistsNode( 0, leftInput, rightInput, betaConstraints, buildContext );                
+                return new ExistsNode(0, leftInput, rightInput, betaConstraints, buildContext);
         }
-        throw new IllegalStateException( "Unable to build Node" );
+        throw new IllegalStateException("Unable to build Node");
     }
 
 }

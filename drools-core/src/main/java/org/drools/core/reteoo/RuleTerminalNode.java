@@ -25,10 +25,12 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -80,8 +82,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     protected String                        consequenceName;
 
-    protected boolean                       unlinkingEnabled;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -111,8 +111,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.rule = rule;
         this.subrule = subrule;
         this.subruleIndex = subruleIndex;
-        
-        this.unlinkingEnabled = context.getRuleBase().getConfiguration().isPhreakEnabled();
 
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
         if ( isFireDirect() ) {
@@ -190,7 +188,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         salienceDeclarations = ( Declaration[]) in.readObject();
         enabledDeclarations = ( Declaration[]) in.readObject();
         consequenceName = (String) in.readObject();
-        unlinkingEnabled = in.readBoolean();
 
         fireDirect = rule.getActivationListener().equals( "direct" );
     }
@@ -209,7 +206,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
         out.writeObject( consequenceName );
-        out.writeBoolean(unlinkingEnabled);
     }
 
     /**
@@ -321,6 +317,20 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void setConsequenceName(String consequenceName) {
         this.consequenceName = consequenceName;
+    }
+
+    public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
+        match.cancel();
+        if ( match.isQueued() ) {
+            LeftTuple leftTuple = match.getTuple();
+            if ( match.getRuleAgendaItem() != null ) {
+                // phreak must also remove the LT from the rule network evaluator
+                if ( leftTuple.getMemory() != null ) {
+                    leftTuple.getMemory().remove( leftTuple );
+                }
+            }
+            PhreakRuleTerminalNode.doLeftDelete(workingMemory, ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor(), leftTuple);
+        }
     }
 
 

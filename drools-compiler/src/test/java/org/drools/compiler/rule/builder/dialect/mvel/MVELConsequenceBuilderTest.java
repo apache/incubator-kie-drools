@@ -113,6 +113,7 @@ public class MVELConsequenceBuilderTest {
         final LeftTupleImpl tuple = new LeftTupleImpl( f0,
                                                sink,
                                                true );
+        f0.removeLeftTuple(tuple);
         
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,

@@ -4,7 +4,9 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
@@ -23,11 +25,6 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        if( unlinkingEnabled ) {
-            context = findMostRecentPropagationContext( leftTuple,
-                                                        context );
-        }
-
         //check if the rule is not effective or
         // if the current Rule is no-loop and the origin rule is the same then return
         if ( (!this.rule.isEffective( leftTuple,
@@ -50,11 +47,6 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        if( unlinkingEnabled ) {
-            context = findMostRecentPropagationContext( leftTuple,
-                                                        context );
-        }
-
         InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // we need the inserted facthandle so we can update the network with new Activation
@@ -114,6 +106,14 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         ((RuleTerminalNodeLeftTuple)leftTuple).setActivationUnMatchListener(null);
     }
 
+    public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
+        match.cancel();
+        if ( match.isQueued() ) {
+            LeftTuple leftTuple = match.getTuple();
+            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) match.getPropagationContext(), workingMemory );
+        }
+    }
+
 
     public void attach( BuildContext context ) {
         super.attach( context );
@@ -127,5 +127,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
             getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
         }
     }
+
+
 
 }

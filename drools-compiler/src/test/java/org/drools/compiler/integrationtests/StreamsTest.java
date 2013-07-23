@@ -311,7 +311,7 @@ public class StreamsTest extends CommonTestMethodBase {
 
     }
 
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testModifyOnEntryPointFacts() throws Exception {
         String str = "package org.drools.compiler\n" +
                      "declare StockTick\n" +

@@ -19,6 +19,7 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 
@@ -34,16 +35,12 @@ public class
          */
         final ReteooRuleBase ruleBase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
         BuildContext context = new BuildContext(ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
-        
-        final EntryPointNode entryPoint = new EntryPointNode( -1,
-                                                              ruleBase.getRete(),
-                                                              context );
+
+        NodeFactory nFacotry = ((ReteooRuleBase) ruleBase).getConfiguration().getComponentFactory().getNodeFactoryService();
+        final EntryPointNode entryPoint = nFacotry.buildEntryPointNode( -1, ruleBase.getRete(), context );
         entryPoint.attach(context);
                         
-        final ObjectTypeNode objectTypeNode = new ObjectTypeNode( 0,
-                                                                  entryPoint,
-                                                                  new ClassObjectType( Object.class ),
-                                                                  context );
+        final ObjectTypeNode objectTypeNode = nFacotry.buildObjectTypeNode( 0, entryPoint, new ClassObjectType( Object.class ), context );
         objectTypeNode.attach(context);
 
         final MockObjectSink sink = new MockObjectSink();

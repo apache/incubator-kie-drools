@@ -937,11 +937,11 @@ public class ReteooRuleBase
         this.reteooBuilder = new ReteooBuilder( this );
 
         // always add the default entry point
-        EntryPointNode epn = new EntryPointNode( this.reteooBuilder.getIdGenerator().getNextId(),
-                                                 RuleBasePartitionId.MAIN_PARTITION,
-                                                 this.getConfiguration().isMultithreadEvaluation(),
-                                                 this.rete,
-                                                 EntryPointId.DEFAULT );
+        EntryPointNode epn = kieComponentFactory.getNodeFactoryService().buildEntryPointNode( this.reteooBuilder.getIdGenerator().getNextId(),
+                                                                                              RuleBasePartitionId.MAIN_PARTITION,
+                                                                                              this.getConfiguration().isMultithreadEvaluation(),
+                                                                                              this.rete,
+                                                                                              EntryPointId.DEFAULT );
         epn.attach();
     }
 

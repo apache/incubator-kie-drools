@@ -590,7 +590,7 @@ public class JoinNodeTest extends DroolsTestCase {
         final String string1 = "string1";
         final DefaultFactHandle string1Handle = new DefaultFactHandle(1, string1);
 
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(null, null, false);
+        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(null, null, new EntryPointNode() );
 
         assertLength(0, sink1.getAsserted());
 

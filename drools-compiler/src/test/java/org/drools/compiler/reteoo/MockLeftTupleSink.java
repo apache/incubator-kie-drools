@@ -213,7 +213,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public LeftTupleSource getLeftTupleSource() {
-        return null;
+        return super.getLeftTupleSource();
     }
 
     @Override

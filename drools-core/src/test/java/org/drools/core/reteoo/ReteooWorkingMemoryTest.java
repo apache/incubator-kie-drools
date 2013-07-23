@@ -28,6 +28,7 @@ import org.drools.core.FactHandle;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.common.AbstractWorkingMemory;
+import org.drools.core.reteoo.builder.NodeFactory;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -179,11 +180,13 @@ public class ReteooWorkingMemoryTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ReteooRuleBase rbase = ( ReteooRuleBase ) ((KnowledgeBaseImpl)kbase).getRuleBase();
         Rete rete = rbase.getRete();
-        EntryPointNode epn = new EntryPointNode( rbase.getReteooBuilder().getIdGenerator().getNextId(),
-                                                 RuleBasePartitionId.MAIN_PARTITION,
-                                                 rbase.getConfiguration().isMultithreadEvaluation(),
-                                                 rete,
-                                                 new EntryPointId( "xxx" ) );
+
+        NodeFactory nFacotry = ((ReteooRuleBase) rbase).getConfiguration().getComponentFactory().getNodeFactoryService();
+        EntryPointNode epn = nFacotry.buildEntryPointNode( rbase.getReteooBuilder().getIdGenerator().getNextId(),
+                                                            RuleBasePartitionId.MAIN_PARTITION,
+                                                            rbase.getConfiguration().isMultithreadEvaluation(),
+                                                            rete,
+                                                            new EntryPointId( "xxx" ) );
         
         
         rbase.getRete().addObjectSink( epn );

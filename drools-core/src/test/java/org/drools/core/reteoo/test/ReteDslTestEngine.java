@@ -44,6 +44,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -872,7 +873,7 @@ public class ReteDslTestEngine {
                                                                                                null, null, handle);
                             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.getFirstLeftTuple(),
                                                                                                   handle.getFirstRightTuple(),
-                                                                                                  false );
+                                                                                                  new EntryPointNode() );
                             handle.clearRightTuples();
                             handle.clearLeftTuples();
                             ((ObjectSink) sink).modifyObject( handle,

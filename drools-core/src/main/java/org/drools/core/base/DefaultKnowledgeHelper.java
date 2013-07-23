@@ -37,8 +37,10 @@ import org.drools.core.factmodel.MapCore;
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitType;
 import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ReteooRuleBase;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Salience;
 import org.drools.core.util.HierarchyEncoder;
@@ -298,17 +300,7 @@ public class DefaultKnowledgeHelper
     
     public void cancelMatch(Match act) {
         AgendaItem match = ( AgendaItem ) act;
-        match.cancel();
-        if ( match.isQueued() ) {
-            LeftTuple leftTuple = match.getTuple();
-            if ( match.getRuleAgendaItem() != null ) {
-                // phreak must also remove the LT from the rule network evaluator
-                if ( leftTuple.getMemory() != null ) {
-                    leftTuple.getMemory().remove( leftTuple );
-                }
-            }
-            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) match.getPropagationContext(), workingMemory );
-        }
+        ((RuleTerminalNode)match.getTerminalNode()).cancelMatch( match,  workingMemory);
     }
 
     public FactHandle lookupFactHandle(Object object) {

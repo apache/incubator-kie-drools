@@ -8,6 +8,12 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.phreak.SegmentUtilities;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -82,13 +88,15 @@ public class MVELEvalBuilderTest {
         ((MVELEvalExpression) eval.getEvalExpression()).compile( (MVELDialectRuntimeData) pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectRuntimeRegistry().getDialectData( "mvel" ) );
 
         final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        final WorkingMemory wm = ruleBase.newStatefulSession();
+        final InternalWorkingMemory wm = (InternalWorkingMemory) ruleBase.newStatefulSession();
 
         MockLeftTupleSink sink = new MockLeftTupleSink();
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
+
         final LeftTupleImpl tuple = new LeftTupleImpl( f0, sink, true );
+        f0.removeLeftTuple(tuple);
         
         Object evalContext = eval.createContext();
 
