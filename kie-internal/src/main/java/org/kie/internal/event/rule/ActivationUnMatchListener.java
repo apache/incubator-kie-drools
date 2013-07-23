@@ -1,8 +1,8 @@
 package org.kie.internal.event.rule;
 
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.Session;
+import org.kie.api.runtime.rule.RuleRuntime;
 
 public interface ActivationUnMatchListener {
-    public void unMatch(Session wm, Match activation);
+    public void unMatch(RuleRuntime wm, Match activation);
 }
