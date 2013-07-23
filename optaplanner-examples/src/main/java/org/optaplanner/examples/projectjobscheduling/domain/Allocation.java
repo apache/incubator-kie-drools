@@ -24,6 +24,8 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
+import org.optaplanner.examples.projectjobscheduling.domain.solver.ExecutionModeStrengthWeightFactory;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.NotSourceOrSinkAllocationFilter;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.PredecessorsDoneDateUpdatingVariableListener;
 
@@ -86,6 +88,7 @@ public class Allocation extends AbstractPersistable {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"executionModeRange"},
+            strengthWeightFactoryClass = ExecutionModeStrengthWeightFactory.class,
             variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
     public ExecutionMode getExecutionMode() {
         return executionMode;
@@ -96,6 +99,7 @@ public class Allocation extends AbstractPersistable {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"delayRange"},
+            strengthComparatorClass = DelayStrengthComparator.class,
             variableListenerClasses = {PredecessorsDoneDateUpdatingVariableListener.class})
     public Integer getDelay() {
         return delay;

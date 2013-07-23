@@ -50,6 +50,7 @@ public class ResourceRequirement extends AbstractPersistable {
     public void setRequirement(int requirement) {
         this.requirement = requirement;
     }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
