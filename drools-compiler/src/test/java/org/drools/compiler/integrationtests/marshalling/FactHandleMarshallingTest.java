@@ -31,12 +31,8 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteooRuleBase;
-<<<<<<< HEAD
 import org.drools.core.rule.EntryPointId;
-=======
 import org.drools.core.reteoo.builder.NodeFactory;
-import org.drools.core.rule.EntryPoint;
->>>>>>> DROOLS-198 Separate Rete and Phreak
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
