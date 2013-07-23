@@ -758,9 +758,6 @@ public class DefaultAgenda
         this.focusStack.clear();
         this.focusStack.add( getMainAgendaGroup() );
 
-        // reset staged activations
-        getStageActivationsGroup().clear();
-
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
             // preserve lazy items.
