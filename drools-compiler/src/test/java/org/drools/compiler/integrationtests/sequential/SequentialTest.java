@@ -54,7 +54,7 @@ public class SequentialTest extends CommonTestMethodBase {
     @Before
     public void setup() {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.DISABLED );
+        kconf.setOption( phreak );
         kconf.setOption( SequentialOption.YES );
     }
 

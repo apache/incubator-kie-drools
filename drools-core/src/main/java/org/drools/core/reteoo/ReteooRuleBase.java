@@ -49,6 +49,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpgradableReentrantReadWriteLock;
+import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.event.RuleBaseEventListener;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -1106,10 +1107,9 @@ public class ReteooRuleBase
 
         readLock();
         try {
-            AbstractWorkingMemory session = new AbstractWorkingMemory( id,
-                                                                       this,
-                                                                       sessionConfig,
-                                                                       environment );
+            WorkingMemoryFactory wmFactory = kieComponentFactory.getWorkingMemoryFactory();
+            AbstractWorkingMemory session = ( AbstractWorkingMemory ) wmFactory.createWorkingMemory( id, this,
+                                                                                                     sessionConfig, environment );
             new StatefulKnowledgeSessionImpl(session);
 
             if ( sessionConfig.isKeepReference() ) {

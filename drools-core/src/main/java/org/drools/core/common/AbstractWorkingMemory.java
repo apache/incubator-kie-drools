@@ -197,8 +197,6 @@ public class AbstractWorkingMemory
 
     private boolean sequential;
 
-    private List<LIANodePropagation> liaPropagations;
-
     /** Flag to determine if a rule is currently being fired. */
     protected volatile AtomicBoolean firing;
 
@@ -733,7 +731,6 @@ public class AbstractWorkingMemory
         this.handleFactory.clear( handleId,
                                   handleCounter );
         if (tms != null) tms.clear();
-        if (liaPropagations != null) liaPropagations.clear();
         if (actionQueue != null) actionQueue.clear();
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );
@@ -756,11 +753,6 @@ public class AbstractWorkingMemory
 
     public boolean isSequential() {
         return this.sequential;
-    }
-
-    public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
-        if (liaPropagations == null) liaPropagations = new ArrayList();
-        liaPropagations.add( liaNodePropagation );
     }
 
     public void addEventListener(final WorkingMemoryEventListener listener) {
@@ -952,14 +944,6 @@ public class AbstractWorkingMemory
             try {
                 startOperation();
                 ruleBase.readLock();
-                
-                // If we're already firing a rule, then it'll pick up the firing for any other assertObject(..) that get
-                // nested inside, avoiding concurrent-modification exceptions, depending on code paths of the actions.
-                if ( liaPropagations != null && isSequential() ) {
-                    for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
-                        ((LIANodePropagation) it.next()).doPropagation( this );
-                    }
-                }
 
                 // do we need to call this in advance?
                 executeQueuedActions();
