@@ -2,7 +2,7 @@ package org.drools.compiler.phreak;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RetePropagationContext;
+import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
@@ -25,7 +25,7 @@ public class RightBuilder {
         for (Object object : objects) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert(object);
             RightTuple rightTuple = new RightTuple( fh, sink );
-            rightTuple.setPropagationContext( new RetePropagationContext() );
+            rightTuple.setPropagationContext( new PhreakPropagationContext() );
             rightTuples.addInsert( rightTuple );
         }
         return this;
@@ -35,7 +35,7 @@ public class RightBuilder {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
             RightTuple rightTuple = fh.getFirstRightTuple();
-            rightTuple.setPropagationContext( new RetePropagationContext() );
+            rightTuple.setPropagationContext( new PhreakPropagationContext() );
             rightTuples.addUpdate( rightTuple );
         }
         return this;
@@ -45,7 +45,7 @@ public class RightBuilder {
         for ( Object object : objects ) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert( object );
             RightTuple rightTuple = fh.getFirstRightTuple();
-            rightTuple.setPropagationContext( new RetePropagationContext() );
+            rightTuple.setPropagationContext( new PhreakPropagationContext() );
             rightTuples.addDelete( rightTuple );
         }
         return this;

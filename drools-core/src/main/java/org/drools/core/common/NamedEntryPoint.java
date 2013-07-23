@@ -246,7 +246,7 @@ public class NamedEntryPoint
                                 
                                 // remove logical dependencies
                                 final InternalFactHandle justifiedHandle = key.getFactHandle();
-                                ((RetePropagationContext)propagationContext).setFactHandle( justifiedHandle ); // necessary to stop recursive retractions
+                                propagationContext.setFactHandle( justifiedHandle ); // necessary to stop recursive retractions
                                 TruthMaintenanceSystemHelper.clearLogicalDependencies( justifiedHandle, propagationContext );
                                 
                                 // now update existing handle to new value

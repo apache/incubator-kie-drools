@@ -37,7 +37,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.RetePropagationContext;
+import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
 import org.drools.core.common.RightTupleSets;
@@ -200,7 +200,7 @@ public abstract class BetaNode extends LeftTupleSource
     }
 
     public void initInferredMask() {
-        initInferredMask( leftInput );
+        initInferredMask(leftInput);
     }
 
     @Override
@@ -252,7 +252,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         out.writeObject( constraints );
-        out.writeObject( rightInput );
+        out.writeObject(rightInput);
         out.writeBoolean( objectMemory );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeBoolean( concurrentRightTupleMemory );
@@ -298,7 +298,7 @@ public abstract class BetaNode extends LeftTupleSource
             stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
             if ( log.isTraceEnabled() ) {
-                log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), RetePropagationContext.intEnumToString(pctx), rightTuple );
+                log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), rightTuple );
             }
         }  else {
             stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
@@ -333,7 +333,7 @@ public abstract class BetaNode extends LeftTupleSource
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
             memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
             if ( log.isTraceEnabled() ) {
-                log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), RetePropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
+                log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PhreakPropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
             }
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
@@ -403,7 +403,7 @@ public abstract class BetaNode extends LeftTupleSource
                                          final InternalFactHandle factHandle,
                                          final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory.getFirst( leftTuple, factHandle, it );
+            return memory.getFirst(leftTuple, factHandle, it);
         } else {
             return (RightTuple) it.next( null );
         }
@@ -414,7 +414,7 @@ public abstract class BetaNode extends LeftTupleSource
                                        final PropagationContext context,
                                        final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory.getFirst( rightTuple );
+            return memory.getFirst(rightTuple);
         } else {
             return (LeftTuple) it.next( null );
         }
@@ -423,7 +423,7 @@ public abstract class BetaNode extends LeftTupleSource
     public static RightTuple getFirstRightTuple(final RightTupleMemory memory,
                                                 final FastIterator it) {
         if ( !memory.isIndexed() ) {
-            return memory.getFirst( null, null, it );
+            return memory.getFirst(null, null, it);
         } else {
             return (RightTuple) it.next( null );
         }
@@ -496,7 +496,7 @@ public abstract class BetaNode extends LeftTupleSource
         constraints.init(context, getType());
         setUnificationJoin();
 
-        this.rightInput.addObjectSink( this );
+        this.rightInput.addObjectSink(this);
         this.leftInput.addTupleSink( this, context );
     }
 
