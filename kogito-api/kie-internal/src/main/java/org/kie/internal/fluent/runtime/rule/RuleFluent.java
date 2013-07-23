@@ -17,11 +17,11 @@
 package org.kie.internal.fluent.runtime.rule;
 
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.Session;
+import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.api.runtime.rule.StatefulRuleSession;
 
 /**
- * See {@link Session} and {@link StatefulRuleSession}
+ * See {@link RuleRuntime} and {@link StatefulRuleSession}
  */
 public interface RuleFluent<T> {
 

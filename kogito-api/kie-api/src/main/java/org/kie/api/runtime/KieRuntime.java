@@ -19,14 +19,14 @@ package org.kie.api.runtime;
 import org.kie.api.KieBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.ProcessRuntime;
-import org.kie.api.runtime.rule.Session;
+import org.kie.api.runtime.rule.RuleRuntime;
 import org.kie.api.time.SessionClock;
 
 import java.util.Map;
 
 public interface KieRuntime
     extends
-    Session,
+    RuleRuntime,
     ProcessRuntime,
     KieRuntimeEventManager {
 

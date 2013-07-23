@@ -22,11 +22,11 @@ import java.util.Collection;
 import org.kie.api.definition.rule.Rule;
 
 public class ConsequenceException extends RuntimeException {
-    private Session workingMemory;
+    private RuleRuntime workingMemory;
     private Match    match;    
 
     public ConsequenceException( final Throwable rootCause,
-                                 final Session workingMemory,
+                                 final RuleRuntime workingMemory,
                                  final Match match ){
         super( rootCause );
         this.workingMemory = workingMemory;

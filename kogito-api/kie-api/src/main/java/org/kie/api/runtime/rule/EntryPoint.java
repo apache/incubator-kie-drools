@@ -44,7 +44,7 @@ import org.kie.api.runtime.ObjectFilter;
  * ...
  * </pre> 
  */
-public interface SessionEntryPoint {
+public interface EntryPoint {
 
     /**
      * Returns the String Id of this entry point

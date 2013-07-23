@@ -19,16 +19,16 @@ package org.kie.api.runtime.rule;
 import java.util.Collection;
 
 /**
- * The <code>WorkingMemory</code> is a super-interface for all <code>StatefulKnowledgeSession</code>s.
- * Although, users are encouraged to use <code>StatefulKnowledgeSession</code> or <code>KnowledgeRuntime</code>
- * interface instead of <code>WorkingMemory</code> interface, specially because of the <code>dispose()</code> method
- * that is only available in the <code>StatefulKnowledgeSession</code> interface.  
+ * The <code>RuleRuntime</code> is a super-interface for all <code>KieSession</code>s.
+ * Although, users are encouraged to use <code>KieSession</code> or <code>KnowledgeRuntime</code>
+ * interface instead of <code>RuleRuntime</code> interface, specially because of the <code>dispose()</code> method
+ * that is only available in the <code>KieSession</code> interface.  
  * 
  * @see org.kie.api.runtime.KieSession
  */
-public interface Session
+public interface RuleRuntime
     extends
-    SessionEntryPoint {
+    EntryPoint {
 
     /**
      * <p>Request the engine to stop firing rules. If the engine is currently firing a rule, it will
@@ -53,7 +53,7 @@ public interface Session
      * @param name
      * @return
      */
-    SessionEntryPoint getEntryPoint(String name);
+    EntryPoint getEntryPoint(String name);
 
     /**
      * Returns a collection of all available working memory entry points
@@ -61,7 +61,7 @@ public interface Session
      * 
      * @return the collection of all available entry points for this session
      */
-    Collection< ? extends SessionEntryPoint> getEntryPoints();
+    Collection< ? extends EntryPoint> getEntryPoints();
 
     /**
      * Retrieve the QueryResults of the specified query and arguments
