@@ -25,8 +25,10 @@ import org.drools.core.common.BeliefSystemFactory;
 import org.drools.core.common.DefaultAgendaFactory;
 import org.drools.core.common.PhreakBeliefSystemFactory;
 import org.drools.core.common.PhreakPropagationContextFactory;
+import org.drools.core.common.PhreakWorkingMemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RetePropagationContextFactory;
+import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.reteoo.builder.PhreakNodeFactory;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
@@ -69,6 +71,15 @@ public class KieComponentFactory implements Serializable {
         return new ReteooFactHandleFactory();
     }
 
+    private WorkingMemoryFactory wmFactory = new PhreakWorkingMemoryFactory();
+
+    public WorkingMemoryFactory getWorkingMemoryFactory() {
+        return wmFactory;
+    }
+
+    public void setWorkingMemoryFactory(WorkingMemoryFactory wmFactory) {
+        this.wmFactory = wmFactory;
+    }
 
     private NodeFactory nodeFactory = new PhreakNodeFactory();
 

@@ -16,6 +16,28 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.SessionConfiguration;
+import org.drools.core.StatelessSession;
+import org.drools.core.StatelessSessionResult;
+import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.InternalStatelessSession;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.WorkingMemoryFactory;
+import org.drools.core.event.AgendaEventListener;
+import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.RuleBaseEventListener;
+import org.drools.core.event.RuleEventListenerSupport;
+import org.drools.core.event.WorkingMemoryEventListener;
+import org.drools.core.event.WorkingMemoryEventSupport;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.rule.EntryPoint;
+import org.drools.core.spi.AgendaFilter;
+import org.drools.core.spi.GlobalExporter;
+import org.drools.core.spi.GlobalResolver;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -24,50 +46,29 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.drools.core.SessionConfiguration;
-import org.drools.core.StatelessSession;
-import org.drools.core.StatelessSessionResult;
-import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
-import org.drools.core.common.InternalStatelessSession;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.event.*;
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.rule.EntryPoint;
-import org.drools.core.spi.AgendaFilter;
-import org.drools.core.spi.GlobalExporter;
-import org.drools.core.spi.GlobalResolver;
-
 public class ReteooStatelessSession
-    implements
+        implements
         StatelessSession,
-    InternalStatelessSession,
-    Externalizable {
-    //private WorkingMemory workingMemory;
+        InternalStatelessSession,
+        Externalizable {
 
-    private InternalRuleBase ruleBase;
-    private AgendaFilter     agendaFilter;
-    private GlobalResolver globalResolver = new MapGlobalResolver();
 
-    private GlobalExporter globalExporter;
-
+    private WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
+    private AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
+    private RuleEventListenerSupport  ruleEventListenerSupport  = new RuleEventListenerSupport();
+    private GlobalResolver            globalResolver            = new MapGlobalResolver();
+    private GlobalExporter       globalExporter;
+    private InternalRuleBase     ruleBase;
+    private AgendaFilter         agendaFilter;
     private SessionConfiguration sessionConf;
-
-    /** The eventSupport */
-    protected WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
-
-    protected AgendaEventSupport agendaEventSupport = new AgendaEventSupport();
-
-    final RuleEventListenerSupport ruleEventListenerSupport = new RuleEventListenerSupport();
+    private WorkingMemoryFactory wmFactory;
 
     public ReteooStatelessSession() {
     }
 
     public ReteooStatelessSession(final InternalRuleBase ruleBase) {
         this.ruleBase = ruleBase;
+        this.wmFactory = ruleBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
         this.sessionConf = SessionConfiguration.getDefaultInstance(); // create one of these and re-use
     }
 
@@ -78,6 +79,7 @@ public class ReteooStatelessSession
         globalResolver = (GlobalResolver) in.readObject();
         globalExporter = (GlobalExporter) in.readObject();
         this.sessionConf = SessionConfiguration.getDefaultInstance(); // create one of these and re-use
+        this.wmFactory = ruleBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -94,43 +96,43 @@ public class ReteooStatelessSession
     public InternalWorkingMemory newWorkingMemory() {
         this.ruleBase.readLock();
         try {
-            InternalWorkingMemory wm = new AbstractWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(),
-                                                               this.ruleBase,
-                                                               ruleBase.newFactHandleFactory(),
-                                                               null,
-                                                               0,
-                                                               this.sessionConf,
-                                                               EnvironmentFactory.newEnvironment(),
-                                                               this.workingMemoryEventSupport,
-                                                               this.agendaEventSupport,
-                                                               this.ruleEventListenerSupport,
-                                                               null );
+            InternalWorkingMemory wm = wmFactory.createWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(),
+                                                                     this.ruleBase,
+                                                                     ruleBase.newFactHandleFactory(),
+                                                                     null,
+                                                                     0,
+                                                                     this.sessionConf,
+                                                                     EnvironmentFactory.newEnvironment(),
+                                                                     this.workingMemoryEventSupport,
+                                                                     this.agendaEventSupport,
+                                                                     this.ruleEventListenerSupport,
+                                                                     null);
 
-            wm.setGlobalResolver( this.globalResolver );
+            wm.setGlobalResolver(this.globalResolver);
 
-            final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
-                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                                  InitialFactImpl.getInstance() ),
-                                                                                       wm,
-                                                                                       wm);
+            final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle(InitialFactImpl.getInstance(),
+                                                                                      wm.getObjectTypeConfigurationRegistry().getObjectTypeConf(EntryPoint.DEFAULT,
+                                                                                                                                                InitialFactImpl.getInstance()),
+                                                                                      wm,
+                                                                                      wm);
 
-            wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
-                                                                            false,
-                                                                            true,
-                                                                            null,
-                                                                            null ) );
+            wm.queueWorkingMemoryAction(new WorkingMemoryReteAssertAction(handle,
+                                                                          false,
+                                                                          true,
+                                                                          null,
+                                                                          null));
             return wm;
         } finally {
             this.ruleBase.readUnlock();
         }
     }
-    
+
     public void addEventListener(final WorkingMemoryEventListener listener) {
-        this.workingMemoryEventSupport.addEventListener( listener );
+        this.workingMemoryEventSupport.addEventListener(listener);
     }
 
     public void removeEventListener(final WorkingMemoryEventListener listener) {
-        this.workingMemoryEventSupport.removeEventListener( listener );
+        this.workingMemoryEventSupport.removeEventListener(listener);
     }
 
     public List getWorkingMemoryEventListeners() {
@@ -138,11 +140,11 @@ public class ReteooStatelessSession
     }
 
     public void addEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.addEventListener( listener );
+        this.agendaEventSupport.addEventListener(listener);
     }
 
     public void removeEventListener(final AgendaEventListener listener) {
-        this.agendaEventSupport.removeEventListener( listener );
+        this.agendaEventSupport.removeEventListener(listener);
     }
 
     public List getAgendaEventListeners() {
@@ -150,7 +152,7 @@ public class ReteooStatelessSession
     }
 
     public void addEventListener(RuleBaseEventListener listener) {
-        this.ruleBase.addEventListener( listener );
+        this.ruleBase.addEventListener(listener);
     }
 
     public List getRuleBaseEventListeners() {
@@ -158,7 +160,7 @@ public class ReteooStatelessSession
     }
 
     public void removeEventListener(RuleBaseEventListener listener) {
-        this.ruleBase.removeEventListener( listener );
+        this.ruleBase.removeEventListener(listener);
     }
 
     public void setAgendaFilter(AgendaFilter agendaFilter) {
@@ -167,8 +169,8 @@ public class ReteooStatelessSession
 
     public void setGlobal(String identifier,
                           Object value) {
-        this.globalResolver.setGlobal( identifier,
-                                       value );
+        this.globalResolver.setGlobal(identifier,
+                                      value);
     }
 
     public void setGlobalResolver(GlobalResolver globalResolver) {
@@ -182,71 +184,71 @@ public class ReteooStatelessSession
     public void execute(Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
 
-        wm.insert( object );
-        wm.fireAllRules( this.agendaFilter );
+        wm.insert(object);
+        wm.fireAllRules(this.agendaFilter);
     }
 
     public void execute(Object[] array) {
         InternalWorkingMemory wm = newWorkingMemory();
 
-        for ( int i = 0, length = array.length; i < length; i++ ) {
-            wm.insert( array[i] );
+        for (int i = 0, length = array.length; i < length; i++) {
+            wm.insert(array[i]);
         }
-        wm.fireAllRules( this.agendaFilter );
+        wm.fireAllRules(this.agendaFilter);
     }
 
     public void execute(Collection collection) {
         InternalWorkingMemory wm = newWorkingMemory();
 
-        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
-            wm.insert( it.next() );
+        for (Iterator it = collection.iterator(); it.hasNext(); ) {
+            wm.insert(it.next());
         }
-        wm.fireAllRules( this.agendaFilter );
+        wm.fireAllRules(this.agendaFilter);
     }
 
     public StatelessSessionResult executeWithResults(Object object) {
         InternalWorkingMemory wm = newWorkingMemory();
 
-        wm.insert( object );
-        wm.fireAllRules( this.agendaFilter );
+        wm.insert(object);
+        wm.fireAllRules(this.agendaFilter);
 
         GlobalResolver globalResolver = null;
-        if ( this.globalExporter != null ) {
-            globalResolver = this.globalExporter.export( wm );
+        if (this.globalExporter != null) {
+            globalResolver = this.globalExporter.export(wm);
         }
-        return new ReteStatelessSessionResult( wm,
-                                               globalResolver );
+        return new ReteStatelessSessionResult(wm,
+                                              globalResolver);
     }
 
     public StatelessSessionResult executeWithResults(Object[] array) {
         InternalWorkingMemory wm = newWorkingMemory();
 
-        for ( int i = 0, length = array.length; i < length; i++ ) {
-            wm.insert( array[i] );
+        for (int i = 0, length = array.length; i < length; i++) {
+            wm.insert(array[i]);
         }
-        wm.fireAllRules( this.agendaFilter );
+        wm.fireAllRules(this.agendaFilter);
 
         GlobalResolver globalResolver = null;
-        if ( this.globalExporter != null ) {
-            globalResolver = this.globalExporter.export( wm );
+        if (this.globalExporter != null) {
+            globalResolver = this.globalExporter.export(wm);
         }
-        return new ReteStatelessSessionResult( wm,
-                                               globalResolver );
+        return new ReteStatelessSessionResult(wm,
+                                              globalResolver);
     }
 
     public StatelessSessionResult executeWithResults(Collection collection) {
         InternalWorkingMemory wm = newWorkingMemory();
 
-        for ( Iterator it = collection.iterator(); it.hasNext(); ) {
-            wm.insert( it.next() );
+        for (Iterator it = collection.iterator(); it.hasNext(); ) {
+            wm.insert(it.next());
         }
-        wm.fireAllRules( this.agendaFilter );
+        wm.fireAllRules(this.agendaFilter);
 
         GlobalResolver globalResolver = null;
-        if ( this.globalExporter != null ) {
-            globalResolver = this.globalExporter.export( wm );
+        if (this.globalExporter != null) {
+            globalResolver = this.globalExporter.export(wm);
         }
-        return new ReteStatelessSessionResult( wm,
-                                               globalResolver );
+        return new ReteStatelessSessionResult(wm,
+                                              globalResolver);
     }
 }

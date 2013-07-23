@@ -50,6 +50,7 @@ import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashSet;
@@ -192,14 +193,15 @@ public class InputMarshaller {
 
         readAgenda( context,
                     agenda );
-        AbstractWorkingMemory session = new AbstractWorkingMemory( id,
-                                                                   context.ruleBase,
-                                                                   handleFactory,
-                                                                   initialFactHandle,
-                                                                   propagationCounter,
-                                                                   config,
-                                                                   agenda,
-                                                                   environment );
+        WorkingMemoryFactory wmFactory = context.ruleBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
+        AbstractWorkingMemory session = ( AbstractWorkingMemory ) wmFactory.createWorkingMemory( id,
+                                                                                                 context.ruleBase,
+                                                                                                 handleFactory,
+                                                                                                 initialFactHandle,
+                                                                                                 propagationCounter,
+                                                                                                 config,
+                                                                                                 agenda,
+                                                                                                 environment );
         new StatefulKnowledgeSessionImpl( session );
 
         initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );

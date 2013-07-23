@@ -4,6 +4,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.ReteWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -47,7 +48,7 @@ public class ReteLeftInputAdapterNode extends LeftInputAdapterNode {
                                                          useLeftMemory,
                                                          this );
         } else {
-            workingMemory.addLIANodePropagation( new LIANodePropagation( this,
+            ((ReteWorkingMemory)workingMemory).addLIANodePropagation( new LIANodePropagation( this,
                                                                          factHandle,
                                                                          context ) );
         }

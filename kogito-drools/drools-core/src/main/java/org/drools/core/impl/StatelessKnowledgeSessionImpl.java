@@ -33,6 +33,7 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
@@ -61,23 +62,25 @@ public class StatelessKnowledgeSessionImpl
         StatelessKnowledgeSession,
         StatelessKieSession {
 
-    private InternalRuleBase                                                  ruleBase;
-    private KnowledgeAgent                                                    kagent;
-    private MapGlobalResolver                                                 sessionGlobals            = new MapGlobalResolver();
-    private Map<String, Channel>                                              channels                  = new HashMap<String, Channel>();
+    private InternalRuleBase ruleBase;
+    private KnowledgeAgent   kagent;
+    private MapGlobalResolver    sessionGlobals = new MapGlobalResolver();
+    private Map<String, Channel> channels       = new HashMap<String, Channel>();
 
     /** The event mapping */
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
     public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
 
     /** The event support */
-    public AgendaEventSupport                                                 agendaEventSupport        = new AgendaEventSupport();
-    public WorkingMemoryEventSupport                                          workingMemoryEventSupport = new WorkingMemoryEventSupport();
-    public ProcessEventSupport                                                processEventSupport       = new ProcessEventSupport();
-    private boolean                                                           initialized;
+    public AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
+    public WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
+    public ProcessEventSupport       processEventSupport       = new ProcessEventSupport();
+    private boolean initialized;
 
-    private KieSessionConfiguration                                           conf;
-    private Environment                                                       environment;
+    private KieSessionConfiguration conf;
+    private Environment             environment;
+
+    private WorkingMemoryFactory wmFactory;
 
     public StatelessKnowledgeSessionImpl() {
     }
@@ -89,10 +92,11 @@ public class StatelessKnowledgeSessionImpl
         this.kagent = kagent;
         this.conf = (conf != null) ? conf : SessionConfiguration.getDefaultInstance();
         this.environment = EnvironmentFactory.newEnvironment();
+        this.wmFactory = ruleBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
     }
 
     public InternalRuleBase getRuleBase() {
-        if ( this.kagent != null ) {
+        if (this.kagent != null) {
             // if we have an agent always get the rulebase from there
             this.ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) this.kagent.getKnowledgeBase()).ruleBase;
         }
@@ -104,30 +108,28 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public StatefulKnowledgeSession newWorkingMemory() {
-        if ( this.kagent != null ) {
+        if (this.kagent != null) {
             // if we have an agent always get the rulebase from there
             this.ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) this.kagent.getKnowledgeBase()).ruleBase;
         }
         this.ruleBase.readLock();
         try {
-            AbstractWorkingMemory wm = new AbstractWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
-                                                                  this.ruleBase,
-                                                                  (SessionConfiguration) this.conf,
-                                                                  this.environment );
+            AbstractWorkingMemory wm = (AbstractWorkingMemory) wmFactory.createWorkingMemory(this.ruleBase.nextWorkingMemoryCounter(), this.ruleBase,
+                                                                                             (SessionConfiguration) this.conf, this.environment);
 
             // we don't pass the mapped listener wrappers to the session constructor anymore,
             // because they would be ignored anyway, since the wm already contains those listeners
-            StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl( wm,
-                                                                                      new KnowledgeBaseImpl( this.ruleBase ) );
+            StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl(wm,
+                                                                                     new KnowledgeBaseImpl(this.ruleBase));
 
-            ((Globals) wm.getGlobalResolver()).setDelegate( this.sessionGlobals );
-            if ( !initialized ) {
+            ((Globals) wm.getGlobalResolver()).setDelegate(this.sessionGlobals);
+            if (!initialized) {
                 // copy over the default generated listeners that are used for internal stuff once
-                for ( org.drools.core.event.AgendaEventListener listener : wm.getAgendaEventSupport().getEventListeners() ) {
-                    this.agendaEventSupport.addEventListener( listener );
+                for (org.drools.core.event.AgendaEventListener listener : wm.getAgendaEventSupport().getEventListeners()) {
+                    this.agendaEventSupport.addEventListener(listener);
                 }
-                for ( org.drools.core.event.WorkingMemoryEventListener listener : wm.getWorkingMemoryEventSupport().getEventListeners() ) {
-                    this.workingMemoryEventSupport.addEventListener( listener );
+                for (org.drools.core.event.WorkingMemoryEventListener listener : wm.getWorkingMemoryEventSupport().getEventListeners()) {
+                    this.workingMemoryEventSupport.addEventListener(listener);
                 }
                 InternalProcessRuntime processRuntime = wm.getProcessRuntime();
                 if ( processRuntime != null ) {
