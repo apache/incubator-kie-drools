@@ -627,7 +627,6 @@ public class ScenarioRunnerTest extends RuleUnit {
                         new FieldData("name",
                                 "mic")),
                 false), new ActivateRuleFlowGroup("asdf")};
-        ksession.getAgenda().clear();
         scenario.getFixtures().addAll(Arrays.asList(given));
         scenario.getFixtures().add(executionTrace);
         ((RuleFlowGroupImpl) ksession.getAgenda().getRuleFlowGroup("asdf")).setAutoDeactivate(false);
