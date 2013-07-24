@@ -65,8 +65,6 @@ public class BaseNodeTest {
                                 final InternalWorkingMemory[] workingMemories) {
         }
 
-        protected void doCollectAncestors(NodeSet nodeSet) { }
-
         public boolean isInUse() {
             return true;
         }

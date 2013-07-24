@@ -335,11 +335,6 @@ public class TimerNode extends LeftTupleSource
     }
 
     @Override
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
-    @Override
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {

@@ -128,10 +128,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         getLeftTupleSource().networkUpdated(updateContext);
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
     public boolean isInUse() {
         return false;
     }

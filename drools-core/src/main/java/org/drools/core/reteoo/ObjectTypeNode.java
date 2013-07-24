@@ -478,8 +478,6 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) { }
-
     /**
      * Creates memory for the node using PrimitiveLongMap as its optimised for storage and reteivals of Longs.
      * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal

@@ -628,12 +628,6 @@ public class QueryElementNode extends LeftTupleSource
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
-
     public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
     }

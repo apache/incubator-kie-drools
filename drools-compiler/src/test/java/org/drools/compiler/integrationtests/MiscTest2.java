@@ -2111,7 +2111,7 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "    final java.util.List l = list;" +
                 "    org.drools.core.common.AgendaItem item = ( org.drools.core.common.AgendaItem ) drools.getMatch();\n" +
                 "    item.setActivationUnMatchListener( new org.kie.internal.event.rule.ActivationUnMatchListener() {\n" +
-                "        public void unMatch(org.kie.api.runtime.rule.Session wm, org.kie.api.runtime.rule.Match activation) {\n" +
+                "        public void unMatch(org.kie.api.runtime.rule.RuleRuntime wm, org.kie.api.runtime.rule.Match activation) {\n" +
                 "            l.add(\"pippo\");\n" +
                 "        }\n" +
                 "    } );" +

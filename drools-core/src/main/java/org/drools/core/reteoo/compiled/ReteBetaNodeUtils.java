@@ -149,11 +149,6 @@ public class ReteBetaNodeUtils {
         }
     }
 
-    public static void doCollectAncestors(BetaNode betaNode, NodeSet nodeSet) {
-        betaNode.getLeftTupleSource().collectAncestors(nodeSet);
-        betaNode.getRightInput().collectAncestors(nodeSet);
-    }
-
     public static void modifyObject(BetaNode betaNode,
                                     InternalFactHandle factHandle,
                                     ModifyPreviousTuples modifyPreviousTuples,

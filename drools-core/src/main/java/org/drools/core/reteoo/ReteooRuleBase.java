@@ -1383,7 +1383,7 @@ public class ReteooRuleBase
      * @param pkg
      * @param rule
      */
-    // FIXME: removeRule(String, String) and removeRule(Package, Rule) do totally different things!
+    // FIXME: removeTerminalNode(String, String) and removeTerminalNode(Package, Rule) do totally different things!
     public void removeRule( final Package pkg,
                             final Rule rule ) {
         lock();

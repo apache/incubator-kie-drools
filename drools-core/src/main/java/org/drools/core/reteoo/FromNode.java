@@ -372,11 +372,6 @@ public class FromNode extends LeftTupleSource
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
     public void attach( BuildContext context ) {
         betaConstraints.init(context, getType());
         this.leftInput.addTupleSink( this, context );
