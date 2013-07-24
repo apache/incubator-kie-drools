@@ -28,7 +28,6 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache.Builder;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
@@ -344,7 +343,7 @@ public class KieBuilderImpl
                 if ( isNegative ) {
                     pkgName = pkgName.substring( 1 );
                 }
-                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) ||
+                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) || pkgNameForFile.endsWith( kieBase.getName() ) ||
                      (pkgName.endsWith( ".*" ) && pkgNameForFile.contains( pkgName.substring( 0, pkgName.length() - 2 ) )) ) {
                     return !isNegative;
                 }
