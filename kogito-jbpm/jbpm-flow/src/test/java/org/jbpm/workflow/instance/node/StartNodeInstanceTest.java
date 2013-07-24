@@ -54,7 +54,7 @@ public class StartNodeInstanceTest extends AbstractBaseTest {
         StartNode startNode = new StartNode();  
         startNode.setId( 1 );
         startNode.setName( "start node" );                
-                            
+        
         mockNode.setId( 2 );
         new ConnectionImpl(
     		startNode, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE,

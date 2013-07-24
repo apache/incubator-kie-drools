@@ -689,24 +689,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore(value="This test tested an incorrect implemenation of compensation")
-    public void testCompensateIntermediateThrowEventProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventCompensate.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("CompensateIntermediateThrowEvent");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
-    }
-
-    @Test
-    @Ignore(value="This test tested an incorrect implemenation of compensation")
-    public void testCompensateEndEventProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("CompensateEndEvent");
-        assertProcessInstanceCompleted(processInstance.getId(), ksession);
-    }
-
-    @Test
     public void testServiceTask() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ServiceProcess.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);

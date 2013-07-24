@@ -115,6 +115,7 @@ public class SubProcessTest extends AbstractBaseTest  {
             }
         });
         actionNode.setAction(action);
+        actionNode.setId(3);
         process.addNode(actionNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,
@@ -181,6 +182,7 @@ public class SubProcessTest extends AbstractBaseTest  {
         Work work = new WorkImpl();
         work.setName("MyWork");
         workItemNode.setWork(work);
+        workItemNode.setId(4);
         process.addNode(workItemNode);
         new ConnectionImpl(
             startNode, Node.CONNECTION_DEFAULT_TYPE,

@@ -99,19 +99,6 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore(value="This test tested an incorrect implemenation of compensation")
-    public void testCompensateEndEventProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-CompensateEndEvent.bpmn2");
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession
-                .startProcess("CompensateEndEvent");
-        assertProcessInstanceCompleted(processInstance);
-        // boundary event can only be triggered when node that it is attached to is active
-        assertNodeTriggered(processInstance.getId(), "StartProcess", "Task", "CompensateEvent");
-        
-    }
-
-    @Test
     public void testSignalEnd() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-SignalEndEvent.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);

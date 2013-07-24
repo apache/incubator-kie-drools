@@ -20,6 +20,7 @@ import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.Difference;
 import org.custommonkey.xmlunit.DifferenceListener;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -46,7 +47,7 @@ public class XMLBPMNProcessDumperTest extends JbpmBpmn2TestCase {
         String original = BPMN2XMLTest.slurp(XMLBPMNProcessDumperTest.class.getResourceAsStream("/" + filename));
         
         KieBase kbase = createKnowledgeBase(filename);
-        WorkflowProcess process = (WorkflowProcess)kbase.getProcess("GatewayTest");
+        RuleFlowProcess process = (RuleFlowProcess) kbase.getProcess("GatewayTest");
         String result = XmlBPMNProcessDumper.INSTANCE.dump(process, XmlBPMNProcessDumper.META_DATA_USING_DI);
         
         // Compare original with result using XMLUnit

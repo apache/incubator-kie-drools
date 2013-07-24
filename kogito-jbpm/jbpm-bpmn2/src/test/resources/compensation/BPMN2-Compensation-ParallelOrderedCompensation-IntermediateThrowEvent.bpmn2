@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  
+  <process processType="Private" isExecutable="true" id="CompensateParallelOrdered" name="Compensate Parallel Ordered Process" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    
+    <!-- nodes -->
+    <startEvent id="_1" name="Start" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+
+    <parallelGateway id="_2" name="Split" gatewayDirection="Diverging" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_2-_4" sourceRef="_2" targetRef="_4" />
+    <sequenceFlow id="_2-_5" sourceRef="_2" targetRef="_5" />
+   
+    <userTask id="_3" name="One" />
+    <sequenceFlow id="_3-_6" sourceRef="_3" targetRef="_6" />
+    
+    <userTask id="_4" name="Two" />
+    <sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" />
+    
+    <userTask id="_5" name="Thr" />
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+
+    <parallelGateway id="_6" name="Join" gatewayDirection="Converging" />
+    <sequenceFlow id="_6-_171" sourceRef="_6" targetRef="_171" />
+    
+    <scriptTask id="_171" name="Fou" >
+      <script>kcontext.setVariable("x", kcontext.getVariable("x").toString() + kcontext.getNodeInstance().getNode().getMetaData().get("UniqueId") + ":");</script>
+    </scriptTask>
+    <sequenceFlow id="_171-_8" sourceRef="_171" targetRef="_8" />
+    
+    <intermediateThrowEvent id="_8" name="CompensateEvent" >
+      <compensateEventDefinition />
+    </intermediateThrowEvent>
+    <sequenceFlow id="_8-_9" sourceRef="_8" targetRef="_9" />
+    
+    <endEvent id="_9" name="EndEvent" />
+
+    <!-- attached to node _3 -->    
+    <boundaryEvent id="_13" name="CompensateEvent" attachedToRef="_3" >
+      <compensateEventDefinition/>
+    </boundaryEvent>
+    <association id="_13-_131" sourceRef="_13" targetRef="_131" />
+    
+    <scriptTask id="_131" name="Compensate" isForCompensation="true" >
+      <script>kcontext.setVariable("x", kcontext.getVariable("x").toString() + kcontext.getNodeInstance().getNode().getMetaData().get("UniqueId") + ":");</script>
+    </scriptTask>
+
+    <!-- attached to node _4 -->    
+    <boundaryEvent id="_14" name="CompensateEvent" attachedToRef="_4" >
+      <compensateEventDefinition/>
+    </boundaryEvent>
+    <association id="_14-_141" sourceRef="_14" targetRef="_141" />
+    
+    <scriptTask id="_141" name="Compensate" isForCompensation="true" >
+      <script>kcontext.setVariable("x", kcontext.getVariable("x").toString() + kcontext.getNodeInstance().getNode().getMetaData().get("UniqueId") + ":");</script>
+    </scriptTask>
+
+    <!-- attached to node _5 -->    
+    <boundaryEvent id="_15" name="CompensateEvent" attachedToRef="_5" >
+      <compensateEventDefinition/>
+    </boundaryEvent>
+    <association id="_15-_151" sourceRef="_15" targetRef="_151" />
+    
+    <scriptTask id="_151" name="Compensate" isForCompensation="true" >
+      <script>kcontext.setVariable("x", kcontext.getVariable("x").toString() + kcontext.getNodeInstance().getNode().getMetaData().get("UniqueId") + ":");</script>
+    </scriptTask>
+
+ </process>
+
+</definitions>

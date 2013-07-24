@@ -1193,7 +1193,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
             fail("Should fail as multiple outgoing and incoming connections are disabled by default");
         } catch (Exception e) {
             assertEquals(
-                    "This type of node cannot have more than one outgoing connection!",
+                    "This type of node [ScriptTask_1, Script Task] cannot have more than one outgoing connection!",
                     e.getMessage());
         }
     }

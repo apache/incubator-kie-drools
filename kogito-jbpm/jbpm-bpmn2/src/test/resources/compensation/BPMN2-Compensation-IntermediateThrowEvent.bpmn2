@@ -11,7 +11,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <itemDefinition id="_xItem" structureRef="org.jbpm.bpmn2.objects.StringHolder" />
+  <itemDefinition id="_xItem" structureRef="String" />
   
   <process processType="Private" isExecutable="true" id="CompensateIntermediateThrowEvent" name="Compensate Intermediate Throw Event Process" >
 
@@ -27,21 +27,24 @@
     </scriptTask>
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
     
-    <intermediateThrowEvent id="_3" name="CompensateEvent" >
-      <compensateEventDefinition activityRef="_2"/>
-    </intermediateThrowEvent>
+    <userTask id="_3" name="User Task" />
     <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
     
-    <endEvent id="_4" name="EndEvent" />
+    <intermediateThrowEvent id="_4" name="CompensateEvent" >
+      <compensateEventDefinition activityRef="_2"/>
+    </intermediateThrowEvent>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    
+    <endEvent id="_5" name="EndEvent" />
 
     <!-- attached to node _2 (Task) -->    
-    <boundaryEvent id="_5" name="CompensateEvent" attachedToRef="_2" >
+    <boundaryEvent id="_10" name="CompensateEvent" attachedToRef="_2" >
       <compensateEventDefinition/>
     </boundaryEvent>
-    <association id="_5-_6" sourceRef="_5" targetRef="_6" />
+    <association id="_10-_11" sourceRef="_10" targetRef="_11" />
     
-    <scriptTask id="_6" name="Compensate" isForCompensation="true" >
-      <script>x.setVal("true");</script>
+    <scriptTask id="_11" name="Compensate" isForCompensation="true" >
+      <script>kcontext.setVariable("x", Integer.toString(Integer.parseInt(kcontext.getVariable("x").toString()) + 1));</script>
     </scriptTask>
 
  </process>

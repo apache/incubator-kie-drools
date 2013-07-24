@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.omg.org/spec/BPMN/20100524/DI http://www.omg.org/spec/BPMN/20100524/DI-XMI http://www.omg.org/spec/DD/20100524/DC http://www.omg.org/spec/DD/20100524/DC-XMI http://www.omg.org/spec/DD/20100524/DI http://www.omg.org/spec/DD/20100524/DI-XMI" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <itemDefinition id="_xItem" structureRef="String"/>
+  <process id="CompensateIntermediateThrowEvent" name="Compensate Intermediate Throw Event Process" isExecutable="true" processType="Private">
+    <property id="x" itemSubjectRef="_xItem"/>
+    
+    <startEvent id="_1" name="StartProcess" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2"/>
+    
+    <userTask id="_2" name="User Task" />
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3"/>
+    
+    <scriptTask id="_3" name="Task">
+      <script>System.out.println(&quot;Executing task&quot;);</script>
+    </scriptTask>
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+    
+    <intermediateThrowEvent id="_4" name="CompensateEvent">
+      <compensateEventDefinition id="_4-x" activityRef="_2"/>
+    </intermediateThrowEvent>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5"/>
+    
+    <endEvent id="_5" name="EndEvent" />
+    
+    <boundaryEvent id="_10" name="CompensateEvent" attachedToRef="_3">
+      <compensateEventDefinition id="CompensateEventDefinition_2"/>
+    </boundaryEvent>
+    <association id="_10-_11" sourceRef="_10" targetRef="_11"/>
+    
+    <scriptTask id="_11" name="Compensate" isForCompensation="true">
+      <script>kcontext.setVariable(&quot;x&quot;, Integer.toString(Integer.parseInt(kcontext.getVariable(&quot;x&quot;).toString()) + 1));</script>
+    </scriptTask>
+  </process>
+  
+</definitions>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  
+  <process id="CompensateSubSubSub" name="Default Process">
+  
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    
+    <startEvent id="_1" name="Start" />
+    <sequenceFlow id="_1-_2" name="" sourceRef="_1" targetRef="_2"/>
+    
+    <subProcess id="_2" name="Sub 1">
+    
+      <startEvent id="_A-1" name="Start 1" />
+      <sequenceFlow id="_A-1-_A-2" name="" sourceRef="_A-1" targetRef="_A-2"/>
+      
+      <subProcess id="_A-2" name="Sub 2">
+      
+        <startEvent id="_B-1" name="Start 2" />
+        <sequenceFlow id="_B-1-_B-2" name="" sourceRef="_B-1" targetRef="_B-2"/>
+        
+        <subProcess id="_B-2" name="Sub 3">
+        
+          <startEvent id="_C-1" name="Start 3" />
+          <sequenceFlow id="_C-1-_C-2" tns:priority="1" name="" sourceRef="_C-1" targetRef="_C-2"/>
+      
+          <userTask id="_C-2" name="User Task 3" />
+          <sequenceFlow id="_C-2-_C-3" tns:priority="1" sourceRef="_C-2" targetRef="_C-3"/>
+      
+          <intermediateThrowEvent id="_C-3" name="Throw General Compensate" >
+            <compensateEventDefinition />
+          </intermediateThrowEvent>
+          <sequenceFlow id="_C-3-_C-4" tns:priority="1" sourceRef="_C-3" targetRef="_C-4"/>
+    
+          <endEvent id="_C-4" name="End 3" />
+      
+          <!-- attached to node _C-2 (Task) -->    
+          <boundaryEvent id="_X-1" name="Boundary Compensate 3" attachedToRef="_C-2" >
+            <compensateEventDefinition/>
+          </boundaryEvent>
+          <association id="_X-1-_X-2" sourceRef="_X-1" targetRef="_X-2" />
+    
+          <scriptTask id="_X-2" name="Compensate Handler 3" isForCompensation="true" >
+            <script>kcontext.setVariable("x", Integer.toString(Integer.parseInt(kcontext.getVariable("x").toString()) + 1));</script>
+          </scriptTask>
+    
+        </subProcess>
+        <sequenceFlow id="_B-2-_B-3" sourceRef="_B-2" targetRef="_B-3" />
+        
+        <userTask id="_B-3" name="User Task 2" />
+        <sequenceFlow id="_B-3-_B-4" sourceRef="_B-3" targetRef="_B-4" />
+          
+        <intermediateThrowEvent id="_B-4" name="Throw Specific Compensate" >
+          <compensateEventDefinition activityRef="_B-3"/>
+        </intermediateThrowEvent>
+        <sequenceFlow id="_B-4-_B-5" tns:priority="1" sourceRef="_B-4" targetRef="_B-5"/>
+        
+        <endEvent id="_B-5" name="End 2" />
+        
+        <!-- attached to node _B-4 (Task) -->    
+        <boundaryEvent id="_Y-1" name="Boundary Compensate 2" attachedToRef="_B-4" >
+          <compensateEventDefinition/>
+        </boundaryEvent>
+        <association id="_Y-1-_Y-2" sourceRef="_Y-1" targetRef="_Y-2" />
+    
+        <scriptTask id="_Y-2" name="Compensate Handler 2" isForCompensation="true" >
+          <script>kcontext.setVariable("x", Integer.toString(Integer.parseInt(kcontext.getVariable("x").toString()) + 1));</script>
+        </scriptTask>
+      </subProcess>
+      <sequenceFlow id="_A-2-_A-3" tns:priority="1" sourceRef="_A-2" targetRef="_A-3"/>
+          
+      <endEvent id="_A-3" name="End 2" />
+    </subProcess>
+    <sequenceFlow id="_2-_3" name="" sourceRef="_2" targetRef="_3"/>
+    
+    <userTask id="_3" name="User Task 0" />
+    <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4"/>
+          
+    <endEvent id="_4" name="End" />
+    
+  </process>
+  
+</definitions>

@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
@@ -56,6 +57,7 @@ public class EventTest extends AbstractBaseTest  {
     
 	@Test
     public void testEvent1() {
+	    
         RuleFlowProcess process = new RuleFlowProcess();
         process.setId("org.drools.core.process.event");
         process.setName("Event Process");
