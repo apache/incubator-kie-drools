@@ -209,28 +209,12 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
-    public void testEnumTypeStringInOperator() {
-        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
-        String expected = "rule \"my rule\"\n"
-                + "\tdialect \"mvel\"\n"
-                + "\twhen\n"
-                + "\t\tCheese( type in ( \"CHEDDAR\", \"STILTON\" ) )\n"
-                + "\tthen\n"
-                + "\t\tinsert( new Report() );\n"
-                + "end\n";
+    public void testExtends() {
+        String expected = "rule \"my rule\" extends \"secondRule\"\n\tdialect \"mvel\"\n\twhen\n"
+                + "\tthen\n\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern( "Cheese" );
+        m.parentName = "secondRule";
 
-        m.addLhsItem( pat );
-        final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName( "type" );
-        con.setOperator( "in" );
-        con.setValue( "( \"CHEDDAR\",\"STILTON\" )" );
-        con.setFieldType( DataType.TYPE_STRING );
-        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
-        pat.addConstraint( con );
-
-        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
         checkMarshallUnmarshall( expected, m );
@@ -250,6 +234,34 @@ public class BRDRLPersistenceTest {
         con.setOperator( "==" );
         con.setValue( "100" );
         con.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
+
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
+        m.name = "my rule";
+
+        checkMarshallUnmarshall( expected, m );
+    }
+
+    @Test
+    public void testEnumTypeStringInOperator() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n"
+                + "\tdialect \"mvel\"\n"
+                + "\twhen\n"
+                + "\t\tCheese( type in ( \"CHEDDAR\", \"STILTON\" ) )\n"
+                + "\tthen\n"
+                + "\t\tinsert( new Report() );\n"
+                + "end\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern( "Cheese" );
+
+        m.addLhsItem( pat );
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "type" );
+        con.setOperator( "in" );
+        con.setValue( "( \"CHEDDAR\",\"STILTON\" )" );
+        con.setFieldType( DataType.TYPE_STRING );
         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
         pat.addConstraint( con );
 
