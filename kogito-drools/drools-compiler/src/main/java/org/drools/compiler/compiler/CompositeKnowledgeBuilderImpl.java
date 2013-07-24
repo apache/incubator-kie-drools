@@ -278,7 +278,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.RDSLR, DSLR_TO_PKG_DESCR);
         buildResource(packages, ResourceType.XDRL, XML_TO_PKG_DESCR);
         buildResource(packages, ResourceType.DTABLE, DTABLE_TO_PKG_DESCR);
-        buildResource(packages, ResourceType.SCARD, DTABLE_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.SCARD, SCARD_TO_PKG_DESCR);
         return packages.values();
     }
 
@@ -347,6 +347,12 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private static final ResourceToPkgDescrMapper DTABLE_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
         public PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception {
             return pkgBuilder.decisionTableToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper SCARD_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(PackageBuilder pkgBuilder, ResourceDescr resourceDescr) throws Exception {
+            return pkgBuilder.scoreCardToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
         }
     };
 }
