@@ -671,10 +671,6 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         @Override
-        protected void doCollectAncestors(NodeSet nodeSet) {
-        }
-
-        @Override
         protected void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
         }
 

@@ -16,19 +16,16 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.marshalling.impl.ProtobufMessages.NodeMemory;
 import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.spi.Salience;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,16 +33,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-
-import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -64,7 +56,7 @@ public class ReteooBuilder
     private transient InternalRuleBase  ruleBase;
 
     private Map<String, BaseNode[]>       rules;
-    
+
     private Map<String, WindowNode>     namedWindows;
 
     private transient RuleBuilder       ruleBuilder;
@@ -116,7 +108,7 @@ public class ReteooBuilder
         this.rules.put( rule.getName(),
                         terminals.toArray( new BaseNode[terminals.size()] ) );
     }
-    
+
     public void addEntryPoint( String id ) {
         this.ruleBuilder.addEntryPoint( id,
                                         this.ruleBase,
@@ -306,7 +298,7 @@ public class ReteooBuilder
             }
         } else if ( baseNode.getType() == NodeTypeEnums.EvalConditionNode ) {
             for ( LeftTupleSink sink : ((EvalConditionNode) baseNode).getSinkPropagator().getSinks() ) {
-                if ( ((BaseNode)sink).isInUse() ) { 
+                if ( ((BaseNode)sink).isInUse() ) {
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }
             }
@@ -398,7 +390,7 @@ public class ReteooBuilder
             bytes = new ByteArrayInputStream( (byte[]) in.readObject() );
             droolsStream = new DroolsObjectInputStream( bytes );
         }
-        
+
         this.rules = (Map<String, BaseNode[]>) droolsStream.readObject();
         this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
         this.idGenerator = (IdGenerator) droolsStream.readObject();

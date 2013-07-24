@@ -63,10 +63,6 @@ public class ReteAccumulateNode extends AccumulateNode {
         ReteBetaNodeUtils.assertObject(this, factHandle, pctx, wm);
     }
 
-    public void doCollectAncestors(NodeSet nodeSet) {
-        ReteBetaNodeUtils.doCollectAncestors(this, nodeSet);
-    }
-
     public void attach(BuildContext context) {
         ReteBetaNodeUtils.attach(this, context);
     }

@@ -279,9 +279,7 @@ public class PatternBuilder
 
             EntryPointNode epn = ruleBase.getRete().getEntryPointNode( context.getCurrentEntryPoint() );
             if ( epn == null ) {
-                epn = new EntryPointNode( context.getNextId(),
-                                          ruleBase.getRete(),
-                                          context );
+                epn = nfactory.buildEntryPointNode( context.getNextId(), ruleBase.getRete(), context );
                 epn.attach( context );
             }
 
@@ -343,11 +341,10 @@ public class PatternBuilder
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      context.getComponentFactory().getNodeFactoryService().buildAlphaNode(
-                                                                        context.getNextId(),
-                                                                        constraint,
-                                                                        context.getObjectSource(),
-                                                                        context) ) );
+                                                                      context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextId(),
+                                                                                                                                            constraint,
+                                                                                                                                            context.getObjectSource(),
+                                                                                                                                            context) ) );
             context.popRuleComponent();
         }
     }

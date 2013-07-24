@@ -447,10 +447,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             objectSource.removeObjectSink(this);
         }
     }
-
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        this.objectSource.collectAncestors(nodeSet);
-    }
     
 
     public LeftTuple createPeer(LeftTuple original) {

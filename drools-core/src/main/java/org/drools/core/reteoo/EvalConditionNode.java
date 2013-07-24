@@ -308,11 +308,6 @@ public class EvalConditionNode extends LeftTupleSource
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {

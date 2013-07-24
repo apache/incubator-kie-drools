@@ -279,8 +279,4 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         }
     }
 
-    @Override
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
 }

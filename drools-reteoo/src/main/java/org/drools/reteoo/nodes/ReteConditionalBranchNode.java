@@ -229,8 +229,4 @@ public class ReteConditionalBranchNode extends ConditionalBranchNode {
         }
     }
 
-
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
 }

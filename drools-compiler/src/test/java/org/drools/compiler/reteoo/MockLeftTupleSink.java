@@ -103,8 +103,6 @@ public class MockLeftTupleSink extends LeftTupleSource
                             final InternalWorkingMemory[] workingMemories) {
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) { }
-
     public void attach(BuildContext buildContext) {
         // TODO Auto-generated method stub
 

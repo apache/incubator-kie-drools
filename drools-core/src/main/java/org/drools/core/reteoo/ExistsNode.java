@@ -175,12 +175,6 @@ public class ExistsNode extends BetaNode {
         }
     }
 
-
-    public void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-        getRightInput().collectAncestors(nodeSet);
-    }
-
     @Override
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
