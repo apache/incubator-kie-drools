@@ -101,7 +101,7 @@ public interface Resource extends Serializable {
     /**
      * Sets the resource configuration in case it is necessary.
      * 
-     * @param type the resource configuration
+     * @param conf the resource configuration
      * 
      * @return the resource itself in order to use it as a fluent API
      */
