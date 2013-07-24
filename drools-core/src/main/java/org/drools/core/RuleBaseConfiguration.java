@@ -905,7 +905,7 @@ public class RuleBaseConfiguration
             if (!(componentFactory.getWorkingMemoryFactory().getClass().getName().endsWith("ReteWorkingMemory"))) {
                 if (wmFactory == null) {
                     try {
-                        wmFactory = (WorkingMemoryFactory) Class.forName("org.drools.core.common.ReteWorkingMemoryFactory").newInstance();
+                        wmFactory = (WorkingMemoryFactory) Class.forName("org.drools.reteoo.common.ReteWorkingMemoryFactory").newInstance();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -915,7 +915,7 @@ public class RuleBaseConfiguration
             if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
                 if (reteNodeFactory == null) {
                     try {
-                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.core.reteoo.builder.ReteNodeFactory").newInstance();
+                        reteNodeFactory = (NodeFactory) Class.forName("org.drools.reteoo.builder.ReteNodeFactory").newInstance();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -925,7 +925,7 @@ public class RuleBaseConfiguration
             if (!(componentFactory.getPropagationContextFactory().getClass().getName().endsWith("RetePropagationContextFactory"))) {
                 if (pctxFactory == null) {
                     try {
-                        pctxFactory = (PropagationContextFactory) Class.forName("org.drools.core.common.RetePropagationContextFactory").newInstance();
+                        pctxFactory = (PropagationContextFactory) Class.forName("org.drools.reteoo.common.RetePropagationContextFactory").newInstance();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -935,7 +935,7 @@ public class RuleBaseConfiguration
             if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
                 if (agendaFactory == null) {
                     try {
-                        agendaFactory = (AgendaFactory) Class.forName("org.drools.core.common.ReteAgendaFactory").newInstance();
+                        agendaFactory = (AgendaFactory) Class.forName("org.drools.reteoo.common.ReteAgendaFactory").newInstance();
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
