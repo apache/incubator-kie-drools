@@ -19,7 +19,8 @@ package org.optaplanner.examples.vehiclerouting.swingui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.text.NumberFormat;
@@ -41,7 +42,7 @@ public class VehicleRoutingSchedulePainter {
 
     private static final int TEXT_SIZE = 12;
 
-    private static final int TIME_WINDOW_WIDTH = 40;
+    private static final int TIME_WINDOW_DIAMETER = 26;
 
     private static final String IMAGE_PATH_PREFIX = "/org/optaplanner/examples/vehiclerouting/swingui/";
 
@@ -86,10 +87,11 @@ public class VehicleRoutingSchedulePainter {
 
         double width = size.getWidth();
         double height = size.getHeight();
-        translator.prepareFor(width, height);
+        translator.prepareFor(width, height - 10 - TEXT_SIZE);
 
-        Graphics g = createCanvas(width, height);
+        Graphics2D g = createCanvas(width, height);
         g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
+        g.setStroke(TangoColorFactory.NORMAL_STROKE);
         for (VrpCustomer customer : schedule.getCustomerList()) {
             VrpLocation location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
@@ -100,11 +102,13 @@ public class VehicleRoutingSchedulePainter {
             g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE/2);
             if (customer instanceof VrpTimeWindowedCustomer) {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
-                g.drawLine(x - (TIME_WINDOW_WIDTH / 2), y + 8, x + (TIME_WINDOW_WIDTH / 2), y + 8);
-                int readyTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedCustomer.getReadyTime());
-                g.drawLine(readyTimeX, y + 7, readyTimeX, y + 5);
-                int dueTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedCustomer.getDueTime());
-                g.drawLine(dueTimeX, y + 7, dueTimeX, y + 5);
+                int circleX = x - (TIME_WINDOW_DIAMETER / 2);
+                int circleY = y + 5;
+                g.drawOval(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER);
+                g.fillArc(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER,
+                        90 - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime()),
+                        calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime())
+                                - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getDueTime()));
                 if (timeWindowedCustomer.getArrivalTime() != null) {
                     if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
@@ -113,9 +117,11 @@ public class VehicleRoutingSchedulePainter {
                     } else {
                         g.setColor(TangoColorFactory.ALUMINIUM_6);
                     }
-                    int arrivalTimeX = calculateTimeWindowX(maximumTimeWindowTime, x,
-                            timeWindowedCustomer.getArrivalTime());
-                    g.drawLine(arrivalTimeX, y + 7, arrivalTimeX, y + 3);
+                    int circleCenterY = y + 5 + TIME_WINDOW_DIAMETER / 2;
+                    int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getArrivalTime());
+                    g.drawLine(x, circleCenterY,
+                            x + (int) (Math.sin(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)),
+                            circleCenterY - (int) (Math.cos(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)));
                 }
             }
         }
@@ -126,14 +132,6 @@ public class VehicleRoutingSchedulePainter {
             g.fillRect(x - 2, y - 2, 5, 5);
             g.drawImage(depotImageIcon.getImage(),
                     x - depotImageIcon.getIconWidth() / 2, y - 2 - depotImageIcon.getIconHeight(), imageObserver);
-            if (depot instanceof VrpTimeWindowedDepot) {
-                VrpTimeWindowedDepot timeWindowedDepot = (VrpTimeWindowedDepot) depot;
-                g.drawLine(x - (TIME_WINDOW_WIDTH / 2), y + 8, x + (TIME_WINDOW_WIDTH / 2), y + 8);
-                int readyTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedDepot.getReadyTime());
-                g.drawLine(readyTimeX, y + 7, readyTimeX, y + 5);
-                int dueTimeX = calculateTimeWindowX(maximumTimeWindowTime, x, timeWindowedDepot.getDueTime());
-                g.drawLine(dueTimeX, y + 7, dueTimeX, y + 5);
-            }
         }
         int colorIndex = 0;
         // TODO Too many nested for loops
@@ -164,18 +162,13 @@ public class VehicleRoutingSchedulePainter {
                         vehicleInfoCustomer = customer;
                     }
                     // Line back to the vehicle depot
-                    boolean needsBackToVehicleLineDraw = true;
-                    for (VrpCustomer trailingCustomer : schedule.getCustomerList()) {
-                        if (trailingCustomer.getPreviousStandstill() == customer) {
-                            needsBackToVehicleLineDraw = false;
-                            break;
-                        }
-                    }
-                    if (needsBackToVehicleLineDraw) {
+                    if (customer.getNextCustomer() == null) {
                         VrpLocation vehicleLocation = vehicle.getLocation();
                         int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
                         int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
-                        g.drawLine(x, y,vehicleX, vehicleY);
+                        g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
+                        g.drawLine(x, y, vehicleX, vehicleY);
+                        g.setStroke(TangoColorFactory.NORMAL_STROKE);
                     }
                 }
             }
@@ -206,10 +199,16 @@ public class VehicleRoutingSchedulePainter {
         g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
         g.drawString((schedule instanceof VrpTimeWindowedSchedule)
                 ? "Depot: time window" : "Depot", 15, (int) height - 10 - TEXT_SIZE);
+        String vehiclesSizeString = schedule.getVehicleList().size() + " vehicles";
+        g.drawString(vehiclesSizeString,
+                ((int) width - g.getFontMetrics().stringWidth(vehiclesSizeString)) / 2, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
         g.drawString((schedule instanceof VrpTimeWindowedSchedule)
                 ? "Customer: demand, time window and arrival time" : "Customer: demand", 15, (int) height - 5);
+        String customersSizeString = schedule.getCustomerList().size() + " customers";
+        g.drawString(customersSizeString,
+                ((int) width - g.getFontMetrics().stringWidth(customersSizeString)) / 2, (int) height - 5);
         // Show soft score
         g.setColor(TangoColorFactory.SCARLET_2);
         HardSoftScore score = schedule.getScore();
@@ -248,16 +247,15 @@ public class VehicleRoutingSchedulePainter {
         return maximumTimeWindowTime;
     }
 
-    private int calculateTimeWindowX(int maximumTimeWindowTime, int x, int timeWindowTime) {
-        return x - (TIME_WINDOW_WIDTH / 2)
-                + (timeWindowTime * TIME_WINDOW_WIDTH / maximumTimeWindowTime);
+    private int calculateTimeWindowDegree(int maximumTimeWindowTime, int timeWindowTime) {
+        return (360 * timeWindowTime / maximumTimeWindowTime);
     }
 
-    public Graphics createCanvas(double width, double height) {
+    public Graphics2D createCanvas(double width, double height) {
         int canvasWidth = (int) Math.ceil(width) + 1;
         int canvasHeight = (int) Math.ceil(height) + 1;
         canvas = new BufferedImage(canvasWidth, canvasHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics g = canvas.getGraphics();
+        Graphics2D g = canvas.createGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, canvasWidth, canvasHeight);
         return g;

@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.common.swingui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Stroke;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +67,17 @@ public class TangoColorFactory {
             TangoColorFactory.CHAMELEON_3, TangoColorFactory.BUTTER_3, TangoColorFactory.SKY_BLUE_3, TangoColorFactory.CHOCOLATE_3,
             TangoColorFactory.PLUM_3
     };
+
+    public static final Stroke NORMAL_STROKE = new BasicStroke();
+
+    public static final Stroke FAT_DASHED_STROKE = new BasicStroke(
+            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {7.0f, 3.0f}, 0.0f);
+
+    public static final Stroke DASHED_STROKE = new BasicStroke(
+            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {4.0f, 4.0f}, 0.0f);
+
+    public static final Stroke LIGHT_DASHED_STROKE = new BasicStroke(
+            1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f, 7.0f}, 0.0f);
     
     private Map<Object, Color> colorMap;
     private int nextColorCount;
