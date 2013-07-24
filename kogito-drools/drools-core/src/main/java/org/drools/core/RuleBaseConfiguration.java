@@ -42,7 +42,7 @@ import org.drools.core.spi.ConflictResolver;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
 import org.kie.internal.builder.conf.DeclarativeAgendaOption;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
@@ -327,7 +327,7 @@ public class RuleBaseConfiguration
             setMBeansEnabled(MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
-        } else if ( name.equals( PhreakOption.PROPERTY_NAME ) ) {
+        } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
             setPhreakEnabled(StringUtils.isEmpty(value) ? DEFAULT_PHREAK : Boolean.valueOf(value));
         }
     }
@@ -382,7 +382,7 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
-        } else if ( name.equals( PhreakOption.PROPERTY_NAME ) ) {
+        } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isPhreakEnabled() );
         }
 
@@ -476,7 +476,7 @@ public class RuleBaseConfiguration
         setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
                                                                                          "true" ) ) );
         
-        setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(PhreakOption.PROPERTY_NAME,
+        setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(RuleEngineOption.PROPERTY_NAME,
                                                                             "" + DEFAULT_PHREAK)));
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
@@ -1206,8 +1206,8 @@ public class RuleBaseConfiguration
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
         } else if (ClassLoaderCacheOption.class.equals(option)) {
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
-        } else if (PhreakOption.class.equals(option)) {
-            return (T) (this.isPhreakEnabled() ? PhreakOption.ENABLED : PhreakOption.DISABLED);
+        } else if (RuleEngineOption.class.equals(option)) {
+            return (T) (this.isPhreakEnabled() ? RuleEngineOption.PHREAK : RuleEngineOption.RETEOO);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
@@ -1252,8 +1252,8 @@ public class RuleBaseConfiguration
             setMBeansEnabled(((MBeansOption) option).isEnabled());
         } else if (option instanceof ClassLoaderCacheOption) {
             setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
-        } else if (option instanceof PhreakOption) {
-            setPhreakEnabled(((PhreakOption) option).isLRUnlinkingEnabled());
+        } else if (option instanceof RuleEngineOption) {
+            setPhreakEnabled(((RuleEngineOption) option).isLRUnlinkingEnabled());
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }

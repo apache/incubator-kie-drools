@@ -32,7 +32,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -1041,7 +1041,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithLongExpressions() throws Exception {
-        if ( CommonTestMethodBase.phreak == PhreakOption.ENABLED ) {
+        if ( CommonTestMethodBase.phreak == RuleEngineOption.PHREAK ) {
             return; // phreak does not yet support dynamic salience
         }
 
@@ -1109,7 +1109,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithStringExpressions() throws Exception {
-        if ( CommonTestMethodBase.phreak == PhreakOption.ENABLED ) {
+        if ( CommonTestMethodBase.phreak == RuleEngineOption.PHREAK ) {
             return; // phreak does not yet support dynamic salience
         }
 
@@ -1326,7 +1326,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test(timeout=10000)
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
+        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
             return; // fails randomly for Rete
         }
 
@@ -1396,7 +1396,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test (timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
+        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
             return; // fails randomly for Rete
         }
 

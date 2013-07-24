@@ -21,7 +21,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 
 public class RuleUnlinkingWithSegmentMemoryTest {
     ReteooRuleBase     ruleBase;
@@ -91,7 +91,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     
     public void setUp(int type) {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
@@ -153,7 +153,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf) );
         
         PathMemory rs = (PathMemory) wm.getNodeMemory( rtn1 );
@@ -175,7 +175,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
         BetaMemory bm = null;
@@ -279,7 +279,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
 
         BetaMemory bm = null;

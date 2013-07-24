@@ -30,7 +30,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 
@@ -49,7 +49,7 @@ public class AddRuleTest {
     @Test
     public void testPopulatedSingleRuleNoSharing() throws Exception {
         KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
@@ -85,7 +85,7 @@ public class AddRuleTest {
     @Test
     public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart() throws Exception {
         KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession()).session;
@@ -578,7 +578,7 @@ public class AddRuleTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );

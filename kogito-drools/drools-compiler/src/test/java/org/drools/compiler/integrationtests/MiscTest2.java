@@ -46,7 +46,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResultSeverity;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
@@ -123,7 +123,7 @@ public class MiscTest2 extends CommonTestMethodBase {
             throw new RuntimeException(builder.getErrors().toString());
         }
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         KnowledgeBase knowledgeBase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
 
@@ -186,7 +186,7 @@ public class MiscTest2 extends CommonTestMethodBase {
             out.close();
 
             KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            kconf.setOption( PhreakOption.ENABLED );
+            kconf.setOption( RuleEngineOption.PHREAK );
             KnowledgeBase kbase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
 
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(root, "test.drl.compiled")));

@@ -23,7 +23,7 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 
 public class NodeSegmentUnlinkingTest {
     ReteooRuleBase       ruleBase;
@@ -82,7 +82,7 @@ public class NodeSegmentUnlinkingTest {
     
     public void setUp(int... type) {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
@@ -166,7 +166,7 @@ public class NodeSegmentUnlinkingTest {
         rule3 = new Rule( "rule3" );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         ruleBase = (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf);
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase.getReteooBuilder().getIdGenerator() );
 
@@ -227,7 +227,7 @@ public class NodeSegmentUnlinkingTest {
         setUp( JOIN_NODE );
         // Initialise from lian
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
         SegmentUtilities.createSegmentMemory( liaNode, wm );
         liaNode.assertObject( (InternalFactHandle) wm.insert( "str" ), context, wm );
@@ -260,7 +260,7 @@ public class NodeSegmentUnlinkingTest {
         setUp( JOIN_NODE );
         // Initialise from lian
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
         
         SegmentUtilities.createSegmentMemory( liaNode, wm ); 
@@ -308,7 +308,7 @@ public class NodeSegmentUnlinkingTest {
         setUp( JOIN_NODE );
         // Initialise from n3
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration) kconf) );
         createSegmentMemory( n3, wm );
 
@@ -408,7 +408,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( JoinNode.class, n3.getClass() ); // make sure it created JoinNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
         n3.assertObject( f1, context, wm );
@@ -436,7 +436,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( ExistsNode.class, n3.getClass() ); // make sure it created ExistsNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
         DefaultFactHandle f1 = (DefaultFactHandle) wm.insert( "test1" );
         n3.assertObject( f1, context, wm );
@@ -474,7 +474,7 @@ public class NodeSegmentUnlinkingTest {
         assertEquals( NotNode.class, n3.getClass() ); // make sure it created NotNodes
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         AbstractWorkingMemory wm = new AbstractWorkingMemory( 1, (ReteooRuleBase) RuleBaseFactory.newRuleBase((RuleBaseConfiguration)kconf) );
                 
         BetaMemory bm = (BetaMemory) wm.getNodeMemory( n3 );

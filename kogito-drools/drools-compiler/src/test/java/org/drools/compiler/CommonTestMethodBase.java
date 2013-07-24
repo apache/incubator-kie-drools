@@ -22,7 +22,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
@@ -41,7 +41,7 @@ import org.kie.api.runtime.conf.KieSessionOption;
  * in drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
-    public static PhreakOption phreak = PhreakOption.ENABLED;
+    public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
@@ -133,7 +133,7 @@ public class CommonTestMethodBase extends Assert {
         return loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
     }
 
-    protected KnowledgeBase loadKnowledgeBaseFromString(PhreakOption phreak, String... drlContentStrings) {
+    protected KnowledgeBase loadKnowledgeBaseFromString(RuleEngineOption phreak, String... drlContentStrings) {
         return loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
     }
 
@@ -149,7 +149,7 @@ public class CommonTestMethodBase extends Assert {
 
     protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config,
                                                         KieBaseConfiguration kBaseConfig,
-                                                        PhreakOption phreak,
+                                                        RuleEngineOption phreak,
                                                         String... drlContentStrings) {
         KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder( config );
         for ( String drlContentString : drlContentStrings ) {
