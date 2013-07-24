@@ -30,9 +30,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -77,8 +77,8 @@ import org.slf4j.LoggerFactory;
  *
  */
 @Transactional
-@ApplicationScoped
 @Startup
+@Singleton
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskDeadlinesServiceImpl.class);
@@ -100,6 +100,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     
     public TaskDeadlinesServiceImpl() {
+        
     }
 
     public void setPm(JbpmServicesPersistenceManager pm) {

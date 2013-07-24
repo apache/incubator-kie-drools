@@ -64,7 +64,6 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
     
     
     @Test
-    @Ignore // temporary ignoring this as it randomly failing on jenkins
     public void testDelayedEmailNotificationOnDeadline() throws Exception {
         
         Map<String, Object> vars = new HashMap<String, Object>();
