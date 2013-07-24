@@ -35,7 +35,7 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.config.util.KeyAsElementMapConverter;
@@ -334,7 +334,7 @@ public class ScoreDirectorFactoryConfig {
                 }
             }
             // TODO remove this line once Phreak is the default
-            kieBaseConfiguration.setOption(PhreakOption.ENABLED);
+            kieBaseConfiguration.setOption(RuleEngineOption.PHREAK);
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
 
             return kieBase;
