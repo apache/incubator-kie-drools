@@ -1,0 +1,271 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Drools multiproject
+[INFO] Drools :: Core
+[INFO] Drools :: ReteOO
+[INFO] Drools :: Compiler
+[INFO] Drools :: Templates
+[INFO] Drools :: Decision Tables
+[INFO] Drools :: JSR-94 API Module
+[INFO] Drools :: Verifier
+[INFO] Drools :: Persistence :: JPA
+[INFO] Drools examples
+[INFO] Drools :: Scorecards
+[INFO] Drools Maven Plugin
+[INFO] KIE :: CI
+[INFO] Drools API examples
+[INFO] Drools API examples - Default KieSession
+[INFO] Drools API examples - Named KieSession
+[INFO] Drools API examples - KieBase Inclusion
+[INFO] Drools API examples - Default KieSession From File
+[INFO] Drools API examples - Named KieSession from File
+[INFO] Drools API examples - KieModule from Multiple Files
+[INFO] Drools API examples - KieFileSystemExample
+[INFO] Drools API examples - KieModuleModel Example
+[INFO] Drools API examples - KieContainer from KieRepo
+[INFO] Drools CDI examples
+[INFO] Drools CDI Example
+[INFO] Drools CDI Example WIth Inclusion
+[INFO] Drools Workbench - Models
+[INFO] Drools Workbench - Common Model
+[INFO] Drools Workbench - Guided Decision Table Model
+[INFO] Drools Workbench - Guided Rule Templates Model
+[INFO] Drools Workbench - Guided Score Cards Model
+[INFO] Drools Workbench - Test Scenarios Model
+[INFO] Knowledge API Legacy5 Adapter
+[INFO] Drools Expert and Fusion Documentation
+[INFO] Drools :: Documentation :: Drools :: Expert
+[INFO] Drools :: Documentation :: Drools :: Fusion
+[INFO] Drools distribution
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Drools multiproject 6.0.0.CR1
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ drools-multiproject ---
+[INFO] Deleting /home/mbiarnes/Development/git/droolsjbpm/drools/target
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (default) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-java-version) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-maven-version) @ drools-multiproject ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:parse-version (default) @ drools-multiproject ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create-timestamp (get-build-timestamp) @ drools-multiproject ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create (get-scm-revision) @ drools-multiproject ---
+[INFO] Checking for local modifications: skipped.
+[INFO] Updating project files from SCM: skipped.
+[INFO] Executing: /bin/sh -c cd /home/mbiarnes/Development/git/droolsjbpm/drools && git rev-parse --verify HEAD
+[INFO] Working directory: /home/mbiarnes/Development/git/droolsjbpm/drools
+[INFO] Storing buildNumber: 62cb4bd6951fb4fa69e6345e3b18386de9e0c2e9 at timestamp: 1374662788648
+[INFO] Executing: /bin/sh -c cd /home/mbiarnes/Development/git/droolsjbpm/drools && git rev-parse --verify HEAD
+[INFO] Working directory: /home/mbiarnes/Development/git/droolsjbpm/drools
+[INFO] Storing buildScmBranch: UNKNOWN
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.1:test-jar (test-jar) @ drools-multiproject ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] Building jar: /home/mbiarnes/Development/git/droolsjbpm/drools/target/drools-multiproject-6.0.0.CR1-tests.jar
+[INFO] 
+[INFO] >>> maven-source-plugin:2.1.2:jar (jar) @ drools-multiproject >>>
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (default) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-java-version) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-maven-version) @ drools-multiproject ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:parse-version (default) @ drools-multiproject ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create-timestamp (get-build-timestamp) @ drools-multiproject ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create (get-scm-revision) @ drools-multiproject ---
+[INFO] 
+[INFO] <<< maven-source-plugin:2.1.2:jar (jar) @ drools-multiproject <<<
+[INFO] 
+[INFO] --- maven-source-plugin:2.1.2:jar (jar) @ drools-multiproject ---
+[INFO] 
+[INFO] >>> maven-source-plugin:2.1.2:test-jar (test-jar) @ drools-multiproject >>>
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (default) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-java-version) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-maven-version) @ drools-multiproject ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:parse-version (default) @ drools-multiproject ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create-timestamp (get-build-timestamp) @ drools-multiproject ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create (get-scm-revision) @ drools-multiproject ---
+[INFO] 
+[INFO] <<< maven-source-plugin:2.1.2:test-jar (test-jar) @ drools-multiproject <<<
+[INFO] 
+[INFO] --- maven-source-plugin:2.1.2:test-jar (test-jar) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-source-plugin:2.1.2:jar-no-fork (attach-sources) @ drools-multiproject ---
+[INFO] 
+[INFO] --- maven-javadoc-plugin:2.8:jar (default) @ drools-multiproject ---
+[INFO] Not executing Javadoc as the project is not a Java classpath-capable package
+[INFO] 
+[INFO] --- maven-failsafe-plugin:2.14:integration-test (default) @ drools-multiproject ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-install-plugin:2.3.1:install (default-install) @ drools-multiproject ---
+[INFO] Installing /home/mbiarnes/Development/git/droolsjbpm/drools/pom.xml to /home/mbiarnes/.m2/repository/org/drools/drools-multiproject/6.0.0.CR1/drools-multiproject-6.0.0.CR1.pom
+[INFO] Installing /home/mbiarnes/Development/git/droolsjbpm/drools/target/drools-multiproject-6.0.0.CR1-tests.jar to /home/mbiarnes/.m2/repository/org/drools/drools-multiproject/6.0.0.CR1/drools-multiproject-6.0.0.CR1-tests.jar
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building Drools :: Core 6.0.0.CR1
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.4.1:clean (default-clean) @ drools-core ---
+[INFO] Deleting /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/target
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (default) @ drools-core ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-java-version) @ drools-core ---
+[INFO] 
+[INFO] --- maven-enforcer-plugin:1.2:enforce (enforce-maven-version) @ drools-core ---
+[INFO] 
+[INFO] --- build-helper-maven-plugin:1.7:parse-version (default) @ drools-core ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create-timestamp (get-build-timestamp) @ drools-core ---
+[INFO] 
+[INFO] --- buildnumber-maven-plugin:1.2:create (get-scm-revision) @ drools-core ---
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ drools-core ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 6 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.5.1:compile (default-compile) @ drools-core ---
+[INFO] Compiling 1128 source files to /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/target/classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[45,36] cannot find symbol
+symbol  : class RuleEngineOption
+location: package org.kie.internal.builder.conf
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[328,33] cannot find symbol
+symbol  : variable RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[329,114] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[383,33] cannot find symbol
+symbol  : variable RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[479,97] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[477,76] cannot find symbol
+symbol  : variable RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[478,109] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[478,146] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1208,19] cannot find symbol
+symbol  : class RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1209,49] cannot find symbol
+symbol  : variable RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1209,75] cannot find symbol
+symbol  : variable RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1254,37] cannot find symbol
+symbol  : class RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1255,31] cannot find symbol
+symbol  : class RuleEngineOption
+location: class org.drools.core.RuleBaseConfiguration
+[INFO] 13 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO] 
+[INFO] Drools multiproject ............................... SUCCESS [3.685s]
+[INFO] Drools :: Core .................................... FAILURE [16.455s]
+[INFO] Drools :: ReteOO .................................. SKIPPED
+[INFO] Drools :: Compiler ................................ SKIPPED
+[INFO] Drools :: Templates ............................... SKIPPED
+[INFO] Drools :: Decision Tables ......................... SKIPPED
+[INFO] Drools :: JSR-94 API Module ....................... SKIPPED
+[INFO] Drools :: Verifier ................................ SKIPPED
+[INFO] Drools :: Persistence :: JPA ...................... SKIPPED
+[INFO] Drools examples ................................... SKIPPED
+[INFO] Drools :: Scorecards .............................. SKIPPED
+[INFO] Drools Maven Plugin ............................... SKIPPED
+[INFO] KIE :: CI ......................................... SKIPPED
+[INFO] Drools API examples ............................... SKIPPED
+[INFO] Drools API examples - Default KieSession .......... SKIPPED
+[INFO] Drools API examples - Named KieSession ............ SKIPPED
+[INFO] Drools API examples - KieBase Inclusion ........... SKIPPED
+[INFO] Drools API examples - Default KieSession From File  SKIPPED
+[INFO] Drools API examples - Named KieSession from File .. SKIPPED
+[INFO] Drools API examples - KieModule from Multiple Files  SKIPPED
+[INFO] Drools API examples - KieFileSystemExample ........ SKIPPED
+[INFO] Drools API examples - KieModuleModel Example ...... SKIPPED
+[INFO] Drools API examples - KieContainer from KieRepo ... SKIPPED
+[INFO] Drools CDI examples ............................... SKIPPED
+[INFO] Drools CDI Example ................................ SKIPPED
+[INFO] Drools CDI Example WIth Inclusion ................. SKIPPED
+[INFO] Drools Workbench - Models ......................... SKIPPED
+[INFO] Drools Workbench - Common Model ................... SKIPPED
+[INFO] Drools Workbench - Guided Decision Table Model .... SKIPPED
+[INFO] Drools Workbench - Guided Rule Templates Model .... SKIPPED
+[INFO] Drools Workbench - Guided Score Cards Model ....... SKIPPED
+[INFO] Drools Workbench - Test Scenarios Model ........... SKIPPED
+[INFO] Knowledge API Legacy5 Adapter ..................... SKIPPED
+[INFO] Drools Expert and Fusion Documentation ............ SKIPPED
+[INFO] Drools :: Documentation :: Drools :: Expert ....... SKIPPED
+[INFO] Drools :: Documentation :: Drools :: Fusion ....... SKIPPED
+[INFO] Drools distribution ............................... SKIPPED
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 24.346s
+[INFO] Finished at: Wed Jul 24 12:46:47 CEST 2013
+[INFO] Final Memory: 45M/1237M
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:2.5.1:compile (default-compile) on project drools-core: Compilation failure: Compilation failure:
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[45,36] cannot find symbol
+[ERROR] symbol  : class RuleEngineOption
+[ERROR] location: package org.kie.internal.builder.conf
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[328,33] cannot find symbol
+[ERROR] symbol  : variable RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[329,114] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[383,33] cannot find symbol
+[ERROR] symbol  : variable RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[479,97] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[477,76] cannot find symbol
+[ERROR] symbol  : variable RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[478,109] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[478,146] package RuleEngineOption does not exist
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1208,19] cannot find symbol
+[ERROR] symbol  : class RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1209,49] cannot find symbol
+[ERROR] symbol  : variable RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1209,75] cannot find symbol
+[ERROR] symbol  : variable RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1254,37] cannot find symbol
+[ERROR] symbol  : class RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] /home/mbiarnes/Development/git/droolsjbpm/drools/drools-core/src/main/java/org/drools/core/RuleBaseConfiguration.java:[1255,31] cannot find symbol
+[ERROR] symbol  : class RuleEngineOption
+[ERROR] location: class org.drools.core.RuleBaseConfiguration
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+[ERROR] 
+[ERROR] After correcting the problems, you can resume the build with the command
+[ERROR]   mvn <goals> -rf :drools-core
