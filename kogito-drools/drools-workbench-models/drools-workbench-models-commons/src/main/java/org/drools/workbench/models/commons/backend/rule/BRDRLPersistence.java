@@ -1400,6 +1400,7 @@ public class BRDRLPersistence
         RuleDescr ruleDescr = parseDrl( expandedDRLInfo );
         RuleModel model = new RuleModel();
         model.name = ruleDescr.getName();
+        model.parentName = ruleDescr.getParentName();
 
         //De-serialize Package name
         final String packageName = PackageNameParser.parsePackageName( expandedDRLInfo.plainDrl );
