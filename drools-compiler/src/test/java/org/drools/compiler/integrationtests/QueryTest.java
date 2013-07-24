@@ -35,7 +35,7 @@ import org.drools.core.spi.ObjectType;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.rule.Rule;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.LiveQuery;
@@ -605,7 +605,7 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testOpenQuery() throws Exception {
-        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
             return;  //Disbaled due to phreak, as tests is order specific
         }
         String str = "";

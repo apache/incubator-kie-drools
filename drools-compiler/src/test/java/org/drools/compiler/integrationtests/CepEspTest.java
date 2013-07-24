@@ -36,7 +36,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -2237,7 +2237,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertThat( act.getRule().getName(),
                     is( "launch" ) );
 
-        if ( phreak == PhreakOption.ENABLED ) {
+        if ( phreak == RuleEngineOption.PHREAK ) {
             // first rule
             act = values.get( 1 ).getMatch();
             assertThat( act.getRule().getName(),
@@ -2627,7 +2627,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testEventExpirationDuringAccumulate() throws Exception {
-        if ( phreak == PhreakOption.DISABLED ) {
+        if ( phreak == RuleEngineOption.RETEOO ) {
             return; // this test is failing for Rete
         }
         // DROOLS-70

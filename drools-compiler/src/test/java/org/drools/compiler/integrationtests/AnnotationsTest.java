@@ -41,7 +41,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.definition.rule.Rule;
@@ -257,7 +257,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         conf.setOption( EventProcessingOption.STREAM );
         conf.setOption( MBeansOption.ENABLED );
-        conf.setOption( PhreakOption.ENABLED );
+        conf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = loadKnowledgeBase( "kb1",
                                                  drl,

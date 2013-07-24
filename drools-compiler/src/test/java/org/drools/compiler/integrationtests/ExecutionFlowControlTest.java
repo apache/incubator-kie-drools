@@ -37,7 +37,7 @@ import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
@@ -376,7 +376,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         final InternalAgenda agenda = (InternalAgenda) ((AgendaImpl)ksession.getAgenda()).getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
-        if ( phreak == PhreakOption.DISABLED ) {
+        if ( phreak == RuleEngineOption.RETEOO ) {
             agenda.setFocus( group1 );
             assertEquals( 3, group1.size() );
             agenda.fireNextItem( null, 0, 0 );
@@ -590,7 +590,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 8, list.size() );
         assertEquals( "group2", list.get( 7 ) );
 
-        if ( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
+        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
             // clear only works for Rete, as while Phreak can be eager, it'll still result in rule firing
 
             // clear main only the auto focus related ones should fire

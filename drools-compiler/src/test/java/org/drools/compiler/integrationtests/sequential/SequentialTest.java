@@ -19,7 +19,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -306,7 +306,7 @@ public class SequentialTest extends CommonTestMethodBase {
                                                  String file) throws DroolsParserException, IOException, Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         if ( sequentialMode ) {
-            kconf.setOption( PhreakOption.DISABLED );
+            kconf.setOption( RuleEngineOption.RETEOO );
             kconf.setOption( SequentialOption.YES );
         }   else {
             kconf.setOption( SequentialOption.NO );

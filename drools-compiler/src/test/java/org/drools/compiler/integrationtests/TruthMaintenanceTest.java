@@ -46,7 +46,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -1105,7 +1105,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test
     public void testTMSWithLateUpdate() {
         //  JBRULES-3416
-        if( CommonTestMethodBase.phreak == PhreakOption.DISABLED ) {
+        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
             return;  // Feature can never work in Rete mode.
         }
 
