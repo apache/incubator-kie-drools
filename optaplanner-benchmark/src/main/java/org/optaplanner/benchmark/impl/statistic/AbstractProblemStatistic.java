@@ -31,9 +31,9 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
+import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
-import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 
 public abstract class AbstractProblemStatistic implements ProblemStatistic {

@@ -16,8 +16,8 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import org.optaplanner.core.api.solver.Solver;
 import org.junit.Test;
+import org.optaplanner.core.api.solver.Solver;
 
 import static org.junit.Assert.*;
 

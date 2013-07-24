@@ -27,16 +27,16 @@ import java.util.Map;
 import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.event.rule.ActivationUnMatchListener;
 import org.kie.api.runtime.rule.RuleContext;
 import org.kie.api.runtime.rule.RuleRuntime;
+import org.kie.internal.event.rule.ActivationUnMatchListener;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatch;
 import org.optaplanner.core.api.score.constraint.bigdecimal.BigDecimalConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatch;
 import org.optaplanner.core.api.score.constraint.primdouble.DoubleConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatch;
 import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatchTotal;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatch;
 import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal;
 

@@ -18,11 +18,11 @@ package org.optaplanner.examples.nqueens.app;
 
 import java.io.File;
 
+import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
-import org.junit.Test;
 
 public class NQueensPerformanceTest extends SolverPerformanceTest {
 

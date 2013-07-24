@@ -20,11 +20,8 @@ import java.util.Comparator;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
-import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicSolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
-import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 
 public class DefaultConstructionHeuristicForager extends AbstractConstructionHeuristicForager {
 

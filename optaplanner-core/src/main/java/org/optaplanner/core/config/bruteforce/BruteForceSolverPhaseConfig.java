@@ -18,13 +18,10 @@ package org.optaplanner.core.config.bruteforce;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.impl.bruteforce.BruteForceEntityWalker;
 import org.optaplanner.core.impl.bruteforce.BruteForceSolverPhase;
 import org.optaplanner.core.impl.bruteforce.DefaultBruteForceSolverPhase;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("bruteForce")

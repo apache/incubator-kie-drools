@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class XStreamBendableScoreConverterTest {
 

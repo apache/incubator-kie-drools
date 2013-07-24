@@ -24,7 +24,6 @@ import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.Deci
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.localsearch.decider.forager.PickEarlyType;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 @XStreamAlias("forager")
 public class ForagerConfig {

@@ -19,9 +19,9 @@ package org.optaplanner.benchmark.impl.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
 

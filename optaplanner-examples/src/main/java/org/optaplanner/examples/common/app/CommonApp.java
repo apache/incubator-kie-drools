@@ -17,7 +17,6 @@
 package org.optaplanner.examples.common.app;
 
 import java.awt.Component;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

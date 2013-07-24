@@ -18,6 +18,9 @@ package org.optaplanner.core.impl.testdata.util;
 
 import java.util.Iterator;
 
+import org.junit.Assert;
+import org.junit.ComparisonFailure;
+import org.mockito.Matchers;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
@@ -29,9 +32,6 @@ import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.junit.Assert;
-import org.junit.ComparisonFailure;
-import org.mockito.Matchers;
 
 import static org.mockito.Mockito.*;
 

@@ -28,8 +28,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.Domicile;
+import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 

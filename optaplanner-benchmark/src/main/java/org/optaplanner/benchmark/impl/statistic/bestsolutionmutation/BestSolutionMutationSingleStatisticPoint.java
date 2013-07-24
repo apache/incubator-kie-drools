@@ -16,8 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
-import org.optaplanner.core.api.score.Score;
-
 public class BestSolutionMutationSingleStatisticPoint {
 
     private final long timeMillisSpend;

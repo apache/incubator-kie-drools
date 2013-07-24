@@ -23,22 +23,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.config.solver.XmlSolverFactory;
-import org.optaplanner.core.config.termination.TerminationConfig;
-import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.SolutionFileFilter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public abstract class SolutionDaoTest extends LoggingTest {

@@ -19,9 +19,6 @@ package org.optaplanner.core.impl.util;
 import java.io.Serializable;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
-import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.lang.SerializationUtils;
 
 public class SerializationTestUtils {

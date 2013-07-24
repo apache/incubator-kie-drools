@@ -27,13 +27,14 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
@@ -42,10 +43,12 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollec
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
-import org.junit.Test;
 
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public abstract class AbstractSolutionClonerTest {
 

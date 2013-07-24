@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.SolutionFileFilter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.*;
 
 /**
  * Turtle tests are not run by default. They are only run if <code>-DrunTurtleTests=true</code> because it takes days.

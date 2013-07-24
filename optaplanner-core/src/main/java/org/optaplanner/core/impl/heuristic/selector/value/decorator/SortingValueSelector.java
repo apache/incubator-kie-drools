@@ -17,14 +17,10 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.decorator.AbstractCachingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class SortingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {

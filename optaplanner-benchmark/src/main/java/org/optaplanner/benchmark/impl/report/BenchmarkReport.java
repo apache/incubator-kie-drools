@@ -17,7 +17,6 @@
 package org.optaplanner.benchmark.impl.report;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;

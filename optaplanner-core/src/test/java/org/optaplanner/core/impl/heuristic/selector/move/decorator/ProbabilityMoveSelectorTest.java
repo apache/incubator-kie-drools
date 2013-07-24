@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
 import java.util.Random;
 
+import org.junit.Test;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -27,10 +28,9 @@ import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.junit.Test;
 
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ProbabilityMoveSelectorTest {
 

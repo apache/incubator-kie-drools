@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.constructionheuristic.event;
 
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicSolverPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
 public class ConstructionHeuristicSolverPhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter

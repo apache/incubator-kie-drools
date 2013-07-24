@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.api.score.Score;
 
 public class LateAcceptanceAcceptor extends AbstractAcceptor {
 

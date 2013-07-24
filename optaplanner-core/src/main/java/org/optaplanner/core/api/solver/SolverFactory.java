@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.api.solver;
 
-import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.XmlSolverFactory;
 
 /**
  * Builds a {@link Solver}.

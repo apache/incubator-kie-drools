@@ -22,11 +22,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.impl.solution.Solution;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExporter {
 

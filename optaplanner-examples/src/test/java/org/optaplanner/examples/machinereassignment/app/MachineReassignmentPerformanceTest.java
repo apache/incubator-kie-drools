@@ -18,11 +18,11 @@ package org.optaplanner.examples.machinereassignment.app;
 
 import java.io.File;
 
+import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
-import org.junit.Test;
 
 public class MachineReassignmentPerformanceTest extends SolverPerformanceTest {
 

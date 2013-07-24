@@ -17,7 +17,6 @@
 package org.optaplanner.core.config.score.director;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 import java.util.Map;
 

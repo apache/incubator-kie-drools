@@ -19,11 +19,11 @@ package org.optaplanner.core.impl.phase;
 import java.util.List;
 import java.util.Random;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;

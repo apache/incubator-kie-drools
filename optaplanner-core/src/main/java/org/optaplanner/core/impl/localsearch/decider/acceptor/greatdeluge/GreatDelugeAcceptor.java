@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.api.score.Score;
 
 /**
  * TODO Under construction. Feel free to create a patch to improve this acceptor!

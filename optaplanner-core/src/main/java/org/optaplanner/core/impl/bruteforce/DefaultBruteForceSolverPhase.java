@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.bruteforce;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.bruteforce.event.BruteForceSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceSolverPhaseScope;
 import org.optaplanner.core.impl.bruteforce.scope.BruteForceStepScope;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**

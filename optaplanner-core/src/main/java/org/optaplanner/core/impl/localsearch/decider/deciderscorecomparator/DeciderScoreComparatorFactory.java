@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator;
 
 import java.util.Comparator;
 
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
 
 /**
  * A DeciderScoreComparatorFactory creates a new DeciderScoreComparator each step,

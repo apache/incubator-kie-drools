@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.solution;
 import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 

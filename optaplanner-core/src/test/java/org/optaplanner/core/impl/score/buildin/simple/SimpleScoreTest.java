@@ -16,13 +16,12 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
-import org.junit.Test;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SimpleScoreTest extends AbstractScoreTest {
 

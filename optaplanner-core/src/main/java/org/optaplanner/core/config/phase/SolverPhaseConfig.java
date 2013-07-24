@@ -18,17 +18,14 @@ package org.optaplanner.core.config.phase;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicSolverPhaseConfig;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchSolverPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomSolverPhaseConfig;
 import org.optaplanner.core.config.termination.TerminationConfig;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhase;
 import org.optaplanner.core.impl.phase.SolverPhase;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.termination.Termination;
 

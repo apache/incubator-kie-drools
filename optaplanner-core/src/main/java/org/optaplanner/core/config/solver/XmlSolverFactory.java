@@ -22,12 +22,9 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.FieldDictionary;
-import com.thoughtworks.xstream.converters.reflection.NativeFieldKeySorter;
-import com.thoughtworks.xstream.converters.reflection.PureJavaReflectionProvider;
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
 
 /**
  * XML based configuration that builds a {@link Solver}.

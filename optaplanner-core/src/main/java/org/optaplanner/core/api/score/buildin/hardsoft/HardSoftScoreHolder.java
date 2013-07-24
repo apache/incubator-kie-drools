@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.api.score.buildin.hardsoft;
 
+import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
-import org.kie.api.runtime.rule.RuleContext;
 
 /**
  * @see HardSoftScore

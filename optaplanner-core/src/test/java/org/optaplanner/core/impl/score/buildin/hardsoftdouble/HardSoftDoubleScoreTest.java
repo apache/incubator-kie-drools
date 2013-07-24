@@ -16,13 +16,12 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftdouble;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
-import org.junit.Test;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 

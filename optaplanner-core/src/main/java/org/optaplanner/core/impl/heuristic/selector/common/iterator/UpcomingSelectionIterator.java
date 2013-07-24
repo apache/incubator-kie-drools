@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S>  {

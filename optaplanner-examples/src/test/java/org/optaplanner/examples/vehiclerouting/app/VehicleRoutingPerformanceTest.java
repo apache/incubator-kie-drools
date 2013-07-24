@@ -18,11 +18,11 @@ package org.optaplanner.examples.vehiclerouting.app;
 
 import java.io.File;
 
+import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
-import org.junit.Test;
 
 public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
 

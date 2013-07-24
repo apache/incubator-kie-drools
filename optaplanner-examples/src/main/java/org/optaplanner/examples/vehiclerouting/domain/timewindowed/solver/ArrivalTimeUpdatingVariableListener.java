@@ -5,7 +5,6 @@ import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListen
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
 
 // TODO When this class is added only for VrpTimeWindowedCustomer, use VrpTimeWindowedCustomer instead of VrpCustomer

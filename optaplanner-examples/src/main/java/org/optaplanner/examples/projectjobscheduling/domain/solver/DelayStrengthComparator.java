@@ -19,10 +19,6 @@ package org.optaplanner.examples.projectjobscheduling.domain.solver;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
-
 public class DelayStrengthComparator implements Comparator<Integer>, Serializable {
 
     public int compare(Integer a, Integer b) {

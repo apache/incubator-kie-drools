@@ -19,10 +19,6 @@ package org.optaplanner.core.impl.constructionheuristic.decider.forager;
 import org.optaplanner.core.impl.constructionheuristic.event.ConstructionHeuristicSolverPhaseLifecycleListener;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicMoveScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.localsearch.decider.forager.AbstractForager;
-import org.optaplanner.core.impl.localsearch.event.LocalSearchSolverPhaseLifecycleListener;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 /**
  * @see AbstractConstructionHeuristicForager

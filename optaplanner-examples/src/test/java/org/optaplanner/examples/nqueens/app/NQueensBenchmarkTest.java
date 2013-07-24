@@ -18,8 +18,8 @@ package org.optaplanner.examples.nqueens.app;
 
 import java.io.File;
 
-import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 import org.junit.Test;
+import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 
 public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
 

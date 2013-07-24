@@ -19,10 +19,8 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Iterator;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.collections.iterators.EmptyIterator;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;

@@ -21,13 +21,6 @@ import java.io.File;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
-import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.benchmark.impl.SingleBenchmark;
-import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
-import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
@@ -36,6 +29,13 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.ProblemBenchmark;
+import org.optaplanner.benchmark.impl.SingleBenchmark;
+import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 
 public class MemoryUseProblemStatistic extends AbstractProblemStatistic {
 

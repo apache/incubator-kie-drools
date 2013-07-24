@@ -18,11 +18,11 @@ package org.optaplanner.examples.pas.app;
 
 import java.io.File;
 
+import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleDao;
-import org.junit.Test;
 
 public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTest {
 
