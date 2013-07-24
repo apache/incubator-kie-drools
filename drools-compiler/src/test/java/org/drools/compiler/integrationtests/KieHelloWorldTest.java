@@ -169,6 +169,49 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testHelloWorldUsingPackageAndDefaultDir() throws Exception {
+        String drl1 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl2 = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule R2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        String drlDef = "package org.drools.compiler.integrationtests\n" +
+                        "import " + Message.class.getCanonicalName() + "\n" +
+                        "rule R_def when\n" +
+                        "   $m : Message( message == \"Hello World\" )\n" +
+                        "then\n" +
+                        "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "hello-world", "1.0-SNAPSHOT");
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .generateAndWritePomXML(releaseId)
+                .write("src/main/resources/KBase1/r_def.drl", drlDef)
+                .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
+                .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
+                .writeKModuleXML(createKieProjectWithPackages(ks, "org.pkg1").toXML());
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer(releaseId).newKieSession("KSession1");
+        ksession.insert(new Message("Hello World"));
+
+        int count = ksession.fireAllRules();
+
+        assertEquals( 2, count );
+    }
+
+    @Test
     public void testHelloWorldWithWildcardPackages() throws Exception {
         String drl1 = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
