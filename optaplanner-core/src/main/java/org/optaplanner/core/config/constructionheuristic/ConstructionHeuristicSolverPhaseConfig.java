@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.config.constructionheuristic;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -34,23 +32,7 @@ import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicSolv
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicSolverPhase;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultConstructionHeuristicForager;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.DefaultGreedyFitSolverPhase;
-import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.DefaultGreedyDecider;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.GreedyDecider;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.decider.forager.GreedyForager;
-import org.optaplanner.core.impl.constructionheuristic.greedyFit.selector.GreedyPlanningEntitySelector;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelectionOrder;
-import org.optaplanner.core.impl.heuristic.selector.entity.PlanningEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelectionOrder;
-import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.variable.PlanningValueWalker;
-import org.optaplanner.core.impl.heuristic.selector.variable.PlanningVariableWalker;
 import org.optaplanner.core.impl.termination.Termination;
 
 @XStreamAlias("constructionHeuristic")
@@ -148,117 +130,6 @@ public class ConstructionHeuristicSolverPhaseConfig extends SolverPhaseConfig {
             decider.setAssertExpectedUndoMoveScore(true);
         }
         return decider;
-    }
-
-    @Deprecated
-    protected ConstructionHeuristicSolverPhase buildGreedySolverPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy, Termination solverTermination, HeuristicConfigPolicy phaseConfigPolicy) {
-        // TODO delete this legacy piece for GreedyFitSolverPhase
-        DefaultGreedyFitSolverPhase greedySolverPhase = new DefaultGreedyFitSolverPhase();
-        configureSolverPhase(greedySolverPhase, phaseIndex, phaseConfigPolicy, solverTermination);
-        greedySolverPhase.setGreedyPlanningEntitySelector(buildGreedyPlanningEntitySelector(
-                solverConfigPolicy.getSolutionDescriptor()));
-        greedySolverPhase.setGreedyDecider(buildGreedyDecider(
-                solverConfigPolicy.getSolutionDescriptor(), solverConfigPolicy.getEnvironmentMode()));
-        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            greedySolverPhase.setAssertStepScoreFromScratch(true);
-        }
-        if (environmentMode.isIntrusiveFastAsserted()) {
-            greedySolverPhase.setAssertExpectedStepScore(true);
-        }
-        return greedySolverPhase;
-    }
-
-    @Deprecated
-    private GreedyPlanningEntitySelector buildGreedyPlanningEntitySelector(SolutionDescriptor solutionDescriptor) {
-        GreedyPlanningEntitySelector greedyPlanningEntitySelector = new GreedyPlanningEntitySelector();
-
-        Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
-        if (entityDescriptors.size() != 1) {
-            throw new UnsupportedOperationException("Currently the greedyFit implementation only supports " +
-                    "1 planningEntityClass.");
-        }
-        PlanningEntityDescriptor entityDescriptor = entityDescriptors.iterator().next();
-        List<PlanningEntitySelector> planningEntitySelectorList = new ArrayList<PlanningEntitySelector>(1);
-        PlanningEntitySelector planningEntitySelector = new PlanningEntitySelector(entityDescriptor);
-        planningEntitySelector.setSelectionOrder(determinePlanningEntitySelectionOrder());
-        planningEntitySelectorList.add(planningEntitySelector);
-        greedyPlanningEntitySelector.setPlanningEntitySelectorList(planningEntitySelectorList);
-        return greedyPlanningEntitySelector;
-    }
-
-    @Deprecated
-    private GreedyDecider buildGreedyDecider(SolutionDescriptor solutionDescriptor, EnvironmentMode environmentMode) {
-        DefaultGreedyDecider greedyDecider = new DefaultGreedyDecider();
-
-        Collection<PlanningEntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
-        if (entityDescriptors.size() != 1) {
-            // TODO Multiple MUST BE SUPPORTED TOO
-            throw new UnsupportedOperationException("Currently the greedyFit implementation only supports " +
-                    "1 planningEntityClass.");
-        }
-        PlanningEntityDescriptor entityDescriptor = entityDescriptors.iterator().next();
-        PlanningVariableWalker planningVariableWalker = new PlanningVariableWalker(entityDescriptor);
-        List<PlanningValueWalker> planningValueWalkerList = new ArrayList<PlanningValueWalker>();
-        for (PlanningVariableDescriptor variableDescriptor
-                : entityDescriptor.getVariableDescriptors()) {
-            PlanningValueSelector planningValueSelector = new PlanningValueSelector(variableDescriptor);
-            planningValueSelector.setSelectionOrder(determinePlanningValueSelectionOrder());
-            PlanningValueWalker planningValueWalker = new PlanningValueWalker(
-                    variableDescriptor, planningValueSelector);
-            planningValueWalkerList.add(planningValueWalker);
-        }
-        planningVariableWalker.setPlanningValueWalkerList(planningValueWalkerList);
-        greedyDecider.setPlanningVariableWalker(planningVariableWalker);
-        
-        greedyDecider.setForager(buildGreedyForager());
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            greedyDecider.setAssertMoveScoreFromScratch(true);
-        }
-        if (environmentMode.isIntrusiveFastAsserted()) {
-            greedyDecider.setAssertExpectedUndoMoveScore(true);
-        }
-        return greedyDecider;
-    }
-
-    @Deprecated
-    private GreedyForager buildGreedyForager() {
-        GreedyForager forager = new GreedyForager();
-        ConstructionHeuristicPickEarlyType pickEarlyType_ =
-                (foragerConfig == null || foragerConfig.getPickEarlyType() == null )
-                ? ConstructionHeuristicPickEarlyType.NEVER : foragerConfig.getPickEarlyType();
-        forager.setPickEarlyType(pickEarlyType_);
-        return forager;
-    }
-
-    @Deprecated
-    private PlanningEntitySelectionOrder determinePlanningEntitySelectionOrder() {
-        switch (constructionHeuristicType) {
-            case FIRST_FIT:
-            case BEST_FIT:
-                return PlanningEntitySelectionOrder.ORIGINAL;
-            case FIRST_FIT_DECREASING:
-            case BEST_FIT_DECREASING:
-                return PlanningEntitySelectionOrder.DECREASING_DIFFICULTY;
-            default:
-                throw new IllegalStateException("The constructionHeuristicType ("
-                        + constructionHeuristicType + ") is not implemented.");
-        }
-    }
-
-    @Deprecated
-    private PlanningValueSelectionOrder determinePlanningValueSelectionOrder() {
-        switch (constructionHeuristicType) {
-            case FIRST_FIT:
-            case FIRST_FIT_DECREASING:
-                return PlanningValueSelectionOrder.ORIGINAL;
-            case BEST_FIT:
-            case BEST_FIT_DECREASING:
-                return PlanningValueSelectionOrder.INCREASING_STRENGTH;
-            default:
-                throw new IllegalStateException("The constructionHeuristicType ("
-                        + constructionHeuristicType + ") is not implemented.");
-        }
     }
 
     public void inherit(ConstructionHeuristicSolverPhaseConfig inheritedConfig) {

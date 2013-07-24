@@ -52,7 +52,6 @@ public class PlanningEntityDescriptor {
     private final BeanInfo planningEntityBeanInfo;
     private SelectionFilter movableEntitySelectionFilter;
     private SelectionSorter decreasingDifficultySorter;
-    private PlanningEntitySorter planningEntitySorter;
 
     private Map<String, PlanningVariableDescriptor> genuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor> shadowVariableDescriptorMap;
@@ -82,7 +81,6 @@ public class PlanningEntityDescriptor {
                     " but does not have a " + PlanningEntity.class.getSimpleName() + " annotation.");
         }
         processMovable(descriptorPolicy, entityAnnotation);
-        planningEntitySorter = new PlanningEntitySorter();
         processDifficulty(descriptorPolicy, entityAnnotation);
     }
 
@@ -118,14 +116,12 @@ public class PlanningEntityDescriptor {
                     "difficultyComparatorClass", difficultyComparatorClass);
             decreasingDifficultySorter = new ComparatorSelectionSorter(
                     difficultyComparator, SelectionSorterOrder.DESCENDING);
-            planningEntitySorter.setDifficultyComparator(difficultyComparator);
         }
         if (difficultyWeightFactoryClass != null) {
             SelectionSorterWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
             decreasingDifficultySorter = new WeightFactorySelectionSorter(
                     difficultyWeightFactory, SelectionSorterOrder.DESCENDING);
-            planningEntitySorter.setDifficultyWeightFactory(difficultyWeightFactory);
         }
     }
 
@@ -208,10 +204,6 @@ public class PlanningEntityDescriptor {
 
     public SelectionSorter getDecreasingDifficultySorter() {
         return decreasingDifficultySorter;
-    }
-
-    public PlanningEntitySorter getPlanningEntitySorter() {
-        return planningEntitySorter;
     }
 
     public PropertyDescriptor getPropertyDescriptor(String propertyName) {

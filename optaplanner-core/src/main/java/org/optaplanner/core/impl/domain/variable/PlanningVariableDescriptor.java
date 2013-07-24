@@ -59,7 +59,6 @@ public class PlanningVariableDescriptor {
     private boolean nullable;
     private SelectionFilter reinitializeVariableEntityFilter;
     private SelectionSorter increasingStrengthSorter;
-    private PlanningValueSorter valueSorter;
 
     private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
     private List<PlanningVariableListener> nonMappedByVariableListeners;
@@ -77,7 +76,6 @@ public class PlanningVariableDescriptor {
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
         PlanningVariable planningVariableAnnotation = variablePropertyAccessor.getReadMethod()
                 .getAnnotation(PlanningVariable.class);
-        valueSorter = new PlanningValueSorter();
         // Keep in sync with ShadowVariableDescriptor.processPropertyAnnotations()
         processMappedBy(descriptorPolicy, planningVariableAnnotation);
         processNullable(descriptorPolicy, planningVariableAnnotation);
@@ -199,14 +197,12 @@ public class PlanningVariableDescriptor {
                     "strengthComparatorClass", strengthComparatorClass);
             increasingStrengthSorter = new ComparatorSelectionSorter(
                     strengthComparator, SelectionSorterOrder.ASCENDING);
-            valueSorter.setStrengthComparator(strengthComparator);
         }
         if (strengthWeightFactoryClass != null) {
             SelectionSorterWeightFactory strengthWeightFactory = ConfigUtils.newInstance(this,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
             increasingStrengthSorter = new WeightFactorySelectionSorter(
                     strengthWeightFactory, SelectionSorterOrder.ASCENDING);
-            valueSorter.setStrengthWeightFactory(strengthWeightFactory);
         }
     }
 
@@ -331,11 +327,6 @@ public class PlanningVariableDescriptor {
 
     public SelectionSorter getIncreasingStrengthSorter() {
         return increasingStrengthSorter;
-    }
-
-    @Deprecated
-    public PlanningValueSorter getValueSorter() {
-        return valueSorter;
     }
 
     public long getValueCount(Solution solution, Object entity) {

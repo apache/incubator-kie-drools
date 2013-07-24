@@ -16,15 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.selector.variable;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.variable.PlanningValueSorter;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -68,24 +63,9 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
     @Override
     public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
-        validate();
         scoreDirector = phaseScope.getScoreDirector();
         workingRandom = phaseScope.getWorkingRandom();
         initSelectedPlanningValueList(phaseScope);
-    }
-
-    private void validate() {
-        if (selectionOrder == PlanningValueSelectionOrder.INCREASING_STRENGTH) {
-            PlanningValueSorter valueSorter = variableDescriptor.getValueSorter();
-            if (!valueSorter.isSortStrengthSupported()) {
-                throw new IllegalStateException("The selectionOrder (" + selectionOrder
-                        + ") can not be used on PlanningEntity ("
-                        + variableDescriptor.getEntityDescriptor().getPlanningEntityClass().getName()
-                        + ")'s planningVariable (" + variableDescriptor.getVariableName()
-                        + ") that has no support for strength sorting."
-                        + " Check the " + PlanningVariable.class.getSimpleName() +" annotation.");
-            }
-        }
     }
 
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope phaseScope) {
@@ -118,16 +98,6 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
         switch (selectionOrder) {
             case ORIGINAL:
                 return workingPlanningValues;
-            case RANDOM:
-                List<Object> randomPlanningValueList = new ArrayList<Object>(workingPlanningValues);
-                Collections.shuffle(randomPlanningValueList, workingRandom);
-                return randomPlanningValueList;
-            case INCREASING_STRENGTH:
-                List<Object> increasingStrengthPlanningValueList = new ArrayList<Object>(workingPlanningValues);
-                PlanningValueSorter valueSorter = variableDescriptor.getValueSorter();
-                valueSorter.sortStrengthAscending(
-                        scoreDirector.getWorkingSolution(), increasingStrengthPlanningValueList);
-                return increasingStrengthPlanningValueList;
             default:
                 throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented.");
         }
