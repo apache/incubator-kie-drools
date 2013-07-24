@@ -281,9 +281,9 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         	public void afterProcessRemoved(AfterProcessRemovedEvent event) {
         		if (event.getProcess() instanceof RuleFlowProcess) {
         			String type = (String)
-    				    ((RuleFlowProcess) event.getProcess()).getMetaData().get("StartProcessEventType");
+    				    ((RuleFlowProcess) event.getProcess()).getRuntimeMetaData().get("StartProcessEventType");
         			StartProcessEventListener listener = (StartProcessEventListener)
-        				((RuleFlowProcess) event.getProcess()).getMetaData().get("StartProcessEventListener");
+        				((RuleFlowProcess) event.getProcess()).getRuntimeMetaData().get("StartProcessEventListener");
         			if (type != null && listener != null) {
         				signalManager.removeEventListener(type, listener);
         			}
@@ -315,8 +315,8 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                                                                                         trigger.getInMappings() );
                                     signalManager.addEventListener( type,
                                                                     listener );
-                                    ((RuleFlowProcess) process).getMetaData().put("StartProcessEventType", type);
-                                    ((RuleFlowProcess) process).getMetaData().put("StartProcessEventListener", listener);
+                                    ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventType", type);
+                                    ((RuleFlowProcess) process).getRuntimeMetaData().put("StartProcessEventListener", listener);
                                 }
                             }
                         }

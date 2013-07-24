@@ -16,6 +16,7 @@
 
 package org.jbpm.process.core.impl;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,12 +24,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.api.io.Resource;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.AbstractContext;
+import org.kie.api.io.Resource;
 
 /**
  * Default implementation of a Process
@@ -47,6 +48,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     private Resource resource;
     private ContextContainer contextContainer = new ContextContainerImpl();
     private Map<String, Object> metaData = new HashMap<String, Object>();
+    private transient Map<String, Object> runtimeMetaData = new HashMap<String, Object>();
     private List<String> imports;
     private Map<String, String> globals;
     private List<String> functionImports;
@@ -199,5 +201,20 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
     public String getNamespace() {
         return packageName;
     }
+
+    public Map<String, Object> getRuntimeMetaData() {
+        return runtimeMetaData;
+    }
+
+    public void setRuntimeMetaData(Map<String, Object> runtimeMetaData) {
+        this.runtimeMetaData = runtimeMetaData;
+    }
     
+    /*
+     * Special handling for serialization to initialize transient (runtime related) meta data
+     */
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.runtimeMetaData = new HashMap<String, Object>();
+    }
 }

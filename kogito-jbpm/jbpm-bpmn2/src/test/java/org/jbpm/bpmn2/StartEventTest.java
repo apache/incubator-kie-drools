@@ -26,18 +26,19 @@ import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieRepository;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,12 +204,18 @@ public class StartEventTest extends JbpmBpmn2TestCase {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testSignalStartDynamic() throws Exception {
-        KieBase kbase = createKnowledgeBase();
+        
+        KieBase kbase = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
         ksession = createKnowledgeSession(kbase);
-        KieBase kbase2 = createKnowledgeBase("BPMN2-SignalStart.bpmn2");
-        kbase.getKiePackages().addAll(kbase2.getKiePackages());
+        // create KieContainer after session was created to make sure no runtime data 
+        // will be used during serialization (deep clone)
+        KieServices ks = KieServices.Factory.get();
+        KieRepository kr = ks.getRepository();
+        KieContainer kContainer = ks.newKieContainer(kr.getDefaultReleaseId());        
+        kContainer.getKieBase();
+        
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
             public void afterProcessStarted(ProcessStartedEvent event) {
@@ -218,6 +225,12 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         });
         ksession.signalEvent("MySignal", "NewValue");
         Thread.sleep(500);
+        assertEquals(1, getNumberOfProcessInstances("Minimal"));
+        // now remove the process from kbase to make sure runtime based listeners are removed from signal manager
+        kbase.removeProcess("Minimal");
+        ksession.signalEvent("MySignal", "NewValue");
+        Thread.sleep(500);
+        // must be still one as the process was removed
         assertEquals(1, getNumberOfProcessInstances("Minimal"));
 
     }
