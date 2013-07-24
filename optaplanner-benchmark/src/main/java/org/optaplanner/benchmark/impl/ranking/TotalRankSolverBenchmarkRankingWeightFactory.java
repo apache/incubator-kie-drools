@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.SingleBenchmark;
 import org.optaplanner.benchmark.impl.SolverBenchmark;
@@ -85,6 +87,32 @@ public class TotalRankSolverBenchmarkRankingWeightFactory implements SolverBench
                     .append(solverBenchmark, other.solverBenchmark, totalScoreSolverBenchmarkRankingComparator)
                     .toComparison();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            } else if (o instanceof TotalRankSolverBenchmarkRankingWeight) {
+                TotalRankSolverBenchmarkRankingWeight other = (TotalRankSolverBenchmarkRankingWeight) o;
+                return new EqualsBuilder()
+                        .append(betterCount, other.betterCount)
+                        .append(equalCount, other.equalCount)
+                        .appendSuper(totalScoreSolverBenchmarkRankingComparator
+                                .compare(solverBenchmark, other.solverBenchmark) == 0)
+                        .isEquals();
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder()
+                    .append(betterCount)
+                    .append(equalCount)
+                    .toHashCode();
+        }
+
     }
 
 }
