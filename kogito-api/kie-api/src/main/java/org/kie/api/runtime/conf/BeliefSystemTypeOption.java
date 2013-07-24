@@ -47,12 +47,12 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
      * The factory method is a best practice for the case where the 
      * actual object construction is changed in the future.
      * 
-     * @param belieSystem  the identifier for the belie system 
+     * @param beliefSystemType  the identifier for the belie system
      * 
      * @return the actual type safe default clock type configuration.
      */
-    public static BeliefSystemTypeOption get( String belieSystemType ) {
-        return new BeliefSystemTypeOption( belieSystemType );
+    public static BeliefSystemTypeOption get( String beliefSystemType ) {
+        return new BeliefSystemTypeOption( beliefSystemType );
     }
     
     /**

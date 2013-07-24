@@ -34,7 +34,7 @@ public interface ObjectMarshallingStrategy {
      * of writing the object into an output stream, it returns
      * the marshalled object as a byte[].
      * 
-     * @param the context for this strategy created by the method #createContext()
+     * @param context the context for this strategy created by the method #createContext()
      * @param object the object to be marshalled
      * 
      * @return the marshalled byte[] of the input object
@@ -47,7 +47,7 @@ public interface ObjectMarshallingStrategy {
      * This method is analogous to the read method, but instead of reading it from an 
      * input stream, it reads it from a byte[]
      * 
-     * @param the context for this strategy created by the method #createContext()
+     * @param context the context for this strategy created by the method #createContext()
      * @param object the marshalled object in a byte[]
      * 
      * @return the unmarshalled Object
