@@ -17,14 +17,18 @@
 package org.optaplanner.examples.nqueens.app;
 
 import java.io.File;
+import java.util.Collections;
 
+import org.junit.Test;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.bruteforce.BruteForceSolverPhaseConfig;
+import org.optaplanner.core.config.phase.SolverPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
-import org.junit.Test;
 
-public class NQueensPerformanceTest extends SolverPerformanceTest {
+public class NQueensBruteForceTest extends SolverPerformanceTest {
 
     @Override
     protected String createSolverConfigResource() {
@@ -36,26 +40,22 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
         return new NQueensDao();
     }
 
+    @Override
+    protected SolverFactory buildSolverFactory(String scoreAttainedString, EnvironmentMode environmentMode) {
+        SolverFactory solverFactory = super.buildSolverFactory(scoreAttainedString, environmentMode);
+        solverFactory.getSolverConfig().setSolverPhaseConfigList(
+                Collections.<SolverPhaseConfig>singletonList(new BruteForceSolverPhaseConfig())
+        );
+        return solverFactory;
+    }
+
     // ************************************************************************
     // Tests
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens16() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens16.xml"),
-                "0");
-    }
-
-    @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens08FastAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"),
-                "0", EnvironmentMode.FAST_ASSERT);
-    }
-
-    @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens04FullAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"),
-                "0", EnvironmentMode.FULL_ASSERT);
+    public void solveModel_unsolvedNQueens04() {
+        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.REPRODUCIBLE);
     }
 
 }
