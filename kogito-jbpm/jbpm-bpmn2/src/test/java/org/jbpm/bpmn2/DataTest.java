@@ -252,7 +252,7 @@ public class DataTest extends JbpmBpmn2TestCase {
     }
 
     /**
-     * FIXME testDataInputAssociationsWithLazyLoading
+     * TODO testDataInputAssociationsWithLazyLoading
      */
     @Test
     @Ignore
@@ -372,7 +372,7 @@ public class DataTest extends JbpmBpmn2TestCase {
     }
 
     /**
-     * FIXME testDataInputAssociationsWithTwoAssigns
+     * TODO testDataInputAssociationsWithTwoAssigns
      */
     @Test
     @Ignore

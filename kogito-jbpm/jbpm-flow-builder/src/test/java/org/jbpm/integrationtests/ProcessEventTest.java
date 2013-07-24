@@ -301,7 +301,7 @@ public class ProcessEventTest extends AbstractBaseTest {
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         ProcessInstance processInstance =
             workingMemory.startProcess("org.drools.core.event");
-        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        assertEquals("Process did not complete!", ProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals("MyValue", ((VariableScopeInstance)
     		((org.jbpm.process.instance.ProcessInstance) processInstance).getContextInstance(
 				VariableScope.VARIABLE_SCOPE)).getVariable("MyVar"));

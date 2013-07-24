@@ -245,13 +245,10 @@ public class PackageBuilderTest extends AbstractBaseTest {
         }
 
         public List<String> getFunctionImports() {
-            // TODO Auto-generated method stub
             return null;
         }
 
         public void setFunctionImports(List<String> functionImports) {
-            // TODO Auto-generated method stub
-
         }
 
         public KnowledgeType getKnowledgeType() {

@@ -17,6 +17,7 @@ import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Message;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ObjectFilter;
@@ -130,7 +131,6 @@ public class ProcessActionTest  extends AbstractBaseTest {
 			"    <actionNode id=\"2\" name=\"MyActionNode\" >\n" +
 			"      <action type=\"expression\" dialect=\"java\" >System.out.println(\"Triggered\");\n" +
 			"String myVariable = (String) kcontext.getVariable(\"variable\");\n" +
-			"System.out.println(kcontext.getKnowledgeRuntime());\n" +
 			"list.add(myVariable);\n" +
 			"String nodeName = kcontext.getNodeInstance().getNodeName();\n" +
 			"list.add(nodeName);\n" +
