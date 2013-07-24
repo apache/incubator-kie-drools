@@ -70,8 +70,6 @@ import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
-
 /**
  * RuleBaseConfiguration
  *
@@ -328,7 +326,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
         } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
-            setPhreakEnabled(StringUtils.isEmpty(value) ? DEFAULT_PHREAK : Boolean.valueOf(value));
+            setPhreakEnabled(StringUtils.isEmpty(value) ? DEFAULT_PHREAK : value.equalsIgnoreCase(RuleEngineOption.PHREAK.toString()));
         }
     }
 
@@ -477,7 +475,8 @@ public class RuleBaseConfiguration
                                                                                          "true" ) ) );
         
         setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(RuleEngineOption.PROPERTY_NAME,
-                                                                            "" + DEFAULT_PHREAK)));
+                                                                            DEFAULT_PHREAK ? RuleEngineOption.PHREAK.toString() : RuleEngineOption.RETEOO.toString())
+                                                               .equalsIgnoreCase(RuleEngineOption.PHREAK.toString())));
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
 
