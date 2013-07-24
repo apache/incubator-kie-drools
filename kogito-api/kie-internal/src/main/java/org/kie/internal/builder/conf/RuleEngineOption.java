@@ -59,4 +59,8 @@ public enum RuleEngineOption implements SingleValueKieBaseOption {
     	return RETEOO.value.equalsIgnoreCase(val) ? RETEOO : PHREAK;
     }
 
+    @Override
+    public String toString() {
+        return value;
+    }
 }
