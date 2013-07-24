@@ -7,7 +7,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
@@ -56,7 +56,7 @@ public class PhreakLiaNodeTest {
         }
         
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
@@ -142,7 +142,7 @@ public class PhreakLiaNodeTest {
         }
         
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( PhreakOption.ENABLED );
+        kconf.setOption( RuleEngineOption.PHREAK );
         
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase(kconf);        
         knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());

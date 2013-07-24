@@ -21,7 +21,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.conf.PhreakOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -45,12 +45,12 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     private Executor executor;
 
-    private static PhreakOption wasRunningPhreak;
+    private static RuleEngineOption wasRunningPhreak;
 
     @BeforeClass
     public static void setPhreak() {
         wasRunningPhreak = phreak;
-        phreak = PhreakOption.ENABLED;
+        phreak = RuleEngineOption.PHREAK;
     }
 
     @AfterClass
