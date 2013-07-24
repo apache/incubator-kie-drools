@@ -94,8 +94,6 @@ public class MockLeftTupleSink extends LeftTupleSource
                             final InternalWorkingMemory[] workingMemories) {
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) { }
-
     public void attach(BuildContext buildContext) {
     }
 

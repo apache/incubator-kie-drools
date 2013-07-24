@@ -46,10 +46,6 @@ public class ReteNotNode extends NotNode {
                context );
     }
 
-    public void doCollectAncestors(NodeSet nodeSet) {
-        ReteBetaNodeUtils.doCollectAncestors(this, nodeSet);
-    }
-
     public void attach(BuildContext context) {
         ReteBetaNodeUtils.attach(this, context);
     }

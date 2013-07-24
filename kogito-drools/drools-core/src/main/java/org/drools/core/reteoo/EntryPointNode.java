@@ -446,8 +446,6 @@ public class EntryPointNode extends ObjectSource
                             final InternalWorkingMemory[] workingMemories) {
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) { }
-
     public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes() {
         return this.objectTypeNodes;
     }

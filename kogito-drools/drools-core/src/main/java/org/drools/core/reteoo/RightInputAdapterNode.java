@@ -188,10 +188,6 @@ public class RightInputAdapterNode extends ObjectSource
         }
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        this.tupleSource.collectAncestors(nodeSet);
-    }
-
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }

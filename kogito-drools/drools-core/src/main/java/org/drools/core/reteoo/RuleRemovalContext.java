@@ -41,10 +41,6 @@ public class RuleRemovalContext
 
     private CleanupAdapter cleanupAdapter;
 
-    private NodeSet        removedNodes = new NodeSet();
-
-    private boolean        unlinkEnabled;
-
     private InternalRuleBase ruleBase;
 
     public RuleRemovalContext(final Rule rule) {
@@ -56,14 +52,6 @@ public class RuleRemovalContext
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-    }
-
-    public boolean isUnlinkEnabled() {
-        return unlinkEnabled;
-    }
-
-    public void setUnlinkEnabled(boolean unlinkEnabled) {
-        this.unlinkEnabled = unlinkEnabled;
     }
 
     /**
@@ -86,14 +74,6 @@ public class RuleRemovalContext
     public static interface CleanupAdapter {
         public void cleanUp(final LeftTuple leftTuple,
                             final InternalWorkingMemory workingMemory);
-    }
-
-    public List<BaseNode> getRemovedNodes() {
-        return removedNodes.getNodes();
-    }
-
-    public boolean addRemovedNode(BaseNode node) {
-        return removedNodes.add( node );
     }
 
     public InternalRuleBase getRuleBase() {

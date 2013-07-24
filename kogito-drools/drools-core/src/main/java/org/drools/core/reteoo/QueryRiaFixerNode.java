@@ -191,10 +191,6 @@ public class QueryRiaFixerNode extends LeftTupleSource
         }
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
     public boolean isLeftTupleMemoryEnabled() {
         return tupleMemoryEnabled;
     }

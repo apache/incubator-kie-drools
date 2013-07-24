@@ -116,7 +116,6 @@ public abstract class BaseNode
     public void remove(RuleRemovalContext context,
                        ReteooBuilder builder,
                        InternalWorkingMemory[] workingMemories) {
-        context.addRemovedNode(this);
         this.removeAssociation( context.getRule() );
         doRemove( context,
                   builder,
@@ -126,13 +125,6 @@ public abstract class BaseNode
         }
     }
 
-    public void collectAncestors(NodeSet nodeSet) {
-        if (nodeSet.add(this)) {
-            doCollectAncestors(nodeSet);
-        }
-    }
-
-    protected abstract void doCollectAncestors(NodeSet nodeSet);
     /**
      * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      * @param builder 

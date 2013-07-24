@@ -57,8 +57,6 @@ public class MockTupleSource extends LeftTupleSource {
                             final InternalWorkingMemory[] workingMemories) {
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) { }
-
     public void attach( BuildContext context ) {
     }
 

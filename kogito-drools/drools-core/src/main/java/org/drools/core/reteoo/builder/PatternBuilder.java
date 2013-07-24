@@ -276,19 +276,16 @@ public class PatternBuilder
         ruleBase.lock();
         try {
             InternalWorkingMemory[] wms = context.getWorkingMemories();
+            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
 
             EntryPointNode epn = ruleBase.getRete().getEntryPointNode( context.getCurrentEntryPoint() );
             if ( epn == null ) {
-                epn = new EntryPointNode( context.getNextId(),
-                                          ruleBase.getRete(),
-                                          context );
+                epn = nfactory.buildEntryPointNode( context.getNextId(), ruleBase.getRete(), context );
                 epn.attach( context );
             }
 
-            ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
-                                                     epn,
-                                                     objectType,
-                                                     context );
+            ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(), epn, objectType, context );
+            //ObjectTypeNode otn = nfactory.buildObjectTypeNode( context.getNextId(), epn, objectType, context );
 
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );
@@ -346,11 +343,10 @@ public class PatternBuilder
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
             context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      context.getComponentFactory().getNodeFactoryService().buildAlphaNode(
-                                                                        context.getNextId(),
-                                                                        constraint,
-                                                                        context.getObjectSource(),
-                                                                        context) ) );
+                                                                      context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextId(),
+                                                                                                                                            constraint,
+                                                                                                                                            context.getObjectSource(),
+                                                                                                                                            context) ) );
             context.popRuleComponent();
         }
     }

@@ -181,10 +181,6 @@ public class ReteQueryElementNode extends QueryElementNode {
         context.addInsertAction( action );
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
     public void attach(BuildContext context) {
         super.attach(context);
         if (context == null) {

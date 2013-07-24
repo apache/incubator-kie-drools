@@ -243,10 +243,6 @@ public abstract class ObjectSource extends BaseNode
         }
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        this.source.collectAncestors(nodeSet);
-    }
-
     protected ObjectTypeNode getObjectTypeNode() {
         ObjectSource source = this;
         while (source != null) {

@@ -175,8 +175,6 @@ public class Rete extends ObjectSource
         // for now, we don't remove EntryPointNodes because they might be referenced by external sources
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) { }
-
     public EntryPointNode getEntryPointNode(final EntryPointId entryPoint) {
         return this.entryPoints.get( entryPoint );
     }

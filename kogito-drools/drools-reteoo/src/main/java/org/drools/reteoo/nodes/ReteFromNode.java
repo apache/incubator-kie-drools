@@ -283,10 +283,6 @@ public class ReteFromNode extends FromNode {
         }
     }
 
-    protected void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-    }
-
     @SuppressWarnings("unchecked")
     public void updateSink(final LeftTupleSink sink,
                            final PropagationContext context,

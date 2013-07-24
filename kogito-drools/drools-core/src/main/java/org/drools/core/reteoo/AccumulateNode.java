@@ -328,11 +328,6 @@ public class AccumulateNode extends BetaNode {
     }
 
 
-    public void doCollectAncestors(NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-        getRightInput().collectAncestors(nodeSet);
-    }
-
     @Override
     public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException();
@@ -385,10 +380,6 @@ public class AccumulateNode extends BetaNode {
         throw new UnsupportedOperationException();
     }
 
-    public void doCollectAncestors(BetaNode betaNode, NodeSet nodeSet) {
-        getLeftTupleSource().collectAncestors(nodeSet);
-        getRightInput().collectAncestors(nodeSet);
-    }
 
     @Override
     public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
