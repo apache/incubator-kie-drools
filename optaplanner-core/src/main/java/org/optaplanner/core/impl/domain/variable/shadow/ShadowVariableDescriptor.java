@@ -141,7 +141,7 @@ public class ShadowVariableDescriptor {
                     + entityDescriptor.getPlanningEntityClass()
                     + ") has shadow PlanningVariable annotated property (" + variablePropertyAccessor.getName()
                     + ") with mappedBy (" + planningVariableAnnotation.mappedBy()
-                    + ") which also has variableListenerClasses (" + variableListenerClasses + ").");
+                    + ") which also has variableListenerClasses (" + Arrays.toString(variableListenerClasses) + ").");
         }
     }
 
