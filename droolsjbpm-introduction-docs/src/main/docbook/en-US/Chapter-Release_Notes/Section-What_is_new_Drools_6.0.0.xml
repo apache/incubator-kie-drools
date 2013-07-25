@@ -56,18 +56,18 @@
       <para>Many things are changing for Drools 6.0.</para>
 
       <para>Along with the functional and feature changes we have restructured the <link
-          xlink:href="https://github.com/droolsjbpm/guvnor">Guvnor</link> github repository to better reflect our new
-        architecture. Guvnor has historically been the web application for Drools. It was a composition of editors
-        specific to Drools, a back-end repository and a simplistic asset management system.</para>
+      xlink:href="https://github.com/droolsjbpm/guvnor">Guvnor</link> github repository to better reflect our new
+      architecture. Guvnor has historically been the web application for Drools. It was a composition of editors
+      specific to Drools, a back-end repository and a simplistic asset management system.</para>
 
       <para>Things are now different.</para>
 
       <para>For Drools 6.0 the web application has been extensively re-written to use <link
-          xlink:href="http://droolsjbpm.github.io/uberfire/">UberFire</link> that provides a generic Workbench environment,
-        a Metadata Engine, Security Framework, a VFS API and clustering support.</para>
+      xlink:href="http://droolsjbpm.github.io/uberfire/">UberFire</link> that provides a generic Workbench environment,
+      a Metadata Engine, Security Framework, a VFS API and clustering support.</para>
 
       <para>Guvnor has become a generic asset management framework providing common services for generic projects and
-        their dependencies. Drools use of both UberFire and Guvnor has born the Drools Workbench.</para>
+      their dependencies. Drools use of both UberFire and Guvnor has born the Drools Workbench.</para>
 
       <para>A picture always helps:</para>
 
@@ -87,8 +87,8 @@
         <title><link xlink:href="https://github.com/droolsjbpm/uberfire">uberfire</link></title>
 
         <para>UberFire is the foundation of all components for both Drools and jBPM. Every editor and service leverages
-          UberFire. Components can be mixed and matched into either a full featured application of used in
-          isolation.</para>
+        UberFire. Components can be mixed and matched into either a full featured application of used in
+        isolation.</para>
       </section>
 
       <section>
@@ -97,55 +97,55 @@
         <para>Guvnor adds project services and dependency management to the mix.</para>
 
         <para>At present Guvnor consists of few parts; being principally a port of common project services that existed
-          in the old Guvnor. As things settle down and the module matures pluggable workflow will be supported allowing
-          for sensitive operations to be controlled by jBPM processes and rules. Work is already underway to include this
-          for 6.0.</para>
+        in the old Guvnor. As things settle down and the module matures pluggable workflow will be supported allowing
+        for sensitive operations to be controlled by jBPM processes and rules. Work is already underway to include this
+        for 6.0.</para>
       </section>
 
       <section>
         <title><link xlink:href="https://github.com/droolsjbpm/kie-wb-common">kie-wb-common</link></title>
 
         <para>Both Drools and jBPM editors and services share the need for a common set of re-usable screens, services
-          and widgets.</para>
+        and widgets.</para>
 
         <para>Rather than pollute Guvnor with screens and services needed only by Drools and jBPM this module contains
-          such common dependencies.</para>
+        such common dependencies.</para>
 
         <para>It is possible to just re-use the UberFire and Guvnor stack to create your own project-based workbench
-          type application and take advantage of the underlying services.</para>
+        type application and take advantage of the underlying services.</para>
       </section>
 
       <section>
         <title><link xlink:href="https://github.com/droolsjbpm/drools-wb">Drools Workbench (drools-wb)</link></title>
 
         <para>Drools Workbench is the end product for people looking for a web application that is composed of all
-          Drools related editors, screens and services. It is equivalent to the old Guvnor.</para>
+        Drools related editors, screens and services. It is equivalent to the old Guvnor.</para>
 
         <para>Looking for the web application to accompany Drools Expert and Drools Fusion; an environment to author,
-          test and deploy rules. This is what you're looking for.</para>
+        test and deploy rules. This is what you're looking for.</para>
       </section>
 
       <section>
         <title><link xlink:href="https://github.com/droolsjbpm/kie-wb-distributions/tree/master/kie-drools-wb">KIE
-          Drools Workbench (kie-drools-wb)</link></title>
+        Drools Workbench (kie-drools-wb)</link></title>
 
         <para>KIE Drools Workbench (for want of a better name - it's amazing how difficult names can be) is an extension
-          of Drools Workbench including jBPM Designer to support Rule Flow.</para>
+        of Drools Workbench including jBPM Designer to support Rule Flow.</para>
 
         <para>jBPM Designer, now being an UberFire compatible component, does not need to be deployed as a separate web
-          application. We bundle it here, along with Drools as a convenience for people looking to author Rule Flows along
-          side their rules.</para>
+        application. We bundle it here, along with Drools as a convenience for people looking to author Rule Flows along
+        side their rules.</para>
       </section>
 
       <section>
         <title><link xlink:href="https://github.com/droolsjbpm/kie-wb-distributions/tree/master/kie-wb">KIE Workbench
-          (kie-wb)</link></title>
+        (kie-wb)</link></title>
 
         <para>This is the daddy of them all.</para>
 
         <para>KIE Workbench is the composition of everything known to man; from both the Drools and jBPM worlds. It
-          provides for authoring of projects, data models, guided rules, decision tables etc, test services, process
-          authoring, a process run-time execution environment and human task interaction.</para>
+        provides for authoring of projects, data models, guided rules, decision tables etc, test services, process
+        authoring, a process run-time execution environment and human task interaction.</para>
 
         <para>KIE Workbench is the old Guvnor, jBPM Designer and jBPM Console applications combined. On steroids.</para>
       </section>
@@ -154,14 +154,14 @@
         <title>The World is not enough?</title>
 
         <para>You may have noticed; KIE Drools Workbench and KIE Workbench are in the same repository. This highlights a
-          great thing about the new module design we have with UberFire. Web applications are just a composition of
-          dependencies.</para>
+        great thing about the new module design we have with UberFire. Web applications are just a composition of
+        dependencies.</para>
 
         <para>You want your own web application that consists of just the Guided Rule Editor and jBPM Designer? You want
-          your own web application that has the the Data Modeller and some of your own screens?</para>
+        your own web application that has the the Data Modeller and some of your own screens?</para>
 
         <para>Pick your dependencies and add them to your own UberFire compliant web application and, as the saying
-          goes, the world is your oyster.</para>
+        goes, the world is your oyster.</para>
       </section>
     </section>
 
@@ -172,9 +172,9 @@
         <title>Virtual File System</title>
 
         <para>UberFire VFS is a <link xlink:href="http://jcp.org/en/jsr/detail?id=203">NIO.2</link> based API that
-          provides a unified interface to access different file systems - by default it uses <link
-              xlink:href="http://git-scm.com/">Git</link> as its primary backend implematation. Resources (ie. files and
-          directories) are represented, as proposed by NIO.2, as URIs. Here are some examples:</para>
+        provides a unified interface to access different file systems - by default it uses <link
+        xlink:href="http://git-scm.com/">Git</link> as its primary backend implematation. Resources (ie. files and
+        directories) are represented, as proposed by NIO.2, as URIs. Here are some examples:</para>
 
         <itemizedlist>
           <listitem>
@@ -195,11 +195,11 @@
         </itemizedlist>
 
         <para>By using Git as its default implementation, UberFire VFS provides out-of-box a versioned system, which
-          means that every information stored/deleted has its history preserved.</para>
+        means that every information stored/deleted has its history preserved.</para>
 
         <important>
           <para>Your system doesn't need to have GIT installed, UberFire uses <link
-              xlink:href="http://www.eclipse.org/jgit/">JGIT</link> internally, a 100% Java based Git implementation.</para>
+          xlink:href="http://www.eclipse.org/jgit/">JGIT</link> internally, a 100% Java based Git implementation.</para>
         </important>
       </section>
 
@@ -207,35 +207,35 @@
         <title>Metadata Engine</title>
 
         <para>Metadata engine provides two complementary services: Indexing and Searching. Both services were designed
-          to be as minimum invasive as possible and, in the same time, providing all the complex features needed by the
-          subject.</para>
+        to be as minimum invasive as possible and, in the same time, providing all the complex features needed by the
+        subject.</para>
 
         <section>
           <title>Index</title>
 
           <para>Indexing is automatically handled on VFS layer in completely transparent way. In order to agregate
-            metadata to a VFS resource using the NIO.2 based API, all you need to do is set a resource attributes.</para>
+          metadata to a VFS resource using the NIO.2 based API, all you need to do is set a resource attributes.</para>
 
           <important>
             <para>All metadata are stored on dot files alongside its resource. So if anything bad happens to your index
-              and it get corrupted, you can always recreate the index based on those persistent dot files.</para>
+            and it get corrupted, you can always recreate the index based on those persistent dot files.</para>
           </important>
 
           <para>The metadata engine is not only for VFS resources, behind the scenes there's a powerfull metadata API
-            that you can define your own MetaModel with custom MetaTypes, MetaObjects and MetaProperties.</para>
+          that you can define your own MetaModel with custom MetaTypes, MetaObjects and MetaProperties.</para>
         </section>
 
         <section>
           <title>Search</title>
 
           <para>The Metadata Search API is very simple and yet powerful. It provides basically two methods, one that
-            allows a full text search (including wildcards and boolean operations) or by a set of predefined
-            attributes.</para>
+          allows a full text search (including wildcards and boolean operations) or by a set of predefined
+          attributes.</para>
         </section>
 
         <para>For those curious to know what is under the hood, Metadata engine uses <link
-            xlink:href="http://lucene.apache.org/">Apache Lucene 4</link> as its default backend, but was designed to be
-          able to have different and eventually mixed/composed backends.</para>
+        xlink:href="http://lucene.apache.org/">Apache Lucene 4</link> as its default backend, but was designed to be
+        able to have different and eventually mixed/composed backends.</para>
       </section>
     </section>
 
@@ -248,9 +248,9 @@
 
       <important>
         <para>Remember Drools Workbench is integrated into other distributions. Therefore many of the core concepts and
-          functions are also within the other distributions. Furthemore jBPM web-based Tooling extends from UberFire and
-          re-use features from Drools Workbench that are common across the KIE platform; such as Project Explorer, Project
-          Editor and the M2 Repository.</para>
+        functions are also within the other distributions. Furthemore jBPM web-based Tooling extends from UberFire and
+        re-use features from Drools Workbench that are common across the KIE platform; such as Project Explorer, Project
+        Editor and the M2 Repository.</para>
       </important>
 
       <section>
@@ -261,7 +261,7 @@
         <para>Drools Workbench starts with a Home Page that will provides short-cut navigation to common tasks.</para>
 
         <para>What is provided in this release is minimal and largely a cosmetic exercise to hopefully increase
-          usability for non-technical people.</para>
+        usability for non-technical people.</para>
 
         <para>The appearance and content of the Home is likely to change as we approach a final release.</para>
 
@@ -282,20 +282,20 @@
         <para>The Project Explorer is where most users will find themselves when authoring projects.</para>
 
         <para>The Project Explorer shows four drop-down selectors that are driven by Group, Repository, Project and
-          Package.<itemizedlist>
+        Package.<itemizedlist>
             <listitem>
               <para>Group : The top level logical entitiy within the KIE world. This can represent a Company,
-                Organization, Department etc.</para>
+              Organization, Department etc.</para>
             </listitem>
 
             <listitem>
               <para>Repository : Groups have access to one or more repositories. Default repositories are setup; but you
-                can create or clone your own.</para>
+              can create or clone your own.</para>
             </listitem>
 
             <listitem>
               <para>Project : Repositories contain one or more KIE projects. New Projects can be created using the "New"
-                Menu option, provided a target repository is selected.</para>
+              Menu option, provided a target repository is selected.</para>
             </listitem>
 
             <listitem>
@@ -304,7 +304,7 @@
           </itemizedlist></para>
 
         <para>Once a Group, Repository, Project and Package are selected the Project Explorer shows the items within
-          that context.</para>
+        that context.</para>
 
         <figure>
           <title>Project Explorer</title>
@@ -319,7 +319,7 @@
 
         <warning>
           <para>The Project Explorer will support both a Business and Technical views. The Technical view will probably
-            not make it into 6.0.0.Beta4.</para>
+          not make it into 6.0.0.Beta4.</para>
         </warning>
       </section>
 
@@ -329,9 +329,9 @@
         <para>Creation of anything "new" is accomplished using the "New" menu option.</para>
 
         <para>The types of thing that can be created from the "New" menu option depends upon the selected context.
-          Projects require a Repository; rules, tests etc require a Package within a Project. New things are created in
-          the context selected in the Project Explorer. I.E. if Repository 1, Project X is selected new items will be
-          created in Project X.</para>
+        Projects require a Repository; rules, tests etc require a Package within a Project. New things are created in
+        the context selected in the Project Explorer. I.E. if Repository 1, Project X is selected new items will be
+        created in Project X.</para>
 
         <figure>
           <title>New Menu</title>
@@ -358,10 +358,10 @@
         <title>Editing</title>
 
         <para>By and large, other than the specific changes mentioned in this document, all of the old Guvnor asset
-          editors have been ported to 6.0 with no or little change.</para>
+        editors have been ported to 6.0 with no or little change.</para>
 
         <para>The layout of the workbench has however changed and the following screen-shots give an example of the new,
-          common layout for most editors.</para>
+        common layout for most editors.</para>
 
         <section>
           <title>The Editor itself</title>
@@ -400,11 +400,11 @@
           <title>The Imports View</title>
 
           <para>Types not within the package that contains the asset being authored need to be imported before they can
-            be used.</para>
+          be used.</para>
 
           <para>Guvnor 5.5 had the user define package-wide imports from the Package Screen. Drools Workbench 6.0 has
-            moved the selection of imports from the Package level to the Asset level; positioning the facility on a
-            mini-tab within the editor.</para>
+          moved the selection of imports from the Package level to the Asset level; positioning the facility on a
+          mini-tab within the editor.</para>
 
           <figure>
             <title>The Imports View</title>
@@ -438,8 +438,8 @@
         <title>Project Editor</title>
 
         <para>Project editor does what Package Editor did previously. It manages the the KIE projects. You can access
-          the Project Editor from the menu bar Tools-&gt;Project Editor. The editor shows the configurations for the
-          current active project and the content changes when you move around in your code repository.</para>
+        the Project Editor from the menu bar Tools-&gt;Project Editor. The editor shows the configurations for the
+        current active project and the content changes when you move around in your code repository.</para>
 
         <figure>
           <title>How to access the Project Editor</title>
@@ -455,7 +455,7 @@
           <title>Group artifact version options</title>
 
           <para>Allows you to set the group, artifact and version id's for the project. Basically this screen is editing
-            a pom.xml since we use Maven to build our KIE projects.</para>
+          a pom.xml since we use Maven to build our KIE projects.</para>
 
           <figure>
             <title>Panel for editing group, artifact and version id</title>
@@ -472,7 +472,7 @@
           <title>Dependencies options</title>
 
           <para>Lets you set the dependencies for the current project. It is possible to pick the the resources from an
-            internal repository.</para>
+          internal repository.</para>
 
           <figure>
             <title>Dependencies for the current project</title>
@@ -486,15 +486,15 @@
         </section>
 
         <section>
-
+           
 
           <title>Metadata</title>
 
-
+           
 
           <para/>
 
-          The different files used by the Project Editor still have metadata like they did in Guvnor 5.x.
+           The different files used by the Project Editor still have metadata like they did in Guvnor 5.x. 
 
           <figure>
             <title>Metadata for pom.xml</title>
@@ -506,14 +506,14 @@
             </mediaobject>
           </figure>
 
-
+           
         </section>
 
         <section>
           <title>Knowledge bases and sessions options</title>
 
           <para>Editor for kmodule.xml explained more detail in the KIE core documentation. Editors for knowledge bases
-            and knowledge session inside.</para>
+          and knowledge session inside.</para>
 
           <figure>
             <title>Knowledge bases and sessions defined in the current project</title>
@@ -531,9 +531,9 @@
           <title>Import suggestions</title>
 
           <para>In import suggestions it is possible to specify a set of imports used in the project. Each editor has
-            it's own imports now. Because of this these imports differ from what Guvnor 5.x Package Editor had, the
-            imports are no longer automatically used in each asset, they just make use automated editor in KIE workbench
-            easier and suggest fact types that the user might want to use.</para>
+          it's own imports now. Because of this these imports differ from what Guvnor 5.x Package Editor had, the
+          imports are no longer automatically used in each asset, they just make use automated editor in KIE workbench
+          easier and suggest fact types that the user might want to use.</para>
 
           <figure>
             <title>Imports that will be used as suggestions in the editors</title>
@@ -553,7 +553,7 @@
         <para>Whenever a Project is built or an asset saved they are validated.</para>
 
         <para>In the example below, the Fact Type "Smurf" has not been imported into the project and hence cannot be
-          resolved.</para>
+        resolved.</para>
 
         <figure>
           <title>The Problems panel</title>
@@ -569,8 +569,9 @@
 
       <section>
         <title>BPM Console</title>
-        <para>The following sections describe the improvements for the different components provided by the jBPM Console NG or the BPM related
-          screens inside KIE Workbench for Beta4.</para>
+
+        <para>The following sections describe the improvements for the different components provided by the jBPM Console
+        NG or the BPM related screens inside KIE Workbench for Beta4.</para>
 
         <section>
           <title>General Integration with Drools and Core Uberfire Components</title>
@@ -591,11 +592,10 @@
             <listitem>
               <para>Improvements on single sign on with the Dashboards application</para>
             </listitem>
-
-
           </itemizedlist>
+
           <figure>
-            <title>Process Authoring Perspective </title>
+            <title>Process Authoring Perspective</title>
 
             <mediaobject>
               <imageobject>
@@ -604,8 +604,6 @@
             </mediaobject>
           </figure>
         </section>
-
-
 
         <section>
           <title>Process Management</title>
@@ -618,9 +616,8 @@
             <listitem>
               <para>Access to the process model and process instance graph through the Process Designer</para>
             </listitem>
-
-
           </itemizedlist>
+
           <figure>
             <title>Process Instance Details</title>
 
@@ -630,6 +627,7 @@
               </imageobject>
             </mediaobject>
           </figure>
+
           <figure>
             <title>Process Instances Lists</title>
 
@@ -639,7 +637,6 @@
               </imageobject>
             </mediaobject>
           </figure>
-
         </section>
 
         <section>
@@ -649,23 +646,28 @@
             <listitem>
               <para>Calendar and Grid View merged into a single view</para>
             </listitem>
+
             <listitem>
               <para>Filter capabilities improved</para>
             </listitem>
+
             <listitem>
               <para>Search and filter is now possible</para>
             </listitem>
+
             <listitem>
               <para>New task creation allows to set up multiple users and groups for the task</para>
             </listitem>
+
             <listitem>
               <para>Now you can release every task that you have assigned (WS-HT conformance)</para>
             </listitem>
+
             <listitem>
               <para>Initial version of the assignments tab added</para>
             </listitem>
-
           </itemizedlist>
+
           <figure>
             <title>Unified Filters</title>
 
@@ -675,6 +677,7 @@
               </imageobject>
             </mediaobject>
           </figure>
+
           <figure>
             <title>Day View</title>
 
@@ -684,6 +687,7 @@
               </imageobject>
             </mediaobject>
           </figure>
+
           <figure>
             <title>Month View</title>
 
@@ -693,7 +697,6 @@
               </imageobject>
             </mediaobject>
           </figure>
-
         </section>
 
         <section>
@@ -703,20 +706,24 @@
             <listitem>
               <para>Deployments screen added for admins</para>
             </listitem>
+
             <listitem>
               <para>Automatic deployments by default</para>
             </listitem>
+
             <listitem>
               <para>Custom deployments based on available KModules</para>
             </listitem>
+
             <listitem>
               <para>Filter capabilities</para>
             </listitem>
+
             <listitem>
               <para>Undeploy possible only on KModules with no active process instances</para>
             </listitem>
-
           </itemizedlist>
+
           <figure>
             <title>Deployed Units</title>
 
@@ -726,20 +733,17 @@
               </imageobject>
             </mediaobject>
           </figure>
-
-
         </section>
-
       </section>
 
       <section>
         <title>Data Modeller</title>
 
         <para>Typically, a business process analyst or data analyst will capture the requirements for a process or
-          appliaction and turn these into a formal set of data structures and their relationships. The new Data Modeller
-          tool enables configuration of such data models (both logical and physical), without the need for explicit
-          coding. Its main goals are to make data models into first class citizens in the process improvement cycle and
-          allow for full process automation using data and forms, without the need for advanced development skills.</para>
+        appliaction and turn these into a formal set of data structures and their relationships. The new Data Modeller
+        tool enables configuration of such data models (both logical and physical), without the need for explicit
+        coding. Its main goals are to make data models into first class citizens in the process improvement cycle and
+        allow for full process automation using data and forms, without the need for advanced development skills.</para>
 
         <section>
           <title>Key features</title>
@@ -768,7 +772,7 @@
         </section>
 
         <para>By default, whenever a new project is created, it automatically associates an empty data model to it. The
-          currently active project's data model can be opened from the menu bar Tools-&gt; Data Modeller:</para>
+        currently active project's data model can be opened from the menu bar Tools-&gt; Data Modeller:</para>
 
         <figure>
           <title>How to access the Data Modeller</title>
@@ -801,27 +805,27 @@
         <itemizedlist>
           <listitem>
             <para>Model browser: the leftmost section, which allows creation of new data objects and where the existing
-              ones are listed.</para>
+            ones are listed.</para>
           </listitem>
 
           <listitem>
             <para>Object browser: the middle section, which displays a table with the fields of the data object that has
-              been selected in the Model browser. This section also enables creating new attributes for the currently
-              selected object.</para>
+            been selected in the Model browser. This section also enables creating new attributes for the currently
+            selected object.</para>
           </listitem>
 
           <listitem>
             <para>Object / Attribute editor: the rightmost section. This is a tabbed editor where either the currently
-              selected object's properties (as currently shown in the screenshot), or a previously selected object
-              attribute's properties, can be modified.</para>
+            selected object's properties (as currently shown in the screenshot), or a previously selected object
+            attribute's properties, can be modified.</para>
           </listitem>
         </itemizedlist>
 
         <para/>
 
         <para>Whenever a data model screen is activated, an additional entry will appear in the top menu, allowing
-          creation of new data objects, as well as saving the model's modifications. Saving the model will also generate
-          all its assets (pojo's), which will then become available to the rest of the tools.</para>
+        creation of new data objects, as well as saving the model's modifications. Saving the model will also generate
+        all its assets (pojo's), which will then become available to the rest of the tools.</para>
 
         <figure>
           <title>The Data Modeller menu</title>
@@ -837,12 +841,12 @@
       <section>
         <title>Form Designer</title>
 
-        <para>As well as being able to easily define data structures and their internal relationships, which is possible through the
-          new Data Modeller utility, providing a tool that empowers analysts and developers to define the graphical interfaces to those data
-          structures is of equal importance.
-          The form designer tool allows non-technical users to configure complex data forms for data capture and visualization a WYSIWYG fashion,
-          define the relationships between those forms and the underlying data structure(s), and execute those forms inside the context of
-          business processes.</para>
+        <para>As well as being able to easily define data structures and their internal relationships, which is possible
+        through the new Data Modeller utility, providing a tool that empowers analysts and developers to define the
+        graphical interfaces to those data structures is of equal importance. The form designer tool allows
+        non-technical users to configure complex data forms for data capture and visualization a WYSIWYG fashion, define
+        the relationships between those forms and the underlying data structure(s), and execute those forms inside the
+        context of business processes.</para>
 
         <section>
           <title>Key features</title>
@@ -879,7 +883,8 @@
             </listitem>
 
             <listitem>
-              <para>Developers. Advanced form configuration, such as adding formulas and expressions for dynamic form recognition.</para>
+              <para>Developers. Advanced form configuration, such as adding formulas and expressions for dynamic form
+              recognition.</para>
             </listitem>
           </itemizedlist>
         </section>
@@ -895,16 +900,15 @@
         </figure>
 
         <para/>
-
       </section>
 
       <section>
         <title>jBPM Dashboard</title>
 
-        <para>The ability to monitor the status of process instances and tasks, is essential to evaluate the correctness of their design and implementation.
-          With this in mind, the workbench integrates a complete process and task dashboard set, based on the "Dashboard Builder" tool
-          (described below), which provide the views, data providers and key performance indicators that are needed to monitor the status of
-          processes and tasks in real-time.</para>
+        <para>The ability to monitor the status of process instances and tasks, is essential to evaluate the correctness
+        of their design and implementation. With this in mind, the workbench integrates a complete process and task
+        dashboard set, based on the "Dashboard Builder" tool (described below), which provide the views, data providers
+        and key performance indicators that are needed to monitor the status of processes and tasks in real-time.</para>
 
         <section>
           <title>Key features</title>
@@ -931,7 +935,8 @@
             </listitem>
 
             <listitem>
-              <para>Filter by process, process status, process version, task, task status, task start- and end-date</para>
+              <para>Filter by process, process status, process version, task, task status, task start- and
+              end-date</para>
             </listitem>
 
             <listitem>
@@ -955,7 +960,6 @@
         </figure>
 
         <para/>
-
       </section>
 
       <section>
@@ -976,8 +980,8 @@
         <para>Upload KJars to Guvnor M2 repository:</para>
 
         <para>A KJar has a pom.xml (and pom.properties) that define the GAV and POJO model dependencies. If the
-          pom.properties is missing the user is prompted for the GAV and a pom.properties file is appended to the JAR
-          before being uploaded to Guvnor M2 repo.</para>
+        pom.properties is missing the user is prompted for the GAV and a pom.properties file is appended to the JAR
+        before being uploaded to Guvnor M2 repo.</para>
 
         <para/>
 
@@ -1002,7 +1006,7 @@
         </figure>
 
         <para>The Guvnor M2 REPO is exposed via REST with URL pattern
-          http://{ServerName}/{httpPort}/{droolsWBWarFilename}/rest</para>
+        http://{ServerName}/{httpPort}/{droolsWBWarFilename}/rest</para>
 
         <para/>
       </section>
@@ -1031,12 +1035,12 @@
         <title>REST</title>
 
         <para>The GuvnorNG Rest API provides access to project "service" resources, i.e., any "service" that is not part
-          of the underlying persistence mechanism (i.e, Git, VFS).</para>
+        of the underlying persistence mechanism (i.e, Git, VFS).</para>
 
         <para>The http address to use as base address is http://{ServerName}/{httpPort}/{droolsWBWarFilename}/rest where
-          ServerName is the host name on the server on which drools-wb is deployed, httpPort the port number (8080 by
-          default development) and droolsWBWarFilename the name of the archived deployed (drools-workbench-6.0.0 for
-          version 6.0) without the extension.</para>
+        ServerName is the host name on the server on which drools-wb is deployed, httpPort the port number (8080 by
+        default development) and droolsWBWarFilename the name of the archived deployed (drools-workbench-6.0.0 for
+        version 6.0) without the extension.</para>
 
         <para>Check this doc for API details: https://app.apiary.io/jervisliu/editor</para>
 
@@ -1150,13 +1154,13 @@
     </section>
 
     <section>
-      <title>Planning Variable Listener</title>
+      <title>Planning Variable Listener (shadow variables)</title>
 
       <para>A planning variable can now have a listener which updates a shadow planning variable.</para>
 
       <para>A shadow planning variable is a variable that is never changed directly, but can be calculated based on the
-        state of the genuine planning variables. For example: in VRP with time windows, the arrival time at a customer can
-        be calculated based on the previous customers of that vehicle.</para>
+      state of the genuine planning variables. For example: in VRP with time windows, the arrival time at a customer can
+      be calculated based on the previous customers of that vehicle.</para>
     </section>
 
     <section>
@@ -1166,14 +1170,19 @@
 
       <para>Use the import button to import a time windowed dataset.</para>
 
-      <para>Work in progress: it works, but the example will be improved further for CR1.</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-Release_Notes/vehicleRoutingWithTimeWindows.png"
+                     format="PNG"/>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section>
       <title>Bi-directional variable relationship for chained variables</title>
 
       <para>A shadow planning variable can now be <literal>mappedBy</literal> a genuine variable. Planner will
-        automatically update the shadow variable if the genuine variable is changed.</para>
+      automatically update the shadow variable if the genuine variable is changed.</para>
 
       <para>Currently this is only supported for chained variables.</para>
     </section>
@@ -1182,9 +1191,19 @@
       <title>New Benchmarker statistics</title>
 
       <para>The best solution mutation statistic shows for every new best solution found, how many variables needed to
-        change to improve the last best solution.</para>
+      change to improve the last best solution.</para>
 
       <para>The step score statistic shows how the step score evolves over time.</para>
+    </section>
+
+    <section>
+      <title>Construction heuristics now use selectors</title>
+
+      <para>The construction heuristics now use the selector architecture so they support selection filtering, etc.
+      Sorting can be overwritten at a configuration level (very handy for benchmarking).</para>
+
+      <para>In cases with multiple planning variables (for example period, room and teacher), you can now switch to a
+      far more scalable configuration.</para>
     </section>
 
     <section>
@@ -1201,17 +1220,17 @@
 
         <listitem>
           <para>The Benchmarker now shows standard deviation per solver configuration (thanks to Miroslav
-            Svitok).</para>
+          Svitok).</para>
         </listitem>
 
         <listitem>
           <para>Domain classes that extend/implement a <literal>@PlanningEntity</literal> class or interface can now be
-            used as planning entities.</para>
+          used as planning entities.</para>
         </listitem>
 
         <listitem>
           <para><literal>BendableScore</literal> is now compatible with XStream: use
-            <literal>XStreamBendableScoreConverter.</literal></para>
+          <literal>XStreamBendableScoreConverter.</literal></para>
         </listitem>
 
         <listitem>
@@ -1225,6 +1244,11 @@
         <listitem>
           <para>Drools properties can now be optionally specified in the solver configuration XML.</para>
         </listitem>
+
+        <listitem>
+          <para>Mimic selection: usefull to create a cartesian product selection of 2 change move selectors that move
+          different variables of the <emphasis>same</emphasis> entity</para>
+        </listitem>
       </itemizedlist>
     </section>
   </section>
@@ -1236,9 +1260,9 @@
       <title>What is JBoss Dashboard Builder?</title>
 
       <para>The Dashboard Builder is a full featured web application which allows non-technical users to visually create
-        business dashboards. Dashboard data can be extracted from heterogeneous sources of information such as JDBC
-        databases or regular text files. It also provides a generic process dashboard for the jBPM Human Task module.
-        Such dashboard can display multiple key performance indicators regarding process instances, tasks and users.</para>
+      business dashboards. Dashboard data can be extracted from heterogeneous sources of information such as JDBC
+      databases or regular text files. It also provides a generic process dashboard for the jBPM Human Task module. Such
+      dashboard can display multiple key performance indicators regarding process instances, tasks and users.</para>
 
       <para>Some ready-to-use sample dashboards are provided as well, for demo and learning purposes.</para>
 
@@ -1251,8 +1275,7 @@
           </listitem>
 
           <listitem>
-            <para>Graphical representation of KPIs (Key Performance
-              Indicators).</para>
+            <para>Graphical representation of KPIs (Key Performance Indicators).</para>
           </listitem>
 
           <listitem>
@@ -1272,8 +1295,7 @@
           </listitem>
 
           <listitem>
-            <para>Data extraction from external systems, through different
-              protocols.</para>
+            <para>Data extraction from external systems, through different protocols.</para>
           </listitem>
 
           <listitem>
@@ -1314,8 +1336,10 @@
 
       <section>
         <title>More info:</title>
-        <para>For more info on the Dashboard Builder application, please refer to:
-          <link xlink:href="https://github.com/droolsjbpm/dashboard-builder/blob/master/docs/quick-start-guide/index.html">Dash Builder Quick Start Guide</link>.</para>
+
+        <para>For more info on the Dashboard Builder application, please refer to: <link
+        xlink:href="https://github.com/droolsjbpm/dashboard-builder/blob/master/docs/quick-start-guide/index.html">Dash
+        Builder Quick Start Guide</link>.</para>
       </section>
     </section>
   </section>
