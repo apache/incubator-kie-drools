@@ -289,7 +289,7 @@ public class SingleSessionCommandService
             this.txm = (TransactionManager) tm;
             this.jpm = (PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER );
         } else {
-            if ( tm != null && tm.getClass().getName().startsWith( "org.springframework" ) ) {
+            if ( tm != null && isSpringTransactionManager(tm.getClass()) ) {
                 try {
                     Class< ? > cls = Class.forName( "org.kie.spring.persistence.KieSpringTransactionManager" );
                     Constructor< ? > con = cls.getConstructors()[0];
@@ -531,5 +531,18 @@ public class SingleSessionCommandService
 
     private void rollback() {
         this.doRollback = true;
+    }
+
+    private static String SPRING_TM_CLASSNAME = "org.springframework.transaction.support.AbstractPlatformTransactionManager";
+    public static boolean isSpringTransactionManager( Class clazz ) {
+        if ( SPRING_TM_CLASSNAME.equals(clazz.getName()) ) {
+            return true;
+        }
+        // Try to find from the ancestors
+        if (clazz.getSuperclass() != null)
+        {
+            return isSpringTransactionManager(clazz.getSuperclass());
+        }
+        return false;
     }
 }
