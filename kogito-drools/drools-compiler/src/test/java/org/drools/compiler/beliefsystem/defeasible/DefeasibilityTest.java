@@ -138,39 +138,29 @@ public class DefeasibilityTest {
         EntryPoint ep = kSession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
         TruthMaintenanceSystem tms = ((NamedEntryPoint)ep).getTruthMaintenanceSystem();
 
-//        assertEquals( 2, tms.getEqualityKeyMap().size());
-//        assertEquals( 5, kSession.getObjects().size() );
-//
-//        //assertEquals( 1,  kSession.getEntryPoint("neg").getObjects().size() );
-//
-//        checkDefeasibilityByHandleId( getEqualityKey("X( id=-1 )", tms), DefeasibilityStatus.DEFINITELY, 3, 2);
-//        checkDefeasibilityByHandleId( getEqualityKey("C( id=99 )", tms), DefeasibilityStatus.DEFINITELY, 1, 1);
+        assertEquals( 2, tms.getEqualityKeyMap().size());
+        assertEquals( 5, kSession.getObjects().size() );
+
+        checkDefeasibilityByHandleId( getEqualityKey("X( id=-1 )", tms), DefeasibilityStatus.DEFINITELY, 3, 2);
+        checkDefeasibilityByHandleId( getEqualityKey("C( id=99 )", tms), DefeasibilityStatus.DEFINITELY, 1, 1);
     }
-//
-//
-//
-//    @Test
-//    public void testDefeasibleEntailmentMultiActivation() {
-//        defeasibleEntailmentMultiActivation( false );
-//    }
-//
-//    @Test
-//    public void testDefeasibleEntailmentMultiActivationComposite() {
-//        defeasibleEntailmentMultiActivation( true );
-//    }
-//
-//    public void defeasibleEntailmentMultiActivation( boolean composite ) {
-//        StatefulKnowledgeSession kSession = getSession( "org/drools/beliefsystem/defeasible/defeat.drl", composite );
-//        kSession.fireAllRules();
-//
-//        TruthMaintenanceSystem tms = ( (StatefulKnowledgeSessionImpl) kSession ).session.getTruthMaintenanceSystem();
-//        assertEquals( 1, tms.getJustifiedMap().size() );
-//        assertEquals( 4, kSession.getObjects().size() );
-//
-//        checkDefeasibilityByHandleId( 4, DefeasibilityStatus.UNDECIDABLY, 3, 3, tms );
-//    }
-//
-//
+
+    @Test
+    public void defeasibleEntailmentMultiActivation( ) {
+        StatefulKnowledgeSession kSession = getSession( "defeat.drl" );
+        kSession.fireAllRules();
+
+        EntryPoint ep = kSession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)ep).getTruthMaintenanceSystem();
+
+        assertEquals( 1, tms.getEqualityKeyMap().size() );
+        assertEquals( 4, kSession.getObjects().size() );
+
+        //checkDefeasibilityByHandleId( 4, DefeasibilityStatus.UNDECIDABLY, 3, 3, tms );
+        checkDefeasibilityByHandleId( getEqualityKey("X( id=-1 )", tms), DefeasibilityStatus.UNDECIDABLY, 3, 3 );
+    }
+
+
 //    @Test
 //    public void testDefeasibleEntailmentMultiActivationWithDefeatComposite() {
 //        defeasibleEntailmentMultiActivationWithDefeat( true );

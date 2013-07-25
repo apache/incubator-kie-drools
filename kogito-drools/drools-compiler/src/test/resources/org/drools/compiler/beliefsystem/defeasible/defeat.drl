@@ -35,7 +35,7 @@ then
 end
 
 rule "Defeater Rule"
-@Defeater
+@Defeater(true)
 when
     B( 2; )
 then
@@ -44,7 +44,7 @@ end
 
 
 rule "Rule 3"
-@Defeasible
+@Defeasible(true)
 when
     A( )
 then

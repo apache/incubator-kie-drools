@@ -48,14 +48,14 @@ public class ReteJTMSBeliefSystem
 
         boolean wasEmpty = jtmsBeliefSet.isEmpty();
         boolean wasNegated = jtmsBeliefSet.isNegated();
-        boolean wasConflicting = jtmsBeliefSet.isConflicting();
+        boolean wasConflicting = jtmsBeliefSet.isUndecided();
 
         jtmsBeliefSet.add( node.getJustifierEntry() );
 
         if ( wasEmpty ) {
             // Insert Belief
             insertBelief( node, typeConf, jtmsBeliefSet, wasNegated, wasConflicting );
-        } else if ( !wasConflicting && jtmsBeliefSet.isConflicting() ) {
+        } else if ( !wasConflicting && jtmsBeliefSet.isUndecided() ) {
             // Handle Conflict
             if ( STRICT ) {
                 throw new IllegalStateException( "FATAL : A fact and its negation have been asserted " + jtmsBeliefSet.getFactHandle().getObject() );
@@ -144,7 +144,7 @@ public class ReteJTMSBeliefSystem
                        BeliefSet beliefSet,
                        PropagationContext context) {
         JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) beliefSet;
-        boolean wasConflicting = jtmsBeliefSet.isConflicting();
+        boolean wasConflicting = jtmsBeliefSet.isUndecided();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
         // If the prime object is removed, we need to update the FactHandle, and tell the callback to update
@@ -166,7 +166,7 @@ public class ReteJTMSBeliefSystem
                 // do not if the FH is the root of the context, it means it's already in the process of retraction
                 retractOrUpdateBelief( node, context, (InternalFactHandle) jtmsBeliefSet.getFactHandle(), false, true );
             }
-        } else if ( wasConflicting && !jtmsBeliefSet.isConflicting() ) {
+        } else if ( wasConflicting && !jtmsBeliefSet.isUndecided() ) {
             insertBelief( node,
                           defEP.getObjectTypeConfigurationRegistry().getObjectTypeConf( defEP.getEntryPoint(), node.getObject() ),
                           jtmsBeliefSet,
