@@ -1,6 +1,7 @@
 with ( new Task() ) { 
     peopleAssignments = (with ( new PeopleAssignments() ) {        
         potentialOwners = [new User('Luke Cage' ), new User('Tony Stark')],
+        businessAdministrators = [ new User('Administrator') ],
     }),
     taskData = (with ( new TaskData() ) {
                    documentAccessType = AccessType.Inline,

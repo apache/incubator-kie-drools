@@ -16,6 +16,7 @@
 package org.jbpm.services.task.wih.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.services.task.impl.model.GroupImpl;
@@ -90,10 +91,12 @@ public class PeopleAssignmentHelper {
 		
 		String businessAdministratorIds = (String) workItem.getParameter(BUSINESSADMINISTRATOR_ID);
         List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
-        
-        UserImpl administrator = new UserImpl("Administrator");        
-        businessAdministrators.add(administrator);
-        
+        if (!hasAdminAssigned(businessAdministrators)) {
+            UserImpl administrator = new UserImpl("Administrator");        
+            businessAdministrators.add(administrator);
+            GroupImpl adminGroup = new GroupImpl("Administrators");        
+            businessAdministrators.add(adminGroup);
+        }
         processPeopleAssignments(businessAdministratorIds, businessAdministrators, true);
         
 	}
@@ -170,6 +173,15 @@ public class PeopleAssignmentHelper {
         
 		return peopleAssignments;
 		
+	}
+	
+	protected boolean hasAdminAssigned(Collection<OrganizationalEntity> businessAdmins) {
+	    for (OrganizationalEntity entity : businessAdmins) {
+	        if ("Administrator".equals(entity.getId()) || "Administrators".equals(entity.getId())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 	
 }

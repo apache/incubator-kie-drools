@@ -102,7 +102,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             }
         }
         task.setPriority(priority);
-        InternalTaskData taskData = new TaskDataImpl();
+        InternalTaskData taskData = new TaskDataImpl();        
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
         if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
@@ -119,10 +119,10 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (parentId != null) {
             taskData.setParentId(parentId);
         }
+        
         String createdBy = (String) workItem.getParameter("CreatedBy");
         if (createdBy != null && createdBy.trim().length() > 0) {
-            taskData.setCreatedBy(new UserImpl(createdBy));
-            taskData.setCreatedOn(new Date());
+            taskData.setCreatedBy(new UserImpl(createdBy));            
         }
         PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
@@ -130,6 +130,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         PeopleAssignments peopleAssignments = task.getPeopleAssignments();
         List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
         
+        taskData.initialize();
         task.setTaskData(taskData);
         task.setDeadlines(HumanTaskHandlerHelper.setDeadlines(workItem, businessAdministrators, session.getEnvironment()));
         return task;

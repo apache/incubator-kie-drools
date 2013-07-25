@@ -88,7 +88,8 @@ public class JBossUserGroupCallbackImpl implements UserGroupCallback {
 		
 		// always add Administrator if not already present
 		if (!groupStore.containsKey("Administrator")) {
-			groupStore.put("Administrator", Collections.<String> emptyList());
+			groupStore.put("Administrator", Collections.singletonList("Administrators"));
+			allgroups.add("Administrators");
 		}
 	}
 

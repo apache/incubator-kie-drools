@@ -37,7 +37,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
   
          // One potential owner, should go straight to state Reserved
         String parentTaskstr = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ], }),";
+        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ],businessAdministrators = [ new User('Administrator') ], }),";
         parentTaskstr += "names = [ new I18NText( 'en-UK', 'This is my task Parent name')] })";
         // By default the task will contain a SubTask SubTasksStrategy.NoAction
 
@@ -54,7 +54,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         taskService.start(taskParentId, "salaboy");
         
         String child1Taskstr = "(with (new Task()) { priority = 55,  taskData = (with( new TaskData()) { parentId= "+taskParentId+" } ), ";
-        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ], }),";
+        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ],businessAdministrators = [ new User('Administrator') ], }),";
         child1Taskstr += "names = [ new I18NText( 'en-UK', 'This is my task Child 1 name')] })";
 
         TaskImpl child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
@@ -99,7 +99,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
   
          // One potential owner, should go straight to state Reserved
         String parentTaskstr = "(with (new Task()) { subTaskStrategy = SubTasksStrategy.EndParentOnAllSubTasksEnd,  priority = 55, taskData = (with( new TaskData()) { } ), ";
-        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ], }),";
+        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ],businessAdministrators = [ new User('Administrator') ], }),";
         parentTaskstr += "names = [ new I18NText( 'en-UK', 'This is my task Parent name')] })";
         // By default the task will contain a SubTask SubTasksStrategy.NoAction
 
@@ -116,7 +116,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         taskService.start(taskParentId, "salaboy");
         
         String child1Taskstr = "(with (new Task()) { priority = 55,  taskData = (with( new TaskData()) { parentId= "+taskParentId+" } ), ";
-        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ], }),";
+        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ],businessAdministrators = [ new User('Administrator') ], }),";
         child1Taskstr += "names = [ new I18NText( 'en-UK', 'This is my task Child 1 name')] })";
 
         TaskImpl child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
@@ -156,7 +156,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         // Notice skippable in task data
         String parentTaskstr = "(with (new Task()) { subTaskStrategy = SubTasksStrategy.SkipAllSubTasksOnParentSkip ,  priority = 55, "
                                 + "taskData = (with( new TaskData()) { skipable = true } ), ";
-        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ], }),";
+        parentTaskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')  ],businessAdministrators = [ new User('Administrator') ], }),";
         parentTaskstr += "names = [ new I18NText( 'en-UK', 'This is my task Parent name')] })";
         // By default the task will contain a SubTask SubTasksStrategy.NoAction
 
@@ -173,7 +173,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         taskService.start(taskParentId, "salaboy");
         
         String child1Taskstr = "(with (new Task()) { priority = 55,  taskData = (with( new TaskData()) { skipable = true, parentId= "+taskParentId+" } ), ";
-        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ], }),";
+        child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ],businessAdministrators = [ new User('Administrator') ], }),";
         child1Taskstr += "names = [ new I18NText( 'en-UK', 'This is my task Child 1 name')] })";
 
         Task child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));

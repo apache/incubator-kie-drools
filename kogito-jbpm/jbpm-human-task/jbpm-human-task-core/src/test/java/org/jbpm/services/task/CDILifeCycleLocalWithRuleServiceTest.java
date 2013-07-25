@@ -103,7 +103,7 @@ public class CDILifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseT
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john')], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
         str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -122,7 +122,7 @@ public class CDILifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseT
         
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john'), new User('mary'),new User('krisv')], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john'), new User('mary'),new User('krisv')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
         str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -144,7 +144,7 @@ public class CDILifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseT
         
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('peter')], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('peter')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
         str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -166,7 +166,7 @@ public class CDILifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseT
         
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john')], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('john')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
         str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -219,7 +219,7 @@ public class CDILifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseT
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { workItemId = 1 } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('mary')], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('mary')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "descriptions = [ new I18NText( 'en-UK', 'This is my description')], ";
         str += "subjects = [ new I18NText( 'en-UK', 'This is my subject')], ";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";

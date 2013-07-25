@@ -3,6 +3,7 @@ with ( new Task() ) {
                    documentAccessType = AccessType.Inline,
                    documentType = "MVEL"
                 }),
+    peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [ new User('Administrator') ], }),
     names = [ new I18NText( 'en-UK', 'Simple Test Task')],
     deadlines = ( with ( new Deadlines() ) {
         startDeadlines = [ 

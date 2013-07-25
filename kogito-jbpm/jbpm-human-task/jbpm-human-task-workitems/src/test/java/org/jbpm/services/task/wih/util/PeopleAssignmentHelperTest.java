@@ -134,14 +134,18 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		workItem.setParameter(PeopleAssignmentHelper.BUSINESSADMINISTRATOR_ID, businessAdministratorId);
 
 		peopleAssignmentHelper.assignBusinessAdministrators(workItem, peopleAssignments);
-		assertEquals(2, peopleAssignments.getBusinessAdministrators().size());
+		assertEquals(3, peopleAssignments.getBusinessAdministrators().size());
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getBusinessAdministrators().get(0);
 		assertTrue(organizationalEntity1 instanceof UserImpl);
 		assertEquals("Administrator", organizationalEntity1.getId());
-		OrganizationalEntity organizationalEntity2 = peopleAssignments.getBusinessAdministrators().get(1);		
-		assertTrue(organizationalEntity2 instanceof UserImpl);				
-		assertEquals(businessAdministratorId, organizationalEntity2.getId());
-		
+
+		OrganizationalEntity organizationalEntity2 = peopleAssignments.getBusinessAdministrators().get(1);        
+        assertTrue(organizationalEntity2 instanceof GroupImpl);              
+        assertEquals("Administrators", organizationalEntity2.getId());
+
+        OrganizationalEntity organizationalEntity3 = peopleAssignments.getBusinessAdministrators().get(2);      
+        assertTrue(organizationalEntity3 instanceof UserImpl);              
+        assertEquals(businessAdministratorId, organizationalEntity3.getId());
 	}
 	
 	@Test
@@ -237,9 +241,12 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		assertEquals(actorId, potentialOwners.get(0).getId());
 		
 		List<OrganizationalEntity> businessAdministrators = task.getPeopleAssignments().getBusinessAdministrators();
-		assertEquals(2, businessAdministrators.size());
+		assertEquals(3, businessAdministrators.size());
 		assertEquals("Administrator", businessAdministrators.get(0).getId());
-		assertEquals(businessAdministratorId, businessAdministrators.get(1).getId());
+		// Admin group
+		assertEquals("Administrators", businessAdministrators.get(1).getId());
+		assertEquals(businessAdministratorId, businessAdministrators.get(2).getId());
+		
 		
 		List<OrganizationalEntity> taskStakehoders = ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders();
 		assertEquals(1, taskStakehoders.size());
@@ -287,11 +294,14 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertEquals("john", potentialOwners.get(1).getId());
 
         List<OrganizationalEntity> businessAdministrators = task.getPeopleAssignments().getBusinessAdministrators();
-        assertEquals(3, businessAdministrators.size());
+        assertEquals(4, businessAdministrators.size());
         assertEquals("Administrator", businessAdministrators.get(0).getId());
-        assertEquals("drbug", businessAdministrators.get(1).getId());
-        assertEquals("peter", businessAdministrators.get(2).getId());
-
+        //Admin group
+        assertEquals("Administrators", businessAdministrators.get(1).getId());
+        assertEquals("drbug", businessAdministrators.get(2).getId());
+        assertEquals("peter", businessAdministrators.get(3).getId());
+        
+        
         List<OrganizationalEntity> taskStakehoders = ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders();
         assertEquals(2, taskStakehoders.size());
         assertEquals("drmary", taskStakehoders.get(0).getId());

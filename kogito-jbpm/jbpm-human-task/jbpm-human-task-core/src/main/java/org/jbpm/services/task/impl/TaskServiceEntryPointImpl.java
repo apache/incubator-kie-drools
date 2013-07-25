@@ -432,13 +432,6 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
         if (assignedStatus != null) {
             ((InternalTaskData) task.getTaskData()).setStatus(assignedStatus);
         }
-
-        if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
-            List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            businessAdmins.add(new UserImpl("Administrator"));
-            businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
-            ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
-        }
         
     }
     

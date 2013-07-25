@@ -21,6 +21,7 @@ import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
+import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.test.JbpmJUnitTestCase;
 import org.junit.Before;
@@ -80,6 +81,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             users.put("Administrator", new UserImpl("Administrator"));
             users.put("john", new UserImpl("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
+            groups.put("Administrators", new GroupImpl("Administrators"));
             ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
 
 
@@ -134,7 +136,6 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
     }
 
     @Test
-//    @Ignore
     public void testSerizliableTestsWithEngineRollback() {
         try {
     
@@ -147,6 +148,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
             users.put("Administrator", new UserImpl("Administrator"));
             users.put("john", new UserImpl("john"));
             Map<String, Group> groups = new HashMap<String, Group>();
+            groups.put("Administrators", new GroupImpl("Administrators"));
             ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
 
 
