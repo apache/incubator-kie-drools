@@ -123,7 +123,7 @@ public interface ProcessRuntime {
      * will be returned.  If a process instance has been completed already, this method will return
      * <code>null</code>.
      * 
-     * @param id the id of the process instance
+     * @param processInstanceId the id of the process instance
      * @return the process instance with the given id or <code>null</code> if it cannot be found
      */
     ProcessInstance getProcessInstance(long processInstanceId);
@@ -133,7 +133,7 @@ public interface ProcessRuntime {
      * will be returned.  If a process instance has been completed already, this method will return
      * <code>null</code>.
      * 
-     * @param id the id of the process instance
+     * @param processInstanceId the id of the process instance
      * @param readonly if this is true and when using persistence, this process instance
      * will not be tracked and updated by the engine
      * @return the process instance with the given id or <code>null</code> if it cannot be found
@@ -145,7 +145,7 @@ public interface ProcessRuntime {
      * (or aborted), or the process instance cannot be found, this method will throw an
      * <code>IllegalArgumentException</code>.
      * 
-     * @param id the id of the process instance
+     * @param processInstanceId the id of the process instance
      */
     void abortProcessInstance(long processInstanceId);
 
