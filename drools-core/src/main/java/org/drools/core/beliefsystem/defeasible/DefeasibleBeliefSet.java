@@ -47,12 +47,14 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     private static final int DEFEASIBLY_POS_BIT = 4;
     private static final int DEFEASIBLY_NEG_BIT = 6;
     private static final int DEFEATEDLY_POS_BIT = 8;
-    private static final int DEFEATEDLY_NEG_BIT = 10;
+    private static final int DEFEATEDLY_NEG_BIT = 16;
 
     private static final int POS_MASK = DEFINITELY_POS_BIT & DEFEASIBLY_POS_BIT & DEFEATEDLY_POS_BIT;
     private static final int NEG_MASK = DEFINITELY_NEG_BIT & DEFEASIBLY_NEG_BIT & DEFEATEDLY_NEG_BIT;
 
     private int statusMask;
+
+    private DefeasibilityStatus status;
 
     public DefeasibleBeliefSet(BeliefSystem beliefSystem, InternalFactHandle rootHandle) {
         this.beliefSystem = beliefSystem;
@@ -130,6 +132,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
             // now process the staged
             reprocessDefeated(stagedDeps);
         }
+        updateStatus();
     }
 
     private void reprocessDefeated(DefeasibleLogicalDependency deps) {
@@ -155,6 +158,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
                 reprocessDefeated(dep.getRootDefeated());
             }
         }
+        updateStatus();
     }
 
     private boolean checkAndApplyIsDefeated(DefeasibleLogicalDependency potentialInferior, Rule rule, DefeasibleLogicalDependency potentialSuperior) {
@@ -379,28 +383,40 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     public boolean isDefeatedlyNegProveable() {
         return  (statusMask &  DEFEATEDLY_NEG_BIT) != 0;
     }
-
     public DefeasibilityStatus getStatus() {
+        return status;
+    }
+
+    public void updateStatus() {
         if ( isDefinitelyPosProveable() && !isDefinitelyNegProveable() ) {
-            return DefeasibilityStatus.DEFINITELY;
+            status = DefeasibilityStatus.DEFINITELY;
+            return;
         } else if ( !isDefinitelyPosProveable() && isDefinitelyNegProveable() ) {
-            return DefeasibilityStatus.DEFINITELY;
+            status = DefeasibilityStatus.DEFINITELY;
+            return;
         }  else if ( isDefinitelyPosProveable() && isDefinitelyNegProveable() ) {
-            return DefeasibilityStatus.UNDECIDABLY;
+            status = DefeasibilityStatus.UNDECIDABLY;
+            return;
         }
 
         if ( isDefeasiblyPosProveable() && !isDefeasiblyNegProveable() && !isDefeatedlyNegProveable() ) {
-            return DefeasibilityStatus.DEFEASIBLY;
+            status = DefeasibilityStatus.DEFEASIBLY;
+            return;
         } else if ( !isDefeasiblyPosProveable() && !isDefeatedlyPosProveable() && isDefeasiblyNegProveable() ) {
-            return DefeasibilityStatus.DEFEASIBLY;
+            status = DefeasibilityStatus.DEFEASIBLY;
+            return;
         }
 
 //        else if ( isDefinitelyPosProveable() && isDefinitelyNegProveable() ) {
 //            return DefeasibilityStatus.UNDECIDABLY;
 //        }
 
-        return DefeasibilityStatus.UNDECIDABLY;
+        status = DefeasibilityStatus.UNDECIDABLY;
     }
+
+//    public boolean isHeld() {
+//        //isUndecided() ||  isDefinitelyPosProveable() ||isDefinitelyNegProveable()
+//    }
 
     public boolean isNegated() {
         return ((statusMask & POS_MASK ) == 0 ) &&  ((statusMask & NEG_MASK ) != 0 );
@@ -410,8 +426,8 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return ((statusMask & POS_MASK ) != 0 ) &&  ((statusMask & NEG_MASK ) == 0 );
     }
 
-    public boolean isConflicting() {
-        return statusMask == 0 ?  false : getStatus() == DefeasibilityStatus.UNDECIDABLY;
+    public boolean isUndecided() {
+        return getStatus() == DefeasibilityStatus.UNDECIDABLY;
     }
 
     public FastIterator iterator() {

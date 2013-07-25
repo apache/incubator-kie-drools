@@ -7,7 +7,7 @@ import org.drools.core.common.InternalFactHandle;
 public interface JTMSBeliefSet extends BeliefSet {
     boolean isNegated();
 
-    boolean isConflicting();
+    boolean isUndecided();
 
     boolean isPositive();
 
