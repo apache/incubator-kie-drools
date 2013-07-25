@@ -38,4 +38,6 @@ public interface LinkedListNode<T extends LinkedListNode<T>>
      */
     public void setPrevious(T previous);
 
+    void nullPrevNext();
+
 }
