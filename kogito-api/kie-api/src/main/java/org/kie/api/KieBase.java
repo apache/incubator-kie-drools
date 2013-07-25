@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.kie.api;
 
 import org.kie.api.definition.KiePackage;
@@ -25,7 +41,7 @@ import java.util.Set;
 public interface KieBase extends KieBaseEventManager {
 
     /**
-     * Returns a collection of the {@link KiePackages}s that exist in this {@link KieBase}.
+     * Returns a collection of the {@link KiePackage}s that exist in this {@link KieBase}.
      * 
      * @return an immutable collection of the packages
      */
@@ -92,7 +108,7 @@ public interface KieBase extends KieBaseEventManager {
      * @param functionName the name of the function
      */
     void removeFunction( String packageName,
-                         String funtionName );
+                         String functionName );
 
     /**
      * Returns a reference to the {@link FactType} identified by the given package and type names.
@@ -132,7 +148,7 @@ public interface KieBase extends KieBaseEventManager {
      * Creates a new {@link KieSession} using the given session configuration and/or environment.
      * Either one can be null and it will use a default.
      * 
-     * Don't forget to {@link #dispose()} session when you are done.
+     * Don't forget to {@link KieSession#dispose()} session when you are done.
      * @param conf session configuration
      * @param environment
      * 
@@ -142,7 +158,7 @@ public interface KieBase extends KieBaseEventManager {
 
     /**
      * Creates a new {@link KieSession} using the default session configuration.
-     * Don't forget to {@link #dispose()} session when you are done.
+     * Don't forget to {@link KieSession#dispose()} session when you are done.
      *
      * @return created {@link KieSession}
      */
@@ -158,7 +174,7 @@ public interface KieBase extends KieBaseEventManager {
 
     /**
      * Creates a new {@link StatelessKieSession} using the given session configuration.
-     * You do not need to call {@link #dispose()} on this.
+     * You do not need to call {@link KieSession#dispose()} on this.
      * 
      * @param conf session configuration
      * 

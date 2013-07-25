@@ -100,7 +100,7 @@ public interface EntryPoint {
      * @return the fact handle for the given object, or null in case no fact handle was found for the
      *         given object.
      *         
-     * @see KnowledgeBaseConfiguration
+     * @see org.kie.api.KieBaseConfiguration
      */
     FactHandle getFactHandle(Object object);
 
