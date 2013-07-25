@@ -447,5 +447,9 @@ public class WindowNode extends ObjectSource
         public void setNext(Memory next) {
             throw new UnsupportedOperationException();
         }
+
+        public void nullPrevNext() {
+            throw new UnsupportedOperationException();
+        }
     }
 }

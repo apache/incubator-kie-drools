@@ -245,6 +245,11 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.previous = previous;
     }
 
+    public void nullPrevNext() {
+        previous = null;
+        next = null;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

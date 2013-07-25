@@ -69,4 +69,9 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
+
+    public void nullPrevNext() {
+        previous = null;
+        next = null;
+    }
 }

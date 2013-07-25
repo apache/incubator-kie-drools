@@ -243,6 +243,11 @@ public class ScheduledAgendaItem
         this.previous = previous;
     }
 
+    public void nullPrevNext() {
+        previous = null;
+        next = null;
+    }
+
     public void remove() {
         this.agenda.removeScheduleItem(this);
     }
