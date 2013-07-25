@@ -3297,7 +3297,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * nestedConstraint := ( ID ( DOT | SHARP ) )* ID DOT LEFT_PAREN constraints RIGHT_PAREN
+     * nestedConstraint := ( ID ( DOT | HASH ) )* ID DOT LEFT_PAREN constraints RIGHT_PAREN
      * @param pattern
      * @throws org.antlr.runtime.RecognitionException
      */
@@ -3325,7 +3325,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             int nextToken = input.LA( ++cursor );
             switch (lastToken) {
                 case DRL6Lexer.ID:
-                    if ( nextToken != DRL6Lexer.DOT && nextToken != DRL6Lexer.SHARP ) {
+                    if ( nextToken != DRL6Lexer.DOT && nextToken != DRL6Lexer.HASH ) {
                         return -1;
                     }
                     break;
@@ -3333,7 +3333,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     if ( nextToken == DRL6Lexer.LEFT_PAREN ) {
                         return cursor;
                     }
-                case DRL6Lexer.SHARP:
+                case DRL6Lexer.HASH:
                     if ( nextToken != DRL6Lexer.ID ) {
                         return -1;
                     }
