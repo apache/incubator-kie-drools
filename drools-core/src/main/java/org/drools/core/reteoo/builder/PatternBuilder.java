@@ -284,8 +284,7 @@ public class PatternBuilder
                 epn.attach( context );
             }
 
-            ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(), epn, objectType, context );
-            //ObjectTypeNode otn = nfactory.buildObjectTypeNode( context.getNextId(), epn, objectType, context );
+            ObjectTypeNode otn = nfactory.buildObjectTypeNode( context.getNextId(), epn, objectType, context );
 
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );
