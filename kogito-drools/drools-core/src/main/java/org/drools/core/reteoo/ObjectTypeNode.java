@@ -771,6 +771,10 @@ public class ObjectTypeNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
+        public void nullPrevNext() {
+            throw new UnsupportedOperationException();
+        }
+
         public void setNext(Memory next) {
             throw new UnsupportedOperationException();
         }
