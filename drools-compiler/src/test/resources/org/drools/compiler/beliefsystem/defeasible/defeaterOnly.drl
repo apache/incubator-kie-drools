@@ -1,0 +1,35 @@
+package org.drools.defeasible;
+
+global java.util.List list;
+
+declare A
+    id  : int   @key
+end
+
+declare X
+    id  : int   @key
+end
+
+
+rule "Init"
+when
+then
+    insert( new A( 1 ) );   // A(1) is a Fact
+end
+
+rule "Defeater Rule"
+@Defeater
+when
+    A( 1; )
+then
+    insertLogical( new X( -1 ), "neg" );
+end
+
+rule "Never"
+when
+    $x : X()
+then
+    System.out.println( "This should not happen" );
+    list.add( $x );
+end
+

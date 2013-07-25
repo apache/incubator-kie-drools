@@ -2,14 +2,12 @@ package org.drools.core.beliefsystem.jtms;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSet.MODE;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.beliefsystem.simple.ReteSimpleBeliefSystem.LogicalCallback;
-import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.rule.Rule;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -151,7 +149,7 @@ public class JTMSBeliefSystem
     public void delete(LogicalDependency node,
                        BeliefSet beliefSet,
                        PropagationContext context) {
-        JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
+        JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) beliefSet;
         boolean wasConflicting = jtmsBeliefSet.isConflicting();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
@@ -217,7 +215,7 @@ public class JTMSBeliefSystem
     }
 
     public BeliefSet newBeliefSet(InternalFactHandle fh) {
-        return new JTMSBeliefSet( this, fh );
+        return new JTMSBeliefSetImpl( this, fh );
     }
 
     public LogicalDependency newLogicalDependency(Activation activation,
