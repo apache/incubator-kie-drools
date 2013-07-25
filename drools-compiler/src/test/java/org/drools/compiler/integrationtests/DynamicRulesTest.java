@@ -243,18 +243,27 @@ public class DynamicRulesTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       kbase.getKnowledgePackages().size() );
+
+        KnowledgePackage knowledgePackage = null;
+        for (KnowledgePackage pkg : kbase.getKnowledgePackages()) {
+            if ( pkg.getName().equals( "org.drools.compiler.test" ) ) {
+                knowledgePackage = pkg;
+                break;
+            }
+        }
+
         assertEquals( 5,
-                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
+                      knowledgePackage.getRules().size() );
 
         kbase.removeRule( "org.drools.compiler.test",
                           "Who likes Stilton" );
         assertEquals( 4,
-                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
+                      knowledgePackage.getRules().size() );
 
         kbase.removeRule( "org.drools.compiler.test",
                           "like cheese" );
         assertEquals( 3,
-                      kbase.getKnowledgePackages().iterator().next().getRules().size() );
+                      knowledgePackage.getRules().size() );
 
         kbase.removeKnowledgePackage( "org.drools.compiler.test" );
         assertEquals( 1,
