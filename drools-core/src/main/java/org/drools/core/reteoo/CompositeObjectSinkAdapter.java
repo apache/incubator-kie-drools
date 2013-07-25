@@ -965,5 +965,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         public void setPrevious(final FieldIndex previous) {
             this.previous = previous;
         }
+
+        public void nullPrevNext() {
+            previous = null;
+            next = null;
+        }
     }
 }

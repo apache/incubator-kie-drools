@@ -293,6 +293,11 @@ public class AlphaNode extends ObjectSource
         public Memory getNext() {
             throw new UnsupportedOperationException();
         }
+
+        public void nullPrevNext() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
     /**
