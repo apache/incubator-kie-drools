@@ -33,7 +33,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
@@ -276,6 +275,7 @@ public class PatternBuilder
         ruleBase.lock();
         try {
             InternalWorkingMemory[] wms = context.getWorkingMemories();
+            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
 
             EntryPointNode epn = ruleBase.getRete().getEntryPointNode( context.getCurrentEntryPoint() );
             if ( epn == null ) {
@@ -285,10 +285,7 @@ public class PatternBuilder
                 epn.attach( context );
             }
 
-            ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
-                                                     epn,
-                                                     objectType,
-                                                     context );
+            ObjectTypeNode otn = nfactory.buildObjectTypeNode( context.getNextId(), epn, objectType, context );
 
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );
