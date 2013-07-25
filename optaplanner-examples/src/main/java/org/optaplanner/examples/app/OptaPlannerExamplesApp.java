@@ -128,14 +128,14 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton("Cloud balancing",
                 "Assign processes to computers.\n\n" +
                         "Each computer must have enough hardware to run all of it's processes.\n" +
-                        "Each computer used inflicts a maintenance cost.",
+                        "Each used computer inflicts a maintenance cost.",
                 CloudBalancingPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new CloudBalancingApp().init(OptaPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Traveling salesman",
-                "Official competition name: TSP - Traveling salesman problem\n" +
+                "Official competition name: TSP - Traveling salesman problem\n\n" +
                         "Determine the order in which to visit all cities.\n\n" +
                         "Find the shortest route to visit all cities.",
                 TspPanel.LOGO_PATH, new Runnable() {
@@ -161,7 +161,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("Course timetabling",
-                "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n" +
+                "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n\n" +
                         "Assign lectures to periods and rooms.",
                 null, new Runnable() {
             public void run() {
@@ -169,7 +169,7 @@ public class OptaPlannerExamplesApp extends JFrame {
             }
         }));
         panel.add(createExampleButton("Machine reassignment",
-                "Official competition name: Google ROADEF 2012 - Machine reassignment.\n" +
+                "Official competition name: Google ROADEF 2012 - Machine reassignment\n\n" +
                         "Reassign processes to machines.",
                 MachineReassignmentPanel.LOGO_PATH, new Runnable() {
             public void run() {
@@ -177,8 +177,12 @@ public class OptaPlannerExamplesApp extends JFrame {
             }
         }));
         panel.add(createExampleButton("Vehicle routing",
-                "Official competition name: Capacitated vehicle routing problem (CRVP)\n" +
-                        "Pick up all items of all customers with a few vehicles in the shortest route possible.",
+                "Official competition name: Capacitated vehicle routing problem (CVRP), " +
+                        "optionally with time windows (CVRPTW)\n\n" +
+                        "Pick up all items of all customers with a few vehicles.\n\n" +
+                        "Find the shortest route possible.\n" +
+                        "Do not overload the capacity of the vehicles.\n" +
+                        "Arrive within the time window of each customer.",
                 VehicleRoutingPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new VehicleRoutingApp().init(OptaPlannerExamplesApp.this, false);
@@ -186,15 +190,16 @@ public class OptaPlannerExamplesApp extends JFrame {
         }));
         panel.add(createExampleButton("Project job scheduling",
                 "Official competition name:" +
-                        " multi-mode resource-constrained multi-project scheduling problem (MRCMPSP)\n" +
-                        "Schedule all jobs in time and execution mode to minimize project delays.",
+                        " multi-mode resource-constrained multi-project scheduling problem (MRCMPSP)\n\n" +
+                        "Schedule all jobs in time and execution mode.\n\n" +
+                        "Minimize project delays.",
                 ProjectJobSchedulingPanel.LOGO_PATH, new Runnable() {
             public void run() {
                 new ProjectJobSchedulingApp().init(OptaPlannerExamplesApp.this, false);
             }
         }));
         panel.add(createExampleButton("Hospital bed planning",
-                "Official competition name: PAS - Patient admission scheduling\n" +
+                "Official competition name: PAS - Patient admission scheduling\n\n" +
                         "Assign patients to beds.",
                 null, new Runnable() {
             public void run() {
@@ -211,7 +216,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
         panel.add(createExampleButton("Exam timetabling",
-                "Official competition name: ITC 2007 track1 - Examination timetabling\n" +
+                "Official competition name: ITC 2007 track1 - Examination timetabling\n\n" +
                         "Assign exams to timeslots and rooms.",
                 null, new Runnable() {
             public void run() {
@@ -219,7 +224,7 @@ public class OptaPlannerExamplesApp extends JFrame {
             }
         }));
         panel.add(createExampleButton("Employee rostering",
-                "Official competition name: INRC2010 - Nurse rostering\n" +
+                "Official competition name: INRC2010 - Nurse rostering\n\n" +
                         "Assign shifts to employees.",
                 NurseRosteringPanel.LOGO_PATH, new Runnable() {
             public void run() {
@@ -227,8 +232,8 @@ public class OptaPlannerExamplesApp extends JFrame {
             }
         }));
         panel.add(createExampleButton("Sport scheduling",
-                "Official competition name: TTP - Traveling tournament problem\n" +
-                        "Assign matches to days.",
+                "Official competition name: TTP - Traveling tournament problem\n\n" +
+                        "Assign sport matches to days.",
                 null, new Runnable() {
             public void run() {
                 new TravelingTournamentApp().init(OptaPlannerExamplesApp.this, false);

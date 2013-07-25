@@ -102,6 +102,7 @@ public class VehicleRoutingSchedulePainter {
             g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE/2);
             if (customer instanceof VrpTimeWindowedCustomer) {
                 VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
+                g.setColor(TangoColorFactory.ALUMINIUM_3);
                 int circleX = x - (TIME_WINDOW_DIAMETER / 2);
                 int circleY = y + 5;
                 g.drawOval(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER);
@@ -117,11 +118,13 @@ public class VehicleRoutingSchedulePainter {
                     } else {
                         g.setColor(TangoColorFactory.ALUMINIUM_6);
                     }
+                    g.setStroke(TangoColorFactory.THICK_STROKE);
                     int circleCenterY = y + 5 + TIME_WINDOW_DIAMETER / 2;
                     int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getArrivalTime());
                     g.drawLine(x, circleCenterY,
                             x + (int) (Math.sin(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)),
                             circleCenterY - (int) (Math.cos(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)));
+                    g.setStroke(TangoColorFactory.NORMAL_STROKE);
                 }
             }
         }
@@ -197,8 +200,7 @@ public class VehicleRoutingSchedulePainter {
         // Legend
         g.setColor(TangoColorFactory.ALUMINIUM_3);
         g.fillRect(5, (int) height - 12 - TEXT_SIZE - (TEXT_SIZE / 2), 5, 5);
-        g.drawString((schedule instanceof VrpTimeWindowedSchedule)
-                ? "Depot: time window" : "Depot", 15, (int) height - 10 - TEXT_SIZE);
+        g.drawString("Depot", 15, (int) height - 10 - TEXT_SIZE);
         String vehiclesSizeString = schedule.getVehicleList().size() + " vehicles";
         g.drawString(vehiclesSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(vehiclesSizeString)) / 2, (int) height - 10 - TEXT_SIZE);

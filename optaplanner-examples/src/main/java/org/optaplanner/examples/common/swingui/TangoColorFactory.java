@@ -68,6 +68,7 @@ public class TangoColorFactory {
             TangoColorFactory.PLUM_3
     };
 
+    public static final Stroke THICK_STROKE = new BasicStroke(2.0f);
     public static final Stroke NORMAL_STROKE = new BasicStroke();
 
     public static final Stroke FAT_DASHED_STROKE = new BasicStroke(
