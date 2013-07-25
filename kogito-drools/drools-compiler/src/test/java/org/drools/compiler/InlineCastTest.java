@@ -279,5 +279,65 @@ public class InlineCastTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testSuperclass() {
+        String drl = "package org.drools.compiler.integrationtests\n"
+                     + "import org.drools.compiler.*;\n"
+                     + "rule R1\n"
+                     + " when\n"
+                     + " Person( address#LongAddress.country str[startsWith] \"United\" )\n"
+                     + " then\n"
+                     + "end\n";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try {
+            Person mark1 = new Person("mark");
+            mark1.setAddress(new Address());
+            ksession.insert(mark1);
+
+            Person mark2 = new Person("mark");
+            mark2.setAddress(new LongAddress("United Kingdom"));
+            ksession.insert(mark2);
+
+            Person mark3 = new Person("mark");
+            mark3.setAddress(new LongAddress("Czech Republic"));
+            ksession.insert(mark3);
+
+            assertEquals("wrong number of rules fired", 1, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testGroupedAccess() {
+        String drl = "package org.drools.compiler.integrationtests\n"
+                     + "import org.drools.compiler.*;\n"
+                     + "rule R1\n"
+                     + " when\n"
+                     + " Person( address#LongAddress.(country == \"United States\" || country == \"United Kingdom\") )\n"
+                     + " then\n"
+                     + "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try {
+            Person mark1 = new Person("mark");
+            mark1.setAddress(new LongAddress("United States"));
+            ksession.insert(mark1);
+
+            Person mark2 = new Person("mark");
+            mark2.setAddress(new LongAddress("United Kingdom"));
+            ksession.insert(mark2);
+
+            Person mark3 = new Person("mark");
+            mark3.setAddress(new LongAddress("Czech Republic"));
+            ksession.insert(mark3);
+
+            assertEquals("wrong number of rules fired", 2, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
 }
