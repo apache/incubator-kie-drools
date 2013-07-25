@@ -1,0 +1,63 @@
+package org.drools.defeasible;
+
+declare A
+    id  : int   @key
+end
+
+declare B
+    id  : int   @key
+end
+
+declare C
+    id  : int   @key
+end
+
+declare D
+    id  : int   @key
+end
+
+declare X
+    id  : int   @key
+end
+
+declare Y
+    id  : int   @key
+end
+
+
+
+rule "Init"
+when
+then
+    insert( new A( 1 ) );   // A(1) is a Fact
+    insert( new A( 3 ) );   // A(1) is a Fact
+    insert( new B( 2 ) );   // same for B(2)
+end
+
+rule "Defeater Rule"
+@Defeater
+when
+    A( 1; )
+    B( 2; )
+then
+    insertLogical( new X( -1 ), "neg" );
+end
+
+rule "Strict Rule 2"
+@Strict
+when
+    A( 3; )
+then
+    insertLogical( new X( -1 ) );
+    insertLogical( new C( 99 ) );
+end
+
+rule "Strict Rule 3"
+@Defeasible
+@Defeats( { "Defeater Rule", "Another rule" } )
+when
+    C( 99; )
+then
+    insertLogical( new X( -1 ) );
+end
+

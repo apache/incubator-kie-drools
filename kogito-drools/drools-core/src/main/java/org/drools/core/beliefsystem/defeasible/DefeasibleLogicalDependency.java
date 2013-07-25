@@ -7,8 +7,9 @@ import org.drools.core.util.StringUtils;
 import java.util.Arrays;
 
 public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
-    public static final String DEFEATS = Defeats.class.getSimpleName();
-    public static final String DEFEATER = Defeater.class.getSimpleName();
+    private static final String[] EMPTY_DEFEATS = new String [0];
+    public static final String    DEFEATS = Defeats.class.getSimpleName();
+    public static final String    DEFEATER = Defeater.class.getSimpleName();
 
     private DefeasibilityStatus         status;
     private String[]                    defeats;
@@ -50,6 +51,8 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
                 defeats = (String[]) o;
                 Arrays.sort(defeats);
             }
+        } else {
+            defeats = EMPTY_DEFEATS;
         }
     }
 

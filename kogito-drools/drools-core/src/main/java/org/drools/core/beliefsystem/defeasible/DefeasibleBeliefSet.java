@@ -2,8 +2,11 @@ package org.drools.core.beliefsystem.defeasible;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSet.MODE;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSet;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.WorkingMemoryAction;
@@ -13,10 +16,12 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Arrays;
+import java.util.List;
 
-public class DefeasibleBeliefSet implements BeliefSet {
+public class DefeasibleBeliefSet implements JTMSBeliefSet {
     private BeliefSystem beliefSystem;
 
     public static final String DEFEATS = Defeats.class.getSimpleName();
@@ -84,6 +89,7 @@ public class DefeasibleBeliefSet implements BeliefSet {
 
     public void add(LinkedListNode node) {
         DefeasibleLogicalDependency newDep = (DefeasibleLogicalDependency) ((LinkedListEntry) node).getObject();
+        newDep.setStatus(resolveStatus(newDep));
 
         Rule rule = newDep.getJustifier().getRule();
 
@@ -101,7 +107,7 @@ public class DefeasibleBeliefSet implements BeliefSet {
         if (!wasDefeated) {
             DefeasibleLogicalDependency stagedDeps = null;
             //for (DefeasibleLogicalDependency existingDep = rootUndefeated; existingDep != null; ) {
-            for (LinkedListEntry<DefeasibleLogicalDependency> existingNode = rootUndefeated; existingNode != null; existingNode = existingNode.getNext()) {
+            for (LinkedListEntry<DefeasibleLogicalDependency> existingNode = rootUndefeated; existingNode != null;) {
                 LinkedListEntry<DefeasibleLogicalDependency> next = existingNode.getNext();
                 DefeasibleLogicalDependency existingDep = existingNode.getObject();
 
@@ -430,5 +436,64 @@ public class DefeasibleBeliefSet implements BeliefSet {
             return true;
         }
     }
+
+    private DefeasibilityStatus resolveStatus( LogicalDependency node ) {
+        List<? extends FactHandle> premise = node.getJustifier().getFactHandles();
+
+        DefeasibilityStatus status = DefeasibilityStatus.resolve( node.getValue() );
+
+        if ( status == null ) {
+            DefeasibleRuleNature defeasibleType = DefeasibleRuleNature.STRICT;
+            if ( node.getJustifier().getRule().getMetaData().containsKey( DefeasibleRuleNature.DEFEASIBLE.getLabel() ) ) {
+                defeasibleType = DefeasibleRuleNature.DEFEASIBLE;
+            } else if ( node.getJustifier().getRule().getMetaData().containsKey( DefeasibleRuleNature.DEFEATER.getLabel() ) ) {
+                defeasibleType = DefeasibleRuleNature.DEFEATER;
+            }
+
+            switch ( defeasibleType ) {
+                case DEFEASIBLE :
+                    status = checkDefeasible(premise);
+                    break;
+                case DEFEATER   :
+                    status = checkDefeater(premise);
+                    break;
+                case STRICT     :
+                default         :
+                    status = checkStrict(premise );
+                    break;
+            }
+        }
+        return status;
+    }
+
+    private DefeasibilityStatus checkDefeasible(  List<? extends FactHandle> premise ) {
+        return DefeasibilityStatus.DEFEASIBLY;
+    }
+
+    private DefeasibilityStatus checkDefeater(  List<? extends FactHandle> premise ) {
+        return DefeasibilityStatus.DEFEATEDLY;
+    }
+
+    private DefeasibilityStatus checkStrict(  List<? extends FactHandle> premise ) {
+        // The rule is strict. To prove that the derivation is strict we have to check that all the premises are
+        // either facts or strictly proved facts
+        for ( FactHandle h : premise ) {
+            EqualityKey key = ((DefaultFactHandle) h).getEqualityKey();
+            if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
+                //DefeasibleBeliefSet bs = (DefeasibleBeliefSet) getTruthMaintenanceSystem().getJustifiedMap().get(((DefaultFactHandle) h).getId());
+
+                DefeasibleBeliefSet bs = (DefeasibleBeliefSet) key.getBeliefSet();
+
+
+                if ( bs.getStatus() != DefeasibilityStatus.DEFINITELY ) {
+                    // to make a fact "definitely provable", all the supporting non-factual premises must be definitely provable.
+                    return DefeasibilityStatus.DEFEASIBLY;
+                }
+            }
+            // else it's a fact, so it's a good candidate for definite entailment
+        }
+        return DefeasibilityStatus.DEFINITELY;
+    }
+
 
 }
