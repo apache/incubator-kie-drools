@@ -168,33 +168,33 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     }
 
     public void addUndefeated(DefeasibleLogicalDependency dep, LinkedListEntry<DefeasibleLogicalDependency> node) {
-        boolean pos = dep.getValue() != null && MODE.POSITIVE.getId().equals( dep.getValue().toString() );
+        boolean pos = dep.getValue() == null || MODE.POSITIVE.getId().equals( dep.getValue().toString() );
         switch( dep.getStatus() ) {
             case DEFINITELY:
                 if ( pos ) {
                     definitelyPosCount++;
-                    statusMask = statusMask & DEFINITELY_POS_BIT;
+                    statusMask = statusMask | DEFINITELY_POS_BIT;
                 } else {
                     definitelyNegCount++;
-                    statusMask = statusMask & DEFINITELY_NEG_BIT;
+                    statusMask = statusMask | DEFINITELY_NEG_BIT;
                 }
                 break;
             case DEFEASIBLY:
                 if ( pos ) {
                     defeasiblyPosCount++;
-                    statusMask = statusMask & DEFEASIBLY_POS_BIT;
+                    statusMask = statusMask | DEFEASIBLY_POS_BIT;
                 } else {
                     defeasiblyNegCount++;
-                    statusMask = statusMask & DEFEASIBLY_NEG_BIT;
+                    statusMask = statusMask | DEFEASIBLY_NEG_BIT;
                 }
                 break;
             case DEFEATEDLY:
                 if ( pos ) {
                     defeatedlyPosCount++;
-                    statusMask = statusMask & DEFEATEDLY_POS_BIT;
+                    statusMask = statusMask | DEFEATEDLY_POS_BIT;
                 } else {
                     defeatedlyNegCount++;
-                    statusMask = statusMask & DEFEATEDLY_NEG_BIT;
+                    statusMask = statusMask | DEFEATEDLY_NEG_BIT;
                 }
                 break;
             case UNDECIDABLY:
@@ -322,6 +322,14 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return definitelyPosCount + definitelyNegCount + defeasiblyPosCount + defeasiblyNegCount + defeatedlyPosCount + defeatedlyNegCount;
     }
 
+    public int undefeatdSize() {
+        int i = 0;
+        for (LinkedListEntry<DefeasibleLogicalDependency> existingNode = rootUndefeated; existingNode != null; existingNode = existingNode.getNext()) {
+            i++;
+        }
+        return i;
+    }
+
     public void cancel(PropagationContext propagationContext) {
         // get all but last, as that we'll do via the BeliefSystem, for cleanup
         // note we don't update negative, conflict counters. It's needed for the last cleanup operation
@@ -403,7 +411,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     }
 
     public boolean isConflicting() {
-        return getStatus() == DefeasibilityStatus.UNDECIDABLY;
+        return statusMask == 0 ?  false : getStatus() == DefeasibilityStatus.UNDECIDABLY;
     }
 
     public FastIterator iterator() {

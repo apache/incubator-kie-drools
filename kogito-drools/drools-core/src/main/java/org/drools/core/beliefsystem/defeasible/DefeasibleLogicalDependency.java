@@ -37,7 +37,8 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
         Object o = getJustifier().getRule().getMetaData().get(DEFEATER);
 
 
-        if ( o != null && !"FALSE".equals(((String) o).toUpperCase()) ) {
+
+        if ( o != null && ((Boolean)o).booleanValue() ) {
             isDefeater = true;
         }
 
@@ -48,7 +49,11 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
                 defeats = new String[]{(String) o};
                 Arrays.sort(defeats);
             } else if (o instanceof Object[]) {
-                defeats = (String[]) o;
+                Object[] oArray = (Object[]) o;
+                defeats = new String[oArray.length];
+                for ( int i = 0; i < oArray.length;i++ ) {
+                    defeats[i] = (String) oArray[i];
+                }
                 Arrays.sort(defeats);
             }
         } else {

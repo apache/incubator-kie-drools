@@ -19,10 +19,13 @@ import org.drools.core.BeliefSystemType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.defeasible.DefeasibilityStatus;
 import org.drools.core.beliefsystem.defeasible.DefeasibleBeliefSet;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
+import org.drools.core.util.Entry;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -36,6 +39,8 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -45,48 +50,48 @@ import static org.junit.Assert.fail;
 public class DefeasibilityTest {
 
 
-//    private void checkDefeasibilityByHandleId( int handleId, DefeasibilityStatus status, int totalSupporters, int frontierSize, TruthMaintenanceSystem tms ) {
-//        Object x = tms.getJustifiedMap().get( handleId );
-//        assertTrue( x instanceof DefeasibleBeliefSet);
-//        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) x;
-//
-//        switch ( status ) {
-//            case DEFINITELY:
+    private void checkDefeasibilityByHandleId( EqualityKey key, DefeasibilityStatus status, int insertSize, int undefeatedSize ) {
+        DefeasibleBeliefSet dbs = (DefeasibleBeliefSet) key.getBeliefSet();
+
+        assertEquals( status, dbs.getStatus() );
+
+        switch ( status ) {
+            case DEFINITELY:
 //                assertTrue( dbs.getDeliberation() == BeliefSet.FACT_WMSTATE.IN );
 //                assertTrue( dbs.isDefinitelyProvable() );
 //                assertTrue( dbs.isDefeasiblyProvable() );
 //                assertFalse( dbs.isUndecidable() );
 //                assertFalse( dbs.isDefeated() );
-//                break;
-//
-//            case DEFEASIBLY:
+                break;
+
+            case DEFEASIBLY:
 //                assertTrue( dbs.getDeliberation() == BeliefSet.FACT_WMSTATE.IN );
 //                assertFalse( dbs.isDefinitelyProvable() );
 //                assertTrue( dbs.isDefeasiblyProvable() );
 //                assertFalse( dbs.isUndecidable() );
 //                assertFalse( dbs.isDefeated() );
-//                break;
-//
-//            case DEFEATEDLY:
+                break;
+
+            case DEFEATEDLY:
 //                assertTrue( dbs.getDeliberation() == BeliefSet.FACT_WMSTATE.HELD );
 //                assertFalse( dbs.isDefinitelyProvable() );
 //                assertFalse( dbs.isDefeasiblyProvable() );
 //                assertFalse( dbs.isUndecidable() );
 //                assertTrue( dbs.isDefeated() );
-//                break;
-//
-//            case UNDECIDABLY:
+                break;
+
+            case UNDECIDABLY:
 //                assertTrue( dbs.getDeliberation() == BeliefSet.FACT_WMSTATE.HELD );
 //                assertFalse( dbs.isDefinitelyProvable() );
 //                assertFalse( dbs.isDefeasiblyProvable() );
 //                assertTrue( dbs.isUndecidable() );
 //                assertFalse( dbs.isDefeated() );
-//                break;
-//        }
-//
-//        assertEquals( totalSupporters, dbs.size() );
-//        assertEquals( frontierSize, dbs.getFrontierSize() );
-//    }
+                break;
+        }
+
+        assertEquals( insertSize, dbs.size() );
+        assertEquals( undefeatedSize, dbs.undefeatdSize() );
+    }
 
 
     protected StatefulKnowledgeSession getSession( String ruleFile  ) {
@@ -112,45 +117,35 @@ public class DefeasibilityTest {
     @Test
     public void strictEntailment() {
         StatefulKnowledgeSession kSession = getSession( "strict.drl" );
+        Map<String, FactHandle> handles = new HashMap<String, FactHandle>();
         kSession.fireAllRules();
 
         EntryPoint ep = kSession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
         TruthMaintenanceSystem tms = ((NamedEntryPoint)ep).getTruthMaintenanceSystem();
 
-        for ( Object o : kSession.getObjects() ) {
-            System.out.println( o );
-        }
-
-//        assertEquals( 2, tms.getJustifiedMap().size() );
+        assertEquals(2, tms.getEqualityKeyMap().size());
         assertEquals( 5, kSession.getObjects().size() );
-//
-//        checkDefeasibilityByHandleId( 4, DefeasibilityStatus.DEFINITELY, 2, 2, tms );
-//        checkDefeasibilityByHandleId( 5, DefeasibilityStatus.DEFINITELY, 1, 1, tms );
+
+        checkDefeasibilityByHandleId( getEqualityKey("C( id=99 )", tms), DefeasibilityStatus.DEFINITELY, 2, 2 );
+        checkDefeasibilityByHandleId( getEqualityKey("D( id=-5 )", tms), DefeasibilityStatus.DEFINITELY, 1, 1);
     }
 
-//
-//    @Test
-//    public void testDefeasibleEntailment() {
-//        defeasibleEntailment( false );
-//    }
-//
-//    @Test
-//    public void testDefeasibleEntailmentComposite() {
-//        defeasibleEntailment( true );
-//    }
-//
-//    public void defeasibleEntailment( boolean composite ) {
-//        StatefulKnowledgeSession kSession = getSession( "org/drools/beliefsystem/defeasible/strictOverride.drl", composite );
-//        kSession.fireAllRules();
-//
-//        TruthMaintenanceSystem tms = ( (StatefulKnowledgeSessionImpl) kSession ).session.getTruthMaintenanceSystem();
-//
-//        assertEquals( 2, tms.getJustifiedMap().size() );
+    @Test
+    public void defeasibleEntailment( ) {
+        StatefulKnowledgeSession kSession = getSession( "strictOverride.drl" );
+        kSession.fireAllRules();
+
+        EntryPoint ep = kSession.getEntryPoint(EntryPointId.DEFAULT.getEntryPointId());
+        TruthMaintenanceSystem tms = ((NamedEntryPoint)ep).getTruthMaintenanceSystem();
+
+//        assertEquals( 2, tms.getEqualityKeyMap().size());
 //        assertEquals( 5, kSession.getObjects().size() );
 //
-//        checkDefeasibilityByHandleId( 4, DefeasibilityStatus.DEFINITELY, 3, 2, tms );
-//        checkDefeasibilityByHandleId( 5, DefeasibilityStatus.DEFINITELY, 1, 1, tms );
-//    }
+//        //assertEquals( 1,  kSession.getEntryPoint("neg").getObjects().size() );
+//
+//        checkDefeasibilityByHandleId( getEqualityKey("X( id=-1 )", tms), DefeasibilityStatus.DEFINITELY, 3, 2);
+//        checkDefeasibilityByHandleId( getEqualityKey("C( id=99 )", tms), DefeasibilityStatus.DEFINITELY, 1, 1);
+    }
 //
 //
 //
@@ -501,6 +496,19 @@ public class DefeasibilityTest {
 ////
 ////
 ////    }
+
+
+    public EqualityKey getEqualityKey(String id, TruthMaintenanceSystem tms) {
+        Entry[] entries = (Entry[]) tms.getEqualityKeyMap().toArray();
+        for ( Entry e : entries ) {
+            EqualityKey key = (EqualityKey)((ObjectEntry)e).getValue();
+            if ( key.getFactHandle().getObject().toString().equals(id)) {
+                return key;
+            }
+        }
+        fail("Unable to find Equality Key" + id );
+        return null;
+    }
 
 
 }
