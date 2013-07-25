@@ -1,5 +1,3 @@
-package org.kie.api.definition.type;
-
 /*
  * Copyright 2012 JBoss Inc
  *
@@ -15,6 +13,9 @@ package org.kie.api.definition.type;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.kie.api.definition.type;
+
 public interface Annotation {
 
     public String getName();
