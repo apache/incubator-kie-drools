@@ -55,7 +55,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
     @Override
     public void assertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        if ( factHandle.getObject() instanceof TraitProxy ) {
+        if ( factHandle.getObject() instanceof TraitProxy && typeMask != null ) {
             BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
             if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset(vetoMask, this.typeMask) ) {
                 //System.out.println(" PASS Redundancy " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
@@ -86,7 +86,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
                     workingMemory );
         } else {
-            if ( factHandle.getObject() instanceof TraitProxy )  {
+            if ( factHandle.getObject() instanceof TraitProxy && typeMask != null )  {
                 BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
                 if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
                     this.sink.propagateModifyObject( factHandle,
