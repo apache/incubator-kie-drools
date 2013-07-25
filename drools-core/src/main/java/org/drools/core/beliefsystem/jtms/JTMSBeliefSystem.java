@@ -47,14 +47,14 @@ public class JTMSBeliefSystem
 
         boolean wasEmpty = jtmsBeliefSet.isEmpty();
         boolean wasNegated = jtmsBeliefSet.isNegated();
-        boolean wasConflicting = jtmsBeliefSet.isConflicting();
+        boolean isUndecided = jtmsBeliefSet.isUndecided();
 
         jtmsBeliefSet.add( node.getJustifierEntry() );
 
         if ( wasEmpty ) {
             // Insert Belief
-            insertBelief( node, typeConf, jtmsBeliefSet, wasNegated, wasConflicting );
-        } else if ( !wasConflicting && jtmsBeliefSet.isConflicting() ) {
+            insertBelief( node, typeConf, jtmsBeliefSet, wasEmpty, wasNegated, isUndecided );
+        } else if ( !isUndecided && jtmsBeliefSet.isUndecided() ) {
             // Handle Conflict
             if ( STRICT ) {
                 throw new IllegalStateException( "FATAL : A fact and its negation have been asserted " + jtmsBeliefSet.getFactHandle().getObject() );
@@ -87,24 +87,25 @@ public class JTMSBeliefSystem
     private void insertBelief(LogicalDependency node,
                               ObjectTypeConf typeConf,
                               JTMSBeliefSet jtmsBeliefSet,
+                              boolean wasEmpty,
                               boolean wasNegated,
-                              boolean wasConflicting) {
+                              boolean isUndecided) {
         if ( jtmsBeliefSet.isNegated() ) {
             jtmsBeliefSet.setNegativeFactHandle( (InternalFactHandle) negEP.insert( node.getObject() ) );
-            
+
             // As the neg partition is always stated, it'll have no equality key.
             // However the equality key is needed to stop duplicate LogicalCallbacks, so we manually set it
             // @FIXME **MDP could this be a problem during derialization, where the
-            jtmsBeliefSet.getNegativeFactHandle().setEqualityKey( jtmsBeliefSet.getFactHandle().getEqualityKey() ); 
+            jtmsBeliefSet.getNegativeFactHandle().setEqualityKey( jtmsBeliefSet.getFactHandle().getEqualityKey() );
             jtmsBeliefSet.setPositiveFactHandle( null );
-            if ( !(wasNegated || wasConflicting) ) {
+            if ( !(wasNegated || isUndecided) ) {
                 defEP.getObjectStore().removeHandle( jtmsBeliefSet.getFactHandle() ); // Make sure the FH is no longer visible in the default ObjectStore
             }
         } else {
             jtmsBeliefSet.setPositiveFactHandle( jtmsBeliefSet.getFactHandle() ); // Use the BeliefSet FH for positive facts
             jtmsBeliefSet.setNegativeFactHandle( null );
 
-            if ( wasNegated || wasConflicting ) {
+            if ( !wasEmpty && (wasNegated || isUndecided ) ) {
                 jtmsBeliefSet.getFactHandle().setObject( node.getObject() ); // Set the Object, as it may have been a negative initialization, before conflict
                 defEP.getObjectStore().addHandle( jtmsBeliefSet.getPositiveFactHandle(), jtmsBeliefSet.getPositiveFactHandle().getObject() ); // Make sure the FH is visible again
             }
@@ -117,27 +118,6 @@ public class JTMSBeliefSystem
         }
     }
 
-//    private void retractOrUpdateBelief(LogicalDependency node,
-//                                       PropagationContext context,
-//                                       InternalFactHandle fh,
-//                                       boolean update,
-//                                       boolean fullyRetract) {
-//        JTMSBeliefSet jtmsBeliefSet = ( JTMSBeliefSet ) fh.getEqualityKey().getBeliefSet();
-//        if ( jtmsBeliefSet.getWorkingMemoryAction() == null ) {
-//            // doesn't exist, so create it
-//            WorkingMemoryAction action = new LogicalCallback( fh,
-//                                                                                     context,
-//                                                                                     node.getJustifier(),
-//                                                                                     update,
-//                                                                                     fullyRetract ); // Only negative is fully retracted.
-//            ((NamedEntryPoint) fh.getEntryPoint()).enQueueWorkingMemoryAction( action );
-//        } else {
-//            // it exists (update required due to previous change in prime), so just update it's actions
-//            LogicalCallback callback = ( LogicalCallback ) jtmsBeliefSet.getWorkingMemoryAction();
-//            callback.setFullyRetract( fullyRetract );
-//            callback.setUpdate( update );
-//        }
-//    }
 
     public void read(LogicalDependency node,
                      BeliefSet beliefSet,
@@ -150,7 +130,7 @@ public class JTMSBeliefSystem
                        BeliefSet beliefSet,
                        PropagationContext context) {
         JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) beliefSet;
-        boolean wasConflicting = jtmsBeliefSet.isConflicting();
+        boolean wasConflicting = jtmsBeliefSet.isUndecided();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
         // If the prime object is removed, we need to update the FactHandle, and tell the callback to update
@@ -175,10 +155,11 @@ public class JTMSBeliefSystem
                 ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
             }
 
-        } else if ( wasConflicting && !jtmsBeliefSet.isConflicting() ) {
+        } else if ( wasConflicting && !jtmsBeliefSet.isUndecided() ) {
             insertBelief( node,
                           defEP.getObjectTypeConfigurationRegistry().getObjectTypeConf( defEP.getEntryPoint(), node.getObject() ),
                           jtmsBeliefSet,
+                          false,
                           wasNegated,
                           wasConflicting );
         } else if ( primeChanged ) {
