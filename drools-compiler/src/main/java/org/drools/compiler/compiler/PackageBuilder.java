@@ -2178,6 +2178,12 @@ public class PackageBuilder
                         typeDescr.setNamespace( imp.substring( 0, separator ) );
                         typeClass = getClassForType( typeDescr.getType().getFullName() );
                         break;
+                    } else if ( tail.equals("*") ) {
+                        typeClass = getClassForType( imp.substring(0, imp.length()-1) + typeDescr.getType().getName() );
+                        if (typeClass != null) {
+                            typeDescr.setNamespace( imp.substring( 0, separator ) );
+                            break;
+                        }
                     }
                 }
             }
