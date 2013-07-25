@@ -178,8 +178,6 @@ public class AbstractWorkingMemory
 
     protected FactHandleFactory handleFactory;
 
-    private TruthMaintenanceSystem tms;
-
     /** Rule-firing agenda. */
     protected InternalAgenda agenda;
 
@@ -713,7 +711,7 @@ public class AbstractWorkingMemory
 
         this.handleFactory.clear( handleId,
                                   handleCounter );
-        if (tms != null) tms.clear();
+
         if (actionQueue != null) actionQueue.clear();
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );

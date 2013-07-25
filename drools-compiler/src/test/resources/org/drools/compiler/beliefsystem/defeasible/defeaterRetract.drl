@@ -1,0 +1,48 @@
+package org.drools.defeasible;
+
+declare A
+    id  : int   @key
+end
+
+declare B
+    id  : int   @key
+end
+
+declare C
+    id  : int   @key
+end
+
+declare D
+    id  : int   @key
+end
+
+rule "Init"
+when
+    $s : String( this == "go" )
+then
+    insertLogical( new A( 3 ) );
+end
+
+rule "Init 2"
+when
+
+then
+    insert( new B( 2 ) );   // same for B(2)
+end
+
+rule "Strict Rule"
+when
+    B( 2; )
+then
+    insertLogical( new C( 99 ) );
+end
+
+rule "Def Rule 2"
+@Defeasible
+when
+    A( 3; )
+then
+    insertLogical( new C( 99 ) );
+end
+
+

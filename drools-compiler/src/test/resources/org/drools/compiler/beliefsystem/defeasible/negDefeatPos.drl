@@ -1,0 +1,59 @@
+package org.drools.defeasible;
+
+global java.util.List list;
+
+declare A
+    id  : int   @key
+end
+
+declare B
+    id  : int   @key
+end
+
+declare X
+    id  : int   @key
+end
+
+
+rule "Init"
+when
+then
+    insert( new A( 1 ) );   // A(1) is a Fact
+    insert( new B( 2 ) );   // same for B(2)
+end
+
+rule "Stronger"
+@Defeasible
+@Defeats( "Weaker" )
+when
+    B( 2; )
+then
+    insertLogical( new X( 1 ), "neg" );
+end
+
+rule "Weaker"
+@Defeasible
+when
+    A( 1; )
+then
+    insertLogical( new X( 1 ) );
+end
+
+
+rule "Pos"
+salience -1
+when
+    $x : X( $id : id )
+then
+    System.out.println( "Positive X " + $x );
+    list.add( "+" + $id );
+end
+
+rule "Neg"
+salience -1
+when
+    $x : X( $id : id ) from entry-point "neg"
+then
+    System.out.println( "Negative X " + $x );
+    list.add( "-" + $id );
+end

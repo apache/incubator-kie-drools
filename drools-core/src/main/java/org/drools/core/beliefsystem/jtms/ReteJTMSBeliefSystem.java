@@ -2,7 +2,7 @@ package org.drools.core.beliefsystem.jtms;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.jtms.JTMSBeliefSet.MODE;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
@@ -44,7 +44,7 @@ public class ReteJTMSBeliefSystem
                        BeliefSet beliefSet,
                        PropagationContext context,
                        ObjectTypeConf typeConf) {
-        JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
+        JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) beliefSet;
 
         boolean wasEmpty = jtmsBeliefSet.isEmpty();
         boolean wasNegated = jtmsBeliefSet.isNegated();
@@ -80,7 +80,7 @@ public class ReteJTMSBeliefSystem
 
     private void insertBelief(LogicalDependency node,
                               ObjectTypeConf typeConf,
-                              JTMSBeliefSet jtmsBeliefSet,
+                              JTMSBeliefSetImpl jtmsBeliefSet,
                               boolean wasNegated,
                               boolean wasConflicting) {
         if ( jtmsBeliefSet.isNegated() ) {
@@ -116,7 +116,7 @@ public class ReteJTMSBeliefSystem
                                        InternalFactHandle fh,
                                        boolean update,
                                        boolean fullyRetract) {
-        JTMSBeliefSet jtmsBeliefSet = ( JTMSBeliefSet ) fh.getEqualityKey().getBeliefSet();
+        JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) fh.getEqualityKey().getBeliefSet();
         if ( jtmsBeliefSet.getWorkingMemoryAction() == null ) {
             // doesn't exist, so create it
             WorkingMemoryAction action = new LogicalCallback( fh,
@@ -143,7 +143,7 @@ public class ReteJTMSBeliefSystem
     public void delete(LogicalDependency node,
                        BeliefSet beliefSet,
                        PropagationContext context) {
-        JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
+        JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) beliefSet;
         boolean wasConflicting = jtmsBeliefSet.isConflicting();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
@@ -207,7 +207,7 @@ public class ReteJTMSBeliefSystem
     }
 
     public BeliefSet newBeliefSet(InternalFactHandle fh) {
-        return new JTMSBeliefSet( this, fh );
+        return new JTMSBeliefSetImpl( this, fh );
     }
 
     public LogicalDependency newLogicalDependency(Activation activation,

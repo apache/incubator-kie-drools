@@ -34,4 +34,5 @@ public class DefeasibleBeliefSystem extends JTMSBeliefSystem {
         return new DefeasibleLogicalDependency(activation, beliefSet, object, value);
     }
 
+
 }
