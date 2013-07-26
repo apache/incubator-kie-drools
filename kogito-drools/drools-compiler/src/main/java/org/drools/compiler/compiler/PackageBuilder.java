@@ -55,7 +55,6 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumLiteralDescr;
-import org.drools.compiler.lang.descr.FactTemplateDescr;
 import org.drools.compiler.lang.descr.FieldTemplateDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.FunctionImportDescr;
@@ -2410,16 +2409,24 @@ public class PackageBuilder
                                                                                   Collections.EMPTY_MAP,
                                                                                   type.getTypeClass() ) );
 
-            InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
-                                                                                          type.getTypeClass().getName(),
-                                                                                          timestamp,
-                                                                                          type.isTypesafe(),
-                                                                                          results.getReturnType() );
+            if ( results != null ) {
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              timestamp,
+                                                                                              type.isTypesafe(),
+                                                                                              results.getReturnType() );
 
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
-            data.addCompileable( (MVELCompileable) reader );
-            ((MVELCompileable) reader).compile( data );
-            type.setTimestampExtractor( reader );
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ((MVELCompileable) reader).compile( data );
+                type.setTimestampExtractor( reader );
+            } else {
+                this.results.add( new TypeDeclarationError( typeDescr,
+                                                            "Error creating field accessors for timestamp field '" + timestamp +
+                                                            "' for type '" +
+                                                            type.getTypeName() +
+                                                            "'" ) );
+            }
         }
 
         annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );

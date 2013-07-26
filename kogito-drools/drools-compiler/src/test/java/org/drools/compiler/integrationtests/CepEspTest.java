@@ -2938,6 +2938,23 @@ public class CepEspTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testTimeStampOnNonExistingField() throws Exception {
+        // BZ-985942
+        String drl = "package org.drools.compiler;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     " @role( event )\n" +
+                     " @timestamp( nonExistingField ) \n" +
+                     "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()),
+                      ResourceType.DRL );
+
+        assertTrue( kbuilder.hasErrors() );
+    }
+
     @Test (timeout=10000)
     public void testTimeWindowWithPastEvents() throws Exception {
         // JBRULES-2258 

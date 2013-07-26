@@ -34,11 +34,12 @@ import org.drools.verifier.data.VerifierReportFactory;
 import org.drools.verifier.report.components.Severity;
 import org.drools.verifier.report.components.VerifierMessage;
 import org.drools.verifier.report.components.VerifierMessageBase;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ConsequenceTest extends TestBaseOld {
 
-    @Test
+    @Test @Ignore
     public void testMissingConsequence() throws Exception {
 
         InputStream in = getClass().getResourceAsStream( "Consequence.drl" );
