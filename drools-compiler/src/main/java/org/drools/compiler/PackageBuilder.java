@@ -2328,17 +2328,25 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                                               Collections.EMPTY_MAP,
                                                                                               Collections.EMPTY_MAP,
                                                                                               type.getTypeClass() ) );
-            
-            InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage(type.getTypeClass()),
-                                                                                          type.getTypeClass().getName(),
-                                                                                          timestamp,
-                                                                                          type.isTypesafe(),
-                                                                                          results.getReturnType() );
-            
-            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
-            data.addCompileable( (MVELCompileable) reader );
-            ( (MVELCompileable) reader ).compile( data );
-            type.setTimestampExtractor( reader );
+
+            if ( results != null ) {
+                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage(type.getTypeClass()),
+                                                                                              type.getTypeClass().getName(),
+                                                                                              timestamp,
+                                                                                              type.isTypesafe(),
+                                                                                              results.getReturnType() );
+
+                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( "mvel" );
+                data.addCompileable( (MVELCompileable) reader );
+                ( (MVELCompileable) reader ).compile( data );
+                type.setTimestampExtractor( reader );
+            } else {
+                this.results.add( new TypeDeclarationError( typeDescr,
+                                                            "Error creating field accessors for timestamp field '" + timestamp +
+                                                            "' for type '" +
+                                                            type.getTypeName() +
+                                                            "'" ) );
+            }
         }
 
         annotationDescr = typeDescr.getAnnotation( TypeDeclaration.ATTR_DURATION );
