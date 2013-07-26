@@ -508,24 +508,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    public void testEscalationBoundaryEvent() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEvent.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-    }
-
-    @Test
-    public void testEscalationBoundaryEventInterrupting() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EscalationBoundaryEventInterrupting.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
-        ProcessInstance processInstance = ksession.startProcess("EscalationBoundaryEvent");
-        assertTrue(processInstance.getState() == ProcessInstance.STATE_COMPLETED);
-        // TODO: testEscalationBoundaryEventInterrupting: check for cancellation of task
-    }
-
-    @Test
     public void testErrorBoundaryEvent() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ErrorBoundaryEventInterrupting.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -669,22 +651,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBase("BPMN2-ErrorEndEvent.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession.startProcess("ErrorEndEvent");
-        assertProcessInstanceAborted(processInstance.getId(), ksession);
-    }
-
-    @Test
-    public void testEscalationEndEventProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("EscalationEndEvent");
-        assertProcessInstanceAborted(processInstance.getId(), ksession);
-    }
-
-    @Test
-    public void testEscalationIntermediateThrowEventProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventEscalation.bpmn2");
-        KieSession ksession = createKnowledgeSession(kbase);
-        ProcessInstance processInstance = ksession.startProcess("EscalationIntermediateThrowEvent");
         assertProcessInstanceAborted(processInstance.getId(), ksession);
     }
 

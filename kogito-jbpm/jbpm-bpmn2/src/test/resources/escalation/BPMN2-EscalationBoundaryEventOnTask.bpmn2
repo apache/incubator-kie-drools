@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1">
+
+  <escalation id="MyEscalation" escalationCode="MyEscalation"/>
+
+  <process id="non-interrupting-escalation" tns:version="1" tns:packageName="defaultPackage" name="Default Process">
+
+    <startEvent id="_1" name="start" />
+    <sequenceFlow id="_1-_2" tns:priority="1" name="" sourceRef="_1" targetRef="_2"/>
+
+    <parallelGateway id="_2" name="split" gatewayDirection="Diverging" />
+    <sequenceFlow id="_2-_3" tns:priority="1" name="" sourceRef="_2" targetRef="_3"/>
+    <sequenceFlow id="_2-_8" tns:priority="1" name="" sourceRef="_2" targetRef="_8"/>
+
+    <!-- user task with boundary event -->
+    <userTask id="_3" name="User Task">
+      <ioSpecification id="_InputOutputSpecification_4">
+        <dataInput id="_DataInput_14" name="TaskName"/>
+        <dataInput id="_DataInput_15" name="Priority"/>
+        <dataInput id="_DataInput_16" name="Comment"/>
+        <dataInput id="_DataInput_17" name="GroupId"/>
+        <dataInput id="_DataInput_18" name="Skippable"/>
+        <dataInput id="_DataInput_19" name="Content"/>
+        <inputSet id="_InputSet_4" name="  Input Set 4">
+          <dataInputRefs>_DataInput_14</dataInputRefs>
+          <dataInputRefs>_DataInput_15</dataInputRefs>
+          <dataInputRefs>_DataInput_16</dataInputRefs>
+          <dataInputRefs>_DataInput_17</dataInputRefs>
+          <dataInputRefs>_DataInput_18</dataInputRefs>
+          <dataInputRefs>_DataInput_19</dataInputRefs>
+        </inputSet>
+      </ioSpecification>
+      <dataInputAssociation id="_DataInputAssociation_14">
+        <targetRef>_DataInput_14</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_15">
+        <targetRef>_DataInput_15</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_16">
+        <targetRef>_DataInput_16</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_17">
+        <targetRef>_DataInput_17</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_18">
+        <targetRef>_DataInput_18</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_19">
+        <targetRef>_DataInput_19</targetRef>
+      </dataInputAssociation>
+      <potentialOwner id="PotentialOwner_1">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_1">
+          <formalExpression id="FormalExpression_1">mary</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <sequenceFlow id="_3-_4" tns:priority="1" name="" sourceRef="_3" targetRef="_4"/>
+
+    <endEvent id="_4" />
+
+    <!-- boundary event-->
+    <boundaryEvent id="_5" name="Boundary event" attachedToRef="_3" cancelActivity="false">
+      <escalationEventDefinition id="EscalationEventDefinition_1" escalationRef="MyEscalation"/>
+    </boundaryEvent>
+    <sequenceFlow id="_5-_6" tns:priority="1" name="" sourceRef="_5" targetRef="_6"/>
+
+    <scriptTask id="_6" name="Script Task" scriptFormat="http://www.java.com/java">
+      <script>System.out.println(&quot;Escalation handled&quot;);</script>
+    </scriptTask>
+    <sequenceFlow id="_6-_7" tns:priority="1" name="" sourceRef="_6" targetRef="_7"/>
+
+    <endEvent id="_7" name="end event 2" />
+
+    <!-- user task that should signal escalation -->
+    <userTask id="_8" name="User Task with escalation">
+      <ioSpecification id="_InputOutputSpecification_5">
+        <dataInput id="_DataInput_20" name="TaskName"/>
+        <dataInput id="_DataInput_21" name="Priority"/>
+        <dataInput id="_DataInput_22" name="Comment"/>
+        <dataInput id="_DataInput_23" name="GroupId"/>
+        <dataInput id="_DataInput_24" name="Skippable"/>
+        <dataInput id="_DataInput_25" name="Content"/>
+        <inputSet id="_InputSet_5" name="  Input Set 5">
+          <dataInputRefs>_DataInput_20</dataInputRefs>
+          <dataInputRefs>_DataInput_21</dataInputRefs>
+          <dataInputRefs>_DataInput_22</dataInputRefs>
+          <dataInputRefs>_DataInput_23</dataInputRefs>
+          <dataInputRefs>_DataInput_24</dataInputRefs>
+          <dataInputRefs>_DataInput_25</dataInputRefs>
+        </inputSet>
+      </ioSpecification>
+      <dataInputAssociation id="_DataInputAssociation_20">
+        <targetRef>_DataInput_20</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_21">
+        <targetRef>_DataInput_21</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_22">
+        <targetRef>_DataInput_22</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_23">
+        <targetRef>_DataInput_23</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_24">
+        <targetRef>_DataInput_24</targetRef>
+      </dataInputAssociation>
+      <dataInputAssociation id="_DataInputAssociation_25">
+        <targetRef>_DataInput_25</targetRef>
+      </dataInputAssociation>
+      <potentialOwner id="PotentialOwner_2">
+        <resourceAssignmentExpression id="ResourceAssignmentExpression_2">
+          <formalExpression id="FormalExpression_2">john</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <sequenceFlow id="_8-_9" tns:priority="1" name="" sourceRef="_8" targetRef="_9"/>
+
+    <endEvent id="_9" name="end event 3">
+      <escalationEventDefinition id="EscalationEventDefinition_2" escalationRef="MyEscalation"/>
+    </endEvent>
+
+  </process>
+
+</definitions>

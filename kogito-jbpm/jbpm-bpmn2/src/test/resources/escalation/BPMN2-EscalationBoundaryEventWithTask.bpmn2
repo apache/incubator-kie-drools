@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
+
+  <itemDefinition id="_xItem" structureRef="String" />
+  <escalation id="esc" escalationCode="Code3" />
+  
+  <process processType="Private" isExecutable="true" id="non-interrupting-escalation" name="Escalation Boundary Event Process" >
+
+    <!-- process variables -->
+    <property id="x" itemSubjectRef="_xItem"/>
+    
+   <!-- process nodes/seqs -->
+    <startEvent id="_1" name="Start" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    
+    <subProcess id="_2" name="Sub"  >
+      <startEvent id="_2-1" name="startSub" />
+      <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+      
+      <intermediateThrowEvent id="_2-2" name="escSub">
+        <escalationEventDefinition id="EscalationEventDefinition_2" />
+      </intermediateThrowEvent>
+      <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+    
+      <userTask id="_2-3" name="User Task" />
+      <sequenceFlow id="_2-3-_2-4" sourceRef="_2-3" targetRef="_2-4" />
+      
+      <endEvent id="_2-4" name="endSub" />
+    </subProcess>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    
+    <endEvent id="_3" name="End" >
+        <terminateEventDefinition/>
+    </endEvent>
+    
+    <boundaryEvent id="_4" name="CatchEscalation" attachedToRef="_2" cancelActivity="false" >
+      <escalationEventDefinition escalationRef="Code3" />
+    </boundaryEvent>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    
+    <scriptTask id="_5" name="Goodbye" >
+      <script>kcontext.setVariable("x", Integer.toString(Integer.parseInt(kcontext.getVariable("x").toString()) + 1));</script>
+    </scriptTask>
+    <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
+    
+    <endEvent id="_6" name="AnotherEnd" />
+    
+  </process>
+
+</definitions>

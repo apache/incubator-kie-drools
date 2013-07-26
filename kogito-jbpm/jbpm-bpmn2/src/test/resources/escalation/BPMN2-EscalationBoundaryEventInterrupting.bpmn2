@@ -11,50 +11,46 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <escalation id="MyEscalation" escalationCode="MyEscalation" />
+  <escalation id="esc" escalationCode="codeRed" />
   <process processType="Private" isExecutable="true" id="EscalationBoundaryEvent" name="Escalation Boundary Event Process" >
 
-    <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
+    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    
     <subProcess id="_2" name="Hello"  >
-    <!-- nodes -->
-    <startEvent id="_2-1" name="StartSubProcess" />
-    <parallelGateway id="_2-2" gatewayDirection="Diverging" />
-    <endEvent id="_2-3" name="EscalationEvent" >
-      <escalationEventDefinition escalationRef="MyEscalation" />
-    </endEvent>
-    <task id="_2-4" name="Task" tns:taskName="MyTask" >
-      <ioSpecification>
-        <inputSet>
-        </inputSet>
-        <outputSet>
-        </outputSet>
-      </ioSpecification>
-    </task>
-    <endEvent id="_2-5" name="EndEvent" />
-    <!-- connections -->
-    <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
-    <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
-    <sequenceFlow id="_2-2-_2-4" sourceRef="_2-2" targetRef="_2-4" />
-    <sequenceFlow id="_2-4-_2-5" sourceRef="_2-4" targetRef="_2-5" />
+        <startEvent id="_2-1" name="StartSubProcess" />
+        <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
+        
+        <parallelGateway id="_2-2" gatewayDirection="Diverging" />
+        <sequenceFlow id="_2-2-_2-3" sourceRef="_2-2" targetRef="_2-3" />
+        <sequenceFlow id="_2-2-_2-4" sourceRef="_2-2" targetRef="_2-4" />
+        
+        <endEvent id="_2-3" name="EscalationEvent" >
+          <escalationEventDefinition escalationRef="codeRed" />
+        </endEvent>
+        
+        <task id="_2-4" name="Task" tns:taskName="MyTask" />
+       <sequenceFlow id="_2-4-_2-5" sourceRef="_2-4" targetRef="_2-5" />
+        
+       <endEvent id="_2-5" name="EndEvent" />
     </subProcess>
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    
     <endEvent id="_3" name="EndProcess" >
         <terminateEventDefinition/>
     </endEvent>
-    <boundaryEvent id="_4" name="EscalationEvent" attachedToRef="_2" >
-      <escalationEventDefinition escalationRef="MyEscalation" />
+    
+    <boundaryEvent id="_4" name="EscalationEvent" attachedToRef="_2" cancelActivity="true">
+      <escalationEventDefinition escalationRef="codeRed" />
     </boundaryEvent>
+    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
+    
     <scriptTask id="_5" name="Goodbye" >
       <script>System.out.println("Escalation handled");</script>
     </scriptTask>
-    <endEvent id="_6" name="EndProcess" />
-
-    <!-- connections -->
-    <sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
-    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
-    <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
     <sequenceFlow id="_5-_6" sourceRef="_5" targetRef="_6" />
-
+    
+    <endEvent id="_6" name="EndProcess" />
   </process>
 
   <bpmndi:BPMNDiagram>

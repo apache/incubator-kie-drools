@@ -15,6 +15,7 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -90,7 +91,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testEscalationEndEventProcess() throws Exception {
-        KieBase kbase = createKnowledgeBase("BPMN2-EscalationEndEvent.bpmn2");
+        KieBase kbase = createKnowledgeBase("escalation/BPMN2-EscalationEndEvent.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ProcessInstance processInstance = ksession
                 .startProcess("EscalationEndEvent");
