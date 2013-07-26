@@ -117,20 +117,26 @@ public class CrossProductTest {
     public void testRemoveIdentities() throws Exception {
         System.setProperty( "drools.removeIdentities",
                             "true" );
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( this.pkg );
 
-        this.workingMemory = ruleBase.newStatefulSession();
-        this.workingMemory.insert( "F1" );
-        this.workingMemory.insert( "F2" );
-        this.workingMemory.insert( "F3" );
-        this.workingMemory.insert( "F4" );
+        try {
+            final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase.addPackage( this.pkg );
 
-        this.workingMemory.fireAllRules();
+            this.workingMemory = ruleBase.newStatefulSession();
+            this.workingMemory.insert( "F1" );
+            this.workingMemory.insert( "F2" );
+            this.workingMemory.insert( "F3" );
+            this.workingMemory.insert( "F4" );
 
-        // A full cross product is 16, this is just 12
-        assertEquals( 12,
-                      this.values.size() );
+            this.workingMemory.fireAllRules();
+
+            // A full cross product is 16, this is just 12
+            assertEquals( 12,
+                          this.values.size() );
+        } finally {
+            System.setProperty( "drools.removeIdentities",
+                                "false" );
+        }
     }
 
 }
