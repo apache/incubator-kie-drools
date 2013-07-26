@@ -1806,5 +1806,22 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals( "john", p.getName() );
     }
 
+    @Test
+    public void testUnaryNegation() {
+        // DROOLS-177
+        String str =
+                "rule R when\n" +
+                " Integer( $a: intValue )\n" +
+                " Integer( intValue > $a, intValue == -$a )\n" +
+                "then\n" +
+                "end\n";
 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(3);
+        ksession.insert(-3);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }
