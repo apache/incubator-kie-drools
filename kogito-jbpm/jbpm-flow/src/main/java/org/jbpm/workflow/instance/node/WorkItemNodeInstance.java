@@ -98,7 +98,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     }
     
     public boolean isInversionOfControl() {
-        // TODO
+        // TODO WorkItemNodeInstance.isInversionOfControl
         return false;
     }
 

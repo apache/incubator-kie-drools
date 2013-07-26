@@ -43,12 +43,14 @@ public class ActionNode extends ExtendedNodeImpl {
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         super.validateAddIncomingConnection(type, connection);
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
-            throw new IllegalArgumentException(
-                "This type of node only accepts default incoming connection type!");
+           throw new IllegalArgumentException(
+                "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
+                + "] only accepts default incoming connection type!");
         }
         if (getFrom() != null && System.getProperty("jbpm.enable.multi.con") == null) {
            throw new IllegalArgumentException(
-                "This type of node cannot have more than one incoming connection!");
+                "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
+                + "] cannot have more than one incoming connection!");
         }
     }
 
@@ -56,11 +58,13 @@ public class ActionNode extends ExtendedNodeImpl {
         super.validateAddOutgoingConnection(type, connection);
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                "This type of node only accepts default outgoing connection type!");
+                "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
+                + "] only accepts default outgoing connection type!");
         }
         if (getTo() != null && System.getProperty("jbpm.enable.multi.con") == null) {
             throw new IllegalArgumentException(
-              "This type of node cannot have more than one outgoing connection!");
+                "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
+                + "] cannot have more than one outgoing connection!");
         }
     }
     

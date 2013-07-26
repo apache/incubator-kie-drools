@@ -46,8 +46,6 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
     
     private List<DataAssociation> outMapping = new LinkedList<DataAssociation>();
 
-    private boolean isInterupting;
-    
     private Timer timer;
 
 
@@ -78,23 +76,23 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
 	
     public void validateAddIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
-            "A start node does not have an incoming connection!");
+            "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] may not have an incoming connection!");
     }
 
     public void validateRemoveIncomingConnection(final String type, final Connection connection) {
         throw new UnsupportedOperationException(
-            "A start node does not have an incoming connection!");
+            "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] may not have an incoming connection!");
     }
     
     public void validateAddOutgoingConnection(final String type, final Connection connection) {
         super.validateAddOutgoingConnection(type, connection);
         if (!org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE.equals(type)) {
             throw new IllegalArgumentException(
-                "This type of node only accepts default outgoing connection type!");
+                "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] only accepts default outgoing connection type!");
         }
         if (getTo() != null) {
             throw new IllegalArgumentException(
-                "This type of node cannot have more than one outgoing connection!");
+                "A start node [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] cannot have more than one outgoing connection!");
         }
     }
 
@@ -108,17 +106,17 @@ public class StartNode extends ExtendedNodeImpl implements Mappable {
 
     @Override
     public void addInMapping(String parameterName, String variableName) {
-        throw new IllegalArgumentException("A start event does not support input mappings");
+        throw new IllegalArgumentException("A start event [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
     }
 
     @Override
     public void setInMappings(Map<String, String> inMapping) {
-        throw new IllegalArgumentException("A start event does not support input mappings");
+        throw new IllegalArgumentException("A start event [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
     }
 
     @Override
     public String getInMapping(String parameterName) {
-        throw new IllegalArgumentException("A start event does not support input mappings");
+        throw new IllegalArgumentException("A start event [" + this.getMetaData("UniqueId") + ", " + this.getName() + "] does not support input mappings");
     }
 
     @Override
