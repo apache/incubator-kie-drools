@@ -61,6 +61,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 	public static final String CONNECTIONS = "BPMN.Connections";
     public static final String LINKS = "BPMN.ThrowLinks";
     public static final String ASSOCIATIONS = "BPMN.Associations";
+    public static final String ERRORS = "BPMN.Errors";
+    public static final String ESCALATIONS = "BPMN.Escalations";
 
 	@SuppressWarnings("unchecked")
 	public ProcessHandler() {
@@ -677,7 +679,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                         eventSubProcessNode.addEvent((EventTypeFilter) filter);
 
                                         String type = ((EventTypeFilter) filter).getType();
-                                        if (type.startsWith("Error-") || type.startsWith("Escalation-")) {
+                                        if (type.startsWith("Error-") || type.startsWith("Escalation")) {
                                             String replaceRegExp = "Error-|Escalation-";
                                             final String signalType = type;
 

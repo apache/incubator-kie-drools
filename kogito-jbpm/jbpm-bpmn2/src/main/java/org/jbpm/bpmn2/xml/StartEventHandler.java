@@ -121,18 +121,11 @@ public class StartEventHandler extends AbstractNodeHandler {
                 // following event definitions are only for event sub process and will be validated to not be included in top process definitions
             } else if ("errorEventDefinition".equals(nodeName)) {
                 if( ! startNode.isInterrupting() ) { 
-                    String errorMsg = "Ignoring (possibly default) 'isInterupting' attribute on <startEvent> element: "
-                            + "Error Start Events in an Event Sub-Process always interrupt the containing process.";
-                    SAXParseException saxpe = new SAXParseException( errorMsg, parser.getLocator() );
-                    parser.warning(saxpe);
-                    // NO exception thrown because we don't know if the <startEvent> isInterrupting attr is 'true' because of
-                    // 1. it's the default value for the 'isInterupting' attribute (user did NOT add a 'isInterupting' in BPMN2 def)
-                    //   or
-                    // 2. the user set the 'isInterupting' attribute to 'true' in the BPMN2 def
-                    // BPMN2 spec (p.225-226, (2011-01-03)) implies that 
+                    // BPMN2 spec (p.245-246, (2011-01-03)) implies that 
                     //   - a <startEvent> in an Event Sub-Process 
-                    //    - *without* the 'isInterupting' attribute always interupts (containing process)
-                    startNode.setInterrupting(true);
+                    //    - *without* the 'isInterupting' attribute always interrupts (containing process)
+                    String errorMsg = "Error Start Events in an Event Sub-Process always interrupt the containing (sub)process(es).";
+                    throw new IllegalArgumentException(errorMsg);
                 }
                 String errorRef = ((Element) xmlNode).getAttribute("errorRef");
                 if (errorRef != null && errorRef.trim().length() > 0) {
@@ -155,7 +148,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>)
-                        ((ProcessBuildData) parser.getData()).getMetaData("Escalations");
+                        ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
                     if (escalations == null) {
                         throw new IllegalArgumentException("No escalations found");
                     }

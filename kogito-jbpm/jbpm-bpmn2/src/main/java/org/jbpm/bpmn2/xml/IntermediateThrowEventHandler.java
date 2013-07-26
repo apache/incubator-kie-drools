@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.GetMethodBytecodeMethod;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.IntermediateLink;
@@ -260,7 +261,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 						.getAttribute("escalationRef");
 				if (escalationRef != null && escalationRef.trim().length() > 0) {
 					Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser
-							.getData()).getMetaData("Escalations");
+							.getData()).getMetaData(ProcessHandler.ESCALATIONS);
 					if (escalations == null) {
 						throw new IllegalArgumentException(
 								"No escalations found");

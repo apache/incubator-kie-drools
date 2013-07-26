@@ -63,13 +63,14 @@ public class EscalationHandler extends BaseAbstractHandler implements Handler {
 		String escalationCode = attrs.getValue("escalationCode");
 
 		ProcessBuildData buildData = (ProcessBuildData) parser.getData();
-		Map<String, Escalation> escalations = (Map<String, Escalation>) buildData.getMetaData("Escalations");
+		Map<String, Escalation> escalations = (Map<String, Escalation>) buildData.getMetaData(ProcessHandler.ESCALATIONS);
         if (escalations == null) {
         	escalations = new HashMap<String, Escalation>();
-            buildData.setMetaData("Escalations", escalations);
+            buildData.setMetaData(ProcessHandler.ESCALATIONS, escalations);
         }
         Escalation e = new Escalation(id, escalationCode); 
-        escalations.put(id, e);
+        // BPMN2 spec, p. 83: escalations are referenced by their "escalationCode" attr values
+        escalations.put(escalationCode, e);
 		return e;
 	}
 

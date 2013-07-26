@@ -233,7 +233,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 String escalationRef = ((Element) xmlNode).getAttribute("escalationRef");
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>)
-		                ((ProcessBuildData) parser.getData()).getMetaData("Escalations");
+		                ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
 		            if (escalations == null) {
 		                throw new IllegalArgumentException("No escalations found");
 		            }
@@ -242,6 +242,10 @@ public class EndEventHandler extends AbstractNodeHandler {
 		                throw new IllegalArgumentException("Could not find escalation " + escalationRef);
 		            }
 		            faultNode.setFaultName(escalation.getEscalationCode());
+                } else { 
+                    // BPMN2 spec, p. 83: end event's with <escalationEventDefintions> 
+                    // are _required_ to reference a specific escalation(-code). 
+                    throw new IllegalArgumentException("End events throwing an escalation must throw *specific* escalations (and not general ones).");
                 }
             } 
             xmlNode = xmlNode.getNextSibling();
