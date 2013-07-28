@@ -40,7 +40,7 @@ rule "Defeater Rule 2"
 when
     B( 2; )
 then
-    insertLogical( new X( -1 ), org.drools.beliefsystem.negatable.NegatableBeliefSet.MODE.NEGATIVE );
+    insertLogical( new X( -1 ), "neg" );
 end
 
 
@@ -51,4 +51,12 @@ when
 then
     insertLogical( new X( -1 ) );
 end
+
+// TODO Needed to init entry point, remove
+rule "Foo"
+when
+    $o : Object() from entry-point "neg"
+then
+end
+
 

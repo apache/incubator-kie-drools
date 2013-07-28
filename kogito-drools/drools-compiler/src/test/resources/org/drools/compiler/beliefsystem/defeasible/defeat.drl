@@ -35,7 +35,7 @@ then
 end
 
 rule "Defeater Rule"
-@Defeater(true)
+@Defeater
 when
     B( 2; )
 then
@@ -44,10 +44,17 @@ end
 
 
 rule "Rule 3"
-@Defeasible(true)
+@Defeasible
 when
     A( )
 then
     insertLogical( new X( -1 ) );
 end
 
+
+// TODO Needed to init entry point, remove
+rule "Foo"
+when
+    $o : Object() from entry-point "neg"
+then
+end

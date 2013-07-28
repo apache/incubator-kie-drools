@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class DefeasibleBeliefSystem extends JTMSBeliefSystem {
+public class DefeasibleBeliefSystem extends JTMSBeliefSystem  {
 
     public DefeasibleBeliefSystem(NamedEntryPoint ep, TruthMaintenanceSystem tms) {
         super(ep, tms);
