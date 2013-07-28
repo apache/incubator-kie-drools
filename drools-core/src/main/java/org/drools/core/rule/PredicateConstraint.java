@@ -223,7 +223,7 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public int hashCode() {
-        return this.expression.hashCode();
+        return this.expression != null ? this.expression.hashCode() : 0;
     }
 
     public boolean equals(final Object object) {
