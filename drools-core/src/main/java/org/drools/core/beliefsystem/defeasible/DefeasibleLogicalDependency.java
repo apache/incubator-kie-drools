@@ -1,7 +1,9 @@
 package org.drools.core.beliefsystem.defeasible;
 
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.common.LogicalDependency;
 import org.drools.core.spi.Activation;
+import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.StringUtils;
 
 import java.util.Arrays;
@@ -13,8 +15,8 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
 
     private DefeasibilityStatus         status;
     private String[]                    defeats;
-    private DefeasibleLogicalDependency rootDefeated;
-    private DefeasibleLogicalDependency tailDefeated;
+    private LinkedListEntry<DefeasibleLogicalDependency> rootDefeated;
+    private LinkedListEntry<DefeasibleLogicalDependency> tailDefeated;
 
     //    private int                         attacks;
 
@@ -49,11 +51,7 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
                 defeats = new String[]{(String) o};
                 Arrays.sort(defeats);
             } else if (o instanceof Object[]) {
-                Object[] oArray = (Object[]) o;
-                defeats = new String[oArray.length];
-                for ( int i = 0; i < oArray.length;i++ ) {
-                    defeats[i] = (String) oArray[i];
-                }
+                defeats = Arrays.copyOf( (Object[]) o, ( (Object[]) o ).length, String[].class );
                 Arrays.sort(defeats);
             }
         } else {
@@ -63,25 +61,31 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
 
     public void addDefeated(DefeasibleLogicalDependency defeated) {
         defeated.setDefeatedBy( this );
+        LinkedListEntry def = new LinkedListEntry<DefeasibleLogicalDependency>( defeated );
         if (rootDefeated == null) {
-            rootDefeated = defeated;
+            rootDefeated = def;
         } else {
-            tailDefeated.setNext(defeated);
-            defeated.setPrevious(rootDefeated);
+            tailDefeated.setNext( def );
+            def.setPrevious( rootDefeated );
         }
-        tailDefeated = defeated;
+        tailDefeated = def;
     }
 
     public void removeDefeated(DefeasibleLogicalDependency defeated) {
         defeated.setDefeatedBy( null );
-        if (this.rootDefeated == defeated) {
+        if (this.rootDefeated.getObject() == defeated) {
             removeFirst();
-        } else if (this.tailDefeated == defeated) {
+        } else if (this.tailDefeated.getObject() == defeated) {
             removeLast();
         } else {
-            defeated.getPrevious().setNext(defeated.getNext());
-            (defeated.getNext()).setPrevious(defeated.getPrevious());
-            defeated.nullPrevNext();
+            LinkedListEntry<DefeasibleLogicalDependency> entry = this.rootDefeated;
+            while ( entry.getObject() != defeated ) {
+                entry = entry.getNext();
+            }
+            entry.getPrevious().setNext(entry.getNext());
+            (entry.getNext()).setPrevious(entry.getPrevious());
+            entry.nullPrevNext();
+
         }
     }
 
@@ -89,37 +93,37 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
         if (this.rootDefeated == null) {
             return null;
         }
-        final DefeasibleLogicalDependency node = this.rootDefeated;
-        this.rootDefeated = (DefeasibleLogicalDependency) node.getNext();
+        final LinkedListEntry<DefeasibleLogicalDependency> node = this.rootDefeated;
+        this.rootDefeated = node.getNext();
         node.setNext(null);
         if (this.rootDefeated != null) {
             this.rootDefeated.setPrevious(null);
         } else {
             this.tailDefeated = null;
         }
-        return node;
+        return node.getObject();
     }
 
     public DefeasibleLogicalDependency removeLast() {
         if (this.tailDefeated == null) {
             return null;
         }
-        final DefeasibleLogicalDependency node = this.tailDefeated;
-        this.tailDefeated = (DefeasibleLogicalDependency) node.getPrevious();
+        final LinkedListEntry<DefeasibleLogicalDependency> node = this.tailDefeated;
+        this.tailDefeated = node.getPrevious();
         node.setPrevious(null);
         if (this.tailDefeated != null) {
             this.tailDefeated.setNext(null);
         } else {
             this.rootDefeated = this.tailDefeated;
         }
-        return node;
+        return node.getObject();
     }
 
-    public DefeasibleLogicalDependency getRootDefeated() {
+    public LinkedListEntry<DefeasibleLogicalDependency> getRootDefeated() {
         return this.rootDefeated;
     }
 
-    public DefeasibleLogicalDependency getTailDefeated() {
+    public LinkedListEntry<DefeasibleLogicalDependency> getTailDefeated() {
         return this.tailDefeated;
     }
 
@@ -161,5 +165,10 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
 
     public void setDefeater(boolean defeater) {
         isDefeater = defeater;
+    }
+
+    public void clearDefeated() {
+        this.rootDefeated = null;
+        this.tailDefeated = null;
     }
 }
