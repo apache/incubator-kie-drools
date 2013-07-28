@@ -1253,10 +1253,8 @@ public class MiscTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       list.size() );
-        assertEquals( "rule 4",
-                      list.get( 0 ) );
-        assertEquals( "rule 2b",
-                      list.get( 1 ) );
+        assertTrue( list.contains( "rule 4" ) );
+        assertTrue( list.contains( "rule 2b" ) );
 
         //Test 2nd level (parent) to make sure rule honors the extend rule
         list = new ArrayList();

@@ -588,17 +588,17 @@ public class Rule
     }
 
     public void wire(Object object) {
-        if ( object instanceof Salience ) {
-            setSalience( (Salience) object );
-        } else if ( object instanceof Enabled ) {
-            setEnabled( (Enabled) object );
-        } else if ( object instanceof Consequence ) {
+        if ( object instanceof Consequence ) {
             Consequence c = (Consequence) object;
             if ( DEFAULT_CONSEQUENCE_NAME.equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
                 addNamedConsequence(c.getName(), c);
             }
+        } else if ( object instanceof Salience ) {
+            setSalience( (Salience) object );
+        } else if ( object instanceof Enabled ) {
+            setEnabled( (Enabled) object );
         }
     }
 
