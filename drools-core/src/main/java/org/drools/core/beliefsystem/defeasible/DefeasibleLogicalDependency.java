@@ -61,7 +61,7 @@ public class DefeasibleLogicalDependency extends SimpleLogicalDependency {
 
     public void addDefeated(DefeasibleLogicalDependency defeated) {
         defeated.setDefeatedBy( this );
-        LinkedListEntry def = new LinkedListEntry<DefeasibleLogicalDependency>( defeated );
+        LinkedListEntry def = defeated.getJustifierEntry();
         if (rootDefeated == null) {
             rootDefeated = def;
         } else {
