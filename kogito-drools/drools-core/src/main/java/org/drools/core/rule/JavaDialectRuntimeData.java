@@ -41,6 +41,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.common.ProjectClassLoader;
@@ -48,6 +52,7 @@ import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.FastClassLoader;
 
 public class JavaDialectRuntimeData
@@ -64,8 +69,6 @@ public class JavaDialectRuntimeData
     private Map<String, byte[]>            classLookups;
 
     private Map<String, byte[]>            store;
-
-    private DialectRuntimeRegistry         registry;
 
     private transient PackageClassLoader   classLoader;
 
@@ -232,7 +235,6 @@ public class JavaDialectRuntimeData
 
     public void onAdd( DialectRuntimeRegistry registry,
                        ClassLoader rootClassLoader ) {
-        this.registry = registry;
         this.rootClassLoader = rootClassLoader;
         this.classLoader = new PackageClassLoader( this,
                                                    this.rootClassLoader );
@@ -248,8 +250,11 @@ public class JavaDialectRuntimeData
         } else if (!this.wireList.isEmpty()) {
             try {
                 // wire all remaining resources
-                for (String resourceName : this.wireList) {
-                    wire( convertResourceToClassName( resourceName ) );
+                int wireListSize = this.wireList.size();
+                if (wireListSize < 100) {
+                    wireAll(classLoader, getInvokers(), this.wireList);
+                } else {
+                    wireInParallel(wireListSize);
                 }
             } catch (Exception e) {
                 throw new RuntimeDroolsException( "Unable to wire up JavaDialect",
@@ -258,6 +263,43 @@ public class JavaDialectRuntimeData
         }
 
         this.wireList.clear();
+    }
+
+    private void wireInParallel(int wireListSize) throws Exception {
+        final int parallelThread = Runtime.getRuntime().availableProcessors();
+        CompletionService<Boolean> ecs = ExecutorProviderFactory.getExecutorProvider().getCompletionService();
+
+        int size = wireListSize / parallelThread;
+        for (int i = 1; i <= parallelThread; i++) {
+            List<String> subList = wireList.subList((i-1) * size, i == parallelThread ? wireListSize : i * size);
+            ecs.submit(new WiringExecutor(classLoader, getInvokers(), subList));
+        }
+        for (int i = 1; i <= parallelThread; i++) {
+            ecs.take().get();
+        }
+    }
+
+    private static void wireAll(PackageClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        for (String resourceName : wireList) {
+            wire( classLoader, invokerLookups, convertResourceToClassName( resourceName ) );
+        }
+    }
+
+    private static class WiringExecutor implements Callable<Boolean> {
+        private final PackageClassLoader classLoader;
+        private final Map<String, Object> invokerLookups;
+        private final List<String> wireList;
+
+        private WiringExecutor(PackageClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) {
+            this.classLoader = classLoader;
+            this.invokerLookups = invokerLookups;
+            this.wireList = wireList;
+        }
+
+        public Boolean call() throws Exception {
+            wireAll(classLoader, invokerLookups, wireList);
+            return true;
+        }
     }
 
     public DialectRuntimeData clone( DialectRuntimeRegistry registry,
@@ -283,9 +325,7 @@ public class JavaDialectRuntimeData
         merge(registry, newData, false);
     }
 
-    public void merge( DialectRuntimeRegistry registry,
-            DialectRuntimeData newData, boolean excludeClasses ) {
-        this.registry = registry;
+    public void merge( DialectRuntimeRegistry registry, DialectRuntimeData newData, boolean excludeClasses ) {
         JavaDialectRuntimeData newJavaData = (JavaDialectRuntimeData) newData;
 
         // First update the binary files
@@ -431,13 +471,18 @@ public class JavaDialectRuntimeData
     }
 
     public void wire( final String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        final Object invoker = getInvokers().get( className );
-        if (invoker != null) {
-            wire( className, invoker );
-        }
+        wire(className, getInvokers().get(className));
+    }
+
+    private static void wire( PackageClassLoader classLoader, Map<String, Object> invokerLookups, String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        wire( classLoader, className, invokerLookups.get( className ) );
     }
 
     public void wire( final String className, final Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        wire( classLoader, className, invoker );
+    }
+
+    private static void wire( PackageClassLoader classLoader, String className, Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Class clazz = classLoader.loadClass( className );
 
         if (clazz != null) {
@@ -512,8 +557,8 @@ public class JavaDialectRuntimeData
 
     public void putInvoker( final String className,
             final Object invoker ) {
-        getInvokers().put( className,
-                           invoker );
+        getInvokers().put(className,
+                          invoker);
     }
 
     public void putAllInvokers( final Map<String, Object> invokers ) {
@@ -529,7 +574,7 @@ public class JavaDialectRuntimeData
     }
 
     public void removeInvoker( final String className ) {
-        getInvokers().remove( className );
+        getInvokers().remove(className);
     }
 
 
@@ -541,7 +586,7 @@ public class JavaDialectRuntimeData
     }
 
     public void putAllClassDefinitions( final Map classDefinitions ) {
-        getClassDefinitions().putAll( classDefinitions );
+        getClassDefinitions().putAll(classDefinitions);
     }
 
     public Map<String, byte[]> getClassDefinitions() {
@@ -574,6 +619,8 @@ public class JavaDialectRuntimeData
 
         protected JavaDialectRuntimeData store;
 
+        private Set<String> existingPackages = new ConcurrentSkipListSet<String>();
+        
         public PackageClassLoader( JavaDialectRuntimeData store,
                                    ClassLoader rootClassLoader ) {
             super( rootClassLoader );
@@ -604,15 +651,16 @@ public class JavaDialectRuntimeData
                 if (clazzBytes != null) {
                     String pkgName = name.substring( 0,
                                                      name.lastIndexOf( '.' ) );
-                    if (getPackage( pkgName ) == null) {
-                        definePackage( pkgName,
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       "",
-                                       null );
+
+                    if (!existingPackages.contains( pkgName )) {
+                        synchronized (this) {
+                            if (getPackage( pkgName ) == null) {
+                                definePackage( pkgName,
+                                               "", "", "", "", "", "",
+                                               null );
+                            }
+                            existingPackages.add( pkgName );
+                        }
                     }
 
                     cls = defineClass( name,
@@ -683,29 +731,4 @@ public class JavaDialectRuntimeData
         final int i = pResourceName.lastIndexOf( '.' );
         return pResourceName.substring( 0, i );
     }
-
-
-
-    /**
-     * This is an Internal Drools Class
-     */
-    public static class TypeDeclarationClassLoader extends PackageClassLoader {
-
-        public TypeDeclarationClassLoader( JavaDialectRuntimeData store,
-                                           ClassLoader rootClassLoader ) {
-            super( store, rootClassLoader );
-            store.rootClassLoader = rootClassLoader;
-            store.classLoader = this;
-        }
-
-        public void addClassDefinition( String className, byte[] def ) {
-            this.store.write( convertClassToResourcePath( className ), def );
-            this.store.putClassDefinition( convertClassToResourcePath( className ), def );
-        }
-
-        public JavaDialectRuntimeData getStore() {
-            return store;
-        }
-    }
-
 }

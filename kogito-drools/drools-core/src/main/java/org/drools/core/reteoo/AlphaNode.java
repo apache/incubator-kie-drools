@@ -24,11 +24,9 @@ import java.util.Map;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
@@ -62,6 +60,8 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode           previousRightTupleSinkNode;
     private ObjectSinkNode           nextRightTupleSinkNode;
 
+    private int                      hashcode;
+
     public AlphaNode() {
 
     }
@@ -89,6 +89,7 @@ public class AlphaNode extends ObjectSource
         this.constraint = constraint.cloneIfInUse();
 
         initDeclaredMask(context);
+        hashcode = calculateHashCode();
     }
 
 
@@ -98,6 +99,7 @@ public class AlphaNode extends ObjectSource
         constraint = (AlphaNodeFieldConstraint) in.readObject();
         declaredMask = in.readLong();
         inferredMask = in.readLong();
+        hashcode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -105,6 +107,7 @@ public class AlphaNode extends ObjectSource
         out.writeObject(constraint);
         out.writeLong(declaredMask);
         out.writeLong(inferredMask);
+        out.writeInt(hashcode);
     }
 
     /**
@@ -194,7 +197,11 @@ public class AlphaNode extends ObjectSource
     }
 
     public int hashCode() {
-        return this.source.hashCode() * 17 + ((this.constraint != null) ? this.constraint.hashCode() : 0);
+        return hashcode;
+    }
+
+    public int calculateHashCode() {
+        return (this.source != null ? this.source.hashCode() : 0) * 37 + (this.constraint != null ? this.constraint.hashCode() : 0) * 31;
     }
 
     /*
@@ -207,7 +214,7 @@ public class AlphaNode extends ObjectSource
             return true;
         }
 
-        if ( object == null || !(object instanceof AlphaNode) ) {
+        if ( !(object instanceof AlphaNode) || hashCode() != object.hashCode() ) {
             return false;
         }
 
