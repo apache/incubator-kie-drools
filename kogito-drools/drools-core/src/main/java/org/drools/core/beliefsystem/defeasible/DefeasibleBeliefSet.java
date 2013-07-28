@@ -147,7 +147,6 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         for ( LinkedListEntry<DefeasibleLogicalDependency> dep = deps; dep != null; ) {
             LinkedListEntry<DefeasibleLogicalDependency> next = dep.getNext();
             dep.nullPrevNext(); // it needs to be removed, before it can be processed
-            DefeasibleLogicalDependency ld = dep.getObject();
             add( dep ); // adding back in, effectively reprocesses the dep
             dep = next;
         }
