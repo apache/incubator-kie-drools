@@ -172,7 +172,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
         kbase.addKnowledgePackages(testBaseMethod.loadKnowledgePackagesFromString( rule ));
 
-        if (false && firingRule != null) {
+        if (firingRule != null) {
             kbase.removeRule("defaultpkg", firingRule.getName());
         }
     }
