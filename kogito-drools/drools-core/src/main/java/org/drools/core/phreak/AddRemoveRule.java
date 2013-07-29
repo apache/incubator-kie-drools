@@ -121,8 +121,11 @@ public class AddRemoveRule {
              PathMemory removedPmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) tn);
              int s = getSegmentPos(splitStartNode, null);
 
+             // if a segment is going to be merged it is necessary to flush all its staged left tuples before doing any change to the network
+             flushSegmentIfMerge(wm, tn, removedPmem, splitStartNode, s);
+
              // must be done before segments are mutated
-             removeTuples(splitStartNode, removedPmem, wm);
+             flushStagedTuples(splitStartNode, removedPmem, wm, true);
 
              //
              if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociations().size() == 1) {
@@ -186,7 +189,25 @@ public class AddRemoveRule {
          }
      }
 
-     private static void removeTuples(LeftTupleSource splitStartNode, PathMemory pmem, InternalWorkingMemory wm) {
+    private static void flushSegmentIfMerge(InternalWorkingMemory wm, TerminalNode tn, PathMemory removedPmem, LeftTupleSource splitStartNode, int segmentPos) {
+        if ( splitStartNode.getAssociations().size() == 2 ) {
+            // only handle for the first PathMemory, all others are shared and duplicate until this point
+            PathMemory pmem = getFirstRtnPathMemory(splitStartNode, wm, tn);
+            SegmentMemory[] smems = pmem.getSegmentMemories();
+
+            SegmentMemory sm1 = smems[segmentPos];
+            SegmentMemory sm2 = smems[segmentPos+1];
+            if ( sm1 != null ) {
+                if (sm1.getRootNode() == sm1.getTipNode() && NodeTypeEnums.LeftInputAdapterNode == sm1.getTipNode().getType()) {
+                    sm1.setStagedTuples(sm2.getStagedLeftTuples());
+                } else if ( !sm2.getStagedLeftTuples().isEmpty() ) {
+                    flushStagedTuples(splitStartNode, pmem, wm, false);
+                }
+            }
+        }
+    }
+
+    private static void flushStagedTuples(LeftTupleSource splitStartNode, PathMemory pmem, InternalWorkingMemory wm, boolean removeTuples) {
          int smemIndex = getSegmentPos(splitStartNode, null); // index before the segments are merged
          SegmentMemory[] smems = pmem.getSegmentMemories();
          SegmentMemory sm;
@@ -210,7 +231,9 @@ public class AddRemoveRule {
          }
 
          // stages the LeftTuples for deletion in the target SegmentMemory, if necessary it looks up the nodes to find.
-         processLeftTuples(splitStartNode, sink, sm, wm, false);
+         if (removeTuples) {
+            processLeftTuples(splitStartNode, sink, sm, wm, false);
+         }
 
          RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
          LeftInputAdapterNode lian = ( LeftInputAdapterNode ) smems[0].getRootNode();
@@ -319,7 +342,7 @@ public class AddRemoveRule {
              newSmem.setStagedTuples( new SynchronizedLeftTupleSets() );
          }
 
-         LeftTupleSource lts = null;
+         LeftTupleSource lts;
          if ( NodeTypeEnums.isTerminalNode(sm.getTipNode() ) ) {
              // if tip is RTN, then use parent
              lts = ((TerminalNode)sm.getTipNode()).getLeftTupleSource();
@@ -450,7 +473,7 @@ public class AddRemoveRule {
     }
 
     public static void deleteFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {
-        LeftTupleSink lts = (LeftTupleSink) startNode;
+        LeftTupleSink lts = startNode;
         while (!NodeTypeEnums.isTerminalNode(lts) && lts.getLeftTupleSource().getType() != NodeTypeEnums.RightInputAdaterNode ) {
             if (NodeTypeEnums.isBetaNode(lts)) {
                 BetaNode bn = (BetaNode) lts;
@@ -464,7 +487,7 @@ public class AddRemoveRule {
 
                     RightTupleMemory rtm = bm.getRightTupleMemory();
                     FastIterator it = rtm.fullFastIterator();
-                    for (RightTuple rightTuple = bn.getFirstRightTuple(rtm, it); rightTuple != null; ) {
+                    for (RightTuple rightTuple = BetaNode.getFirstRightTuple(rtm, it); rightTuple != null; ) {
                         RightTuple next = (RightTuple) it.next(rightTuple);
                         rtm.remove(rightTuple);
                         rightTuple.unlinkFromRightParent();
@@ -519,7 +542,7 @@ public class AddRemoveRule {
                     AccumulateMemory am = (AccumulateMemory) memory;
                     bm = am.getBetaMemory();
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                    LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getObject();
                         followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert, wm);
@@ -527,7 +550,7 @@ public class AddRemoveRule {
                 } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                    RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
+                    RightTuple rt = BetaNode.getFirstRightTuple(bm.getRightTupleMemory(), it);
                     for (; rt != null; rt = (RightTuple) it.next(rt)) {
                         for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
                             if ( lt.getFirstChild() != null ) {
@@ -538,7 +561,7 @@ public class AddRemoveRule {
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                    LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         if ( lt.getFirstChild() != null ) {
                             followPeerFromLeftInput(lt.getFirstChild(), peerNode, smem, sinks, insert, wm);
@@ -550,7 +573,7 @@ public class AddRemoveRule {
                 FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
                 LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                 FastIterator it = ltm.fullFastIterator();
-                for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                for (LeftTuple lt = ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                     if ( lt.getFirstChild() != null ) {
                         followPeerFromLeftInput(lt.getFirstChild(), peerNode, smem, sinks, insert, wm);
                     }
@@ -781,7 +804,7 @@ public class AddRemoveRule {
         smem.getStagedLeftTuples().addInsert(newPeer);
     }
 
-    public static void collectRtnPathMemories(LeftTupleSource lt,
+    private static void collectRtnPathMemories(LeftTupleSource lt,
                                               InternalWorkingMemory wm,
                                               List<PathMemory> pathMems,
                                               TerminalNode excludeTerminalNode) {
@@ -802,6 +825,32 @@ public class AddRemoveRule {
                 throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
             }
         }
+    }
+
+    private static PathMemory getFirstRtnPathMemory(LeftTupleSource lt,
+                                                    InternalWorkingMemory wm,
+                                                    TerminalNode excludeTerminalNode) {
+        for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
+            if (sink == excludeTerminalNode) {
+                continue;
+            }
+            if (NodeTypeEnums.isLeftTupleSource(sink)) {
+                PathMemory result = getFirstRtnPathMemory((LeftTupleSource) sink, wm, excludeTerminalNode);
+                if (result != null) {
+                    return result;
+                }
+            } else if (NodeTypeEnums.isTerminalNode(sink)) {
+                // getting will cause an initialization of rtn, which will recursively initialise rians too.
+                PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
+                return pmem;
+            } else if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
+                return riaMem.getRiaPathMemory();
+            } else {
+                throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
+            }
+        }
+        return null;
     }
 
      public static LeftTupleSource getNetworkSplitPoint(TerminalNode tn) {

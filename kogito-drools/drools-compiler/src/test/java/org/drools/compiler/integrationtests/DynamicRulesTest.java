@@ -1228,4 +1228,49 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             return c;
         }
     }
+
+    @Test
+    public void testSegmentMerging() {
+        String drl1 = "global java.util.List list\n" +
+                      "rule R1 when\n" +
+                      "  $s : String()\n" +
+                      "  $i : Integer( this == $s.length() )\n" +
+                      "  $j : Integer( this == $i * 2 )\n" +
+                      "then\n" +
+                      "  list.add( $j );\n" +
+                      "end\n";
+
+        String drl2 = "global java.util.List list\n" +
+                      "rule R2 when\n" +
+                      "  $s : String()\n" +
+                      "  $i : Integer( this == $s.length() )\n" +
+                      "  $j : Integer( this == $i * 3 )\n" +
+                      "then\n" +
+                      "  list.add( $j );\n" +
+                      "end\n";
+
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+
+        kbase.addKnowledgePackages(loadKnowledgePackagesFromString( drl1 ));
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert("test");
+        ksession.insert(4);
+        ksession.insert(8);
+        ksession.insert(12);
+
+        ksession.fireAllRules();
+        assertEquals(8, (int)list.get(0));
+        list.clear();
+
+        kbase.addKnowledgePackages(loadKnowledgePackagesFromString(drl2));
+
+        kbase.removeRule("defaultpkg", "R1");
+
+        ksession.fireAllRules();
+        assertEquals(12, (int)list.get(0));
+    }
 }
