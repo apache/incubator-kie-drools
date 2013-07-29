@@ -21,33 +21,28 @@ import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
-import org.kie.api.task.model.Group;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.api.task.model.User;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bitronix.tm.TransactionManagerServices;
 
-public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
+public class SerializedTimerRollbackTest extends JbpmJUnitBaseTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(SerializedTimerRollbackTest.class);
     
     public SerializedTimerRollbackTest() {
-        super(true);
-        setPersistence(true);
+        super(true, true);
     }
 
 
@@ -70,30 +65,21 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
     @Test
     public void testSerizliableTestsWithExternalRollback() {
         try {
-
+            createRuntimeManager("HumanTaskWithBoundaryTimer.bpmn");
+            RuntimeEngine runtimeEngine = getRuntimeEngine();
+            KieSession ksession = runtimeEngine.getKieSession();
+            TaskService taskService = runtimeEngine.getTaskService();
+            logger.debug("Created knowledge session");
+            
             TransactionManager tm = TransactionManagerServices.getTransactionManager();
 
-            KieSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
-            logger.debug("Created knowledge session");
-
-            TaskService taskService = getTaskService();
-            Map<String, User> users = new HashMap<String, User>();
-            users.put("Administrator", new UserImpl("Administrator"));
-            users.put("john", new UserImpl("john"));
-            Map<String, Group> groups = new HashMap<String, Group>();
-            groups.put("Administrators", new GroupImpl("Administrators"));
-            ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
-
-
-
-            logger.debug("Attached human task work item handler");
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
             for (int i = 0; i < 10; i++) {
                 tm.begin();
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("test", "john");
                 logger.debug("Creating process instance: {}", i);
-                ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
+                ProcessInstance pi = ksession.startProcess("PROCESS_1", params);
                 if (i % 2 == 0) {
                     committedProcessInstanceIds.add(pi.getId());
                     tm.commit();
@@ -123,7 +109,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
 
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
-                sesion.abortProcessInstance(timerInstance.getProcessInstanceId());
+                ksession.abortProcessInstance(timerInstance.getProcessInstanceId());
             }
 
             List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -139,27 +125,20 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
     public void testSerizliableTestsWithEngineRollback() {
         try {
     
-            KieSession sesion = createKnowledgeSession("HumanTaskWithBoundaryTimer.bpmn");
+            createRuntimeManager("HumanTaskWithBoundaryTimer.bpmn");
+            RuntimeEngine runtimeEngine = getRuntimeEngine();
+            KieSession ksession = runtimeEngine.getKieSession();
             logger.debug("Created knowledge session");
-             
-            TaskService taskService = getTaskService();
+            TaskService taskService = runtimeEngine.getTaskService();
             logger.debug("Task service created");
-            Map<String, User> users = new HashMap<String, User>();
-            users.put("Administrator", new UserImpl("Administrator"));
-            users.put("john", new UserImpl("john"));
-            Map<String, Group> groups = new HashMap<String, Group>();
-            groups.put("Administrators", new GroupImpl("Administrators"));
-            ((InternalTaskService) taskService).addUsersAndGroups(users, groups);
 
-
-            logger.debug("Attached human task work item handler");
             List<Long> committedProcessInstanceIds = new ArrayList<Long>();
             for (int i = 0; i < 10; i++) {
                 if (i % 2 == 0) {
                     Map<String, Object> params = new HashMap<String, Object>();
                     params.put("test", "john");
                     logger.debug("Creating process instance: {}", i);
-                    ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
+                    ProcessInstance pi = ksession.startProcess("PROCESS_1", params);
 
                     committedProcessInstanceIds.add(pi.getId());
 
@@ -169,7 +148,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
                         // set test variable to null so engine will rollback 
                         params.put("test", null);
                         logger.debug("Creating process instance: {}", i);
-                        ProcessInstance pi = sesion.startProcess("PROCESS_1", params);
+                        ksession.startProcess("PROCESS_1", params);
                     } catch (Exception e) {
                         logger.debug("Process rolled back");
                     }
@@ -197,7 +176,7 @@ public class SerializedTimerRollbackTest extends JbpmJUnitTestCase {
 
             for (TimerInstance timerInstance : timers) {
                 assertTrue(committedProcessInstanceIds.contains(timerInstance.getProcessInstanceId()));
-                sesion.abortProcessInstance(timerInstance.getProcessInstanceId());
+                ksession.abortProcessInstance(timerInstance.getProcessInstanceId());
             }
             List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
             assertEquals(0, tasks.size());

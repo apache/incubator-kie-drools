@@ -8,33 +8,25 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
-import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LocalTasksServiceTest extends JbpmJUnitTestCase {
+public class LocalTasksServiceTest extends JbpmJUnitBaseTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalTasksServiceTest.class);
     
@@ -42,16 +34,13 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
     protected Map<String, UserImpl> users;
     protected Map<String, GroupImpl> groups;
     
-
     protected Properties conf;
     
     protected ExternalTaskEventListener externalTaskEventListener;
-    
-    protected RuntimeManager manager;
+
 
     public LocalTasksServiceTest() {
-        super(true);
-        setPersistence(true);
+        super(true, true);
     }
 
     @Before
@@ -63,7 +52,6 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-        manager.close();
         if (emfTasks != null && emfTasks.isOpen()) {
             emfTasks.close();
         }
@@ -72,21 +60,11 @@ public class LocalTasksServiceTest extends JbpmJUnitTestCase {
     @Test 
     public void groupTaskQueryTest() throws Exception {
 
-    	Properties userGroups = new Properties();
-        userGroups.setProperty("salaboy", "");
-        userGroups.setProperty("john", "PM");
-        userGroups.setProperty("mary", "HR");
-        
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
-                .userGroupCallback(new JBossUserGroupCallbackImpl(userGroups))
-                .addAsset(ResourceFactory.newClassPathResource("Evaluation2.bpmn"), ResourceType.BPMN2)
-                .get();
-        
-        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
-        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
-        
-        KieSession ksession = runtime.getKieSession();
-        TaskService taskService = runtime.getTaskService();
+        createRuntimeManager("Evaluation2.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
  
         logger.info("### Starting process ###");

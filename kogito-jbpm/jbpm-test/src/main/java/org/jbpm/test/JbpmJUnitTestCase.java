@@ -25,7 +25,6 @@ import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
@@ -64,12 +63,10 @@ import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
- * Base test case for the jbpm-bpmn2 module.
- *
- * Please keep this test class in the org.jbpm.bpmn2 package or otherwise give
- * it a unique name.
- *
+ * This test case is deprecated. JbpmJUnitBaseTestCase shall be used instead.
+ * @see JbpmJUnitBaseTestCase
  */
+@Deprecated
 public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
     
     private static final Logger testLogger = LoggerFactory.getLogger(JbpmJUnitTestCase.class);

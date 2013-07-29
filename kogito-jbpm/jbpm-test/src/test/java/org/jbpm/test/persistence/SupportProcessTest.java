@@ -19,30 +19,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.InternalTaskService;
 
 
-/**
- *
- * @author salaboy
- */
-public class SupportProcessTest extends JbpmJUnitTestCase{
+public class SupportProcessTest extends JbpmJUnitBaseTestCase{
     
     public SupportProcessTest() {
-        super(true);
-        setPersistence(true);
+        super(true, true);
     }
   
     @Test
     public void simpleSupportProcessTest() {
-        KieSession ksession = createKnowledgeSession("support.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("support.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+  
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("customer", "salaboy");

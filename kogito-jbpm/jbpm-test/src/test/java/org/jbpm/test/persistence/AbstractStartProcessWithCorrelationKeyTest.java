@@ -18,9 +18,10 @@ package org.jbpm.test.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
@@ -31,21 +32,22 @@ import org.kie.internal.process.CorrelationKeyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUnitTestCase {
+public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUnitBaseTestCase {
     
     private static final Logger logger = LoggerFactory.getLogger(AbstractStartProcessWithCorrelationKeyTest.class);
     
     private CorrelationKeyFactory factory;
     public AbstractStartProcessWithCorrelationKeyTest(boolean persistence) {
-        super(true);
-        super.setPersistence(persistence);
+        super(true, persistence);
         factory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
     }
     
     @Test
     public void testCreateAndStartProcessWithBusinessKey() {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).createProcessInstance("com.sample.bpmn.hello", getCorrelationKey(), null);
         ksession.startProcessInstance(processInstance.getId());
@@ -79,8 +81,10 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessWithBusinessKey() {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
 
@@ -113,8 +117,10 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
 
     @Test
     public void testProcessWithBusinessKeyFailOnDuplicatedBusinessKey() {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession)
                 .startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
@@ -155,8 +161,10 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessesWithSameBusinessKeyNotInParallel() {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).
                 startProcess("com.sample.bpmn.hello", getCorrelationKey(), null);
@@ -219,8 +227,10 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessWithMultiValuedBusinessKey() {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getMultiValuedCorrelationKey(), null);
 
@@ -253,8 +263,10 @@ public abstract class AbstractStartProcessWithCorrelationKeyTest extends JbpmJUn
     
     @Test
     public void testProcessWithInvalidBusinessKey() {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
         
         ProcessInstance processInstance = ((CorrelationAwareProcessRuntime)ksession).startProcess("com.sample.bpmn.hello", getMultiValuedCorrelationKey(), null);
 

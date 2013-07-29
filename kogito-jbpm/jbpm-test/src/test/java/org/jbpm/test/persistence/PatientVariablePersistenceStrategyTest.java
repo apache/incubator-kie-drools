@@ -13,13 +13,14 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.jbpm.test.persistence.objects.MedicalRecord;
 import org.jbpm.test.persistence.objects.Patient;
 import org.jbpm.test.persistence.objects.RecordRow;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
@@ -28,17 +29,15 @@ import org.kie.api.task.model.TaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
+public class PatientVariablePersistenceStrategyTest extends JbpmJUnitBaseTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(PatientVariablePersistenceStrategyTest.class);
 
     private EntityManagerFactory emfDomain;
-    protected TaskService taskService ;
-    protected KieSession ksession;
+
 
     public PatientVariablePersistenceStrategyTest() {
-        super(true);
-        setPersistence(true);
+        super(true, true);
     }
 
     @Test
@@ -53,9 +52,11 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
         em.persist(medicalRecord);
         em.getTransaction().commit();
         
-        ksession = createKnowledgeSession("patient-appointment.bpmn");
-        
-        taskService = getTaskService();
+        createRuntimeManager("patient-appointment.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+
         
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
@@ -81,7 +82,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
         
         taskService.start(frontDeskTasks.get(0).getId(), "frontDesk");
         //frontDesk completes its task
-        MedicalRecord taskMedicalRecord = getTaskContent(frontDeskTasks.get(0));
+        MedicalRecord taskMedicalRecord = getTaskContent(runtimeEngine, frontDeskTasks.get(0));
         Assert.assertNotNull(taskMedicalRecord.getId());
         taskMedicalRecord.setDescription("Initial Description of the Medical Record");
         
@@ -99,7 +100,7 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
         managerTasks = taskService.getTasksAssignedAsPotentialOwner("manager", "en-UK");
         Assert.assertTrue(managerTasks.isEmpty());
         
-        taskMedicalRecord = getTaskContent(doctorTasks.get(0));
+        taskMedicalRecord = getTaskContent(runtimeEngine, doctorTasks.get(0));
         
         taskService.start(doctorTasks.get(0).getId(), "doctor");
         //Check that we have the Modified Document
@@ -141,15 +142,14 @@ public class PatientVariablePersistenceStrategyTest extends JbpmJUnitTestCase {
         Assert.assertNull(process);
     }
     
-    private MedicalRecord getTaskContent(TaskSummary summary) throws IOException, ClassNotFoundException{
+    private MedicalRecord getTaskContent(RuntimeEngine runtimeEngine, TaskSummary summary) throws IOException, ClassNotFoundException{
         logger.info(" >>> Getting Task Content = {}", summary.getId());
         
-        Task task = taskService.getTaskById(summary.getId());
+        Task task = runtimeEngine.getTaskService().getTaskById(summary.getId());
         long documentContentId = task.getTaskData().getDocumentContentId();
-        Content content = taskService.getContentById(documentContentId);
-        Object readObject = 
-                ContentMarshallerHelper.unmarshall(         content.getContent(), 
-                                                            ksession.getEnvironment());
+        Content content = runtimeEngine.getTaskService().getContentById(documentContentId);
+        Object readObject = ContentMarshallerHelper.unmarshall(content.getContent(), 
+                                runtimeEngine.getKieSession().getEnvironment());
         
         logger.info(" >>> Object = {}", readObject);
         return (MedicalRecord)readObject;

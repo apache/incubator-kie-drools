@@ -7,6 +7,7 @@ import javax.transaction.UserTransaction;
 
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
@@ -16,19 +17,21 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a sample file to test a process.
  */
-public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
+public class ProcessPersistenceHumanTaskTest extends JbpmJUnitBaseTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessPersistenceHumanTaskTest.class);
 
     public ProcessPersistenceHumanTaskTest() {
-        super(true);
-        setPersistence(true);
+        super(true, true);
     }
 
     @Test
     public void testProcess() throws Exception {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+
 
         ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
 
@@ -36,8 +39,12 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
         assertNodeTriggered(processInstance.getId(), "Start", "Task 1");
 
         // simulating a system restart
-        ksession = restoreSession(ksession, true);
-        taskService = getTaskService();
+        logger.debug("Reloading the environemnt to simulate system restart");
+        disposeRuntimeManager();
+        createRuntimeManager("humantask.bpmn");
+        runtimeEngine = getRuntimeEngine();
+        ksession = runtimeEngine.getKieSession();
+        taskService = runtimeEngine.getTaskService();
 
         // let john execute Task 1
         String taskGroup = "en-UK";
@@ -50,8 +57,12 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
         assertNodeTriggered(processInstance.getId(), "Task 2");
 
         // simulating a system restart
-        ksession = restoreSession(ksession, true);
-        taskService = getTaskService();
+        logger.debug("Reloading the environemnt to simulate system restart once again");
+        disposeRuntimeManager();
+        createRuntimeManager("humantask.bpmn");
+        runtimeEngine = getRuntimeEngine();
+        ksession = runtimeEngine.getKieSession();
+        taskService = runtimeEngine.getTaskService();
 
         // let mary execute Task 2
         String taskUser = "mary";
@@ -68,8 +79,10 @@ public class ProcessPersistenceHumanTaskTest extends JbpmJUnitTestCase {
 
     @Test
     public void testTransactions() throws Exception {
-        KieSession ksession = createKnowledgeSession("humantask.bpmn");
-        TaskService taskService = getTaskService();
+        createRuntimeManager("humantask.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
 
         UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
         ut.begin();

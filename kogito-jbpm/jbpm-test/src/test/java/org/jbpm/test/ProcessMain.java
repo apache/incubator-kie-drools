@@ -17,7 +17,7 @@ public class ProcessMain {
     private static final Logger logger = LoggerFactory.getLogger(ProcessMain.class);
     
 	public static final void main(String[] args) throws Exception {
-		startUp();
+	    JBPMHelper.startUp();
 		// load up the knowledge base
 		KnowledgeBase kbase = readKnowledgeBase();
 		StatefulKnowledgeSession ksession = JBPMHelper.newStatefulKnowledgeSession(kbase);

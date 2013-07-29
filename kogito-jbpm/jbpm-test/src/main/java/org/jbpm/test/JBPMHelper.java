@@ -1,5 +1,7 @@
 package org.jbpm.test;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -7,19 +9,28 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.core.impl.EnvironmentFactory;
 import org.h2.tools.Server;
-import org.jbpm.services.task.HumanTaskServiceFactory;
-import org.kie.api.runtime.Environment;
+import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
+import org.jbpm.services.task.HumanTaskConfigurator;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.task.TaskService;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
+/**
+ * Since version 6.0 this class is deprecated. Instead <code>RuntimeManager</code> should be used directly.
+ * See documentation on how to use <code>RuntimeManager</code>
+ */
+@Deprecated
 public final class JBPMHelper {
 
     public static String[] processStateName = {"PENDING", "ACTIVE", "COMPLETED", "ABORTED", "SUSPENDED"};
@@ -38,6 +49,7 @@ public final class JBPMHelper {
     }
 
     public static void startUp() {
+        cleanupSingletonSessionId();
         Properties properties = getProperties();
         String driverClassName = properties.getProperty("persistence.datasource.driverClassName", "org.h2.Driver");
         if (driverClassName.startsWith("org.h2")) {
@@ -85,48 +97,20 @@ public final class JBPMHelper {
         String dialect = properties.getProperty("persistence.persistenceunit.dialect", "org.hibernate.dialect.H2Dialect");
         Map<String, String> map = new HashMap<String, String>();
         map.put("hibernate.dialect", dialect);
-        EntityManagerFactory emf =
-                Persistence.createEntityManagerFactory(properties.getProperty("taskservice.datasource.name", "org.jbpm.services.task"), map);
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(properties.getProperty("taskservice.datasource.name", "org.jbpm.services.task"), map);
         System.setProperty("jbpm.user.group.mapping", properties.getProperty("taskservice.usergroupmapping", "classpath:/usergroups.properties"));
-        System.setProperty("jbpm.usergroup.callback",
-                properties.getProperty("taskservice.usergroupcallback", "org.jbpm.services.task.identity.DefaultUserGroupCallbackImpl"));
-//        TaskService taskService = new TaskService(emf, SystemEventListenerFactory.getSystemEventListener());
-//        String transport = properties.getProperty("taskservice.transport", "mina");
-//        if ("mina".equals(transport)) {
-//    		MinaTaskServer taskServer = new MinaTaskServer(taskService);
-//            Thread thread = new Thread(taskServer);
-//            thread.start();
-//        } else if ("hornetq".equals(transport)) {
-//            HornetQTaskServer taskServer = new HornetQTaskServer(taskService, Integer.parseInt(properties.getProperty("taskservice.port", "5153")));
-//            Thread thread = new Thread(taskServer);
-//            thread.start();
-//        } else {
-//        	throw new RuntimeException("Unknown task service transport " + transport);
-//        }
-        HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        TaskService taskService = HumanTaskServiceFactory.newTaskService();
+
+        TaskService taskService = new HumanTaskConfigurator()
+                                        .entityManagerFactory(emf)
+                                        .userGroupCallback(getUserGroupCallback())
+                                        .transactionManager(new JbpmJTATransactionManager())
+                                        .getTaskService();
         return taskService;
     }
 
     public static void registerTaskService(StatefulKnowledgeSession ksession) {
-        Properties properties = getProperties();
-        String transport = properties.getProperty("taskservice.transport", "hornetq");
-//        if ("mina".equals(transport)) {
-//        	ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-//    			new MinaHTWorkItemHandler(ksession));
-//        } else if ("hornetq".equals(transport)) {
-//            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-//                new HornetQHTWorkItemHandler(ksession));
-//        } else {
-//        	throw new RuntimeException("Unknown task service transport " + transport);
-//        }	
-    }
+        // no-op HT work item handler is already registered when using RuntimeManager
 
-    protected static Environment createEnvironment(EntityManagerFactory emf) {
-        Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        env.set(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
-        return env;
     }
 
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase) {
@@ -136,58 +120,42 @@ public final class JBPMHelper {
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(KnowledgeBase kbase, int sessionId) {
         Properties properties = getProperties();
         String persistenceEnabled = properties.getProperty("persistence.enabled", "false");
-        StatefulKnowledgeSession ksession;
+        RuntimeEnvironmentBuilder builder = null;
         if ("true".equals(persistenceEnabled)) {
             String dialect = properties.getProperty("persistence.persistenceunit.dialect", "org.hibernate.dialect.H2Dialect");
             Map<String, String> map = new HashMap<String, String>();
             map.put("hibernate.dialect", dialect);
-            EntityManagerFactory emf =
-                    Persistence.createEntityManagerFactory(properties.getProperty("persistence.persistenceunit.name", "org.jbpm.persistence.jpa"), map);
-            Environment env = createEnvironment(emf);
+            EntityManagerFactory emf = Persistence.createEntityManagerFactory(properties.getProperty("persistence.persistenceunit.name", "org.jbpm.persistence.jpa"), map);
+            
+            
+            builder = RuntimeEnvironmentBuilder.getDefault()
+                .entityManagerFactory(emf)                
+                .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
 
-            /**
-             * At the moment, we still need a real Thread.sleep() to test
-             * things, since the pseudo clock is attached to the ksession
-             */
-            // final KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-            // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-            // create a new knowledge session that uses JPA to store the runtime state
-            if (sessionId == -1) {
-                ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, env);
-            } else {
-                ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId, kbase, null, env);
-            }
-            String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
-            if ("true".equals(humanTaskEnabled)) {
-//				String transport = properties.getProperty("taskservice.transport", "hornetq");
-//		        if ("mina".equals(transport)) {
-//					ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-//						new MinaHTWorkItemHandler(ksession));
-//		        }  else if ("hornetq".equals(transport)) {
-//		            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-//	                    new HornetQHTWorkItemHandler(ksession));
-//	            } else {
-//		        	throw new RuntimeException("Unknown task service transport " + transport);
-//		        }
+
+        } else {            
+            builder = RuntimeEnvironmentBuilder.getDefaultInMemory();
+        }
+        builder.knowledgeBase(kbase);
+        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(builder.get());
+        return (StatefulKnowledgeSession) manager.getRuntimeEngine(EmptyContext.get()).getKieSession();
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static UserGroupCallback getUserGroupCallback() {
+        Properties properties = getProperties();
+        String className = properties.getProperty("taskservice.usergroupcallback");
+        if (className != null) {
+            try {
+                Class<UserGroupCallback> clazz = (Class<UserGroupCallback>) Class.forName(className);
+           
+                return clazz.newInstance();
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Cannot create instance of UserGroupCallback " + className, e);
             }
         } else {
-            ksession = kbase.newStatefulKnowledgeSession();
-            String humanTaskEnabled = properties.getProperty("taskservice.enabled", "false");
-            if ("true".equals(humanTaskEnabled)) {
-                String transport = properties.getProperty("taskservice.transport", "hornetq");
-//		        if ("mina".equals(transport)) {
-//					ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-//						new MinaHTWorkItemHandler(ksession));
-//		        } else if ("hornetq".equals(transport)) {
-//		            ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-//	                    new HornetQHTWorkItemHandler(ksession));
-//	            } else {
-//		        	throw new RuntimeException("Unknown task service transport " + transport);
-//		        }	
-            }
+            return new JBossUserGroupCallbackImpl("classpath:/usergroups.properties");
         }
-        KnowledgeSessionCleanup.knowledgeSessionSetLocal.get().add(ksession);
-        return ksession;
     }
 
     public static Properties getProperties() {
@@ -198,5 +166,24 @@ public final class JBPMHelper {
             // do nothing, use defaults
         }
         return properties;
+    }
+    
+    protected static void cleanupSingletonSessionId() {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        if (tempDir.exists()) {
+            
+            String[] jbpmSerFiles = tempDir.list(new FilenameFilter() {
+                
+                @Override
+                public boolean accept(File dir, String name) {
+                    
+                    return name.endsWith("-jbpmSessionId.ser");
+                }
+            });
+            for (String file : jbpmSerFiles) {
+                
+                new File(tempDir, file).delete();
+            }
+        }
     }
 }

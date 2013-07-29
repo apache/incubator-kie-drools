@@ -11,12 +11,13 @@ import javax.persistence.Persistence;
 
 import org.jbpm.services.task.admin.listener.TaskCleanUpProcessEventListener;
 import org.jbpm.services.task.identity.DefaultUserInfo;
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
@@ -27,7 +28,7 @@ import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
+public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminAPIsWithListenerTest.class);
 
@@ -36,8 +37,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
     protected Properties conf;
 
     public AdminAPIsWithListenerTest() {
-        super(true);
-        setPersistence(true);
+        super(true, true);
     }
 
     
@@ -63,10 +63,11 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
     @Test
     public void automaticCleanUpTest() throws Exception {
 
+        createRuntimeManager("patient-appointment.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
 
-        KieSession ksession = createKnowledgeSession("patient-appointment.bpmn");
-
-        TaskService taskService = getTaskService();
 
         ((InternalTaskService) taskService).setUserInfo(userInfo);
 
@@ -140,10 +141,11 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitTestCase {
     @Test
     public void automaticCleanUpTestAbortProcess() throws Exception {
 
-
-        KieSession ksession = createKnowledgeSession("patient-appointment.bpmn");
-
-        TaskService taskService = getTaskService();
+        createRuntimeManager("patient-appointment.bpmn");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+        
         ((InternalTaskService) taskService).setUserInfo(userInfo);
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
