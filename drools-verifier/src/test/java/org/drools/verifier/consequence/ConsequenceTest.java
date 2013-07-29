@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 
 public class ConsequenceTest extends TestBaseOld {
 
-    @Test @Ignore
+    @Test
     public void testMissingConsequence() throws Exception {
 
         InputStream in = getClass().getResourceAsStream( "Consequence.drl" );
@@ -49,7 +49,7 @@ public class ConsequenceTest extends TestBaseOld {
 
         VerifierReport result = VerifierReportFactory.newVerifierReport();
 
-        Collection< ? extends Object> testData = getTestData( this.getClass().getResourceAsStream( "ConsequenceTest.drl" ),
+        Collection< ? extends Object> testData = getTestData( this.getClass().getResourceAsStream( "ConsequenceTest2.drl" ),
                                                               result.getVerifierData() );
 
         session.setGlobal( "result",
@@ -57,11 +57,11 @@ public class ConsequenceTest extends TestBaseOld {
 
         session.executeWithResults( testData );
 
-        Iterator<VerifierMessageBase> iter = result.getBySeverity( Severity.WARNING ).iterator();
+        Iterator<VerifierMessageBase> iterator = result.getBySeverity( Severity.WARNING ).iterator();
 
         Set<String> rulesThatHadErrors = new HashSet<String>();
-        while ( iter.hasNext() ) {
-            Object o = (Object) iter.next();
+        while ( iterator.hasNext() ) {
+            Object o = iterator.next();
             if ( o instanceof VerifierMessage ) {
                 VerifierMessage message = (VerifierMessage) o;
                 rulesThatHadErrors.addAll( message.getImpactedRules().values() );
