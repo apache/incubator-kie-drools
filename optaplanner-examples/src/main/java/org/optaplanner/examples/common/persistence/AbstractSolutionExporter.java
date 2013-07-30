@@ -21,6 +21,7 @@ import java.util.Arrays;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 public abstract class AbstractSolutionExporter extends LoggingMain {
 
@@ -47,14 +48,17 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
 
     public void convertAll() {
         File inputDir = getInputDir();
+        if (!inputDir.exists()) {
+            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
+                    + ") does not exist." +
+                    " The working directory should be set to the directory that contains the data directory." +
+                    " This is different in a git clone (optaplanner/optaplanner-examples)" +
+                    " and the release zip (examples).");
+        }
         File outputDir = getOutputDir();
         outputDir.mkdirs();
         File[] inputFiles = inputDir.listFiles();
-        Arrays.sort(inputFiles);
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be optaplanner-examples and contain: " + inputDir);
-        }
+        Arrays.sort(inputFiles, new ProblemFileComparator());
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith(getInputFileSuffix())) {

@@ -17,12 +17,14 @@
 package org.optaplanner.examples.common.business;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
@@ -41,6 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SolutionBusiness {
+
+    private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -152,15 +156,23 @@ public class SolutionBusiness {
     }
 
     public List<File> getUnsolvedFileList() {
-        List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
-        Collections.sort(unsolvedFileList);
-        return unsolvedFileList;
+        List<File> fileList = extractFileList(unsolvedDataDir);
+        Collections.sort(fileList, FILE_COMPARATOR);
+        return fileList;
     }
 
     public List<File> getSolvedFileList() {
-        List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
-        Collections.sort(solvedFileList);
-        return solvedFileList;
+        List<File> fileList = extractFileList(solvedDataDir);
+        Collections.sort(fileList, FILE_COMPARATOR);
+        return fileList;
+    }
+
+    public List<File> extractFileList(File directory) {
+        List<File> fileList = Arrays.asList(directory.listFiles(new SolutionFileFilter(solutionDao)));
+        for (File subDirectory : directory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)) {
+            fileList.addAll(extractFileList(subDirectory));
+        }
+        return fileList;
     }
 
     public Solution getSolution() {

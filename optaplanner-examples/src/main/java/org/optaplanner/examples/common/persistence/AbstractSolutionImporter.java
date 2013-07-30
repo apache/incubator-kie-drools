@@ -17,10 +17,16 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.business.SolutionFileFilter;
 
 public abstract class AbstractSolutionImporter extends LoggingMain {
 
@@ -48,13 +54,16 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
 
     public void convertAll() {
         File inputDir = getInputDir();
+        if (!inputDir.exists()) {
+            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
+                    + ") does not exist." +
+                    " The working directory should be set to the directory that contains the data directory." +
+                    " This is different in a git clone (optaplanner/optaplanner-examples)" +
+                    " and the release zip (examples).");
+        }
         File outputDir = getOutputDir();
         File[] inputFiles = inputDir.listFiles();
-        if (inputFiles == null) {
-            throw new IllegalArgumentException(
-                    "Your working dir should be optaplanner-examples and contain: " + inputDir);
-        }
-        Arrays.sort(inputFiles);
+        Arrays.sort(inputFiles, new ProblemFileComparator());
         for (File inputFile : inputFiles) {
             if (acceptInputFile(inputFile) && acceptInputFileDuringBulkConvert(inputFile)) {
                 Solution solution = readSolution(inputFile);

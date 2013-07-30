@@ -26,7 +26,6 @@ public class SolutionFileFilter implements FileFilter {
     private final SolutionDao solutionDao;
 
     public SolutionFileFilter(SolutionDao solutionDao) {
-
         this.solutionDao = solutionDao;
     }
 

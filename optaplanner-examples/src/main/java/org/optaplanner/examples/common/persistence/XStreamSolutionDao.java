@@ -51,13 +51,8 @@ public abstract class XStreamSolutionDao implements SolutionDao {
 
     public Solution readSolution(File inputSolutionFile) {
         Solution solution = xStreamProblemIO.read(inputSolutionFile);
-        postRead(solution);
         logger.info("Loaded: {}", inputSolutionFile);
         return solution;
-    }
-
-    protected void postRead(Solution solution) {
-        // Do nothing
     }
 
     public void writeSolution(Solution solution, File outputSolutionFile) {

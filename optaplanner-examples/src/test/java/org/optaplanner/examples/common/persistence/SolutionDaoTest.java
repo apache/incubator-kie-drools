@@ -17,45 +17,53 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.examples.common.app.LoggingTest;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.examples.common.business.SolutionFileFilter;
 
 @RunWith(Parameterized.class)
 public abstract class SolutionDaoTest extends LoggingTest {
 
     protected static Collection<Object[]> getSolutionFilesAsParameters(SolutionDao solutionDao) {
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
+        List<File> fileList = new ArrayList<File>(0);
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
-            List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
-            Collections.sort(unsolvedFileList);
-            for (File unsolvedFile : unsolvedFileList) {
-                filesAsParameters.add(new Object[]{unsolvedFile});
-            }
+            addFiles(solutionDao, fileList, unsolvedDataDir);
         }
         File solvedDataDir = new File(dataDir, "solved");
         if (solvedDataDir.exists()) {
-            List<File> solvedFileList = Arrays.asList(solvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
-            Collections.sort(solvedFileList);
-            for (File solvedFile : solvedFileList) {
-                filesAsParameters.add(new Object[]{solvedFile});
-            }
+            addFiles(solutionDao, fileList, solvedDataDir);
+        }
+        Collections.sort(fileList, new ProblemFileComparator());
+        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
+        for (File file : fileList) {
+            filesAsParameters.add(new Object[]{file});
         }
         return filesAsParameters;
+    }
+
+    private static void addFiles(SolutionDao solutionDao, List<File> fileList, File directory) {
+        List<File> newFileList = Arrays.asList(directory.listFiles(new SolutionFileFilter(solutionDao)));
+        fileList.addAll(newFileList);
+        for (File subDirectory : directory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)) {
+            addFiles(solutionDao, fileList, subDirectory);
+        }
     }
 
     protected SolutionDao solutionDao;
