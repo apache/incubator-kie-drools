@@ -4410,10 +4410,19 @@ public class TraitTest extends CommonTestMethodBase {
 
     public static class TraitableFoo {
 
-        public TraitableFoo( String id, int x, Object k ) {
+        private String id;
 
+        public TraitableFoo( String id, int x, Object k ) {
+            setId( id );
         }
 
+        public String getId() {
+            return id;
+        }
+
+        public void setId( String id ) {
+            this.id = id;
+        }
     }
 
     public static class XYZ extends TraitableFoo {
@@ -4432,20 +4441,22 @@ public class TraitTest extends CommonTestMethodBase {
                      "import org.drools.factmodel.traits.TraitTest.TraitableFoo;\n" +
                      "import org.drools.factmodel.traits.Traitable;\n" +
                      "\n" +
-                     "\n" +
+                     "" +
                      "declare trait Bar\n" +
                      "end\n" +
                      "\n" +
                      "rule \"Don\"\n" +
+                     "no-loop \n" +
                      "when\n" +
                      " $f : TraitableFoo( )\n" +
                      "then\n" +
-                     " Bar b = don( $f, Bar.class );\n" +
+                     "  Bar b = don( $f, Bar.class );\n" +
                      "end";
 
 
         StatefulKnowledgeSession ksession = getSessionFromString(drl);
         TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase() );
+        ksession.addEventListener( new DebugAgendaEventListener(  ) );
 
         ksession.insert( new TraitableFoo( "xx", 0, null ) );
         ksession.fireAllRules();
@@ -4454,6 +4465,7 @@ public class TraitTest extends CommonTestMethodBase {
             System.out.println( o );
         }
 
+        assertEquals( 3, ksession.getObjects().size() );
     }
 
 
