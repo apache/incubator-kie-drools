@@ -37,17 +37,4 @@
       <acceptedCountLimit>2000</acceptedCountLimit>
     </forager>
   </localSearch>
-  <!--<localSearch>-->
-    <!--<unionMoveSelector>-->
-      <!--<changeMoveSelector/>-->
-      <!--<swapMoveSelector/>-->
-      <!--<subChainChangeMoveSelector/>-->
-    <!--</unionMoveSelector>-->
-    <!--<acceptor>-->
-      <!--<simulatedAnnealingStartingTemperature>10</simulatedAnnealingStartingTemperature>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-      <!--<acceptedCountLimit>4</acceptedCountLimit>-->
-    <!--</forager>-->
-  <!--</localSearch>-->
 </solver>
