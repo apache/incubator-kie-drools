@@ -460,14 +460,14 @@
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
-      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false" />
+      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false -Dorg.jbpm.console.demo=true -Dorg.kie.wb.demo=true" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
-      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false" />
+      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false -Dorg.jbpm.console.demo=true -Dorg.kie.wb.demo=true" />
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
