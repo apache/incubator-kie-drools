@@ -95,10 +95,16 @@ public abstract class AbstractDRLEmitter {
 
     private void addImports(PMML pmml, Package aPackage) {
         String importsFromDelimitedString = ScorecardPMMLUtils.getExtensionValue(pmml.getHeader().getExtensions(), PMMLExtensionNames.SCORECARD_IMPORTS);
-        for (String importStatement : importsFromDelimitedString.split(",")) {
+        if ( StringUtils.isEmpty(importsFromDelimitedString) ) {
             Import imp = new Import();
-            imp.setClassName(importStatement);
+            imp.setClassName("java.util.*");
             aPackage.addImport(imp);
+        } else {
+            for (String importStatement : importsFromDelimitedString.split(",")) {
+                Import imp = new Import();
+                imp.setClassName(importStatement);
+                aPackage.addImport(imp);
+            }
         }
         Import defaultScorecardImport = new Import();
         defaultScorecardImport.setClassName("org.drools.scorecards.DroolsScorecard");
