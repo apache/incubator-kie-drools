@@ -176,17 +176,21 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
 
         private void createBasicVehicleList() throws IOException {
             String inputFileName = inputFile.getName();
-            String inputFileNameRegex = "^.+\\-k(\\d+)\\.vrp$";
-            if (!inputFileName.matches(inputFileNameRegex)) {
-                throw new IllegalArgumentException("The inputFileName (" + inputFileName
-                        + ") does not match the inputFileNameRegex (" + inputFileNameRegex + ").");
-            }
-            String vehicleListSizeString = inputFileName.replaceAll(inputFileNameRegex, "$1");
-            try {
-                vehicleListSize = Integer.parseInt(vehicleListSizeString);
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("The inputFileName (" + inputFileName
-                        + ") has a vehicleListSizeString (" + vehicleListSizeString + ") that is not a number.", e);
+            if (inputFileName.toLowerCase().startsWith("demo")) {
+                vehicleListSize = readIntegerValue("VEHICLES :");
+            } else {
+                String inputFileNameRegex = "^.+\\-k(\\d+)\\.vrp$";
+                if (!inputFileName.matches(inputFileNameRegex)) {
+                    throw new IllegalArgumentException("The inputFileName (" + inputFileName
+                            + ") does not match the inputFileNameRegex (" + inputFileNameRegex + ").");
+                }
+                String vehicleListSizeString = inputFileName.replaceAll(inputFileNameRegex, "$1");
+                try {
+                    vehicleListSize = Integer.parseInt(vehicleListSizeString);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("The inputFileName (" + inputFileName
+                            + ") has a vehicleListSizeString (" + vehicleListSizeString + ") that is not a number.", e);
+                }
             }
             createVehicleList();
         }
