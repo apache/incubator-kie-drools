@@ -125,6 +125,12 @@ class XLSEventDataCollector {
         if (XLSKeywords.SCORECARD_NAME.equalsIgnoreCase(stringCellValue)) {
             addExpectation(currentRowCtr, currentColCtr + 1, "modelName", scorecard, "Model Name is missing!");
 
+        } else if (XLSKeywords.SCORECARD_SCORING_STRATEGY.equalsIgnoreCase(stringCellValue)) {
+            Extension extension = new Extension();
+            extension.setName(PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+            scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
+            addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, null);
+
         } else if (XLSKeywords.SCORECARD_REASONCODE_ALGORITHM.equalsIgnoreCase(stringCellValue)) {
             addExpectation(currentRowCtr, currentColCtr + 1, "reasonCodeAlgorithm", scorecard, null);
         } else if (XLSKeywords.SCORECARD_USE_REASONCODES.equalsIgnoreCase(stringCellValue)) {

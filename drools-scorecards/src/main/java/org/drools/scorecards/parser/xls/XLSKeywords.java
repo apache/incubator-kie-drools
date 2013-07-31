@@ -31,6 +31,8 @@ public interface XLSKeywords {
     public static final String SCORECARD_REASONCODE = "Reason Code";
     public static final String SCORECARD_REASONCODE_ALGORITHM = "Reason Code Algorithm";
 
+    public static final String SCORECARD_SCORING_STRATEGY = "Scoring Strategy";
+
     public static final String SCORECARD_CHARACTERISTIC_NAME = "Name";
     public static final String SCORECARD_CHARACTERISTIC_DATATYPE = "Data Type";
     public static final String SCORECARD_CHARACTERISTIC_BASELINE_SCORE = "Baseline Score";
@@ -40,6 +42,7 @@ public interface XLSKeywords {
     public static final String SCORECARD_CHARACTERISTIC_BIN_LABEL = "Value";
     public static final String SCORECARD_CHARACTERISTIC_BIN_INITIALSCORE = "Partial Score";
     public static final String SCORECARD_CHARACTERISTIC_BIN_DESC = "Description";
+
     public static final String DATATYPE_NUMBER = "Number";
     public static final String DATATYPE_TEXT = "Text";
     public static final String DATATYPE_BOOLEAN = "Boolean";
