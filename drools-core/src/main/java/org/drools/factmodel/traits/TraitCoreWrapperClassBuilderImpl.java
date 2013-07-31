@@ -25,6 +25,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -84,8 +85,24 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
 
-            mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, BuildUtils.getInternalType( coreName ), "<init>", "()V" );
+            try {
+                coreKlazz.getConstructor();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn( INVOKESPECIAL, BuildUtils.getInternalType( coreName ), "<init>", "()V" );
+            } catch ( NoSuchMethodException nsme ) {
+                Constructor con = coreKlazz.getConstructors()[ 0 ];
+                Class[] params = con.getParameterTypes();
+
+                mv.visitVarInsn( ALOAD, 0 );
+                for ( Class param : params ) {
+                    mv.visitInsn( BuildUtils.zero( param.getName() ) );
+                }
+                mv.visitMethodInsn( INVOKESPECIAL,
+                                    BuildUtils.getInternalType( coreName ),
+                                    "<init>",
+                                    Type.getConstructorDescriptor( con ) );
+            }
+
 
 //            mv.visitVarInsn( ALOAD, 0 );
 //            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );

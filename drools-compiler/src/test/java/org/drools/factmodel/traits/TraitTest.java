@@ -4407,4 +4407,55 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+
+    public static class TraitableFoo {
+
+        public TraitableFoo( String id, int x, Object k ) {
+
+        }
+
+    }
+
+    public static class XYZ extends TraitableFoo {
+
+        public XYZ() {
+            super( null, 0, null );
+        }
+
+    }
+
+
+    @Test
+    public void traitDonLegacyClassWithoutEmptyConstructor( ) {
+        String drl = "package org.drools.compiler.trait.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.TraitTest.TraitableFoo;\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "\n" +
+                     "\n" +
+                     "declare trait Bar\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Don\"\n" +
+                     "when\n" +
+                     " $f : TraitableFoo( )\n" +
+                     "then\n" +
+                     " Bar b = don( $f, Bar.class );\n" +
+                     "end";
+
+
+        StatefulKnowledgeSession ksession = getSessionFromString(drl);
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase() );
+
+        ksession.insert( new TraitableFoo( "xx", 0, null ) );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+    }
+
+
+
 }
