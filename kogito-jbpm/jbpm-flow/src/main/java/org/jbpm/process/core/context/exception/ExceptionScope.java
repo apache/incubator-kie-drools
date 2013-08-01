@@ -28,7 +28,7 @@ public class ExceptionScope extends AbstractContext {
 
     public static final String EXCEPTION_SCOPE = "ExceptionScope";
     
-    private Map<String, ExceptionHandler> exceptionHandlers = new HashMap<String, ExceptionHandler>();
+    protected Map<String, ExceptionHandler> exceptionHandlers = new HashMap<String, ExceptionHandler>();
     
     public String getType() {
         return EXCEPTION_SCOPE;

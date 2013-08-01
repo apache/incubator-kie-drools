@@ -489,9 +489,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
-        List<String> completedNodeIds = processInstance.getCompletedNodeIds();
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
-            completedNodeIds.add(completedNodeId);
+            processInstance.addCompletedNodeId(completedNodeId);
         }
 
         if ( _instance.getSwimlaneContextCount() > 0 ) {

@@ -51,6 +51,7 @@ public class ForEachNode extends CompositeContextNode {
         ForEachSplitNode split = new ForEachSplitNode();
         split.setName("ForEachSplit");
         split.setMetaData("hidden", true);
+        split.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:split");
         super.addNode(split);
         super.linkIncomingConnections(
             org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, 
@@ -59,6 +60,7 @@ public class ForEachNode extends CompositeContextNode {
         CompositeContextNode compositeNode = new CompositeContextNode();
         compositeNode.setName("ForEachComposite");
         compositeNode.setMetaData("hidden", true);
+        compositeNode.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:composite");
         super.addNode(compositeNode);
         VariableScope variableScope = new VariableScope();
         compositeNode.addContext(variableScope);
@@ -67,6 +69,7 @@ public class ForEachNode extends CompositeContextNode {
         ForEachJoinNode join = new ForEachJoinNode();
         join.setName("ForEachJoin");
         join.setMetaData("hidden", true);
+        join.setMetaData("UniqueId", getMetaData("Uniqueid") + ":foreach:join");
         super.addNode(join);
         super.linkOutgoingConnections(
             new CompositeNode.NodeAndType(join, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE),

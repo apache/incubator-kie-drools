@@ -42,11 +42,13 @@ public class ReuseNodeFactory implements NodeInstanceFactory {
             nodeInstance.setNodeId(node.getId());
             nodeInstance.setNodeInstanceContainer(nodeInstanceContainer);
             nodeInstance.setProcessInstance(processInstance);
-            String uniqueID = (String) node.getMetaData().get("UniqueId");
-            if (uniqueID == null) {
-                uniqueID = node.getId()+"";
+            String uniqueId = (String) node.getMetaData().get("UniqueId");
+            assert uniqueId != null : node.getName() + " does not have a unique id.";
+            if (uniqueId == null) {
+                uniqueId = node.getId()+"";
             }
-            int level = ((org.jbpm.workflow.instance.NodeInstanceContainer)nodeInstanceContainer).getLevelForNode(uniqueID);
+            nodeInstance.setMetaData("UniqueId", uniqueId);
+            int level = ((org.jbpm.workflow.instance.NodeInstanceContainer)nodeInstanceContainer).getLevelForNode(uniqueId);
             nodeInstance.setLevel(level);
             return nodeInstance;
         } catch (Exception e) {

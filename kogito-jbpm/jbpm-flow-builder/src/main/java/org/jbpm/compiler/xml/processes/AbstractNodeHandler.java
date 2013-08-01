@@ -189,6 +189,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         			 && !"width".equals(name)
         			 && !"height".equals(name)
         			 && !"color".equals(name)
+        			 && !"UniqueId".equals(name)
         			 && entry.getValue() instanceof String) {
         		return true;
         	}

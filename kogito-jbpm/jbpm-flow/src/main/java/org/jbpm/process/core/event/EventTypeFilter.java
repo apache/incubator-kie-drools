@@ -39,4 +39,7 @@ public class EventTypeFilter implements EventFilter, Serializable {
 		return false;
 	}
 
+	public String toString() { 
+	    return "Event filter: [" + this.type + "]";
+	}
 }

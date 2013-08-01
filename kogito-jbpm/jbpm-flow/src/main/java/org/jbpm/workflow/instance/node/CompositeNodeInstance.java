@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.process.instance.ProcessInstance;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
@@ -74,7 +75,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         iterationLevels.put(uniqueID, value);
         return value;
     }
-    
+   
     public void setProcessInstance(WorkflowProcessInstance processInstance) {
     	super.setProcessInstance(processInstance);
     	registerExternalEventNodeListeners();
@@ -90,10 +91,6 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 			} else if (node instanceof EventSubProcessNode) {
                 List<String> events = ((EventSubProcessNode) node).getEvents();
                 for (String type : events) {
-                    //exclude compensation as they are only valid within process instance scope
-                    if (type.startsWith("Compensate-")) {
-                        continue;
-                    }
                     getProcessInstance().addEventListener(type, new DoNothingEventListener(), true);
                 }
             }
@@ -257,6 +254,9 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 					if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
 						EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
 						eventNodeInstance.signalEvent(type, event);
+					} else if( node instanceof EventSubProcessNode ) { 
+					    EventNodeInstanceInterface eventNodeInstance = (EventNodeInstanceInterface) getNodeInstance(node);
+					    eventNodeInstance.signalEvent(type, event);
 					} else {
 						List<NodeInstance> nodeInstances = getNodeInstances(node.getId());
 						if (nodeInstances != null && !nodeInstances.isEmpty()) {
@@ -339,7 +339,15 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	}
 
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
-	    if (nodeInstance instanceof EndNodeInstance) {
+	    Node nodeInstanceNode = nodeInstance.getNode();
+	    if( nodeInstanceNode != null ) { 
+	        Object compensationBoolObj =  nodeInstanceNode.getMetaData().get("isForCompensation");
+	        boolean isForCompensation = compensationBoolObj == null ? false : ((Boolean) compensationBoolObj);
+	        if( isForCompensation ) { 
+	            return;
+	        }
+	    }
+	    if(nodeInstance instanceof EndNodeInstance || nodeInstance instanceof EventSubProcessNodeInstance ) {
              if (((org.jbpm.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
                 if (nodeInstances.isEmpty()) {
                     triggerCompleted(

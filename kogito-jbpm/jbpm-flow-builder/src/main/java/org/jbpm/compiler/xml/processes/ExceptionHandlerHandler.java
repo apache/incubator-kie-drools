@@ -50,7 +50,7 @@ public class ExceptionHandlerHandler extends BaseAbstractHandler implements Hand
 		
 		final String faultVariable = element.getAttribute("faultVariable");
 		
-		ExceptionHandler exceptionHandler = null;
+		ActionExceptionHandler exceptionHandler = null;
 		if ("action".equals(type)) {
 			exceptionHandler = new ActionExceptionHandler();
 			org.w3c.dom.Node xmlNode = element.getFirstChild();

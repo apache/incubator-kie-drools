@@ -200,7 +200,6 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         List<Connection> connections = null;
         if (node != null) {
         	if (System.getProperty("jbpm.enable.multi.con") != null && ((NodeImpl) node).getConstraints().size() > 0) {
-        	    // TODO: marking multi-inst activities as completed for compensation 
         		int priority = Integer.MAX_VALUE;
         		connections = ((NodeImpl)node).getDefaultOutgoingConnections();
                 boolean found = false;
@@ -257,15 +256,15 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
                 }   
                 return;
         	} else {
-        	    String uniqueId = (String) node.getMetaData().get("UniqueId");
-        	    if( uniqueId == null ) { 
-        	       uniqueId = ((NodeImpl) node).getUniqueId();
-        	    }
-        	    ((WorkflowProcessInstanceImpl) processInstance).addCompletedNodeId(uniqueId);
         		connections = node.getOutgoingConnections(type); 
         	}
+        	String uniqueId = (String) node.getMetaData().get("UniqueId");
+        	if( uniqueId == null ) { 
+        	    uniqueId = ((NodeImpl) node).getUniqueId();
+        	}
+        	((WorkflowProcessInstanceImpl) processInstance).addCompletedNodeId(uniqueId);
         }
-        if (connections == null || connections.isEmpty()) {
+        if (connections == null || connections.isEmpty() ) {
         	boolean hidden = false;
         	Node currentNode = getNode();
         	if (currentNode != null && currentNode.getMetaData().get("hidden") != null) {

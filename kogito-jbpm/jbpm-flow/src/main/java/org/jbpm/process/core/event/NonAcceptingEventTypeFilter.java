@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package org.jbpm.process.core.context.exception;
+package org.jbpm.process.core.event;
 
-public interface ExceptionHandler {
+
+public class NonAcceptingEventTypeFilter extends EventTypeFilter {
+
+	private static final long serialVersionUID = 510l;
+	
+	/**
+	 * Nodes that use this event filter should never be triggered by this event
+	 */
+	public boolean acceptsEvent(String type, Object event) {
+		return false;
+	}
 
 }

@@ -20,9 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.process.core.Context;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.context.exception.CompensationScopeInstance;
 import org.jbpm.process.instance.context.exception.DefaultExceptionScopeInstance;
 import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -43,6 +45,8 @@ public class ContextInstanceFactoryRegistry {
                  VariableScopeInstance.class));
         register(ExceptionScope.class, new ReuseContextInstanceFactory(
                  DefaultExceptionScopeInstance.class));
+        register(CompensationScope.class, new ReuseContextInstanceFactory(
+                 CompensationScopeInstance.class));
         register(SwimlaneContext.class, new ReuseContextInstanceFactory(
                  SwimlaneContextInstance.class));
     }

@@ -59,6 +59,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             nodeInstance.setNodeInstanceContainer(this);
             nodeInstance.setProcessInstance(getProcessInstance());
             String uniqueID = (String) node.getMetaData().get("UniqueId");
+            assert uniqueID != null : node.getName() + " does not have a unique id.";
             if (uniqueID == null) {
                 uniqueID = node.getId()+"";
             }
@@ -74,6 +75,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
                 nodeInstance.setNodeInstanceContainer(this);
                 nodeInstance.setProcessInstance(getProcessInstance());
                 String uniqueID = (String) node.getMetaData().get("UniqueId");
+                assert uniqueID != null : node.getName() + " does not have a unique id.";
                 if (uniqueID == null) {
                     uniqueID = node.getId()+"";
                 }

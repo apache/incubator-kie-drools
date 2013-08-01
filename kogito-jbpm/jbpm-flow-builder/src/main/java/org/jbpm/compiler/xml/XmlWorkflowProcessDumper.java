@@ -168,7 +168,7 @@ public class XmlWorkflowProcessDumper {
             	if (exceptionHandler instanceof ActionExceptionHandler) {
             		ActionExceptionHandler actionExceptionHandler = (ActionExceptionHandler) exceptionHandler;
             		xmlDump.append("      <exceptionHandler faultName=\"" + entry.getKey() + "\" type=\"action\" ");
-            		String faultVariable = exceptionHandler.getFaultVariable();
+            		String faultVariable = actionExceptionHandler.getFaultVariable();
             		if (faultVariable != null && faultVariable.length() > 0) {
             			xmlDump.append("faultVariable=\"" + faultVariable + "\" ");
             		}
@@ -179,8 +179,7 @@ public class XmlWorkflowProcessDumper {
         			}
         			xmlDump.append("      </exceptionHandler>" + EOL);
             	} else {
-            		throw new IllegalArgumentException(
-        				"Unknown exception handler type: " + exceptionHandler);
+            		throw new IllegalArgumentException("Unknown exception handler type: " + exceptionHandler);
             	}
             }
             xmlDump.append("    </exceptionHandlers>" + EOL);

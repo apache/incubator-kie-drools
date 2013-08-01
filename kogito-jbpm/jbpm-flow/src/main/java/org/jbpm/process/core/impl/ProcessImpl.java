@@ -109,6 +109,7 @@ public class ProcessImpl implements Process, Serializable, ContextResolver {
 
     public void setDefaultContext(Context context) {
         this.contextContainer.setDefaultContext(context);
+        ((AbstractContext) context).setContextContainer(this);
     }
     
     public Context getDefaultContext(String contextType) {

@@ -29,9 +29,10 @@ public class BoundaryEventNodeInstance extends EventNodeInstance {
     @Override
     public void signalEvent(String type, Object event) {
         BoundaryEventNode boundaryNode = (BoundaryEventNode) getEventNode();
+        
         String attachedTo = boundaryNode.getAttachedToNodeId();
         Collection<NodeInstance> nodeInstances = ((NodeInstanceContainer) getNodeInstanceContainer()).getNodeInstances();
-        if( type != null && type.startsWith("Compensate-") ) { 
+        if( type != null && type.startsWith("Compensation") ) { 
             // if not active && completed, signal
             if( ! isAttachedToNodeActive(nodeInstances, attachedTo) && isAttachedToNodeCompleted(attachedTo)) {
                 super.signalEvent(type, event);

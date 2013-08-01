@@ -20,6 +20,7 @@ package org.jbpm.ruleflow.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -59,6 +60,10 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
 
     public ExceptionScope getExceptionScope() {
         return (ExceptionScope) getDefaultContext(ExceptionScope.EXCEPTION_SCOPE);
+    }
+    
+    public CompensationScope getCompensationScope() {
+        return (CompensationScope) getDefaultContext(CompensationScope.COMPENSATION_SCOPE);
     }
 
     protected NodeContainer createNodeContainer() {

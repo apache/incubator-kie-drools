@@ -47,10 +47,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
 
     @Override
     public void signalEvent(String type, Object event) {
-        if (getProcessInstance().getNodeInstances().contains(this) || type.startsWith("Error-")) {
-            if( type.startsWith("Compensate-") ) { 
-                type = "Compensate-";
-            }
+        if (getNodeInstanceContainer().getNodeInstances().contains(this) || type.startsWith("Error-")) {
             StartNode startNode = getCompositeNode().findStartNode();
             NodeInstance nodeInstance = getNodeInstance(startNode);
             ((StartNodeInstance) nodeInstance).signalEvent(type, event);

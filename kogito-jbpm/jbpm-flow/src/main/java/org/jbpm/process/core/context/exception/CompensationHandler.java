@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package org.jbpm.process.instance.context.exception;
+package org.jbpm.process.core.context.exception;
 
-import org.jbpm.process.core.context.exception.ExceptionHandler;
+import java.io.Serializable;
 
-public interface ExceptionHandlerInstance {
+import org.kie.api.definition.process.Node;
+
+public class CompensationHandler implements ExceptionHandler, Serializable {
 	
-    void handleException(String exception, Object param);
-    
-    void setExceptionHandler(ExceptionHandler exceptionHandler);
-    
+	private static final long serialVersionUID = 510l;
+	
+	private Node node;
+
+	public Node getnode() {
+		return node;
+	}
+
+	public void setNode(Node node) {
+		this.node = node;
+	}
+	
+	public String toString() {
+		return "Compensation Handler [" + this.node.getName() + ", " + this.node.getMetaData().get("UniqueId") + "]";
+	}
+
 }

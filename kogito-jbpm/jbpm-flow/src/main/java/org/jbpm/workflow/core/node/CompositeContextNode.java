@@ -48,6 +48,7 @@ public class CompositeContextNode extends CompositeNode implements ContextContai
 
     public void setDefaultContext(Context context) {
         this.contextContainer.setDefaultContext(context);
+        ((AbstractContext) context).setContextContainer(this);
     }
     
     public Context getDefaultContext(String contextType) {

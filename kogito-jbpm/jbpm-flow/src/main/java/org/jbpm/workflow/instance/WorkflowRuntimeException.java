@@ -28,10 +28,11 @@ public class WorkflowRuntimeException extends RuntimeException {
     
     private Map<String, Object> variables;
 
-    public WorkflowRuntimeException(Exception e) {
-        super(e);
+    public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message) {
+        super(message);
+        initialize(nodeInstance, processInstance);
     }
-
+    
     public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message, Exception e) {
         super(message, e);
         initialize(nodeInstance, processInstance);
@@ -138,8 +139,12 @@ public class WorkflowRuntimeException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return MessageFormat.format("[{0}:{4} - {1}:{2}] -- {3}", getProcessId(),
-                getNodeName(), getNodeId(), getCause().getMessage(), getProcessInstanceId());
+        return MessageFormat.format("[{0}:{4} - {1}:{2}] -- {3}", 
+                getProcessId(),
+                (getNodeName() == null ? "?" : getNodeName()), 
+                (getNodeId() == 0 ? "?" : getNodeId()), 
+                (getCause() == null ? getMessage() : getCause().getMessage()), 
+                getProcessInstanceId());
     }
 
 }

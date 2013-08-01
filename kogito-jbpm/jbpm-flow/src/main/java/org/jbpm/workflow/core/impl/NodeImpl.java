@@ -22,14 +22,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
-import org.kie.api.definition.process.Connection;
-import org.kie.api.definition.process.NodeContainer;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeNode;
+import org.kie.api.definition.process.Connection;
+import org.kie.api.definition.process.NodeContainer;
 
 /**
  * Default implementation of a node.
@@ -43,11 +44,12 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
 	protected static final NodeImpl[] EMPTY_NODE_ARRAY = new NodeImpl[0];
 
     private long id;
+    private static final AtomicLong uniqueIdGen = new AtomicLong(0);
 
     private String name;
     private Map<String, List<Connection>> incomingConnections;
     private Map<String, List<Connection>> outgoingConnections;
-    private NodeContainer nodeContainer;
+    private NodeContainer parentNodeContainer;
     private Map<String, Context> contexts = new HashMap<String, Context>();
     private Map<String, Object> metaData = new HashMap<String, Object>();
     
@@ -76,6 +78,10 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
 
     public void setId(final long id) {
         this.id = id;
+        String uniqueId = (String) getMetaData("UniqueId");
+        if( uniqueId == null ) { 
+            setMetaData("UniqueId", "_jbpm-unique-" + uniqueIdGen.getAndIncrement() );
+        }
     }
 
     public String getName() {
@@ -233,11 +239,11 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
     }
 
     public NodeContainer getNodeContainer() {
-        return nodeContainer;
+        return parentNodeContainer;
     }
     
     public void setNodeContainer(NodeContainer nodeContainer) {
-        this.nodeContainer = nodeContainer;
+        this.parentNodeContainer = nodeContainer;
     }
     
     public void setContext(String contextId, Context context) {
@@ -256,7 +262,7 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
                 return context;
             }
         }
-        return ((org.jbpm.workflow.core.NodeContainer) nodeContainer).resolveContext(contextId, param);
+        return ((org.jbpm.workflow.core.NodeContainer) parentNodeContainer).resolveContext(contextId, param);
     }
     
     public void setMetaData(String name, Object value) {
