@@ -349,8 +349,8 @@ public class DefaultKnowledgeHelper
         InternalFactHandle h = (InternalFactHandle) handle;
         ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
                                                                       newObject,
-                                                                      Long.MAX_VALUE,
-                                                                      Object.class,
+                                                                      Long.MIN_VALUE,
+                                                                      newObject.getClass(),
                                                                       this.activation );
         if ( getIdentityMap() != null ) {
             this.getIdentityMap().put( newObject,
