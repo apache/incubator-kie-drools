@@ -33,3 +33,11 @@ then
     list.add( $x );
 end
 
+
+
+// TODO Needed to init entry point, remove
+rule "Foo"
+when
+    $o : Object() from entry-point "neg"
+then
+end
