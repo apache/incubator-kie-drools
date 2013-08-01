@@ -17,6 +17,7 @@ package org.drools.scorecards.drl;
 
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.core.util.StringUtils;
+import org.drools.scorecards.ScoringStrategy;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.PMMLOperators;
@@ -334,7 +335,25 @@ public abstract class AbstractDRLEmitter {
         Rule calcTotalRule = new Rule(objectClass+"_calculateTotalScore",1,1);
         StringBuilder stringBuilder = new StringBuilder();
         Condition condition = new Condition();
-        stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
+        ScoringStrategy strategy = getScoringStrategy(scorecard);
+        switch (strategy) {
+            case AGGREGATE_SCORE: {
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
+                break;
+            }
+            case AVERAGE_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), average($partialScore))");
+                break;
+            }
+            case MAXIMUM_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), max($partialScore))");
+                break;
+            }
+            case MINIMUM_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), min($partialScore))");
+                break;
+            }
+        }
         condition.setSnippet(stringBuilder.toString());
         calcTotalRule.addCondition(condition);
         if (scorecard.getInitialScore() > 0) {
@@ -363,6 +382,15 @@ public abstract class AbstractDRLEmitter {
 
         addAdditionalSummationCondition(calcTotalRule, scorecard);
         addAdditionalSummationConsequence(calcTotalRule, scorecard);
+    }
+
+    protected ScoringStrategy getScoringStrategy(Scorecard scorecard) {
+        ScoringStrategy strategy = ScoringStrategy.AGGREGATE_SCORE;
+        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+        if ( !StringUtils.isEmpty(scoringStrategyName)) {
+            strategy = ScoringStrategy.valueOf(scoringStrategyName);
+        }
+        return strategy;
     }
 
     protected abstract void addDeclaredTypeContents(PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard);
