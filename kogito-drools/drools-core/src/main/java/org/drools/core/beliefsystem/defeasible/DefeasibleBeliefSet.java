@@ -45,14 +45,17 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     private static final int DEFINITELY_POS_BIT = 1;
     private static final int DEFINITELY_NEG_BIT = 2;
     private static final int DEFEASIBLY_POS_BIT = 4;
-    private static final int DEFEASIBLY_NEG_BIT = 6;
-    private static final int DEFEATEDLY_POS_BIT = 8;
-    private static final int DEFEATEDLY_NEG_BIT = 16;
+    private static final int DEFEASIBLY_NEG_BIT = 8;
+    private static final int DEFEATEDLY_POS_BIT = 16;
+    private static final int DEFEATEDLY_NEG_BIT = 32;
 
-    private static final int POS_MASK = DEFINITELY_POS_BIT & DEFEASIBLY_POS_BIT & DEFEATEDLY_POS_BIT;
-    private static final int NEG_MASK = DEFINITELY_NEG_BIT & DEFEASIBLY_NEG_BIT & DEFEATEDLY_NEG_BIT;
+    private static final int POS_MASK = DEFINITELY_POS_BIT | DEFEASIBLY_POS_BIT | DEFEATEDLY_POS_BIT;
+    private static final int NEG_MASK = DEFINITELY_NEG_BIT | DEFEASIBLY_NEG_BIT | DEFEATEDLY_NEG_BIT;
 
-    private int statusMask;
+    private static final int WEAK_POS_MASK = DEFEASIBLY_POS_BIT | DEFEATEDLY_POS_BIT;
+    private static final int WEAK_NEG_MASK = DEFEASIBLY_NEG_BIT | DEFEATEDLY_NEG_BIT;
+
+    private int statusMask = 0;
 
     private DefeasibilityStatus status;
 
@@ -62,15 +65,19 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     }
 
     public BeliefSystem getBeliefSystem() {
-        return null;
+        return beliefSystem;
     }
 
     public InternalFactHandle getFactHandle() {
         return rootHandle;
     }
 
-    public LinkedListEntry<DefeasibleLogicalDependency>  getFirst() {
+    public LinkedListEntry<DefeasibleLogicalDependency> getFirst() {
         return rootUndefeated;
+    }
+
+    public LinkedListEntry<DefeasibleLogicalDependency> getLast() {
+        return tailUndefeated;
     }
 
     public InternalFactHandle getPositiveFactHandle() {
@@ -107,7 +114,7 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         }
 
         if (!wasDefeated) {
-            DefeasibleLogicalDependency stagedDeps = null;
+            LinkedListEntry<DefeasibleLogicalDependency> stagedDeps = null;
             //for (DefeasibleLogicalDependency existingDep = rootUndefeated; existingDep != null; ) {
             for (LinkedListEntry<DefeasibleLogicalDependency> existingNode = rootUndefeated; existingNode != null;) {
                 LinkedListEntry<DefeasibleLogicalDependency> next = existingNode.getNext();
@@ -121,10 +128,11 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
                         if (stagedDeps == null) {
                             stagedDeps = existingDep.getRootDefeated();
                         } else {
-                            stagedDeps.setPrevious(existingDep.getTailDefeated());
+                            stagedDeps.setPrevious( existingDep.getTailDefeated() );
                             stagedDeps = existingDep.getRootDefeated();
                         }
                     }
+                    existingDep.clearDefeated();
                 }
                 existingNode = next;
             }
@@ -135,11 +143,11 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         updateStatus();
     }
 
-    private void reprocessDefeated(DefeasibleLogicalDependency deps) {
-        for (DefeasibleLogicalDependency dep = deps; dep != null; ) {
-            DefeasibleLogicalDependency next = (DefeasibleLogicalDependency) dep.getNext();
+    private void reprocessDefeated( LinkedListEntry<DefeasibleLogicalDependency> deps) {
+        for ( LinkedListEntry<DefeasibleLogicalDependency> dep = deps; dep != null; ) {
+            LinkedListEntry<DefeasibleLogicalDependency> next = dep.getNext();
             dep.nullPrevNext(); // it needs to be removed, before it can be processed
-            add(dep); // adding back in, effectively reprocesses the dep
+            add( dep ); // adding back in, effectively reprocesses the dep
             dep = next;
         }
     }
@@ -162,6 +170,13 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     }
 
     private boolean checkAndApplyIsDefeated(DefeasibleLogicalDependency potentialInferior, Rule rule, DefeasibleLogicalDependency potentialSuperior) {
+        if ( potentialSuperior.getDefeats() == null ) {
+            return false;
+        }
+        if ( potentialSuperior.getStatus() == DefeasibilityStatus.DEFINITELY && potentialInferior.getStatus() != DefeasibilityStatus.DEFINITELY ) {
+            potentialSuperior.addDefeated(potentialInferior);
+            return true;
+        }
         // adds the references that defeat the current node
         if (Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getName()) >= 0 ||
             Arrays.binarySearch(potentialSuperior.getDefeats(), rule.getPackage() + "." + rule.getName()) >= 0) {
@@ -217,14 +232,14 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
             } else {
                 // add to end
                 tailUndefeated.setNext(node);
-                node.setPrevious(rootUndefeated);
+                node.setPrevious(tailUndefeated);
                 tailUndefeated = node;
             }
         }
     }
 
     public void removeUndefeated(DefeasibleLogicalDependency dep, LinkedListEntry<DefeasibleLogicalDependency> node) {
-        boolean pos = dep.getValue() != null && MODE.POSITIVE.getId().equals( dep.getValue().toString() );
+        boolean pos = dep.getValue() == null || MODE.POSITIVE.getId().equals( dep.getValue().toString() );
         switch( dep.getStatus() ) {
             case DEFINITELY:
                 if ( pos ) {
@@ -388,28 +403,25 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
     }
 
     public void updateStatus() {
-        if ( isDefinitelyPosProveable() && !isDefinitelyNegProveable() ) {
+        if ( isDefinitelyPosProveable() ^ isDefinitelyNegProveable() ) {
             status = DefeasibilityStatus.DEFINITELY;
             return;
-        } else if ( !isDefinitelyPosProveable() && isDefinitelyNegProveable() ) {
-            status = DefeasibilityStatus.DEFINITELY;
-            return;
-        }  else if ( isDefinitelyPosProveable() && isDefinitelyNegProveable() ) {
+        }
+
+        if ( isConflicting() ) {
             status = DefeasibilityStatus.UNDECIDABLY;
             return;
         }
 
-        if ( isDefeasiblyPosProveable() && !isDefeasiblyNegProveable() && !isDefeatedlyNegProveable() ) {
-            status = DefeasibilityStatus.DEFEASIBLY;
-            return;
-        } else if ( !isDefeasiblyPosProveable() && !isDefeatedlyPosProveable() && isDefeasiblyNegProveable() ) {
+        if ( isDefeasiblyPosProveable() ^ isDefeasiblyNegProveable() ) {
             status = DefeasibilityStatus.DEFEASIBLY;
             return;
         }
 
-//        else if ( isDefinitelyPosProveable() && isDefinitelyNegProveable() ) {
-//            return DefeasibilityStatus.UNDECIDABLY;
-//        }
+        if ( isDefeatedlyPosProveable() ^ isDefeatedlyNegProveable() ) {
+            status = DefeasibilityStatus.DEFEATEDLY;
+            return;
+        }
 
         status = DefeasibilityStatus.UNDECIDABLY;
     }
@@ -426,12 +438,16 @@ public class DefeasibleBeliefSet implements JTMSBeliefSet {
         return ((statusMask & POS_MASK ) != 0 ) &&  ((statusMask & NEG_MASK ) == 0 );
     }
 
+    public boolean isConflicting() {
+        return ((statusMask & POS_MASK ) != 0 ) &&  ((statusMask & NEG_MASK ) != 0 );
+    }
+
     public boolean isUndecided() {
-        return getStatus() == DefeasibilityStatus.UNDECIDABLY;
+        return getStatus() == DefeasibilityStatus.UNDECIDABLY || getStatus() == DefeasibilityStatus.DEFEATEDLY;
     }
 
     public FastIterator iterator() {
-        return iterator();
+        return iterator;
     }
 
     private static class IteratorImpl implements FastIterator {

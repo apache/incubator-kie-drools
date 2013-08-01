@@ -47,14 +47,18 @@ public class JTMSBeliefSystem
 
         boolean wasEmpty = jtmsBeliefSet.isEmpty();
         boolean wasNegated = jtmsBeliefSet.isNegated();
-        boolean isUndecided = jtmsBeliefSet.isUndecided();
+        boolean wasUndecided = jtmsBeliefSet.isUndecided();
 
         jtmsBeliefSet.add( node.getJustifierEntry() );
 
         if ( wasEmpty ) {
             // Insert Belief
-            insertBelief( node, typeConf, jtmsBeliefSet, wasEmpty, wasNegated, isUndecided );
-        } else if ( !isUndecided && jtmsBeliefSet.isUndecided() ) {
+            if ( ! jtmsBeliefSet.isUndecided() ) {
+                insertBelief( node, typeConf, jtmsBeliefSet, context, wasEmpty, wasNegated, wasUndecided );
+            } else {
+                defEP.getObjectStore().removeHandle( jtmsBeliefSet.getFactHandle() );
+            }
+        } else if ( !wasUndecided && jtmsBeliefSet.isUndecided() ) {
             // Handle Conflict
             if ( STRICT ) {
                 throw new IllegalStateException( "FATAL : A fact and its negation have been asserted " + jtmsBeliefSet.getFactHandle().getObject() );
@@ -67,7 +71,7 @@ public class JTMSBeliefSystem
                 jtmsBeliefSet.setNegativeFactHandle( null );
                 fullyRetract = true; // Only fully retract negatives
 
-                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, (Rule) context.getRuleOrigin(), node.getJustifier() );
+                ((NamedEntryPoint) fh.getEntryPoint()).delete( fh, context.getRuleOrigin(), node.getJustifier() );
             } else {
                 fh = jtmsBeliefSet.getPositiveFactHandle();
                 jtmsBeliefSet.setPositiveFactHandle( null );
@@ -78,19 +82,24 @@ public class JTMSBeliefSystem
 //                final ObjectTypeConf typeConf = nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(),
 //                                                                                                            handle.getObject() );
 
-                ((NamedEntryPoint) fh.getEntryPoint() ).getEntryPointNode().retractObject( fh, context, typeConf, nep.getInternalWorkingMemory() );
+                nep.getEntryPointNode().retractObject( fh, context, typeConf, nep.getInternalWorkingMemory() );
             }
 
+        } else {
+            if ( wasUndecided && ! jtmsBeliefSet.isUndecided() ) {
+                insertBelief( node, typeConf, jtmsBeliefSet, context, wasEmpty, wasNegated, wasUndecided );
+            }
         }
     }
 
     private void insertBelief(LogicalDependency node,
                               ObjectTypeConf typeConf,
                               JTMSBeliefSet jtmsBeliefSet,
+                              PropagationContext context,
                               boolean wasEmpty,
                               boolean wasNegated,
                               boolean isUndecided) {
-        if ( jtmsBeliefSet.isNegated() ) {
+        if ( jtmsBeliefSet.isNegated() && ! jtmsBeliefSet.isUndecided() ) {
             jtmsBeliefSet.setNegativeFactHandle( (InternalFactHandle) negEP.insert( node.getObject() ) );
 
             // As the neg partition is always stated, it'll have no equality key.
@@ -101,7 +110,7 @@ public class JTMSBeliefSystem
             if ( !(wasNegated || isUndecided) ) {
                 defEP.getObjectStore().removeHandle( jtmsBeliefSet.getFactHandle() ); // Make sure the FH is no longer visible in the default ObjectStore
             }
-        } else {
+        } else if ( jtmsBeliefSet.isPositive() && ! jtmsBeliefSet.isUndecided() ) {
             jtmsBeliefSet.setPositiveFactHandle( jtmsBeliefSet.getFactHandle() ); // Use the BeliefSet FH for positive facts
             jtmsBeliefSet.setNegativeFactHandle( null );
 
@@ -129,7 +138,7 @@ public class JTMSBeliefSystem
     public void delete(LogicalDependency node,
                        BeliefSet beliefSet,
                        PropagationContext context) {
-        JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) beliefSet;
+        JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
         boolean wasConflicting = jtmsBeliefSet.isUndecided();
         boolean wasNegated = jtmsBeliefSet.isNegated();
 
@@ -159,6 +168,7 @@ public class JTMSBeliefSystem
             insertBelief( node,
                           defEP.getObjectTypeConfigurationRegistry().getObjectTypeConf( defEP.getEntryPoint(), node.getObject() ),
                           jtmsBeliefSet,
+                          context,
                           false,
                           wasNegated,
                           wasConflicting );
@@ -168,6 +178,10 @@ public class JTMSBeliefSystem
             InternalFactHandle handle;
             Object object = null;
             if ( jtmsBeliefSet.isNegated() ) {
+                if ( ! wasNegated ) {
+                    jtmsBeliefSet.setNegativeFactHandle( jtmsBeliefSet.getPositiveFactHandle() );
+                    jtmsBeliefSet.setPositiveFactHandle( null );
+                }
                 value = MODE.NEGATIVE.getId();
                 handle = jtmsBeliefSet.getNegativeFactHandle();
                 // Find the new node, and update the handle to it, Negatives iterate from the last
@@ -178,11 +192,15 @@ public class JTMSBeliefSystem
                     }
                 }
             } else {
+                if ( wasNegated ) {
+                    jtmsBeliefSet.setPositiveFactHandle( jtmsBeliefSet.getNegativeFactHandle() );
+                    jtmsBeliefSet.setNegativeFactHandle( null );
+                }
                 value = MODE.POSITIVE.getId();
                 handle = jtmsBeliefSet.getPositiveFactHandle();
                 // Find the new node, and update the handle to it, Positives iterate from the front
                 for ( LinkedListEntry<LogicalDependency> entry = (LinkedListEntry<LogicalDependency>) jtmsBeliefSet.getFirst(); entry != null; entry = (LinkedListEntry<LogicalDependency>) entry.getNext() ) {
-                    if ( entry.getObject().getValue().equals( value ) ) {
+                    if ( entry.getObject().getValue() == null || entry.getObject().getValue().equals( value ) ) {
                         object = entry.getObject().getObject();
                         break;
                     }
