@@ -37,7 +37,7 @@ end
 
 
 
-// Both X(-1) and X(-3) should be defeated by the respective defeater
+// X(-3) should be defeated by the respective defeater
 
 rule "Defeasible Rule"
 @Defeasible

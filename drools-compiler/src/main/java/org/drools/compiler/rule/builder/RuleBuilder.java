@@ -111,9 +111,19 @@ public class RuleBuilder {
     public void buildMetaAttributes(final RuleBuildContext context ) {
         Rule rule = context.getRule();
         for ( String metaAttr : context.getRuleDescr().getAnnotationNames() ) {
-            Object value = resolveValue( (String) context.getRuleDescr().getAnnotation(metaAttr).getValue() ); 
-            rule.addMetaAttribute( metaAttr,
-                                   value );
+            AnnotationDescr ad = context.getRuleDescr().getAnnotation( metaAttr );
+            if ( ad.hasValue() ) {
+                if ( ad.getValues().size() == 1 ) {
+                    rule.addMetaAttribute( metaAttr,
+                                           resolveValue( ad.getSingleValue() ) );
+                } else {
+                    rule.addMetaAttribute( metaAttr,
+                                           ad.getValueMap() );
+                }
+            } else {
+                rule.addMetaAttribute( metaAttr,
+                                       null );
+            }
         }
     }
 

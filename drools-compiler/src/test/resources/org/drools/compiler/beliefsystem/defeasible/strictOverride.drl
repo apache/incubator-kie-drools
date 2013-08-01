@@ -35,7 +35,7 @@ then
 end
 
 rule "Defeater Rule"
-@Defeater(true)
+@Defeater
 when
     A( 1; )
     B( 2; )
@@ -44,7 +44,7 @@ then
 end
 
 rule "Strict Rule 2"
-@Strict(true)
+@Strict
 when
     A( 3; )
 then
@@ -53,7 +53,7 @@ then
 end
 
 rule "Strict Rule 3"
-@Defeasible(true)
+@Defeasible
 @Defeats( { "Defeater Rule", "Another rule" } )
 when
     C( 99; )
