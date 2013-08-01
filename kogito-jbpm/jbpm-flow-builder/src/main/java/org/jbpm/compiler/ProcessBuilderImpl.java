@@ -181,6 +181,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     	List<Context> exceptionScopes = contextContainer.getContexts(ExceptionScope.EXCEPTION_SCOPE);
     	if (exceptionScopes != null) {
     		for (Context context: exceptionScopes) {
+    		    // OCRAM: add compensation scope to process builder????
     			ExceptionScope exceptionScope = (ExceptionScope) context;
     			for (ExceptionHandler exceptionHandler: exceptionScope.getExceptionHandlers().values()) {
     				if (exceptionHandler instanceof ActionExceptionHandler) {

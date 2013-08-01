@@ -16,10 +16,12 @@
 
 package org.jbpm.bpmn2.xml;
 
+import static org.jbpm.bpmn2.xml.ProcessHandler.*;
 import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -58,7 +60,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 }
                 xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Message\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
-            } else if (s.startsWith("kcontext.getKnowledgeRuntime().signalEvent(\"")) {
+            } else if (s.startsWith(RUNTIME_SIGNAL_EVENT)) { 
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(44);
@@ -77,18 +79,24 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                         "        <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</dataInputRefs>" + EOL + 
                         "      </inputSet>" + EOL);
                 }
-                if (type.startsWith("Compensate-")) {
-	                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
-                } else {
-	                xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
-                }
+                xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
-            } else if (s.startsWith("kcontext.getProcessInstance().signalEvent(\"")) {
+            } else if (s.startsWith(PROCESS_INSTANCE_SIGNAL_EVENT)) { 
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
                 xmlDump.append(">" + EOL);
                 s = s.substring(43);
-                String type = s.substring(0, s.indexOf("\""));
-                xmlDump.append("      <compensateEventDefinition activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(type.substring(11)) + "\"/>" + EOL);
+                assert "Compensation".equals(s.substring(0, s.indexOf("\""))) 
+                    : "Type is not \"Compensation\" but \"" + s.substring(0, s.indexOf("\"")) + "\"";
+                
+                String activityRef = "";
+                int begin = 12; // : Compensation
+                int end = s.length() - 3; // ");
+                String compensationEvent = s.substring(begin, end);
+                if( ! compensationEvent.startsWith(CompensationScope.GENERAL_COMPENSATION_PREFIX) ) { 
+                    // specific
+                    activityRef = "activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(activityRef) + "\" ";
+                } // else general: activityRef = "" (above) 
+                xmlDump.append("      <compensateEventDefinition " + activityRef + "/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith("org.drools.core.process.instance.context.exception.ExceptionScopeInstance scopeInstance = (org.drools.core.process.instance.context.exception.ExceptionScopeInstance) ((org.drools.workflow.instance.NodeInstance) kcontext.getNodeInstance()).resolveContextInstance(org.drools.core.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE, \"")) {
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
@@ -105,8 +113,8 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 if (JavaDialect.ID.equals(action.getDialect())) {
                     xmlDump.append("scriptFormat=\"" + XmlBPMNProcessDumper.JAVA_LANGUAGE + "\" ");
                 }
-                Object compensationObj = actionNode.getMetaData("isForCompensation");
-                if( compensationObj != null && (Boolean) compensationObj ) { 
+                Object isForCompensationObj = actionNode.getMetaData("isForCompensation");
+                if( isForCompensationObj != null && (Boolean) isForCompensationObj ) { 
                     xmlDump.append("isForCompensation=\"true\" ");
                 }
                 if (action.getConsequence() != null) {

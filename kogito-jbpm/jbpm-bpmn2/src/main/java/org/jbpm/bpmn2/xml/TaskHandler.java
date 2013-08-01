@@ -72,8 +72,11 @@ public class TaskHandler extends AbstractNodeHandler {
         
         String compensation = element.getAttribute("isForCompensation");
         if( compensation != null ) {
-            workItemNode.setMetaData("isForCompensation", Boolean.parseBoolean(compensation) );
-        }
+            boolean isForCompensation = Boolean.parseBoolean(compensation);
+            if( isForCompensation ) { 
+                workItemNode.setMetaData("isForCompensation", isForCompensation );
+            }
+        }  
 	}
     
     protected String getTaskName(final Element element) {
@@ -161,18 +164,19 @@ public class TaskHandler extends AbstractNodeHandler {
             final ExtensibleXmlParser parser) throws SAXException {
 		final Element element = parser.endElementBuilder();
 		Node node = (Node) parser.getCurrent();
-		// determine type of event definition, so the correct type of node
-		// can be generated
+		// determine type of event definition, so the correct type of node can be generated
     	handleNode(node, element, uri, localName, parser);
 		org.w3c.dom.Node xmlNode = element.getFirstChild();
+		int uniqueIdGen = 1;
 		while (xmlNode != null) {
 			String nodeName = xmlNode.getNodeName();
 			if ("multiInstanceLoopCharacteristics".equals(nodeName)) {
 				// create new timerNode
 				ForEachNode forEachNode = new ForEachNode();
 				forEachNode.setId(node.getId());
-				forEachNode.setMetaData("UniqueId", node.getMetaData().get("UniqueId"));
-				node.setMetaData("UniqueId", null);
+				String uniqueId = (String) node.getMetaData().get("UniqueId");
+				forEachNode.setMetaData("UniqueId", uniqueId);
+				node.setMetaData("UniqueId", uniqueId + ":" + uniqueIdGen++);
 				node.setMetaData("hidden", true);
 				forEachNode.addNode(node);
 				forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);

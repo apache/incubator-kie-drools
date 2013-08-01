@@ -16,6 +16,7 @@
 
 package org.jbpm.bpmn2.xml;
 
+import static org.jbpm.bpmn2.xml.ProcessHandler.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 break;
             } else if ("compensateEventDefinition".equals(nodeName)) {
                 // reuse already created ActionNode
-                handleCompensationNode(node, element, uri, localName, parser);
+                handleThrowCompensationEventNode(node, element, uri, localName, parser);
                 break;
             }
             xmlNode = xmlNode.getNextSibling();
@@ -133,7 +134,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 String variable = (String) endNode.getMetaData("MappingVariable");
                 List<DroolsAction> actions = new ArrayList<DroolsAction>();
                 actions.add(new DroolsConsequenceAction("mvel",
-                    "kcontext.getKnowledgeRuntime().signalEvent(\""
+                    RUNTIME_SIGNAL_EVENT
                         + signalName + "\", " + (variable == null ? "null" : variable) + ")"));
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }
@@ -259,31 +260,6 @@ public class EndEventHandler extends AbstractNodeHandler {
         faultNode.setFaultVariable(faultVariable);
     }
 
-    public void handleCompensationNode(final Node node, final Element element, final String uri, 
-            final String localName, final ExtensibleXmlParser parser) throws SAXException {
-        EndNode actionNode = (EndNode) node;
-        org.w3c.dom.Node xmlNode = element.getFirstChild();
-        while (xmlNode != null) {
-            String nodeName = xmlNode.getNodeName();
-            if ("compensateEventDefinition".equals(nodeName)) {
-                String activityRef = ((Element) xmlNode).getAttribute("activityRef");
-                if (activityRef != null && activityRef.trim().length() > 0) {
-                	actionNode.setMetaData("Compensate", activityRef);
-                	List<DroolsAction> actions = new ArrayList<DroolsAction>();
-                    actions.add(new DroolsConsequenceAction("java", 
-            			"kcontext.getProcessInstance().signalEvent(\"Compensate-" + activityRef + "\", null);"));
-                    actionNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
-                }
-//                boolean waitForCompletion = true;
-//                String waitForCompletionString = ((Element) xmlNode).getAttribute("waitForCompletion");
-//                if ("false".equals(waitForCompletionString)) {
-//                    waitForCompletion = false;
-//                }
-            }
-            xmlNode = xmlNode.getNextSibling();
-        }
-    }
-    
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
         throw new IllegalArgumentException("Writing out should be handled by specific handlers");
     }

@@ -26,7 +26,7 @@ import org.jbpm.workflow.core.node.ForEachNode;
 import org.kie.api.definition.process.Connection;
 import org.xml.sax.Attributes;
 
-public class ForEachNodeHandler extends AbstractNodeHandler {
+public class ForEachNodeHandler extends AbstractCompositeNodeHandler {
     
     protected Node createNode(Attributes attrs) {
     	throw new IllegalArgumentException("Reading in should be handled by end event handler");
@@ -71,16 +71,11 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
         xmlDump.append("      </multiInstanceLoopCharacteristics>" + EOL);
 		// nodes
 		List<Node> subNodes = getSubNodes(forEachNode);
-    	xmlDump.append("    <!-- nodes -->" + EOL);
-        for (Node subNode: subNodes) {
-    		XmlBPMNProcessDumper.INSTANCE.visitNode(subNode, xmlDump, metaDataType);
-        }
+		XmlBPMNProcessDumper.INSTANCE.visitNodes(subNodes, xmlDump, metaDataType);
+        
         // connections
-        List<Connection> connections = getSubConnections(forEachNode);
-    	xmlDump.append("    <!-- connections -->" + EOL);
-        for (Connection connection: connections) {
-        	XmlBPMNProcessDumper.INSTANCE.visitConnection(connection, xmlDump, metaDataType);
-        }
+        visitConnectionsAndAssociations(forEachNode, xmlDump, metaDataType);
+        
 		endNode("subProcess", xmlDump);
 	}
 	
@@ -97,19 +92,4 @@ public class ForEachNodeHandler extends AbstractNodeHandler {
         return subNodes;
     }
     
-    protected List<Connection> getSubConnections(ForEachNode forEachNode) {
-    	List<Connection> connections = new ArrayList<Connection>();
-        for (org.kie.api.definition.process.Node subNode: forEachNode.getNodes()) {
-        	// filter out composite start and end nodes as they can be regenerated
-            if (!(subNode instanceof CompositeNode.CompositeNodeEnd)) {
-                for (Connection connection: subNode.getIncomingConnections(Node.CONNECTION_DEFAULT_TYPE)) {
-                    if (!(connection.getFrom() instanceof CompositeNode.CompositeNodeStart)) {
-                        connections.add(connection);
-                    }
-                }
-            }
-        }
-        return connections;
-    }
-
 }

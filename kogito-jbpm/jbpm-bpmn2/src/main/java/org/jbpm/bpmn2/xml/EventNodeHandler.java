@@ -117,13 +117,6 @@ public class EventNodeHandler extends AbstractNodeHandler {
                             "      </timerEventDefinition>" + EOL);
                 }
                 endNode("boundaryEvent", xmlDump);
-            } else if (type.startsWith("Compensate-")) {
-                type = type.substring(attachedTo.length() + 7);
-                writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
-                xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
-                xmlDump.append(">" + EOL);
-                xmlDump.append("      <compensateEventDefinition/>" + EOL);
-                endNode("boundaryEvent", xmlDump);
             }  else if (node.getMetaData().get("SignalName") != null) {
                 
                 boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
@@ -155,6 +148,8 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 xmlDump.append(">" + EOL);
                 xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
                 endNode("boundaryEvent", xmlDump);
+            } else { 
+                throw new IllegalArgumentException("Unknown boundary event type: \"" + type + "\"");
             }
 		}
 	}

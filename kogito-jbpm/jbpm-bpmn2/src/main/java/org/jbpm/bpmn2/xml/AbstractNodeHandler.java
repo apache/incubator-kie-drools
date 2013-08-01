@@ -41,13 +41,21 @@ import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Lane;
 import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.compiler.xml.ProcessBuildData;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.CompensationHandler;
+import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.impl.NodeImpl;
+import org.jbpm.workflow.core.node.ActionNode;
+import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.slf4j.Logger;
@@ -432,4 +440,42 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         return error.getId();
     }
     
+    protected void handleThrowCompensationEventNode(final Node node, final Element element,
+            final String uri, final String localName, final ExtensibleXmlParser parser) { 
+        org.w3c.dom.Node xmlNode = element.getFirstChild();
+        assert node instanceof ActionNode || node instanceof EndNode 
+             : "Node is neither an ActionNode nor an EndNode but a " + node.getClass().getSimpleName();
+        while (xmlNode != null) {
+            if ("compensateEventDefinition".equals(xmlNode.getNodeName())) {
+                String activityRef = ((Element) xmlNode).getAttribute("activityRef");
+                if (activityRef == null ) { 
+                    activityRef = "";
+                }
+                node.setMetaData("compensation-activityRef", activityRef);
+
+                /**
+                 * waitForCompletion: 
+                 * BPMN 2.0 Spec, p. 304: 
+                 * "By default, compensation is triggered synchronously, that is the compensation throw event 
+                 *  waits for the completion of the triggered compensation handler. 
+                 *  Alternatively, compensation can be triggered without waiting for its completion, 
+                 *  by setting the throw compensation event's waitForCompletion attribute to false."
+                 */
+                String nodeId = (String) node.getMetaData().get("UniqueId");
+                String waitForCompletionString = ((Element) xmlNode).getAttribute("waitForCompletion");
+                boolean waitForCompletion = true;
+                if( waitForCompletionString != null && waitForCompletionString.length() > 0 ) { 
+                    waitForCompletion = Boolean.parseBoolean(waitForCompletionString);
+                }
+                if( ! waitForCompletion ) { 
+                    throw new IllegalArgumentException("Asynchronous compensation [" + nodeId + ", " + node.getName() 
+                            + "] is not yet supported!");
+                }
+                
+            }
+            xmlNode = xmlNode.getNextSibling();
+        }
+    }
+    
+
 }

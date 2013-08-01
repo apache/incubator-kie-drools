@@ -63,7 +63,10 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
         
         String compensation = element.getAttribute("isForCompensation");
         if( compensation != null ) {
-            actionNode.setMetaData("isForCompensation", Boolean.parseBoolean(compensation));
+            boolean isForCompensation = Boolean.parseBoolean(compensation);
+            if( isForCompensation ) { 
+                actionNode.setMetaData("isForCompensation", isForCompensation );
+            }
         }
 	}
 

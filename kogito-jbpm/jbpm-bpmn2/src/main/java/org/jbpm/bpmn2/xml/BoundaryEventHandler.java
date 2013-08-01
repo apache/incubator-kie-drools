@@ -26,9 +26,10 @@ import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
-import org.jbpm.process.core.event.BroadcastEventTypeFilter;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
@@ -135,7 +136,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventFilter.setType("Escalation-" + attachedTo + "-" + type);
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
-                    eventNode.setMetaData("EscalationEvent", type); // OCRAM:  eventNode.eventNode.setMetaData("EscalationEvent", type);
+                    eventNode.setMetaData("EscalationEvent", type); 
                 } else { 
                     // general escalation
                 }
@@ -244,7 +245,6 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     protected void handleCompensationNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
             final boolean cancelActivity) throws SAXException {
-       
         BoundaryEventNode eventNode = (BoundaryEventNode) parser.getCurrent();
         
         super.handleNode(node, element, uri, localName, parser);
@@ -254,24 +254,28 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 Element el = (Element) childs.item(i);
                 if ("compensateEventDefinition".equalsIgnoreCase(el.getNodeName())) {
                     String activityRef = el.getAttribute("activityRef");
-                    if (activityRef != null && activityRef.length() > 0) {
-                        eventNode.setMetaData("ActivityRef", activityRef);
+                    if( activityRef != null && activityRef.length() > 0 ) { 
+                        logger.warn("activityRef value [" + activityRef + "] on Boundary Event '" + eventNode.getMetaData("UniqueId") 
+                                + "' ignored per the BPMN2 specification.");
                     }
                 }
             }
         }
-        
         eventNode.setMetaData("AttachedTo", attachedTo);
         eventNode.setAttachedToNodeId(attachedTo);
+       
+        // 1. Find the parent (sub-)process
+        NodeContainer parentContainer = (NodeContainer) parser.getParent();
         
+        // 2. Add the event filter (never fires, purely for dumping purposes)
+        EventTypeFilter eventFilter = new NonAcceptingEventTypeFilter();
+        eventFilter.setType("Compensation");
         List<EventFilter> eventFilters = new ArrayList<EventFilter>();
-        
-        // Specfic (broadcast-capable) compensate event
-        BroadcastEventTypeFilter eventFilter = new BroadcastEventTypeFilter();
-        eventFilter.setType("Compensate",  "-" + attachedTo);
+        eventNode.setEventFilters(eventFilters);
         eventFilters.add(eventFilter);
         
-        ((EventNode) node).setEventFilters(eventFilters);
+        // 3. Add compensation scope
+        ProcessHandler.addCompensationScope((RuleFlowProcess) parser.getParent(RuleFlowProcess.class), eventNode, parentContainer, attachedTo);
     }
     
     protected void handleSignalNode(final Node node, final Element element,
@@ -437,15 +441,13 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                             "      </timerEventDefinition>" + EOL);
                 }
                 endNode("boundaryEvent", xmlDump);
-            } else if (type.startsWith("Compensate-")) {
-                type = type.substring(attachedTo.length() + 7);
+            } else if (type.equals("Compensation")) {
                 writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");
                 xmlDump.append(">" + EOL);
                 xmlDump.append("      <compensateEventDefinition/>" + EOL);
                 endNode("boundaryEvent", xmlDump);
             }  else if (node.getMetaData().get("SignalName") != null) {
-                
                 boolean cancelActivity = (Boolean) eventNode.getMetaData("CancelActivity");
                 writeNode("boundaryEvent", eventNode, xmlDump, metaDataType);
                 xmlDump.append("attachedToRef=\"" + attachedTo + "\" ");

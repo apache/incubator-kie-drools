@@ -16,32 +16,27 @@
 
 package org.jbpm.bpmn2.xml;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.bpmn2.core.Definitions;
 import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.Message;
 import org.jbpm.compiler.xml.ProcessBuildData;
-import org.jbpm.process.core.event.BroadcastEventTypeFilter;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
+import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
-import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
-import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
-import org.kie.api.definition.process.NodeContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -63,6 +58,9 @@ public class StartEventHandler extends AbstractNodeHandler {
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
+        // TODO: StartEventHandler.handleNode(): the parser doesn't discriminate between the schema default and the actual set value
+        // However, while the schema says the "isInterrupting" attr should default to true
+        // The spec says that Escalation start events should default to not interrupting.. 
         startNode.setInterrupting(Boolean.parseBoolean(element.getAttribute("isInterrupting")));
         
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -160,29 +158,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                     addTriggerWithInMappings(startNode, "Escalation-" + escalation.getEscalationCode());
                 }
             } else if ("compensateEventDefinition".equals(nodeName)) {
-                /** From the BPMN2 spec, P.264:
-                 * "For a Start Event:
-                 *  This Event "catches" the compensation for an Event Sub-Process. No further information is REQUIRED.
-                 *  The Event Sub-Process will provide the id necessary to match the Compensation Event with the Event
-                 *  that threw the compensation"
-                 */
-                EventTrigger trigger = new EventTrigger();
-                EventTypeFilter eventFilter = new BroadcastEventTypeFilter(); // For compensation broadcasting
-                // Full "Compensate-" event name filled in when StartEventHandler.end() is called
-                eventFilter.setType("Compensate-");
-                trigger.addEventFilter(eventFilter);
-                
-                String mapping = (String) startNode.getMetaData("TriggerMapping");
-                if (mapping != null) {
-                    trigger.addInMapping(mapping, startNode.getOutMapping(mapping));
-                }
-                startNode.addTrigger(trigger);
-                
-                String activityRef = ((Element) xmlNode).getAttribute("activityRef");
-                if( activityRef != null ) { 
-                    logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getMetaData("UniqueId") 
-                            + "' ignored per the BPMN2 specification.");
-                }
+                handleCompensationNode(startNode, element, xmlNode, parser);
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -206,40 +182,6 @@ public class StartEventHandler extends AbstractNodeHandler {
             final ExtensibleXmlParser parser) throws SAXException {
         StartNode startNode = (StartNode) super.end(uri, localName, parser);
    
-        List<Trigger> triggers = startNode.getTriggers();
-       
-        boolean compensationStartEvent = false;
-        EventTypeFilter compensationEventFilter = null;
-        if( triggers != null ) { 
-            CHECK_COMPENSATION: for( Trigger trigger : triggers ) { 
-               if( trigger instanceof EventTrigger ) { 
-                  List<EventFilter> eventFilters = ((EventTrigger) trigger).getEventFilters();
-                  for( EventFilter filter : eventFilters ) { 
-                     if( filter instanceof EventTypeFilter 
-                         && ((EventTypeFilter) filter).getType().equals("Compensate-") ) { 
-                         compensationEventFilter = (EventTypeFilter) filter;
-                         compensationStartEvent = true;
-                         break CHECK_COMPENSATION;
-                     }
-                  }
-               }
-            }
-        }
-        if( compensationStartEvent ) { 
-           NodeContainer nodeContainer = (NodeContainer) parser.getParent();
-           if( nodeContainer instanceof EventSubProcessNode ) { 
-               // Add full event type name
-               EventSubProcessNode eventSubProcessNode = (EventSubProcessNode) nodeContainer;
-               String id = (String) eventSubProcessNode.getMetaData("UniqueId");
-               String typeSpecificSuffix = compensationEventFilter.getType() + id;
-               typeSpecificSuffix = typeSpecificSuffix.replaceFirst("Compensate-", "");
-               ((BroadcastEventTypeFilter) compensationEventFilter).setType("Compensate-", typeSpecificSuffix);
-           } else { 
-               throw new IllegalArgumentException("Only Event Sub-Processes may contain a Start Compensation Event.");
-           }
-           
-        }
-        
         return startNode;
     }
     
@@ -333,9 +275,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                 } else if (type.startsWith("Escalation-")) {
                     type = type.substring(11);
                     xmlDump.append("      <escalationEventDefinition escalationRef=\"" + type + "\"/>" + EOL);
-                } else if (type.startsWith("Compensate-")) {
-                    type = type.substring(11);
-                    xmlDump.append("      <compensateEventDefinition activityRef=\"" + type + "\"/>" + EOL);
+                } else if (type.equals("Compensation")) {
+                    xmlDump.append("      <compensateEventDefinition/>" + EOL);
                 } else {
                     xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\" />" + EOL);
                 }
@@ -445,6 +386,47 @@ public class StartEventHandler extends AbstractNodeHandler {
               }
             }
             xmlNode = xmlNode.getNextSibling();
+        }
+    }
+
+    protected void handleCompensationNode(final StartNode startNode, final Element element, final org.w3c.dom.Node xmlNode,
+            final ExtensibleXmlParser parser) throws SAXException {
+        if( startNode.isInterrupting() ) { 
+            logger.warn( "Compensation Event Sub-Processes [" + startNode.getMetaData("UniqueId") + "] may not be specified as interrupting:" +
+            		" overriding attribute and setting to not-interrupting.");
+        }
+        startNode.setInterrupting(false);
+        
+        /** From the BPMN2 spec, P.264:
+         * "For a Start Event:
+         *  This Event "catches" the compensation for an Event Sub-Process. No further information is required.
+         *  The Event Sub-Process will provide the id necessary to match the Compensation Event with the Event
+         *  that threw the compensation"
+         *  
+         *  In other words, the id of the Sub-Process containing this Event Sub-Process is what should be used 
+         *  as the activityRef value in any Intermediate (throw) or End compensation event that targets 
+         *  this particular Event Sub-Process. 
+         *  
+         *  This is similar to the logic used for a Compensation Boundary Event: it's signaled using
+         *  the id of the activity to which the CBE is attached to. 
+         */
+        String activityRef = ((Element) xmlNode).getAttribute("activityRef");
+        if( activityRef != null && activityRef.length() > 0 ) { 
+            logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getMetaData("UniqueId") 
+                    + "' ignored per the BPMN2 specification.");
+        }
+
+        // so that this node will get processed in ProcessHandler.postProcessNodes(...)
+        EventTrigger startTrigger = new EventTrigger();
+        EventFilter eventFilter = new NonAcceptingEventTypeFilter();
+        ((NonAcceptingEventTypeFilter) eventFilter).setType("Compensation");
+        startTrigger.addEventFilter(eventFilter);
+        List<Trigger> startTriggers = new ArrayList<Trigger>();
+        startTriggers.add(startTrigger);
+        startNode.setTriggers(startTriggers);
+        String mapping = (String) startNode.getMetaData("TriggerMapping");
+        if (mapping != null) {
+            startTrigger.addInMapping(mapping, startNode.getOutMapping(mapping));
         }
     }
 
