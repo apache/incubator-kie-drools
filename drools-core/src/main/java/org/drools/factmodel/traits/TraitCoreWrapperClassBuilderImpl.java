@@ -25,6 +25,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -84,8 +85,24 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
 
-            mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKESPECIAL, BuildUtils.getInternalType( coreName ), "<init>", "()V" );
+            try {
+                coreKlazz.getConstructor();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn( INVOKESPECIAL, BuildUtils.getInternalType( coreName ), "<init>", "()V" );
+            } catch ( NoSuchMethodException nsme ) {
+                Constructor con = coreKlazz.getConstructors()[ 0 ];
+                Class[] params = con.getParameterTypes();
+
+                mv.visitVarInsn( ALOAD, 0 );
+                for ( Class param : params ) {
+                    mv.visitInsn( BuildUtils.zero( param.getName() ) );
+                }
+                mv.visitMethodInsn( INVOKESPECIAL,
+                                    BuildUtils.getInternalType( coreName ),
+                                    "<init>",
+                                    Type.getConstructorDescriptor( con ) );
+            }
+
 
 //            mv.visitVarInsn( ALOAD, 0 );
 //            mv.visitTypeInsn( NEW, Type.getInternalName( HashMap.class ) );
@@ -455,6 +472,20 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitCode();
                 mv.visitVarInsn( ALOAD, 0 );
                 mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), "core", BuildUtils.getTypeDescriptor( coreName ) );
+
+                Label l0 = new Label();
+                    mv.visitJumpInsn( IFNONNULL, l0 );
+                    if ( method.getReturnType() == void.class ) {
+                        mv.visitInsn( RETURN );
+                    } else {
+                        mv.visitInsn( BuildUtils.zero( method.getReturnType().getName() ) );
+                        mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
+                    }
+                mv.visitLabel( l0 );
+
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), "core", BuildUtils.getTypeDescriptor( coreName ) );
+
                 int j = 1;
                 for ( Class arg : method.getParameterTypes() ) {
                     mv.visitVarInsn( BuildUtils.varType( arg.getName() ), j++ );
