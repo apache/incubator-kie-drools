@@ -69,4 +69,6 @@ public interface BetaConstraints
     void initIndexes(int depth, short betaNodeType);
 
     BetaConstraints cloneIfInUse();
+
+    boolean isLeftUpdateOptimizationAllowed();
 }

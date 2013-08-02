@@ -259,6 +259,11 @@ public class ReteNotNode extends NotNode {
                                           workingMemory,
                                           leftTuple );
 
+        if ( blocker != null && !isLeftUpdateOptimizationAllowed() ) {
+            blocker.removeBlocked(leftTuple);
+            blocker = null;
+        }
+
         // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
         if ( blocker == null || !this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                                        blocker.getFactHandle() ) ) {
