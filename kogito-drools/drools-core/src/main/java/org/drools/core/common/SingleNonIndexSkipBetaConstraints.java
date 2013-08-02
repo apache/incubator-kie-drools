@@ -150,4 +150,8 @@ public class SingleNonIndexSkipBetaConstraints
     public long getListenedPropertyMask(List<String> settableProperties) {
         return constraint instanceof MvelConstraint ? ((MvelConstraint)constraint).getListenedPropertyMask(settableProperties) : Long.MAX_VALUE;
     }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return true;
+    }
 }

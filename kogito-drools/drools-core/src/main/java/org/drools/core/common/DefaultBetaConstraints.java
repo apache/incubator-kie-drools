@@ -267,4 +267,8 @@ public class DefaultBetaConstraints
         }
         return mask;
     }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return constraints.length < 2;
+    }
 }

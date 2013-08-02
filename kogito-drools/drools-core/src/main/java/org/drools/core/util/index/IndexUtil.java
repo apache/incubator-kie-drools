@@ -189,6 +189,10 @@ public class IndexUtil {
             return isAscending() || isDescending();
         }
 
+        public boolean isEquality() {
+            return this == EQUAL || this == NOT_EQUAL;
+        }
+
         public boolean isAscending() {
             return this == GREATER_THAN || this == GREATER_OR_EQUAL;
         }

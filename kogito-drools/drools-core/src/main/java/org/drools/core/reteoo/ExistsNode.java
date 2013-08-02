@@ -214,4 +214,7 @@ public class ExistsNode extends BetaNode {
         }
     }
 
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return getRawConstraints().isLeftUpdateOptimizationAllowed();
+    }
 }
