@@ -4384,7 +4384,7 @@ public class TraitTest extends CommonTestMethodBase {
         String drl = "package org.drools.compiler.trait.test;\n" +
                      "\n" +
                      "import org.drools.compiler.factmodel.traits.TraitTest.TraitableFoo;\n" +
-                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
                      "\n" +
                      "" +
                      "declare trait Bar\n" +

@@ -812,7 +812,6 @@ public class AbstractWorkingMemory
 
         try {
             this.ruleBase.readLock();
-            this.lock.lock();
             startOperation();
             // Make sure the global has been declared in the RuleBase
             final Map globalDefintions = this.ruleBase.getGlobals();
@@ -828,7 +827,6 @@ public class AbstractWorkingMemory
             }
         } finally {
             endOperation();
-            this.lock.unlock();
             this.ruleBase.readUnlock();
         }
     }
@@ -863,12 +861,7 @@ public class AbstractWorkingMemory
     }
 
     public Object getGlobal(final String identifier) {
-        try {
-            this.lock.lock();
-            return this.globalResolver.resolveGlobal( identifier );
-        } finally {
-            this.lock.unlock();
-        }
+        return this.globalResolver.resolveGlobal( identifier );
     }
 
     public Environment getEnvironment() {
