@@ -67,7 +67,7 @@ public class CopyIdentifiersGlobalExporter implements GlobalExporter {
             this.identifiers = (String[]) map.keySet().toArray( this.identifiers );
         }
 
-        Map map = new HashMap(identifiers.length);
+        Map<String, Object> map = new HashMap<String, Object>(identifiers.length);
         for ( int i = 0, length = identifiers.length; i < length; i++ ) {
             map.put( identifiers[i], workingMemory.getGlobal( identifiers[i] ) );
         }
