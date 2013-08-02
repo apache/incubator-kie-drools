@@ -34,6 +34,7 @@ import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.util.CDIHelper;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.audit.AbstractAuditLogger;
+import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.api.EventListenerProducer;
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.runtime.manager.api.qualifiers.Agenda;
@@ -201,6 +202,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     public List<AgendaEventListener> getAgendaEventListeners(
             RuntimeEngine runtime) {
         List<AgendaEventListener> defaultListeners = new ArrayList<AgendaEventListener>();
+        defaultListeners.add(new TriggerRulesEventListener(runtime.getKieSession()));
         try {
             for (EventListenerProducer<AgendaEventListener> producer : agendaListenerProducer) {
                 defaultListeners.addAll(producer.getEventListeners(((RuntimeEngineImpl)runtime).getManager().getIdentifier(), getParametersMap(runtime)));
