@@ -20,13 +20,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.runtime.Globals;
 import org.drools.spi.GlobalResolver;
@@ -38,16 +38,21 @@ public class MapGlobalResolver
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String,Object> map;
+    private Map<String, Object> map;
     
     private Globals delegate;
 
     public MapGlobalResolver() {
-        this.map = new HashMap();
+        this.map = new ConcurrentHashMap<String, Object>();
     }
 
-    public MapGlobalResolver(Map map) {
-        this.map = map;
+    public MapGlobalResolver(Map<String, Object> map) {
+        if (map instanceof ConcurrentHashMap) {
+            this.map = map;
+        } else {
+            this.map = new ConcurrentHashMap<String, Object>();
+            this.map.putAll(map);
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -100,13 +105,13 @@ public class MapGlobalResolver
     public Entry<String,Object>[] getGlobals() {
         if ( delegate == null ) {
             return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
-        } else if ( delegate != null && map.size() == 0 ) {
-            Map<String,Object> delegateMap = ((MapGlobalResolver) delegate).map;
-            return (Entry[]) delegateMap.entrySet().toArray(new Entry[delegateMap.size()]);
+        } else if ( map.isEmpty() ) {
+            Map<String, Object> delegateMap = ((MapGlobalResolver) delegate).map;
+            return (Entry<String, Object>[]) delegateMap.entrySet().toArray(new Entry[delegateMap.size()]);
         } else {
             Map<String,Object> combined = new HashMap<String,Object>( ((MapGlobalResolver) delegate).map );
             combined.putAll( map );
-            return (Entry[]) combined.entrySet().toArray(new Entry[combined.size()]);
+            return (Entry<String, Object>[]) combined.entrySet().toArray(new Entry[combined.size()]);
         }
     }
     

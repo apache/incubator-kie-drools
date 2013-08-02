@@ -120,7 +120,7 @@ public class ReteooWorkingMemoryTest {
 
     @Test
     public void testGlobalResolver() {
-        final Map map = new HashMap();
+        final Map<String, Object> map = new HashMap<String, Object>();
         map.put( "global1",
                  "value1" );
         map.put( "global2",
