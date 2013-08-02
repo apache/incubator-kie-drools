@@ -69,4 +69,6 @@ public interface BetaConstraints
 
     void init(BuildContext context, short betaNodeType);
     void initIndexes(int depth, short betaNodeType);
+
+    boolean isLeftUpdateOptimizationAllowed();
 }

@@ -160,4 +160,8 @@ public class QuadroupleNonIndexSkipBetaConstraints
         }
         return Long.MAX_VALUE;
     }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return true;
+    }
 }

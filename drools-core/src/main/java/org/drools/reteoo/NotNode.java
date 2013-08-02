@@ -262,6 +262,11 @@ public class NotNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
+         if ( blocker != null && !isLeftUpdateOptimizationAllowed() ) {
+            blocker.removeBlocked(leftTuple);
+            blocker = null;
+         }
+
         // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
         if ( blocker == null || !this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                                        blocker.getFactHandle() ) ) {
@@ -514,5 +519,9 @@ public class NotNode extends BetaNode {
     public String toString() {
         ObjectTypeNode source = getObjectTypeNode();
         return "[NotNode(" + this.getId() + ") - " + ((source != null) ? ((ObjectTypeNode) source).getObjectType() : "<source from a subnetwork>") + "]";
+    }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return getRawConstraints().isLeftUpdateOptimizationAllowed();
     }
 }

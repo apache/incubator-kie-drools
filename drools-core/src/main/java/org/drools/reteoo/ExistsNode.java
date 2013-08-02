@@ -330,6 +330,11 @@ public class ExistsNode extends BetaNode {
                                           workingMemory,
                                           leftTuple );
 
+        if ( blocker != null && !isLeftUpdateOptimizationAllowed() ) {
+            blocker.removeBlocked(leftTuple);
+            blocker = null;
+        }
+
         // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
         if ( blocker == null || !this.constraints.isAllowedCachedLeft( memory.getContext(),
                                                                        blocker.getFactHandle() ) ) {
@@ -571,5 +576,9 @@ public class ExistsNode extends BetaNode {
                                      LeftTupleSink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+    }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return getRawConstraints().isLeftUpdateOptimizationAllowed();
     }
 }

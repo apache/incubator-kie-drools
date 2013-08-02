@@ -24,6 +24,7 @@ import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.IndexableConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
@@ -250,5 +251,14 @@ public class DefaultBetaConstraints
             }
         }
         return mask;
+    }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        for (BetaNodeFieldConstraint constraint : constraints) {
+            if ( !(constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType().isEquality()) ) {
+                return false;
+            }
+        }
+        return true;
     }
 }

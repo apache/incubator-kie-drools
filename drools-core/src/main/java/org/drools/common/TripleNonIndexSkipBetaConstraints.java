@@ -18,7 +18,6 @@ package org.drools.common;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.reteoo.BetaMemory;
-import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
@@ -154,5 +153,9 @@ public class TripleNonIndexSkipBetaConstraints
                     ((MvelConstraint)constraint2).getListenedPropertyMask(settableProperties);
         }
         return Long.MAX_VALUE;
+    }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return true;
     }
 }

@@ -185,6 +185,10 @@ public class IndexUtil {
             this.indexable = indexable;
         }
 
+        public boolean isEquality() {
+            return this == EQUAL || this == NOT_EQUAL;
+        }
+
         public boolean isComparison() {
             return isAscending() || isDescending();
         }

@@ -7,6 +7,7 @@ import org.drools.reteoo.BetaMemory;
 import org.drools.reteoo.BetaNode;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.IndexableConstraint;
 import org.drools.spi.BetaNodeFieldConstraint;
 
 import java.io.IOException;
@@ -97,5 +98,14 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
 
     public final boolean isEmpty() {
         return false;
+    }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        for (BetaNodeFieldConstraint constraint : constraints) {
+            if ( !(constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType().isEquality()) ) {
+                return false;
+            }
+        }
+        return true;
     }
 }
