@@ -73,14 +73,11 @@ public class AbstractUserGroupCallbackDecorator {
     }
 
     protected void addUserFromCallbackOperation(String userId) {
-        try {
-            boolean userExists = pm.find(UserImpl.class, userId) != null;
-            if (!StringUtils.isEmpty(userId) && !userExists) {
-                UserImpl user = new UserImpl(userId);
-                pm.persist(user);
-            }
-        } catch (Throwable t) {
-            //logger.log(Level.SEVERE, "Unable to add user " + userId);
+        
+        boolean userExists = pm.find(UserImpl.class, userId) != null;
+        if (!StringUtils.isEmpty(userId) && !userExists) {
+            UserImpl user = new UserImpl(userId);
+            pm.persist(user);
         }
     }
 
@@ -119,15 +116,11 @@ public class AbstractUserGroupCallbackDecorator {
     }
 
     protected void addGroupFromCallbackOperation(String groupId) {
-        try {
-            boolean groupExists = pm.find(GroupImpl.class, groupId) != null;
-            if (!StringUtils.isEmpty(groupId) && !groupExists) {
-                GroupImpl group = new GroupImpl(groupId);
-                pm.persist(group);
-            }
-        } catch (Throwable t) {
-            //logger.log(Level.WARNING, "UserGroupCallback has not been registered.");
-        }
+        boolean groupExists = pm.find(GroupImpl.class, groupId) != null;
+        if (!StringUtils.isEmpty(groupId) && !groupExists) {
+            GroupImpl group = new GroupImpl(groupId);
+            pm.persist(group);
+        }        
     }
 
     protected void doCallbackOperationForTaskData(InternalTaskData data) {
