@@ -167,6 +167,12 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-shared-services</artifactId>
+      <classifier>btm</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-runtime-manager</artifactId>
       <type>test-jar</type>
       <scope>test</scope>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbpm</groupId>
@@ -144,6 +144,26 @@
           </filesets>
         </configuration>
       </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>btm-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <configuration>
+              <classifier>btm</classifier>
+              <includes>
+                <include>org/jbpm/shared/services/impl/tx/*</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -152,19 +172,16 @@
           <instructions>
             <Bundle-SymbolicName>org.jbpm.shared.services</Bundle-SymbolicName>
             <Import-Package>
-              !org.jbpm.shared.services,
-              org.jboss.solder.core;resolution:=optional,
-              bitronix.tm;resolution:=optional,
-              *
+              !org.jbpm.shared.services, org.jboss.solder.core;resolution:=optional,*
             </Import-Package>
-            <Private-Package></Private-Package>
+            <Private-Package>
+            </Private-Package>
             <Export-Package>
-              org.jbpm.shared.services*
+              !org.jbpm.shared.services.impl.tx.*,org.jbpm.shared.services*
             </Export-Package>
           </instructions>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>
