@@ -2290,4 +2290,102 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    public static class Conversation {
+        private final int id;
+        private String family;
+        private int timeslot;
+
+        public Conversation(int id) {
+            this.id = id;
+        }
+
+        public Conversation(int id, String family, int timeslot) {
+            this.id = id;
+            this.family = family;
+            this.timeslot = timeslot;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getFamily() {
+            return family;
+        }
+
+        public void setFamily(String family) {
+            this.family = family;
+        }
+
+        public int getTimeslot() {
+            return timeslot;
+        }
+
+        public void setTimeslot(int timeslot) {
+            this.timeslot = timeslot;
+        }
+
+        public String toString() {
+            return "Conversation #" + getId() + " with " + getFamily() + " @ " + getTimeslot();
+        }
+    }
+
+    @Test
+    public void testNotNodeUpdateBlocker() {
+        String str =
+                "import org.drools.compiler.integrationtests.MiscTest2.Conversation;\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "rule \"familyEnd\" when\n" +
+                "   $conversation : Conversation(\n" +
+                "       family != null, $family: family, \n" +
+                "       $timeslot: timeslot)\n" +
+                "\n" +
+                "   not Conversation(\n" +
+                "       family == $family, \n" +
+                "       timeslot > $timeslot);\n" +
+                "then\n" +
+                "   list.add($conversation);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Conversation> conversations = new ArrayList<Conversation>();
+        ksession.setGlobal("list", conversations);
+
+        Conversation c0 = new Conversation(0, "Fusco", 2);
+        Conversation c1 = new Conversation(1, "Fusco", 3);
+        Conversation c2 = new Conversation(2, "Fusco", 4);
+
+        FactHandle fh0 = ksession.insert(c0);
+        FactHandle fh1 = ksession.insert(c1);
+        FactHandle fh2 = ksession.insert(c2);
+
+        ksession.fireAllRules();
+        assertEquals(1, conversations.size());
+        conversations.clear();
+
+        c2.setTimeslot(0);
+        ksession.update(fh2, c2);
+        ksession.fireAllRules();
+        c2.setTimeslot(4);
+        ksession.update(fh2, c2);
+        ksession.fireAllRules();
+        conversations.clear();
+
+        c0.setTimeslot(3);
+        ksession.update(fh0, c0);
+        ksession.fireAllRules();
+        c0.setTimeslot(2);
+        ksession.update(fh0, c0);
+        ksession.fireAllRules();
+        conversations.clear();
+
+        c2.setTimeslot(1);
+        ksession.update(fh2, c2);
+        ksession.fireAllRules();
+        assertEquals(1, conversations.size());
+    }
 }
