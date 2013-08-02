@@ -27,6 +27,7 @@ import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
@@ -35,9 +36,10 @@ import org.kie.internal.task.api.model.InternalPeopleAssignments;
 
 public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 	
-	private PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
+	private PeopleAssignmentHelper peopleAssignmentHelper;
 	
-	protected void setup() {
+	@Before
+	public void setup() {
 		
 		peopleAssignmentHelper = new PeopleAssignmentHelper();
 		
@@ -121,6 +123,94 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		assertEquals(0, peopleAssignments.getPotentialOwners().size());
 
 	}
+	
+	@Test
+    public void testAssignActorsWithCustomSeparatorViaSysProp() {
+        System.setProperty("org.jbpm.ht.user.separator", ";");
+        peopleAssignmentHelper = new PeopleAssignmentHelper();
+        String actorId = "user1;user2";
+        
+        TaskImpl task = new TaskImpl();
+        TaskDataImpl taskData = new TaskDataImpl();
+        PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        
+        WorkItem workItem = new WorkItemImpl();     
+        workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, actorId);
+        
+        peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
+        OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
+        assertTrue(organizationalEntity1 instanceof UserImpl);
+        assertEquals("user1", organizationalEntity1.getId());       
+        assertEquals("user1", taskData.getCreatedBy().getId());
+        
+        OrganizationalEntity organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
+        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertEquals("user2", organizationalEntity2.getId());       
+        
+        workItem = new WorkItemImpl();
+        peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);              
+        workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, actorId + "; drbug  ");
+        peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
+        assertEquals(3, peopleAssignments.getPotentialOwners().size());
+        organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
+        assertEquals("user1", organizationalEntity1.getId());       
+        assertEquals("user1", taskData.getCreatedBy().getId());
+        organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
+        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertEquals("user2", organizationalEntity2.getId()); 
+        OrganizationalEntity organizationalEntity3 = peopleAssignments.getPotentialOwners().get(2);
+        assertEquals("drbug", organizationalEntity3.getId());
+
+        workItem = new WorkItemImpl();
+        peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);              
+        workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, "");
+        peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
+        assertEquals(0, peopleAssignments.getPotentialOwners().size());
+        System.clearProperty("org.jbpm.ht.user.separator");
+    }
+	
+	@Test
+    public void testAssignActorsWithCustomSeparator() {
+        peopleAssignmentHelper = new PeopleAssignmentHelper(":");
+        String actorId = "user1:user2";
+        
+        TaskImpl task = new TaskImpl();
+        TaskDataImpl taskData = new TaskDataImpl();
+        PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
+        
+        WorkItem workItem = new WorkItemImpl();     
+        workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, actorId);
+        
+        peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
+        OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
+        assertTrue(organizationalEntity1 instanceof UserImpl);
+        assertEquals("user1", organizationalEntity1.getId());       
+        assertEquals("user1", taskData.getCreatedBy().getId());
+        
+        OrganizationalEntity organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
+        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertEquals("user2", organizationalEntity2.getId());       
+        
+        workItem = new WorkItemImpl();
+        peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);              
+        workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, actorId + ": drbug  ");
+        peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
+        assertEquals(3, peopleAssignments.getPotentialOwners().size());
+        organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
+        assertEquals("user1", organizationalEntity1.getId());       
+        assertEquals("user1", taskData.getCreatedBy().getId());
+        organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
+        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertEquals("user2", organizationalEntity2.getId()); 
+        OrganizationalEntity organizationalEntity3 = peopleAssignments.getPotentialOwners().get(2);
+        assertEquals("drbug", organizationalEntity3.getId());
+
+        workItem = new WorkItemImpl();
+        peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);              
+        workItem.setParameter(PeopleAssignmentHelper.ACTOR_ID, "");
+        peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
+        assertEquals(0, peopleAssignments.getPotentialOwners().size());
+    }
 	
 	@Test
 	public void testAssignBusinessAdministrators() {

@@ -45,7 +45,17 @@ public class PeopleAssignmentHelper {
 	public static final String TASKSTAKEHOLDER_ID = "TaskStakeholderId";
     public static final String EXCLUDED_OWNER_ID = "ExcludedOwnerId";
     public static final String RECIPIENT_ID = "RecipientId";
+    
+    private String separator;
+    
+    public PeopleAssignmentHelper() {
+        this.separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+    }
 	
+    public PeopleAssignmentHelper(String separator) {
+        this.separator = separator;
+    }
+    
 	public void handlePeopleAssignments(WorkItem workItem, InternalTask task, InternalTaskData taskData) {
 		
 		InternalPeopleAssignments peopleAssignments = getNullSafePeopleAssignments(task);
@@ -132,7 +142,7 @@ public class PeopleAssignmentHelper {
 
         if (peopleAssignmentIds != null && peopleAssignmentIds.trim().length() > 0) {
 
-            String[] ids = peopleAssignmentIds.split(",");
+            String[] ids = peopleAssignmentIds.split(separator);
             for (String id : ids) {
                 id = id.trim();
                 boolean exists = false;
