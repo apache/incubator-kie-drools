@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.NodeInstance, Serializable {
 
 	private static final long serialVersionUID = 510l;
-	private static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
+	protected static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 	
 	private long id;
     private long nodeId;

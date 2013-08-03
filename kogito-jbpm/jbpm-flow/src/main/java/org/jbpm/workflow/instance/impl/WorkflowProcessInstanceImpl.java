@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.process.core.ContextContainer;
@@ -71,7 +72,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private static final long serialVersionUID = 510l;
 
 	private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
+
+	@Deprecated // this should be deleted in 7.0.x
 	private long nodeInstanceCounter = 0;
+	@Deprecated // this should be deleted in 7.0.x
+	private boolean deprecatedIdStrategy = Boolean.getBoolean("jbpm.v5.id.strategy");
+	private AtomicLong singleNodeInstanceCounter = new AtomicLong(0);
+	
 	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
 	private List<String> completedNodeIds = new ArrayList<String>();
@@ -86,7 +93,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void addNodeInstance(final NodeInstance nodeInstance) {
-		((NodeInstanceImpl) nodeInstance).setId(nodeInstanceCounter++);
+	    long id; 
+	    if( deprecatedIdStrategy ) { 
+	       id = nodeInstanceCounter++; 
+	    } else {
+	        id = singleNodeInstanceCounter.getAndIncrement();
+	    }
+		((NodeInstanceImpl) nodeInstance).setId(id);
 		this.nodeInstances.add(nodeInstance);
 	}
 	
@@ -225,12 +238,28 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 
 	public long getNodeInstanceCounter() {
-		return nodeInstanceCounter;
+	    if( deprecatedIdStrategy ) { 
+	        return nodeInstanceCounter;
+	    }
+		return singleNodeInstanceCounter.get();
 	}
 
 	public void internalSetNodeInstanceCounter(long nodeInstanceCounter) {
-		this.nodeInstanceCounter = nodeInstanceCounter;
+	    if( deprecatedIdStrategy ) { 
+	       this.nodeInstanceCounter = nodeInstanceCounter; 
+	    } else { 
+	        this.singleNodeInstanceCounter = new AtomicLong(nodeInstanceCounter);
+	    }
 	}
+	
+	public AtomicLong internalGetNodeInstanceCounter() {
+		return this.singleNodeInstanceCounter;
+	}
+
+	public boolean getDeprecatedIdStrategy() { 
+	   return deprecatedIdStrategy; 
+	}
+	
 
 	public WorkflowProcess getWorkflowProcess() {
 		return (WorkflowProcess) getProcess();

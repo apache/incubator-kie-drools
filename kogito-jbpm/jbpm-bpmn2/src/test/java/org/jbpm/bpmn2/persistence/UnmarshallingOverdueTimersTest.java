@@ -141,7 +141,7 @@ public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
         
         if( debug ) { 
             long wait = (long) ((double) seconds * 1000d * 1.1);
-            logger.debug("sleeping {} seconds", wait);
+            logger.debug("sleeping {} seconds", seconds);
             Thread.sleep(seconds * 1000 );
         }
         

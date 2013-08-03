@@ -157,6 +157,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             		nodeInstances.add(nodeInstance);
             	}
             	for (NodeInstance nodeInstance: nodeInstances) {
+            	    logger.debug( "Triggering [{}] in multi-instance loop.", ((NodeInstanceImpl) nodeInstance).getNodeId() );
             		((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(this, getForEachSplitNode().getTo().getToType());
             	}
 	            if (!getForEachNode().isWaitForCompletion()) {

@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -44,7 +46,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
+import org.kie.api.definition.process.Node;
 import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.process.ProcessNodeEvent;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
@@ -1118,9 +1124,45 @@ public class FlowTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess(
                 "MultiInstanceLoopCharacteristicsProcess", params);
         assertProcessInstanceCompleted(processInstance);
-
     }
     
+    @Test
+    public void testMultiInstanceLoopNumberTest() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-MultiInstanceLoop-Numbering.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        final Map<String, String> nodeIdNodeNameMap = new HashMap<String, String>();
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                NodeInstance nodeInstance = event.getNodeInstance();
+                String uniqId = ((NodeInstanceImpl) nodeInstance).getUniqueId();
+                String nodeName = ((NodeInstanceImpl) nodeInstance).getNode().getName();
+                
+                String prevNodeName = nodeIdNodeNameMap.put( uniqId, nodeName );
+                if( prevNodeName != null ) { 
+                    assertEquals(uniqId + " is used for more than one node instance: ", prevNodeName, nodeName);
+                }
+            }
+
+        });
+        
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        ProcessInstance processInstance = ksession.startProcess("Test.MultipleInstancesBug", params);
+       
+        List<WorkItem> workItems = handler.getWorkItems();
+        logger.debug( "COMPLETING TASKS.");
+        ksession.getWorkItemManager().completeWorkItem(workItems.remove(0).getId(), null);
+        ksession.getWorkItemManager().completeWorkItem(workItems.remove(0).getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+
+    }
+
     @Test
     public void testMultiInstanceLoopCharacteristicsProcess2() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-MultiInstanceProcessWithOutputOnTask.bpmn2");
@@ -1526,7 +1568,6 @@ public class FlowTest extends JbpmBpmn2TestCase {
         }
 
 
-        @Override
         public Object execute(Context context) {
             KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 

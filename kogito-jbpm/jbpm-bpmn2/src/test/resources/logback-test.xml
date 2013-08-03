@@ -9,7 +9,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.jbpm" level="info"/>
+  <logger name="org.jbpm" level="debug"/>
   <logger name="bitronix.tm" level="error"/>
   <logger name="org.hibernate" level="warn"/>
   
