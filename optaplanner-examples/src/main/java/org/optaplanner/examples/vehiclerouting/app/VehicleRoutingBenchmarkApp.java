@@ -24,6 +24,8 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
             = "/org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfig.xml";
     public static final String STEP_LIMIT_BENCHMARK_CONFIG
             = "/org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingStepLimitBenchmarkConfig.xml";
+    public static final String TEMPLATE_BENCHMARK_CONFIG_TEMPLATE
+            = "/org/optaplanner/examples/vehiclerouting/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl";
 
     public static void main(String[] args) {
         String benchmarkConfig;
@@ -32,6 +34,10 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
                 benchmarkConfig = DEFAULT_BENCHMARK_CONFIG;
             } else if (args[0].equals("stepLimit")) {
                 benchmarkConfig = STEP_LIMIT_BENCHMARK_CONFIG;
+            } else if (args[0].equals("template")) {
+                benchmarkConfig = TEMPLATE_BENCHMARK_CONFIG_TEMPLATE;
+                new VehicleRoutingBenchmarkApp().buildFromTemplateAndBenchmark(benchmarkConfig);
+                return;
             } else {
                 throw new IllegalArgumentException("The program argument (" + args[0] + ") is not supported.");
             }

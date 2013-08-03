@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/vehiclerouting</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n34-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n36-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n38-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k5.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n44-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k6.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n46-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n48-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n53-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n54-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n55-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n60-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n61-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n62-k8.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k10.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n64-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n65-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n69-k9.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/A-n80-k10.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/F-n135-k7.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/F-n45-k4.xml</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/F-n72-k4.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+      <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpStandstill</planningEntityClass>
+
+      <scoreDirectorFactory>
+        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+
+      <termination>
+        <maximumMinutesSpend>5</maximumMinutesSpend>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+<#list [5, 7, 9] as entityTabuSize>
+  <solverBenchmark>
+    <name>enityTabu ${entityTabuSize}</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <subChainSwapMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuSize>${entityTabuSize}</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>2000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</#list>
+<#list [100, 200, 400, 800, 1600] as lateAcceptanceSize>
+  <solverBenchmark>
+    <name>lateAcceptance ${lateAcceptanceSize}</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <subChainChangeMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainChangeMoveSelector>
+          <subChainSwapMoveSelector>
+            <selectReversingMoveToo>true</selectReversingMoveToo>
+          </subChainSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</#list>
+</plannerBenchmark>
