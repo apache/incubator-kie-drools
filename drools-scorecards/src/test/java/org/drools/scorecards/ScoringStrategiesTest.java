@@ -26,38 +26,36 @@ import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_
 
 public class ScoringStrategiesTest {
 
-    private PMML pmmlDocument;
 
     @Before
     public void setUp() throws Exception {
+    }
+
+    @Test
+    public void testScoringExtension() throws Exception {
+        PMML pmmlDocument;
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
         if (scorecardCompiler.compileFromExcel(PMMLDocumentTest.class.getResourceAsStream("/scoremodel_scoring_strategies.xls")) ) {
             pmmlDocument = scorecardCompiler.getPMMLDocument();
             assertNotNull(pmmlDocument);
             String drl = scorecardCompiler.getDRL();
             assertNotNull(drl);
-        } else {
-            fail("failed to parse scoremodel Excel.");
-        }
-    }
-
-    @Test
-    public void testScoringExtension() throws Exception {
-        for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
-            if (serializable instanceof Scorecard){
-                Scorecard scorecard = (Scorecard)serializable;
-                assertEquals("Sample Score",scorecard.getModelName());
-                Extension extension = ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
-                assertNotNull(extension);
-                assertEquals(extension.getValue(), ScoringStrategy.AGGREGATE_SCORE.toString());
-                return;
+            for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
+                if (serializable instanceof Scorecard){
+                    Scorecard scorecard = (Scorecard)serializable;
+                    assertEquals("Sample Score",scorecard.getModelName());
+                    Extension extension = ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+                    assertNotNull(extension);
+                    assertEquals(extension.getValue(), ScoringStrategy.AGGREGATE_SCORE.toString());
+                    return;
+                }
             }
         }
         fail();
     }
 
     @Test
-    public void testScoringStrategyAggregate() throws Exception {
+    public void testAggregate() throws Exception {
 
         double finalScore = executeAndFetchScore("scorecards");
         //age==10 (30), validLicense==FALSE (-1)
@@ -65,7 +63,7 @@ public class ScoringStrategiesTest {
     }
 
     @Test
-    public void testScoringStrategyAverage() throws Exception {
+    public void testAverage() throws Exception {
 
         double finalScore = executeAndFetchScore("scorecards_avg");
         //age==10 (30), validLicense==FALSE (-1)
@@ -74,23 +72,55 @@ public class ScoringStrategiesTest {
     }
 
     @Test
-    public void testScoringStrategyMinimum() throws Exception {
+    public void testMinimum() throws Exception {
         double finalScore = executeAndFetchScore("scorecards_min");
         //age==10 (30), validLicense==FALSE (-1)
         assertEquals(-1.0, finalScore);
     }
 
     @Test
-    public void testScoringStrategyMaximum() throws Exception {
+    public void testMaximum() throws Exception {
 
         double finalScore = executeAndFetchScore("scorecards_max");
         //age==10 (30), validLicense==FALSE (-1)
         assertEquals(30.0, finalScore);
     }
 
+    @Test
+    public void testWeightedAggregate() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_aggregate");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        assertEquals(599.0, finalScore);
+    }
+
+    @Test
+    public void testWeightedAverage() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_avg");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        assertEquals(299.5, finalScore);
+    }
+
+    @Test
+    public void testWeightedMaximum() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_max");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        assertEquals(600.0, finalScore);
+    }
+
+    @Test
+    public void testWeightedMinimum() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_min");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        assertEquals(-1.0, finalScore);
+    }
+
     /* Tests with Initial Score */
     @Test
-    public void testScoringStrategyAggregateInitialScore() throws Exception {
+    public void testAggregateInitialScore() throws Exception {
 
         double finalScore = executeAndFetchScore("scorecards_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
@@ -99,7 +129,7 @@ public class ScoringStrategiesTest {
     }
 
     @Test
-    public void testScoringStrategyAverageInitialScore() throws Exception {
+    public void testAverageInitialScore() throws Exception {
         double finalScore = executeAndFetchScore("scorecards_avg_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
         //count = 2
@@ -108,7 +138,7 @@ public class ScoringStrategiesTest {
     }
 
     @Test
-    public void testScoringStrategyMinimumInitialScore() throws Exception {
+    public void testMinimumInitialScore() throws Exception {
         double finalScore = executeAndFetchScore("scorecards_min_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
         //initialScore = 100
@@ -116,7 +146,7 @@ public class ScoringStrategiesTest {
     }
 
     @Test
-    public void testScoringStrategyMaximumInitialScore() throws Exception {
+    public void testMaximumInitialScore() throws Exception {
 
         double finalScore = executeAndFetchScore("scorecards_max_initial_score");
         //age==10 (30), validLicense==FALSE (-1)
@@ -124,16 +154,61 @@ public class ScoringStrategiesTest {
         assertEquals(130.0, finalScore);
     }
 
+    @Test
+    public void testWeightedAggregateInitialScore() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_aggregate_initial");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        //initialScore = 100
+        assertEquals(699.0, finalScore);
+    }
+
+    @Test
+    public void testWeightedAverageInitialScore() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_avg_initial");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        //initialScore = 100
+        assertEquals(399.5, finalScore);
+    }
+
+    @Test
+    public void testWeightedMaximumInitialScore() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_max_initial");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        //initialScore = 100
+        assertEquals(700.0, finalScore);
+    }
+
+    @Test
+    public void testWeightedMinimumInitialScore() throws Exception {
+
+        double finalScore = executeAndFetchScore("scorecards_w_min_initial");
+        //age==10 (score=30, w=20), validLicense==FALSE (score=-1, w=1)
+        //initialScore = 100
+        assertEquals(99.0, finalScore);
+    }
+
     /* Internal functions */
     private double executeAndFetchScore(String sheetName) throws Exception {
 
-        ScoreCardConfiguration scconf = KnowledgeBuilderFactory.newScoreCardConfiguration();
-        scconf.setWorksheetName( sheetName );
-
+        ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
+        InputStream inputStream = PMMLDocumentTest.class.getResourceAsStream("/scoremodel_scoring_strategies.xls");
+        boolean compileResult = scorecardCompiler.compileFromExcel(inputStream, sheetName);
+        if (!compileResult) {
+            for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
+                System.err.println("Scorecard Compiler Error :"+error.getErrorLocation()+"->"+error.getErrorMessage());
+            }
+            return -999999;
+        }
+        String drl = scorecardCompiler.getDRL();
+        //System.out.println(drl);
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newUrlResource(ScorecardProviderTest.class.getResource("/scoremodel_scoring_strategies.xls")),
-                ResourceType.SCARD,
-                scconf );
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        for (KnowledgeBuilderError error : kbuilder.getErrors()){
+            System.out.println(error.getMessage());
+        }
         assertFalse( kbuilder.hasErrors() );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
