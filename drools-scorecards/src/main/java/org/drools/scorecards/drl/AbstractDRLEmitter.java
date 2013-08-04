@@ -317,7 +317,13 @@ public abstract class AbstractDRLEmitter {
         String setter = "insertLogical(new PartialScore(\"";
         String field = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(c);
 
-        stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",").append(scoreAttribute.getPartialScore());
+        ScoringStrategy scoringStrategy = getScoringStrategy(scorecard);
+        if ( scoringStrategy.toString().startsWith("WEIGHTED")) {
+            String weight = ScorecardPMMLUtils.getExtensionValue(scoreAttribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+            stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",(").append(scoreAttribute.getPartialScore()).append("*").append(weight).append(")");
+        } else {
+            stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",").append(scoreAttribute.getPartialScore());
+        }
         if (scorecard.isUseReasonCodes()){
             String reasonCode = scoreAttribute.getReasonCode();
             if (reasonCode == null || StringUtils.isEmpty(reasonCode)) {
@@ -337,18 +343,22 @@ public abstract class AbstractDRLEmitter {
         Condition condition = new Condition();
         ScoringStrategy strategy = getScoringStrategy(scorecard);
         switch (strategy) {
+            case WEIGHTED_AGGREGATE_SCORE:
             case AGGREGATE_SCORE: {
                 stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
                 break;
             }
+            case WEIGHTED_AVERAGE_SCORE:
             case AVERAGE_SCORE:{
                 stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), average($partialScore))");
                 break;
             }
+            case WEIGHTED_MAXIMUM_SCORE:
             case MAXIMUM_SCORE:{
                 stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), max($partialScore))");
                 break;
             }
+            case WEIGHTED_MINIMUM_SCORE:
             case MINIMUM_SCORE:{
                 stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), min($partialScore))");
                 break;

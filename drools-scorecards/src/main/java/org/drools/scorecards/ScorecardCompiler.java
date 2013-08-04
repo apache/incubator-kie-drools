@@ -95,6 +95,7 @@ public class ScorecardCompiler {
             }
         } catch (ScorecardParseException e) {
             logger.error(e.getMessage(), e);
+            e.printStackTrace();
         } finally {
             closeStream(stream);
         }

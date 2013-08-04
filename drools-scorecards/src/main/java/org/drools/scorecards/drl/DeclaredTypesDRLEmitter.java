@@ -95,7 +95,11 @@ public class DeclaredTypesDRLEmitter extends AbstractDRLEmitter{
             case AGGREGATE_SCORE:
             case MINIMUM_SCORE:
             case MAXIMUM_SCORE:
-            case AVERAGE_SCORE: {
+            case AVERAGE_SCORE:
+            case WEIGHTED_AVERAGE_SCORE:
+            case WEIGHTED_MAXIMUM_SCORE:
+            case WEIGHTED_MINIMUM_SCORE:
+            case WEIGHTED_AGGREGATE_SCORE: {
                 consequence.setSnippet("double calculatedScore = $calculatedScore;");
                 break;
             }
