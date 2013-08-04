@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
-  <benchmarkDirectory>local/data/vehiclerouting</benchmarkDirectory>
+  <benchmarkDirectory>local/data/vehiclerouting/template</benchmarkDirectory>
   <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
