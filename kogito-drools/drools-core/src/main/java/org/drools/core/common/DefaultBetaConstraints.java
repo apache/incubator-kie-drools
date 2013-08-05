@@ -17,6 +17,7 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.reteoo.BetaMemory;
@@ -50,6 +51,8 @@ public class DefaultBetaConstraints
     private IndexPrecedenceOption       indexPrecedenceOption;
 
     private int                         indexed;
+
+    private transient Boolean           leftUpdateOptimizationAllowed;
 
     public DefaultBetaConstraints() {
 
@@ -269,6 +272,18 @@ public class DefaultBetaConstraints
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
-        return constraints.length < 2;
+        if (leftUpdateOptimizationAllowed == null) {
+            leftUpdateOptimizationAllowed = calcLeftUpdateOptimizationAllowed();
+        }
+        return leftUpdateOptimizationAllowed;
+    }
+
+    private boolean calcLeftUpdateOptimizationAllowed() {
+        for (BetaNodeFieldConstraint constraint : constraints) {
+            if ( !(constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType().isEquality()) ) {
+                return false;
+            }
+        }
+        return true;
     }
 }

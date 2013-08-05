@@ -22,6 +22,8 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
     protected IndexPrecedenceOption     indexPrecedenceOption;
     protected transient boolean         disableIndexing;
 
+    private transient Boolean           leftUpdateOptimizationAllowed;
+
     public MultipleBetaConstraint() { }
 
     public MultipleBetaConstraint( BetaNodeFieldConstraint[] constraints,
@@ -106,6 +108,13 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {
+        if (leftUpdateOptimizationAllowed == null) {
+            leftUpdateOptimizationAllowed = calcLeftUpdateOptimizationAllowed();
+        }
+        return leftUpdateOptimizationAllowed;
+    }
+
+    private boolean calcLeftUpdateOptimizationAllowed() {
         for (BetaNodeFieldConstraint constraint : constraints) {
             if ( !(constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType().isEquality()) ) {
                 return false;
