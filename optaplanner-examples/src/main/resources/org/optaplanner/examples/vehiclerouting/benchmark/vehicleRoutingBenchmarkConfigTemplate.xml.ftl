@@ -6,37 +6,80 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k6.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n34-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n36-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k6.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n38-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k5.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k6.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n44-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k6.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n46-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n48-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n53-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n54-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n55-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n60-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n61-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n62-k8.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k10.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n64-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n65-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n69-k9.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n80-k10.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/F-n135-k7.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/F-n45-k4.xml</inputSolutionFile>
-      <inputSolutionFile>data/vehiclerouting/unsolved/F-n72-k4.xml</inputSolutionFile>
+      <#--<xstreamAnnotatedClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n33-k6.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n34-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n36-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n37-k6.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n38-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k5.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n39-k6.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n44-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k6.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n45-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n46-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n48-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n53-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n54-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n55-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n60-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n61-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n62-k8.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k10.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n63-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n64-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n65-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n69-k9.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/A-n80-k10.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/F-n135-k7.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/F-n45-k4.xml</inputSolutionFile>-->
+      <#--<inputSolutionFile>data/vehiclerouting/unsolved/F-n72-k4.xml</inputSolutionFile>-->
+      <problemIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingProblemIO</problemIOClass>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_025_C101.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_025_C201.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_025_R101.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_025_R201.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_025_RC101.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_025_RC201.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_100_C101.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_100_C201.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_100_R101.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_100_R201.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_100_RC101.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Solomon_100_RC201.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0200_C2_2_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0200_R1_2_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0200_R2_2_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0200_RC1_2_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0200_RC2_2_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0400_C2_4_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0400_R1_4_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0400_R2_4_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0400_RC1_4_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0400_RC2_4_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0600_C1_6_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0600_C2_6_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0600_R1_6_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0600_R2_6_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0600_RC2_6_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0600_RC1_6_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0800_C1_8_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0800_C2_8_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0800_R1_8_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0800_R2_8_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0800_RC1_8_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_0800_RC2_8_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_1000_C110_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_1000_C210_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_1000_R110_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_1000_R210_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_1000_RC110_1.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/unsolved/timewindow/Homberger_1000_RC210_1.vrp</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
@@ -57,7 +100,7 @@
     </solver>
   </inheritedSolverBenchmark>
 
-<#list [5, 7, 9] as entityTabuSize>
+<#list [7, 9] as entityTabuSize>
   <solverBenchmark>
     <name>enityTabu ${entityTabuSize}</name>
     <solver>
@@ -85,7 +128,7 @@
     </solver>
   </solverBenchmark>
 </#list>
-<#list [100, 200, 400, 800, 1600] as lateAcceptanceSize>
+<#list [100, 200, 400, 800] as lateAcceptanceSize>
   <solverBenchmark>
     <name>lateAcceptance ${lateAcceptanceSize}</name>
     <solver>
