@@ -133,7 +133,6 @@
     <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-jms-server</artifactId>
-      <version>${hornetq.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

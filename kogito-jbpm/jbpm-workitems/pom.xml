@@ -102,7 +102,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http</artifactId>
-      <version>${cxf.version}</version>
+      <version>${version.org.apache.cxf}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -125,7 +125,7 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
-      <version>${cxf.version}</version>
+      <version>${version.org.apache.cxf}</version>
       <scope>test</scope>
     </dependency>
     <!-- REST -->
