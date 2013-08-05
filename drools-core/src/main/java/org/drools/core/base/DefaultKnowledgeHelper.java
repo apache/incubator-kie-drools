@@ -594,6 +594,9 @@ public class DefaultKnowledgeHelper
 
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
+        if ( core instanceof Thing && ( (Thing) core ).getCore() != core ) {
+            return don( ((Thing) core).getCore(), trait, logical );
+        }
         try {
             BitSet currentType = core instanceof TraitableBean ? ( (TraitableBean) core ).getCurrentTypeCode() : null;
             BitSet veto =  currentType != null ? (BitSet) currentType.clone() : null;
