@@ -1,6 +1,5 @@
 package org.drools.core.phreak;
 
-import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
@@ -12,9 +11,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Salience;
-import org.drools.core.util.index.LeftTupleList;
 
 /**
 * Created with IntelliJ IDEA.
@@ -138,7 +135,7 @@ public class PhreakBranchNode {
                     if ( rtnLeftTuple.getMemory() != null ) {
                         executor.removeLeftTuple(rtnLeftTuple);
                     }
-                    oldRtn.retractLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
+                    PhreakRuleTerminalNode.doLeftDelete(wm, executor, rtnLeftTuple);
 
                 } else if (newRtn == oldRtn) {
                     // old and new on same branch, so update
@@ -211,13 +208,10 @@ public class PhreakBranchNode {
             LeftTuple mainLeftTuple = leftTuple.getFirstChild();
 
             if (rtnLeftTuple != null) {
-                RuleTerminalNode rtn = (RuleTerminalNode) rtnLeftTuple.getSink();
                 if ( rtnLeftTuple.getMemory() != null ) {
                     executor.removeLeftTuple(rtnLeftTuple);
                 }
-                rtn.retractLeftTuple(rtnLeftTuple,
-                                     rtnLeftTuple.getPropagationContext(),
-                                     wm);
+                PhreakRuleTerminalNode.doLeftDelete(wm, executor, rtnLeftTuple);
             }
 
             if (mainLeftTuple != null) {

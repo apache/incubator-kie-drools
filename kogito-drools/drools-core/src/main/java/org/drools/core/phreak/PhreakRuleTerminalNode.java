@@ -6,7 +6,6 @@ import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
@@ -218,7 +217,8 @@ public class PhreakRuleTerminalNode {
         }
     }
 
-    public static void doLeftDelete(InternalWorkingMemory wm, RuleExecutor executor, LeftTuple leftTuple) {PropagationContext pctx = leftTuple.getPropagationContext();
+    public static void doLeftDelete(InternalWorkingMemory wm, RuleExecutor executor, LeftTuple leftTuple) {
+        PropagationContext pctx = leftTuple.getPropagationContext();
         pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
 
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
