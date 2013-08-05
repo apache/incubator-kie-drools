@@ -1,7 +1,9 @@
 package org.drools.integrationtests;
 
+import org.drools.Address;
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
+import org.drools.Person;
 import org.drools.base.BaseEvaluator;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.EvaluatorDefinition;
@@ -13,6 +15,7 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.rule.VariableRestriction.ObjectVariableContextEntry;
 import org.drools.rule.VariableRestriction.VariableContextEntry;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.spi.Evaluator;
 import org.drools.spi.FieldValue;
 import org.drools.spi.InternalReadAccessor;
@@ -21,6 +24,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 
 public class CustomOperatorTest extends CommonTestMethodBase {
 
@@ -167,6 +171,115 @@ public class CustomOperatorTest extends CommonTestMethodBase {
                 }
             }
             return result;
+        }
+    }
+
+    @Test
+    public void testCustomOperatorUsingCollections() {
+        String str =
+                "import org.drools.Person\n" +
+                "import org.drools.Address\n" +
+                "rule R when\n" +
+                "    $alice : Person(name == \"Alice\")\n" +
+                "    $bob : Person(name == \"Bob\", addresses supersetOf $alice.addresses)\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBuilderConfiguration builderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        builderConf.setOption(EvaluatorOption.get("supersetOf", new SupersetOfEvaluatorDefinition()));
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(builderConf, str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person alice = new Person("Alice", 30);
+        alice.addAddress(new Address("Large Street", "BigTown", "12345"));
+        Person bob = new Person("Bob", 30);
+        bob.addAddress(new Address("Large Street", "BigTown", "12345"));
+        bob.addAddress(new Address("Long Street", "SmallTown", "54321"));
+
+        ksession.insert(alice);
+        ksession.insert(bob);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class SupersetOfEvaluatorDefinition implements EvaluatorDefinition {
+
+        public static final Operator SUPERSET_OF = Operator.addOperatorToRegistry("supersetOf", false);
+        public static final Operator NOT_SUPERSET_OF = Operator.addOperatorToRegistry("supersetOf", true);
+        private static final String[] SUPPORTED_IDS = {SUPERSET_OF.getOperatorString()};
+
+        private Evaluator[] evaluator;
+
+        public String[] getEvaluatorIds() {
+            return SupersetOfEvaluatorDefinition.SUPPORTED_IDS;
+        }
+
+        public boolean isNegatable() {
+            return true;
+        }
+
+        public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText, Target leftTarget, Target rightTarget) {
+            SupersetOfEvaluator evaluatorLocal = new SupersetOfEvaluator(type, isNegated);
+            return evaluatorLocal;
+        }
+
+        public Evaluator getEvaluator(ValueType type, String operatorId, boolean isNegated, String parameterText) {
+            return getEvaluator(type, operatorId, isNegated, parameterText, Target.FACT, Target.FACT);
+        }
+
+        public Evaluator getEvaluator(ValueType type, Operator operator, String parameterText) {
+            return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), parameterText);
+        }
+
+        public Evaluator getEvaluator(ValueType type, Operator operator) {
+            return this.getEvaluator(type, operator.getOperatorString(), operator.isNegated(), null);
+        }
+
+        public boolean supportsType(ValueType vt) {
+            return true;
+        }
+
+        public Target getTarget() {
+            return Target.FACT;
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(evaluator);
+        }
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            evaluator = (Evaluator[]) in.readObject();
+        }
+    }
+
+    public static class SupersetOfEvaluator extends BaseEvaluator {
+
+        public SupersetOfEvaluator(final ValueType type, final boolean isNegated) {
+            super(type, isNegated ? SupersetOfEvaluatorDefinition.NOT_SUPERSET_OF : SupersetOfEvaluatorDefinition.SUPERSET_OF);
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory, InternalReadAccessor extractor, InternalFactHandle factHandle, FieldValue value) {
+            final Object objectValue = extractor.getValue(workingMemory, factHandle);
+            return evaluateAll((Collection) value.getValue(), (Collection) objectValue);
+        }
+
+        public boolean evaluate(InternalWorkingMemory iwm, InternalReadAccessor ira, InternalFactHandle left, InternalReadAccessor ira1, InternalFactHandle right) {
+            return evaluateAll((Collection) left.getObject(), (Collection) right.getObject());
+        }
+
+        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle right) {
+            final Object valRight = context.extractor.getValue(workingMemory, right.getObject());
+            return evaluateAll((Collection) ((ObjectVariableContextEntry) context).left, (Collection) valRight);
+        }
+
+        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory, VariableContextEntry context, InternalFactHandle left) {
+            final Object varLeft = context.declaration.getExtractor().getValue(workingMemory, left.getObject());
+            return evaluateAll((Collection) varLeft, (Collection) ((ObjectVariableContextEntry) context).right);
+        }
+
+        public boolean evaluateAll(Collection leftCollection, Collection rightCollection) {
+            return rightCollection.containsAll(leftCollection);
         }
     }
 }
