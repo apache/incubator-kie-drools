@@ -33,6 +33,7 @@ import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.ContentDataImpl;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
 import org.kie.api.task.model.Content;
@@ -114,12 +115,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         long contentId = task1.getTaskData().getDocumentContentId();
         assertTrue(contentId != -1);
 
-
-
         Content content = taskService.getContentById(contentId);
         Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals("content", unmarshalledObject.toString());
+        xmlRoundTripContent(content);
     }
+    
     @Test
     public void testNewTaskWithMapContent() {
         
@@ -161,6 +162,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals("value1",unmarshalledvars.get("key1") );
         assertNull(unmarshalledvars.get("key2") );
         assertEquals("value3",unmarshalledvars.get("key3") );
+        xmlRoundTripContent(content);
     }
     
     /*
@@ -207,9 +209,10 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         if(!(unmarshalledObject instanceof Map)){
             fail("The variables should be a Map");
-        
         }
-        Map<String, Object> unmarshalledvars = (Map<String, Object>)unmarshalledObject;
+        xmlRoundTripContent(content);
+        
+        Map<String, Object> unmarshalledvars = (Map<String, Object>) unmarshalledObject;
         
         assertEquals("value1",unmarshalledvars.get("key1") );
         assertNull(unmarshalledvars.get("key2") );
@@ -252,14 +255,11 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key4"));
         assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key5"));
         assertTrue(((Map<String, Object>)unmarshalledObject).containsKey("key6"));
-        
+        xmlRoundTripContent(contentById);
     }
     
     @Test
     public void testNewTaskWithLargeContent() {
-        
-        
-
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
@@ -288,6 +288,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Content content = taskService.getContentById(contentId);
         Object unmarshalledObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals(largeContent, unmarshalledObject.toString());
+        xmlRoundTripContent(content);
     }
 
     @Test
@@ -1575,6 +1576,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Content content = taskService.getContentById(contentId);
         Map<String, Object> unmarshalledContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(content.getContent(), null);
         assertEquals("content", unmarshalledContent.get("content"));
+        xmlRoundTripContent(content);
     }
 //    
 //    /**

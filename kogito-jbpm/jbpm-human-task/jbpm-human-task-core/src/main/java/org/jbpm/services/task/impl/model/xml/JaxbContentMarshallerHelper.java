@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.services.task.utils;
+package org.jbpm.services.task.impl.model.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,17 +43,17 @@ import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.ExtensionRegistry;
 
-public class ContentMarshallerHelper {
+public class JaxbContentMarshallerHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContentMarshallerHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(JaxbContentMarshallerHelper.class);
 
     public static ContentDataImpl marshal(Object o, Environment env) {
         if (o == null) {
             return null;
         }
-        MarshallerWriteContext context = null;
+        
         ContentDataImpl content = null;
-        byte[] toByteArray = marshallContent(o, env);
+        byte[] toByteArray = marshallContent(env, o);
         content = new ContentDataImpl();
         content.setContent(toByteArray);
         content.setType(o.getClass().getCanonicalName());
@@ -65,7 +65,7 @@ public class ContentMarshallerHelper {
      public static FaultDataImpl marshalFault(Map<String, Object> fault, Environment env) {
         
         FaultDataImpl content = null;
-        byte[] toByteArray = marshallContent(fault, env);
+        byte[] toByteArray = marshallContent(env, fault);
         content = new FaultDataImpl();
         content.setContent(toByteArray);
         content.setType(fault.getClass().getCanonicalName());
@@ -96,7 +96,7 @@ public class ContentMarshallerHelper {
             if (classloader != null) {
                 context.classLoader = classloader;
             } else {
-                context.classLoader = ContentMarshallerHelper.class.getClassLoader();
+                context.classLoader = JaxbContentMarshallerHelper.class.getClassLoader();
             }
             ExtensionRegistry registry = PersisterHelper.buildRegistry(context, null);
             Header _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry);
@@ -118,7 +118,7 @@ public class ContentMarshallerHelper {
         return null;
     }
 
-    public static byte[] marshallContent(Object o, Environment env) {
+    private static byte[] marshallContent(Environment env, Object o) {
         MarshallerWriteContext context;
         try {
             MarshallingConfigurationImpl marshallingConfigurationImpl = null;

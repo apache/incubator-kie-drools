@@ -29,8 +29,8 @@ public class AbstractJaxbTaskObject<T> {
                 fieldName = methodName.substring(2);
             } 
             else {
+                assert false : "Unknown method ´" + methodName + "' in "+ this.getClass().getSimpleName() + ".";
                 continue;
-//                throw new UnsupportedOperationException("Unknown method ´" + methodName + "' in "+ this.getClass().getSimpleName() + ".");
             }
             // getField -> field (lowercase f)
             fieldName = fieldName.substring(0,1).toLowerCase() + fieldName.substring(1);

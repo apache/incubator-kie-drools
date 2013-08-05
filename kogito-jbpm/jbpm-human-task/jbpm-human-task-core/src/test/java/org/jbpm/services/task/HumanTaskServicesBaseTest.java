@@ -17,22 +17,37 @@ package org.jbpm.services.task;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.jbpm.services.task.query.TaskSummaryImpl;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.MVELUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
+import org.kie.api.task.model.Content;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -160,5 +175,40 @@ public abstract class HumanTaskServicesBaseTest {
         } catch (ParseException e) {
             throw new RuntimeException("Can't create date from string '" + dateString + "' using '" + dateFormat + "' format!", e);
         }
+    }
+
+    protected void xmlRoundTripContent(Content content) {
+        JaxbContent xmlContent = new JaxbContent(content);
+        JaxbContent xmlCopy = null;
+        try { 
+            Marshaller marshaller = JAXBContext.newInstance(JaxbContent.class).createMarshaller();
+
+            // marshal
+            StringWriter stringWriter = new StringWriter();
+            marshaller.marshal(xmlContent, stringWriter);
+
+            // unmarshal
+            Unmarshaller unmarshaller = JAXBContext.newInstance(JaxbContent.class).createUnmarshaller();
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(stringWriter.toString().getBytes());
+             xmlCopy = (JaxbContent) unmarshaller.unmarshal(inputStream);
+
+            for(Field field : JaxbContent.class.getDeclaredFields()) { 
+                field.setAccessible(true);
+                Object orig = field.get(xmlContent);
+                Object roundTrip = field.get(xmlCopy);
+                if( orig instanceof byte[] ) { 
+                    Assert.assertTrue(Arrays.equals((byte[]) orig, (byte[]) roundTrip));
+                } else {
+                    Assert.assertEquals(field.getName(), orig, roundTrip); 
+                }
+            }
+        } catch(Exception e) { 
+            logger.error("Unable to complete round trip: " + e.getMessage(), e );
+            Assert.fail("Unable to complete round trip: " + e.getMessage());
+        }
+        
+        Object orig = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+        Object roundTrip = ContentMarshallerHelper.unmarshall(xmlCopy.getContent(), null);
+        Assert.assertEquals(orig, roundTrip);
     }
 }
