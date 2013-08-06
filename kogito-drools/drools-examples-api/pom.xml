@@ -23,6 +23,7 @@
     <module>kiefilesystem-example</module>
     <module>kiemodulemodel-example</module>
     <module>kiecontainer-from-kierepo</module>
+    <module>multiple-kbases</module>
   </modules>
 
 
