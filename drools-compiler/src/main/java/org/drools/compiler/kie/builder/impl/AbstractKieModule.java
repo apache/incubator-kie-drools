@@ -150,6 +150,8 @@ public abstract class AbstractKieModule
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
+        Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
+
         for ( String include : getTransitiveIncludes(kieProject, kBaseModel) ) {
             if ( StringUtils.isEmpty( include ) ) {
                 continue;
@@ -159,14 +161,26 @@ public abstract class AbstractKieModule
                 log.error( "Unable to build KieBase, could not find include: " + include );
                 return null;
             }
-            addFiles(ckbuilder,
-                    kieProject.getKieBaseModel(include),
-                    includeModule);
+            addFiles( assets,
+                      kieProject.getKieBaseModel(include),
+                      includeModule );
         }
 
-        addFiles( ckbuilder,
+        addFiles( assets,
                   kBaseModel,
                   kModule );
+
+        if ( assets.isEmpty() ) {
+            if (kModule instanceof FileKieModule) {
+                log.warn("No files found for KieBase " + kBaseModel.getName() + ", searching folder " + kModule.getFile());
+            } else {
+                log.warn("No files found for KieBase " + kBaseModel.getName());
+            }
+        } else {
+            for (Map.Entry<String, InternalKieModule> entry : assets.entrySet()) {
+                addFile( ckbuilder, entry.getValue(), entry.getKey() );
+            }
+        }
 
         ckbuilder.build();
         
@@ -205,23 +219,15 @@ public abstract class AbstractKieModule
         }
     }
 
-    private static void addFiles( CompositeKnowledgeBuilder ckbuilder,
+    private static void addFiles( Map<String, InternalKieModule> assets,
                                   KieBaseModel kieBaseModel,
                                   InternalKieModule kieModule ) {
         int fileCount = 0;
         for ( String fileName : kieModule.getFileNames() ) {
             if ( filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith( ".properties" ) ) {
-                fileCount += addFile( ckbuilder, kieModule, fileName ) ? 1 : 0;
+                assets.put(fileName, kieModule);
             }
         }
-        if ( fileCount == 0 ) {
-            if (kieModule instanceof FileKieModule) {
-                log.warn("No files found for KieBase " + kieBaseModel.getName() + ", searching folder " + kieModule.getFile());
-            } else {
-                log.warn("No files found for KieBase " + kieBaseModel.getName());
-            }
-        }
-
     }
     
     public static boolean addFile(CompositeKnowledgeBuilder ckbuilder,
