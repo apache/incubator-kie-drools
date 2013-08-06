@@ -38,6 +38,9 @@ public class JaxbContent extends AbstractJaxbTaskObject<Content> implements Cont
     @SuppressWarnings("unchecked")
     public JaxbContent(Content content) { 
         super(Content.class);
+        if( content == null ) { 
+            return; 
+        }
         this.id = content.getId();
         Object realContentObject = ContentMarshallerHelper.unmarshall(content.getContent(), null);
         this.className = realContentObject.getClass().getName();
@@ -71,6 +74,10 @@ public class JaxbContent extends AbstractJaxbTaskObject<Content> implements Cont
     
     public byte[] getSerializedContent() { 
         return this.content;
+    }
+
+    public Map<String, Object> getContentMap() { 
+        return this.contentMap;
     }
 
     @Override

@@ -44,13 +44,13 @@ public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, M
     public static byte [] serializeObject(Object obj, String name) { 
         Class<?> valueClass = obj.getClass();
         if( valueClass.getCanonicalName() == null ) { 
-            logger.error("Could not serialize '" + name + "' " +
+            logger.error("Unable to serialize '" + name + "' " +
                     "because serialization of weird classes is not supported: " + valueClass.getName());
             return null;
         }
         if( ! (obj  instanceof Serializable) ) { 
-            logger.error("Could not serialize '" + name + "' " +
-                    "because serialization of unserializable classes is not supported: " + valueClass.getName());
+            logger.error("Unable to serialize '" + name + "' " +
+                    "because " + valueClass.getName() + " is an unserializable class" );
             return null;
         }
         
@@ -61,7 +61,7 @@ public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, M
             out.writeObject(obj);
             serializedBytes = bais.toByteArray();
         } catch( IOException ioe ) { 
-            logger.error("Was not able serialize '" + name + "' " + "because of exception: " + ioe.getMessage(), ioe );
+            logger.error("Unable to serialize '" + name + "' " + "because of exception: " + ioe.getMessage(), ioe );
             return null;
         }
         return serializedBytes;
@@ -89,9 +89,7 @@ public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, M
         try { 
             Class.forName(className);
         } catch( ClassNotFoundException cnfe ) { 
-            logger.error("Unable to deserialize '" + key + "' " +
-                    "because an instance of " + className + " because the class is not on the classpath.", 
-                    cnfe);
+            logger.error("Unable to deserialize '" + key + "' " + "because " + className + " is not on the classpath.", cnfe);
             return null;
         }
         ByteArrayInputStream bais = new ByteArrayInputStream(objBytes);
@@ -103,9 +101,7 @@ public class StringObjectMapXmlAdapter extends XmlAdapter<JaxbStringObjectMap, M
             logger.error("Unable to deserialize '" + key + "' because of exception: " + ioe.getMessage(), ioe);
             return null;
         } catch (ClassNotFoundException cnfe) {
-            logger.error("Unable to deserialize '" + key + "' " +
-                    "because an instance of " + className + " because the class is not on the classpath.", 
-                    cnfe);
+            logger.error("Unable to deserialize '" + key + "' because " + className + " is not on the classpath.", cnfe);
             return null;
         }
         return value;
