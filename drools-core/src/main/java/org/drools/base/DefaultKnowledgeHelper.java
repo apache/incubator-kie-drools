@@ -446,12 +446,6 @@ public class DefaultKnowledgeHelper
             this.getIdentityMap().remove( o );
         }
 
-        if ( o instanceof TraitableBean ) {
-            Collection removedTypes = new ArrayList( ( (TraitableBean) o )._getTraitMap().values() );
-            for ( Object t : removedTypes ) {
-                retract( t );
-            }
-        }
     }
 
     public Rule getRule() {

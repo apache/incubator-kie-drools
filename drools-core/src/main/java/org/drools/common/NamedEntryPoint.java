@@ -20,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -557,7 +558,18 @@ public class NamedEntryPoint
             if ( handle.isDisconnected() ) {
                 handle = this.objectStore.reconnect( handle );
             }
-            
+
+            if ( handle.getObject() instanceof TraitableBean ) {
+                Collection removedTypes = new ArrayList( ( (TraitableBean) handle.getObject() )._getTraitMap().values() );
+                for ( Object t : removedTypes ) {
+                    retract( getFactHandle( t ),
+                            removeLogical,
+                            updateEqualsMap,
+                            rule,
+                            activation );
+                }
+            }
+
             if ( handle.getEntryPoint() != this ) {
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }            

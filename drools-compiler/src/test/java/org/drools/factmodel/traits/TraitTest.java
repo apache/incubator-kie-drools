@@ -1952,7 +1952,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "end\n" +
                 "declare Person\n" +
                 "  @Traitable\n" +
-                "  name : String\n" +
+                "  name : String \n" +
                 "end\n" +
                 "\n" +
                 "\n" +
@@ -1987,24 +1987,23 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.retract( h );
         ksession.fireAllRules();
 
-        assertEquals( 1, ksession.getObjects().size() );
-
+        assertEquals( 0, ksession.getObjects().size() );
 
         FactHandle h1 = ksession.insert( "trigger" );
         FactHandle h2 = ksession.insert( "trigger2" );
         ksession.fireAllRules();
 
-        assertEquals( 7, ksession.getObjects().size() );
+        assertEquals( 6, ksession.getObjects().size() );
 
         ksession.retract( h2 );
         ksession.fireAllRules();
 
-        assertEquals( 5, ksession.getObjects().size() );
+        assertEquals( 4, ksession.getObjects().size() );
 
         ksession.retract( h1 );
         ksession.fireAllRules();
 
-        assertEquals( 2, ksession.getObjects().size() );
+        assertEquals( 0, ksession.getObjects().size() );
 
     }
 
@@ -3952,7 +3951,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testMapCore2(  ) {
-        String source = "package openehr.test;\n" +
+        String source = "package org.drools.factmodel.traits.test;\n" +
                         "\n" +
                         "import java.util.*;\n" +
                         "global List list;\n " +
@@ -4380,6 +4379,7 @@ public class TraitTest extends CommonTestMethodBase {
                      " $s : String( this == \"trigger\" )\n" +
                      "then\n" +
                      " Person p = new Person( \"john\" );\n" +
+                     " insert( p ); \n" +
                      " don( p, Student.class, true );\n" +
                      " don( p, Worker.class );\n" +
                      " don( p, Scholar.class );\n" +
@@ -4400,9 +4400,10 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
+            // lose the string and the Student proxy
             System.out.println( o );
         }
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 4, ksession.getObjects().size() );
 
     }
 
@@ -4526,6 +4527,74 @@ public class TraitTest extends CommonTestMethodBase {
         }
 
         assertEquals( 3.0, map.get( "GPA" ) );
+    }
+
+
+    @Test
+    public void testRetractCoreObjectChained(  ) {
+        String source = "package org.drools.test;\n" +
+                        "import java.util.List; \n" +
+                        "import org.drools.factmodel.traits.Thing \n" +
+                        "import org.drools.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "" +
+                        "declare trait A " +
+                        "   age : int \n" +
+                        "end\n" +
+                        "" +
+                        "declare Kore\n" +
+                        "   @Traitable\n" +
+                        "   age : int\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init \n" +
+                        "when\n" +
+                        "   $s : String() \n" +
+                        "then\n" +
+                        "   Kore k = new Kore( 44 );\n" +
+                        "   insertLogical( k ); \n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "rule Don \n" +
+                        "no-loop \n" +
+                        "when\n" +
+                        "   $x : Kore() \n" +
+                        "then \n" +
+                        "   System.out.println( \"Donning\" ); \n" +
+                        "   don( $x, A.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "" +
+                        "rule Retract \n" +
+                        "salience -99 \n" +
+                        "when \n" +
+                        "   $x : String() \n" +
+                        "then \n" +
+                        "   System.out.println( \"Retracting\" ); \n" +
+                        "   retract( $x ); \n" +
+                        "end \n" +
+                        "\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.insert( "go" );
+
+        ks.fireAllRules();
+
+        for ( Object o : ks.getObjects() ) {
+            System.out.println( o );
+        }
+
+        assertEquals( 0, ks.getObjects().size() );
+
+        ks.dispose();
     }
 
 
