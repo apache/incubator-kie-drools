@@ -1099,4 +1099,45 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
     }
 
+    @Test
+    public void testCallActivityWithBoundaryErrorEvent() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "BPMN2-CallActivityProcessBoundaryError.bpmn2",
+                "BPMN2-CallActivitySubProcessBoundaryError.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("task1",
+                new SystemOutWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess");
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "StartProcess",
+                "Call Activity 1", "Boundary event", "Task Parent", "End2");
+        // then check child process executed nodes - is there better way to get child process id than simply increment?
+        assertNodeTriggered(processInstance.getId() + 1, "StartProcess", "Task 1", "End");
+    }
+    
+    @Test
+    public void testCallActivityWithBoundaryErrorEventWithWaitState() throws Exception {
+        KieBase kbase = createKnowledgeBase(
+                "BPMN2-CallActivityProcessBoundaryError.bpmn2",
+                "BPMN2-CallActivitySubProcessBoundaryError.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("task1", workItemHandler);
+        ProcessInstance processInstance = ksession.startProcess("ParentProcess");
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "StartProcess",
+                "Call Activity 1", "Boundary event", "Task Parent", "End2");
+        // then check child process executed nodes - is there better way to get child process id than simply increment?
+        assertNodeTriggered(processInstance.getId() + 1, "StartProcess", "Task 1", "End");
+    }
 }

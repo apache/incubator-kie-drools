@@ -23,7 +23,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.kie.api.definition.process.Connection;
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.AbstractContext;
 import org.jbpm.process.core.context.variable.Mappable;
+import org.jbpm.process.core.impl.ContextContainerImpl;
 
 
 /**
@@ -31,9 +35,12 @@ import org.jbpm.process.core.context.variable.Mappable;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNode extends StateBasedNode implements Mappable {
+public class SubProcessNode extends StateBasedNode implements Mappable, ContextContainer {
 
 	private static final long serialVersionUID = 510l;
+	
+	// NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    private ContextContainer contextContainer = new ContextContainerImpl();
 	
 	private String processId;
 	private String processName;
@@ -165,4 +172,34 @@ public class SubProcessNode extends StateBasedNode implements Mappable {
         return processName;
     }
 
+    public List<Context> getContexts(String contextType) {
+        return contextContainer.getContexts(contextType);
+    }
+    
+    public void addContext(Context context) {
+        ((AbstractContext) context).setContextContainer(this);
+        contextContainer.addContext(context);
+    }
+    
+    public Context getContext(String contextType, long id) {
+        return contextContainer.getContext(contextType, id);
+    }
+
+    public void setDefaultContext(Context context) {
+        ((AbstractContext) context).setContextContainer(this);
+        contextContainer.setDefaultContext(context);
+    }
+    
+    public Context getDefaultContext(String contextType) {
+        return contextContainer.getDefaultContext(contextType);
+    }
+
+    @Override
+    public Context getContext(String contextId) {
+        Context context = getDefaultContext(contextId);
+        if (context != null) {
+            return context;
+        }
+        return super.getContext(contextId);
+    }
 }

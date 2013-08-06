@@ -16,16 +16,26 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.RuntimeDroolsException;
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.ContextInstance;
+import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.StartProcessHelper;
+import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.process.instance.impl.ContextInstanceFactory;
+import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.SubProcessNode;
@@ -49,10 +59,14 @@ import org.slf4j.LoggerFactory;
  * 
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
-public class SubProcessNodeInstance extends StateBasedNodeInstance implements EventListener {
+public class SubProcessNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
+    
+    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
+    private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
     
     private long processInstanceId;
 	
@@ -153,9 +167,9 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	    	kruntime.startProcessInstance(processInstance.getId());
 	    	if (!getSubProcessNode().isWaitForCompletion()) {
 	    		triggerCompleted();
-	    	} else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED) {
-	    		handleOutMappings(processInstance);
-	    		triggerCompleted();
+	    	} else if (processInstance.getState() == ProcessInstance.STATE_COMPLETED
+	    	        || processInstance.getState() == ProcessInstance.STATE_ABORTED) {
+	    	    processInstanceCompleted(processInstance);
 	    	} else {
 	    		addProcessListener();
 	    	}
@@ -211,7 +225,25 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     public void processInstanceCompleted(ProcessInstance processInstance) {
         removeEventListeners();
         handleOutMappings(processInstance);
+        if (processInstance.getState() == ProcessInstance.STATE_ABORTED) {
+            String faultName = processInstance.getOutcome()==null?"":processInstance.getOutcome();
+            // handle exception as sub process failed with error code
+            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) 
+                    resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
+            if (exceptionScopeInstance != null) {
+                
+                exceptionScopeInstance.handleException(faultName, null);
+                cancel();
+                return;
+            } else if (!getSubProcessNode().isIndependent()){
+                ((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
+                return;
+            }
+            
+        }      
+        // if there were no exception proceed normally
         triggerCompleted();
+        
     }
     
     private void handleOutMappings(ProcessInstance processInstance) {
@@ -248,6 +280,61 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     		return "[Dynamic] Sub Process";
     	}
     	return super.getNodeName();
+    }
+    
+
+    @Override
+    public List<ContextInstance> getContextInstances(String contextId) {
+        return this.subContextInstances.get(contextId);
+    }
+
+    @Override
+    public void addContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list == null) {
+            list = new ArrayList<ContextInstance>();
+            this.subContextInstances.put(contextId, list);
+        }
+        list.add(contextInstance);
+    }
+
+    @Override
+    public void removeContextInstance(String contextId, ContextInstance contextInstance) {
+        List<ContextInstance> list = this.subContextInstances.get(contextId);
+        if (list != null) {
+            list.remove(contextInstance);
+        }
+    }
+
+    @Override
+    public ContextInstance getContextInstance(String contextId, long id) {
+        List<ContextInstance> contextInstances = subContextInstances.get(contextId);
+        if (contextInstances != null) {
+            for (ContextInstance contextInstance: contextInstances) {
+                if (contextInstance.getContextId() == id) {
+                    return contextInstance;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ContextInstance getContextInstance(Context context) {
+        ContextInstanceFactory conf = ContextInstanceFactoryRegistry.INSTANCE.getContextInstanceFactory(context);
+        if (conf == null) {
+            throw new IllegalArgumentException("Illegal context type (registry not found): " + context.getClass());
+        }
+        ContextInstance contextInstance = (ContextInstance) conf.getContextInstance(context, this, (ProcessInstance) getProcessInstance());
+        if (contextInstance == null) {
+            throw new IllegalArgumentException("Illegal context type (instance not found): " + context.getClass());
+        }
+        return contextInstance;
+    }
+
+    @Override
+    public ContextContainer getContextContainer() {
+        return getSubProcessNode();
     }
 
 }
