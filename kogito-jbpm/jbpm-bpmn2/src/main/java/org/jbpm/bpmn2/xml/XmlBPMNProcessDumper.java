@@ -85,15 +85,15 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
     	semanticModule = new BPMNSemanticModule();
     }
     
-    public String dump(RuleFlowProcess process) {
+    public String dump(WorkflowProcess process) {
         return dump(process, META_DATA_USING_DI);
     }
     
-    public String dump(RuleFlowProcess process, boolean includeMeta) {
+    public String dump(WorkflowProcess process, boolean includeMeta) {
     	return dump(process, META_DATA_AS_NODE_PROPERTY);
     }
     
-    public String dump(RuleFlowProcess process, int metaDataType) {
+    public String dump(WorkflowProcess process, int metaDataType) {
         StringBuilder xmlDump = new StringBuilder();
         visitProcess(process, xmlDump, metaDataType);
         return xmlDump.toString();
@@ -109,7 +109,7 @@ public class XmlBPMNProcessDumper implements XmlProcessDumper {
 
 	private Set<String> visitedVariables;
 	
-	protected void visitProcess(RuleFlowProcess process, StringBuilder xmlDump, int metaDataType) {
+	protected void visitProcess(WorkflowProcess process, StringBuilder xmlDump, int metaDataType) {
         String targetNamespace = (String) process.getMetaData().get("TargetNamespace");
         if (targetNamespace == null) {
         	targetNamespace = "http://www.jboss.org/drools";
