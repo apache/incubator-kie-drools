@@ -1,0 +1,7 @@
+global java.util.List list
+
+rule "rule 2" when
+    $i : Integer( )
+then
+    list.add( $i * 2 );
+end
