@@ -70,10 +70,13 @@ public class KieRepositoryImpl
         return getKieModule(releaseId, null);
     }
 
-    public KieModule getKieModule(ReleaseId releaseId, byte[] pomXml) {
-        VersionRange versionRange = new VersionRange(releaseId.getVersion());
+    KieModule getOldKieModule(ReleaseId releaseId) {
+        KieModule kieModule = kieModuleRepo.loadOldAndRemove(releaseId);
+        return kieModule != null ? kieModule : getKieModule(releaseId);
+    }
 
-        KieModule kieModule = kieModuleRepo.load(releaseId, versionRange);
+    public KieModule getKieModule(ReleaseId releaseId, byte[] pomXml) {
+        KieModule kieModule = kieModuleRepo.load(releaseId);
         if ( kieModule == null ) {
             log.debug( "KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
                     releaseId.toExternalForm() );
@@ -188,6 +191,7 @@ public class KieRepositoryImpl
 
     private static class KieModuleRepo {
         private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new HashMap<String, TreeMap<ComparableVersion, KieModule>>();
+        private final Map<ReleaseId, KieModule> oldKieModules = new HashMap<ReleaseId, KieModule>();
 
         void store(KieModule kieModule) {
             ReleaseId releaseId = kieModule.getReleaseId();
@@ -198,7 +202,19 @@ public class KieRepositoryImpl
                 artifactMap = new TreeMap<ComparableVersion, KieModule>();
                 kieModules.put(ga, artifactMap);
             }
-            artifactMap.put(new ComparableVersion(releaseId.getVersion()), kieModule);
+            ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
+            if (oldKieModules.get(releaseId) == null) {
+                oldKieModules.put(releaseId, artifactMap.get(comparableVersion));
+            }
+            artifactMap.put(comparableVersion, kieModule);
+        }
+
+        private KieModule loadOldAndRemove(ReleaseId releaseId) {
+            return oldKieModules.remove(releaseId);
+        }
+
+        KieModule load(ReleaseId releaseId) {
+            return load(releaseId, new VersionRange(releaseId.getVersion()));
         }
 
         KieModule load(ReleaseId releaseId, VersionRange versionRange) {
