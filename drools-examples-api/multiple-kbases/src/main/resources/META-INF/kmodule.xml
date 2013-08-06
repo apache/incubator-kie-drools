@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+  <kbase name="kbase1">
+    <ksession name="ksession1"/>
+  </kbase>
+
+  <kbase name="kbase2" packages="org.some.pkg">
+    <ksession name="ksession2"/>
+  </kbase>
+
+  <kbase name="kbase3" includes="kbase1">
+    <ksession name="ksession3"/>
+  </kbase>
+
+  <kbase name="kbase4" packages="org.some.pkg, org.other.pkg">
+    <ksession name="ksession4"/>
+  </kbase>
+
+  <kbase name="kbase5" includes="kbase3" packages="org.other.pkg">
+    <ksession name="ksession5"/>
+  </kbase>
+
+  <kbase name="kbase6" packages="*">
+    <ksession name="ksession6"/>
+  </kbase>
+
+  <kbase name="kbase7" packages="org.*">
+    <ksession name="ksession7"/>
+  </kbase>
+</kmodule>
