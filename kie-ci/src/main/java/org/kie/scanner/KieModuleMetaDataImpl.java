@@ -98,6 +98,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         return typeMetaInfo != null ? typeMetaInfo : new TypeMetaInfo(clazz);
     }
 
+    @Override
+    public Collection<String> getRuleNames() {
+        return null;  //TODO
+    }
+
     private ClassLoader getClassLoader() {
         if (classLoader == null) {
             URL[] urls = new URL[jars.size()];
