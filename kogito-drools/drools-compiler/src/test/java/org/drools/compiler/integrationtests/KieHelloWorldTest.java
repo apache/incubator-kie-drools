@@ -169,7 +169,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testHelloWorldUsingPackageAndDefaultDir() throws Exception {
+    public void testHelloWorldUsingPackages() throws Exception {
         String drl1 = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
@@ -197,8 +197,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
-                .write("src/main/resources/KBase1/r_def.drl", drlDef)
-                .write("src/main/resources/KBase1/org/pkg1/r1.drl", drl1)
+                .write("src/main/resources/KBase1/org/pkg1/r1_1.drl", drlDef)
+                .write("src/main/resources/KBase1/org/pkg1/r1_2.drl", drl1)
                 .write("src/main/resources/KBase1/org/pkg2/r2.drl", drl2)
                 .writeKModuleXML(createKieProjectWithPackages(ks, "org.pkg1").toXML());
         ks.newKieBuilder( kfs ).buildAll();

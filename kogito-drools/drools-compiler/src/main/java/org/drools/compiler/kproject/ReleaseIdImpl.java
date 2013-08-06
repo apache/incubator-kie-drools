@@ -57,7 +57,8 @@ public class ReleaseIdImpl implements ReleaseId {
     }   
     
     public String getCompilationCachePathPrefix() { 
-        return "META-INF/maven/" + groupId + "/" + artifactId + "/";
+        //return "META-INF/maven/" + groupId + "/" + artifactId + "/";
+        return "META-INF/";
     }
     
     public static ReleaseId fromPropertiesString(String string) {
