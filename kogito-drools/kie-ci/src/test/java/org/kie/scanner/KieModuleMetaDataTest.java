@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import junit.framework.TestCase;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Ignore;
@@ -23,6 +24,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertFalse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
@@ -78,6 +80,60 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
         final TypeMetaInfo beanMetaInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
         assertNotNull( beanMetaInfo );
+    }
+
+    @Test @Ignore
+    public void testGetPackageNames() {
+        final KieServices ks = KieServices.Factory.get();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/resources/test.drl",
+                "package org.test");
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        assertTrue(messages.isEmpty());
+
+        final KieModule kieModule = kieBuilder.getKieModule();
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
+
+        assertFalse(kieModuleMetaData.getPackages().isEmpty());
+        TestCase.assertTrue(kieModuleMetaData.getPackages().contains("org.test"));
+    }
+
+    @Test @Ignore
+    public void testGetRuleNames() {
+        final KieServices ks = KieServices.Factory.get();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/resources/test1.drl",
+                "package org.test\n" +
+                        "rule A\n" +
+                        " when\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule B\n" +
+                        " when\n" +
+                        "then\n" +
+                        "end\n");
+        kfs.write("src/main/resources/test1.drl",
+                "package org.test\n" +
+                        "rule C\n" +
+                        " when\n" +
+                        "then\n" +
+                        "end\n");
+
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
+        assertTrue(messages.isEmpty());
+
+        final KieModule kieModule = kieBuilder.getKieModule();
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
+
+        assertFalse(kieModuleMetaData.getRuleNames().isEmpty());
+        TestCase.assertTrue(kieModuleMetaData.getRuleNames().contains("A"));
+        TestCase.assertTrue(kieModuleMetaData.getRuleNames().contains("B"));
+        TestCase.assertTrue(kieModuleMetaData.getRuleNames().contains("C"));
     }
 
     private String createJavaSource() {

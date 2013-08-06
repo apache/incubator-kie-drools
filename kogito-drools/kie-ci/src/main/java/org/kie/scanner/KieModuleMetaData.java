@@ -21,6 +21,8 @@ public interface KieModuleMetaData {
 
     TypeMetaInfo getTypeMetaInfo(Class<?> clazz);
 
+    Collection<String> getRuleNames();
+
     public static class Factory {
         public static KieModuleMetaData newKieModuleMetaData(KieModule kieModule) {
             return new KieModuleMetaDataImpl((InternalKieModule) kieModule);
