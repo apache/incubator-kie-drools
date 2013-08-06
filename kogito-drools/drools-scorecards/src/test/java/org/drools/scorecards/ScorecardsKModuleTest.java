@@ -41,4 +41,30 @@ public class ScorecardsKModuleTest {
         assertEquals(29.0,scorecard.getCalculatedScore());
     }
 
+    @Test
+    public void testScorecardFromKBase2() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        KieContainer kContainer = ks.getKieClasspathContainer();
+        KieBase kBase = kContainer.getKieBase("kbase2");
+        assertNotNull(kBase);
+
+        KieSession kSession = kContainer.newKieSession("ksession2");
+        assertNotNull(kSession);
+
+        FactType scorecardType = kBase.getFactType( "org.drools.scorecards.example","SampleScore" );
+        assertNotNull(scorecardType);
+
+        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        assertNotNull(scorecard);
+
+        scorecardType.set(scorecard, "age", 50);
+        scorecardType.set(scorecard, "validLicense", true);
+        scorecardType.set(scorecard, "occupation", "PROGRAMMER");
+        //occupation
+        kSession.insert( scorecard );
+        kSession.fireAllRules();
+        kSession.dispose();
+        //age = 25, validLicence 0, occupation=5
+        assertEquals(30.0,scorecard.getCalculatedScore());
+    }
 }
