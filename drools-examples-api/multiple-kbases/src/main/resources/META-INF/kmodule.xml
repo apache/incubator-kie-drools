@@ -9,7 +9,7 @@
     <ksession name="ksession2"/>
   </kbase>
 
-  <kbase name="kbase3" includes="kbase1">
+  <kbase name="kbase3" includes="kbase2" packages="org.some.pkg2">
     <ksession name="ksession3"/>
   </kbase>
 
@@ -17,15 +17,11 @@
     <ksession name="ksession4"/>
   </kbase>
 
-  <kbase name="kbase5" includes="kbase3" packages="org.other.pkg">
+  <kbase name="kbase5" packages="org.*">
     <ksession name="ksession5"/>
   </kbase>
 
-  <kbase name="kbase6" packages="*">
+  <kbase name="kbase6" packages="org.some.*">
     <ksession name="ksession6"/>
-  </kbase>
-
-  <kbase name="kbase7" packages="org.*">
-    <ksession name="ksession7"/>
   </kbase>
 </kmodule>

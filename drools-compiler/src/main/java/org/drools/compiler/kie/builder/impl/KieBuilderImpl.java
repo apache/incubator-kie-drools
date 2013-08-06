@@ -332,8 +332,7 @@ public class KieBuilderImpl
     private static boolean isFileInKieBase(KieBaseModel kieBase,
                                            String fileName) {
         if ( kieBase.getPackages().isEmpty() ) {
-            String pathName = kieBase.getName().replace( '.', '/' );
-            return fileName.startsWith( RESOURCES_ROOT + pathName + "/" ) || fileName.startsWith( pathName + "/" );
+            return true;
         } else {
             int lastSep = fileName.lastIndexOf( "/" );
             String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : fileName;
@@ -343,7 +342,7 @@ public class KieBuilderImpl
                 if ( isNegative ) {
                     pkgName = pkgName.substring( 1 );
                 }
-                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) || pkgNameForFile.endsWith( kieBase.getName() ) ||
+                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) ||
                      (pkgName.endsWith( ".*" ) && pkgNameForFile.contains( pkgName.substring( 0, pkgName.length() - 2 ) )) ) {
                     return !isNegative;
                 }
