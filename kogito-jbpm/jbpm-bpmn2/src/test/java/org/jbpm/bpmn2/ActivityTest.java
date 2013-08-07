@@ -223,6 +223,25 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    public void testRuleTaskSetVariable() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
+                "BPMN2-RuleTaskSetVariable.drl");
+        ksession = createKnowledgeSession(kbase);
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "SomeString");
+        ProcessInstance processInstance = ksession.startProcess("RuleTask",
+                params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        ksession.fireAllRules();
+        assertTrue(list.size() == 1);
+        WorkflowProcessInstance wpi = (WorkflowProcessInstance)processInstance;
+        assertEquals("AnotherString", wpi.getVariable("x"));
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test
     @RequirePersistence(false)
     public void testRuleTaskWithFacts() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTaskWithFact.bpmn2",
