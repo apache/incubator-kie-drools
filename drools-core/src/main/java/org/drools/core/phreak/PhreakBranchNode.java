@@ -10,7 +10,6 @@ import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Salience;
 
 /**
@@ -146,7 +145,7 @@ public class PhreakBranchNode {
                     if ( rtnLeftTuple.getMemory() != null ) {
                         executor.removeLeftTuple(rtnLeftTuple);
                     }
-                    oldRtn.retractLeftTuple(rtnLeftTuple, rtnLeftTuple.getPropagationContext(), wm);
+                    PhreakRuleTerminalNode.doLeftDelete(wm, executor, rtnLeftTuple);
 
                     rtnLeftTuple = newRtn.createLeftTuple(leftTuple,
                                                           newRtn,
