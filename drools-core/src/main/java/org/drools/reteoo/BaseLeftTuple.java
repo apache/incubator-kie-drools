@@ -541,6 +541,10 @@ public class BaseLeftTuple
         return handles;
     }
 
+    public void clearBlocker() {
+        throw new UnsupportedOperationException();
+    }
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setBlocker(org.drools.reteoo.RightTuple)
      */

@@ -125,6 +125,7 @@ public class RightTuple
         } else {
             this.blocked = null;
         }
+        leftTuple.clearBlocker();
     }
 
     public RightTupleList getMemory() {

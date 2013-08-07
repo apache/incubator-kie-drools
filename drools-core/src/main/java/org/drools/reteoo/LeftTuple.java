@@ -60,6 +60,8 @@ public interface LeftTuple extends Entry, Tuple {
 
     InternalFactHandle getLastHandle();
 
+    void clearBlocker();
+
     void setBlocker(RightTuple blocker);
 
     RightTuple getBlocker();
