@@ -13,6 +13,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
+import static junit.framework.Assert.assertEquals;
+
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
     @Test
@@ -103,13 +105,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // continue working with the session
         ksession.insert(new Message("Hello World"));
         assertEquals( 3, ksession.fireAllRules() );
-    }
-
-    public static KieModule createAndDeployJar(KieServices ks,
-                                         ReleaseId releaseId,
-                                         String... drls ) {
-        byte[] jar = createKJar(ks, releaseId, null, drls);
-        return deployJar(ks, jar);
     }
 
     @Test
