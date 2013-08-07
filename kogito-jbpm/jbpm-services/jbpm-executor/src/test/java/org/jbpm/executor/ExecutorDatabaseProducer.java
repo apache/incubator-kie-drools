@@ -1,39 +1,32 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2013 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jbpm.executor;
-
-import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
-
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-/**
- *
- */
 @ApplicationScoped
 public class ExecutorDatabaseProducer {
-    private static final Logger logger = LoggerFactory.getLogger(ExecutorDatabaseProducer.class);
-    
-    private IOService ioService = new IOServiceNio2WrapperImpl();
-    private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
-    
+
     private EntityManagerFactory emf;
 	
     @PersistenceUnit(unitName = "org.jbpm.executor")
@@ -64,27 +57,5 @@ public class ExecutorDatabaseProducer {
 
         }
     }
-    
-    @Produces
-    @Named("ioStrategy")
-    public IOService prepareFileSystem() {
 
-        try {
-            final String userName = "guvnorngtestuser1";
-            final String password = "test1234";
-            final URI fsURI = URI.create( "git://jbpm-playground" );
-
-            final Map<String, Object> env = new HashMap<String, Object>();
-            env.put( "username", userName );
-            env.put( "password", password );
-            env.put( "origin", ORIGIN_URL );
-            ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
-        } catch ( Exception e ) {
-            logger.error("Error while preparing file system ", e);
-        }
-        return ioService;
-    }
-    
-    
-    
 }

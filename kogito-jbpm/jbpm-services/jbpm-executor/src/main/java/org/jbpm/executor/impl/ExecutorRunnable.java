@@ -1,7 +1,19 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2013 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jbpm.executor.impl;
 
 import java.io.ByteArrayInputStream;
@@ -9,30 +21,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.executor.api.Command;
-import org.jbpm.executor.api.CommandCallback;
-import org.jbpm.executor.api.CommandContext;
-import org.jbpm.executor.api.ExecutionResults;
-import org.jbpm.executor.api.ExecutorQueryService;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.executor.entities.STATUS;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.kie.internal.executor.api.Command;
+import org.kie.internal.executor.api.CommandCallback;
+import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.executor.api.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Heart of the executor component - executes the actual tasks.
+ * Handles retries and error management. Based on results of execution notifies
+ * defined callbacks about the execution results.
  *
- * @author salaboy
  */
 public class ExecutorRunnable implements Runnable {
 
@@ -41,15 +54,11 @@ public class ExecutorRunnable implements Runnable {
     @Inject
     private JbpmServicesPersistenceManager pm;
    
-    //@Inject
-    //private Event<RequestInfo> requestEvents;
-    //@Inject
-    //private Event<ErrorInfo> errorEvents;
     @Inject
     private ExecutorQueryService queryService;
-    private final Map<String, Command> commandCache = new HashMap<String, Command>();
-    private final Map<String, CommandCallback> callbackCache = new HashMap<String, CommandCallback>();
-
+   
+    @Inject
+    private ClassCacheManager classCacheManager;
 
     public void setPm(JbpmServicesPersistenceManager pm) {
         this.pm = pm;
@@ -57,158 +66,103 @@ public class ExecutorRunnable implements Runnable {
 
     public void setQueryService(ExecutorQueryService queryService) {
         this.queryService = queryService;
+    }    
+
+    public void setClassCacheManager(ClassCacheManager classCacheManager) {
+        this.classCacheManager = classCacheManager;
     }
 
-    @Transactional
+    @PostConstruct
+    public void init() {
+        // make sure it has tx manager as it runs as background thread - no request scope available
+        if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
+            ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public void run() {
         logger.debug("Executor Thread {} Waking Up!!!", this.toString());
-        List<?> resultList = queryService.getPendingRequests();
-        logger.debug("Pending Requests = {}", resultList.size());
 
-        if (resultList.size() > 0) {
-            RequestInfo r = null;
-            Throwable exception = null;
+        RequestInfo request = (RequestInfo) queryService.getRequestForProcessing();
+        if (request != null) {
+            CommandContext ctx = null;
+            List<CommandCallback> callbacks = null;
             try {
-                r = (RequestInfo) resultList.get(0);
-                r.setStatus(STATUS.RUNNING);
-                pm.merge(r);
-                // CDI Contexts are not propagated to new threads
-                //requestEvents.select(new AnnotationLiteral<Running>(){}).fire(r); 
-                logger.debug("Processing Request Id: {}", r.getId());
-                logger.debug("Request Status ={}", r.getStatus());
-                logger.debug("Command Name to execute = {}", r.getCommandName());
 
-
-                Command cmd = this.findCommand(r.getCommandName());
-
-                CommandContext ctx = null;
-                byte[] reqData = r.getRequestData();
+                logger.debug("Processing Request Id: {}, status {} command {}", request.getId(), request.getStatus(), request.getCommandName());
+                
+                
+                byte[] reqData = request.getRequestData();
                 if (reqData != null) {
                     try {
                         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(reqData));
                         ctx = (CommandContext) in.readObject();
-                    } catch (IOException e) {
-                        ctx = null;
-                        e.printStackTrace();
+                    } catch (IOException e) {                        
+                        logger.warn("Exception while serializing context data", e);
+                        return;
                     }
                 }
+                callbacks = classCacheManager.buildCommandCallback(ctx);                
+                
+                Command cmd = classCacheManager.findCommand(request.getCommandName());
                 ExecutionResults results = cmd.execute(ctx);
-                if (ctx != null && ctx.getData("callbacks") != null) {
-                    logger.debug("Callback: {}", ctx.getData("callbacks"));
-                    String[] callbacksArray = ((String) ctx.getData("callbacks")).split(",");;
-                    List<String> callbacks = (List<String>) Arrays.asList(callbacksArray);
-                    for (String callbackName : callbacks) {
-                        CommandCallback handler = this.findCommandCallback(callbackName);
-                        handler.onCommandDone(ctx, results);
-                    }
-                } else {
-                    logger.debug("Callbacks: NULL");
+                for (CommandCallback handler : callbacks) {
+                    
+                    handler.onCommandDone(ctx, results);
                 }
+                
                 if (results != null) {
                     try {
                         ByteArrayOutputStream bout = new ByteArrayOutputStream();
                         ObjectOutputStream out = new ObjectOutputStream(bout);
                         out.writeObject(results);
                         byte[] respData = bout.toByteArray();
-                        r.setResponseData(respData);
+                        request.setResponseData(respData);
                     } catch (IOException e) {
-                        r.setResponseData(null);
+                        request.setResponseData(null);
                     }
                 }
+
+                request.setStatus(STATUS.DONE);
+                pm.merge(request);
+                
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             } catch (Throwable e) {
-                e.printStackTrace();
-                exception = e;
-            }
+                logger.warn("Error during command {} execution {}", request.getCommandName(), e.getMessage());
 
-            if (exception != null) {
-                logger.debug("{} Before - Error Handling!!!{}", System.currentTimeMillis(), exception.getMessage());
+                ErrorInfo errorInfo = new ErrorInfo(e.getMessage(), ExceptionUtils.getFullStackTrace(e.fillInStackTrace()));
+                errorInfo.setRequestInfo(request);
 
-
-
-                ErrorInfo errorInfo = new ErrorInfo(exception.getMessage(), ExceptionUtils.getFullStackTrace(exception.fillInStackTrace()));
-                errorInfo.setRequestInfo(r);
-                // CDI Contexts are not propagated to new threads
-                //requestEvents.select(new AnnotationLiteral<OnError>(){}).fire(r);
-                //errorEvents.select(new AnnotationLiteral<OnError>(){}).fire(errorInfo);
-                r.getErrorInfo().add(errorInfo);
-                logger.debug("Error Number: {}", r.getErrorInfo().size());
-                if (r.getRetries() > 0) {
-                    r.setStatus(STATUS.RETRYING);
-                    r.setRetries(r.getRetries() - 1);
-                    r.setExecutions(r.getExecutions() + 1);
-                    logger.debug("Retrying ({}) still available!", r.getRetries());
+                ((List<ErrorInfo>)request.getErrorInfo()).add(errorInfo);
+                logger.debug("Error Number: {}", request.getErrorInfo().size());
+                if (request.getRetries() > 0) {
+                    request.setStatus(STATUS.RETRYING);
+                    request.setRetries(request.getRetries() - 1);
+                    request.setExecutions(request.getExecutions() + 1);
+                    logger.debug("Retrying ({}) still available!", request.getRetries());
+                    
+                    pm.merge(request);
                 } else {
                     logger.debug("Error no retries left!");
-                    r.setStatus(STATUS.ERROR);
-                    r.setExecutions(r.getExecutions() + 1);
-                }
-
-                pm.merge(r);
-
-
-                logger.debug("After - Error Handling!!!");
-
-
-            } else {
-
-                r.setStatus(STATUS.DONE);
-                pm.merge(r);
-                // CDI Contexts are not propagated to new threads
-                //requestEvents.select(new AnnotationLiteral<Completed>(){}).fire(r);
-            }
-        }
-    }
-
-//    /*
-//     * following are supporting methods to allow execution on application startup
-//     * as at that time RequestScoped entity manager cannot be used so instead
-//     * use EntityManagerFactory and manage transaction manually
-//     */
-//    protected EntityManager getEntityManager() {
-//        try {
-//            this.em.toString();          
-//            return this.em;
-//        } catch (ContextNotActiveException e) {
-//            EntityManager em = this.emf.createEntityManager();
-//            return em;
-//        }
-//    }
-    private Command findCommand(String name) {
-        synchronized (commandCache) {
-            
-                if (!commandCache.containsKey(name)) {
-                    try {
-                        Command commandInstance = (Command) Class.forName(name).newInstance();
-                        commandCache.put(name, commandInstance);
-                    } catch (Exception ex) {
-                        logger.error("Unknown Command implemenation with name '{}'", name);
-                        throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
-                    }
-
-                }
-
-       
-        }
-        return commandCache.get(name);
-    }
-
-    private CommandCallback findCommandCallback(String name) {
-        synchronized (callbackCache) {
-            
-                    if (!callbackCache.containsKey(name)) {
-                        try {
-                            CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name).newInstance();
-                            callbackCache.put(name, commandCallbackInstance);
-                        } catch (Exception ex) {
-                            logger.error("Unknown CommandCallback implemenation with name '{}'", name);
-                            throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                    request.setStatus(STATUS.ERROR);
+                    request.setExecutions(request.getExecutions() + 1);
+                    
+                    pm.merge(request);
+                    
+                    if (callbacks != null) {
+                        for (CommandCallback handler : callbacks) {                        
+                            handler.onCommandError(ctx, e);                        
                         }
-
                     }
 
+                }
+
+            } 
         }
-        return callbackCache.get(name);
     }
+    
+
+
 }

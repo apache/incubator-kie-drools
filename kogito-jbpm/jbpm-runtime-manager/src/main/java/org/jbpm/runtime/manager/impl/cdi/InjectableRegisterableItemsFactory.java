@@ -53,6 +53,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +102,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private Instance<EventListenerProducer<AgendaEventListener>> agendaListenerProducer;
     @Inject
     @WorkingMemory
-    private Instance<EventListenerProducer<WorkingMemoryEventListener>> wmListenerProducer;
+    private Instance<EventListenerProducer<WorkingMemoryEventListener>> wmListenerProducer;    
+    @Inject
+    private Instance<ExecutorService> executorService;
     
     private AbstractAuditLogger auditlogger;
     
@@ -120,6 +123,11 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         parameters.put("ksession", runtime.getKieSession());
         parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", manager);
+        try {
+            parameters.put("executorService", executorService.get());
+        } catch (Exception e) {
+            logger.debug("Executor service not available due to {}", e.getMessage());
+        }
         
         if (kieContainer != null) {
             KieSessionModel ksessionModel = null;

@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
-public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
+    public static final String WSDL_IMPORT_TYPE = "http://schemas.xmlsoap.org/wsdl/";
     
     private static Logger logger = LoggerFactory.getLogger(WebServiceWorkItemHandler.class);
     

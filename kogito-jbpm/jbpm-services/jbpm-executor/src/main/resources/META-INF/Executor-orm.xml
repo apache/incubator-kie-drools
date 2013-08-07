@@ -70,4 +70,10 @@
         </query>
     </named-query>
 
+    <named-query name="GetRequestsByBusinessKey">
+        <query>
+            Select r from RequestInfo as r where r.key = :businessKey
+        </query>
+    </named-query>
+    
 </entity-mappings>

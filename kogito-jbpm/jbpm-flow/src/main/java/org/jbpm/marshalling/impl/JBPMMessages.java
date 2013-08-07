@@ -17784,6 +17784,21 @@ public final class JBPMMessages {
      */
     org.jbpm.marshalling.impl.JBPMMessages.VariableOrBuilder getVariableOrBuilder(
         int index);
+
+    // optional string deployment_id = 6;
+    /**
+     * <code>optional string deployment_id = 6;</code>
+     */
+    boolean hasDeploymentId();
+    /**
+     * <code>optional string deployment_id = 6;</code>
+     */
+    java.lang.String getDeploymentId();
+    /**
+     * <code>optional string deployment_id = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getDeploymentIdBytes();
   }
   /**
    * Protobuf type {@code org.jbpm.marshalling.WorkItem}
@@ -17862,6 +17877,11 @@ public final class JBPMMessages {
                 mutable_bitField0_ |= 0x00000010;
               }
               variable_.add(input.readMessage(org.jbpm.marshalling.impl.JBPMMessages.Variable.PARSER, extensionRegistry));
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000010;
+              deploymentId_ = input.readBytes();
               break;
             }
           }
@@ -18034,12 +18054,56 @@ public final class JBPMMessages {
       return variable_.get(index);
     }
 
+    // optional string deployment_id = 6;
+    public static final int DEPLOYMENT_ID_FIELD_NUMBER = 6;
+    private java.lang.Object deploymentId_;
+    /**
+     * <code>optional string deployment_id = 6;</code>
+     */
+    public boolean hasDeploymentId() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional string deployment_id = 6;</code>
+     */
+    public java.lang.String getDeploymentId() {
+      java.lang.Object ref = deploymentId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          deploymentId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string deployment_id = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getDeploymentIdBytes() {
+      java.lang.Object ref = deploymentId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        deploymentId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       id_ = 0L;
       processInstancesId_ = 0L;
       name_ = "";
       state_ = 0;
       variable_ = java.util.Collections.emptyList();
+      deploymentId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -18067,6 +18131,9 @@ public final class JBPMMessages {
       }
       for (int i = 0; i < variable_.size(); i++) {
         output.writeMessage(5, variable_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(6, getDeploymentIdBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -18096,6 +18163,10 @@ public final class JBPMMessages {
       for (int i = 0; i < variable_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, variable_.get(i));
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getDeploymentIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -18228,6 +18299,8 @@ public final class JBPMMessages {
         } else {
           variableBuilder_.clear();
         }
+        deploymentId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -18281,6 +18354,10 @@ public final class JBPMMessages {
         } else {
           result.variable_ = variableBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.deploymentId_ = deploymentId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -18336,6 +18413,11 @@ public final class JBPMMessages {
               variableBuilder_.addAllMessages(other.variable_);
             }
           }
+        }
+        if (other.hasDeploymentId()) {
+          bitField0_ |= 0x00000020;
+          deploymentId_ = other.deploymentId_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -18775,6 +18857,80 @@ public final class JBPMMessages {
           variable_ = null;
         }
         return variableBuilder_;
+      }
+
+      // optional string deployment_id = 6;
+      private java.lang.Object deploymentId_ = "";
+      /**
+       * <code>optional string deployment_id = 6;</code>
+       */
+      public boolean hasDeploymentId() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional string deployment_id = 6;</code>
+       */
+      public java.lang.String getDeploymentId() {
+        java.lang.Object ref = deploymentId_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          deploymentId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string deployment_id = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getDeploymentIdBytes() {
+        java.lang.Object ref = deploymentId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          deploymentId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string deployment_id = 6;</code>
+       */
+      public Builder setDeploymentId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        deploymentId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string deployment_id = 6;</code>
+       */
+      public Builder clearDeploymentId() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        deploymentId_ = getDefaultInstance().getDeploymentId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string deployment_id = 6;</code>
+       */
+      public Builder setDeploymentIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        deploymentId_ = value;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:org.jbpm.marshalling.WorkItem)
@@ -21270,32 +21426,33 @@ public final class JBPMMessages {
       "\026COMPOSITE_CONTEXT_NODE\020\t\022\021\n\rFOR_EACH_NO" +
       "DE\020\n\022\020\n\014DYNAMIC_NODE\020\013\022\031\n\025EVENT_SUBPROCE" +
       "SS_NODE\020\014\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026\n\016s" +
-      "trategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\203\001\n\010W",
+      "trategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\232\001\n\010W",
       "orkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instances" +
       "_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(\005\0220" +
       "\n\010variable\030\005 \003(\0132\036.org.jbpm.marshalling." +
-      "Variable\"\265\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\013" +
-      "20.org.jbpm.marshalling.ProcessTimer.Tim" +
-      "erInstance\0225\n\007trigger\030\002 \001(\0132$.org.drools" +
-      ".core.marshalling.Trigger\032\254\001\n\rTimerInsta" +
-      "nce\022\n\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005del" +
-      "ay\030\003 \001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_inst" +
-      "ance_id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n",
-      "\016last_triggered\030\007 \001(\003\022\021\n\tsessionId\030\010 \001(\005" +
-      "\"+\n\016IterationLevel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030" +
-      "\002 \001(\005:i\n\020process_instance\022(.org.drools.c" +
-      "ore.marshalling.ProcessData\030\n \003(\0132%.org." +
-      "jbpm.marshalling.ProcessInstance:[\n\twork" +
-      "_item\022(.org.drools.core.marshalling.Proc" +
-      "essData\030\013 \003(\0132\036.org.jbpm.marshalling.Wor" +
-      "kItem::\n\010timer_id\022(.org.drools.core.mars" +
-      "halling.ProcessData\030\r \001(\003:c\n\rprocess_tim" +
-      "er\022(.org.drools.core.marshalling.Process",
-      "Data\030\014 \003(\0132\".org.jbpm.marshalling.Proces" +
-      "sTimer:a\n\nproc_timer\022).org.drools.core.m" +
-      "arshalling.Timers.Timer\030d \001(\0132\".org.jbpm" +
-      ".marshalling.ProcessTimerB)\n\031org.jbpm.ma" +
-      "rshalling.implB\014JBPMMessages"
+      "Variable\022\025\n\rdeployment_id\030\006 \001(\t\"\265\002\n\014Proc" +
+      "essTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm.marsh" +
+      "alling.ProcessTimer.TimerInstance\0225\n\007tri" +
+      "gger\030\002 \001(\0132$.org.drools.core.marshalling" +
+      ".Trigger\032\254\001\n\rTimerInstance\022\n\n\002id\030\001 \001(\003\022\020" +
+      "\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n\006perio" +
+      "d\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001(\003\022\026\n\016",
+      "activated_time\030\006 \001(\003\022\026\n\016last_triggered\030\007" +
+      " \001(\003\022\021\n\tsessionId\030\010 \001(\005\"+\n\016IterationLeve" +
+      "l\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005:i\n\020process_" +
+      "instance\022(.org.drools.core.marshalling.P" +
+      "rocessData\030\n \003(\0132%.org.jbpm.marshalling." +
+      "ProcessInstance:[\n\twork_item\022(.org.drool" +
+      "s.core.marshalling.ProcessData\030\013 \003(\0132\036.o" +
+      "rg.jbpm.marshalling.WorkItem::\n\010timer_id" +
+      "\022(.org.drools.core.marshalling.ProcessDa" +
+      "ta\030\r \001(\003:c\n\rprocess_timer\022(.org.drools.c",
+      "ore.marshalling.ProcessData\030\014 \003(\0132\".org." +
+      "jbpm.marshalling.ProcessTimer:a\n\nproc_ti" +
+      "mer\022).org.drools.core.marshalling.Timers" +
+      ".Timer\030d \001(\0132\".org.jbpm.marshalling.Proc" +
+      "essTimerB)\n\031org.jbpm.marshalling.implB\014J" +
+      "BPMMessages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -21421,7 +21578,7 @@ public final class JBPMMessages {
           internal_static_org_jbpm_marshalling_WorkItem_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_org_jbpm_marshalling_WorkItem_descriptor,
-              new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", });
+              new java.lang.String[] { "Id", "ProcessInstancesId", "Name", "State", "Variable", "DeploymentId", });
           internal_static_org_jbpm_marshalling_ProcessTimer_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_org_jbpm_marshalling_ProcessTimer_fieldAccessorTable = new

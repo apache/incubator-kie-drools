@@ -1,10 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2013 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jbpm.executor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -15,25 +28,22 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 
-import org.jbpm.executor.api.CommandContext;
-import org.jbpm.executor.entities.ErrorInfo;
-import org.jbpm.executor.entities.RequestInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.executor.api.ErrorInfo;
+import org.kie.internal.executor.api.ExecutorService;
+import org.kie.internal.executor.api.RequestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author salaboy
- */
 public abstract class BasicExecutorBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(BasicExecutorBaseTest.class);
 
     @Inject
-    protected ExecutorServiceEntryPoint executorService;
+    protected ExecutorService executorService;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
     
     
@@ -42,14 +52,12 @@ public abstract class BasicExecutorBaseTest {
     public void setUp() {
         executorService.setThreadPoolSize(1);
         executorService.setInterval(3);
-        executorService.init();
     }
 
     @After
     public void tearDown() {
         executorService.clearAllRequests();
         executorService.clearAllErrors();
-        executorService.destroy();
     }
 
     @Test
@@ -147,9 +155,15 @@ public abstract class BasicExecutorBaseTest {
         //  The executor is on purpose not started to not fight against race condition 
         // with the request cancelations.
         CommandContext ctxCMD = new CommandContext();
-        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
 
         Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
+        
+        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey);
+        assertNotNull(requests);
+        assertEquals(1, requests.size());
+        assertEquals(requestId, requests.get(0).getId());
 
         // cancel the task immediately
         executorService.cancelRequest(requestId);
@@ -164,7 +178,7 @@ public abstract class BasicExecutorBaseTest {
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
         Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", new Date(new Date().getTime() + 10000), ctxCMD);
-        
+        assertNotNull(requestId);
         Thread.sleep(5000);
         
         List<RequestInfo> runningRequests = executorService.getRunningRequests();

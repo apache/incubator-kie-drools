@@ -17,14 +17,11 @@ package org.jbpm.executor;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import org.jbpm.executor.events.listeners.DefaultExecutorEventListener;
+
 import org.junit.After;
 import org.junit.Before;
 
-/**
- *
- * @author salaboy
- */
+
 public class NoCDIWithFactorySimpleExecutorTest extends BasicExecutorBaseTest{
     
     public NoCDIWithFactorySimpleExecutorTest() {
@@ -36,17 +33,14 @@ public class NoCDIWithFactorySimpleExecutorTest extends BasicExecutorBaseTest{
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
         ExecutorServiceFactory.setEmf(emf);
         executorService = ExecutorServiceFactory.newExecutorService();
-        
-        DefaultExecutorEventListener eventListener = new DefaultExecutorEventListener();
-        
-        executorService.registerExecutorEventListener(eventListener);
-
+        executorService.init();
         super.setUp();
     }
     
     @After
     public void tearDown() {
         super.tearDown();
+        executorService.destroy();
     }
    
     

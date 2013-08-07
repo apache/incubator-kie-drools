@@ -16,10 +16,10 @@
 package org.jbpm.services.task.wih;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
@@ -107,7 +107,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
         if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
             taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
-            String deploymentId = (String) session.getEnvironment().get("deploymentId");
+            String deploymentId = ((WorkItemImpl) workItem).getDeploymentId();
             taskData.setDeploymentId(deploymentId);            
         }
         if (session != null && (session instanceof KieSession)) {

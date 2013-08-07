@@ -22,10 +22,10 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
 import org.drools.persistence.TransactionSynchronization;
-import org.jboss.seam.transaction.Transactional;
 import org.jboss.weld.context.ContextNotActiveException;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
  * instance are disposed of. 
  * </p>
  */
-@Transactional
 public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersistenceManager {
 
     private static final Logger logger = LoggerFactory.getLogger(JbpmServicesPersistenceManagerImpl.class);
@@ -241,6 +240,32 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         
     }
     
+    @Override
+    public Object queryAndLockStringWithParametersInTransaction(String queryString, Map<String, Object> params, boolean singleResult){
+        Object result = null;
+        
+        boolean txOwner = false;
+        boolean operationSuccessful = false;
+        boolean txStarted = false;
+        try {
+            txOwner = beginTransaction();
+            txStarted = true;
+            result = queryStringWithParameters(queryString, params, singleResult, LockModeType.PESSIMISTIC_WRITE);
+            operationSuccessful = true;   
+            
+            endTransaction(txOwner);
+        } catch(Exception e) {
+            rollBackTransaction(txOwner);
+            
+            String message; 
+            if( !txStarted ) { message = "Could not start transaction."; }
+            else if( !operationSuccessful ) { message = "Operation failed"; }
+            else { message = "Could not commit transaction"; }
+             throw new RuntimeException(message, e);
+           
+        }
+        return result;
+    }
 
     @Override
     public Object queryStringWithParametersInTransaction(String queryString, Map<String, Object> params) { 
@@ -252,7 +277,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         try {
             txOwner = beginTransaction();
             txStarted = true;
-            result = queryStringWithParameters(queryString, params, false);
+            result = queryStringWithParameters(queryString, params, false, null);
              operationSuccessful = true;   
             
             endTransaction(txOwner);
@@ -269,6 +294,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         return result;
             
     }
+    
     @Override
     public Object queryStringInTransaction(String queryString) {
         return queryStringWithParametersInTransaction(queryString, null);
@@ -396,8 +422,41 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
      * @param queryName
      * @param params
      * @return
-     */
-    public Object queryWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult) { 
+     */   
+    public Object queryWithParametersInTransaction(String queryName,
+            Map<String, Object> params, boolean singleResult) {
+        Object result = null;
+
+        boolean txOwner = false;
+        boolean operationSuccessful = false;
+        boolean txStarted = false;
+        try {
+            txOwner = beginTransaction();
+            txStarted = true;
+
+            result = queryWithParameters(queryName, params, singleResult, null);
+            operationSuccessful = true;
+
+            endTransaction(txOwner);
+        } catch (Exception e) {
+            rollBackTransaction(txOwner);
+
+            String message;
+            if (!txStarted) {
+                message = "Could not start transaction.";
+            } else if (!operationSuccessful) {
+                message = "Operation failed";
+            } else {
+                message = "Could not commit transaction";
+            }
+            throw new RuntimeException(message, e);
+
+        }
+        return result;
+    }
+   
+    @Override
+    public Object queryAndLockWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult) { 
         Object result = null;
         
         boolean txOwner = false;
@@ -407,22 +466,27 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
             txOwner = beginTransaction();
             txStarted = true;
             
-            result = queryWithParameters(queryName, params, singleResult); 
+            result = queryWithParameters(queryName, params, singleResult, LockModeType.PESSIMISTIC_WRITE); 
             operationSuccessful = true;   
             
             endTransaction(txOwner);
         } catch(Exception e) {
             rollBackTransaction(txOwner);
             
-            String message; 
-            if( !txStarted ) { message = "Could not start transaction."; }
-            else if( !operationSuccessful ) { message = "Operation failed"; }
-            else { message = "Could not commit transaction"; }
+            String message;
+            if (!txStarted) {
+                message = "Could not start transaction.";
+            } else if (!operationSuccessful) {
+                message = "Operation failed";
+            } else {
+                message = "Could not commit transaction";
+            }
             throw new RuntimeException(message, e);
            
         }
         return result;
     }
+
 
     public Object queryWithParametersInTransaction(String queryName, Map<String, Object> params) { 
         return queryWithParametersInTransaction(queryName, params, false);
@@ -440,8 +504,11 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
      * 
      * @return The result of the query. 
      */
-    private Object queryWithParameters(String queryName, Map<String, Object> params, boolean singleResult) { 
+    private Object queryWithParameters(String queryName, Map<String, Object> params, boolean singleResult, LockModeType lockMode) { 
         Query query = getEm().createNamedQuery(queryName);
+        if (lockMode != null) {
+            query.setLockMode(lockMode);
+        }
         if( params != null && ! params.isEmpty() ) { 
             for( String name : params.keySet() ) { 
                 if( FIRST_RESULT.equals(name) ) {
@@ -462,8 +529,11 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     }
     
     
-    private Object queryStringWithParameters(String string, Map<String, Object> params, boolean singleResult) { 
+    private Object queryStringWithParameters(String string, Map<String, Object> params, boolean singleResult, LockModeType lockMode) { 
         Query query = getEm().createQuery(string);
+        if (lockMode != null) {
+            query.setLockMode(lockMode);
+        }
         if( params != null && ! params.isEmpty() ) { 
             for( String name : params.keySet() ) { 
                 if( FIRST_RESULT.equals(name) ) {

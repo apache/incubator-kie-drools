@@ -15,32 +15,26 @@
  */
 package org.jbpm.executor;
 
-import javax.enterprise.event.Event;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.executor.api.Executor;
-import org.jbpm.executor.api.ExecutorQueryService;
-import org.jbpm.executor.api.ExecutorRequestAdminService;
-import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.executor.events.listeners.DefaultExecutorEventListener;
+import org.jbpm.executor.impl.ClassCacheManager;
 import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.ExecutorRunnable;
-import org.jbpm.executor.impl.ExecutorServiceEntryPointImpl;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.internal.executor.api.Executor;
+import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.executor.api.ExecutorAdminService;
 
-/**
- *
- * @author salaboy
- */
+
 public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
     
     public NoCDISimpleExecutorTest() {
@@ -56,41 +50,38 @@ public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
         ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
         ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(new JbpmLocalTransactionManager());        
         
-        executorService = new ExecutorServiceEntryPointImpl();
+        executorService = new ExecutorServiceImpl();
         
-        Event<RequestInfo> requestEvents = new JbpmServicesEventImpl<RequestInfo>();
-        
-        DefaultExecutorEventListener eventListener = new DefaultExecutorEventListener();
-        
-        ((JbpmServicesEventImpl)requestEvents).addListener(eventListener);
-        
+
         ExecutorQueryService queryService = new ExecutorQueryServiceImpl();
         ((ExecutorQueryServiceImpl)queryService).setPm(pm);
         
-        ((ExecutorServiceEntryPointImpl)executorService).setQueryService(queryService);
+        ((ExecutorServiceImpl)executorService).setQueryService(queryService);
 
         Executor executor = new ExecutorImpl();
-        
+        ClassCacheManager classCacheManager = new ClassCacheManager();
         ExecutorRunnable runnable = new ExecutorRunnable();
         runnable.setPm(pm);
         runnable.setQueryService(queryService);
+        runnable.setClassCacheManager(classCacheManager);
         ((ExecutorImpl)executor).setPm(pm);
         ((ExecutorImpl)executor).setExecutorRunnable(runnable);
         ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setRequestEvents(requestEvents);
+        ((ExecutorImpl)executor).setClassCacheManager(classCacheManager);
         
-        ((ExecutorServiceEntryPointImpl)executorService).setExecutor(executor);
+        ((ExecutorServiceImpl)executorService).setExecutor(executor);
         
-        ExecutorRequestAdminService adminService = new ExecutorRequestAdminServiceImpl();
+        ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
         ((ExecutorRequestAdminServiceImpl)adminService).setPm(pm);
-        ((ExecutorServiceEntryPointImpl)executorService).setAdminService(adminService);
-        
+        ((ExecutorServiceImpl)executorService).setAdminService(adminService);
+        executorService.init();
         super.setUp();
     }
     
     @After
     public void tearDown() {
         super.tearDown();
+        executorService.destroy();
     }
    
     

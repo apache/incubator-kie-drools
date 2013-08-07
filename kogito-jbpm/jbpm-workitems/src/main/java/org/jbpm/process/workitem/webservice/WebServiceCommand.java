@@ -1,0 +1,95 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.jbpm.process.workitem.webservice;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.xml.namespace.QName;
+
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.internal.executor.api.Command;
+import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.executor.api.ExecutionResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Web Service executor command that executes web service call using Apache CXF. 
+ * It expects following parameters to be able to operate:
+ * <ul>
+ *  <li>Interface - valid interface/service name of the web service (port type name from wsdl)</li>
+ *  <li>Operation - valid operation name</li>
+ *  <li>Parameter - object that is going to be used as web service message</li>
+ *  <li>Url - location of thw wsdl file used to look up service definition</li>
+ *  <li>Namespace - name space of the web service</li> 
+ * </ul>
+ * 
+ * Web service call is synchronous but since it's executor command it will be invoked as asynchronous task any way.
+ */
+public class WebServiceCommand implements Command {
+    
+    private static final Logger logger = LoggerFactory.getLogger(WebServiceCommand.class);
+    private volatile static ConcurrentHashMap<String, Client> clients = new ConcurrentHashMap<String, Client>();
+    private JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+
+    @Override
+    public ExecutionResults execute(CommandContext ctx) throws Exception {
+        
+        WorkItem workItem = (WorkItem) ctx.getData("workItem");
+        
+        String interfaceRef = (String) workItem.getParameter("Interface");
+        String operationRef = (String) workItem.getParameter("Operation");
+        Object parameter = workItem.getParameter("Parameter");
+        
+        Client client = getWSClient(workItem, interfaceRef);
+        
+        Object[] result = client.invoke(operationRef, parameter);
+        
+        ExecutionResults results = new ExecutionResults();       
+
+        if (result == null || result.length == 0) {
+            results.setData("Result", null);
+        } else {
+            results.setData("Result", result[0]);
+        }
+        logger.debug("Received sync response {}", result);
+        
+        
+        return results;
+    }
+    
+    
+    protected synchronized Client getWSClient(WorkItem workItem, String interfaceRef) {
+        if (clients.containsKey(interfaceRef)) {
+            return clients.get(interfaceRef);
+        }
+        
+        String importLocation = (String) workItem.getParameter("Url");
+        String importNamespace = (String) workItem.getParameter("Namespace");
+        if (importLocation != null && importLocation.trim().length() > 0 
+                && importNamespace != null && importNamespace.trim().length() > 0) {
+            Client client = dcf.createClient(importLocation, new QName(importNamespace, interfaceRef), this.getClass().getClassLoader(), null);
+            clients.put(interfaceRef, client);
+            return client;
+        }
+
+        return null;
+    }
+
+}

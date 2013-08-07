@@ -161,6 +161,8 @@ message WorkItem {
     optional int32 state = 4;
 
     repeated Variable variable = 5;
+
+    optional string deployment_id = 6;
 }
 
 message ProcessTimer {

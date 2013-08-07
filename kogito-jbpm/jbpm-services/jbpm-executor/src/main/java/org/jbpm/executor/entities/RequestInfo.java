@@ -1,7 +1,19 @@
 /*
- * To change this template, choose Tools | Templates and open the template in
- * the editor.
+ * Copyright 2013 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jbpm.executor.entities;
 
 import java.io.Serializable;
@@ -9,15 +21,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
 
-/**
- *
- * @author salaboy
- */
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.kie.internal.executor.api.STATUS;
+
 @Entity
 @SequenceGenerator(name="requestInfoIdSeq", sequenceName="REQUEST_INFO_ID_SEQ")
-public class RequestInfo implements Serializable {
+public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, Serializable {
 
     private static final long serialVersionUID = 5823083735663566537L;
     
@@ -34,7 +57,7 @@ public class RequestInfo implements Serializable {
     //Business Key for callback
     @Column(name="businessKey")
     private String key;
-    //Number of times that this request must be retryied
+    //Number of times that this request must be retried
     private int retries = 0;
     //Number of times that this request has been executed
     private int executions = 0;
@@ -49,7 +72,7 @@ public class RequestInfo implements Serializable {
     public RequestInfo() {
     }
 
-    public List<ErrorInfo> getErrorInfo() {
+    public List<? extends ErrorInfo> getErrorInfo() {
         return errorInfo;
     }
 

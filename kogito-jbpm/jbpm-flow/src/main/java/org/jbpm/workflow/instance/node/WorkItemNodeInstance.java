@@ -114,6 +114,8 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (workItemNode.isWaitForCompletion()) {
             addWorkItemListener();
         }
+        String deploymentId = (String) getProcessInstance().getKnowledgeRuntime().getEnvironment().get("deploymentId");
+        ((WorkItem) workItem).setDeploymentId(deploymentId);
         if (isInversionOfControl()) {
             ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime()
                 .update(((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getFactHandle(this), this);
@@ -148,7 +150,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         workItem = new WorkItemImpl();
         ((WorkItem) workItem).setName(work.getName());
         ((WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
-        ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
+        ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));        
         for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext(); ) {
             DataAssociation association = iterator.next();
             if (association.getAssignments() == null || association.getAssignments().isEmpty()) {

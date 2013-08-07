@@ -1,41 +1,59 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2013 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.jbpm.executor.impl;
 
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.event.Event;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
-import org.jbpm.executor.ExecutorServiceEntryPoint;
-import org.jbpm.executor.api.CommandContext;
-import org.jbpm.executor.api.Executor;
-import org.jbpm.executor.api.ExecutorQueryService;
-import org.jbpm.executor.api.ExecutorRequestAdminService;
-import org.jbpm.executor.entities.ErrorInfo;
-import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.executor.entities.STATUS;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventImpl;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
+import javax.inject.Singleton;
+
+import org.jboss.seam.transaction.Transactional;
+import org.kie.commons.services.cdi.Startup;
+import org.kie.internal.executor.api.CommandContext;
+import org.kie.internal.executor.api.ErrorInfo;
+import org.kie.internal.executor.api.Executor;
+import org.kie.internal.executor.api.ExecutorAdminService;
+import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.executor.api.ExecutorService;
+import org.kie.internal.executor.api.RequestInfo;
+import org.kie.internal.executor.api.STATUS;
 
 /**
+ * Entry point of the executor component. Application should always talk
+ * via this service to ensure all internals are properly initialized
  *
- * @author salaboy
  */
-public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint {
+@Startup
+@Singleton
+@Transactional
+public class ExecutorServiceImpl implements ExecutorService {
     @Inject
     private Executor executor;
     private boolean executorStarted = false;
     @Inject 
     private ExecutorQueryService queryService;
     @Inject
-    private ExecutorRequestAdminService adminService;
+    private ExecutorAdminService adminService;
     
-    // External NON CDI event Listeners for the executor service
-    private Event<RequestInfo> executorEvents = new JbpmServicesEventImpl<RequestInfo>();
 
-    public ExecutorServiceEntryPointImpl() {
+    public ExecutorServiceImpl() {
     }
 
     public Executor getExecutor() {
@@ -54,11 +72,11 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
         this.queryService = queryService;
     }
 
-    public ExecutorRequestAdminService getAdminService() {
+    public ExecutorAdminService getAdminService() {
         return adminService;
     }
 
-    public void setAdminService(ExecutorRequestAdminService adminService) {
+    public void setAdminService(ExecutorAdminService adminService) {
         this.adminService = adminService;
     }
     
@@ -110,11 +128,13 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
         executor.cancelRequest(requestId);
     }
 
+    @PostConstruct
     public void init() {
         executor.init();
         this.executorStarted = true;
     }
-
+    
+    @PreDestroy
     public void destroy() {
     	this.executorStarted = false;
         executor.destroy();
@@ -173,17 +193,8 @@ public class ExecutorServiceEntryPointImpl implements ExecutorServiceEntryPoint 
     }
 
     @Override
-    public void registerExecutorEventListener(JbpmServicesEventListener<RequestInfo> executorEventListener) {
-        ((JbpmServicesEventImpl<RequestInfo>)executorEvents).addListener(executorEventListener);
+    public List<RequestInfo> getRequestsByBusinessKey(String businessKey) {
+        return queryService.getRequestByBusinessKey(businessKey);
     }
 
-    @Override
-    public Event<RequestInfo> getExecutorEventListeners() {
-        return executorEvents;
-    }
-
-  
-    
-    
-    
 }

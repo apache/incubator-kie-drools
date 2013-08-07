@@ -13,36 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jbpm.executor;
 
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.executor.api.Executor;
-import org.jbpm.executor.api.ExecutorQueryService;
-import org.jbpm.executor.api.ExecutorRequestAdminService;
+import org.jbpm.executor.impl.ClassCacheManager;
 import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.ExecutorRunnable;
-import org.jbpm.executor.impl.ExecutorServiceEntryPointImpl;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.internal.executor.api.Executor;
+import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.internal.executor.api.ExecutorAdminService;
+import org.kie.internal.executor.api.ExecutorService;
 
 /**
- *
- * @author salaboy
+ * Creates singleton instance of <code>ExecutorService</code> that shall be used outside of CDI 
+ * environment.
  */
 public class ExecutorServiceFactory {
     
-    private static final Logger logger = LoggerFactory.getLogger(ExecutorServiceFactory.class);
-    
-    private static ExecutorServiceEntryPoint service = new ExecutorServiceEntryPointImpl();
+    private static ExecutorService service = new ExecutorServiceImpl();
     
     private static JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
     
@@ -54,32 +53,26 @@ public class ExecutorServiceFactory {
    
     private static Executor executor = new ExecutorImpl();
         
-    private static ExecutorRequestAdminService adminService = new ExecutorRequestAdminServiceImpl();
+    private static ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
     
     
-    public static ExecutorServiceEntryPoint newExecutorService(){
+    public static ExecutorService newExecutorService(){
         configure();
         return service;
     }
-    
-    
-    
 
     private static void configure() {
         
         configurePersistenceManager();
 
         ((ExecutorQueryServiceImpl)queryService).setPm(pm);
-        ((ExecutorServiceEntryPointImpl)service).setQueryService(queryService);
+        ((ExecutorServiceImpl)service).setQueryService(queryService);
 
         configureExecutorImpl();
-        ((ExecutorServiceEntryPointImpl)service).setExecutor(executor);
-        
-        
+        ((ExecutorServiceImpl)service).setExecutor(executor);
+                
         ((ExecutorRequestAdminServiceImpl)adminService).setPm(pm);
-        ((ExecutorServiceEntryPointImpl)service).setAdminService(adminService);
-       
-
+        ((ExecutorServiceImpl)service).setAdminService(adminService);
     }
 
     public static void setEmf(EntityManagerFactory emf) {
@@ -100,13 +93,15 @@ public class ExecutorServiceFactory {
     }
      
     public static void configureExecutorImpl(){
+        ClassCacheManager classCacheManager = new ClassCacheManager();
         ExecutorRunnable runnable = new ExecutorRunnable();
+        runnable.setClassCacheManager(classCacheManager);
         runnable.setPm(pm);
         runnable.setQueryService(queryService);
         ((ExecutorImpl)executor).setPm(pm);
         ((ExecutorImpl)executor).setExecutorRunnable(runnable);
         ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setRequestEvents(service.getExecutorEventListeners());
+        ((ExecutorImpl)executor).setClassCacheManager(classCacheManager);
     }
      
     

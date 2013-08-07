@@ -35,11 +35,15 @@ public interface JbpmServicesPersistenceManager {
     
     Object queryWithParametersInTransaction(String queryName, Map<String, Object> params);
     
+    Object queryAndLockWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult);
+    
     Object queryInTransaction(String queryName);
     
     Object queryStringInTransaction(String queryString );
    
     Object queryStringWithParametersInTransaction(String queryString,  Map<String, Object> params );
+    
+    Object queryAndLockStringWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult);
     
     int executeUpdateString(String updateString);
     
@@ -54,5 +58,11 @@ public interface JbpmServicesPersistenceManager {
     <T> T find(Class<T> entityClass, Object primaryKey);
 
     void persist(Object entity);
+    
+    boolean beginTransaction();
+    
+    void endTransaction(boolean txOwner);
+    
+    void rollBackTransaction(boolean txOwner);
     
 }
