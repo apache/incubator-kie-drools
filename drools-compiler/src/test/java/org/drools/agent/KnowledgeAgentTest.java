@@ -1,7 +1,9 @@
 package org.drools.agent;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.*;
@@ -17,6 +19,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.builder.impl.KnowledgeBuilderImpl;
 import org.drools.command.runtime.rule.InsertObjectCommand;
+import org.drools.common.DroolsObjectOutputStream;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.conf.EventProcessingOption;
@@ -24,6 +27,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgeDefinition;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.definitions.rule.impl.RuleImpl;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.Resource;
@@ -31,6 +35,7 @@ import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.io.impl.ChangeSetImpl;
+import org.drools.io.impl.ReaderResource;
 import org.drools.io.impl.UrlResource;
 import org.drools.io.internal.InternalResource;
 import org.drools.rule.Package;
@@ -951,4 +956,29 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
         assertThat( ((Number) arg.getValue().getActivation().getDeclarationValue( "$n" )).intValue(), CoreMatchers.equalTo( 2 ) );
     }
 
+    @Test
+    public void testResourceConsistency() throws Exception {
+        fileManager.write( "rule1.drl",
+                           createDefaultRule( "rule1" ) );
+        String url = "http://localhost:" + this.getPort() + "/rule1.drl";
+        URL fileUrl = new URL( url );
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ReaderResource( new InputStreamReader( fileUrl.openStream() ) ), ResourceType.DRL );
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgePackage kpg = kbuilder.getKnowledgePackages().iterator().next();
+        assertTrue( ((RuleImpl) kpg.getRules().iterator().next()).getRule().getResource() instanceof ReaderResource );
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DroolsObjectOutputStream oos = new DroolsObjectOutputStream( baos );
+        oos.writeObject( kpg );
+
+        KnowledgeBuilder client = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        client.add( new ByteArrayResource( baos.toByteArray() ), ResourceType.PKG );
+        assertFalse(client.hasErrors());
+
+        KnowledgePackage cpkg = client.getKnowledgePackages().iterator().next();
+        assertTrue( ((RuleImpl) cpkg.getRules().iterator().next()).getRule().getResource() instanceof ByteArrayResource );
+    }
 }
