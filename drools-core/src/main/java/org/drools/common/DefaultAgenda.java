@@ -1111,7 +1111,7 @@ public class DefaultAgenda
      * @throws ConsequenceException
      *             If an error occurs while firing an agenda item.
      */
-    public boolean fireNextItem(final AgendaFilter filter) throws ConsequenceException {
+    public synchronized boolean fireNextItem(final AgendaFilter filter) throws ConsequenceException {
         boolean tryagain, result;
         try {
             do {
