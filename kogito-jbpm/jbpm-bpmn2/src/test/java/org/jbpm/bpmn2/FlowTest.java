@@ -90,6 +90,11 @@ public class FlowTest extends JbpmBpmn2TestCase {
         }
     }
     
+    @After
+    public void clearProperties() {
+        System.clearProperty("jbpm.enable.multi.con");
+    }
+    
     @Test
     public void testExclusiveSplitWithNoConditions() throws Exception {
         try {
@@ -1158,6 +1163,17 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertEquals(1, list.size());
         System.clearProperty("jbpm.enable.multi.con");
 
+    }
+    
+    @Test
+    public void testMultipleIncomingFlowToEndNode() throws Exception {
+        System.setProperty("jbpm.enable.multi.con", "true");
+
+        KieBase kbase = createKnowledgeBase("BPMN2-MultipleFlowEndNode.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        ProcessInstance processInstance = ksession.startProcess("MultipleFlowEndNode");
+        assertProcessInstanceCompleted(processInstance);
     }
     
     @Test
