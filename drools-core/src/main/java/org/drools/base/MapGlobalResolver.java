@@ -23,6 +23,7 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.runtime.Globals;
 import org.drools.spi.GlobalResolver;
@@ -34,16 +35,21 @@ public class MapGlobalResolver
 
     private static final long serialVersionUID = 510l;
 
-    private Map map;
+    private Map<String, Object> map;
     
     private Globals delegate;
 
     public MapGlobalResolver() {
-        this.map = new HashMap();
+        this.map = new ConcurrentHashMap<String, Object>();
     }
 
-    public MapGlobalResolver(Map map) {
-        this.map = map;
+    public MapGlobalResolver(Map<String, Object> map) {
+        if (map instanceof ConcurrentHashMap) {
+            this.map = map;
+        } else {
+            this.map = new ConcurrentHashMap<String, Object>();
+            this.map.putAll(map);
+        }
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -81,7 +87,7 @@ public class MapGlobalResolver
                       value );
     }
 
-    public Entry[] getGlobals() {
+    public Entry<String, Object>[] getGlobals() {
         return (Entry[]) this.map.entrySet().toArray(new Entry[this.map.size()]);
     }
     
