@@ -86,6 +86,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -2430,6 +2431,41 @@ public class MiscTest2 extends CommonTestMethodBase {
                     "        $foo2: Foo2()\n" +
                     "        if( $foo.getX() != 1 )  break[needThis]\n" +
                     "        $foo3: Foo3(x == $x);\n" +
+                    "    then\n" +
+                    "        fired.add(\"We made it!\");\n" +
+                    "    then[needThis]\n" +
+                    "        modify($foo){\n" +
+                    "            setX(1)\n" +
+                    "        };\n" +
+                    "end";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("fired", firedRules);
+        ksession.insert(new Foo());
+        ksession.insert(new Foo2());
+        ksession.insert(new Foo3());
+        ksession.fireAllRules();
+        
+        assertEquals(1, firedRules.size());
+        
+                
+     }
+  @Ignore  
+    @Test
+    public void reteErrorInIF2() {
+        List<String> firedRules = new ArrayList<String>();
+        String str = "import " + MiscTest2.Foo.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo2.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo3.class.getCanonicalName() + "\n"
+                + "global java.util.List fired;\n"
+                + "rule \"weird foo\"\n" +
+                    "    when\n" +
+                    "        $foo: Foo($x: x)\n" +
+                    "        $foo2: Foo2()\n" + 
+                    "        if( $foo.getX() != 1 ) break[needThis] \n" +   
+                    "        not( Foo(x == 2) ) \n" +
+                    "        $foo3: Foo3(x == $x)\n" +
                     "    then\n" +
                     "        fired.add(\"We made it!\");\n" +
                     "    then[needThis]\n" +
