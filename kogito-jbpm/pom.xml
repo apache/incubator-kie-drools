@@ -90,16 +90,6 @@
     <module>jbpm-runtime-manager</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.9</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <build>
     <testResources>
       <testResource>
@@ -115,7 +105,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.12</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
