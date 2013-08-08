@@ -17,11 +17,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
 import org.drools.FactHandle;
 import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.Order;
 import org.drools.OrderItem;
@@ -42,14 +44,19 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
+import org.drools.conf.EventProcessingOption;
+import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.Activation;
+import org.drools.time.SessionPseudoClock;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -1958,5 +1965,59 @@ public class AccumulateTest {
                 results.size() );
         assertEquals( 9.0,
                 results.get( 0 ) );
+    }
+
+    @Test
+    public void testAccumulatesExpireVsCancel() throws Exception {
+        // JBRULES-3201
+        String drl = "package com.sample;\n" +
+                     "\n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare FactTest\n" +
+                     " @role( event ) \n" +
+                     "end\n" +
+                     " \n" +
+                    "rule \"A500 test\"\n" +
+                     "when\n" +
+                     " $tot : Number( intValue > 0 ) from accumulate ( $fact : FactTest() over window:time(1m), count($fact) )\n" +
+                     "then\n" +
+                     " System.out.println( $tot ); \n" +
+                     " list.add( $tot.intValue() ); \n "+
+                     "end\n" +
+                     "\n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbConf.setOption(EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        KnowledgeSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksConf.setOption( ClockTypeOption.get("pseudo") );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksConf,null);
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        FactType ft = kbase.getFactType( "com.sample", "FactTest" );
+
+        ksession.insert( ft.newInstance() );
+        ksession.fireAllRules();
+        ksession.insert( ft.newInstance() );
+        ksession.fireAllRules();
+        ksession.insert( ft.newInstance() );
+        ksession.fireAllRules();
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+        clock.advanceTime( 1, TimeUnit.MINUTES );
+
+        ksession.fireAllRules();
+
+        assertFalse( list.contains( 0 ) );
     }
 }
