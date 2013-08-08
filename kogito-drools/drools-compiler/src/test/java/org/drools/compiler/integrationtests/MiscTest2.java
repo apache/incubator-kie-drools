@@ -2403,4 +2403,53 @@ public class MiscTest2 extends CommonTestMethodBase {
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         assertTrue( kb.hasErrors() );
     }
+    
+    public static class Foo3 {
+        @Position(0)
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+   
+    @Ignore
+    @Test
+    public void reteErrorInIF() {
+        List<String> firedRules = new ArrayList<String>();
+        String str = "import " + MiscTest2.Foo.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo2.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo3.class.getCanonicalName() + "\n"
+                + "global java.util.List fired;\n"
+                + "rule \"weird foo\"\n" +
+                    "    when\n" +
+                    "        \n" +
+                    "        $foo: Foo($x: x)\n" +
+                    "        $foo2: Foo2()\n" +
+                    "        if( $foo.getX() != 1 )  break[needThis]\n" +
+                    "        $foo3: Foo3(x == $x);\n" +
+                    "    then\n" +
+                    "        fired.add(\"We made it!\");\n" +
+                    "    then[needThis]\n" +
+                    "        modify($foo){\n" +
+                    "            setX(1)\n" +
+                    "        };\n" +
+                    "end";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("fired", firedRules);
+        ksession.insert(new Foo());
+        ksession.insert(new Foo2());
+        ksession.insert(new Foo3());
+        ksession.fireAllRules();
+        
+        assertEquals(1, firedRules.size());
+        
+                
+     }
+
+    
 }
