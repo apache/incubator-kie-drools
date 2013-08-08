@@ -133,10 +133,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>freemarker</groupId>
+      <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
-      <version>2.3.8</version>
-      <type>jar</type>
     </dependency>
     
     <dependency>
