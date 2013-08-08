@@ -69,7 +69,7 @@ public class PropagationContextImpl
     
     // this field is only set for propagations happening during 
     // the deserialization of a session
-    private MarshallerReaderContext readerContext;
+    private transient MarshallerReaderContext readerContext;
 
     public PropagationContextImpl() {
 
@@ -164,6 +164,10 @@ public class PropagationContextImpl
 
     public long getPropagationNumber() {
         return this.propagationNumber;
+    }
+
+    public void cleanReaderContext() {
+        readerContext = null;
     }
 
     /*

@@ -467,15 +467,15 @@ public class ProtobufInputMarshaller {
         InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) handle.getEntryPoint();
         ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(),
                                                                                                                                                      object );
-        final PropagationContext propagationContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
-                                                                                  PropagationContext.ASSERTION,
-                                                                                  null,
-                                                                                  null,
-                                                                                  handle,
-                                                                                  ((DefaultAgenda) wm.getAgenda()).getActiveActivations(),
-                                                                                  ((DefaultAgenda) wm.getAgenda()).getDormantActivations(),
-                                                                                  ep.getEntryPoint(),
-                                                                                  context);
+        PropagationContextImpl propagationContext = new PropagationContextImpl( wm.getNextPropagationIdCounter(),
+                                                                                PropagationContext.ASSERTION,
+                                                                                null,
+                                                                                null,
+                                                                                handle,
+                                                                                ((DefaultAgenda) wm.getAgenda()).getActiveActivations(),
+                                                                                ((DefaultAgenda) wm.getAgenda()).getDormantActivations(),
+                                                                                ep.getEntryPoint(),
+                                                                                context );
 
         ep.getEntryPointNode().assertObject( handle,
                                              propagationContext,
@@ -484,6 +484,7 @@ public class ProtobufInputMarshaller {
 
         propagationContext.evaluateActionQueue( wm );
         wm.executeQueuedActions();
+        propagationContext.cleanReaderContext();
     }
 
     public static InternalFactHandle readFactHandle(MarshallerReaderContext context,
