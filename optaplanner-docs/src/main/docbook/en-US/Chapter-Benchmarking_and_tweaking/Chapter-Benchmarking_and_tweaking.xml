@@ -23,7 +23,7 @@
     <title>Doing a benchmark</title>
 
     <section>
-      <title>Adding the extra dependency</title>
+      <title>Adding a dependency on optaplanner-benchmark</title>
 
       <para>The benchmarker is in a separate artifact called <literal>optaplanner-benchmark</literal>.</para>
 
@@ -32,11 +32,11 @@
       <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;org.optaplanner&lt;/groupId&gt;
       &lt;artifactId&gt;optaplanner-benchmark&lt;/artifactId&gt;
-      &lt;version&gt;...&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
       <para>This is similar for Gradle, Ivy and Buildr. The version must be exactly the same as the
-      <literal>optaplanner-core</literal> version used.</para>
+      <literal>optaplanner-core</literal> version used (which is automatically the case if you import
+      <literal>optaplanner-bom</literal>).</para>
 
       <para>If you use ANT, you've probably already copied the required jars from the download zip's
       <filename>binaries</filename> directory.</para>

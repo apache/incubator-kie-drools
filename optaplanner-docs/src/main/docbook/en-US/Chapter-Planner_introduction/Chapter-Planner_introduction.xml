@@ -326,17 +326,33 @@ $ runExamples.bat</programlisting>
       <link xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~">the JBoss
       maven repository</link>).</para>
 
-      <para>If you use Maven, just add a dependency to <literal>optaplanner-core</literal> in your project's
+      <para>If you use Maven, add a dependency to <literal>optaplanner-core</literal> in your project's
       <filename>pom.xml</filename>:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;org.optaplanner&lt;/groupId&gt;
       &lt;artifactId&gt;optaplanner-core&lt;/artifactId&gt;
-      &lt;version&gt;...&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
       <para>This is similar for Gradle, Ivy and Buildr. To identify the latest version, check <link
       xlink:href="http://search.maven.org/#search|ga|1|org.optaplanner">the central maven repository</link>.</para>
+
+      <para>Because you might end up using other optaplanner modules too, it's recommended to import the
+      <literal>optaplanner-bom</literal> in Maven's <literal>dependencyManagement</literal> so the optaplanner version
+      is specified only once:</para>
+
+      <programlisting language="xml">  &lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;
+        &lt;groupId&gt;org.optaplanner&lt;/groupId&gt;
+        &lt;artifactId&gt;optaplanner-bom&lt;/artifactId&gt;
+        &lt;type&gt;pom&lt;/type&gt;
+        &lt;version&gt;...&lt;/version&gt;
+        &lt;scope&gt;import&lt;/scope&gt;
+      &lt;/dependency&gt;
+      ...
+    &lt;/dependencies&gt;
+  &lt;/dependencyManagement&gt;</programlisting>
 
       <para>If you're still using ANT (without Ivy), copy all the jars from the download zip's
       <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
