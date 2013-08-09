@@ -81,6 +81,49 @@
   </section>
 
   <section>
+    <title>Use with Maven, Gradle, Ivy, Buildr or ANT</title>
+
+    <para>The jars are also available in <link xlink:href="http://search.maven.org/#search|ga|1|org.drools">the central
+    maven repository</link> (and also in <link
+    xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools~~~~">the JBoss maven
+    repository</link>).</para>
+
+    <para>If you use Maven, add KIE and Drools dependencies in your project's <filename>pom.xml</filename> like
+    this:</para>
+
+    <programlisting language="xml">  &lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;
+        &lt;groupId&gt;org.drools&lt;/groupId&gt;
+        &lt;artifactId&gt;drools-bom&lt;/artifactId&gt;
+        &lt;type&gt;pom&lt;/type&gt;
+        &lt;version&gt;...&lt;/version&gt;
+        &lt;scope&gt;import&lt;/scope&gt;
+      &lt;/dependency&gt;
+      ...
+    &lt;/dependencies&gt;
+  &lt;/dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.kie&lt;/groupId&gt;
+      &lt;artifactId&gt;kie-api&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.drools&lt;/groupId&gt;
+      &lt;artifactId&gt;drools-compiler&lt;/artifactId&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+    ...
+  &lt;dependencies&gt;</programlisting>
+
+    <para>This is similar for Gradle, Ivy and Buildr. To identify the latest version, check the maven repository.</para>
+
+    <para>If you're still using ANT (without Ivy), copy all the jars from the download zip's
+    <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
+    jars.</para>
+  </section>
+
+  <section>
     <title>Runtime</title>
 
     <para>The "runtime" requirements mentioned here are if you are deploying rules as their binary form (either as
