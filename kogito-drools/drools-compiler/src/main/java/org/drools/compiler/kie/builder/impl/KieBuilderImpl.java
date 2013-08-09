@@ -34,6 +34,7 @@ import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.StringUtils;
@@ -49,6 +50,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -166,18 +168,19 @@ public class KieBuilderImpl
             }
 
             if ( buildKieModule( kModule, results ) ) {
-                Map<String, TypeDeclaration> typeDeclarations = addTypeDeclarationClassesToTrg();
-                writeTypeMetaInfosToTrg( typeDeclarations );
+                writeKieModuleMetaInfo( generateKieModuleMetaInfo() );
             }
         }
         return this;
     }
 
-    private Map<String, TypeDeclaration> addTypeDeclarationClassesToTrg() {
-        Map<String, TypeDeclaration> typeDeclarations = new HashMap<String, TypeDeclaration>();
+    private KieModuleMetaInfo generateKieModuleMetaInfo() {
+        Map<String, TypeMetaInfo> typeInfos = new HashMap<String, TypeMetaInfo>();
+        Map<String, List<String>> rulesByKieBase = new HashMap<String, List<String>>();
+
         KieModuleModel kieModuleModel = kModule.getKieModuleModel();
-        for ( String kieBaseNames : kieModuleModel.getKieBaseModels().keySet() ) {
-            KnowledgeBuilderImpl kBuilder = (KnowledgeBuilderImpl) kModule.getKnowledgeBuilderForKieBase( kieBaseNames );
+        for ( String kieBaseName : kieModuleModel.getKieBaseModels().keySet() ) {
+            KnowledgeBuilderImpl kBuilder = (KnowledgeBuilderImpl) kModule.getKnowledgeBuilderForKieBase( kieBaseName );
             Map<String, PackageRegistry> pkgRegistryMap = kBuilder.getPackageBuilder().getPackageRegistry();
 
             KModuleCache.Builder _kmoduleCacheBuilder = createCacheBuilder();
@@ -192,7 +195,7 @@ public class KieBuilderImpl
                     Class< ? > typeClass = ((ClassDefinition) factType).getDefinedClass();
                     TypeDeclaration typeDeclaration = pkgRegistry.getPackage().getTypeDeclaration( typeClass );
                     if ( typeDeclaration != null ) {
-                        typeDeclarations.put( typeClass.getName(), typeDeclaration );
+                        typeInfos.put( typeClass.getName(), new TypeMetaInfo(typeDeclaration) );
                     }
 
                     String className = factType.getName();
@@ -202,13 +205,21 @@ public class KieBuilderImpl
                     types.add( internalName );
                 }
 
-                addToCompilationData( _compData, runtimeData, types );
+                List<String> rules = new ArrayList<String>();
+                for ( Rule rule : kPkg.getRules() ) {
+                    rules.add(rule.getName());
+                }
+                if (!rules.isEmpty()) {
+                    rulesByKieBase.put(kieBaseName, rules);
+                }
+
+                addToCompilationData(_compData, runtimeData, types);
             }
 
             _kmoduleCacheBuilder.addCompilationData( _compData.build() );
-            writeCompilationDataToTrg( _kmoduleCacheBuilder.build(), kieBaseNames );
+            writeCompilationDataToTrg( _kmoduleCacheBuilder.build(), kieBaseName );
         }
-        return typeDeclarations;
+        return new KieModuleMetaInfo(typeInfos, rulesByKieBase);
     }
 
     private KModuleCache.Builder createCacheBuilder() {
@@ -253,12 +264,10 @@ public class KieBuilderImpl
         return ((ReleaseIdImpl) releaseId).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
     }
 
-    private void writeTypeMetaInfosToTrg(Map<String, TypeDeclaration> typeDeclarations) {
-        if ( !typeDeclarations.isEmpty() ) {
+    private void writeKieModuleMetaInfo(KieModuleMetaInfo info) {
             trgMfs.write( KieModuleModelImpl.KMODULE_INFO_JAR_PATH,
-                          TypeMetaInfo.marshallMetaInfos( typeDeclarations ).getBytes(),
+                          info.marshallMetaInfos().getBytes(),
                           true );
-        }
     }
 
     public static boolean buildKieModule(InternalKieModule kModule,

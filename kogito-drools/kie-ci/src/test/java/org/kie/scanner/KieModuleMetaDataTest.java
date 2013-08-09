@@ -1,7 +1,6 @@
 package org.kie.scanner;
 
 import junit.framework.TestCase;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,6 +20,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -82,13 +82,13 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         assertNotNull( beanMetaInfo );
     }
 
-    @Test @Ignore
+    @Test
     public void testGetPackageNames() {
         final KieServices ks = KieServices.Factory.get();
 
         final KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write("src/main/resources/test.drl",
-                "package org.test");
+                "package org.test declare Bean end");
 
         final KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
@@ -101,7 +101,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         TestCase.assertTrue(kieModuleMetaData.getPackages().contains("org.test"));
     }
 
-    @Test @Ignore
+    @Test
     public void testGetRuleNames() {
         final KieServices ks = KieServices.Factory.get();
 
@@ -116,7 +116,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
                         " when\n" +
                         "then\n" +
                         "end\n");
-        kfs.write("src/main/resources/test1.drl",
+        kfs.write("src/main/resources/test2.drl",
                 "package org.test\n" +
                         "rule C\n" +
                         " when\n" +
@@ -130,10 +130,9 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         final KieModule kieModule = kieBuilder.getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
 
-        assertFalse(kieModuleMetaData.getRuleNames().isEmpty());
-        TestCase.assertTrue(kieModuleMetaData.getRuleNames().contains("A"));
-        TestCase.assertTrue(kieModuleMetaData.getRuleNames().contains("B"));
-        TestCase.assertTrue(kieModuleMetaData.getRuleNames().contains("C"));
+        Collection<String> rules = kieModuleMetaData.getRuleNames("defaultKieBase");
+        assertEquals( 3, rules.size() );
+        assertTrue( rules.containsAll(asList("A", "B", "C")) );
     }
 
     private String createJavaSource() {

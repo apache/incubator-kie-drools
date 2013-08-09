@@ -1,13 +1,12 @@
 package org.kie.scanner;
 
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.util.ClassUtils;
+import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.TypeMetaInfo;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.sonatype.aether.artifact.Artifact;
 
 import java.io.ByteArrayInputStream;
@@ -23,13 +22,13 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
-import static org.drools.core.rule.TypeMetaInfo.unmarshallMetaInfos;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
@@ -43,6 +42,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private final Map<URI, File> jars = new HashMap<URI, File>();
 
     private final Map<String, TypeMetaInfo> typeMetaInfos = new HashMap<String, TypeMetaInfo>();
+    private final Map<String, List<String>> rulesByKieBase = new HashMap<String, List<String>>();
 
     private ProjectClassLoader classLoader;
 
@@ -99,8 +99,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     @Override
-    public Collection<String> getRuleNames() {
-        return null;  //TODO
+    public Collection<String> getRuleNames(String kieBaseName) {
+        return rulesByKieBase.get(kieBaseName);
     }
 
     private ClassLoader getClassLoader() {
@@ -200,7 +200,9 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     private void indexMetaInfo(byte[] bytes) {
-        typeMetaInfos.putAll(unmarshallMetaInfos(new String(bytes)));
+        KieModuleMetaInfo info = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes));
+        typeMetaInfos.putAll(info.getTypeMetaInfos());
+        rulesByKieBase.putAll(info.getRulesByKieBase());
     }
 
     @Override
