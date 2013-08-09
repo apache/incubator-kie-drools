@@ -1,7 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.core.rule.TypeMetaInfo.unmarshallMetaInfos;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.io.ByteArrayInputStream;
@@ -22,6 +21,7 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
@@ -132,7 +132,7 @@ public abstract class AbstractKieModule
         if (typesMetaInfo == null) {
             byte[] bytes = getBytes( KieModuleModelImpl.KMODULE_INFO_JAR_PATH );
             if (bytes != null) {
-                typesMetaInfo = unmarshallMetaInfos(new String(bytes));
+                typesMetaInfo = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes)).getTypeMetaInfos();
             }
         }
         return typesMetaInfo;
