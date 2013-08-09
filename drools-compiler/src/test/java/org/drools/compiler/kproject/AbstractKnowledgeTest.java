@@ -113,6 +113,7 @@ public class AbstractKnowledgeTest {
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel(namespace + ".KBase1")
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
+                .addPackage(namespace + ".KBase1")
                 .setDefault( true );
             
 
@@ -128,6 +129,7 @@ public class AbstractKnowledgeTest {
 
         KieBaseModel kieBaseModel2 = kproj.newKieBaseModel(namespace + ".KBase2")
                 .setEqualsBehavior( EqualityBehaviorOption.IDENTITY )
+                .addPackage(namespace + ".KBase2")
                 .setEventProcessingMode( EventProcessingOption.CLOUD );
 
         KieSessionModel ksession3 = kieBaseModel2.newKieSessionModel(namespace + ".KSession3")

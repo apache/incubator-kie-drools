@@ -162,4 +162,8 @@ public class TripleNonIndexSkipBetaConstraints
         }
         return Long.MAX_VALUE;
     }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return true;
+    }
 }

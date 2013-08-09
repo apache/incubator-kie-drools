@@ -1,7 +1,7 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.index.IndexUtil;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -21,6 +21,8 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
     protected boolean[]                 indexed;
     protected IndexPrecedenceOption     indexPrecedenceOption;
     protected transient boolean         disableIndexing;
+
+    private transient Boolean           leftUpdateOptimizationAllowed;
 
     public MultipleBetaConstraint() { }
 
@@ -103,5 +105,21 @@ public abstract class MultipleBetaConstraint implements BetaConstraints {
 
     public final boolean isEmpty() {
         return false;
+    }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        if (leftUpdateOptimizationAllowed == null) {
+            leftUpdateOptimizationAllowed = calcLeftUpdateOptimizationAllowed();
+        }
+        return leftUpdateOptimizationAllowed;
+    }
+
+    private boolean calcLeftUpdateOptimizationAllowed() {
+        for (BetaNodeFieldConstraint constraint : constraints) {
+            if ( !(constraint instanceof IndexableConstraint && ((IndexableConstraint)constraint).getConstraintType().isEquality()) ) {
+                return false;
+            }
+        }
+        return true;
     }
 }

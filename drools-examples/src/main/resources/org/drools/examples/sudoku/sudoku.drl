@@ -22,17 +22,17 @@ end
 // Rule "set a value" updates the cell and all cell groups containing it.
 rule "set a value"
 when
-    # a Setting with row and column number, and a value
+    // a Setting with row and column number, and a value
     $s: Setting( $rn: rowNo, $cn: colNo, $v: value )
     
-    # a matching Cell, with no value set
+    // a matching Cell, with no value set
     $c: Cell( rowNo == $rn, colNo == $cn, value == null,
               $cr: cellRow, $cc: cellCol, $cs: cellSqr )
     
-    # count down
+    // count down
     $ctr: Counter( $count: count )
 then
-    # modify the Cell by setting its value
+    // modify the Cell by setting its value
     modify( $c ){ setValue( $v ) }
 //  System.out.println( "set cell " + $c.toString() );
     modify( $cr ){ blockValue( $v ) }
@@ -45,54 +45,54 @@ end
 // in one of the three cell groups.
 rule "eliminate a value from Cell"
 when
-    # a Setting with row and column number, and a value
+    // a Setting with row and column number, and a value
     $s: Setting( $rn: rowNo, $cn: colNo, $v: value )
 
-    # the matching Cell, with the value already set
+    // the matching Cell, with the value already set
     Cell( rowNo == $rn, colNo == $cn, value == $v, $exCells: exCells )
     
-    # for all Cells that are in cahoots with the updated cell
+    // for all Cells that are in cahoots with the updated cell
     $c: Cell( free contains $v ) from $exCells
 then
 //  System.out.println( "clear " + $v + " from cell " + $c.posAsString()  );
-    # modify a related Cell by blocking the assigned value
+    // modify a related Cell by blocking the assigned value
     modify( $c ){ blockValue( $v ) }
 end
 
 // Rule for elimination the Setting fact.
 rule "retract setting"
 when
-    # a Setting with row and column number, and a value
+    // a Setting with row and column number, and a value
     $s: Setting( $rn: rowNo, $cn: colNo, $v: value )
 
-    # the matching Cell, with the value already set
+    // the matching Cell, with the value already set
     $c: Cell( rowNo == $rn, colNo == $cn, value == $v )
 
-    # This is the negation of the last pattern in the previous rule.
-    # Now the Setting fact can be safely retracted.
+    // This is the negation of the last pattern in the previous rule.
+    // Now the Setting fact can be safely retracted.
     not( $x: Cell( free contains $v )
          and
          Cell( this == $c, exCells contains $x ) )
 then
 //  System.out.println( "done setting cell " + $c.toString() ); 
-    # Discard the Setter fact.
+    // Discard the Setter fact.
     retract( $s );
-//##    Sudoku.sudoku.consistencyCheck();
+//////    Sudoku.sudoku.consistencyCheck();
 end
 
 // Detect a set of candidate values with cardinality 1 for some Cell.
 // This is the value to be set.
 rule "single"
 when
-    # There is currently no setting under way.
+    // There is currently no setting under way.
     not Setting()
     
-    # One element in the "free" set.
+    // One element in the "free" set.
     $c: Cell( $rn: rowNo, $cn: colNo, freeCount == 1 )
 then
     Integer i = $c.getFreeValue();
     if (explain) System.out.println( "single " + i + " at " + $c.posAsString() );
-    # Insert another Setter fact.
+    // Insert another Setter fact.
     insert( new Setting( $rn, $cn, i ) );
 end
 
@@ -100,23 +100,23 @@ end
 // in one of its groups. This is the value to be set.
 rule "hidden single"
 when
-    # There is currently no setting under way.
+    // There is currently no setting under way.
     not Setting()
     not Cell( freeCount == 1 )
     
-    # Some integer.
+    // Some integer.
     $i: Integer()
     
-    # The "free" set contains this number. 
+    // The "free" set contains this number. 
     $c: Cell( $rn: rowNo, $cn: colNo, freeCount > 1, free contains $i )
          
-    # We have a cell group containing this cell $c
+    // We have a cell group containing this cell $c
     $cg: CellGroup( cells contains $c )
-    # but no other cell from that group contains $i
+    // but no other cell from that group contains $i
     not ( Cell( this != $c, free contains $i ) from $cg.getCells() )
 then
     if (explain) System.out.println( "hidden single " + $i + " at " + $c.posAsString() );
-    # Insert another Setter fact.
+    // Insert another Setter fact.
     insert( new Setting( $rn, $cn, $i ) );
 end
 
@@ -126,27 +126,27 @@ end
 // can be removed from all other candidate lists in the group.
 rule "naked pair"
 when
-    # There is currently no setting under way.
+    // There is currently no setting under way.
     not Setting()
     not Cell( freeCount == 1 )
 
-    # One cell with two candidates.
+    // One cell with two candidates.
     $c1: Cell( freeCount == 2, $f1: free, $r1: cellRow, $rn1: rowNo, $cn1: colNo, $b1: cellSqr )
     
-    # The containing cell group.
+    // The containing cell group.
     $cg: CellGroup( freeCount > 2, cells contains $c1 )
     
-    # Another cell with two candidates, not the one we already have.
+    // Another cell with two candidates, not the one we already have.
     $c2: Cell( this != $c1, free == $f1 /*** , rowNo >= $rn1, colNo >= $cn1 ***/ ) from $cg.cells
     
-    # Get one of the "naked pair".
+    // Get one of the "naked pair".
     Integer( $v: intValue ) from $c1.getFree()
     
-    # Get some other cell with a candidate equal to one from the pair.
+    // Get some other cell with a candidate equal to one from the pair.
     $c3: Cell( this != $c1 && != $c2, freeCount > 1, free contains $v ) from $cg.cells
 then
     if (explain) System.out.println( "remove " + $v + " from " + $c3.posAsString() + " due to naked pair at " + $c1.posAsString() + " and " + $c2.posAsString() );
-    # Remove the value.
+    // Remove the value.
     modify( $c3 ){ blockValue( $v ) }
 end
 
@@ -157,26 +157,26 @@ end
 //
 rule "hidden pair in row"
 when
-    # There is currently no setting under way.
+    // There is currently no setting under way.
     not Setting()
     not Cell( freeCount == 1 )
     
-    # Establish a pair of Integer facts
+    // Establish a pair of Integer facts
     $i1: Integer()
     $i2: Integer( this > $i1 )
     
-    # Look for a Cell with these two among its candidates. (The upper bound on
-    # the number of candidates avoids a lot of useless work during startup.)
+    // Look for a Cell with these two among its candidates. (The upper bound on
+    // the number of candidates avoids a lot of useless work during startup.)
     $c1: Cell( $rn1: rowNo, $cn1: colNo, freeCount > 2 && < 9, free contains $i1 && contains $i2, $cellRow: cellRow )
 
-    # Get another one from the same row, with the same pair among its candidates,
+    // Get another one from the same row, with the same pair among its candidates,
     $c2: Cell( this != $c1, cellRow == $cellRow, freeCount > 2, free contains $i1 && contains $i2 )
     
-    # Assertain that no other cell in the group has one of these two values.
+    // Assertain that no other cell in the group has one of these two values.
     not( Cell( this != $c1 && != $c2, free contains $i1 || contains $i2 ) from $cellRow.getCells() ) 
 then
     if( explain) System.out.println( "hidden pair in row at " + $c1.posAsString() + " and " + $c2.posAsString() );
-    # Set the candidate lists of these two Cells to the "hidden pair".
+    // Set the candidate lists of these two Cells to the "hidden pair".
     modify( $c1 ){ blockExcept( $i1, $i2 ) }
     modify( $c2 ){ blockExcept( $i1, $i2 ) }
 end
@@ -279,15 +279,15 @@ when
     not Cell( freeCount == 1 )
 
     $i: Integer()
-    # occurs in a Cell
+    // occurs in a Cell
     $c: Cell( free contains $i, $cs: cellSqr, $cc: cellCol )
-    # but not in another cell of the same square and a different column
+    // but not in another cell of the same square and a different column
     not Cell( this != $c, free contains $i, cellSqr == $cs, cellCol != $cc )
 
-    # but there is a cell in the same column and another square containing this value
+    // but there is a cell in the same column and another square containing this value
     $cx: Cell( freeCount > 1, free contains $i, cellCol == $cc, cellSqr != $cs )
 then
-    # remove the value from that other cell
+    // remove the value from that other cell
     if (explain) {
         System.out.println( "column elimination due to " + $c.posAsString() +
                             ": remove " + $i + " from " + $cx.posAsString() );
@@ -301,15 +301,15 @@ when
     not Cell( freeCount == 1 )
 
     $i: Integer()
-    # occurs in a Cell
+    // occurs in a Cell
     $c: Cell( free contains $i, $cs: cellSqr, $cr: cellRow )
-    # but not in another cell of the same square and a different row
+    // but not in another cell of the same square and a different row
     not Cell( this != $c, free contains $i, cellSqr == $cs, cellRow != $cr )
 
-    # but there is a cell in the same row and another square containing this value
+    // but there is a cell in the same row and another square containing this value
     $cx: Cell( freeCount > 1, free contains $i, cellRow == $cr, cellSqr != $cs )
 then
-    # remove the value from that other cell
+    // remove the value from that other cell
     if (explain) {
         System.out.println( "row elimination due to " + $c.posAsString() +
                             ": remove " + $i + " from " + $cx.posAsString() );

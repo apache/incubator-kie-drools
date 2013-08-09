@@ -4,7 +4,6 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleMemory;
@@ -213,11 +212,10 @@ public class PhreakNotNode {
         RightTupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
+        boolean leftUpdateOptimizationAllowed = notNode.isLeftUpdateOptimizationAllowed();
 
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-
-            PropagationContext context = leftTuple.getPropagationContext();
 
             FastIterator rightIt = notNode.getRightIterator(rtm);
             RightTuple firstRightTuple = notNode.getFirstRightTuple(leftTuple, rtm, null, rightIt);
@@ -242,6 +240,11 @@ public class PhreakNotNode {
             constraints.updateFromTuple(contextEntry,
                                         wm,
                                         leftTuple);
+
+            if ( !leftUpdateOptimizationAllowed && blocker != null ) {
+                blocker.removeBlocked(leftTuple);
+                blocker = null;
+            }
 
             // if we where not blocked before (or changed buckets), or the previous blocker no longer blocks, then find the next blocker
             if (blocker == null || !constraints.isAllowedCachedLeft(contextEntry,
@@ -486,8 +489,6 @@ public class PhreakNotNode {
             }
 
             if (rightTuple.getBlocked() != null) {
-                PropagationContext context = rightTuple.getPropagationContext();
-
                 for (LeftTuple leftTuple = rightTuple.getBlocked(); leftTuple != null; ) {
                     LeftTuple temp = leftTuple.getBlockedNext();
 

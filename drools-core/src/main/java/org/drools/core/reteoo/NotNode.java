@@ -269,4 +269,8 @@ public class NotNode extends BetaNode {
             }
         }
     }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return getRawConstraints().isLeftUpdateOptimizationAllowed();
+    }
 }

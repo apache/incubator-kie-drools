@@ -156,4 +156,8 @@ public class DoubleNonIndexSkipBetaConstraints
         }
         return Long.MAX_VALUE;
     }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return true;
+    }
 }

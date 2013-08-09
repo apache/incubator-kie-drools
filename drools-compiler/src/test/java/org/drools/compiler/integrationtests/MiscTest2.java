@@ -86,6 +86,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -2290,4 +2291,201 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(1, ksession.fireAllRules());
     }
+
+    public static class Conversation {
+        private final int id;
+        private String family;
+        private int timeslot;
+
+        public Conversation(int id) {
+            this.id = id;
+        }
+
+        public Conversation(int id, String family, int timeslot) {
+            this.id = id;
+            this.family = family;
+            this.timeslot = timeslot;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getFamily() {
+            return family;
+        }
+
+        public void setFamily(String family) {
+            this.family = family;
+        }
+
+        public int getTimeslot() {
+            return timeslot;
+        }
+
+        public void setTimeslot(int timeslot) {
+            this.timeslot = timeslot;
+        }
+
+        public String toString() {
+            return "Conversation #" + getId() + " with " + getFamily() + " @ " + getTimeslot();
+        }
+    }
+
+    @Test
+    public void testNotNodeUpdateBlocker() {
+        String str =
+                "import org.drools.compiler.integrationtests.MiscTest2.Conversation;\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "rule \"familyEnd\" when\n" +
+                "   $conversation : Conversation(\n" +
+                "       family != null, $family: family, \n" +
+                "       $timeslot: timeslot)\n" +
+                "\n" +
+                "   not Conversation(\n" +
+                "       family == $family, \n" +
+                "       timeslot > $timeslot);\n" +
+                "then\n" +
+                "   list.add($conversation);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<Conversation> conversations = new ArrayList<Conversation>();
+        ksession.setGlobal("list", conversations);
+
+        Conversation c0 = new Conversation(0, "Fusco", 2);
+        Conversation c1 = new Conversation(1, "Fusco", 3);
+        Conversation c2 = new Conversation(2, "Fusco", 4);
+
+        FactHandle fh0 = ksession.insert(c0);
+        FactHandle fh1 = ksession.insert(c1);
+        FactHandle fh2 = ksession.insert(c2);
+
+        ksession.fireAllRules();
+        assertEquals(1, conversations.size());
+        conversations.clear();
+
+        c2.setTimeslot(0);
+        ksession.update(fh2, c2);
+        ksession.fireAllRules();
+        c2.setTimeslot(4);
+        ksession.update(fh2, c2);
+        ksession.fireAllRules();
+        conversations.clear();
+
+        c0.setTimeslot(3);
+        ksession.update(fh0, c0);
+        ksession.fireAllRules();
+        c0.setTimeslot(2);
+        ksession.update(fh0, c0);
+        ksession.fireAllRules();
+        conversations.clear();
+
+        c2.setTimeslot(1);
+        ksession.update(fh2, c2);
+        ksession.fireAllRules();
+        assertEquals(1, conversations.size());
+    }
+
+    @Test
+    public void testFailedStaticImport() {
+        // DROOLS-155
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "import function org.does.not.exist.Foo; \n" +
+                     "" + "" +
+                     "rule X when\n" +
+                     "then\n" +
+                     "end";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertTrue( kb.hasErrors() );
+    }
+    
+    public static class Foo3 {
+        @Position(0)
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+   
+    @Ignore
+    @Test
+    public void reteErrorInIF() {
+        List<String> firedRules = new ArrayList<String>();
+        String str = "import " + MiscTest2.Foo.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo2.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo3.class.getCanonicalName() + "\n"
+                + "global java.util.List fired;\n"
+                + "rule \"weird foo\"\n" +
+                    "    when\n" +
+                    "        \n" +
+                    "        $foo: Foo($x: x)\n" +
+                    "        $foo2: Foo2()\n" +
+                    "        if( $foo.getX() != 1 )  break[needThis]\n" +
+                    "        $foo3: Foo3(x == $x);\n" +
+                    "    then\n" +
+                    "        fired.add(\"We made it!\");\n" +
+                    "    then[needThis]\n" +
+                    "        modify($foo){\n" +
+                    "            setX(1)\n" +
+                    "        };\n" +
+                    "end";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("fired", firedRules);
+        ksession.insert(new Foo());
+        ksession.insert(new Foo2());
+        ksession.insert(new Foo3());
+        ksession.fireAllRules();
+        
+        assertEquals(1, firedRules.size());
+        
+                
+     }
+  @Ignore  
+    @Test
+    public void reteErrorInIF2() {
+        List<String> firedRules = new ArrayList<String>();
+        String str = "import " + MiscTest2.Foo.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo2.class.getCanonicalName() + "\n"
+                + "import " + MiscTest2.Foo3.class.getCanonicalName() + "\n"
+                + "global java.util.List fired;\n"
+                + "rule \"weird foo\"\n" +
+                    "    when\n" +
+                    "        $foo: Foo($x: x)\n" +
+                    "        $foo2: Foo2()\n" + 
+                    "        if( $foo.getX() != 1 ) break[needThis] \n" +   
+                    "        not( Foo(x == 2) ) \n" +
+                    "        $foo3: Foo3(x == $x)\n" +
+                    "    then\n" +
+                    "        fired.add(\"We made it!\");\n" +
+                    "    then[needThis]\n" +
+                    "        modify($foo){\n" +
+                    "            setX(1)\n" +
+                    "        };\n" +
+                    "end";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("fired", firedRules);
+        ksession.insert(new Foo());
+        ksession.insert(new Foo2());
+        ksession.insert(new Foo3());
+        ksession.fireAllRules();
+        
+        assertEquals(1, firedRules.size());
+        
+                
+     }
+
+    
 }

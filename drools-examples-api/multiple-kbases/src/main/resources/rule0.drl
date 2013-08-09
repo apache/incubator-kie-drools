@@ -1,0 +1,7 @@
+global java.util.List list
+
+rule "rule 0" when
+    $i : Integer( )
+then
+    list.add( $i * 0 );
+end

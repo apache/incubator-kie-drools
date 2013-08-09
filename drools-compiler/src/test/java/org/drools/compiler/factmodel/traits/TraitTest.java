@@ -4353,4 +4353,117 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+    public static class TraitableFoo {
+
+        private String id;
+
+        public TraitableFoo( String id, int x, Object k ) {
+            setId( id );
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId( String id ) {
+            this.id = id;
+        }
+    }
+
+    public static class XYZ extends TraitableFoo {
+
+        public XYZ() {
+            super( null, 0, null );
+        }
+
+    }
+
+
+    @Test
+    public void traitDonLegacyClassWithoutEmptyConstructor( ) {
+        String drl = "package org.drools.compiler.trait.test;\n" +
+                     "\n" +
+                     "import org.drools.compiler.factmodel.traits.TraitTest.TraitableFoo;\n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "\n" +
+                     "" +
+                     "declare trait Bar\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Don\"\n" +
+                     "no-loop \n" +
+                     "when\n" +
+                     " $f : TraitableFoo( )\n" +
+                     "then\n" +
+                     " Bar b = don( $f, Bar.class );\n" +
+                     "end";
+
+
+        StatefulKnowledgeSession ksession = getSessionFromString(drl);
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ksession.getKieBase() );
+
+        ksession.insert( new TraitableFoo( "xx", 0, null ) );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+        assertEquals( 3, ksession.getObjects().size() );
+    }
+
+    @Test
+    public void testMapCoreManyTraits( ) {
+        // DROOLS-210
+        String source = "package org.drools.test;\n" +
+                        "\n" +
+                        "import java.util.*;\n" +
+                        "global List list;\n " +
+                        "\n" +
+                        "global List list; \n" +
+                        "\n" +
+                        "declare trait PersonMap\n" +
+                        "@propertyReactive \n" +
+                        " name : String \n" +
+                        " age : int \n" +
+                        " height : Double \n" +
+                        "end\n" +
+                        "\n" +
+                        "declare trait StudentMap\n" +
+                        "@propertyReactive\n" +
+                        " ID : String\n" +
+                        " GPA : Double = 3.0\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule Don \n" +
+                        "no-loop \n" +
+                        "when \n" +
+                        " $m : Map( this[ \"age\"] == 18 )\n" +
+                        "then \n" +
+                        " Object obj1 = don( $m, PersonMap.class );\n" +
+                        " Object obj2 = don( obj1, StudentMap.class );\n" +
+                        " System.out.println( \"done: PersonMap\" );\n" +
+                        "\n" +
+                        "end\n" +
+                        "\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKieBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        Map<String,Object> map = new HashMap<String, Object>( );
+        map.put( "name", "john" );
+        map.put( "age", 18 );
+        ks.insert( map );
+
+        ks.fireAllRules();
+
+        for ( Object o : ks.getObjects() ) {
+            System.err.println( o );
+        }
+
+        assertEquals( 3.0, map.get( "GPA" ) );
+    }
 }

@@ -157,4 +157,8 @@ public class EmptyBetaConstraints
 
     public void init(BuildContext context, short betaNodeType) { }
     public void initIndexes(int depth, short betaNodeType) { }
+
+    public boolean isLeftUpdateOptimizationAllowed() {
+        return true;
+    }
 }
