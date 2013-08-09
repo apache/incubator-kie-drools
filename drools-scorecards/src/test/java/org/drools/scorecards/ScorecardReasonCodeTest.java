@@ -1,6 +1,6 @@
 package org.drools.scorecards;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.dmg.pmml.pmml_4_1.descr.Attribute;
 import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
@@ -18,11 +18,11 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.drools.scorecards.ScorecardCompiler.DrlType.INTERNAL_DECLARED_TYPES;
 
 public class ScorecardReasonCodeTest {
@@ -72,7 +72,7 @@ public class ScorecardReasonCodeTest {
         for (Object serializable : pmmlDocument.getAssociationModelsAndBaselineModelsAndClusteringModels()){
             if (serializable instanceof Scorecard){
                 assertTrue(((Scorecard)serializable).isUseReasonCodes());
-                assertEquals(100.0, ((Scorecard)serializable).getInitialScore());
+                assertEquals(100.0, ((Scorecard)serializable).getInitialScore(), 0.0);
                 assertEquals("pointsBelow",((Scorecard)serializable).getReasonCodeAlgorithm());
             }
         }
@@ -107,11 +107,11 @@ public class ScorecardReasonCodeTest {
                     if (obj instanceof Characteristics){
                         Characteristics characteristics = (Characteristics)obj;
                         assertEquals(4, characteristics.getCharacteristics().size());
-                        assertEquals(10.0, characteristics.getCharacteristics().get(0).getBaselineScore());
-                        assertEquals(99.0, characteristics.getCharacteristics().get(1).getBaselineScore());
-                        assertEquals(12.0, characteristics.getCharacteristics().get(2).getBaselineScore());
-                        assertEquals(0.0, characteristics.getCharacteristics().get(3).getBaselineScore());
-                        assertEquals(25.0, ((Scorecard)serializable).getBaselineScore());
+                        assertEquals(10.0, characteristics.getCharacteristics().get(0).getBaselineScore(), 0.0);
+                        assertEquals(99.0, characteristics.getCharacteristics().get(1).getBaselineScore(), 0.0);
+                        assertEquals(12.0, characteristics.getCharacteristics().get(2).getBaselineScore(), 0.0);
+                        assertEquals(0.0, characteristics.getCharacteristics().get(3).getBaselineScore(), 0.0);
+                        assertEquals(25.0, ((Scorecard)serializable).getBaselineScore(), 0.0);
                         return;
                     }
                 }
@@ -198,7 +198,7 @@ public class ScorecardReasonCodeTest {
         session.fireAllRules();
         session.dispose();
         //occupation = +10, age = +40, state = -10, validLicense = 1
-        assertEquals(41.0,scorecard.getCalculatedScore());
+        assertEquals(41.0,scorecard.getCalculatedScore(), 0.0);
         //[OCC02, AGE03, VL001, RS001]
         assertEquals(4, scorecard.getReasonCodes().size());
         assertTrue(scorecard.getReasonCodes().contains("OCC99"));
@@ -245,7 +245,7 @@ public class ScorecardReasonCodeTest {
         session.fireAllRules();
         session.dispose();
         //occupation = -10, age = +10, validLicense = -1, initialScore = 100;
-        assertEquals(99.0, scorecard.getCalculatedScore());
+        assertEquals(99.0, scorecard.getCalculatedScore(), 0.0);
 
         assertEquals(3, scorecard.getReasonCodes().size());
         //[AGE01, VL002, OCC01]
@@ -263,7 +263,7 @@ public class ScorecardReasonCodeTest {
         session.fireAllRules();
         session.dispose();
         //occupation = +10, age = +40, state = -10, validLicense = 1, initialScore = 100;
-        assertEquals(141.0,scorecard.getCalculatedScore());
+        assertEquals(141.0,scorecard.getCalculatedScore(), 0.0);
         //[OCC02, AGE03, VL001, RS001]
         assertEquals(4, scorecard.getReasonCodes().size());
         assertTrue(scorecard.getReasonCodes().contains("OCC02"));
