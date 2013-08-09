@@ -72,10 +72,12 @@
      <dependency>
        <groupId>org.hibernate</groupId>
        <artifactId>hibernate-entitymanager</artifactId>
+       <optional>true</optional>
      </dependency>
      <dependency>
        <groupId>org.hibernate</groupId>
        <artifactId>hibernate-core</artifactId>
+       <optional>true</optional>
      </dependency>
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
