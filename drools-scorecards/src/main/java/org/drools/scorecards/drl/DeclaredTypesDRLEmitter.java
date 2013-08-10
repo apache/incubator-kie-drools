@@ -69,11 +69,14 @@ public class DeclaredTypesDRLEmitter extends AbstractDRLEmitter{
     @Override
     protected void addAdditionalReasonCodeConsequence(Rule rule, Scorecard scorecard) {
         Consequence consequence = new Consequence();
-        consequence.setSnippet("$sc.setReasonCodes($reasons);");
-        rule.addConsequence(consequence);
-        consequence = new Consequence();
-        consequence.setSnippet("$sc.sortReasonCodes();");
-        rule.addConsequence(consequence);
+        if (scorecard.getReasonCodeAlgorithm() != null) {
+            if ("pointsAbove".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+                consequence.setSnippet("$sc.sortAndSetReasonCodes(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE, $partialScoresList);");
+            } else if ("pointsBelow".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+                consequence.setSnippet("$sc.sortAndSetReasonCodes(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW, $partialScoresList);");
+            }
+            rule.addConsequence(consequence);
+        }
     }
 
     @Override
