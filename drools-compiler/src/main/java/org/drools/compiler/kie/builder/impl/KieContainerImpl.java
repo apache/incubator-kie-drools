@@ -73,7 +73,11 @@ public class KieContainerImpl
             throw new UnsupportedOperationException( "It is not possible to update a classpath container to a new version." );
         }
         ReleaseId currentReleaseId = kProject.getGAV();
-        InternalKieModule currentKM = (InternalKieModule) kr.getKieModule( currentReleaseId );
+
+        // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
+        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) && !currentReleaseId.equals(kr.getDefaultReleaseId()) ?
+                                      (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
+                                      (InternalKieModule) kr.getKieModule( currentReleaseId );
         InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
         
         ChangeSetBuilder csb = new ChangeSetBuilder();

@@ -1,5 +1,6 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import org.kie.internal.builder.InternalKieBuilder;
 
 import static junit.framework.Assert.assertEquals;
 
-public class IncrementalCompilationTest {
+public class IncrementalCompilationTest extends CommonTestMethodBase {
 
     @Test
     public void testKJarUpgrade() throws Exception {
@@ -106,25 +107,6 @@ public class IncrementalCompilationTest {
         // continue working with the session
         ksession.insert(new Message("Hello World"));
         assertEquals( 3, ksession.fireAllRules() );
-    }
-
-    public static KieModule createAndDeployJar(KieServices ks,
-                                         ReleaseId releaseId,
-                                         String... drls ) {
-        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(releaseId);
-        for( int i = 0; i < drls.length; i++ ) {
-            if( drls[i] != null ) {
-                kfs.write("src/main/resources/r"+i+".drl", drls[i]);
-            }
-        }
-        ks.newKieBuilder( kfs ).buildAll();
-        InternalKieModule kieModule = (InternalKieModule) ks.getRepository().getKieModule( releaseId );
-        byte[] jar = kieModule.getBytes();
-
-        // Deploy jar into the repository
-        Resource jarRes = ks.getResources().newByteArrayResource( jar );
-        KieModule km = ks.getRepository().addKieModule( jarRes );
-        return km;
     }
 
     @Test

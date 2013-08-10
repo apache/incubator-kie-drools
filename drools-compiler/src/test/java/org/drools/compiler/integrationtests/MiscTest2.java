@@ -35,10 +35,8 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
@@ -57,12 +55,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.FactHandle;
-import org.mvel2.integration.impl.MapVariableResolverFactory;
-import org.mvel2.optimizers.OptimizerFactory;
-import org.mvel2.templates.SimpleTemplateRegistry;
-import org.mvel2.templates.TemplateCompiler;
-import org.mvel2.templates.TemplateRegistry;
-import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,17 +67,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Run all the tests with the ReteOO engine implementation
@@ -704,16 +691,6 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(1, foo1.x);
         assertEquals(1, foo2.x);
-    }
-
-    public static class Foo {
-        public int x;
-        public int getX() {
-            return x;
-        }
-        public void setX(int x) {
-            this.x = x;
-        }
     }
 
     @Test
@@ -1584,17 +1561,6 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, ksession.fireAllRules());
     }
 
-    public static class Foo2 {
-        @Position(0)
-        public int x;
-        public int getX() {
-            return x;
-        }
-        public void setX(int x) {
-            this.x = x;
-        }
-    }
-
 
     @Test
     public void testSelfChangingRuleSet() {
@@ -2387,5 +2353,107 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.update(fh2, c2);
         ksession.fireAllRules();
         assertEquals(1, conversations.size());
+    }
+
+    @Test
+    public void testFailedStaticImport() {
+        // DROOLS-155
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "import function org.does.not.exist.Foo; \n" +
+                     "" + "" +
+                     "rule X when\n" +
+                     "then\n" +
+                     "end";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertTrue( kb.hasErrors() );
+    }
+    
+    @Test @Ignore
+    public void testNamedConsequence() {
+        List<String> firedRules = new ArrayList<String>();
+        String str =
+                "import " + Foo.class.getCanonicalName() + "\n" +
+                "import " + Foo2.class.getCanonicalName() + "\n" +
+                "global java.util.List fired;\n" +
+                "rule \"weird foo\"\n" +
+                "    when\n" +
+                "        \n" +
+                "        $foo: Foo($x: x)\n" +
+                "        if( $foo.getX() != 1 )  break[needThis]\n" +
+                "        $foo2: Foo2(x == $x);\n" +
+                "    then\n" +
+                "        fired.add(\"We made it!\");\n" +
+                "    then[needThis]\n" +
+                "        modify($foo){\n" +
+                "            setX(1)\n" +
+                "        };\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("fired", firedRules);
+        ksession.insert(new Foo());
+        ksession.insert(new Foo2(1));
+        ksession.fireAllRules();
+
+        assertEquals(1, firedRules.size());
+    }
+
+    @Test @Ignore
+    public void testNamedConsequenceWithNot() {
+        List<String> firedRules = new ArrayList<String>();
+        String str =
+                "import " + Foo.class.getCanonicalName() + "\n" +
+                "import " + Foo2.class.getCanonicalName() + "\n" +
+                "global java.util.List fired;\n" +
+                "rule \"weird foo\"\n" +
+                "    when\n" +
+                "        $foo: Foo($x: x)\n" +
+                "        if( $foo.getX() != 1 ) break[needThis] \n" +
+                "        not( Foo(x == 2) ) \n" +
+                "        $foo2: Foo2(x == $x)\n" +
+                "    then\n" +
+                "        fired.add(\"We made it!\");\n" +
+                "    then[needThis]\n" +
+                "        modify($foo){\n" +
+                "            setX(1)\n" +
+                "        };\n" +
+                "end";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.setGlobal("fired", firedRules);
+        ksession.insert(new Foo());
+        ksession.insert(new Foo2(1));
+        ksession.fireAllRules();
+        
+        assertEquals(1, firedRules.size());
+    }
+
+    public static class Foo {
+        public int x;
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
+    }
+
+    public static class Foo2 {
+        @Position(0)
+        public int x;
+        public Foo2() { }
+        public Foo2(int x) {
+            this.x = x;
+        }
+        public int getX() {
+            return x;
+        }
+        public void setX(int x) {
+            this.x = x;
+        }
     }
 }
