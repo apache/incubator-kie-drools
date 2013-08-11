@@ -32,4 +32,5 @@ public interface WorkItem extends org.kie.api.runtime.process.WorkItem {
 
     void setProcessInstanceId(long processInstanceId);
 
+    void setDeploymentId(String deploymentId);
 }
