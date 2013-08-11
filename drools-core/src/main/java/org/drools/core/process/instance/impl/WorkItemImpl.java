@@ -33,6 +33,7 @@ public class WorkItemImpl implements WorkItem, Serializable {
     private Map<String, Object> parameters = new HashMap<String, Object>();
     private Map<String, Object> results = new HashMap<String, Object>();
     private long processInstanceId;
+    private String deploymentId;
     
     public void setId(long id) {
         this.id = id;
@@ -99,7 +100,16 @@ public class WorkItemImpl implements WorkItem, Serializable {
     public long getProcessInstanceId() {
         return processInstanceId;
     }
-    
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+
     public String toString() {
         StringBuilder b = new StringBuilder("WorkItem ");
         b.append(id);
