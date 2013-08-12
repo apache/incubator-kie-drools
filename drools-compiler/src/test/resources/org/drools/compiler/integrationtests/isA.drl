@@ -1,0 +1,13 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.IsATest.Person
+
+declare trait Student
+    schoolName : String
+end
+
+rule "test rule"
+    when
+        Person( this isA Student )
+    then
+end
