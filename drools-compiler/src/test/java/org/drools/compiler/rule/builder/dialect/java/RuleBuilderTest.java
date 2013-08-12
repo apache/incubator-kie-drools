@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.List;
 
 import org.drools.core.base.EnabledBoolean;
 import org.drools.compiler.compiler.DrlParser;
@@ -50,8 +51,6 @@ import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.type.DateFormatsImpl;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-
-import antlr.collections.List;
 
 public class RuleBuilderTest {
 

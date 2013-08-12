@@ -43,19 +43,6 @@
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>stringtemplate</artifactId>
-    </dependency>
-    <dependency>
-      <!-- antlr also depends on the old antlr 2.7.7 jar -->
-      <groupId>antlr</groupId>
-      <artifactId>antlr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.antlr</groupId>
       <artifactId>gunit</artifactId>
     </dependency>
     <dependency>
@@ -168,6 +155,9 @@
                     <condition property="antlr.debugParser" value="-Xconversiontimeout 32000 -debug" else="">
                       <isset property="debugParser"/>
                     </condition>
+                    <!-- path id="antlr.path">
+                        <path refid="maven.compile.classpath"/>
+                    </path -->
                     <echo message="Generating Lexer (${antlr.debugParser})"/>
                     <java classname="org.antlr.Tool" fork="true">
                       <jvmarg line="-Xmx750M -Xincgc"/>
