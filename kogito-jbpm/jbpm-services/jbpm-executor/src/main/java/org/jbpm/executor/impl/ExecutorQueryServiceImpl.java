@@ -79,7 +79,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
      */
     @Override
     public RequestInfo getRequestById(Long id) {
-    	return pm.find(RequestInfo.class, id);
+    	return pm.find(org.jbpm.executor.entities.RequestInfo.class, id);
     }
 
     /**
