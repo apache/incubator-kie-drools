@@ -30,6 +30,12 @@
     <dependency>
       <groupId>org.kie.commons</groupId>
       <artifactId>kie-commons-io</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>log4j</artifactId>
+          <groupId>log4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>  
 
     <dependency>

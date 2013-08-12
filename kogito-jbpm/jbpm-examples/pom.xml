@@ -104,6 +104,12 @@
     	<groupId>org.subethamail</groupId>
     	<artifactId>subethasmtp-wiser</artifactId>
     	<scope>provided</scope>
+    	<exclusions>
+    	  <exclusion>
+    	    <artifactId>log4j</artifactId>
+    	    <groupId>log4j</groupId>
+    	  </exclusion>
+    	</exclusions>
     </dependency>
     <dependency>
     	<groupId>com.h2database</groupId>
@@ -118,9 +124,9 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-   <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
   </dependencies>
 </project>
