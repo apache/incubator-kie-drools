@@ -133,7 +133,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.opensymphony.quartz</groupId>
+      <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
       <scope>provided</scope>
     </dependency>
