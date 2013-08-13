@@ -99,4 +99,8 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         this.manager = manager;
     }
 
+    public boolean isDisposed() {
+        return disposed;
+    }
+
 }

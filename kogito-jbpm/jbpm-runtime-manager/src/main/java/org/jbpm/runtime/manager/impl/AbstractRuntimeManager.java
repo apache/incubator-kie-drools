@@ -153,5 +153,15 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             internalTaskService.removeMarshallerContext(getIdentifier());
         }
     }
+    
+
+    protected boolean canDestroy() {
+        JtaTransactionManager tm = new ExtendedJTATransactionManager(null, null, null);
+        if (tm.getStatus() == JtaTransactionManager.STATUS_NO_TRANSACTION ||
+                tm.getStatus() == JtaTransactionManager.STATUS_ACTIVE) {
+            return true;
+        }
+        return false;
+    }
 
 }

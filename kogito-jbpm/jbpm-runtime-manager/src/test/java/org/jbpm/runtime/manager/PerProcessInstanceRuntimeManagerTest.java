@@ -5,8 +5,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
 
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
@@ -31,6 +35,7 @@ import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
@@ -382,5 +387,31 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
             
         }
         manager.close();
+    }
+    
+    @Test
+    public void testCreationOfRuntimeManagerWithinTransaction() throws Exception {
+        System.setProperty("jbpm.tm.jndi.lookup", "java:comp/UserTransaction");
+        
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        assertNotNull(manager);
+
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ksession.startProcess("ScriptTask");
+        
+        ut.commit();
+        
+        System.clearProperty("jbpm.tm.jndi.lookup");
     }
 }

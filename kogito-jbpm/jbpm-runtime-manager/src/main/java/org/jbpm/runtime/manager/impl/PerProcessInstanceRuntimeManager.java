@@ -55,7 +55,7 @@ import org.kie.internal.task.api.InternalTaskService;
  * </ul>
  */
 public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
-
+    
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
     
@@ -255,13 +255,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void init() {
         // need to init one session to bootstrap all case - such as start timers
-        RuntimeEngine engine = getRuntimeEngine(EmptyContext.get());
-        configureRuntimeOnTaskService((InternalTaskService) engine.getTaskService());
-        try {
-            engine.getKieSession().destroy();
-        } finally {
-            disposeRuntimeEngine(engine);
-        }
+        KieSession ksession = factory.newKieSession();
+        ksession.destroy();
         
     }
 

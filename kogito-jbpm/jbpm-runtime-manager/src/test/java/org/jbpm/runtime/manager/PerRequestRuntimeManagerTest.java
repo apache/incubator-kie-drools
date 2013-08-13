@@ -225,4 +225,30 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         
         logService.dispose();
     }
+    
+    @Test
+    public void testCreationOfRuntimeManagerWithinTransaction() throws Exception {
+        System.setProperty("jbpm.tm.jndi.lookup", "java:comp/UserTransaction");
+        
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        assertNotNull(manager);
+
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ksession.startProcess("ScriptTask");
+        
+        ut.commit();
+        
+        System.clearProperty("jbpm.tm.jndi.lookup");
+    }
 }
