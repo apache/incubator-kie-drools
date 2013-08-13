@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -39,9 +42,9 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
@@ -66,7 +69,9 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
@@ -223,21 +228,49 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @RequirePersistence(true)
     public void testRuleTaskSetVariable() throws Exception {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
                 "BPMN2-RuleTaskSetVariable.drl");
         ksession = createKnowledgeSession(kbase);
+        
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        ProcessInstance processInstance = ksession.startProcess("RuleTask",
+                params);
+        assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        ksession.fireAllRules();
+        ut.commit();
+        assertTrue(list.size() == 1);
+
+        assertProcessVarValue(processInstance, "x", "AnotherString");
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test
+    public void testRuleTaskSetVariableWithReconnect() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-RuleTask2.bpmn2",
+                "BPMN2-RuleTaskSetVariableReconnect.drl");
+        ksession = createKnowledgeSession(kbase);
+        
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "SomeString");
+
         ProcessInstance processInstance = ksession.startProcess("RuleTask",
                 params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession.fireAllRules();
+
         assertTrue(list.size() == 1);
-        WorkflowProcessInstance wpi = (WorkflowProcessInstance)processInstance;
-        assertEquals("AnotherString", wpi.getVariable("x"));
+
+        assertProcessVarValue(processInstance, "x", "AnotherString");
         assertProcessInstanceFinished(processInstance, ksession);
     }
     

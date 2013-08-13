@@ -42,6 +42,7 @@ import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowLogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.DroolsStreamUtils;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
@@ -49,9 +50,10 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
+import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
-import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
@@ -80,6 +82,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
@@ -477,6 +480,14 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         env.set(EnvironmentName.TRANSACTION_MANAGER,
                 TransactionManagerServices.getTransactionManager());
+        if (sessionPersistence) {
+            ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);        
+            
+            List<ObjectMarshallingStrategy> listStrategies =new ArrayList<ObjectMarshallingStrategy>(Arrays.asList(strategies));
+            listStrategies.add(0, new ProcessInstanceResolverStrategy());
+            strategies = new ObjectMarshallingStrategy[listStrategies.size()];  
+            env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, listStrategies.toArray(strategies));
+        }
         return env;
     }
 

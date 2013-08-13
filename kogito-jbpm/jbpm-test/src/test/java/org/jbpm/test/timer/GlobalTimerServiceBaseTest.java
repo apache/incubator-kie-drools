@@ -152,7 +152,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         for (int i = 0; i < 5; i++) {
             Thread.sleep(1000);
         }
-        Thread.sleep(1000);
+        Thread.sleep(200);
         manager.disposeRuntimeEngine(runtime);
         assertEquals(5, timerExporations.size());
 

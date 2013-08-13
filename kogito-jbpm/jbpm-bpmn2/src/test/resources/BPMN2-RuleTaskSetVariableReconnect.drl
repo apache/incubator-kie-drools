@@ -1,0 +1,16 @@
+package com.sample;
+
+import org.kie.api.runtime.process.WorkflowProcessInstance
+
+global java.util.List list;
+
+rule MyRule
+  ruleflow-group "myRules"
+  when
+    processInstance : WorkflowProcessInstance()
+    eval( processInstance.getVariable("x") == "SomeString")
+  then
+    processInstance = (WorkflowProcessInstance)kcontext.getKnowledgeRuntime().getProcessInstance(processInstance.getId());
+    processInstance.setVariable("x", "AnotherString");
+    list.add("Executed");
+end

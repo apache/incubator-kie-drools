@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
-  <itemDefinition id="_xItem" structureRef="String" />
-  <process id="RuleTask" tns:packageName="com.sample" name="RuleTask Process" isExecutable="true" processType="Private">
-    <property id="x" itemSubjectRef="_xItem"/>
-    <startEvent id="_1" name="StartProcess">
-      <outgoing>_1-_5</outgoing>
-    </startEvent>
-    <endEvent id="_3" name="EndProcess">
-      <incoming>_4-_3</incoming>
-      <terminateEventDefinition id="TerminateEventDefinition_1"/>
-    </endEvent>
-    <businessRuleTask id="_4" g:ruleFlowGroup="myRules" name="Rule">
-      <incoming>_5-_4</incoming>
-      <outgoing>SequenceFlow_1</outgoing>
-    </businessRuleTask>
-    <scriptTask id="_5" name="Insert" scriptFormat="http://www.java.com/java">
-      <incoming>_1-_5</incoming>
-      <outgoing>_5-_4</outgoing>
-      <script>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:tns="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="Definition" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.example.org/MinimalExample" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_xItem" structureRef="String"/>
+  <bpmn2:process id="RuleTask" tns:version="1" tns:packageName="com.sample" tns:adHoc="false" name="RuleTask Process" isExecutable="true" processType="Private">
+    <bpmn2:property id="x" itemSubjectRef="_xItem"/>
+    <bpmn2:startEvent id="_1" name="StartProcess">
+      <bpmn2:outgoing>_1-_5</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:endEvent id="_3" name="EndProcess">
+      <bpmn2:incoming>_4-_3</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
+    </bpmn2:endEvent>
+    <bpmn2:businessRuleTask id="_4" tns:ruleFlowGroup="" g:ruleFlowGroup="myRules" name="Rule">
+      <bpmn2:incoming>_5-_4</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:businessRuleTask>
+    <bpmn2:scriptTask id="_5" name="Insert" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_1-_5</bpmn2:incoming>
+      <bpmn2:outgoing>_5-_4</bpmn2:outgoing>
+      <bpmn2:script>
 insert(kcontext.getProcessInstance());
-</script>
-    </scriptTask>
-    <sequenceFlow id="_4-_3" sourceRef="ScriptTask_1" targetRef="_3"/>
-    <sequenceFlow id="_5-_4" sourceRef="_5" targetRef="_4"/>
-    <sequenceFlow id="_1-_5" sourceRef="_1" targetRef="_5"/>
-    <scriptTask id="ScriptTask_1" name="Retract" scriptFormat="http://www.java.com/java">
-      <incoming>SequenceFlow_1</incoming>
-      <outgoing>_4-_3</outgoing>
-      <script>System.out.println(&quot;Process instance is &quot; + kcontext.getProcessInstance());
+</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_4-_3" tns:priority="1" sourceRef="ScriptTask_1" targetRef="_3"/>
+    <bpmn2:sequenceFlow id="_5-_4" tns:priority="1" sourceRef="_5" targetRef="_4"/>
+    <bpmn2:sequenceFlow id="_1-_5" tns:priority="1" sourceRef="_1" targetRef="_5"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="Retract" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>_4-_3</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Process instance is &quot; + kcontext.getProcessInstance());
 if (x == null) {
 kcontext.getKnowledgeRuntime().retract(null);
-}</script>
-    </scriptTask>
-    <sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="_4" targetRef="ScriptTask_1"/>
-  </process>
+}</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" tns:priority="1" name="" sourceRef="_4" targetRef="ScriptTask_1"/>
+  </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="RuleTask">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="_1">
@@ -69,4 +69,4 @@ kcontext.getKnowledgeRuntime().retract(null);
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</definitions>
+</bpmn2:definitions>

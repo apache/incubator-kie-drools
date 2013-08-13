@@ -15,17 +15,22 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.impl.EnvironmentFactory;
+import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -70,7 +75,7 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
     protected GlobalSchedulerService schedulerService;
     protected ClassLoader classLoader;
     
-    protected Properties sessionConfigProperties;
+    protected Properties sessionConfigProperties;      
     
     public SimpleRuntimeEnvironment() {
         this(new SimpleRegisterableItemsFactory());        
@@ -184,6 +189,15 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         addIfPresent(EnvironmentName.TRANSACTION_MANAGER, copy);
         addIfPresent(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, copy);
         addIfPresent(EnvironmentName.TRANSACTION, copy);
+        
+        if (usePersistence()) {
+            ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) copy.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);        
+            
+            List<ObjectMarshallingStrategy> listStrategies = new ArrayList<ObjectMarshallingStrategy>(Arrays.asList(strategies));
+            listStrategies.add(0, new ProcessInstanceResolverStrategy());
+            strategies = new ObjectMarshallingStrategy[listStrategies.size()];  
+            copy.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, listStrategies.toArray(strategies));
+        }
         
         return copy;
     }

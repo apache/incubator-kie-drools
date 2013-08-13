@@ -8,4 +8,5 @@ rule MyRule
     processInstance : WorkflowProcessInstance()
   then
     System.out.println("Rule fired");
+    retract(processInstance);
 end
