@@ -39,12 +39,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>antlr</artifactId>
-          <groupId>antlr</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
