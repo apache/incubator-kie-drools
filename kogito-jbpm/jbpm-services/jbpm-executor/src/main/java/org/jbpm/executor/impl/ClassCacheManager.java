@@ -48,12 +48,12 @@ public class ClassCacheManager {
      * @param name - fully qualified class name of the command
      * @return initialized class instance
      */
-    public Command findCommand(String name) {
+    public Command findCommand(String name, ClassLoader cl) {
         synchronized (commandCache) {
             
                 if (!commandCache.containsKey(name)) {
                     try {
-                        Command commandInstance = (Command) Class.forName(name).newInstance();
+                        Command commandInstance = (Command) Class.forName(name, true, cl).newInstance();
                         commandCache.put(name, commandInstance);
                     } catch (Exception ex) {
                         throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
@@ -72,12 +72,12 @@ public class ClassCacheManager {
      * @param name - fully qualified class name of the command callback
      * @return initialized class instance
      */
-    public CommandCallback findCommandCallback(String name) {
+    public CommandCallback findCommandCallback(String name, ClassLoader cl) {
         synchronized (callbackCache) {
             
                     if (!callbackCache.containsKey(name)) {
                         try {
-                            CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name).newInstance();
+                            CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name, true, cl).newInstance();
                             callbackCache.put(name, commandCallbackInstance);
                         } catch (Exception ex) {
                             throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
@@ -94,14 +94,14 @@ public class ClassCacheManager {
      * @param ctx contextual data given by execution service
      * @return
      */
-    public List<CommandCallback> buildCommandCallback(CommandContext ctx) {
+    public List<CommandCallback> buildCommandCallback(CommandContext ctx, ClassLoader cl) {
         List<CommandCallback> callbackList = new ArrayList<CommandCallback>();
         if (ctx != null && ctx.getData("callbacks") != null) {
             logger.debug("Callback: {}", ctx.getData("callbacks"));
             String[] callbacksArray = ((String) ctx.getData("callbacks")).split(",");;
             List<String> callbacks = (List<String>) Arrays.asList(callbacksArray);
             for (String callbackName : callbacks) {
-                CommandCallback handler = findCommandCallback(callbackName);
+                CommandCallback handler = findCommandCallback(callbackName, cl);
                 callbackList.add(handler);
             }
         }

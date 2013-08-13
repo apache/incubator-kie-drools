@@ -26,8 +26,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -186,6 +184,7 @@ public class ExecutorImpl implements Executor {
         requestInfo.setStatus(STATUS.QUEUED);
         requestInfo.setTime(date);
         requestInfo.setMessage("Ready to execute");
+        requestInfo.setDeploymentId((String)ctx.getData("deploymentId"));
         if (ctx.getData("retries") != null) {
             requestInfo.setRetries(Integer.valueOf(String.valueOf(ctx.getData("retries"))));
         } else {

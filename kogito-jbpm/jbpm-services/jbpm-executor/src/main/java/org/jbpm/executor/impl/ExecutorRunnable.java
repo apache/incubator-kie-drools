@@ -26,9 +26,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.impl.runtime.RuntimeManagerRegistry;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
@@ -38,6 +40,7 @@ import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ExecutionResults;
 import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.STATUS;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,21 +94,26 @@ public class ExecutorRunnable implements Runnable {
             try {
 
                 logger.debug("Processing Request Id: {}, status {} command {}", request.getId(), request.getStatus(), request.getCommandName());
-                
+                ClassLoader cl = getClassLoader(request.getDeploymentId());
                 
                 byte[] reqData = request.getRequestData();
                 if (reqData != null) {
+                    ObjectInputStream in = null;
                     try {
-                        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(reqData));
+                        in = new ClassLoaderObjectInputStream(cl, new ByteArrayInputStream(reqData));
                         ctx = (CommandContext) in.readObject();
                     } catch (IOException e) {                        
                         logger.warn("Exception while serializing context data", e);
                         return;
+                    } finally {
+                        if (in != null) {
+                            in.close();
+                        }
                     }
                 }
-                callbacks = classCacheManager.buildCommandCallback(ctx);                
+                callbacks = classCacheManager.buildCommandCallback(ctx, cl);                
                 
-                Command cmd = classCacheManager.findCommand(request.getCommandName());
+                Command cmd = classCacheManager.findCommand(request.getCommandName(), cl);
                 ExecutionResults results = cmd.execute(ctx);
                 for (CommandCallback handler : callbacks) {
                     
@@ -163,6 +171,18 @@ public class ExecutorRunnable implements Runnable {
         }
     }
     
-
+    protected ClassLoader getClassLoader(String deploymentId) {
+        ClassLoader cl = this.getClass().getClassLoader();
+        if (deploymentId == null) {
+            return cl;
+        }
+        
+        InternalRuntimeManager manager = ((InternalRuntimeManager)RuntimeManagerRegistry.get().getRuntimeManager(deploymentId));
+        if (manager != null && manager.getEnvironment().getClassLoader() != null) {            
+            cl = manager.getEnvironment().getClassLoader();
+        }
+        
+        return cl;
+    }
 
 }
