@@ -16,6 +16,7 @@
 package org.drools.persistence.kie.persistence.session;
 
 import java.io.Serializable;
+
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -57,11 +58,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+
 import org.junit.Ignore;
 
 @RunWith(Parameterized.class)
@@ -73,14 +74,17 @@ public class JpaPersistentStatefulSessionTest {
     private Environment env;
     private boolean locking;
 
-    @Parameters
+    @Parameters(name="{0}")
     public static Collection<Object[]> persistence() {
-        Object[][] locking = new Object[][] { { false }, { true } };
+        Object[][] locking = new Object[][] { 
+                { OPTIMISTIC_LOCKING }, 
+                { PESSIMISTIC_LOCKING } 
+                };
         return Arrays.asList(locking);
     };
     
-    public JpaPersistentStatefulSessionTest(boolean locking) { 
-        this.locking = true;
+    public JpaPersistentStatefulSessionTest(String locking) { 
+        this.locking = PESSIMISTIC_LOCKING.equals(locking);
     }
     
     @Before

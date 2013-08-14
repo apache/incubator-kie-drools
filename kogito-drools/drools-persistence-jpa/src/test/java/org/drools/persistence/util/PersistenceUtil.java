@@ -15,13 +15,9 @@
  */
 package org.drools.persistence.util;
 
-import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.kie.api.runtime.EnvironmentName.GLOBALS;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
+import static org.kie.api.runtime.EnvironmentName.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,16 +32,14 @@ import javax.transaction.UserTransaction;
 
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.persistence.marshalling.util.EntityManagerFactoryProxy;
-import org.drools.persistence.marshalling.util.UserTransactionProxy;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +52,6 @@ public class PersistenceUtil {
 
     private static Logger logger = LoggerFactory.getLogger( PersistenceUtil.class );
 
-    private static boolean TEST_MARSHALLING = true;
-    
     // Persistence and data source constants
     public static final String DROOLS_PERSISTENCE_UNIT_NAME = "org.drools.persistence.jpa";
     public static final String JBPM_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
@@ -69,6 +61,9 @@ public class PersistenceUtil {
     
     private static Properties defaultProperties = null;
    
+    public static String OPTIMISTIC_LOCKING = "optimistic";
+    public static String PESSIMISTIC_LOCKING = "pessimistic";
+    
     // Setup and marshalling setup constants
     public static String DATASOURCE = "org.droolsjbpm.persistence.datasource";
 
@@ -107,62 +102,17 @@ public class PersistenceUtil {
         String jdbcUrl = dsProps.getProperty("url");
         String driverClass = dsProps.getProperty("driverClassName");
 
-        // only save marshalling data if the dialect is H2..
-        if( ! driverClass.startsWith("org.h2") ) { 
-           TEST_MARSHALLING = false; 
-        }
-        Object testMarshallingProperty = dsProps.get("testMarshalling"); 
-        if( "true".equals(testMarshallingProperty) ) { 
-            TEST_MARSHALLING = true;
-           if( !testMarshalling ) { 
-               TEST_MARSHALLING = false;
-           }
-        } 
-        else { 
-            TEST_MARSHALLING = false;
-        }
-
-        if( TEST_MARSHALLING ) {
-            Class<?> testClass = null;
-            StackTraceElement [] ste = Thread.currentThread().getStackTrace();
-                int i = 1;
-                do { 
-                    try {
-                        testClass = Class.forName(ste[i++].getClassName());
-                    } catch (ClassNotFoundException e) {
-                        // do nothing.. 
-                    }
-                } while ( PersistenceUtil.class.equals(testClass) && i < ste.length );
-                assertNotNull("Unable to resolve test class!", testClass);
-                
-            jdbcUrl = initializeTestDb(dsProps, testClass);
-        }
-
         // Setup the datasource
         PoolingDataSource ds1 = setupPoolingDataSource(dsProps, dataSourceName);
         if( driverClass.startsWith("org.h2") ) { 
-            if( ! TEST_MARSHALLING ) { 
-                jdbcUrl += "tcp://localhost/JPADroolsFlow";
-            }
+            jdbcUrl += "tcp://localhost/target/drools-persistence-test";
             ds1.getDriverProperties().setProperty("url", jdbcUrl);
         }
         ds1.init();
         context.put(DATASOURCE, ds1);
 
         // Setup persistence
-        EntityManagerFactory emf;
-        if (TEST_MARSHALLING) {
-            Properties overrideProperties = new Properties();
-            overrideProperties.setProperty("hibernate.connection.url", jdbcUrl);
-            EntityManagerFactory realEmf = Persistence.createEntityManagerFactory(persistenceUnitName, overrideProperties);
-            emf = (EntityManagerFactory) EntityManagerFactoryProxy.newInstance(realEmf);
-           
-            UserTransaction ut = (UserTransaction) UserTransactionProxy.newInstance(realEmf);
-            context.put(TRANSACTION, ut);
-        } else {
-            emf = Persistence.createEntityManagerFactory(persistenceUnitName);
-        }
-        
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         context.put(ENTITY_MANAGER_FACTORY, emf);
 
         return context;
@@ -240,9 +190,7 @@ public class PersistenceUtil {
 
         String driverClass = dsProps.getProperty("driverClassName");
         if (driverClass.startsWith("org.h2")) {
-            if( ! TEST_MARSHALLING ) { 
-                h2Server.start();
-            }
+            h2Server.start();
             for (String propertyName : new String[] { "url", "driverClassName" }) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }

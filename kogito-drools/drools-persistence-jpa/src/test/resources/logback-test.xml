@@ -5,20 +5,22 @@
     <encoder>
       <!-- %l lowers performance -->
       <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
-      <pattern>%d [%t] %-5p %m%n</pattern>
+      <pattern>%d [%t] |%c| %-5p %m%n</pattern>
     </encoder>
   </appender>
 
   <logger name="org.kie" level="info"/>
 
-  <!--  marshalling utils -->
-  <logger name="org.kie.api.marshalling.util" level="debug"/>
-  <logger name="org.kie.api.marshalling.util.CompareViaReflectionUtil" level="info"/>
-
   <!-- bitronix -->
   <logger name="bitronix.tm.twopc.Preparer" level="error"/>
+  <logger name="bitronix.tm.recovery.Recoverer" level="warn" />
+  <logger name="bitronix.tm.BitronixTransactionManager" level="warn" />
+  <logger name="bitronix.tm.Configuration" level="error" />
+  
 
   <!--  hibernate  -->
+  <logger name="java.sql.DatabaseMetaData" level="warn" />
+  
   <logger name="org.hibernate" level="warn"/>
   <logger name="org.hibernate.cfg.search" level="warn"/>
   <logger name="org.hibernate.cfg.annotations" level="warn"/>

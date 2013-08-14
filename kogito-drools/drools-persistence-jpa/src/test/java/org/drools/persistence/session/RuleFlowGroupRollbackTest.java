@@ -15,8 +15,7 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -59,14 +58,17 @@ public class RuleFlowGroupRollbackTest {
     private HashMap<String, Object> context;
     private boolean locking;
 
-    @Parameters
+    @Parameters(name="{0}")
     public static Collection<Object[]> persistence() {
-        Object[][] locking = new Object[][] { { false }, { true } };
+        Object[][] locking = new Object[][] { 
+                { OPTIMISTIC_LOCKING }, 
+                { PESSIMISTIC_LOCKING } 
+                };
         return Arrays.asList(locking);
     };
     
-    public RuleFlowGroupRollbackTest(boolean locking) { 
-        this.locking = true;
+    public RuleFlowGroupRollbackTest(String locking) { 
+        this.locking = PESSIMISTIC_LOCKING.equals(locking);
     }
     
     @Before
