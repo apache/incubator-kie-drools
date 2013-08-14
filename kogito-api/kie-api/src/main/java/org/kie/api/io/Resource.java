@@ -36,7 +36,7 @@ public interface Resource extends Serializable {
     public InputStream getInputStream() throws IOException;
 
     /**
-     * Opens a Reader to the resource, the user most close this when finished.
+     * Opens a Reader to the resource, the user must close this when finished.
      * @return
      * @throws IOException
      */
@@ -49,18 +49,18 @@ public interface Resource extends Serializable {
     
     /**
      * Returns the path that should be used when writing this resource down
-     * to KieFileSystem
+     * to KieFileSystem.
      */
     public String getTargetPath();
     
     /**
      * Returns the type of the resource if one could be inferred by the
-     * extension of the resource of if it was explicitly set.
+     * extension of the resource or if it was explicitly set.
      */
     public ResourceType getResourceType();
     
     /**
-     * Returns the configuration for the resource if one is available
+     * Returns the configuration for the resource if one is available.
      */
     public ResourceConfiguration getConfiguration();
     
