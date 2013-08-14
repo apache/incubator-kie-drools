@@ -87,6 +87,7 @@
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
