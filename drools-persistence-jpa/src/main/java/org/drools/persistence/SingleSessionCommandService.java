@@ -71,6 +71,7 @@ public class SingleSessionCommandService
     private PersistenceContextManager  jpm;
 
     private volatile boolean           doRollback;
+    private volatile boolean           pessimisticLocking;
 
     private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
 
@@ -126,7 +127,7 @@ public class SingleSessionCommandService
             registerRollbackSync();
 
             persistenceContext.joinTransaction();
-            persistenceContext.persist( this.sessionInfo );
+            this.sessionInfo = persistenceContext.persist( this.sessionInfo );
 
             txm.commit( transactionOwner );
         } catch ( RuntimeException re ) {
@@ -233,6 +234,7 @@ public class SingleSessionCommandService
 
         this.doRollback = false;
         try {
+            // if locking is active, this will also lock the (found) SessionInfo instance
             this.sessionInfo = persistenceContext.findSessionInfo( sessionId );
         } catch ( Exception e ) {
             throw new SessionNotFoundException( "Could not find session data for id " + sessionId,
@@ -308,14 +310,10 @@ public class SingleSessionCommandService
                         this.txm = (TransactionManager) con.newInstance( tm );
                         logger.debug( "Instantiating  DroolsSpringTransactionManager" );
 
-                        //                    if ( tm.getClass().getName().toLowerCase().contains( "jpa" ) ) {
                         // configure spring for JPA and local transactions
                         cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
                         con = cls.getConstructors()[0];
                         this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
-                        //                    } else {
-                        //                        // configure spring for JPA and distributed transactions
-                        //                    }
                     } catch ( Exception ex ) {
                         logger.warn( "Could not instantiate DroolsSpringTransactionManager" );
                         throw new RuntimeException( "Could not instatiate org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager", ex );
@@ -341,6 +339,10 @@ public class SingleSessionCommandService
                      this.jpm );
             env.set( EnvironmentName.TRANSACTION_MANAGER,
                      this.txm );
+        }
+        Boolean lock = (Boolean) env.get(EnvironmentName.USE_PESSIMISTIC_LOCKING);
+        if( lock != null && lock ) { 
+            this.pessimisticLocking = true;
         }
     }
 
@@ -394,8 +396,8 @@ public class SingleSessionCommandService
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
-
             persistenceContext.joinTransaction();
+            
             initExistingKnowledgeSession( this.sessionInfo.getId(),
                     this.marshallingHelper.getKbase(),
                     this.marshallingHelper.getConf(),

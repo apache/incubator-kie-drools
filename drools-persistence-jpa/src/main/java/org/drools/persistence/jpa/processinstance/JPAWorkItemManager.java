@@ -12,6 +12,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
 import org.drools.persistence.info.WorkItemInfo;
+import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
@@ -25,21 +26,23 @@ public class JPAWorkItemManager implements WorkItemManager {
     private InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
     private transient Map<Long, WorkItemInfo> workItems;
+    private transient volatile boolean pessimisticLocking;
     
     public JPAWorkItemManager(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
+        Boolean locking = (Boolean) this.kruntime.getEnvironment().get(EnvironmentName.USE_PESSIMISTIC_LOCKING);
+        if( locking != null && locking ) {
+            this.pessimisticLocking = locking;
+        }
     }
     
     public void internalExecuteWorkItem(WorkItem workItem) {
         Environment env = this.kruntime.getEnvironment();
-//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
-
         WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
-//        em.persist(workItemInfo);
         
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
-        context.persist( workItemInfo );
-
+        workItemInfo = context.persist( workItemInfo );
+        
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
         workItemInfo.update();
         
@@ -108,9 +111,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void completeWorkItem(long id, Map<String, Object> results) {
         Environment env = this.kruntime.getEnvironment();
-//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
-
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -143,7 +144,6 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void abortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
-//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
 
         WorkItemInfo workItemInfo = null;
@@ -176,7 +176,6 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public WorkItem getWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
-//        EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
         
         WorkItemInfo workItemInfo = null;
@@ -184,8 +183,11 @@ public class JPAWorkItemManager implements WorkItemManager {
             workItemInfo = this.workItems.get(id);
         }
         
+        if( this.pessimisticLocking && workItemInfo != null ) { 
+           context.lock(workItemInfo);
+        }
+        
         if (workItemInfo == null && context != null) {
-
             workItemInfo = context.findWorkItemInfo( id );
         }
 

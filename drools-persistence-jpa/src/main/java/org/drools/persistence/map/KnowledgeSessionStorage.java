@@ -9,14 +9,18 @@ public interface KnowledgeSessionStorage {
 
     void saveOrUpdate(SessionInfo storedObject);
 
-    void saveOrUpdate(WorkItemInfo workItemInfo);
+    void lock(SessionInfo sessionInfo);
 
+    void saveOrUpdate(WorkItemInfo workItemInfo);
+    
     Long getNextWorkItemId();
 
     WorkItemInfo findWorkItemInfo(Long id);
 
     void remove(WorkItemInfo workItemInfo);
 
+    void lock(WorkItemInfo workItemInfo);
+    
     Integer getNextStatefulKnowledgeSessionId();
 
 }

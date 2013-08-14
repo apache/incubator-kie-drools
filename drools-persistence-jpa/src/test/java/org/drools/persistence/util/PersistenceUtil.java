@@ -61,6 +61,9 @@ public class PersistenceUtil {
     
     private static Properties defaultProperties = null;
    
+    public static String OPTIMISTIC_LOCKING = "optimistic";
+    public static String PESSIMISTIC_LOCKING = "pessimistic";
+    
     // Setup and marshalling setup constants
     public static String DATASOURCE = "org.droolsjbpm.persistence.datasource";
 
@@ -113,15 +116,6 @@ public class PersistenceUtil {
         context.put(ENTITY_MANAGER_FACTORY, emf);
 
         return context;
-    }
-
-    /**
-     * Please use {@link #cleanUp(HashMap)} because tearDown() ends up conflicting with Junit methods at times. 
-     * @see {@link PersistenceUtil#cleanUp(HashMap)}
-     */
-    @Deprecated
-    public static void tearDown(HashMap<String, Object> context) {
-       cleanUp(context);     
     }
     
     /**

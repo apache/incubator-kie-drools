@@ -27,7 +27,7 @@ import org.kie.api.runtime.EnvironmentName;
 public class JpaPersistenceContextManager
     implements
     PersistenceContextManager {
-    Environment                  env;
+    protected Environment                  env;
 
     private EntityManagerFactory emf;
 

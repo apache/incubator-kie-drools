@@ -16,6 +16,7 @@
 package org.drools.persistence.kie.persistence.session;
 
 import java.io.Serializable;
+
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -26,6 +27,9 @@ import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.builder.KieFileSystem;
@@ -36,6 +40,7 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
@@ -44,36 +49,57 @@ import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+
 import org.junit.Ignore;
 
+@RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
     
     private HashMap<String, Object> context;
     private Environment env;
+    private boolean locking;
 
+    @Parameters(name="{0}")
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { 
+                { OPTIMISTIC_LOCKING }, 
+                { PESSIMISTIC_LOCKING } 
+                };
+        return Arrays.asList(locking);
+    };
+    
+    public JpaPersistentStatefulSessionTest(String locking) { 
+        this.locking = PESSIMISTIC_LOCKING.equals(locking);
+    }
+    
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
+        if( locking ) { 
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
     }
         
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        PersistenceUtil.cleanUp(context);
     }
 
 
