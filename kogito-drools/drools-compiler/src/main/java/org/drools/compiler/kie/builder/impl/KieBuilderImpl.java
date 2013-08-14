@@ -398,7 +398,7 @@ public class KieBuilderImpl
             } catch ( Exception e ) {
                 results.addMessage( Level.ERROR,
                                     "kmodule.xml",
-                                    "kmodulet.xml found, but unable to read\n" + e.getMessage() );
+                                    "kmodule.xml found, but unable to read\n" + e.getMessage() );
             }
         } else {
             // There's no kmodule.xml, create a defualt one
