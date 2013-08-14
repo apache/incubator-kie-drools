@@ -1,11 +1,9 @@
 package org.drools.persistence.timer.integrationtests;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.drools.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.drools.persistence.util.PersistenceUtil.tearDown;
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,31 +19,57 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionClock;
+import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.type.FactType;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.time.SessionClock;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
+@RunWith(Parameterized.class)
 public class TimerAndCalendarTest {
-    private PoolingDataSource    ds1;
-    private EntityManagerFactory emf;
+    
+    private HashMap<String, Object> context;
+    private boolean locking;
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { { false }, { true } };
+        return Arrays.asList(locking);
+    };
+    
+    public TimerAndCalendarTest(boolean locking) { 
+        this.locking = true;
+    }
+    
+    @Before
+    public void before() throws Exception {
+        context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+    }
+
+    @After
+    public void after() throws Exception {
+        cleanUp(context);
+    }
 
     @Test @Ignore("beta4 phreak")
     public void testTimerRuleAfterIntReloadSession() throws Exception {
@@ -247,25 +271,16 @@ public class TimerAndCalendarTest {
                                             kbase );
     }
 
-    private HashMap<String, Object> context;
-    
-    @Before
-    public void before() throws Exception {
-        context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
-        emf = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-    }
-
-    @After
-    public void after() throws Exception {
-        tearDown(context);
-    }
-
     private StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+        Environment env = createEnvironment(context);
+        if( locking ) { 
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase,
                                                                                              conf,
-                                                                                             createEnvironment(context) );
+                                                                                             env );
         return ksession;
     }
 

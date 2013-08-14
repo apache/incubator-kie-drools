@@ -27,11 +27,12 @@ public class MapBasedPersistenceContext
         this.workItems = new HashMap<Long, WorkItemInfo>();
     }
     
-    public void persist(SessionInfo entity) {
+    public SessionInfo persist(SessionInfo entity) {
         if( entity.getId() == null ) {
             entity.setId(storage.getNextStatefulKnowledgeSessionId());
         }
         ksessions.put( entity.getId(), entity );
+        return entity;
     }
 
     public SessionInfo findSessionInfo(Integer sessionId) {
@@ -73,11 +74,12 @@ public class MapBasedPersistenceContext
         return Collections.unmodifiableList( new ArrayList<SessionInfo>(ksessions.values()) );
     }
     
-    public void persist(WorkItemInfo workItemInfo) {
+    public WorkItemInfo persist(WorkItemInfo workItemInfo) {
         if( workItemInfo.getId() == null){
             workItemInfo.setId( storage.getNextWorkItemId() );
         }
         workItems.put( workItemInfo.getId(), workItemInfo );
+        return workItemInfo;
     }
 
     public List<WorkItemInfo> getStoredWorkItems() {
@@ -98,7 +100,17 @@ public class MapBasedPersistenceContext
     }
 
     public WorkItemInfo merge(WorkItemInfo workItemInfo) {
+        storage.saveOrUpdate(workItemInfo);
         return workItemInfo;
+    }
+
+    public void lock(SessionInfo sessionInfo) {
+        throw new UnsupportedOperationException("Map based persistence does not support locking.");
+        
+    }
+
+    public void lock(WorkItemInfo workItemInfo) {
+        throw new UnsupportedOperationException("Map based persistence does not support locking.");
     }
 
 }

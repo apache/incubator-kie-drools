@@ -15,11 +15,12 @@
  */
 package org.drools.persistence.map.impl;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.drools.persistence.util.PersistenceUtil.useTransactions;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.persistence.EntityManagerFactory;
@@ -29,14 +30,18 @@ import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class JpaBasedPersistenceTest extends MapPersistenceTest {
 
     private static Logger logger = LoggerFactory.getLogger(JPAPlaceholderResolverStrategy.class);
@@ -45,6 +50,17 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     private EntityManagerFactory emf;
     private JtaTransactionManager txm;
     private boolean useTransactions = false;
+    private boolean locking;
+    
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { { false }, { true } };
+        return Arrays.asList(locking);
+    };
+    
+    public JpaBasedPersistenceTest(boolean locking) { 
+        this.locking = true;
+    }
     
     @Before
     public void setUp() throws Exception {
@@ -63,13 +79,17 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        PersistenceUtil.cleanUp(context);
     }
     
 
     @Override
     protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
-        return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, createEnvironment(context) );
+        Environment env = createEnvironment(context);
+        if( this.locking ) { 
+            env.set(USE_PESSIMISTIC_LOCKING, true);
+        }
+        return JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env);
     }
 
     @Override

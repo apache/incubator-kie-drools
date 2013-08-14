@@ -111,5 +111,14 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
         public Integer getNextStatefulKnowledgeSessionId() {
             return ksessions.size() + 1 ;
         }
+
+        public void lock(SessionInfo sessionInfo) {
+            throw new UnsupportedOperationException("Map based persistence does not support locking.");
+        }
+
+        @Override
+        public void lock(WorkItemInfo workItemInfo) {
+            throw new UnsupportedOperationException("Map based persistence does not support locking.");
+        }
     }
 }

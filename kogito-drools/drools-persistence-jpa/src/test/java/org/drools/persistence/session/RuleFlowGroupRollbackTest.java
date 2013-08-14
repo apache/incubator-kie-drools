@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +35,9 @@ import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -41,12 +46,25 @@ import org.kie.internal.command.Context;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
+@RunWith(Parameterized.class)
 public class RuleFlowGroupRollbackTest {
     
     private HashMap<String, Object> context;
+    private boolean locking;
 
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { { false }, { true } };
+        return Arrays.asList(locking);
+    };
+    
+    public RuleFlowGroupRollbackTest(boolean locking) { 
+        this.locking = true;
+    }
+    
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
@@ -54,7 +72,7 @@ public class RuleFlowGroupRollbackTest {
 	
 	@After
 	public void tearDown() {
-		PersistenceUtil.tearDown(context);
+		PersistenceUtil.cleanUp(context);
 	}
 
     @Test	
@@ -95,6 +113,9 @@ public class RuleFlowGroupRollbackTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         Environment env = createEnvironment(context);
+        if( locking ) { 
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
         return (CommandBasedStatefulKnowledgeSession) JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 	}
 	

@@ -19,8 +19,7 @@ import static org.drools.persistence.marshalling.util.CompareViaReflectionUtil.c
 import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
 import static org.drools.persistence.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
 import static org.drools.persistence.marshalling.util.MarshallingTestUtil.unmarshallObject;
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.tearDown;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -38,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class TestMarshallingUtilsTest {
             EntityManagerFactory emf = (EntityManagerFactory) testContext.get(ENTITY_MANAGER_FACTORY);
             marshalledDataList = retrieveMarshallingData(emf);
         } finally {
-            tearDown(testContext);
+            cleanUp(testContext);
         }
 
         for (MarshalledData marshalledData : marshalledDataList) {
@@ -107,7 +107,7 @@ public class TestMarshallingUtilsTest {
             e.printStackTrace();
             fail("[" + e.getClass().getSimpleName() + "]: " + e.getMessage());
         } finally {
-            tearDown(testContext);
+            cleanUp(testContext);
         }
     }
 
