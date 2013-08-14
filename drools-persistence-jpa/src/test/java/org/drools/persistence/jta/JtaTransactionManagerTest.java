@@ -86,7 +86,7 @@ public class JtaTransactionManagerTest {
 
     @After
     public void tearDown() {
-        PersistenceUtil.tearDown(context);
+        PersistenceUtil.cleanUp(context);
     }
 
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
@@ -123,6 +123,7 @@ public class JtaTransactionManagerTest {
         String methodName =  ste[2].getMethodName();
         return methodName.substring(0, 1).toUpperCase() + methodName.substring(1);
     }
+    
     @Test
     public void showingTransactionTestObjectsNeedTransactions()  throws Exception {
         String testName = getTestName();

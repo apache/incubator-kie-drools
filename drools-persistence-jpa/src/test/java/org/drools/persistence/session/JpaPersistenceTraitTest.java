@@ -19,11 +19,10 @@ package org.drools.persistence.session;
 
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -34,30 +33,49 @@ import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.Environment;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+@RunWith(Parameterized.class)
 public class JpaPersistenceTraitTest {
 
     private HashMap<String, Object> context;
     private Environment env;
+    private boolean locking;
 
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { { false }, { true } };
+        return Arrays.asList(locking);
+    };
+    
+    public JpaPersistenceTraitTest(boolean locking) { 
+        this.locking = true;
+    }
+    
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
+        if( locking ) { 
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
     }
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        PersistenceUtil.cleanUp(context);
     }
 
 

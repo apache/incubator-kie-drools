@@ -15,14 +15,14 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
@@ -37,6 +37,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -51,11 +54,13 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.FactHandle;
 
+@RunWith(Parameterized.class)
 public class ReloadSessionTest {
 
     // Datasource (setup & clean up)
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
+    private boolean locking;
 
     private static String simpleRule = "package org.kie.test\n"
             + "global java.util.List list\n" 
@@ -67,17 +72,36 @@ public class ReloadSessionTest {
             + "end\n" 
             + "\n";
 
+
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { { false }, { true } };
+        return Arrays.asList(locking);
+    };
+    
+    public ReloadSessionTest(boolean locking) { 
+        this.locking = true;
+    }
+    
     @Before
     public void setup() {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
+
     }
 
     @After
     public void cleanUp() {
-        PersistenceUtil.tearDown(context);
+        PersistenceUtil.cleanUp(context);
     }
 
+    private Environment createEnvironment() { 
+        Environment env = PersistenceUtil.createEnvironment(context);
+        if( locking ) { 
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
+        return env;
+    }
     private KnowledgeBase initializeKnowledgeBase(String rule) { 
         // Initialize knowledge base/session/etc..
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -97,7 +121,7 @@ public class ReloadSessionTest {
     public void reloadKnowledgeSessionTest() { 
         
         // Initialize drools environment stuff
-        Environment env = createEnvironment(context);
+        Environment env = createEnvironment();
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         assertTrue("There should be NO facts present in a new (empty) knowledge session.", commandKSession.getFactHandles().isEmpty());
@@ -126,7 +150,7 @@ public class ReloadSessionTest {
         // Reload session from the database
         emf = Persistence.createEntityManagerFactory(DROOLS_PERSISTENCE_UNIT_NAME);
         context.put(ENTITY_MANAGER_FACTORY, emf);
-        env = createEnvironment(context);
+        env = createEnvironment();
        
         // Re-initialize the knowledge session:
         StatefulKnowledgeSession newCommandKSession
@@ -152,7 +176,7 @@ public class ReloadSessionTest {
     @Test @Ignore
     public void testListenersAfterSessionReload() {
         // https://bugzilla.redhat.com/show_bug.cgi?id=826952
-        Environment env = createEnvironment(context);
+        Environment env = createEnvironment();
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 

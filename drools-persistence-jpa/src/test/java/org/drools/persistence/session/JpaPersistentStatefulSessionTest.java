@@ -20,6 +20,8 @@ import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,37 +41,56 @@ import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
     
     private HashMap<String, Object> context;
     private Environment env;
+    private boolean locking;
 
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] locking = new Object[][] { { false }, { true } };
+        return Arrays.asList(locking);
+    };
+    
+    public JpaPersistentStatefulSessionTest(boolean locking) { 
+        this.locking = true;
+    }
+    
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
+        if( locking ) { 
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
     }
         
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.tearDown(context);
+        PersistenceUtil.cleanUp(context);
     }
 
 

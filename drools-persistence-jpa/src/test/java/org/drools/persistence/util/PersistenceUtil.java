@@ -167,15 +167,6 @@ public class PersistenceUtil {
 
         return context;
     }
-
-    /**
-     * Please use {@link #cleanUp(HashMap)} because tearDown() ends up conflicting with Junit methods at times. 
-     * @see {@link PersistenceUtil#cleanUp(HashMap)}
-     */
-    @Deprecated
-    public static void tearDown(HashMap<String, Object> context) {
-       cleanUp(context);     
-    }
     
     /**
      * This method should be called in the @After method of a test to clean up
