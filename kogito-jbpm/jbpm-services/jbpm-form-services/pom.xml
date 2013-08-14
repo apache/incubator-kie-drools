@@ -23,7 +23,6 @@
     <dependency>
       <groupId>commons-vfs</groupId>
       <artifactId>commons-vfs</artifactId>
-      <version>1.0</version>
     </dependency>
 
     <dependency>
