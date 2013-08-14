@@ -1,7 +1,5 @@
 package org.jbpm.test.timer;
 
-import static org.junit.Assert.assertNull;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
