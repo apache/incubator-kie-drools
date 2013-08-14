@@ -1,8 +1,6 @@
 package org.drools.persistence.command;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.cleanUp;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.PersistenceUtil.*;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,14 +26,17 @@ public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {
     private HashMap<String, Object> context;
     private boolean locking;
     
-    @Parameters
+    @Parameters(name="{0}")
     public static Collection<Object[]> persistence() {
-        Object[][] locking = new Object[][] { { false }, { true } };
+        Object[][] locking = new Object[][] { 
+                { OPTIMISTIC_LOCKING }, 
+                { PESSIMISTIC_LOCKING } 
+                };
         return Arrays.asList(locking);
     };
     
-    public MoreBatchExecutionPersistenceTest(boolean locking) { 
-        this.locking = true;
+    public MoreBatchExecutionPersistenceTest(String locking) { 
+        this.locking = PESSIMISTIC_LOCKING.equals(locking);
     }
     
     @After

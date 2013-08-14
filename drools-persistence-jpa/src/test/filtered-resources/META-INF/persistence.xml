@@ -18,8 +18,7 @@
       <properties>
         <property name="hibernate.max_fetch_depth" value="3"/>
         <property name="hibernate.hbm2ddl.auto" value="update" />
-        <property name="hibernate.show_sql" value="true" />
-        <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.BTMTransactionManagerLookup" />
+        <property name="hibernate.show_sql" value="false" />
                         
         <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
          
@@ -27,6 +26,9 @@
         <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
         <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
         <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+        
+        <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
+        <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
       </properties>
     </persistence-unit>
 </persistence>

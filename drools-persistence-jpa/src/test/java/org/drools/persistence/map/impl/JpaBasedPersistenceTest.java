@@ -52,14 +52,17 @@ public class JpaBasedPersistenceTest extends MapPersistenceTest {
     private boolean useTransactions = false;
     private boolean locking;
     
-    @Parameters
+    @Parameters(name="{0}")
     public static Collection<Object[]> persistence() {
-        Object[][] locking = new Object[][] { { false }, { true } };
+        Object[][] locking = new Object[][] { 
+                { OPTIMISTIC_LOCKING }, 
+                { PESSIMISTIC_LOCKING } 
+                };
         return Arrays.asList(locking);
     };
     
-    public JpaBasedPersistenceTest(boolean locking) { 
-        this.locking = true;
+    public JpaBasedPersistenceTest(String locking) { 
+        this.locking = PESSIMISTIC_LOCKING.equals(locking);
     }
     
     @Before

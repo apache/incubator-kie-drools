@@ -73,14 +73,17 @@ public class ReloadSessionTest {
             + "\n";
 
 
-    @Parameters
+    @Parameters(name="{0}")
     public static Collection<Object[]> persistence() {
-        Object[][] locking = new Object[][] { { false }, { true } };
+        Object[][] locking = new Object[][] { 
+                { OPTIMISTIC_LOCKING }, 
+                { PESSIMISTIC_LOCKING } 
+                };
         return Arrays.asList(locking);
     };
     
-    public ReloadSessionTest(boolean locking) { 
-        this.locking = true;
+    public ReloadSessionTest(String locking) { 
+        this.locking = PESSIMISTIC_LOCKING.equals(locking);
     }
     
     @Before
