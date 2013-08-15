@@ -57,7 +57,7 @@ public class JPAProcessInstanceManager
                     .get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ))
                     .getProcessPersistenceContext();
 
-        context.persist( processInstanceInfo );
+        processInstanceInfo = context.persist( processInstanceInfo );
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
         // persist correlation if exists

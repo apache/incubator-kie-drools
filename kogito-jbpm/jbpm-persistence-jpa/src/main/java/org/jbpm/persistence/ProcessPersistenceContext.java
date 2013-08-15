@@ -11,9 +11,9 @@ public interface ProcessPersistenceContext
     extends
     PersistenceContext {
 
-    void persist(ProcessInstanceInfo processInstanceInfo);
+    ProcessInstanceInfo persist(ProcessInstanceInfo processInstanceInfo);
     
-    void persist(CorrelationKeyInfo correlationKeyInfo);
+    CorrelationKeyInfo persist(CorrelationKeyInfo correlationKeyInfo);
     
     ProcessInstanceInfo findProcessInstanceInfo(Long processId);
     
