@@ -15,39 +15,38 @@
  */
 package org.jbpm.persistence.util;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.impl.EnvironmentFactory;
-import org.h2.tools.DeleteDbFiles;
-import org.h2.tools.Server;
-import org.jbpm.marshalling.util.EntityManagerFactoryProxy;
-import org.jbpm.marshalling.util.UserTransactionProxy;
-import org.junit.Assert;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.UserTransaction;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Properties;
-
 import static org.jbpm.marshalling.util.MarshallingDBUtil.initializeTestDb;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.kie.api.runtime.EnvironmentName.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Properties;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
+
+import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.impl.EnvironmentFactory;
+import org.jbpm.marshalling.util.EntityManagerFactoryProxy;
+import org.jbpm.marshalling.util.UserTransactionProxy;
+import org.junit.Assert;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class PersistenceUtil {
 
@@ -63,7 +62,7 @@ public class PersistenceUtil {
         
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     
-    private static TestH2Server h2Server = new TestH2Server();
+//    private static TestH2Server h2Server = new TestH2Server();
     
     private static Properties defaultProperties = null;
    
@@ -244,9 +243,10 @@ public class PersistenceUtil {
         }
 
         String driverClass = dsProps.getProperty("driverClassName");
-        if (driverClass.startsWith("org.h2")) {
+        if (driverClass.startsWith("org.h2") || driverClass.startsWith("org.hsqldb")) {
             if( startServer ) { 
-                h2Server.start();
+                throw new UnsupportedOperationException("Can not start H2 server at the moment!");
+//                h2Server.start();
             }
             for (String propertyName : new String[] { "url", "driverClassName" }) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
@@ -426,31 +426,31 @@ public class PersistenceUtil {
     * An class responsible for starting and stopping the H2 database (tcp)
     * server
     */
-   private static class TestH2Server {
-       private Server realH2Server;
-
-       public void start() {
-           if (realH2Server == null || !realH2Server.isRunning(false)) {
-               try {
-                   DeleteDbFiles.execute("", "JPADroolsFlow", true);
-                   realH2Server = Server.createTcpServer(new String[0]);
-                   realH2Server.start();
-               } catch (SQLException e) {
-                   throw new RuntimeException("can't start h2 server db", e);
-               }
-           }
-       }
-
-       @Override
-       protected void finalize() throws Throwable {
-           if (realH2Server != null) {
-               realH2Server.stop();
-           }
-           DeleteDbFiles.execute("", "JPADroolsFlow", true);
-           super.finalize();
-       }
-
-   }
+//   private static class TestH2Server {
+//       private Server realH2Server;
+//
+//       public void start() {
+//           if (realH2Server == null || !realH2Server.isRunning(false)) {
+//               try {
+//                   DeleteDbFiles.execute("", "JPADroolsFlow", true);
+//                   realH2Server = Server.createTcpServer(new String[0]);
+//                   realH2Server.start();
+//               } catch (SQLException e) {
+//                   throw new RuntimeException("can't start h2 server db", e);
+//               }
+//           }
+//       }
+//
+//       @Override
+//       protected void finalize() throws Throwable {
+//           if (realH2Server != null) {
+//               realH2Server.stop();
+//           }
+//           DeleteDbFiles.execute("", "JPADroolsFlow", true);
+//           super.finalize();
+//       }
+//
+//   }
 
    public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) {
        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();

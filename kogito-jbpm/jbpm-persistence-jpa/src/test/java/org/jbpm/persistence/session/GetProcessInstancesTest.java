@@ -9,6 +9,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 
 import javax.naming.InitialContext;
@@ -19,6 +21,9 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.internal.KnowledgeBase;
@@ -33,6 +38,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  * with regards to created (but not started) process instances 
  * and whether the process instances are available or not after creation.
  */
+@RunWith(Parameterized.class)
 public class GetProcessInstancesTest extends AbstractBaseTest {
     
     private HashMap<String, Object> context;
@@ -40,7 +46,17 @@ public class GetProcessInstancesTest extends AbstractBaseTest {
     private Environment env;
     private KnowledgeBase kbase;
     private int sessionId;
-
+    
+    public GetProcessInstancesTest(boolean locking) { 
+       this.useLocking = locking; 
+    }
+    
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
+    
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);

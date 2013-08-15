@@ -1,10 +1,30 @@
 package org.jbpm.test.util;
 
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
+import org.jbpm.runtime.manager.concurrent.SessionTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractBaseTest {
+    
+    protected static final Logger logger = LoggerFactory.getLogger(SessionTest.class);
+    
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected void starting(Description description) {
+            logger.info("Starting {}", description.getMethodName());
+        };
+
+        protected void finished(Description description) {
+            logger.info("Finished {}", description);
+        };
+    };
     
     @BeforeClass
     public static void configure() { 

@@ -17,6 +17,8 @@
 package org.jbpm.bpmn2.handler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,16 +26,32 @@ import java.util.Map;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.bpmn2.handler.LoggingTaskHandlerDecorator.InputParameter;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
+@RunWith(Parameterized.class)
 public class LoggingTaskHandlerWrapperTest extends JbpmBpmn2TestCase {
     
     private StatefulKnowledgeSession ksession;
     
-    public LoggingTaskHandlerWrapperTest() {
-        super(false);
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true} };
+        return Arrays.asList(data);
+    };
+
+    public LoggingTaskHandlerWrapperTest(boolean persistence) {
+        super(persistence);
+    }
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        setUpDataSource();
     }
 
     @After

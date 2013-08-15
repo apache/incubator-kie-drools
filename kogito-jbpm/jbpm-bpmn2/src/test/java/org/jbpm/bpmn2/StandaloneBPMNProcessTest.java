@@ -67,12 +67,16 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { 
+                { false, false }, 
+                { true, false }, 
+                { true, true } 
+                };
         return Arrays.asList(data);
     };
     
-    public StandaloneBPMNProcessTest(boolean persistence) {
-        super(persistence);
+    public StandaloneBPMNProcessTest(boolean persistence, boolean locking) {
+        super(persistence, locking);
     }
 
     @BeforeClass
@@ -163,7 +167,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
     public void testEvaluationProcess3() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EvaluationProcess3.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -384,7 +387,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
+    @Ignore("process does not complete")
     public void testEventBasedSplit3() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit3.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -517,7 +520,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
     public void testTimerBoundaryEvent() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -529,7 +531,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
     public void testTimerBoundaryEventInterrupting() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -632,7 +633,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
+    @Ignore("process does not complete")
     public void testIntermediateCatchEventCondition() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -691,7 +692,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
+    @Ignore("bpmn does not compile")
     public void testConditionalStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-ConditionalStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -706,7 +707,6 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     }
 
     @Test
-    @Ignore
     public void testTimerStart() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);

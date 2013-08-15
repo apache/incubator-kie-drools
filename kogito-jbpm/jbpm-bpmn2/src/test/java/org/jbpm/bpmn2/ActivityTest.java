@@ -43,6 +43,7 @@ import org.jbpm.bpmn2.handler.ServiceTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
+import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;

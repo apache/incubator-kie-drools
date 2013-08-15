@@ -15,7 +15,6 @@ import org.drools.persistence.jpa.JpaPersistenceContext;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
 import org.jbpm.persistence.processinstance.JPASignalManager;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
-import org.jbpm.persistence.session.SingleSessionCommandServiceTest;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.kie.internal.process.CorrelationKey;

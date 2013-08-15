@@ -28,6 +28,7 @@ import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.joda.time.DateTime;
@@ -59,7 +60,11 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { { false }, { true } };
+        Object[][] data = new Object[][] { 
+                { false, false }, 
+                { true, false },
+                { true, true }
+                };
         return Arrays.asList(data);
     };
 
@@ -68,8 +73,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     private KieSession ksession;
     
-    public IntermediateEventTest(boolean persistence) {
-        super(persistence);
+    public IntermediateEventTest(boolean persistence, boolean locking) {
+        super(persistence, locking);
     }
 
     @BeforeClass

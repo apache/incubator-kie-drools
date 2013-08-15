@@ -9,6 +9,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,9 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -79,12 +84,23 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class VariablePersistenceStrategyTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger( VariablePersistenceStrategyTest.class );
     
     private HashMap<String, Object> context;
     private EntityManagerFactory emf;
+    
+    public VariablePersistenceStrategyTest(boolean locking) { 
+       this.useLocking = locking; 
+    }
+    
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
     
     @Before
     public void setUp() throws Exception {

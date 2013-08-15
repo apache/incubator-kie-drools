@@ -1,10 +1,12 @@
 package org.jbpm.persistence.processinstance;
 
+import static org.kie.api.runtime.EnvironmentName.*;
 import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,10 +28,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.KnowledgeBase;
@@ -40,6 +44,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceResolverStrategyTest.class);
@@ -50,6 +55,16 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
     private static final String RF_FILE = "SimpleProcess.rf";
     private final static String PROCESS_ID = "org.jbpm.persistence.TestProcess";
     private final static String VAR_NAME = "persistVar";
+    
+    public ProcessInstanceResolverStrategyTest(boolean locking) { 
+       this.useLocking = locking; 
+    }
+    
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
    
     @Before
     public void before() { 
@@ -57,11 +72,14 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
         
         // load up the knowledge base
         Environment env = PersistenceUtil.createEnvironment(context);
-        env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[] {
+        env.set(OBJECT_MARSHALLING_STRATEGIES, new ObjectMarshallingStrategy[] {
                 new ProcessInstanceResolverStrategy(),
                 new JPAPlaceholderResolverStrategy(env),
                 new SerializablePlaceholderResolverStrategy(ClassObjectMarshallingStrategyAcceptor.DEFAULT) }
                 );
+        if( useLocking ) { 
+            env.set(USE_PESSIMISTIC_LOCKING, true);
+        }
         KnowledgeBase kbase = loadKnowledgeBase();
 
         // create session

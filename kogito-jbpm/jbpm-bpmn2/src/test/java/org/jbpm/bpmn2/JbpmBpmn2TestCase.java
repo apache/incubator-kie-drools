@@ -15,11 +15,13 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import static org.kie.api.runtime.EnvironmentName.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +35,7 @@ import javax.persistence.Persistence;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -46,6 +48,8 @@ import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.DroolsStreamUtils;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
+import org.jbpm.bpmn2.test.RequirePersistence;
+import org.jbpm.bpmn2.test.RequireLocking;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
@@ -84,7 +88,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -117,19 +120,21 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             "PREPARED", "COMMITTED", "ROLLEDBACK", "UNKNOWN", "NO_TRANSACTION",
             "PREPARING", "COMMITTING", "ROLLING_BACK" };
 
-    public static final boolean PERSISTENCE = Boolean.valueOf(System
-            .getProperty("org.jbpm.test.persistence", "true"));
+    public static final boolean PERSISTENCE = Boolean.valueOf(System.getProperty("org.jbpm.test.persistence", "true"));
+    public static final boolean LOCKING = Boolean.valueOf(System.getProperty("org.jbpm.test.locking", "false"));
 
     private static boolean setupDataSource = false;
     private boolean sessionPersistence = false;
+    private boolean pessimisticLocking = false;
     private static H2Server server = new H2Server();
-
+    
     private WorkingMemoryInMemoryLogger logger;
     private AuditLogService logService;
 
     protected static EntityManagerFactory emf;
     private static PoolingDataSource ds;
 
+    private RequireLocking testReqLocking;
     private RequirePersistence testReqPersistence;
     @Rule
     public TestRule watcher = new TestWatcher() {
@@ -137,14 +142,14 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             log.info(" >>> {} <<<", description.getMethodName());
 
             try {
-                String method = description.getMethodName();
-                int i = method.indexOf("[");
+                String methodName = description.getMethodName();
+                int i = methodName.indexOf("[");
                 if (i > 0) {
-                    method = method.substring(0, i);
+                    methodName = methodName.substring(0, i);
                 }
-                testReqPersistence = description.getTestClass()
-                        .getMethod(method)
-                        .getAnnotation(RequirePersistence.class);
+                Method method = description.getTestClass().getMethod(methodName);
+                testReqPersistence = method.getAnnotation(RequirePersistence.class);
+                testReqLocking = method.getAnnotation(RequireLocking.class);
             } catch (Exception ex) {
                 // ignore
             }
@@ -156,15 +161,18 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     };
 
     public JbpmBpmn2TestCase() {
-        this(PERSISTENCE);
+        this(PERSISTENCE, LOCKING);
     }
 
-    public JbpmBpmn2TestCase(boolean sessionPersistance) {
-        System.setProperty("jbpm.user.group.mapping",
-                "classpath:/usergroups.properties");
-        System.setProperty("jbpm.usergroup.callback",
-                "org.jbpm.task.identity.DefaultUserGroupCallbackImpl");
+    public JbpmBpmn2TestCase(boolean sessionPersistence) {
+        this(sessionPersistence, LOCKING);
+    }
+
+    public JbpmBpmn2TestCase(boolean sessionPersistance, boolean locking) {
+        System.setProperty("jbpm.user.group.mapping", "classpath:/usergroups.properties");
+        System.setProperty("jbpm.usergroup.callback", "org.jbpm.task.identity.DefaultUserGroupCallbackImpl");
         this.sessionPersistence = sessionPersistance;
+        this.pessimisticLocking = locking;
     }
 
     public static PoolingDataSource setupPoolingDataSource() {
@@ -207,20 +215,29 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         setupDataSource = true;
         server.start();
         ds = setupPoolingDataSource();
-        emf = Persistence
-                .createEntityManagerFactory("org.jbpm.persistence.jpa");
+        emf = Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa");
     }
 
     @Before
     public void checkTest() {
-        if (testReqPersistence != null
-                && testReqPersistence.value() != sessionPersistence) {
-            log.info("skipped - test is run only {} persistence"
-                    , (testReqPersistence.value() ? "with" : "without"));
-            log.info(testReqPersistence.comment());
+        if (testReqPersistence != null && testReqPersistence.value() != sessionPersistence) {
+            log.info("Skipped - test is run only {} persistence", (testReqPersistence.value() ? "with" : "without"));
+            String comment = testReqPersistence.comment();
+            if( comment.length() > 0 ) { 
+                log.info(comment);
+            }
+            Assume.assumeTrue(false);
+        }
+        if (testReqLocking != null && testReqLocking.value() != pessimisticLocking) {
+            log.info("Skipped - test is run only {} pessimistic locking", (testReqLocking.value() ? "with" : "without"));
+            String comment = testReqPersistence.comment();
+            if( comment.length() > 0 ) { 
+                log.info(comment);
+            }
             Assume.assumeTrue(false);
         }
     }
+   
     @After
     public void clear() {
         clearHistory();
@@ -419,6 +436,9 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             if (env == null) {
                 env = createEnvironment(emf);
             }
+            if( pessimisticLocking ) { 
+                env.set(USE_PESSIMISTIC_LOCKING, true);
+            }
             result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase,
                     conf, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
@@ -457,6 +477,9 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             } else {
                 env = ksession.getEnvironment();
             }
+            if( pessimisticLocking ) { 
+                env.set(USE_PESSIMISTIC_LOCKING, true);
+            }
             KieSessionConfiguration config = ksession.getSessionConfiguration();
             StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
@@ -477,16 +500,16 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
 
     protected Environment createEnvironment(EntityManagerFactory emf) {
         Environment env = EnvironmentFactory.newEnvironment();
-        env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
-        env.set(EnvironmentName.TRANSACTION_MANAGER,
+        env.set(ENTITY_MANAGER_FACTORY, emf);
+        env.set(TRANSACTION_MANAGER,
                 TransactionManagerServices.getTransactionManager());
         if (sessionPersistence) {
-            ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);        
+            ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) env.get(OBJECT_MARSHALLING_STRATEGIES);        
             
             List<ObjectMarshallingStrategy> listStrategies =new ArrayList<ObjectMarshallingStrategy>(Arrays.asList(strategies));
             listStrategies.add(0, new ProcessInstanceResolverStrategy());
             strategies = new ObjectMarshallingStrategy[listStrategies.size()];  
-            env.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, listStrategies.toArray(strategies));
+            env.set(OBJECT_MARSHALLING_STRATEGIES, listStrategies.toArray(strategies));
         }
         return env;
     }

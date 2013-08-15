@@ -12,6 +12,8 @@ import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +52,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
@@ -62,6 +67,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class WorkItemPersistenceTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WorkItemPersistenceTest.class);
@@ -73,6 +79,16 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
         ProcessRuntimeFactory.setProcessRuntimeFactoryService(new ProcessRuntimeFactoryServiceImpl());
     }
     
+    public WorkItemPersistenceTest(boolean locking) { 
+        this.useLocking = locking; 
+     }
+     
+     @Parameters
+     public static Collection<Object[]> persistence() {
+         Object[][] data = new Object[][] { { false }, { true } };
+         return Arrays.asList(data);
+     };
+     
     @Before
     public void setUp() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);

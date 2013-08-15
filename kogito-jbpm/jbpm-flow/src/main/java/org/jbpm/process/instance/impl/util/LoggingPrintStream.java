@@ -23,10 +23,9 @@ import org.slf4j.LoggerFactory;
 
 public class LoggingPrintStream extends PrintStream {
 
-    private Logger logger;
+    protected Logger logger;
     private StringBuilder buffer = new StringBuilder();
-    private boolean isError = false;
-
+    protected boolean isError = false;
     
     public LoggingPrintStream(OutputStream outputStream, boolean isError) { 
         super(outputStream);

@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,14 +22,28 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.api.runtime.EnvironmentName;
 
+@RunWith(Parameterized.class)
 public class CorrelationPersistenceTest extends AbstractBaseTest {
     
     private HashMap<String, Object> context;
     
+    public CorrelationPersistenceTest(boolean locking) { 
+        this.useLocking = locking; 
+     }
+     
+     @Parameters
+     public static Collection<Object[]> persistence() {
+         Object[][] data = new Object[][] { { false }, { true } };
+         return Arrays.asList(data);
+     };
+         
     @Before
     public void before() throws Exception {
         context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
@@ -70,7 +85,6 @@ public class CorrelationPersistenceTest extends AbstractBaseTest {
         EntityManagerFactory emf = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
         EntityManager em = emf.createEntityManager();
 
-        
         Query query = em.createNamedQuery("GetProcessInstanceIdByCorrelation");
         query.setParameter("properties", Arrays.asList(new String[] {"test123"}));
         query.setParameter("elem_count", new Long(1));

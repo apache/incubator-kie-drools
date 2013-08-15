@@ -11,6 +11,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEvent;
@@ -37,6 +42,7 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.KnowledgeBase;
@@ -50,13 +56,24 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class PersistentStatefulSessionTest extends AbstractBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistentStatefulSessionTest.class);
     
     private HashMap<String, Object> context;
     private Environment env;
-
+    
+    public PersistentStatefulSessionTest(boolean locking) { 
+       this.useLocking = locking; 
+    }
+    
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
+    
     @Rule
     public TestName testName = new TestName();
     
@@ -77,6 +94,9 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         }
         
         env = createEnvironment(context);
+        if( useLocking ) {
+            env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+        }
     }
 
     @After

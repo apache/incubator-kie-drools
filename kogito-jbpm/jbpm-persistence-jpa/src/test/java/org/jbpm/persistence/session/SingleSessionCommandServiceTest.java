@@ -9,6 +9,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,10 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.experimental.theories.ParametersSuppliedBy;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.process.NodeInstance;
@@ -63,12 +68,23 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RunWith(Parameterized.class)
 public class SingleSessionCommandServiceTest extends AbstractBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(SingleSessionCommandServiceTest.class);
 
 	private HashMap<String, Object> context;
 	private Environment env;
+    
+    public SingleSessionCommandServiceTest(boolean locking) { 
+       this.useLocking = locking; 
+    }
+    
+    @Parameters
+    public static Collection<Object[]> persistence() {
+        Object[][] data = new Object[][] { { false }, { true } };
+        return Arrays.asList(data);
+    };
     
     public void setUp() {
         String testMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
@@ -200,6 +216,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
     }
     
     @Test
+    
     public void testPersistenceWorkItemsUserTransaction() throws Exception {
         setUp();
         
