@@ -17,6 +17,12 @@
 
     <para>Luckily, OptaPlanner includes a benchmarker, which allows you to play out different solver phases with
     different settings against each other, so you can pick the best configuration for your planning problem.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/benchmarkOverview.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 
   <section>
