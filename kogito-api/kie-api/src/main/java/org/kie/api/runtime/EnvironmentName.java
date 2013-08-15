@@ -25,6 +25,7 @@ public class EnvironmentName {
     public static final String CMD_SCOPED_ENTITY_MANAGER            = "org.kie.api.persistence.jpa.CmdScopedEntityManager";
     public static final String APP_SCOPED_ENTITY_MANAGER            = "org.kie.api.persistence.jpa.AppScopedEntityManager";
     public static final String PERSISTENCE_CONTEXT_MANAGER          = "org.kie.api.persistence.PersistenceContextManager";
+    public static final String USE_PESSIMISTIC_LOCKING              = "org.kie.api.persistence.pessimistic";
 
     public static final String OBJECT_MARSHALLING_STRATEGIES        = "org.kie.api.marshalling.ObjectMarshallingStrategies";
     public static final String GLOBALS                              = "org.kie.Globals";
