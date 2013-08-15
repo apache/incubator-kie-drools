@@ -55,7 +55,7 @@ public class EndNode extends ExtendedNodeImpl {
             throw new IllegalArgumentException(
                 "This type of node only accepts default incoming connection type!");
         }
-        if (getFrom() != null) {
+        if (getFrom() != null && System.getProperty("jbpm.enable.multi.con") == null) {
             throw new IllegalArgumentException(
                 "This type of node cannot have more than one incoming connection!");
         }

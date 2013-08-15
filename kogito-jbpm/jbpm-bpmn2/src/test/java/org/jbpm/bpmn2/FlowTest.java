@@ -1174,6 +1174,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         
         ProcessInstance processInstance = ksession.startProcess("MultipleFlowEndNode");
         assertProcessInstanceCompleted(processInstance);
+        System.clearProperty("jbpm.enable.multi.con");
     }
     
     @Test
