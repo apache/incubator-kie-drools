@@ -23,6 +23,10 @@ public class JpaPersistenceContext implements PersistenceContext {
         this(em, true, false);
     }
     
+    public JpaPersistenceContext(EntityManager em, boolean isJTA) {
+       this(em, isJTA, false); 
+    }
+    
     public JpaPersistenceContext(EntityManager em, boolean isJTA, boolean locking) {
         this.em = em;
         this.isJTA = isJTA;
