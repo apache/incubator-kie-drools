@@ -231,7 +231,8 @@ public class ProcessInstanceInfo{
             }
             context.close();
         } catch ( IOException e ) {
-            throw new IllegalArgumentException( "IOException while storing process instance " + processInstance.getId() + ": " + e.getMessage() );
+            throw new IllegalArgumentException( "IOException while storing process instance "
+        		+ processInstance.getId() + ": " + e.getMessage(), e );
         }
         byte[] newByteArray = baos.toByteArray();
         if ( variablesChanged || !Arrays.equals( newByteArray,
