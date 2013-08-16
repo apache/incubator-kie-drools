@@ -1,5 +1,7 @@
 package org.jbpm.test.timer;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +60,7 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
     public void setup() {
         System.setProperty("org.quartz.properties", "quartz-db.properties");
         testCreateQuartzSchema();
+        cleanupSingletonSessionId();
     }
     
     @After
@@ -154,17 +158,24 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
         managerM2.disposeRuntimeEngine(runtimeM2);
         Thread.sleep(2000);
         
-        runtimeM1 = managerM1.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceM1.getId()));
-        ksessionM1 = runtimeM1.getKieSession();
-        ksessionM1.abortProcessInstance(processInstanceM1.getId());
-        processInstanceM1 = ksessionM1.getProcessInstance(processInstanceM1.getId());        
-        assertNull(processInstanceM1);
-        
-        runtimeM2 = managerM2.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceM2.getId()));
-        ksessionM2 = runtimeM2.getKieSession();
-        ksessionM2.abortProcessInstance(processInstanceM2.getId());
-        processInstanceM2 = ksessionM2.getProcessInstance(processInstanceM2.getId());        
-        assertNull(processInstanceM2);
+        try {
+            runtimeM1 = managerM1.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceM1.getId()));
+            ksessionM1 = runtimeM1.getKieSession();
+            
+            processInstanceM1 = ksessionM1.getProcessInstance(processInstanceM1.getId());        
+            assertNull(processInstanceM1);
+        } catch (SessionNotFoundException e) {
+            // expected in PerProcessInstance manager
+        }
+        try {
+            runtimeM2 = managerM2.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceM2.getId()));
+            ksessionM2 = runtimeM2.getKieSession();
+            
+            processInstanceM2 = ksessionM2.getProcessInstance(processInstanceM2.getId());        
+            assertNull(processInstanceM2);
+        } catch (SessionNotFoundException e) {
+            // expected in PerProcessInstance manager
+        }
         // let's wait to ensure no more timers are expired and triggered
         Thread.sleep(3000);
    
@@ -176,5 +187,24 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
         assertEquals(3, timerExporations2.size());
         
 
+    }
+    
+    public static void cleanupSingletonSessionId() {
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        if (tempDir.exists()) {
+            
+            String[] jbpmSerFiles = tempDir.list(new FilenameFilter() {
+                
+                @Override
+                public boolean accept(File dir, String name) {
+                    
+                    return name.endsWith("-jbpmSessionId.ser");
+                }
+            });
+            for (String file : jbpmSerFiles) {
+                
+                new File(tempDir, file).delete();
+            }
+        }
     }
 }

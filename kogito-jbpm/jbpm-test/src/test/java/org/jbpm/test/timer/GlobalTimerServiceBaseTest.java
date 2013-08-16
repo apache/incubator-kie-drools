@@ -110,11 +110,16 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         manager.disposeRuntimeEngine(runtime);
         Thread.sleep(2000);
         
-        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
-        ksession = runtime.getKieSession();
-        ksession.abortProcessInstance(processInstance.getId());
-        processInstance = ksession.getProcessInstance(processInstance.getId());        
-        assertNull(processInstance);
+        try {
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtime.getKieSession();
+    
+            
+            processInstance = ksession.getProcessInstance(processInstance.getId());        
+            assertNull(processInstance);
+        } catch (SessionNotFoundException e) {
+            // expected for PerProcessInstanceManagers since process instance is completed
+        }
         // let's wait to ensure no more timers are expired and triggered
         Thread.sleep(3000);
    
@@ -147,12 +152,9 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         
-        
         assertEquals(0, timerExporations.size());
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(1000);
-        }
-        Thread.sleep(200);
+       
+        Thread.sleep(6000);
         manager.disposeRuntimeEngine(runtime);
         assertEquals(5, timerExporations.size());
 
@@ -194,13 +196,13 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     public void testInterediateTiemrWithHTAfterWithGlobalTestService() throws Exception {
         
         // prepare listener to assert results
-        final List<Long> timerExporations = new ArrayList<Long>();
+        final List<Long> timerExpirations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
 
             @Override
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
-                    timerExporations.add(event.getProcessInstance().getId());
+                    timerExpirations.add(event.getProcessInstance().getId());
                 }
             }
             
@@ -222,7 +224,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         KieSession ksession = runtime.getKieSession();
         
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "1s###1s");
+        params.put("x", "R3/PT1S");
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         logger.debug("Disposed after start");
@@ -248,7 +250,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             runtime.getTaskService().complete(task.getId(), "john", null);
         }
         
-        ksession.abortProcessInstance(processInstance.getId());
+        
         processInstance = ksession.getProcessInstance(processInstance.getId());        
         assertNull(processInstance);
         // let's wait to ensure no more timers are expired and triggered
@@ -257,7 +259,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
         manager.disposeRuntimeEngine(runtime);
 
-        assertEquals(3, timerExporations.size());
+        assertEquals(3, timerExpirations.size());
     }
     
     @Test
@@ -292,7 +294,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
         
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "1s###1s");
+        params.put("x", "R3/PT1S");
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         
@@ -313,14 +315,16 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         Thread.sleep(1500);
         
         Thread.sleep(2000);
-        
-        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
-        ksession = runtime.getKieSession();
-
-        
-        ksession.abortProcessInstance(processInstance.getId());
-        processInstance = ksession.getProcessInstance(processInstance.getId());        
-        assertNull(processInstance);
+        try {
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtime.getKieSession();
+    
+            
+            processInstance = ksession.getProcessInstance(processInstance.getId());        
+            assertNull(processInstance);
+        } catch (SessionNotFoundException e) {
+            // expected for PerProcessInstanceManagers since process instance is completed
+        }
         // let's wait to ensure no more timers are expired and triggered
         Thread.sleep(3000);
    
@@ -392,7 +396,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         int ksessionId = ksession.getId();
         
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "1s###1s");
+        params.put("x", "R3/PT1S");
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         
@@ -536,7 +540,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         runtime.getTaskService().complete(maryTasks.get(0).getId(), "mary", null);
         
         // now wait for 2 seconds to make sure that reassignment did not happen any more since task was completed
-//        Thread.sleep(2000);
+        Thread.sleep(2000);
         
         processInstance = ksession.getProcessInstance(processInstance.getId());        
         assertNull(processInstance);

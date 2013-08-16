@@ -206,6 +206,11 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   
     <!-- test: arquillian -->
     <dependency>

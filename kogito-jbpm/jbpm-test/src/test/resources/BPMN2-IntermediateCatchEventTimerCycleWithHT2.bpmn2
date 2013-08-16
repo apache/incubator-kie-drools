@@ -23,7 +23,7 @@
     <startEvent id="_1" name="StartProcess" />
     <intermediateCatchEvent id="_3" name="timer" >
       <timerEventDefinition>
-        <timeCycle xsi:type="tFormalExpression">1s###1s</timeCycle>
+        <timeCycle xsi:type="tFormalExpression">R3/PT1S</timeCycle>
       </timerEventDefinition>
     </intermediateCatchEvent>
     <endEvent id="_5" name="EndProcess" />

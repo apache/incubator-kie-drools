@@ -16,13 +16,14 @@ import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.impl.model.GroupImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.test.timer.TimerBaseTest;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -32,12 +33,15 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +62,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
 	
 	private GlobalSchedulerService globalScheduler;
 
+	private RuntimeManager manager;
     
     @Before
     public void setup() {
@@ -73,6 +78,9 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
     @After
     public void teardown() {       
         globalScheduler.shutdown();
+        if (manager != null) {
+            manager.close();
+        }
         
     }
 	
@@ -87,7 +95,16 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         long startTimeStamp = System.currentTimeMillis();
         long maxEndTime = startTimeStamp + maxWaitTime;
         
-        RuntimeManager manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        // prepare task service with users and groups
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        TaskService taskService = engine.getTaskService();
+        
+        ((InternalTaskService)taskService).addGroup(new GroupImpl("HR"));
+        ((InternalTaskService)taskService).addUser(new UserImpl("mary"));
+        ((InternalTaskService)taskService).addUser(new UserImpl("john"));
+        
+        manager.disposeRuntimeEngine(engine);
  
         completedStart = 0;
         for (int i=0; i<nbThreadsProcess; i++) {
@@ -118,7 +135,7 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         assertNotNull(logs);
         assertEquals(nbThreadsProcess, logs.size());
         logService.dispose();
-        manager.close();
+        
         logger.debug("Done");
     }
     

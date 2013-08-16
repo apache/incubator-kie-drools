@@ -22,7 +22,7 @@
     <startEvent id="_1" name="StartProcess" />
     <intermediateCatchEvent id="_3" name="timer" >
       <timerEventDefinition>
-        <timeCycle>1s###1s</timeCycle>
+        <timeCycle>R3/PT1S</timeCycle>
       </timerEventDefinition>
     </intermediateCatchEvent>
     <scriptTask id="_4" name="Event" >
