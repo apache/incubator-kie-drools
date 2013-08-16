@@ -196,7 +196,11 @@ public class JtaTransactionManager
     public void rollback(boolean transactionOwner) {
         try {
         	if (transactionOwner) {
-        		this.ut.rollback();
+        		// transaction can be already rolled back,
+        		// exception thrown during beforeCompletion cycle can cause transaction rollback
+        		if (ut.getStatus() != Status.STATUS_NO_TRANSACTION) {
+            		this.ut.rollback();
+        		}
         	} else {
         		this.ut.setRollbackOnly();
         	}
