@@ -122,6 +122,28 @@ public class MavenRepository {
         deployArtifact(releaseId, jarFile, pomfile);
     }
 
+    public void deployArtifact(ReleaseId releaseId, byte[] jarContent, byte[] pomContent ) {
+        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(releaseId, null) + ".jar");
+        try {
+            FileOutputStream fos = new FileOutputStream(jarFile);
+            fos.write(jarContent);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        File pomFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName(releaseId, null) + ".pom");
+        try {
+            FileOutputStream fos = new FileOutputStream(pomFile);
+            fos.write(pomContent);
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        deployArtifact(releaseId, jarFile, pomFile);
+    }
+
     public void deployArtifact(ReleaseId releaseId, File jar, File pomfile) {
         Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
         jarArtifact = jarArtifact.setFile( jar );
