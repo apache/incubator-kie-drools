@@ -1,18 +1,20 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.core.common.ProjectClassLoader;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.KieRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
+import static org.drools.core.rule.JavaDialectRuntimeData.convertResourceToClassName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
-import static org.drools.core.rule.JavaDialectRuntimeData.convertResourceToClassName;
+import org.drools.core.common.ProjectClassLoader;
+import org.kie.api.builder.ReleaseId;
+import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.internal.utils.NoDepsClassLoaderResolver;
+import org.kie.internal.utils.ServiceRegistryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Discovers all KieModules on the classpath, via the kmodule.xml file.
@@ -32,15 +34,28 @@ public class KieModuleKieProject extends AbstractKieProject {
 
     private ProjectClassLoader             cl;
 
-    public KieModuleKieProject(InternalKieModule kieModule) {
+    public KieModuleKieProject( InternalKieModule kieModule ) {
+        this( kieModule, null );
+    }
+    
+    public KieModuleKieProject(InternalKieModule kieModule, ClassLoader parent) {
         this.kieModule = kieModule;
-        this.cl = createProjectClassLoader();
+        if( parent == null ) {
+            ClassLoaderResolver resolver = null;
+            try {
+                resolver = ServiceRegistryImpl.getInstance().get(ClassLoaderResolver.class);
+            } catch ( Exception cne ) {
+                resolver = new NoDepsClassLoaderResolver();
+            }
+            parent = resolver.getClassLoader( kieModule );
+        }
+        this.cl = createProjectClassLoader( parent );
     }
 
     public void init() {
         if ( kieModules == null ) {
             kieModules = new ArrayList<InternalKieModule>();
-            kieModules.addAll( kieModule.getDependencies().values() );
+            kieModules.addAll( kieModule.getKieDependencies().values() );
             kieModules.add( kieModule );
             indexParts( kieModules, kJarFromKBaseName );
             initClassLoader( cl );

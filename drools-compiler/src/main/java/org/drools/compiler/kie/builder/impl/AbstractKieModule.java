@@ -5,10 +5,12 @@ import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -18,8 +20,11 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.CompDataEntry;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.MinimalPomParser;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
@@ -45,44 +50,59 @@ import org.slf4j.LoggerFactory;
 import com.google.protobuf.ExtensionRegistry;
 
 public abstract class AbstractKieModule
-    implements
-    InternalKieModule {
+        implements
+        InternalKieModule {
 
-    private static final Logger                             log               = LoggerFactory.getLogger( AbstractKieModule.class );
+    private static final Logger log = LoggerFactory.getLogger(AbstractKieModule.class);
 
-    private final Map<String, KnowledgeBuilder>             kBuilders         = new HashMap<String, KnowledgeBuilder>();
-    
-    private final Map<String, Results>                      resultsCache      = new HashMap<String, Results>();
+    private final Map<String, KnowledgeBuilder> kBuilders = new HashMap<String, KnowledgeBuilder>();
+
+    private final Map<String, Results> resultsCache = new HashMap<String, Results>();
 
     protected final ReleaseId releaseId;
-    
-    private final KieModuleModel                            kModuleModel;
 
-    private Map<ReleaseId, InternalKieModule>               dependencies;
+    private final KieModuleModel kModuleModel;
+
+    private Map<ReleaseId, InternalKieModule> kieDependencies;
+
+    private List<ReleaseId> jarDependencies;
 
     // this is a { KBASE_NAME -> DIALECT -> ( RESOURCE, BYTECODE ) } cache
-    protected Map<String, Map<String, Map<String, byte[]>>> compilationCache  = new HashMap<String, Map<String,Map<String,byte[]>>>();
+    protected Map<String, Map<String, Map<String, byte[]>>> compilationCache = new HashMap<String, Map<String, Map<String, byte[]>>>();
 
-    private Map<String, TypeMetaInfo>                       typesMetaInfo;
+    private Map<String, TypeMetaInfo> typesMetaInfo;
+
+    protected PomModel pomModel;
 
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;
         this.kModuleModel = kModuleModel;
-    }   
-    
+    }
+
     public KieModuleModel getKieModuleModel() {
         return this.kModuleModel;
     }
-    
-    public Map<ReleaseId, InternalKieModule> getDependencies() {
-        return dependencies == null ? Collections.<ReleaseId, InternalKieModule>emptyMap() : dependencies;
+
+    public Map<ReleaseId, InternalKieModule> getKieDependencies() {
+        return kieDependencies == null ? Collections.<ReleaseId, InternalKieModule> emptyMap() : kieDependencies;
     }
 
-    public void addDependency(InternalKieModule dependency) {
-        if (dependencies == null) {
-            dependencies = new HashMap<ReleaseId, InternalKieModule>();
+    public void addKieDependency(InternalKieModule dependency) {
+        if (kieDependencies == null) {
+            kieDependencies = new HashMap<ReleaseId, InternalKieModule>();
         }
-        dependencies.put(dependency.getReleaseId(), dependency);
+        kieDependencies.put(dependency.getReleaseId(), dependency);
+    }
+
+    public List<ReleaseId> getJarDependencies() {
+        if( pomModel == null ) {
+            getPomModel();
+        }
+        List<ReleaseId> deps = null;
+        if( pomModel != null ) {
+            deps = pomModel.getDependencies();
+        }
+        return deps == null ? Collections.<ReleaseId> emptyList() : deps;
     }
 
     public ReleaseId getReleaseId() {
@@ -112,10 +132,10 @@ public abstract class AbstractKieModule
 
     public Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations) {
         Map<String, byte[]> classes = new HashMap<String, byte[]>();
-        for ( String fileName : getFileNames() ) {
-            if ( fileName.endsWith( ".class" ) ) {
-                if ( includeTypeDeclarations || !isTypeDeclaration(fileName) ) {
-                    classes.put( fileName, getBytes( fileName ) );
+        for (String fileName : getFileNames()) {
+            if (fileName.endsWith(".class")) {
+                if (includeTypeDeclarations || !isTypeDeclaration(fileName)) {
+                    classes.put(fileName, getBytes(fileName));
                 }
             }
         }
@@ -124,13 +144,13 @@ public abstract class AbstractKieModule
 
     private boolean isTypeDeclaration(String fileName) {
         Map<String, TypeMetaInfo> info = getTypesMetaInfo();
-        TypeMetaInfo typeInfo = info == null ? null : info.get(convertResourceToClassName( fileName ));
+        TypeMetaInfo typeInfo = info == null ? null : info.get(convertResourceToClassName(fileName));
         return typeInfo != null && typeInfo.isDeclaredType();
     }
 
     private Map<String, TypeMetaInfo> getTypesMetaInfo() {
         if (typesMetaInfo == null) {
-            byte[] bytes = getBytes( KieModuleModelImpl.KMODULE_INFO_JAR_PATH );
+            byte[] bytes = getBytes(KieModuleModelImpl.KMODULE_INFO_JAR_PATH);
             if (bytes != null) {
                 typesMetaInfo = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes)).getTypeMetaInfos();
             }
@@ -140,37 +160,37 @@ public abstract class AbstractKieModule
 
     @SuppressWarnings("deprecation")
     static KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel,
-                                                   KieProject kieProject,
-                                                   ResultsImpl messages) {
-        AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase( kBaseModel.getName() );
+            KieProject kieProject,
+            ResultsImpl messages) {
+        AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase(kBaseModel.getName());
 
-        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration( kieProject.getClonedClassLoader() );
-        pconf.setCompilationCache( kModule.getCompilationCache( kBaseModel.getName() ) );
+        PackageBuilderConfiguration pconf = new PackageBuilderConfiguration(kieProject.getClonedClassLoader());
+        pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pconf);
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
 
-        for ( String include : getTransitiveIncludes(kieProject, kBaseModel) ) {
-            if ( StringUtils.isEmpty( include ) ) {
+        for (String include : getTransitiveIncludes(kieProject, kBaseModel)) {
+            if (StringUtils.isEmpty(include)) {
                 continue;
             }
-            InternalKieModule includeModule = kieProject.getKieModuleForKBase( include );
-            if ( includeModule == null ) {
-                log.error( "Unable to build KieBase, could not find include: " + include );
+            InternalKieModule includeModule = kieProject.getKieModuleForKBase(include);
+            if (includeModule == null) {
+                log.error("Unable to build KieBase, could not find include: " + include);
                 return null;
             }
-            addFiles( assets,
-                      kieProject.getKieBaseModel(include),
-                      includeModule );
+            addFiles(assets,
+                    kieProject.getKieBaseModel(include),
+                    includeModule);
         }
 
-        addFiles( assets,
-                  kBaseModel,
-                  kModule );
+        addFiles(assets,
+                kBaseModel,
+                kModule);
 
-        if ( assets.isEmpty() ) {
+        if (assets.isEmpty()) {
             if (kModule instanceof FileKieModule) {
                 log.warn("No files found for KieBase " + kBaseModel.getName() + ", searching folder " + kModule.getFile());
             } else {
@@ -178,24 +198,24 @@ public abstract class AbstractKieModule
             }
         } else {
             for (Map.Entry<String, InternalKieModule> entry : assets.entrySet()) {
-                addFile( ckbuilder, entry.getValue(), entry.getKey() );
+                addFile(ckbuilder, entry.getValue(), entry.getKey());
             }
         }
 
         ckbuilder.build();
-        
-        if ( kbuilder.hasErrors() ) {
-            for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                messages.addMessage( error );
+
+        if (kbuilder.hasErrors()) {
+            for (KnowledgeBuilderError error : kbuilder.getErrors()) {
+                messages.addMessage(error);
             }
-            log.error( "Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString() );
+            log.error("Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString());
         }
-        
+
         // cache KnowledgeBuilder and results
-        kModule.cacheKnowledgeBuilderForKieBase( kBaseModel.getName(), kbuilder );
-        kModule.cacheResultsForKieBase( kBaseModel.getName(), messages );
-        
-        return kbuilder;        
+        kModule.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), kbuilder);
+        kModule.cacheResultsForKieBase(kBaseModel.getName(), messages);
+
+        return kbuilder;
     }
 
     private static Set<String> getTransitiveIncludes(KieProject kieProject, KieBaseModelImpl kBaseModel) {
@@ -209,8 +229,8 @@ public abstract class AbstractKieModule
             return;
         }
         Set<String> incs = kBaseModel.getIncludes();
-        if ( incs != null && !incs.isEmpty() ) {
-            for ( String inc : incs ) {
+        if (incs != null && !incs.isEmpty()) {
+            for (String inc : incs) {
                 if (!includes.contains(inc)) {
                     includes.add(inc);
                     getTransitiveIncludes(kieProject, (KieBaseModelImpl) kieProject.getKieBaseModel(inc), includes);
@@ -219,91 +239,118 @@ public abstract class AbstractKieModule
         }
     }
 
-    private static void addFiles( Map<String, InternalKieModule> assets,
-                                  KieBaseModel kieBaseModel,
-                                  InternalKieModule kieModule ) {
+    private static void addFiles(Map<String, InternalKieModule> assets,
+            KieBaseModel kieBaseModel,
+            InternalKieModule kieModule) {
         int fileCount = 0;
-        for ( String fileName : kieModule.getFileNames() ) {
-            if ( filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith( ".properties" ) ) {
+        for (String fileName : kieModule.getFileNames()) {
+            if (filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith(".properties")) {
                 assets.put(fileName, kieModule);
             }
         }
     }
-    
+
     public static boolean addFile(CompositeKnowledgeBuilder ckbuilder,
-                                  InternalKieModule kieModule, 
-                                  String fileName ) {
+            InternalKieModule kieModule,
+            String fileName) {
         ResourceConfiguration conf = getResourceConfiguration(kieModule, fileName);
-        Resource resource = kieModule.getResource( fileName );
-        if ( resource != null ) {
-            if ( conf == null ) {
-                ckbuilder.add( resource,
-                               ResourceType.determineResourceType( fileName ) );
+        Resource resource = kieModule.getResource(fileName);
+        if (resource != null) {
+            if (conf == null) {
+                ckbuilder.add(resource,
+                        ResourceType.determineResourceType(fileName));
             } else {
-                ckbuilder.add( resource,
-                               ResourceType.determineResourceType( fileName ),
-                               conf );
+                ckbuilder.add(resource,
+                        ResourceType.determineResourceType(fileName),
+                        conf);
             }
             return true;
         }
         return false;
     }
-    
-    public Resource getResource( String fileName ) {
-        byte[] bytes = getBytes( fileName );
-        if ( bytes != null && bytes.length > 0 ) {
-            return ResourceFactory.newByteArrayResource( bytes ).setSourcePath( fileName );
+
+    public Resource getResource(String fileName) {
+        byte[] bytes = getBytes(fileName);
+        if (bytes != null && bytes.length > 0) {
+            return ResourceFactory.newByteArrayResource(bytes).setSourcePath(fileName);
         }
         return null;
     }
 
     public static ResourceConfiguration getResourceConfiguration(InternalKieModule kieModule, String fileName) {
         ResourceConfiguration conf = null;
-        if( kieModule.isAvailable( fileName+".properties" ) ) {
+        if (kieModule.isAvailable(fileName + ".properties")) {
             // configuration file available
             Properties prop = new Properties();
             try {
-                prop.load( new ByteArrayInputStream( kieModule.getBytes(fileName+".properties") ) );
-            } catch ( IOException e ) {
-                log.error( "Error loading resource configuration from file: "+fileName+".properties" );
+                prop.load(new ByteArrayInputStream(kieModule.getBytes(fileName + ".properties")));
+            } catch (IOException e) {
+                log.error("Error loading resource configuration from file: " + fileName + ".properties");
             }
             conf = ResourceTypeImpl.fromProperties(prop);
-        } else if( ResourceType.DTABLE.matchesExtension( fileName ) ) {
-            if( fileName.endsWith( ".csv" ) ) {
+        } else if (ResourceType.DTABLE.matchesExtension(fileName)) {
+            if (fileName.endsWith(".csv")) {
                 Properties prop = new Properties();
-                prop.setProperty( ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName() );
-                prop.setProperty( DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.CSV.toString() );
+                prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
+                prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.CSV.toString());
                 conf = ResourceTypeImpl.fromProperties(prop);
             }
         }
         return conf;
     }
-    
-    protected Map<String, Map<String, byte[]>> getCompilationCache( String kbaseName ) {
-        Map<String, Map<String, byte[]>> cache = compilationCache.get( kbaseName );
-        if( cache == null ) {
-            byte[] fileContents = getBytes( KieBuilderImpl.getCompilationCachePath( releaseId, kbaseName ) );
-            if( fileContents != null) {
+
+    protected Map<String, Map<String, byte[]>> getCompilationCache(String kbaseName) {
+        Map<String, Map<String, byte[]>> cache = compilationCache.get(kbaseName);
+        if (cache == null) {
+            byte[] fileContents = getBytes(KieBuilderImpl.getCompilationCachePath(releaseId, kbaseName));
+            if (fileContents != null) {
                 ExtensionRegistry registry = KieModuleCacheHelper.buildRegistry();
                 try {
-                    Header _header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded( new ByteArrayInputStream( fileContents ), registry );
-                    KModuleCache _cache = KModuleCache.parseFrom( _header.getPayload() );
-                    
-                    cache = new HashMap<String, Map<String,byte[]>>();
-                    for( CompilationData _data : _cache.getCompilationDataList() ) {
-                        Map<String,byte[]> bytecode = new HashMap<String, byte[]>();
-                        cache.put( _data.getDialect(), bytecode );
-                        for( CompDataEntry _entry : _data.getEntryList() ) {
-                            bytecode.put( _entry.getId(), _entry.getData().toByteArray() );
+                    Header _header = KieModuleCacheHelper.readFromStreamWithHeaderPreloaded(new ByteArrayInputStream(fileContents), registry);
+                    KModuleCache _cache = KModuleCache.parseFrom(_header.getPayload());
+
+                    cache = new HashMap<String, Map<String, byte[]>>();
+                    for (CompilationData _data : _cache.getCompilationDataList()) {
+                        Map<String, byte[]> bytecode = new HashMap<String, byte[]>();
+                        cache.put(_data.getDialect(), bytecode);
+                        for (CompDataEntry _entry : _data.getEntryList()) {
+                            bytecode.put(_entry.getId(), _entry.getData().toByteArray());
                         }
                     }
-                    compilationCache.put( kbaseName, cache );
-                } catch (Exception e ) {
-                    log.error( "Unable to load compilation cache... ", e );
+                    compilationCache.put(kbaseName, cache);
+                } catch (Exception e) {
+                    log.error("Unable to load compilation cache... ", e);
                 }
             }
         }
         return cache;
     }
-    
+
+    public PomModel getPomModel() {
+        if (pomModel == null) {
+            try {
+                byte[] pomXml = getPomXml();
+                if( pomXml != null ) {
+                    PomModel tempPomModel = MinimalPomParser.parse("pom.xml",
+                            new ByteArrayInputStream(pomXml));
+                    validatePomModel(tempPomModel); // throws an exception if invalid
+                    pomModel = tempPomModel;
+                }
+            } catch( Exception e ) {
+                // nothing to do as it was not possible to retrieve pom.xml
+            }
+        }
+        return pomModel;
+    }
+
+    private void validatePomModel(PomModel pomModel) {
+        ReleaseId pomReleaseId = pomModel.getReleaseId();
+        if (StringUtils.isEmpty(pomReleaseId.getGroupId()) || StringUtils.isEmpty(pomReleaseId.getArtifactId()) || StringUtils.isEmpty(pomReleaseId.getVersion())) {
+            throw new RuntimeException("Maven pom.properties exists but ReleaseId content is malformed");
+        }
+    }
+
+    private byte[] getPomXml() {
+        return getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
+    }
 }
