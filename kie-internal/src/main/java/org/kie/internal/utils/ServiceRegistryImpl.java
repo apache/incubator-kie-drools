@@ -198,6 +198,8 @@ public class ServiceRegistryImpl
                     "org.drools.persistence.jpa.KnowledgeStoreServiceImpl");
         addDefault( CorrelationKeyFactory.class,
                 "org.jbpm.persistence.correlation.JPACorrelationKeyFactory");
+        addDefault( ClassLoaderResolver.class,
+                    "org.kie.scanner.MavenClassLoaderResolver" );
     }
 
     public synchronized void addDefault(Class cls,
