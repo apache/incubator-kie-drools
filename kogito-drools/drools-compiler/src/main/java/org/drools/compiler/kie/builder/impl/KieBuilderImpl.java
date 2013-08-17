@@ -79,7 +79,8 @@ public class KieBuilderImpl
     private byte[]                kModuleModelXml;
     private KieModuleModel        kModuleModel;
 
-    private Collection<KieModule> dependencies;
+    private Collection<KieModule> kieDependencies;
+    private Collection<ReleaseId> jarDependencies;
 
     private KieBuilderSetImpl     kieBuilderSet;
 
@@ -94,7 +95,7 @@ public class KieBuilderImpl
     }
 
     public KieBuilder setDependencies(KieModule... dependencies) {
-        this.dependencies = Arrays.asList( dependencies );
+        this.kieDependencies = Arrays.asList( dependencies );
         return this;
     }
 
@@ -105,7 +106,7 @@ public class KieBuilderImpl
             InternalKieModule depKieMod = (InternalKieModule) kr.getKieModule( res );
             list.add( depKieMod );
         }
-        this.dependencies = list;
+        this.kieDependencies = list;
         return this;
     }
 
@@ -132,7 +133,9 @@ public class KieBuilderImpl
             for ( ReleaseId dep : pomModel.getDependencies() ) {
                 KieModule depModule = repository.getKieModule( dep, pomXml );
                 if ( depModule != null ) {
-                    addDependency( depModule );
+                    addKieDependency( depModule );
+                } else {
+                    addJarDependency( dep );
                 }
             }
         } else {
@@ -141,11 +144,18 @@ public class KieBuilderImpl
         }
     }
 
-    private void addDependency(KieModule depModule) {
-        if ( dependencies == null ) {
-            dependencies = new ArrayList<KieModule>();
+    private void addKieDependency(KieModule depModule) {
+        if ( kieDependencies == null ) {
+            kieDependencies = new ArrayList<KieModule>();
         }
-        dependencies.add( depModule );
+        kieDependencies.add( depModule );
+    }
+
+    private void addJarDependency(ReleaseId releaseId) {
+        if ( jarDependencies == null ) {
+            jarDependencies = new ArrayList<ReleaseId>();
+        }
+        jarDependencies.add( releaseId );
     }
 
     public KieBuilder buildAll() {
@@ -161,9 +171,9 @@ public class KieBuilderImpl
                                            kModuleModel,
                                            trgMfs );
 
-            if ( dependencies != null && !dependencies.isEmpty() ) {
-                for ( KieModule kieModule : dependencies ) {
-                    kModule.addDependency( (InternalKieModule) kieModule );
+            if ( kieDependencies != null && !kieDependencies.isEmpty() ) {
+                for ( KieModule kieModule : kieDependencies ) {
+                    kModule.addKieDependency( (InternalKieModule) kieModule );
                 }
             }
 
@@ -271,7 +281,7 @@ public class KieBuilderImpl
     }
 
     public static boolean buildKieModule(InternalKieModule kModule,
-                                         ResultsImpl messages) {
+                                         ResultsImpl messages ) {
         KieModuleKieProject kProject = new KieModuleKieProject( kModule );
         kProject.init();
         kProject.verify( messages );

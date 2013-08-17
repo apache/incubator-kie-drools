@@ -22,6 +22,7 @@ import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.internal.io.ResourceFactoryService;
+import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;

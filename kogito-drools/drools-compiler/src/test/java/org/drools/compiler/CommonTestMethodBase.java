@@ -5,31 +5,21 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Collection;
 
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.common.InternalAgenda;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.RuleBase;
+import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.RuleBaseFactory;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Assert;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -38,6 +28,17 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.KieSessionOption;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
@@ -386,5 +387,62 @@ public class CommonTestMethodBase extends Assert {
 		KieModule km = ks.getRepository().addKieModule(jarRes);
 		return km;
 	}
+
+    public static byte[] createKJar(KieServices ks,
+                                    ReleaseId releaseId,
+                                    Resource pom,
+                                    Resource... resources) {
+        KieFileSystem kfs = ks.newKieFileSystem();
+        if( pom != null ) {
+            kfs.write(pom);
+        } else {
+            kfs.generateAndWritePomXML(releaseId);
+        }
+        for (int i = 0; i < resources.length; i++) {
+            if (resources[i] != null) {
+                kfs.write(resources[i]);
+            }
+        }
+        ks.newKieBuilder(kfs).buildAll();
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+                .getKieModule(releaseId);
+        byte[] jar = kieModule.getBytes();
+        return jar;
+    }
+
+    public static byte[] createKJar(KieServices ks,
+                                    ReleaseId releaseId,
+                                    String pom,
+                                    String... drls) {
+        KieFileSystem kfs = ks.newKieFileSystem();
+        if( pom != null ) {
+            kfs.write("pom.xml", pom);
+        } else {
+            kfs.generateAndWritePomXML(releaseId);
+        }
+        for (int i = 0; i < drls.length; i++) {
+            if (drls[i] != null) {
+                kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
+            }
+        }
+        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+        if( kb.getResults().hasMessages( org.kie.api.builder.Message.Level.ERROR ) ) {
+            for( org.kie.api.builder.Message result : kb.getResults().getMessages() ) {
+                System.out.println(result.getText());
+            }
+            return null;
+        }
+        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+                .getKieModule(releaseId);
+        byte[] jar = kieModule.getBytes();
+        return jar;
+    }
+
+    public static KieModule deployJar(KieServices ks, byte[] jar) {
+        // Deploy jar into the repository
+        Resource jarRes = ks.getResources().newByteArrayResource(jar);
+        KieModule km = ks.getRepository().addKieModule(jarRes);
+        return km;
+    }
 
 }

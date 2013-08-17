@@ -1,41 +1,37 @@
 package org.drools.compiler.builder;
 
 
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.core.util.FileManager;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.KieRepository;
-import org.kie.api.builder.Message.Level;
-import org.kie.api.builder.ReleaseId;
-import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
-import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
+import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.util.FileManager;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
+import org.kie.api.builder.Message.Level;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
-public class KieBuilderTest {
+public class KieBuilderTest extends CommonTestMethodBase {
     protected FileManager fileManager;
     
     @Before
@@ -299,7 +295,7 @@ public class KieBuilderTest {
     }
     
     public void generateRule(KieFileSystem kfs, String namespace) {
-        kfs.write("src/main/resources/" + namespace.replace('.', '/') + "/rule1.drl", getRule(namespace, "r1") );
+        kfs.write("src/main/resources/" + namespace.replace('.', '/') + "/rule1.drl", getRule(namespace, namespace, "r1") );
     }    
     
     public KieBuilder createKieBuilder(KieFileSystem kfs) {
@@ -339,9 +335,10 @@ public class KieBuilderTest {
     }
     
     public String getRule(String namespace,
+                          String messageNS,
                           String ruleName) {
         String s = "package " + namespace + "\n" +
-                "import " + namespace  + ".Message;\n"+
+                "import " + messageNS  + ".Message;\n"+
                 "global java.util.List list;\n" +
                 "rule " + ruleName + " when \n" +
                 "then \n" +

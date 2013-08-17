@@ -1,16 +1,17 @@
 package org.drools.compiler.kie.builder.impl;
 
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.Results;
-import org.kie.api.io.Resource;
-import org.kie.internal.definition.KnowledgePackage;
-
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.definition.KnowledgePackage;
 
 public interface InternalKieModule extends KieModule {
 
@@ -30,9 +31,11 @@ public interface InternalKieModule extends KieModule {
     
     Resource getResource( String fileName );
     
-    Map<ReleaseId, InternalKieModule> getDependencies();
+    Map<ReleaseId, InternalKieModule> getKieDependencies();
+    
+    void addKieDependency(InternalKieModule dependency);
 
-    void addDependency(InternalKieModule dependency);
+    List<ReleaseId> getJarDependencies();
 
     boolean isAvailable( final String pResourceName );
     

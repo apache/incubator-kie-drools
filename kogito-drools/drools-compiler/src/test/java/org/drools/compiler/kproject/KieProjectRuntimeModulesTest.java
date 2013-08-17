@@ -59,9 +59,9 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
                                                 kProjModel4,
                                                 fol4 );
 
-        mod1.addDependency( mod2 );
-        mod1.addDependency( mod3 );
-        mod1.addDependency( mod4 );
+        mod1.addKieDependency( mod2 );
+        mod1.addKieDependency( mod3 );
+        mod1.addKieDependency( mod4 );
 
         KieModuleKieProject kProject = new KieModuleKieProject(mod1);
         
