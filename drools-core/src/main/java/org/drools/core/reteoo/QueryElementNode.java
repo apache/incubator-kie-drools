@@ -150,6 +150,7 @@ public class QueryElementNode extends LeftTupleSource
                                          InternalFactHandle handle,
                                          StackEntry stackEntry,
                                          final List<PathMemory> pmems,
+                                         QueryElementNodeMemory qmem,
                                          LeftTupleSets trgLeftTuples,
                                          LeftTupleSink sink,
                                          InternalWorkingMemory workingMemory) {
@@ -215,6 +216,7 @@ public class QueryElementNode extends LeftTupleSource
                                                    stackEntry,
                                                    pmems,
                                                    trgLeftTuples,
+                                                   qmem,
                                                    sink);
 
         collector.setFactHandle( handle );
@@ -338,7 +340,10 @@ public class QueryElementNode extends LeftTupleSource
 
             LeftTupleSink sink = dquery.getLeftTupleSink();
             LeftTuple childLeftTuple = sink.createLeftTuple( this.leftTuple, rightTuple, sink );
-            dquery.getResultLeftTupleSets().addInsert(childLeftTuple);
+            boolean stagedInsertWasEmpty = dquery.getResultLeftTupleSets().addInsert(childLeftTuple);
+            if ( stagedInsertWasEmpty ) {
+                dquery.getQueryNodeMemory().setNodeDirtyWithoutNotify();
+            }
 
 
         }
@@ -551,6 +556,8 @@ public class QueryElementNode extends LeftTupleSource
 
         private LeftTupleSets resultLeftTuples;
 
+        private long          nodePosMaskBit;
+
         public QueryElementNodeMemory(QueryElementNode node) {
             this.node = node;
             this.resultLeftTuples = new LeftTupleSetsImpl();
@@ -584,6 +591,21 @@ public class QueryElementNode extends LeftTupleSource
             return resultLeftTuples;
         }
 
+        public long getNodePosMaskBit() {
+            return nodePosMaskBit;
+        }
+
+        public void setNodePosMaskBit(long segmentPos) {
+            this.nodePosMaskBit = segmentPos;
+        }
+
+        public void setNodeDirtyWithoutNotify() {
+            smem.updateDirtyNodeMask( nodePosMaskBit );
+        }
+
+        public void setNodeCleanWithoutNotify() {
+            smem.updateCleanNodeMask( nodePosMaskBit );
+        }
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

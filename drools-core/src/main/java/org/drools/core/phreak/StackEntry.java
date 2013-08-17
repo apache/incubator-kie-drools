@@ -21,6 +21,7 @@ import java.util.Set;
 */
 public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     private LeftInputAdapterNode liaNode;
+    private long                 bit;
     private NetworkNode          node;
     private LeftTupleSinkNode    sink;
     private PathMemory           pmem;
@@ -34,6 +35,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
 
     public StackEntry(LeftInputAdapterNode liaNode,
                       NetworkNode node,
+                      long bit,
                       LeftTupleSinkNode sink,
                       PathMemory pmem,
                       Memory nodeMem,
@@ -43,6 +45,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
                       Set<String> visitedRules,
                       boolean resumeFromNextNode) {
         this.liaNode = liaNode;
+        this.bit = bit;
         this.node = node;
         this.sink = sink;
         this.pmem = pmem;
@@ -56,6 +59,10 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
 
     public LeftInputAdapterNode getLiaNode() {
         return this.liaNode;
+    }
+
+    public long getBit() {
+        return bit;
     }
 
     public NetworkNode getNode() {

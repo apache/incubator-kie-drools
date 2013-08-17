@@ -306,6 +306,7 @@ public class TimerNode extends LeftTupleSource
         private LeftTupleList insertOrUpdateLeftTuples;
         private LeftTupleList deleteLeftTuples;
         private SegmentMemory memory;
+        private long          nodePosMaskBit;
 
 
         public TimerNodeMemory() {
@@ -331,6 +332,22 @@ public class TimerNode extends LeftTupleSource
 
         public void setSegmentMemory(SegmentMemory smem) {
             this.memory = smem;
+        }
+
+        public long getNodePosMaskBit() {
+            return nodePosMaskBit;
+        }
+
+        public void setNodePosMaskBit(long segmentPos) {
+            this.nodePosMaskBit = segmentPos;
+        }
+
+        public void setNodeDirtyWithoutNotify() {
+            memory.updateDirtyNodeMask( nodePosMaskBit );
+        }
+
+        public void setNodeCleanWithoutNotify() {
+            memory.updateCleanNodeMask( nodePosMaskBit );
         }
     }
 
