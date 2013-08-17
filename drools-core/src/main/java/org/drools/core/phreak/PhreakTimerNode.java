@@ -8,6 +8,7 @@ import java.util.Queue;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
@@ -22,6 +23,7 @@ import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
@@ -162,7 +164,7 @@ public class PhreakTimerNode {
                     leftTuples.remove( leftTuple ); // it gets removed either way.
                     if ( pctx.getType() == PropagationContext.EXPIRATION ) {
                         // a expire clashes with insert or update, allow it to propagate once, will handle the expire the second time around
-                        doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
+                        doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple, tm );
                         tm.getDeleteLeftTuples().add( leftTuple );
                         pmem.doLinkRule( wm ); // make sure it's dirty, so it'll evaluate again
                         if ( log.isTraceEnabled() ) {
@@ -269,7 +271,7 @@ public class PhreakTimerNode {
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Fire Now {}", leftTuple );
             }
-            doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
+            doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple, tm );
 
             trigger.nextFireTime();
 
@@ -305,13 +307,16 @@ public class PhreakTimerNode {
             for ( LeftTuple leftTuple = leftTuples.getFirst(); leftTuple != null; ) {
                 LeftTuple next = (LeftTuple) leftTuple.getNext();
 
-                doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple );
+                doPropagateChildLeftTuple( sink, trgLeftTuples, stagedLeftTuples, leftTuple, tm );
 
                 leftTuple.clear();
                 leftTuple = next;
             }
             // doLeftDeletes handles deletes, directly into the trgLeftTuples
-
+            if ( tm.getDeleteLeftTuples().isEmpty() ) {
+                // dirty bit can only be reset when there are no InsertOUdate LeftTuples and no Delete staged LeftTuples.
+                tm.setNodeCleanWithoutNotify();
+            }
             leftTuples.clear();
         }
     }
@@ -319,7 +324,8 @@ public class PhreakTimerNode {
     private static void doPropagateChildLeftTuple(LeftTupleSink sink,
                                                   LeftTupleSets trgLeftTuples,
                                                   LeftTupleSets stagedLeftTuples,
-                                                  LeftTuple leftTuple) {
+                                                  LeftTuple leftTuple,
+                                                  TimerNodeMemory tm) {
         LeftTuple childLeftTuple = leftTuple.getFirstChild();
         if ( childLeftTuple == null ) {
             childLeftTuple = sink.createLeftTuple( leftTuple, sink, leftTuple.getPropagationContext(), true );
@@ -329,7 +335,7 @@ public class PhreakTimerNode {
             }
         } else {
             switch ( childLeftTuple.getStagedType() ) {
-            // handle clash with already staged entries
+                // handle clash with already staged entries
                 case LeftTuple.INSERT :
                     stagedLeftTuples.removeInsert( childLeftTuple );
                     break;
@@ -367,6 +373,8 @@ public class PhreakTimerNode {
                     leftTuples.add( lt );
                 }
             }
+
+            timerJobCtx.getTimerNodeMemory().setNodeDirtyWithoutNotify();
 
             pmem.queueRuleAgendaItem( timerJobCtx.getWorkingMemory() );
 
@@ -408,30 +416,23 @@ public class PhreakTimerNode {
                 smemIndex++;
             }
 
+            long bit = 1;
+            for (NetworkNode node = sm.getRootNode(); node != sink; node = ((LeftTupleSource)node).getSinkPropagator().getFirstLeftTupleSink() ) {
+                //update the bit to the correct node position.
+                bit = bit << 1;
+            }
+
             LeftTupleSets trgLeftTuples = new LeftTupleSetsImpl();
-            doPropagateChildLeftTuples(null,
-                                       tm,
-                                       sink,
-                                       wm,
-                                       null,
-                                       trgLeftTuples,
-                                       sm.getStagedLeftTuples());
+            doPropagateChildLeftTuples(null, tm, sink, wm,
+                                       null, trgLeftTuples, sm.getStagedLeftTuples());
 
             RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
             LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
 
-            rne.outerEval(lian,
-                          pmem,
-                          sink,
-                          tm,
-                          smems,
-                          smemIndex,
-                          trgLeftTuples,
-                          wm,
-                          new LinkedList<StackEntry>(),
-                          outerStack,
-                          new HashSet<String>(),
-                          true,
+            rne.outerEval(lian, pmem, sink, bit, tm,
+                          smems, smemIndex, trgLeftTuples,
+                          wm, new LinkedList<StackEntry>(), outerStack,
+                          new HashSet<String>(), true,
                           pmem.getRuleAgendaItem().getRuleExecutor());
 
             pmem.getRuleAgendaItem().getRuleExecutor().fire(wm, outerStack);

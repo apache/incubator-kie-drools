@@ -38,12 +38,12 @@ public class PhreakExistsNode {
         }
 
         if (srcLeftTuples.getUpdateFirst() != null )  {
-            RuleNetworkEvaluator.dpUpdatesExistentialReorderLeftMemory(bm,
+            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
                                                                        srcLeftTuples);
         }
 
         if ( srcRightTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.dpUpdatesExistentialReorderRightMemory(bm,
+            RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
                                                                         existsNode,
                                                                         srcRightTuples); // this also preserves the next rightTuple
         }

@@ -8,6 +8,9 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.phreak.TupleEntry;
+import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
+import org.drools.core.util.AtomicBitwiseLong;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
@@ -27,7 +30,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          NetworkNode        rootNode;
     private          NetworkNode        tipNode;
     private          LinkedList<Memory> nodeMemories;
-    private          long               linkedNodeMask;
+    private          AtomicBitwiseLong  linkedNodeMask;
+    private          AtomicBitwiseLong  dirtyNodeMask;
     private          long               allLinkedMaskTest;
     private          List<PathMemory>   pathMemories;
     private          long               segmentPosMaskBit;
@@ -44,6 +48,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public SegmentMemory(NetworkNode rootNode, Queue<TupleEntry> queue) {
         this.rootNode = rootNode;
+        this.linkedNodeMask = new AtomicBitwiseLong();
+        this.dirtyNodeMask = new AtomicBitwiseLong();
         this.pathMemories = new ArrayList<PathMemory>(1);
         this.nodeMemories = new LinkedList<Memory>();
         this.stagedLeftTuples = new LeftTupleSetsImpl();
@@ -89,12 +95,31 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public long getLinkedNodeMask() {
-        return linkedNodeMask;
+        return linkedNodeMask.get();
     }
 
     public void setLinkedNodeMask(long linkedNodeMask) {
-        this.linkedNodeMask = linkedNodeMask;
+        this.linkedNodeMask.set( linkedNodeMask );
+        //this.linkedNodeMask = linkedNodeMask;
     }
+
+    public long getDirtyNodeMask() {
+        return dirtyNodeMask.get();
+    }
+
+    public void resetDirtyNodeMask() {
+        dirtyNodeMask.set( 0 );
+    }
+
+    public void updateDirtyNodeMask(long mask) {
+        dirtyNodeMask.getAndBitwiseOr(mask);
+    }
+
+    public void updateCleanNodeMask(long mask) {
+        dirtyNodeMask.getAndBitwiseReset(mask);
+        //dirtyNodeMask = dirtyNodeMask & ~( 1 << mask );
+    }
+
 
     public String getRuleNames() {
         StringBuilder sbuilder = new StringBuilder();
@@ -110,7 +135,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void linkNode(long mask,
                          InternalWorkingMemory wm) {
-        linkedNodeMask = linkedNodeMask | mask;
+        linkedNodeMask.getAndBitwiseOr( mask );
+        //dirtyNodeMask = dirtyNodeMask | mask;
         if (log.isTraceEnabled()) {
             log.trace("LinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
@@ -119,8 +145,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void linkNodeWithoutRuleNotify(long mask) {
-        linkedNodeMask = linkedNodeMask | mask;
-
+        linkedNodeMask.getAndBitwiseOr( mask );
+        //dirtyNodeMask = dirtyNodeMask | mask;
         if (log.isTraceEnabled()) {
             log.trace("LinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
@@ -133,12 +159,22 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
     }
 
+    public void notifyRuleLinkSegment(InternalWorkingMemory wm, long mask) {
+        dirtyNodeMask.getAndBitwiseOr( mask );
+        //dirtyNodeMask = dirtyNodeMask | mask;
+        if (isSegmentLinked()) {
+            for (int i = 0, length = pathMemories.size(); i < length; i++) {
+                // do not use foreach, don't want Iterator object creation
+                pathMemories.get(i).linkSegment(segmentPosMaskBit, wm);
+            }
+        }
+    }
+
     public void notifyRuleLinkSegment(InternalWorkingMemory wm) {
         if (isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
-                pathMemories.get(i).linkSegment(segmentPosMaskBit,
-                                                wm);
+                pathMemories.get(i).linkSegment(segmentPosMaskBit, wm);
             }
         }
     }
@@ -147,7 +183,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                            InternalWorkingMemory wm) {
         boolean linked = isSegmentLinked();
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
-        linkedNodeMask = linkedNodeMask ^ mask;
+        linkedNodeMask.getAndBitwiseXor(mask);
+        dirtyNodeMask.getAndBitwiseOr( mask );
+        //dirtyNodeMask = dirtyNodeMask | mask;
+
 
         if (log.isTraceEnabled()) {
             log.trace("UnlinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
@@ -171,7 +210,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void unlinkNodeWithoutRuleNotify(long mask) {
-        linkedNodeMask = linkedNodeMask ^ mask;
+        linkedNodeMask.getAndBitwiseXor( mask );
+        //dirtyNodeMask = dirtyNodeMask | mask;
         if (log.isTraceEnabled()) {
             log.trace("UnlinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
@@ -186,7 +226,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public boolean isSegmentLinked() {
-        return (linkedNodeMask & allLinkedMaskTest) == allLinkedMaskTest;
+        return (linkedNodeMask.get() & allLinkedMaskTest) == allLinkedMaskTest;
     }
 
     public List<PathMemory> getPathMemories() {
@@ -298,7 +338,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         private Prototype(SegmentMemory smem) {
             this.rootNode = smem.rootNode;
             this.tipNode = smem.tipNode;
-            this.linkedNodeMask = smem.linkedNodeMask;
+            this.linkedNodeMask = smem.linkedNodeMask.get();
             this.allLinkedMaskTest = smem.allLinkedMaskTest;
             this.segmentPosMaskBit = smem.segmentPosMaskBit;
             this.pos = smem.pos;
@@ -312,7 +352,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public SegmentMemory newSegmentMemory(InternalWorkingMemory wm) {
             SegmentMemory smem = new SegmentMemory(rootNode);
             smem.tipNode = tipNode;
-            smem.linkedNodeMask = linkedNodeMask;
+            smem.linkedNodeMask = new AtomicBitwiseLong( linkedNodeMask );
             smem.allLinkedMaskTest = allLinkedMaskTest;
             smem.segmentPosMaskBit = segmentPosMaskBit;
             smem.pos = pos;
@@ -347,6 +387,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             }
             if (memory instanceof QueryElementNode.QueryElementNodeMemory) {
                 return new QueryMemoryPrototype((QueryElementNode.QueryElementNodeMemory)memory);
+            }
+            if (memory instanceof TimerNodeMemory) {
+                return new TimerMemoryPrototype((TimerNodeMemory)memory);
             }
             if (memory instanceof AccumulateNode.AccumulateMemory) {
                 return new AccumulateMemoryPrototype((AccumulateNode.AccumulateMemory)memory);
@@ -396,16 +439,35 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public static class QueryMemoryPrototype extends MemoryPrototype {
 
+        private final long nodePosMaskBit;
         private final QueryElementNode queryNode;
 
         private QueryMemoryPrototype(QueryElementNode.QueryElementNodeMemory queryMemory) {
+            nodePosMaskBit = queryMemory.getNodePosMaskBit();
             this.queryNode = queryMemory.getNode();
         }
 
         @Override
-        public void populateMemory(InternalWorkingMemory wm, Memory queryMemory) {
-            SegmentMemory querySmem = getQuerySegmentMemory(wm, (LeftTupleSource)queryMemory.getSegmentMemory().getRootNode(), queryNode);
-            ((QueryElementNode.QueryElementNodeMemory)queryMemory).setQuerySegmentMemory(querySmem);
+        public void populateMemory(InternalWorkingMemory wm, Memory mem) {
+            QueryElementNodeMemory qmem = (QueryElementNodeMemory)  mem;
+            SegmentMemory querySmem = getQuerySegmentMemory(wm, (LeftTupleSource)qmem.getSegmentMemory().getRootNode(), queryNode);
+            qmem.setQuerySegmentMemory(querySmem);
+            qmem.setNodePosMaskBit(nodePosMaskBit);
+        }
+    }
+
+    public static class TimerMemoryPrototype extends MemoryPrototype {
+
+        private final long nodePosMaskBit;
+
+        private TimerMemoryPrototype(TimerNodeMemory timerMemory) {
+            nodePosMaskBit = timerMemory.getNodePosMaskBit();
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory mem) {
+            TimerNodeMemory tmem = (TimerNodeMemory)  mem;
+            tmem.setNodePosMaskBit(nodePosMaskBit);
         }
     }
 

@@ -5,6 +5,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.PropagationContext;
@@ -149,6 +150,8 @@ public class PhreakQueryTerminalNode {
         if (!isAdded(stack, stackEntry)) {
             // Ignore unless stackEntry is not added to stack
 
+            // node must be marked as dirty
+            ((QueryElementNodeMemory)stackEntry.getNodeMem()).setNodeDirtyWithoutNotify();
             if (stackEntry.getLiaNode()== rootEntry.getLeftTupleSink().getLeftTupleSource()) {
                 // query is recursive, so just re-add the stack entry to the current stack. This happens for reactive queries, triggered by a beta node right input
                 stack.add(stackEntry);

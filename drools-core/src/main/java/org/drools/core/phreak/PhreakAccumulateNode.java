@@ -6,7 +6,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.SynchronizedRightTupleSets;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -56,12 +55,12 @@ public class PhreakAccumulateNode {
         }
 
         if (srcLeftTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.dpUpdatesReorderLeftMemory(am.getBetaMemory(),
+            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(am.getBetaMemory(),
                                                             srcLeftTuples);
         }
 
         if (srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluator.dpUpdatesReorderRightMemory(am.getBetaMemory(),
+            RuleNetworkEvaluator.doUpdatesReorderRightMemory(am.getBetaMemory(),
                                                              srcRightTuples);
         }
 

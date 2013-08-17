@@ -172,30 +172,6 @@ public class ReteNotNode extends NotNode {
         this.constraints.resetFactHandle(memory.getContext());
     }
 
-    public void doDeleteRightTuple(final RightTuple rightTuple,
-                                   final InternalWorkingMemory wm,
-                                   final BetaMemory memory) {
-        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-
-        boolean stagedDeleteWasEmpty = false;
-        if ( isStreamMode() ) {
-            stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
-            if ( log.isTraceEnabled() ) {
-                log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), RetePropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
-            }
-        } else {
-            stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
-        }
-
-        if ( memory.getAndDecCounter() == 1 ) {
-            memory.linkNode( wm );
-        } else if ( stagedDeleteWasEmpty ) {
-            // nothing staged before, notify rule, so it can evaluate network
-            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
-        };
-    }
-
     public void retractRightTuple(final RightTuple rightTuple,
                                   final PropagationContext context,
                                   final InternalWorkingMemory workingMemory) {

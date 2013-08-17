@@ -68,7 +68,7 @@ public class Scenario {
         this.bm = bm;
         this.wm = wm;
         this.leftTuples = new LeftTupleSetsImpl();
-        this.rightRuples = new SynchronizedRightTupleSets();
+        this.rightRuples = new SynchronizedRightTupleSets(bm);
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
 

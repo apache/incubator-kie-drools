@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.phreak.StackEntry;
+import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.util.index.RightTupleList;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.PathMemory;
@@ -44,6 +45,8 @@ public final class DroolsQuery extends ArrayElements {
 
     private LeftTupleSets resultLeftTuples;
 
+    private QueryElementNodeMemory qmem;
+
     private List<PathMemory> pmems;
 
     private StackEntry stackEntry;
@@ -65,7 +68,7 @@ public final class DroolsQuery extends ArrayElements {
                        final Object[] params,
                        final InternalViewChangedEventListener resultsCollector,
                        final boolean open) {
-        this(name, params, resultsCollector, open, null, null, null, null);
+        this(name, params, resultsCollector, open, null, null, null, null, null);
     }
 
     public DroolsQuery(final String name,
@@ -75,6 +78,7 @@ public final class DroolsQuery extends ArrayElements {
                        final StackEntry stackEntry,
                        final List<PathMemory> pmems,
                        final LeftTupleSets resultLeftTuples,
+                       final QueryElementNodeMemory qmem,
                        final LeftTupleSink sink) {
         setParameters(params);
         this.name = name;
@@ -83,6 +87,7 @@ public final class DroolsQuery extends ArrayElements {
         this.open = open;
         this.pmems = pmems;
         this.resultLeftTuples = resultLeftTuples;
+        this.qmem = qmem;
         this.sink = sink;
     }
     
@@ -118,6 +123,10 @@ public final class DroolsQuery extends ArrayElements {
 
     public List<PathMemory> getRuleMemories() {
         return this.pmems;
+    }
+
+    public QueryElementNodeMemory getQueryNodeMemory() {
+        return qmem;
     }
 
     public LeftTupleSink getLeftTupleSink() {

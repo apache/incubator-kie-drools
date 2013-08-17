@@ -213,6 +213,7 @@ public class AddRemoveRule {
          SegmentMemory sm;
          LeftTupleSink sink;
          Memory mem;
+         long bit = 1;
          if ( smems.length == 1 ) {
              // there is no sharing
              sm = smems[0];
@@ -221,6 +222,7 @@ public class AddRemoveRule {
              }
              sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
              mem = sm.getNodeMemories().get(1);
+             bit = 2; // adjust bit to point to next node
          } else {
              sm = smems[smemIndex+1]; // segment after the split being removed.
              if ( sm == null ) {
@@ -244,8 +246,10 @@ public class AddRemoveRule {
 
          // The graph must be fully updated before SegmentMemory and PathMemories are mutated
          if ( !sm.getStagedLeftTuples().isEmpty() && pmem.isRuleLinked() ) {
-             rne.outerEval(lian, pmem, sink, mem,
-                           smems, smemIndex, sm.getStagedLeftTuples(), wm, stack, outerStack, visitedRules, true, pmem.getRuleAgendaItem().getRuleExecutor());
+             rne.outerEval( lian, pmem, sink, bit, mem,
+                            smems, smemIndex, sm.getStagedLeftTuples(),
+                            wm, stack, outerStack, visitedRules, true,
+                            pmem.getRuleAgendaItem().getRuleExecutor() );
          }
      }
 
