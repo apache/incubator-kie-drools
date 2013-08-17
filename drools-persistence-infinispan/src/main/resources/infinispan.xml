@@ -1,0 +1,25 @@
+<infinispan
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="urn:infinispan:config:5.1 http://www.infinispan.org/schemas/infinispan-config-5.1.xsd"
+      xmlns="urn:infinispan:config:5.1">
+
+   <global>
+      <globalJmxStatistics enabled="true" allowDuplicateDomains="true" />
+   </global>
+
+   <namedCache name="jbpm-configured-cache">
+      <eviction strategy="NONE" />
+      <transaction transactionMode="TRANSACTIONAL" lockingMode="OPTIMISTIC" autoCommit="false"
+                   syncRollbackPhase="false" syncCommitPhase="false" useEagerLocking="false"
+                   useSynchronization="true" use1PcForAutoCommitTransactions="false"
+                   transactionManagerLookupClass="org.infinispan.transaction.lookup.BitronixTransactionManagerLookup"/>
+      <indexing enabled="true" indexLocalOnly="true">
+         <properties>
+            <property name="jta.UserTransaction" value="java:comp/UserTransaction" />
+            <property name="hibernate.search.default.directory_provider" value="filesystem" />
+            <property name="hibernate.search.default.exclusive_index_use" value="false" />
+         </properties>
+      </indexing>
+   </namedCache>
+   
+</infinispan>
