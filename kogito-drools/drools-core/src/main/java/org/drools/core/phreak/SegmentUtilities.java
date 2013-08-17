@@ -137,10 +137,10 @@ public class SegmentUtilities {
                         processFromNode((FromNode) tupleSource, wm, smem);
                         break;
                     case NodeTypeEnums.TimerConditionNode:
-                        processTimerNode((TimerNode) tupleSource, wm, smem);
+                        processTimerNode((TimerNode) tupleSource, wm, smem, nodePosMask);
                         break;
                     case NodeTypeEnums.QueryElementNode:
-                        processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem);
+                        processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem, nodePosMask);
                         break;
                 }
             }
@@ -200,11 +200,12 @@ public class SegmentUtilities {
         return smem;
     }
 
-    private static void processQueryNode(QueryElementNode tupleSource, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem) {
+    private static void processQueryNode(QueryElementNode tupleSource, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem, long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         QueryElementNode queryNode = (QueryElementNode) tupleSource;
         SegmentMemory querySmem = getQuerySegmentMemory(wm, segmentRoot, queryNode);
         QueryElementNodeMemory queryNodeMem = (QueryElementNodeMemory) smem.createNodeMemory(queryNode, wm);
+        queryNodeMem.setNodePosMaskBit(nodePosMask);
         queryNodeMem.setQuerySegmentMemory(querySmem);
         queryNodeMem.setSegmentMemory(smem);
     }
@@ -237,8 +238,9 @@ public class SegmentUtilities {
         evalMem.setSegmentMemory(smem);
     }
 
-    private static void processTimerNode(TimerNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
+    private static void processTimerNode(TimerNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask) {
         TimerNodeMemory tnMem = (TimerNodeMemory) smem.createNodeMemory( ( TimerNode ) tupleSource, wm );
+        tnMem.setNodePosMaskBit(nodePosMask);
         tnMem.setSegmentMemory(smem);
     }
 
@@ -304,8 +306,8 @@ public class SegmentUtilities {
     }
 
     public static synchronized void createChildSegments(final InternalWorkingMemory wm,
-                                           SegmentMemory smem,
-                                           LeftTupleSinkPropagator sinkProp) {
+                                                        SegmentMemory smem,
+                                                        LeftTupleSinkPropagator sinkProp) {
         if ( !smem.isEmpty() ) {
               return; // this can happen when multiple threads are trying to initialize the segment
         }

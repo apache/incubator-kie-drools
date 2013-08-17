@@ -34,12 +34,12 @@ public class PhreakNotNode {
 
         if (srcLeftTuples.getUpdateFirst() != null) {
             // must happen before right inserts, so it can find left tuples to block.
-            RuleNetworkEvaluator.dpUpdatesExistentialReorderLeftMemory(bm,
+            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
                                                                        srcLeftTuples);
         }
 
         if ( srcRightTuples.getUpdateFirst() != null) {
-            RuleNetworkEvaluator.dpUpdatesExistentialReorderRightMemory(bm,
+            RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
                                                                         notNode,
                                                                         srcRightTuples); // this also preserves the next rightTuple
         }

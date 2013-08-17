@@ -27,6 +27,7 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
@@ -53,7 +54,7 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
                       final short nodeType) {
         this.leftTupleMemory = tupleMemory;
         this.rightTupleMemory = objectMemory;
-        this.stagedRightTuples = new SynchronizedRightTupleSets();
+        this.stagedRightTuples = new SynchronizedRightTupleSets(this);
         this.context = context;
         this.nodeType = nodeType;
     }
@@ -133,4 +134,15 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return counter--;
     }
 
+    public void setNodeDirty(InternalWorkingMemory wm) {
+        segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit);
+    }
+
+    public void setNodeDirtyWithoutNotify() {
+        segmentMemory.updateDirtyNodeMask( nodePosMaskBit );
+    }
+
+    public void setNodeCleanWithoutNotify() {
+        segmentMemory.updateCleanNodeMask( nodePosMaskBit );
+    }
 }

@@ -413,6 +413,7 @@ public class AbstractWorkingMemory
                                                        null,
                                                        null,
                                                        null,
+                                                       null,
                                                        null );
 
             InternalFactHandle handle = this.handleFactory.newFactHandle( queryObject,
@@ -474,6 +475,7 @@ public class AbstractWorkingMemory
                                                        arguments,
                                                        new OpenQueryViewChangedEventListenerAdapter( listener ),
                                                        true,
+                                                       null,
                                                        null,
                                                        null,
                                                        null,

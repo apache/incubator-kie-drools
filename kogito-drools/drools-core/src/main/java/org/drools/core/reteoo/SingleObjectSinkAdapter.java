@@ -99,7 +99,7 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
         if ( bm.getRightTupleMemory().size() == 0 && bm.getStagedRightTuples().isEmpty() ) {
             bm.linkNode( wm );
         } else if (  bm.getStagedRightTuples().isEmpty() ) {
-            bm.getSegmentMemory().notifyRuleLinkSegment( wm );
+            bm.setNodeDirty(wm);
         }
 
     }

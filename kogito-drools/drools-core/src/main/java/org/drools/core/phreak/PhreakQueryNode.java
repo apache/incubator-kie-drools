@@ -12,17 +12,11 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
 import org.kie.api.runtime.rule.Variable;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:43
-* To change this template use File | Settings | File Templates.
-*/
 public class PhreakQueryNode {
     public void doNode(QueryElementNode queryNode,
                        QueryElementNodeMemory qmem,
@@ -64,6 +58,7 @@ public class PhreakQueryNode {
 
             DroolsQuery dquery = queryNode.createDroolsQuery(leftTuple, handle, stackEntry,
                                                              qmem.getSegmentMemory().getPathMemories(),
+                                                             qmem,
                                                              qmem.getResultLeftTuples(),
                                                              stackEntry.getSink(), wm);
 
@@ -134,10 +129,12 @@ public class PhreakQueryNode {
             dquery.setParameters(args);
             ((UnificationNodeViewChangedEventListener) dquery.getQueryResultCollector()).setVariables(varIndexes);
 
-            LeftInputAdapterNode lian = (LeftInputAdapterNode) qmem.getQuerySegmentMemory().getRootNode();
+            SegmentMemory qsmem = qmem.getQuerySegmentMemory();
+            LeftInputAdapterNode lian = (LeftInputAdapterNode) qsmem.getRootNode();
+            LiaNodeMemory lmem = (LiaNodeMemory) qsmem.getNodeMemories().getFirst();
             if (dquery.isOpen()) {
                 LeftTuple childLeftTuple = fh.getFirstLeftTuple(); // there is only one, all other LTs are peers
-                LeftInputAdapterNode.doUpdateObject(childLeftTuple, childLeftTuple.getPropagationContext(), wm, lian, false, qmem.getQuerySegmentMemory());
+                LeftInputAdapterNode.doUpdateObject(childLeftTuple, childLeftTuple.getPropagationContext(), wm, lian, false, lmem, qmem.getQuerySegmentMemory());
             } else {
                 if (fh.getFirstLeftTuple() != null) {
                     throw new RuntimeException("defensive programming while testing"); // @TODO remove later (mdp)

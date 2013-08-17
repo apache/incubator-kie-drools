@@ -967,7 +967,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         }
     }
     
-    @Test(timeout=10000)
+    @Test //(timeout=10000)
     public void testTimerWithNot() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("test_Timer_With_Not.drl");
         KieSession ksession = createKnowledgeSession(kbase);

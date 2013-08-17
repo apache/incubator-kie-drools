@@ -309,7 +309,7 @@ public abstract class BetaNode extends LeftTupleSource
         if ( memory.getAndIncCounter() == 0 ) {
             memory.linkNode( wm );
         } else if ( stagedInsertWasEmpty ) {
-            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+            memory.setNodeDirty( wm );
         }
 
         if( pctx.getReaderContext() != null ) {
@@ -343,7 +343,7 @@ public abstract class BetaNode extends LeftTupleSource
             memory.unlinkNode( wm );
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+            memory.setNodeDirty( wm );
         };
     }
 
@@ -362,7 +362,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         if ( stagedUpdateWasEmpty  ) {
-            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+            memory.setNodeDirty( wm );
         }
     }
 

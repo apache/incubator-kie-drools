@@ -165,7 +165,7 @@ public class NotNode extends BetaNode {
             memory.linkNode( wm );
         } else if ( stagedInsertWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.getSegmentMemory().notifyRuleLinkSegment( wm );
+            memory.setNodeDirty(wm);
         }
     }
 
@@ -189,7 +189,7 @@ public class NotNode extends BetaNode {
             memory.linkNode( workingMemory );
         }  else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.getSegmentMemory().notifyRuleLinkSegment( workingMemory );
+            memory.setNodeDirty(workingMemory);
         }
     }
 
