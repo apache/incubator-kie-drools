@@ -2,20 +2,16 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
-
-import static junit.framework.Assert.assertEquals;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -107,6 +103,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // continue working with the session
         ksession.insert(new Message("Hello World"));
         assertEquals( 3, ksession.fireAllRules() );
+    }
+
+    public static KieModule createAndDeployJar(KieServices ks,
+                                         ReleaseId releaseId,
+                                         String... drls ) {
+        byte[] jar = createKJar(ks, releaseId, null, drls);
+        return deployJar(ks, jar);
     }
 
     @Test

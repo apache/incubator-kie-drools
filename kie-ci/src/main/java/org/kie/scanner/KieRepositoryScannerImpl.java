@@ -116,7 +116,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
                 ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getGav();
                 ZipKieModule zipKieModule = createZipKieModule(depReleaseId, depArtifact.getFile());
                 if (zipKieModule != null) {
-                    kieModule.addDependency(zipKieModule);
+                    kieModule.addKieDependency(zipKieModule);
                 }
             }
         }
