@@ -16,6 +16,10 @@
 
 package org.drools.lang.descr;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 public class ImportDescr extends BaseDescr {
 
     private static final long serialVersionUID = 510l;
@@ -74,6 +78,17 @@ public class ImportDescr extends BaseDescr {
 
     public String toString() {
         return "import " + this.target;
+    }
+
+    public void readExternal( ObjectInput in ) throws IOException,
+            ClassNotFoundException {
+        super.readExternal( in );
+        target = (String) in.readObject();
+    }
+
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        super.writeExternal( out );
+        out.writeObject( target );
     }
 
 }
