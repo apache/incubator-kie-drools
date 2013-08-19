@@ -109,10 +109,19 @@ public class PhreakBranchNode {
             LeftTuple mainLeftTuple = null;
             LeftTuple child = leftTuple.getFirstChild();
             if ( child != null ) {
+                // assigns the correct main or rtn LeftTuple based on the identified sink
                 if ( child.getSink() == sink ) {
                     mainLeftTuple = child;
                 } else {
                     rtnLeftTuple = child;
+                }
+                child = child.getLeftParentNext();
+                if ( child != null ) {
+                    if ( child.getSink() == sink ) {
+                        mainLeftTuple = child;
+                    } else {
+                        rtnLeftTuple = child;
+                    }
                 }
             }
 
