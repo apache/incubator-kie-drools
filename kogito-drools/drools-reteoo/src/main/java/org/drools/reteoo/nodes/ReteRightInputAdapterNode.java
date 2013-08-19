@@ -5,7 +5,6 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -113,7 +112,6 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         // for RIA nodes, we need to store the ID of the created handles
         bm.getRightTupleMemory().iterator();
         if ( bm.getRightTupleMemory().size() > 0 ) {
-            ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
             final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
             for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
                 LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
@@ -141,7 +139,6 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
                 }
                 bm.getRightTupleMemory().iterator();
                 if ( bm.getRightTupleMemory().size() > 0 ) {
-                    ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
                     final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
                     for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
                         LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
