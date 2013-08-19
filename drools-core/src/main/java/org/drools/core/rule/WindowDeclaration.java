@@ -47,11 +47,13 @@ public class WindowDeclaration extends BaseAnnotatedAsset
                                             ClassNotFoundException {
         this.name = (String) in.readObject();
         this.namespace = (String) in.readObject();
+        this.pattern = (Pattern) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( name );
         out.writeObject( namespace );
+        out.writeObject( pattern );
     }
     
     public String getName() {
