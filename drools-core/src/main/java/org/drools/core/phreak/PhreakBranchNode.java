@@ -12,13 +12,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Salience;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:43
-* To change this template use File | Settings | File Templates.
-*/
+
 public class PhreakBranchNode {
     public void doNode(ConditionalBranchNode branchNode,
                        ConditionalBranchMemory cbm,
@@ -110,8 +104,17 @@ public class PhreakBranchNode {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            LeftTuple rtnLeftTuple = (LeftTuple) leftTuple.getObject();
-            LeftTuple mainLeftTuple = leftTuple.getFirstChild();
+
+            LeftTuple rtnLeftTuple = null;
+            LeftTuple mainLeftTuple = null;
+            LeftTuple child = leftTuple.getFirstChild();
+            if ( child != null ) {
+                if ( child.getSink() == sink ) {
+                    mainLeftTuple = child;
+                } else {
+                    rtnLeftTuple = child;
+                }
+            }
 
             RuleTerminalNode oldRtn = null;
             if (rtnLeftTuple != null) {

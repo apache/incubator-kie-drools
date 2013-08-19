@@ -16,10 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-/**
- * Created by IntelliJ IDEA. User: SG0521861 Date: Mar 18, 2008 Time: 1:22:50 PM To change this template use File |
- * Settings | File Templates.
- */
+
 @Ignore
 public class LargeRuleBaseSerializationTest {
     private static final int    RULE_COUNT = Integer.parseInt(System.getProperty("test.count", "525"));
@@ -41,7 +38,7 @@ public class LargeRuleBaseSerializationTest {
         }
     }
 
-    @Test @Ignore
+    @Test
     public void testUnmarshallingPerformance() throws Exception {
         DroolsStreamUtils.streamIn(bytes);
         long    time    = System.currentTimeMillis();
@@ -53,7 +50,7 @@ public class LargeRuleBaseSerializationTest {
                            format(System.currentTimeMillis()-time));
     }
 
-    @Test @Ignore
+    @Test
     public void testMarshallingPerformance() throws Exception {
         long    time    = System.currentTimeMillis();
         for (int i = ITERATIONS; i-- > 0; ) {
@@ -63,7 +60,7 @@ public class LargeRuleBaseSerializationTest {
                            format(System.currentTimeMillis()-time)+" with size of "+bytes.length+" bytes");
     }
 
-    @Test @Ignore
+    @Test
     public void testUnmarshallWithCompressionPerformance() throws Exception {
         long    time    = System.currentTimeMillis();
 
@@ -74,7 +71,7 @@ public class LargeRuleBaseSerializationTest {
                            format(System.currentTimeMillis()-time));
     }
 
-    @Test @Ignore
+    @Test
     public void testMarshallWithCompressionPerformance() throws Exception {
         long    time    = System.currentTimeMillis();
         for (int i = ITERATIONS; i-- > 0; ) {
