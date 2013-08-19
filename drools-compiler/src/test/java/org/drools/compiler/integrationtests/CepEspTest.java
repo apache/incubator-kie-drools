@@ -30,6 +30,10 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -3128,5 +3132,66 @@ public class CepEspTest extends CommonTestMethodBase {
         wm.insert( new OrderEvent( "6", "customer A", 20 ) );
         wm.insert( new OrderEvent( "7", "customer A", 10 ) );
         wm.fireAllRules();
+    }
+
+    @Test
+    public void testUpdateEventThroughEntryPoint() throws Exception {
+        String drl = "import org.drools.compiler.integrationtests.CepEspTest.TestEvent\n" +
+                     "\n" +
+                     "declare TestEvent\n" +
+                     "    @role( event )\n" +
+                     "    @expires( 4s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"TestEventReceived\"\n" +
+                     "    no-loop\n" +
+                     "    when\n" +
+                     "        $event : TestEvent ( name != null ) over window:time( 4s ) from entry-point EventStream\n" +
+                     "    then\n" +
+                     "        // insert( new Message( $event.getValue().toString() ) );\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write("src/main/resources/lifecycle.drl", drl);
+
+        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+        assertEquals(0, builder.getResults().getMessages().size());
+
+        KieSession kieSession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        EntryPoint entryPoint = kieSession.getEntryPoint("EventStream");
+
+        TestEvent event = new TestEvent("testEvent1");
+        FactHandle handle = entryPoint.insert(event);
+
+        TestEvent event2 = new TestEvent("testEvent2");
+        entryPoint.update(handle, event2);
+
+        // make sure the event is in the entry-point
+        assertFalse(entryPoint.getObjects().contains(event));
+        assertTrue(entryPoint.getObjects().contains(event2));
+        assertEquals(entryPoint.getObject(handle), event2);
+
+        kieSession.dispose();
+    }
+
+    public static class TestEvent implements Serializable {
+
+        private final String name;
+
+        public TestEvent(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("TestEvent[name=%s]", name);
+        }
     }
 }
