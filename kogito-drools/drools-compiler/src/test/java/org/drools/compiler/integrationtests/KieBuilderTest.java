@@ -5,13 +5,18 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
 
 public class KieBuilderTest extends CommonTestMethodBase {
@@ -70,4 +75,42 @@ public class KieBuilderTest extends CommonTestMethodBase {
         ksession.dispose();
 	}
 
+    @Test
+    public void testGetKieBaseAfterKieSessionCreation() {
+        final String KBASE_NAME = "kieBase";
+        final String KSESSION_NAME = "kieSession";
+
+        String drl = "declare TestEvent\n" +
+                     "    @role( event )\n" +
+                     "    name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare window DeclaredTimeWindow\n" +
+                     "    TestEvent ( name == \"timeDec\" ) over window:time( 50ms ) from entry-point EventStream\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write("src/main/resources/window.drl", drl);
+
+        KieModuleModel kmoduleModel = ks.newKieModuleModel();
+        kmoduleModel.newKieBaseModel(KBASE_NAME)
+                    .addPackage("*")
+                    .newKieSessionModel(KSESSION_NAME)
+                    .setDefault(true)
+                    .setClockType(ClockTypeOption.get("pseudo"));
+
+        kfs.writeKModuleXML(kmoduleModel.toXML());
+
+        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+        assertEquals(0, builder.getResults().getMessages().size());
+        ks.getRepository().addKieModule(builder.getKieModule());
+
+        KieSession kieSession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession(KSESSION_NAME);
+        assertNotNull(kieSession);
+
+        KieBase kieBase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase(KBASE_NAME);
+        assertNotNull(kieBase);
+    }
 }
