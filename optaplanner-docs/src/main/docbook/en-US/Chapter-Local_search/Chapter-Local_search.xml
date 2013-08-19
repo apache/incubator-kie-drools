@@ -127,7 +127,7 @@
   </section>
 
   <section xml:id="lateSimulatedAnnealing">
-    <title>Late Simulated Annealing</title>
+    <title>Late Simulated Annealing (experimental)</title>
 
     <section>
       <title>Algorithm description</title>
@@ -469,7 +469,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       </section>
 
       <section>
-        <title>Late Simulated Annealing acceptor</title>
+        <title>Late Simulated Annealing acceptor (experimental)</title>
 
         <para>Late Simulated Annealing accepts any move that has a score which is higher than the best score of a number
         of steps ago and has a chance to accept any move below that score too. That number of steps is the

@@ -136,7 +136,7 @@
       </localSearch>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
+  <!--<solverBenchmark>
     <name>Late Simulated Annealing</name>
     <solver>
       <constructionHeuristic>
@@ -158,5 +158,5 @@
         </forager>
       </localSearch>
     </solver>
-  </solverBenchmark>
+  </solverBenchmark>-->
 </plannerBenchmark>
