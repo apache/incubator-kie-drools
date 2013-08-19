@@ -651,9 +651,6 @@ public class RuleNetworkEvaluator {
 
             PropagationContext pctx = leftTuple.getPropagationContext();
             InternalFactHandle handle = riaNode.createFactHandle(leftTuple, pctx, wm);
-        
-            // this is required for serialization support
-            rnm.getMap().put( leftTuple, handle );
 
             RightTuple rightTuple = new RightTuple(handle, betaNode);
             leftTuple.setObject(rightTuple);
@@ -676,9 +673,6 @@ public class RuleNetworkEvaluator {
 
         for (LeftTuple leftTuple = srcTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
-
-            // this is required for serialization support
-            rnm.getMap().remove( leftTuple );
 
             RightTuple rightTuple = (RightTuple) leftTuple.getObject();
             RightTupleSets rightTuples = bm.getStagedRightTuples();

@@ -5,8 +5,13 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
+import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -41,9 +46,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         }
 
         if ( useLeftMemory) {
-            final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
-            // add it to a memory mapping
-            memory.getMap().put( leftTuple, handle );
+            leftTuple.setObject(handle);
         }
 
         // propagate it
@@ -61,7 +64,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
                                  final InternalWorkingMemory workingMemory) {
         final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
         // retrieve handle from memory
-        final InternalFactHandle factHandle = (InternalFactHandle) memory.getMap().remove( tuple );
+        final InternalFactHandle factHandle = (InternalFactHandle) tuple.getObject();
 
         for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
@@ -84,7 +87,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
                                 InternalWorkingMemory workingMemory) {
         final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
         // add it to a memory mapping
-        InternalFactHandle handle = (InternalFactHandle) memory.getMap().get( leftTuple );
+        InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
 
         // propagate it
         for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
@@ -97,16 +100,28 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
+        BetaNode betaNode = (BetaNode) this.getNextLeftTupleSinkNode();
 
-        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
+        Memory betaMemory = workingMemory.getNodeMemory( betaNode );
+        BetaMemory bm;
+        if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
+            bm =  ((AccumulateMemory) betaMemory).getBetaMemory();
+        } else {
+            bm =  (BetaMemory) betaMemory;
+        }
 
-        final Iterator it = memory.getMap().iterator();
-
-        // iterates over all propagated handles and assert them to the new sink
-        for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-            sink.assertObject( (InternalFactHandle) entry.getValue(),
-                               context,
-                               workingMemory );
+        // for RIA nodes, we need to store the ID of the created handles
+        bm.getRightTupleMemory().iterator();
+        if ( bm.getRightTupleMemory().size() > 0 ) {
+            ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
+            final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
+            for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
+                LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
+                InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
+                sink.assertObject( (InternalFactHandle) handle,
+                                   context,
+                                   workingMemory );
+            }
         }
     }
 
@@ -115,13 +130,24 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
                             final InternalWorkingMemory[] workingMemories) {
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
+                BetaNode betaNode = (BetaNode) this.getNextLeftTupleSinkNode();
 
-                Iterator it = memory.getMap().iterator();
-                for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                    LeftTuple leftTuple = (LeftTuple) entry.getKey();
-                    leftTuple.unlinkFromLeftParent();
-                    leftTuple.unlinkFromRightParent();
+                Memory betaMemory = workingMemory.getNodeMemory( betaNode );
+                BetaMemory bm;
+                if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
+                    bm =  ((AccumulateMemory) betaMemory).getBetaMemory();
+                } else {
+                    bm =  (BetaMemory) betaMemory;
+                }
+                bm.getRightTupleMemory().iterator();
+                if ( bm.getRightTupleMemory().size() > 0 ) {
+                    ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
+                    final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
+                    for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
+                        LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
+                        leftTuple.unlinkFromLeftParent();
+                        leftTuple.unlinkFromRightParent();
+                    }
                 }
                 workingMemory.clearNodeMemory( this );
             }
