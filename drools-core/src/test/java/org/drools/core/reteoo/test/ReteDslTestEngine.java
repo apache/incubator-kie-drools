@@ -43,8 +43,10 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.Memory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
@@ -581,7 +583,15 @@ public class ReteDslTestEngine {
             List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
 
-            final ObjectHashMap memory = ((RiaNodeMemory) wm.getNodeMemory( node )).getMap();
+            BetaMemory bm;
+            Memory childMemory = wm.getNodeMemory( node );
+            if ( node.getType() == NodeTypeEnums.AccumulateNode ) {
+                bm =  ((AccumulateMemory) childMemory).getBetaMemory();
+            } else {
+                bm =  (BetaMemory) childMemory;
+            }
+
+            int memorySize = bm.getRightTupleMemory().size();
             for ( String[] cmd : cmds ) {
                 if ( cmd[0].equals( "leftMemory" ) ) {
                     String args = cmd[1];
@@ -593,9 +603,9 @@ public class ReteDslTestEngine {
                     List< ? > expectedLeftTuples = (List< ? >) MVEL.eval( listString,
                                                                           vars );
 
-                    if ( expectedLeftTuples.isEmpty() && memory.size() != 0 ) {
-                        throw new AssertionError( "line " + step.getLine() + ": left Memory expected [] actually " + memory );
-                    } else if ( expectedLeftTuples.isEmpty() && memory.size() == 0 ) {
+                    if ( expectedLeftTuples.isEmpty() && memorySize != 0 ) {
+                        throw new AssertionError( "line " + step.getLine() + ": left tuples expected "+expectedLeftTuples.isEmpty()+" actually " + memorySize );
+                    } else if ( expectedLeftTuples.isEmpty() && memorySize == 0 ) {
                         return;
                     }
 
@@ -617,9 +627,10 @@ public class ReteDslTestEngine {
 
                     // get actual tuples
                     final List<LeftTuple> actualTuples = new ArrayList<LeftTuple>();
-                    final Iterator it = memory.iterator();
-                    for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                        actualTuples.add( (LeftTuple) entry.getKey() );
+                    final Iterator it = bm.getRightTupleMemory().iterator();
+                    for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
+                        LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
+                        actualTuples.add( leftTuple );
                     }
 
                     // iterate over expected tuples and compare with actual tuples 
