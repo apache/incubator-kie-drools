@@ -70,7 +70,7 @@ public class NestedAccessorsTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
-    @Test @Ignore
+    @Test
     public void testNestedAccessorWithInlineCast() throws Exception {
         String str = "import org.drools.compiler.*;\n" +
                 "rule R1 when\n" +

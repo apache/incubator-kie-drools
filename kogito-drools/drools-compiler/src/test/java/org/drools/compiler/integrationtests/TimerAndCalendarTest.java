@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.compiler.Alarm;
 import org.drools.compiler.Cheese;
@@ -25,7 +26,6 @@ import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -99,7 +99,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                       list.size() );
     }
 
-    @Test(timeout=10000) @Ignore("beta4 phreak")
+    @Test(timeout=10000)
     public void testDurationMemoryLeakonRepeatedUpdate() throws Exception {
         String str = "";
         str += "package org.drools.compiler.test\n";
@@ -120,20 +120,23 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
 
         List list = new ArrayList();
         ksession.setGlobal( "list",
-                           list );
+                            list );
         ksession.insert( new Alarm() );
 
         ksession.fireAllRules();
 
-        Thread.sleep( 1000 );
+        for ( int i = 0; i < 6; i++ ) {
+            timeService.advanceTime( 55, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+        }
 
-        assertEquals( 5,
-                      list.size() );
-        assertEquals( 0,
-                      ((AgendaImpl)ksession.getAgenda()).getAgenda().getScheduledActivations().length );
+        assertEquals(5,
+                     list.size() );
     }
     
     @Test(timeout=10000)
@@ -285,11 +288,12 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ((StatefulKnowledgeSessionImpl)ksession).session.setTimedExecutionsQueue(queue);
 
         final CyclicBarrier barrier = new CyclicBarrier(2);
+        final AtomicBoolean run = new AtomicBoolean(true);
 
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
-                    while (true) {
+                    while (run.get()) {
                         queue.take().evauateAndFireRule();
                         try {
                             barrier.await();
@@ -329,6 +333,9 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         barrier.await();
         barrier.reset();
         assertEquals( 3, list.size() );
+
+        run.set(false);
+        barrier.reset();
     }
 
     @Test(timeout=10000)

@@ -2370,7 +2370,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertTrue( kb.hasErrors() );
     }
     
-    @Test @Ignore
+    @Test
     public void testNamedConsequence() {
         List<String> firedRules = new ArrayList<String>();
         String str =
@@ -2401,7 +2401,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals(1, firedRules.size());
     }
 
-    @Test @Ignore
+    @Test
     public void testNamedConsequenceWithNot() {
         List<String> firedRules = new ArrayList<String>();
         String str =
