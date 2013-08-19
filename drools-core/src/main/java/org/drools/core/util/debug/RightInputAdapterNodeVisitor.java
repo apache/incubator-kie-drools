@@ -18,7 +18,12 @@ package org.drools.core.util.debug;
 
 import java.util.Stack;
 
+import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
@@ -36,11 +41,21 @@ public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
                            StatefulKnowledgeSessionInfo info) {
         RightInputAdapterNode an = (RightInputAdapterNode) node;
         DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
-        final ObjectHashMap memory = ((RiaNodeMemory) info.getSession().getNodeMemory( an )).getMap();
-        
+
+        BetaNode betaNode = (BetaNode) an.getSinkPropagator().getSinks()[0];
+
+        Memory childMemory = info.getSession().getNodeMemory( betaNode );
+
+        BetaMemory bm;
+        if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
+            bm =  ((AccumulateMemory) childMemory).getBetaMemory();
+        } else {
+            bm =  (BetaMemory) childMemory;
+        }
+
         ni.setMemoryEnabled( true );
-        ni.setTupleMemorySize( memory.size() );
-        ni.setCreatedFactHandles( memory.size() );
+        ni.setTupleMemorySize( bm.getRightTupleMemory().size() );
+        ni.setCreatedFactHandles( bm.getRightTupleMemory().size() );
     }
 
 }

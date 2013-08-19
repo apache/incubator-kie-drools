@@ -33,6 +33,7 @@ import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
+import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.EventFactHandle;
@@ -57,10 +58,13 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Rule;
@@ -79,6 +83,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.drools.core.util.index.RightTupleList;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -308,7 +313,8 @@ public class ProtobufOutputMarshaller {
                         break;
                     }
                     case NodeTypeEnums.RightInputAdaterNode : {
-                        _node = writeRIANodeMemory( i, memory );
+
+                        _node = writeRIANodeMemory( i, context.sinks.get(i), memories, memory );
                         break;
                     }
                     case NodeTypeEnums.FromNode : {
@@ -362,17 +368,30 @@ public class ProtobufOutputMarshaller {
     }
 
     private static ProtobufMessages.NodeMemory writeRIANodeMemory(final int nodeId,
+                                                                  final BaseNode node,
+                                                                  final NodeMemories memories,
                                                                   final Memory memory) {
-        // for RIA nodes, we need to store the ID of the created handles
-        RiaNodeMemory mem = (RiaNodeMemory) memory;
-        if ( !mem.getMap().isEmpty() ) {
-            ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
+        RightInputAdapterNode riaNode = (RightInputAdapterNode) node;
+        BetaNode betaNode = (BetaNode) riaNode.getNextLeftTupleSinkNode();
 
-            final org.drools.core.util.Iterator it = mem.getMap().iterator();
+        Memory betaMemory = memories.peekNodeMemory( betaNode.getId() );
+        BetaMemory bm;
+        if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
+            bm =  ((AccumulateMemory) betaMemory).getBetaMemory();
+        } else {
+            bm =  (BetaMemory) betaMemory;
+        }
+
+        // for RIA nodes, we need to store the ID of the created handles
+        bm.getRightTupleMemory().iterator();
+        if ( bm.getRightTupleMemory().size() > 0 ) {
+            ProtobufMessages.NodeMemory.RIANodeMemory.Builder _ria = ProtobufMessages.NodeMemory.RIANodeMemory.newBuilder();
+            final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
+
             // iterates over all propagated handles and assert them to the new sink
-            for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
-                LeftTuple leftTuple = (LeftTuple) entry.getKey();
-                InternalFactHandle handle = (InternalFactHandle) entry.getValue();
+            for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
+                LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
+                InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
                 FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                         .setId( handle.getId() )
                         .setRecency( handle.getRecency() )

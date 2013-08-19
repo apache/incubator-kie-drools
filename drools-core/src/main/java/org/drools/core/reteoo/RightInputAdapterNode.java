@@ -317,18 +317,9 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     public static class RiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
-        private ObjectHashMap map = new ObjectHashMap();
         private RiaPathMemory pathMemory;
 
         public RiaNodeMemory() {
-        }
-
-        public ObjectHashMap getMap() {
-            return map;
-        }
-
-        public void setMap(ObjectHashMap map) {
-            this.map = map;
         }
 
         public RiaPathMemory getRiaPathMemory() {
