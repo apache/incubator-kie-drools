@@ -49,12 +49,12 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
         addRule("raiseAlarm");
     }
 
-    @Test//(timeout=10000) @Ignore("beta4 phreak")
+    @Test(timeout=10000)
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());
     }
 
-    @Test(timeout=10000) @Ignore("beta4 phreak")
+    @Test(timeout=10000)
     public void testBatchRuleAdditions() throws Exception {
         parallelExecute(BatchRulesExecutor.getSolvers());
     }

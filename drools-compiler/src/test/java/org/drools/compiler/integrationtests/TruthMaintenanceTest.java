@@ -39,7 +39,6 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Package;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
@@ -475,7 +474,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       l.size() );
     }
 
-    @Test @Ignore("beta4 phreak")
+    @Test
     public void testLogicalInsertionsWithModify() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionsWithUpdate.drl" ) ) );
@@ -742,7 +741,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       m.size() );
     }
 
-    @Test @Ignore("beta4 phreak")
+    @Test
     public void testLogicalInsertionsWithExists() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_LogicalInsertionWithExists.drl" ) ) );
@@ -850,7 +849,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
                       cheeseList.size() );
     }
 
-    @Test @Ignore("beta4 phreak")
+    @Test
     public void testLogicalInsertions3() throws Exception {
         final PackageBuilder builder = new PackageBuilder();
         builder.addPackageFromDrl( new InputStreamReader( getClass().getResourceAsStream( "test_logicalInsertions3.drl" ) ) );
