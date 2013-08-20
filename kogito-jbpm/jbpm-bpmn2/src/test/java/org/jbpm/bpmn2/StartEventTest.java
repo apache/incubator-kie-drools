@@ -18,7 +18,9 @@ package org.jbpm.bpmn2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.objects.Person;
@@ -336,6 +338,57 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         }
         assertEquals(5, getNumberOfProcessInstances("MultipleStartEvents"));
 
+    }
+    
+    @Test
+    public void testTimerCycle() throws Exception {
+        KieBase kbase = createKnowledgeBase("timer/BPMN2-StartTimerCycle.bpmn2");
+        
+        ksession = createKnowledgeSession(kbase);
+        StartCountingListener listener = new StartCountingListener();
+        ksession.addEventListener(listener);
+        
+        for (int i = 1; i < 10; i++) {
+            Thread.sleep(1100);
+            assertEquals(i, listener.getCount("start.cycle"));
+        }
+    }
+
+    /**
+     * This is how I would expect the start event to work (same as the recurring event)
+     */
+    @Test
+    public void testTimerDelay() throws Exception {
+        KieBase kbase = createKnowledgeBase("timer/BPMN2-StartTimerDuration.bpmn2");
+        
+        ksession = createKnowledgeSession(kbase);
+        StartCountingListener listener = new StartCountingListener();
+        ksession.addEventListener(listener);
+        
+        Thread.sleep(1100);
+        
+        assertEquals(1, listener.getCount("start.delaying"));
+    }
+
+    
+    private static class StartCountingListener extends DefaultProcessEventListener {
+        private Map<String, Integer> map = new HashMap<String, Integer>();
+        
+        public void beforeProcessStarted(ProcessStartedEvent event) {
+            String processId = event.getProcessInstance().getProcessId();
+            Integer count = map.get(processId);
+            
+            if (count == null) {
+                map.put(processId, 1);
+            } else {
+                map.put(processId, count + 1);
+            }
+        }
+        
+        public int getCount(String processId) {
+            Integer count = map.get(processId);
+            return (count == null) ? 0 : count;
+        }
     }
 
 }
