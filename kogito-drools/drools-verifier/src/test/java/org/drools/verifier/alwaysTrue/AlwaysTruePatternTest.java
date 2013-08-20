@@ -38,7 +38,6 @@ import static org.junit.Assert.*;
 public class AlwaysTruePatternTest extends TestBaseOld {
 
     @Test
-    @Ignore
     public void testPatternPossibilities() throws Exception {
         StatelessSession session = getStatelessSession(this.getClass().getResourceAsStream("Patterns.drl"));
 

@@ -21,7 +21,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 
-@Ignore
 public class SessionInspectorTest extends CommonTestMethodBase {
 
     @Test
