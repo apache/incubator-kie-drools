@@ -66,7 +66,7 @@ public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
 
     @Override
     public String toString() {
-        return getLocation() + " vehicle-" + id;
+        return getLocation() + "[vehicle-" + id + "]";
     }
 
 }

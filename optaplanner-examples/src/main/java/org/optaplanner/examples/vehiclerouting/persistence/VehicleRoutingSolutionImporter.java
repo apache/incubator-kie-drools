@@ -66,15 +66,24 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
         private List<VrpDepot> depotList;
 
         public Solution readSolution() throws IOException {
-            String nameLine = readStringValue();
-            boolean basic = nameLine.startsWith("NAME :");
-            schedule = basic ? new VrpSchedule() : new VrpTimeWindowedSchedule();
-            schedule.setId(0L);
-            if (basic) {
-                schedule.setName(removePrefixSuffixFromLine(nameLine, "NAME :", ""));
+            String firstLine = readStringValue();
+            if (firstLine.trim().startsWith("NAME :")) {
+                schedule = new VrpSchedule();
+                schedule.setId(0L);
+                schedule.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
                 readBasicSolution();
+            } if (splitBySpace(firstLine).length == 3) {
+                schedule = new VrpSchedule();
+                schedule.setId(0L);
+                String[] tokens = splitBySpace(firstLine, 3);
+                locationListSize = Integer.parseInt(tokens[0]);
+                vehicleListSize = Integer.parseInt(tokens[1]);
+                capacity = Integer.parseInt(tokens[2]);
+                readAlternativeBasicSolution();
             } else {
-                schedule.setName(nameLine);
+                schedule = new VrpTimeWindowedSchedule();
+                schedule.setId(0L);
+                schedule.setName(firstLine);
                 readTimeWindowedSolution();
             }
             // TODO search space does not take different vehicles into account
@@ -88,6 +97,10 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                     flooredPossibleSolutionSize);
             return schedule;
         }
+
+        // ************************************************************************
+        // CVRP normal format. See http://neo.lcc.uma.es/vrp/
+        // ************************************************************************
 
         public void readBasicSolution() throws IOException {
             readBasicHeaders();
@@ -208,6 +221,54 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
             }
             schedule.setVehicleList(vehicleList);
         }
+
+        // ************************************************************************
+        // CVRP alternative format. See https://class.coursera.org/optimization-001/
+        // ************************************************************************
+
+        public void readAlternativeBasicSolution() throws IOException {
+            List<VrpLocation> locationList = new ArrayList<VrpLocation>(locationListSize);
+            depotList = new ArrayList<VrpDepot>(1);
+            List<VrpCustomer> customerList = new ArrayList<VrpCustomer>(locationListSize);
+            locationMap = new HashMap<Long, VrpLocation>(locationListSize);
+            for (int i = 0; i < locationListSize; i++) {
+                String line = bufferedReader.readLine();
+                String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 3);
+                VrpLocation location = new VrpLocation();
+                location.setId((long) i);
+                location.setLatitude(Double.parseDouble(lineTokens[1]));
+                location.setLongitude(Double.parseDouble(lineTokens[2]));
+                if (lineTokens.length >= 4) {
+                    location.setName(lineTokens[3]);
+                }
+                locationList.add(location);
+                if (i == 0) {
+                    VrpDepot depot = new VrpDepot();
+                    depot.setId((long) i);
+                    depot.setLocation(location);
+                    depotList.add(depot);
+                } else {
+                    VrpCustomer customer = new VrpCustomer();
+                    customer.setId((long) i);
+                    customer.setLocation(location);
+                    int demand = Integer.parseInt(lineTokens[0]);
+                    customer.setDemand(demand);
+                    // Notice that we leave the PlanningVariable properties on null
+                    // Do not add a customer that has no demand
+                    if (demand != 0) {
+                        customerList.add(customer);
+                    }
+                }
+            }
+            schedule.setLocationList(locationList);
+            schedule.setDepotList(depotList);
+            schedule.setCustomerList(customerList);
+            createVehicleList();
+        }
+
+        // ************************************************************************
+        // CVRPTW normal format. See http://neo.lcc.uma.es/vrp/
+        // ************************************************************************
 
         public void readTimeWindowedSolution() throws IOException {
             readTimeWindowedHeaders();
