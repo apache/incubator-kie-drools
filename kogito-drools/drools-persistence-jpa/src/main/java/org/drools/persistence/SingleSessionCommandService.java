@@ -25,6 +25,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
+import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
 import org.drools.core.command.impl.GenericCommand;
@@ -167,7 +168,7 @@ public class SingleSessionCommandService
                                                           this.ksession,
                                                           null );
 
-        this.commandService = new DefaultCommandService(kContext);
+        this.commandService = new TransactionInterceptor(kContext);
 
         ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
     }
@@ -281,7 +282,7 @@ public class SingleSessionCommandService
                                                               null );
         }
 
-        this.commandService = new DefaultCommandService(kContext);
+        this.commandService = new TransactionInterceptor(kContext);
     }
 
     public void initTransactionManager(Environment env) {
@@ -364,59 +365,8 @@ public class SingleSessionCommandService
     }
 
     public synchronized <T> T execute(Command<T> command) {
-        if (command instanceof DisposeCommand) {
-            T result = commandService.execute( (GenericCommand<T>) command );
-            this.jpm.dispose();
-            return result;
-        }
 
-        // Open the entity manager before the transaction begins. 
-        PersistenceContext persistenceContext = this.jpm.getApplicationScopedPersistenceContext();
-
-        boolean transactionOwner = false;
-        try {
-            transactionOwner = txm.begin();
-
-            persistenceContext.joinTransaction();
-           
-            initExistingKnowledgeSession( this.sessionInfo.getId(),
-                          this.marshallingHelper.getKbase(),
-                          this.marshallingHelper.getConf(),
-                          persistenceContext );
-
-            this.jpm.beginCommandScopedEntityManager();
-
-            registerRollbackSync();
-
-            T result = null;
-            if( command instanceof BatchExecutionCommand ) { 
-                // Batch execution requires the extra logic in 
-                //  StatefulSessionKnowledgeImpl.execute(Context,Command);
-                result = ksession.execute(command);
-            }
-            else { 
-                result = commandService.execute( (GenericCommand<T>) command );
-            }
-
-            txm.commit( transactionOwner );
-
-            return result;
-
-        } catch ( RuntimeException re ) {
-            rollbackTransaction( re,
-                                 transactionOwner );
-            throw re;
-        } catch ( Exception t1 ) {
-            rollbackTransaction( t1,
-                                 transactionOwner );
-            throw new RuntimeException( "Wrapped exception see cause",
-                                        t1 );
-        } finally {
-            if ( command instanceof DisposeCommand ) {
-                commandService.execute( (GenericCommand<T>) command );
-                this.jpm.dispose();
-            }
-        }
+        return commandService.execute(command);
     }
 
     private void rollbackTransaction(Exception t1,
@@ -547,5 +497,68 @@ public class SingleSessionCommandService
             return isSpringTransactionManager(clazz.getSuperclass());
         }
         return false;
+    }
+
+    private class TransactionInterceptor extends AbstractInterceptor {
+
+        public TransactionInterceptor(Context context) {
+            setNext(new DefaultCommandService(context));
+        }
+
+        @Override
+        public <T> T execute(Command<T> command) {
+            if (command instanceof DisposeCommand) {
+                T result = executeNext( (GenericCommand<T>) command );
+                jpm.dispose();
+                return result;
+            }
+            // Open the entity manager before the transaction begins.
+            PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
+
+            boolean transactionOwner = false;
+            try {
+                transactionOwner = txm.begin();
+
+                persistenceContext.joinTransaction();
+
+                initExistingKnowledgeSession( sessionInfo.getId(),
+                        marshallingHelper.getKbase(),
+                        marshallingHelper.getConf(),
+                        persistenceContext );
+
+                jpm.beginCommandScopedEntityManager();
+
+                registerRollbackSync();
+
+                T result = null;
+                if( command instanceof BatchExecutionCommand) {
+                    // Batch execution requires the extra logic in
+                    //  StatefulSessionKnowledgeImpl.execute(Context,Command);
+                    result = ksession.execute(command);
+                }
+                else {
+                    result = executeNext((GenericCommand<T>) command);
+                }
+
+                txm.commit( transactionOwner );
+
+                return result;
+
+            } catch ( RuntimeException re ) {
+                rollbackTransaction( re,
+                        transactionOwner );
+                throw re;
+            } catch ( Exception t1 ) {
+                rollbackTransaction( t1,
+                        transactionOwner );
+                throw new RuntimeException( "Wrapped exception see cause",
+                        t1 );
+            } finally {
+                if ( command instanceof DisposeCommand) {
+                    executeNext((GenericCommand<T>) command);
+                    jpm.dispose();
+                }
+            }
+        }
     }
 }
