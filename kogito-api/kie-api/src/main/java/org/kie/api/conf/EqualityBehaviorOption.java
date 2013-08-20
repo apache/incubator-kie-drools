@@ -40,5 +40,13 @@ public enum EqualityBehaviorOption implements SingleValueKieBaseOption {
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
+    public static EqualityBehaviorOption determineEqualityBehavior(String option) {
+        if ( IDENTITY.name().equalsIgnoreCase(option) ) {
+            return IDENTITY;
+        } else if ( EQUALITY.name().equalsIgnoreCase( option ) ) {
+            return EQUALITY;
+        }
+        throw new IllegalArgumentException( "Illegal enum value '" + option + "' for EqualityBehaviorOption" );
+    }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.api.builder.model;
 
+import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 
@@ -104,9 +105,20 @@ public interface KieBaseModel {
 
     /**
      * Sets the EventProcessingOption for this KieBaseModel
-     * Default is EventProcessingOption.STREAM
+     * Default is EventProcessingOption.CLOUD
      */
     KieBaseModel setEventProcessingMode(EventProcessingOption eventProcessingMode);
+
+    /**
+     * Returns the DeclarativeAgendaOption of this KieBaseModel
+     */
+    DeclarativeAgendaOption getDeclarativeAgenda();
+
+    /**
+     * Sets the DeclarativeAgendaOption for this KieBaseModel
+     * Default is DeclarativeAgendaOption.DISABLED
+     */
+    KieBaseModel setDeclarativeAgenda(DeclarativeAgendaOption declarativeAgenda);
 
     /**
      * Sets the CDI scope for this KieBaseModel
