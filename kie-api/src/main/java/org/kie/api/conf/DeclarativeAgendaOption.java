@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.internal.builder.conf;
-
-import org.kie.api.conf.SingleValueKieBaseOption;
+package org.kie.api.conf;
 
 /**
  * <p>
  * An enum to enable Declarative Agenda option.
+ * This is an experimental feature.
  * </p>
  * 
  * <pre>
@@ -58,4 +57,12 @@ public enum DeclarativeAgendaOption implements SingleValueKieBaseOption {
         return this.value;
     }
 
+    public static DeclarativeAgendaOption determineDeclarativeAgenda(String option) {
+        if ( ENABLED.name().equalsIgnoreCase(option) || "true".equalsIgnoreCase(option) ) {
+            return ENABLED;
+        } else if ( DISABLED.name().equalsIgnoreCase(option) || "false".equalsIgnoreCase(option) ) {
+            return DISABLED;
+        }
+        throw new IllegalArgumentException( "Illegal enum value '" + option + "' for DeclarativeAgendaOption" );
+    }
 }

@@ -25,6 +25,7 @@
             <xsd:attribute name="scope" type="xsd:string" />
             <xsd:attribute name="equalsBehavior" type="insertBehaviorEnum" />
             <xsd:attribute name="eventProcessingMode" type="eventModeEnum" />
+            <xsd:attribute name="declarativeAgenda" type="declarativeAgendaEnum" />
         </xsd:complexType>
     </xsd:element>
 
@@ -123,6 +124,15 @@
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="identity" />
 			<xsd:enumeration value="equality" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="declarativeAgendaEnum">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="enabled" />
+			<xsd:enumeration value="disabled" />
+			<xsd:enumeration value="true" />
+			<xsd:enumeration value="false" />
 		</xsd:restriction>
 	</xsd:simpleType>
 
