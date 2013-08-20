@@ -1,5 +1,6 @@
 package org.drools.reteoo.common;
 
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatefulSession;
 import org.drools.core.base.DefaultKnowledgeHelper;
@@ -11,14 +12,22 @@ import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.MBeansOption;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+
 import static org.junit.Assert.*;
 
-@Ignore
 public class AgendaItemTest {
     
     @Test
     public void testAddition() {
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setOption( RuleEngineOption.RETEOO );
+
+        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
         StatefulSession wm = rbase.newStatefulSession();
 
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
@@ -57,7 +66,10 @@ public class AgendaItemTest {
     
     @Test
     public void testRemoval() {
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setOption( RuleEngineOption.RETEOO );
+
+        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
         StatefulSession wm = rbase.newStatefulSession();
 
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
@@ -123,7 +135,10 @@ public class AgendaItemTest {
     
     @Test
     public void testUnblockAll() {
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setOption( RuleEngineOption.RETEOO );
+
+        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
         StatefulSession wm = rbase.newStatefulSession();
 
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
@@ -157,7 +172,10 @@ public class AgendaItemTest {
     
     @Test
     public void testKnowledgeHelperUpdate() {
-        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration();
+        conf.setOption( RuleEngineOption.RETEOO );
+
+        ReteooRuleBase rbase = ( ReteooRuleBase ) RuleBaseFactory.newRuleBase(conf);
         StatefulSession wm = rbase.newStatefulSession();
 
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();

@@ -627,7 +627,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("This test requires us to fix the propagation order")
     public void testForallSinglePattern() throws Exception {
         KieBase kbase = loadKnowledgeBase( "test_ForallSinglePattern.drl");
         StatefulKnowledgeSession workingMemory = createKnowledgeSession((KnowledgeBase) kbase);
@@ -659,7 +658,7 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
         // still only stilton, so should not fire  
         workingMemory.retract( stilton1 );
         workingMemory.fireAllRules();
-        assertEquals( ++fired, // we need to fix forall to not fire in this situation 
+        assertEquals( fired,
                       list.size() );
 
         // there is a brie, so should not fire  
@@ -1119,7 +1118,6 @@ public class FirstOrderLogicTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("This test requires us to fix the propagation order")
     public void testForallWithSlidingWindow() throws Exception {
         final KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
