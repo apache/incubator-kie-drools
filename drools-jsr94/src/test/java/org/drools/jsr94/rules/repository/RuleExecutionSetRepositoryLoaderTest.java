@@ -34,8 +34,7 @@ public class RuleExecutionSetRepositoryLoaderTest {
      *
      * @throws Exception
      */
-    @Test @Ignore
+    @Test
     public void testLoadRuleExecutionSetRepository() throws Exception {
-        // TODO
     }
 }
