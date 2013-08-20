@@ -12,6 +12,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
+import org.kie.api.conf.DeclarativeAgendaOption;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +40,8 @@ public class KieBaseModelImpl
     private EqualityBehaviorOption       equalsBehavior = EqualityBehaviorOption.IDENTITY;
 
     private EventProcessingOption        eventProcessingMode = EventProcessingOption.CLOUD;
+
+    private DeclarativeAgendaOption      declarativeAgenda = DeclarativeAgendaOption.DISABLED;
 
     private Map<String, KieSessionModel> kSessions = new HashMap<String, KieSessionModel>();
 
@@ -207,7 +210,16 @@ public class KieBaseModelImpl
         this.eventProcessingMode = eventProcessingMode;
         return this;
     }
-    
+
+    public DeclarativeAgendaOption getDeclarativeAgenda() {
+        return declarativeAgenda;
+    }
+
+    public KieBaseModel setDeclarativeAgenda(DeclarativeAgendaOption declarativeAgenda) {
+        this.declarativeAgenda = declarativeAgenda;
+        return this;
+    }
+
     @Override
     public KieBaseModel setScope(String scope) {
         this.scope = scope;
@@ -273,7 +285,10 @@ public class KieBaseModelImpl
             if ( kBase.getEqualsBehavior() != null ) {
                 writer.addAttribute( "equalsBehavior", kBase.getEqualsBehavior().toString().toLowerCase() );
             }
-            
+            if ( kBase.getDeclarativeAgenda() != null ) {
+                writer.addAttribute( "declarativeAgenda", kBase.getDeclarativeAgenda().toString().toLowerCase() );
+            }
+
             if ( kBase.getScope() != null ) {
                 writer.addAttribute( "scope", kBase.getScope() );
             }
@@ -324,9 +339,14 @@ public class KieBaseModelImpl
             
             String equalsBehavior = reader.getAttribute( "equalsBehavior" );
             if ( equalsBehavior != null ) {
-                kBase.setEqualsBehavior( EqualityBehaviorOption.valueOf(equalsBehavior.toUpperCase()) );
+                kBase.setEqualsBehavior( EqualityBehaviorOption.determineEqualityBehavior( equalsBehavior ) );
             }
-            
+
+            String declarativeAgenda = reader.getAttribute( "declarativeAgenda" );
+            if ( declarativeAgenda != null ) {
+                kBase.setDeclarativeAgenda( DeclarativeAgendaOption.determineDeclarativeAgenda( declarativeAgenda ) );
+            }
+
             String scope = reader.getAttribute( "scope" );
             if ( scope != null ) {
                 kBase.setScope( scope.trim() );
