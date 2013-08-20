@@ -160,7 +160,7 @@ public class ReteooBuilder
 
     public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, InternalWorkingMemory[] workingMemories)  {
         if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
-            AddRemoveRule.removeRule(  tn, workingMemories);
+            AddRemoveRule.removeRule( tn, workingMemories, ruleBase );
         }
 
         RuleRemovalContext.CleanupAdapter adapter = null;
