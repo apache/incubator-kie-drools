@@ -52,15 +52,13 @@ public class AddRemoveRule {
 
     private static final Logger log = LoggerFactory.getLogger(AddRemoveRule.class);
 
-    public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms) {
+    public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalRuleBase ruleBase) {
         if ( log.isTraceEnabled() ) {
             log.trace("Adding Rule {}", tn.getRule().getName() );
         }
         LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
 
-        if (wms.length > 0) {
-            ((ReteooRuleBase) wms[0].getRuleBase()).invalidateSegmentPrototype(splitStartLeftTupleSource);
-        }
+        ((ReteooRuleBase)ruleBase).invalidateSegmentPrototype(splitStartLeftTupleSource);
 
         for (InternalWorkingMemory wm : wms) {
 
@@ -115,16 +113,14 @@ public class AddRemoveRule {
         }
     }
 
-     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms) {
+     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalRuleBase ruleBase) {
          if ( log.isTraceEnabled() ) {
              log.trace("Removing Rule {}", tn.getRule().getName() );
          }
 
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
 
-         if (wms.length > 0) {
-             ((ReteooRuleBase)wms[0].getRuleBase()).invalidateSegmentPrototype(splitStartNode);
-         }
+         ((ReteooRuleBase)ruleBase).invalidateSegmentPrototype(splitStartNode);
 
          for ( InternalWorkingMemory wm : wms ) {
 

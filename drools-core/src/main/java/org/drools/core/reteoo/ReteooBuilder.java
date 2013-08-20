@@ -169,7 +169,7 @@ public class ReteooBuilder
 
         if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
             for ( BaseNode node : nodes ) {
-                AddRemoveRule.removeRule( (TerminalNode) node, workingMemories);
+                AddRemoveRule.removeRule( (TerminalNode) node, workingMemories, ruleBase);
             }
         }
 
