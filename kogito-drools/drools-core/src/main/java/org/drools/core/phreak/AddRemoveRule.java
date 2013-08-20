@@ -40,6 +40,8 @@ import org.drools.core.spi.PropagationContext;
  import org.drools.core.util.Iterator;
  import org.drools.core.util.LinkedList;
  import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -48,44 +50,48 @@ import java.util.HashSet;
 
 public class AddRemoveRule {
 
+    private static final Logger log = LoggerFactory.getLogger(AddRemoveRule.class);
 
     public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms) {
+        if ( log.isTraceEnabled() ) {
+            log.trace("Adding Rule {}", tn.getRule().getName() );
+        }
         LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
 
         if (wms.length > 0) {
-            ((ReteooRuleBase)wms[0].getRuleBase()).invalidateSegmentPrototype(splitStartLeftTupleSource);
+            ((ReteooRuleBase) wms[0].getRuleBase()).invalidateSegmentPrototype(splitStartLeftTupleSource);
         }
 
-        for ( InternalWorkingMemory wm : wms ) {
+        for (InternalWorkingMemory wm : wms) {
 
-            if ( splitStartLeftTupleSource.getAssociations().size() > 1 ) {
+            if (splitStartLeftTupleSource.getAssociations().size() > 1) {
                 List<PathMemory> pathMems = new ArrayList<PathMemory>();
 
                 collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
 
-                PathMemory newPmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) tn);
+                PathMemory newPmem = (PathMemory) wm.getNodeMemory((MemoryFactory) tn);
 
                 int s = getSegmentPos(splitStartLeftTupleSource, null);
 
                 LeftTupleSink[] sinks = splitStartLeftTupleSource.getSinkPropagator().getSinks();
-                if ( sinks.length == 2 || ( sinks.length == 3 && NodeTypeEnums.isBetaNode(sinks[2])) && ((BetaNode)sinks[2]).isRightInputIsRiaNode() ) {
+                if (sinks.length == 2 || (sinks.length == 3 && NodeTypeEnums.isBetaNode(sinks[2])) && ((BetaNode) sinks[2]).isRightInputIsRiaNode()) {
                     List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, null);
 
                     // can only be two if the adding node caused the split to be created
                     int p = 0;
                     SegmentMemory splitSmem = null;
-                    for ( PathMemory pmem : pathMems) {
+                    for (PathMemory pmem : pathMems) {
                         SegmentMemory[] smems = previousSmems.get(p);
 
-                        for (int i = 0; i < smems.length; i++ ) {
+                        for (int i = 0; i < smems.length; i++) {
                             SegmentMemory sm = smems[i];
-                            if ( sm == null ) {
+                            if (sm == null) {
                                 continue; // SegmentMemory is not yet initialized
                             }
 
-                            if ( i < s ) {
+                            if (i < s) {
                                 correctSegmentBeforeSplitOnAdd(wm, newPmem, p, pmem, sm);
-                            } else if ( i == s ) {
+                            } else if (i == s) {
                                 splitSmem = correctSegmentOnSplitOnAdd(splitStartLeftTupleSource, wm, newPmem, p, splitSmem, pmem, sm);
                             } else if (i > s) {
                                 correctSegmentAfterSplitOnAdd(wm, pmem, i, sm);
@@ -110,6 +116,10 @@ public class AddRemoveRule {
     }
 
      public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms) {
+         if ( log.isTraceEnabled() ) {
+             log.trace("Removing Rule {}", tn.getRule().getName() );
+         }
+
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
 
          if (wms.length > 0) {
@@ -662,10 +672,12 @@ public class AddRemoveRule {
             }
 
             if (NodeTypeEnums.AccumulateNode == peer.getLeftTupleSink().getType()) {
-                AccumulateContext accctx = (AccumulateContext) lt.getObject();
-                followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert, wm);
+                AccumulateContext accctx = (AccumulateContext) peer.getObject();
+                followPeer(accctx.getResultLeftTuple(), smem, sinks,  i-1, insert, wm);
             } else if ( peer.getFirstChild() != null ) {
-                followPeer(peer.getFirstChild(), smem, sinks, i-1, insert, wm);
+                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                    followPeer(childLt, smem, sinks, i-1, insert, wm);
+                }
             }
 
         }
