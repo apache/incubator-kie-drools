@@ -17,6 +17,7 @@ package org.drools.scorecards.drl;
 
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.core.util.StringUtils;
+import org.drools.scorecards.ScoringStrategy;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.PMMLOperators;
@@ -95,10 +96,16 @@ public abstract class AbstractDRLEmitter {
 
     private void addImports(PMML pmml, Package aPackage) {
         String importsFromDelimitedString = ScorecardPMMLUtils.getExtensionValue(pmml.getHeader().getExtensions(), PMMLExtensionNames.SCORECARD_IMPORTS);
-        for (String importStatement : importsFromDelimitedString.split(",")) {
+        if ( StringUtils.isEmpty(importsFromDelimitedString) ) {
             Import imp = new Import();
-            imp.setClassName(importStatement);
+            imp.setClassName("java.util.*");
             aPackage.addImport(imp);
+        } else {
+            for (String importStatement : importsFromDelimitedString.split(",")) {
+                Import imp = new Import();
+                imp.setClassName(importStatement);
+                aPackage.addImport(imp);
+            }
         }
         Import defaultScorecardImport = new Import();
         defaultScorecardImport.setClassName("org.drools.scorecards.DroolsScorecard");
@@ -147,9 +154,9 @@ public abstract class AbstractDRLEmitter {
                         if (desc != null) {
                             rule.setDescription(desc);
                         }
-                        attributePosition++;
                         populateLHS(rule, pmmlDocument, scorecard, c, scoreAttribute);
                         populateRHS(rule, pmmlDocument, scorecard, c, scoreAttribute, attributePosition);
+                        attributePosition++;
                         ruleList.add(rule);
                     }
                 }
@@ -166,8 +173,18 @@ public abstract class AbstractDRLEmitter {
             Rule rule = new Rule(ruleName, 999, 1);
             rule.setDescription("set the initial score");
 
+//            String var = "$sc";
+//            StringBuilder stringBuilder = new StringBuilder();
+//
+//            stringBuilder.append(var).append(" : ").append(objectClass).append("()");
+//            Condition condition = new Condition();
+//            condition.setSnippet(stringBuilder.toString());
+//            rule.addCondition(condition);
+
             Condition condition = createInitialRuleCondition(scorecard, objectClass);
-            rule.addCondition(condition);
+            if ( condition != null) {
+                rule.addCondition(condition);
+            }
             if (scorecard.getInitialScore() > 0 ) {
                 Consequence consequence = new Consequence();
                 //consequence.setSnippet("$sc.setInitialScore(" + scorecard.getInitialScore() + ");");
@@ -183,25 +200,22 @@ public abstract class AbstractDRLEmitter {
                             Consequence consequence = new Consequence();
                             if (characteristic.getBaselineScore() == null ||  characteristic.getBaselineScore() == 0 ) {
                                 consequence.setSnippet("insertLogical(new BaselineScore(\"" + objectClass+"\",\""+field + "\","+scorecard.getBaselineScore()+"));");
-                                //consequence.setSnippet("$sc.setBaselineScore(\"" + field + "\","+scorecard.getBaselineScore()+");");
                             } else {
                                 consequence.setSnippet("insertLogical(new BaselineScore(\"" + objectClass+"\",\""+field + "\","+characteristic.getBaselineScore()+"));");
-                                //consequence.setSnippet("$sc.setBaselineScore(\"" + field + "\","+characteristic.getBaselineScore()+");");
                             }
                             rule.addConsequence(consequence);
                         }
                     }
                 }
-                if (scorecard.getReasonCodeAlgorithm() != null) {
-                    Consequence consequence = new Consequence();
-                    if ("pointsAbove".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
-                        //TODO: ReasonCode Algorithm
-                        consequence.setSnippet("//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE);");
-                    } else if ("pointsBelow".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
-                        consequence.setSnippet("//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW);");
-                    }
-                    rule.addConsequence(consequence);
-                }
+//                if (scorecard.getReasonCodeAlgorithm() != null) {
+//                    Consequence consequence = new Consequence();
+//                    if ("pointsAbove".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+//                        consequence.setSnippet("$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE);");
+//                    } else if ("pointsBelow".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+//                        consequence.setSnippet("$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW);");
+//                    }
+//                    rule.addConsequence(consequence);
+//                }
             }
             ruleList.add(rule);
         }
@@ -310,13 +324,20 @@ public abstract class AbstractDRLEmitter {
         String setter = "insertLogical(new PartialScore(\"";
         String field = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(c);
 
-        stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",").append(scoreAttribute.getPartialScore());
+        ScoringStrategy scoringStrategy = getScoringStrategy(scorecard);
+        if ( scoringStrategy.toString().startsWith("WEIGHTED")) {
+            String weight = ScorecardPMMLUtils.getExtensionValue(scoreAttribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+            stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",(").append(scoreAttribute.getPartialScore()).append("*").append(weight).append(")");
+        } else {
+            stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",").append(scoreAttribute.getPartialScore());
+        }
         if (scorecard.isUseReasonCodes()){
             String reasonCode = scoreAttribute.getReasonCode();
             if (reasonCode == null || StringUtils.isEmpty(reasonCode)) {
                 reasonCode = c.getReasonCode();
             }
-            stringBuilder.append(",\"").append(reasonCode).append("\", ").append(position);
+            stringBuilder.append(",\"").append(reasonCode).append("\", ").append(c.getBaselineScore());
+            stringBuilder.append(",").append(position);
         }
         stringBuilder.append("));");
         consequence.setSnippet(stringBuilder.toString());
@@ -328,7 +349,29 @@ public abstract class AbstractDRLEmitter {
         Rule calcTotalRule = new Rule(objectClass+"_calculateTotalScore",1,1);
         StringBuilder stringBuilder = new StringBuilder();
         Condition condition = new Condition();
-        stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
+        ScoringStrategy strategy = getScoringStrategy(scorecard);
+        switch (strategy) {
+            case WEIGHTED_AGGREGATE_SCORE:
+            case AGGREGATE_SCORE: {
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
+                break;
+            }
+            case WEIGHTED_AVERAGE_SCORE:
+            case AVERAGE_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), average($partialScore))");
+                break;
+            }
+            case WEIGHTED_MAXIMUM_SCORE:
+            case MAXIMUM_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), max($partialScore))");
+                break;
+            }
+            case WEIGHTED_MINIMUM_SCORE:
+            case MINIMUM_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), min($partialScore))");
+                break;
+            }
+        }
         condition.setSnippet(stringBuilder.toString());
         calcTotalRule.addCondition(condition);
         if (scorecard.getInitialScore() > 0) {
@@ -346,7 +389,8 @@ public abstract class AbstractDRLEmitter {
             rule.setDescription("collect and sort the reason codes as per the specified algorithm");
             condition = new Condition();
             stringBuilder = new StringBuilder();
-            stringBuilder.append("$reasons : List() from accumulate ( PartialScore(scorecardName == \"").append(objectClass).append("\", $reasonCode : reasoncode ); collectList($reasonCode) )");
+           // stringBuilder.append("$reasons : List() from accumulate ( PartialScore(scorecardName == \"").append(objectClass).append("\", $reasonCode : reasoncode ); collectList($reasonCode) )");
+            stringBuilder.append("$partialScoresList : List() from collect ( PartialScore(scorecardName == \"").append(objectClass).append("\"))");
             condition.setSnippet(stringBuilder.toString());
             rule.addCondition(condition);
             ruleList.add(rule);
@@ -357,6 +401,15 @@ public abstract class AbstractDRLEmitter {
 
         addAdditionalSummationCondition(calcTotalRule, scorecard);
         addAdditionalSummationConsequence(calcTotalRule, scorecard);
+    }
+
+    protected ScoringStrategy getScoringStrategy(Scorecard scorecard) {
+        ScoringStrategy strategy = ScoringStrategy.AGGREGATE_SCORE;
+        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+        if ( !StringUtils.isEmpty(scoringStrategyName)) {
+            strategy = ScoringStrategy.valueOf(scoringStrategyName);
+        }
+        return strategy;
     }
 
     protected abstract void addDeclaredTypeContents(PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard);
