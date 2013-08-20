@@ -182,7 +182,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         baseTerminalNode.networkUpdated(new UpdateContext());
         baseTerminalNode.attach(context);
         if ( context.getRuleBase().getConfiguration().isPhreakEnabled() ) {
-            AddRemoveRule.addRule( terminal, context.getWorkingMemories() );
+            AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getRuleBase() );
         }
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
