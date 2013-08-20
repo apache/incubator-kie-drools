@@ -53,7 +53,7 @@ public interface KieBaseModel {
     KieBaseModel addInclude(String kBaseName);
 
     /**
-     * Remove the imclusion of the KieBase with the given name
+     * Remove the inclusion of the KieBase with the given name
      */
     KieBaseModel removeInclude(String kBaseName);
 
