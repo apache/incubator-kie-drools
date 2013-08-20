@@ -221,6 +221,7 @@ public class KieContainerImpl
         KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null, cl);
         kbConf.setOption(kBaseModel.getEqualsBehavior());
         kbConf.setOption(kBaseModel.getEventProcessingMode());
+        kbConf.setOption(kBaseModel.getDeclarativeAgenda());
         return kbConf;
     }
 

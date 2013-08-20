@@ -305,6 +305,7 @@ public class KieBuilderImpl
         KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( properties, classLoaders );
         kbConf.setOption( kieBase.getEqualsBehavior() );
         kbConf.setOption( kieBase.getEventProcessingMode() );
+        kbConf.setOption( kieBase.getDeclarativeAgenda() );
         return kbConf;
     }
 

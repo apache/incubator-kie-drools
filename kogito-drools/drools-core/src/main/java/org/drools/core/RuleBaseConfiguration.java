@@ -41,7 +41,7 @@ import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
-import org.kie.internal.builder.conf.DeclarativeAgendaOption;
+import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.api.conf.EqualityBehaviorOption;
