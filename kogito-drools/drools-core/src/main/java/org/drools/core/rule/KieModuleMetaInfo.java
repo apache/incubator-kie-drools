@@ -9,8 +9,10 @@ import java.util.Map;
 public class KieModuleMetaInfo {
     private static final XStream xStream = new XStream(new DomDriver());
 
-    private final Map<String, TypeMetaInfo> typeMetaInfos;
-    private final Map<String, List<String>> rulesByKieBase;
+    private Map<String, TypeMetaInfo> typeMetaInfos;
+    private Map<String, List<String>> rulesByKieBase;
+
+    public KieModuleMetaInfo() { }
 
     public KieModuleMetaInfo(Map<String, TypeMetaInfo> typeMetaInfoMap, Map<String, List<String>> rulesByKieBase) {
         this.typeMetaInfos = typeMetaInfoMap;

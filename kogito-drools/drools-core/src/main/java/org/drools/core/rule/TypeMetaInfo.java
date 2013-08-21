@@ -7,6 +7,8 @@ public class TypeMetaInfo {
     private TypeDeclaration.Role role;
     private boolean isDeclaredType;
 
+    public TypeMetaInfo() { }
+
     public TypeMetaInfo(TypeDeclaration typeDeclaration) {
         this.kind = typeDeclaration.getKind();
         this.role = typeDeclaration.getRole();
