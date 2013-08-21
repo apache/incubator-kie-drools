@@ -32,12 +32,12 @@
     </mediaobject>
   </preface>
 
-  <xi:include href="Chapter-Introduction/Chapter-Introduction.xml" />
-  <xi:include href="Chapter-UserGuide/Chapter-UserGuide.xml" />
-  <xi:include href="Chapter-ApiReference/Chapter-ApiReference.xml" />
-  <xi:include href="Chapter-LanguageReference/Chapter-LanguageReference.xml" />
-  <xi:include href="Chapter-JSR94/Chapter-JSR94.xml" />
-  <xi:include href="Chapter-IDE/Chapter-IDE.xml" />
-  <xi:include href="Chapter-Examples/Chapter-Examples.xml" />
+  <xi:include href="Chapter-Introduction.xml" />
+  <xi:include href="Chapter-UserGuide.xml" />
+  <xi:include href="Chapter-ApiReference.xml" />
+  <xi:include href="Chapter-LanguageReference.xml" />
+  <xi:include href="Chapter-JSR94.xml" />
+  <xi:include href="Chapter-IDE.xml" />
+  <xi:include href="Chapter-Examples.xml"/>
 
 </book>
