@@ -335,8 +335,7 @@ public class EntryPointNode extends ObjectSource
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        BetaMemory bm = BetaNode.getBetaMemory((BetaNode) rightTuple.getRightTupleSink(), wm);
-        (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
+        rightTuple.getRightTupleSink().retractRightTuple( rightTuple, pctx, wm );
     }
 
     public void modifyObject(InternalFactHandle factHandle,
