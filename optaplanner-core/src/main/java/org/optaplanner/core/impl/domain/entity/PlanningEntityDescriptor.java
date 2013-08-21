@@ -239,6 +239,10 @@ public class PlanningEntityDescriptor {
         return shadowVariableDescriptorMap.containsKey(propertyName);
     }
 
+    public ShadowVariableDescriptor getShadowVariableDescriptor(String propertyName) {
+        return shadowVariableDescriptorMap.get(propertyName);
+    }
+
     public void addVariableListenersToMap(
             Map<PlanningVariableDescriptor, List<PlanningVariableListener>> variableListenerMap) {
         for (PlanningVariableDescriptor variableDescriptor : genuineVariableDescriptorMap.values()) {

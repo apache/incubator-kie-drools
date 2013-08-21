@@ -11,4 +11,8 @@ public class TestdataChainedAnchor extends TestdataObject implements TestdataCha
         super(code);
     }
 
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
 }
