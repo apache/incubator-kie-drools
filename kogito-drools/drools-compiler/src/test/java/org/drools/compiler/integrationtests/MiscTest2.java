@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
 import org.kie.api.runtime.KieSession;
@@ -2455,5 +2456,42 @@ public class MiscTest2 extends CommonTestMethodBase {
         public void setX(int x) {
             this.x = x;
         }
+    }
+
+    @Test
+    public void testBetaNodeInSubnetworkInStreamMode() {
+        // BZ-995408
+        String str =
+                "import " + Foo.class.getCanonicalName() + "\n" +
+                "\n" +
+                "global java.util.List context;\n" +
+                "\n" +
+                "declare Foo\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule A\"\n" +
+                "when\n" +
+                "    $f : Foo( )\n" +
+                "    not ( Integer() from context )\n" +
+                "then\n" +
+                "    $f.setX( 2 );\n" +
+                "end";
+
+        KieBaseConfiguration kBaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kBaseConf.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConf, str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.setGlobal("context", new ArrayList() {{
+            add(new Long(0));
+        }});
+
+        Foo foo = new Foo();
+        foo.setX(1);
+        ksession.insert(foo);
+        ksession.fireAllRules();
+
+        assertEquals(2, foo.getX());
     }
 }

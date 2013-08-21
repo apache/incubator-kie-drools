@@ -100,11 +100,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         ObjectTypeNode otn = (ObjectTypeNode) current;
         rootQueryNode = ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom(otn.getObjectType());
 
-        if (context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent()) {
-            streamMode = true;
-        } else {
-            streamMode = false;
-        }
+        streamMode = context.isStreamMode() && context.getRootObjectTypeNode().getObjectType().isEvent();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -229,7 +225,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         if( context.getReaderContext() != null /*&& sm != null*/ ) {
             // we are deserializing a session, so we might need to evaluate
             // rule activations immediately
-            MarshallerReaderContext mrc = (MarshallerReaderContext) context.getReaderContext();
+            MarshallerReaderContext mrc = context.getReaderContext();
             mrc.filter.fireRNEAs( wm );
         }
     }
@@ -242,7 +238,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             boolean stagedInsertWasEmpty = false;
 
             // mask check is necessary if insert is a result of a modify
-            if ( liaNode.isStreamMode() ) {
+            if ( liaNode.isStreamMode() && sm.getTupleQueue() != null ) {
                 stagedInsertWasEmpty = sm.getTupleQueue().isEmpty();
                 sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst() ));
 
@@ -303,7 +299,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         leftTuple.setPropagationContext( context );
 
         boolean stagedDeleteWasEmpty = false;
-        if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
+        if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
             stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
             sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
             if ( log.isTraceEnabled() ) {
@@ -374,7 +370,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                     // only add to staging if masks match
 
                     boolean stagedUpdateWasEmpty = false;
-                    if ( ((BaseNode)sm.getRootNode()).isStreamMode() ) {
+                    if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
                         stagedUpdateWasEmpty = sm.getTupleQueue().isEmpty();
                         sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
                     } else {
@@ -417,7 +413,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
             LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
             LiaNodeMemory prevLm = ( LiaNodeMemory ) workingMemory.getNodeMemory( prevLiaNode );
-            SegmentMemory prevSm = (SegmentMemory ) prevLm.getSegmentMemory();
+            SegmentMemory prevSm = prevLm.getSegmentMemory();
             doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
 
             leftTuple = modifyPreviousTuples.peekLeftTuple();

@@ -62,9 +62,6 @@ import org.drools.core.util.index.IndexUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
-import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
-
 public abstract class BetaNode extends LeftTupleSource
         implements
         LeftTupleSinkNode,
@@ -146,13 +143,13 @@ public abstract class BetaNode extends LeftTupleSource
 
         initMasks(context, leftInput);
 
-        ObjectTypeNode node = null;
+        streamMode = context.isStreamMode() && getObjectTypeNode(context).getObjectType().isEvent();
+    }
 
-        if (context.isStreamMode() && getObjectTypeNode().getObjectType().isEvent()) {
-            streamMode = true;
-        } else {
-            streamMode = false;
-        }
+    private ObjectTypeNode getObjectTypeNode(BuildContext context) {
+        ObjectTypeNode otn = getObjectTypeNode();
+        // getObjectTypeNode() can return null if the BetaNode is in a subnetwork
+        return otn != null ? otn : context.getRootObjectTypeNode();
     }
 
     @Override
