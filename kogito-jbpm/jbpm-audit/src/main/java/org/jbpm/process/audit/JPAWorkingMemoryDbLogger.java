@@ -120,8 +120,8 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         ProcessInstanceLog log = (ProcessInstanceLog) ((ProcessInstanceImpl) event.getProcessInstance()).getMetaData().get("ProcessInstanceLog");
         if (log == null) {
 	        List<ProcessInstanceLog> result = em.createQuery(
-		        "from ProcessInstanceLog as log where log.processInstanceId = ? and log.end is null")
-		            .setParameter(1, processInstanceId).getResultList();
+		        "from ProcessInstanceLog as log where log.processInstanceId = :piId and log.end is null")
+		            .setParameter("piId", processInstanceId).getResultList();
 	        if (result != null && result.size() != 0) {
 	           log = result.get(result.size() - 1);
 	        }
