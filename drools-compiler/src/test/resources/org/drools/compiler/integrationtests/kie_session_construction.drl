@@ -1,0 +1,28 @@
+package org.drools.compiler.integrationtests
+
+import java.util.List
+import org.drools.compiler.integrationtests.KieSessionConstructionTest.ListHolder
+
+global ListHolder listHolder
+
+declare Here
+   place : String
+end
+
+declare Location
+   thing : String
+   location : String
+end
+
+query look(String place, List things)
+   Here(place;)
+   things := List() from accumulate( Location(thing, place;), collectList( thing ) )
+end
+
+rule reactiveLook 
+   when
+      Here( $place : place)
+      ?look($place, $things;)
+   then
+      listHolder.setThings($things);
+end
