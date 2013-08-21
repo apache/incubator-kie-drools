@@ -185,8 +185,11 @@ public class KieBuilderImpl
     }
 
     private KieModuleMetaInfo generateKieModuleMetaInfo() {
+    	// TODO: I think this method is wrong because it is only inspecting packages that are included
+    	// in at least one kbase, but I believe it should inspect all packages, even if not included in
+    	// any kbase, as they could be included in the future
         Map<String, TypeMetaInfo> typeInfos = new HashMap<String, TypeMetaInfo>();
-        Map<String, List<String>> rulesByKieBase = new HashMap<String, List<String>>();
+        Map<String, List<String>> rulesPerPackage = new HashMap<String, List<String>>();
 
         KieModuleModel kieModuleModel = kModule.getKieModuleModel();
         for ( String kieBaseName : kieModuleModel.getKieBaseModels().keySet() ) {
@@ -214,13 +217,19 @@ public class KieBuilderImpl
                     trgMfs.write( internalName, bytes, true );
                     types.add( internalName );
                 }
-
-                List<String> rules = new ArrayList<String>();
+                
+                // we need to replace this List<String> by a Set<String>
+                List<String> rules = rulesPerPackage.get( kPkg.getName() );
+                if( rules == null ) {
+                    rules = new ArrayList<String>();
+                }
                 for ( Rule rule : kPkg.getRules() ) {
-                    rules.add(rule.getName());
+                	if( !rules.contains( rule.getName() ) ) {
+                        rules.add(rule.getName());
+                	}
                 }
                 if (!rules.isEmpty()) {
-                    rulesByKieBase.put(kieBaseName, rules);
+                    rulesPerPackage.put(kPkg.getName(), rules);
                 }
 
                 addToCompilationData(_compData, runtimeData, types);
@@ -229,7 +238,7 @@ public class KieBuilderImpl
             _kmoduleCacheBuilder.addCompilationData( _compData.build() );
             writeCompilationDataToTrg( _kmoduleCacheBuilder.build(), kieBaseName );
         }
-        return new KieModuleMetaInfo(typeInfos, rulesByKieBase);
+        return new KieModuleMetaInfo(typeInfos, rulesPerPackage);
     }
 
     private KModuleCache.Builder createCacheBuilder() {
