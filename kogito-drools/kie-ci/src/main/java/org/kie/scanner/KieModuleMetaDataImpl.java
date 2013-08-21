@@ -99,8 +99,9 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     @Override
-    public Collection<String> getRuleNames(String kieBaseName) {
-        return rulesByKieBase.get(kieBaseName);
+    public Collection<String> getRuleNames(String packageName) {
+        List<String> rulesPerPackage = rulesByKieBase.get(packageName);
+		return rulesPerPackage != null ? rulesPerPackage : Collections.<String>emptyList();
     }
 
     private ClassLoader getClassLoader() {
