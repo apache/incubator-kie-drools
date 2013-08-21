@@ -1,0 +1,27 @@
+package org.drools.compiler.integrationtests
+
+global java.util.List ruleList
+
+rule first
+salience 2
+when
+then
+    ruleList.add("first");
+    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup("agenda").setFocus();
+end
+
+rule second
+agenda-group "agenda"
+when
+    $s : String( this == 'fireRules' )
+then
+    ruleList.add("second");
+end
+
+rule third
+salience 1
+when
+    $s : String( this == 'fireRules' )
+then
+    ruleList.add("third");
+end
