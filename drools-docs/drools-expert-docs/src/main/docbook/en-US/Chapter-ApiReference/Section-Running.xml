@@ -111,7 +111,7 @@
         used interchangeably.</para>
 
         <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
-        However, when the rules are executed, they can assert new objects 
+        However, when the rules are executed, they can assert new objects
         thus causing new work to be needed. laune: No, it should be elsewhere.
       -->
 
@@ -176,7 +176,7 @@ ksession.retract( stiltonHandle );            </programlisting>
         changes and notifies the engine in a single statement. Alternatively,
         after changing a fact object's field values through calls of setter
         methods you must invoke <code>update</code> immediately, event
-        before changing another fact, or you will cause problems with the 
+        before changing another fact, or you will cause problems with the
         indexing within the rule engine. The modify statement avoids this
         problem.</para>
 
@@ -273,21 +273,21 @@ for ( QueryResultsRow row : results ) {
           <programlisting language="java">final List updated = new ArrayList();
 final List removed = new ArrayList();
 final List added = new ArrayList();
- 
-ViewChangedEventListener listener = new ViewChangedEventListener() {           
+
+ViewChangedEventListener listener = new ViewChangedEventListener() {
  public void rowUpdated(Row row) {
   updated.add( row.get( "$price" ) );
  }
-  
+
  public void rowRemoved(Row row) {
   removed.add( row.get( "$price" ) );
  }
-  
+
  public void rowAdded(Row row) {
   added.add( row.get( "$price" ) );
  }
-};       
- 
+};
+
 // Open the LiveQuery
 LiveQuery query = ksession.openLiveQuery( "cheeses",
                                           new Object[] { "cheddar", "stilton" },
@@ -329,13 +329,13 @@ query.dispose() // calling dispose to terminate the live query</programlisting>
         <para>Globals are named objects that are made visible to the rule engine,
         but in a way that is fundamentally different from the one for facts:
         changes in the object backing a global do not trigger reevaluation of
-        rules. Still, globals are useful for providing static information, 
+        rules. Still, globals are useful for providing static information,
         as an object offering services that are used in the RHS of a rule, or
         as a means to return objects from the rule engine. When you use
         a global on the LHS of a rule, make sure it is immutable, or, at least,
         don't expect changes to have any effect on the behavior of your rules.</para>
 
-        <para>A global must be declared in a rules file, and then it needs to be 
+        <para>A global must be declared in a rules file, and then it needs to be
         backed up with a Java object.</para>
 
         <programlisting>global java.util.List list</programlisting>
@@ -343,7 +343,7 @@ query.dispose() // calling dispose to terminate the live query</programlisting>
         <para>With the Knowledge Base now aware of the global identifier and
         its type, it is now possible to call <code>ksession.setGlobal()</code>
         with the global's name and an object, for any session, to associate
-        the object with the global. Failure to declare the global type and 
+        the object with the global. Failure to declare the global type and
         identifier in DRL code will result in an exception being thrown from
         this call.</para>
 
@@ -838,7 +838,7 @@ if (kbuilder.hasErrors() ) {
           <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 // Set a global hbnSession, that can be used for DB interactions in the rules.
 ksession.setGlobal( "hbnSession", hibernateSession );
-// Execute while being able to resolve the "hbnSession" identifier.  
+// Execute while being able to resolve the "hbnSession" identifier.
 ksession.execute( collection ); </programlisting>
         </example>
       </listitem>
@@ -1102,7 +1102,7 @@ Stilton stilton = bresults.getValue( "stilton_id" );
       <title>InsertElements Command</title>
 
       <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
-Command cmd = CommandFactory.newInsertElements( Arrays.asList( Object[] { 
+Command cmd = CommandFactory.newInsertElements( Arrays.asList( Object[] {
                   new Cheese( "stilton" ),
                   new Cheese( "brie" ),
                   new Cheese( "cheddar" ),
@@ -1135,7 +1135,7 @@ ExecutionResults bresults = ksession.execute( cmd );
 
       <programlisting language="java">StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
 
-List cmds = new ArrayList();        
+List cmds = new ArrayList();
 cmds.add( CommandFactory.newInsertObject( new Cheese( "stilton", 1), "stilton") );
 cmds.add( CommandFactory.newStartProcess( "process cheeses" ) );
 cmds.add( CommandFactory.newQuery( "cheeses" ) );
@@ -1177,7 +1177,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
    &lt;result identifier='outStilton'&gt;
       &lt;org.drools.compiler.Cheese&gt;
          &lt;type&gt;stilton&lt;/type&gt;
-         &lt;oldPrice&gt;25&lt;/oldPrice&gt;        
+         &lt;oldPrice&gt;25&lt;/oldPrice&gt;
          &lt;price&gt;30&lt;/price&gt;
       &lt;/org.drools.compiler.Cheese&gt;
    &lt;/result&gt;
@@ -1221,7 +1221,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
       &lt;type&gt;stilton&lt;/type&gt;
       &lt;price&gt;2&lt;/price&gt;
     &lt;/org.drools.compiler.Cheese&gt;
-  &lt;/result&gt;        
+  &lt;/result&gt;
   &lt;result identifier='cheeses2'&gt;
     &lt;query-results&gt;
       &lt;identifiers&gt;
@@ -1586,12 +1586,12 @@ env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
          Persistence.createEntityManagerFactory( "emf-name" ) );
 env.set( EnvironmentName.TRANSACTION_MANAGER,
          TransactionManagerServices.getTransactionManager() );
-          
+
 // KnowledgeSessionConfiguration may be null, and a default will be used
 StatefulKnowledgeSession ksession =
   JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 int sessionId = ksession.getId();
- 
+
 UserTransaction ut =
   (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 ut.begin();
@@ -1624,13 +1624,13 @@ ut.commit();
 
       <programlisting language="xml">&lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
-   &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;       
+   &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;
    &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;
    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
    &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;
    &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
    &lt;properties&gt;
-         &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;            
+         &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
          &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
          &lt;property name="hibernate.hbm2ddl.auto" value="update" /&gt;
          &lt;property name="hibernate.show_sql" value="true" /&gt;

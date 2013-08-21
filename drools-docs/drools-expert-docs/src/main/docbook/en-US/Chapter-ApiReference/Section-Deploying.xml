@@ -270,7 +270,7 @@ ResourceFactory.getResourceChangeScannerService().start();
       <programlisting language="java">ResourceChangeScannerConfiguration sconf =
     ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
 // Set the disk scanning interval to 30s, default is 60s.
-sconf.setProperty( "drools.resource.scanner.interval", "30" ); 
+sconf.setProperty( "drools.resource.scanner.interval", "30" );
 ResourceFactory.getResourceChangeScannerService().configure( sconf );
 </programlisting>
     </example>
