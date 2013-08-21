@@ -18,7 +18,6 @@ import static junit.framework.Assert.assertEquals;
 
 import org.drools.compiler.integrationtests.DynamicRulesChangesTest.*;
 
-@Ignore
 public class SegmentMemoryPrototypeTest {
     private static final String DRL =
             "import " +  DynamicRulesChangesTest.class.getCanonicalName() + "\n " +
