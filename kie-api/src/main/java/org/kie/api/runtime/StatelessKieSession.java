@@ -18,6 +18,7 @@ package org.kie.api.runtime;
 
 import java.util.Map;
 
+import org.kie.api.KieBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.StatelessProcessSession;
 import org.kie.api.runtime.rule.StatelessRuleSession;
@@ -145,6 +146,9 @@ public interface StatelessKieSession
      * @return
      */
     Map< String, Channel> getChannels();
-    
-    
+
+    /**
+     * Returns the KieBase reference from which this stateful session was created.
+     */
+    KieBase getKieBase();
 }
