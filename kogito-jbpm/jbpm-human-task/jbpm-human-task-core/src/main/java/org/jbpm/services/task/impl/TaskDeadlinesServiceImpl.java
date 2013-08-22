@@ -30,6 +30,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -72,16 +73,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/**
- *
- *
- */
 @Transactional
 @Startup
 @Singleton
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskDeadlinesServiceImpl.class);
+    // static instance so it can be used from background jobs
+    protected static volatile TaskDeadlinesService instance;
 
     // use single ThreadPoolExecutor for all instances of task services within same JVM
     private static ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(3);
@@ -100,7 +99,6 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     
     public TaskDeadlinesServiceImpl() {
-        
     }
 
     public void setPm(JbpmServicesPersistenceManager pm) {
@@ -115,9 +113,25 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         this.taskContentService = taskContentService;
     }
 
+    @PreDestroy
+    public void dispose() {
+        setInstance(null);
+        try {
+            if (scheduler != null) {
+                scheduler.shutdownNow();
+            }        
+            startScheduledTaskDeadlines.clear();
+            endScheduledTaskDeadlines.clear();
+            jobHandles.clear();
+        } catch (Exception e) {
+            logger.error("Error encountered when disposing TaskDeadlineService", e);
+        }
+    }
 
+    @SuppressWarnings("unchecked")
     @PostConstruct
-    public void init() {
+    public void init() {   
+        setInstance(this);
         // make sure it has tx manager as it runs as background thread - no request scope available
         if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
             ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
@@ -138,6 +152,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private void executeEscalatedDeadline(long taskId, long deadlineId, DeadlineType type) {
         // make sure it has tx manager as it runs as background thread - no request scope available
         if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
@@ -189,6 +204,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
                         Reassignment reassignment = escalation.getReassignments().get(0);
                         logger.debug("Reassigning to {}", reassignment.getPotentialOwners());
                         ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
+                        
                         List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
                         ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
                         ((InternalTaskData) task.getTaskData()).setActualOwner(null);
@@ -251,6 +267,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void unschedule(long taskId, DeadlineType type) {
         TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
         String deploymentId = task.getTaskData().getDeploymentId();
@@ -324,8 +341,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         }
     }
 
-    public class ScheduledTaskDeadline implements
-            Callable, Serializable {
+    public static class ScheduledTaskDeadline implements
+            Callable<ScheduledTaskDeadline>, Serializable {
 
         private static final long serialVersionUID = 1L;
 
@@ -352,10 +369,13 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             return this.type;
         }
 
-        public Object call() throws Exception {
-
-            executeEscalatedDeadline(taskId, deadlineId, type);
-
+        public ScheduledTaskDeadline call() throws Exception {
+            TaskDeadlinesService service = TaskDeadlinesServiceImpl.getInstance();
+            if (service != null) {
+                ((TaskDeadlinesServiceImpl)service).executeEscalatedDeadline(taskId, deadlineId, type);
+            } else {
+                logger.error("TaskDeadlineService instance is not available, most likely was not properly initialized - Job did not run!");
+            }
             return null;
         }
 
@@ -398,7 +418,8 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         }
     }
     
-    private class TaskDeadlineJob implements Job, Serializable {
+    @SuppressWarnings("unused")
+    private static class TaskDeadlineJob implements Job, Serializable {
 
         private static final long serialVersionUID = -2453658968872574615L;
         private long taskId;
@@ -410,7 +431,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             this.deadlineId = deadlineId;
             this.type = type;
         }
-
+        
         public long getTaskId() {
             return taskId;
         }
@@ -425,8 +446,12 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         @Override
         public void execute(JobContext ctx) {
             
-            executeEscalatedDeadline(taskId, deadlineId, type);
-            
+            TaskDeadlinesService service = TaskDeadlinesServiceImpl.getInstance();
+            if (service != null) {
+                ((TaskDeadlinesServiceImpl)service).executeEscalatedDeadline(taskId, deadlineId, type);
+            } else {
+                logger.error("TaskDeadlineService instance is not available, most likely was not properly initialized - Job did not run!");
+            }            
         }
         
         public String getId() {
@@ -435,7 +460,9 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         
     }
     
-    private class TaskDeadlineJobContext implements NamedJobContext {
+    private static class TaskDeadlineJobContext implements NamedJobContext {
+
+        private static final long serialVersionUID = -6838102884655249845L;
         private JobHandle jobHandle;
         private String jobName;
         
@@ -462,6 +489,14 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 
     public void setTaskQueryService(TaskQueryService taskQueryService) {
         this.taskQueryService = taskQueryService;
+    }
+
+    public static TaskDeadlinesService getInstance() {
+        return instance;
+    }
+
+    public static void setInstance(TaskDeadlinesService instance) {
+        TaskDeadlinesServiceImpl.instance = instance;
     }
 
 }
