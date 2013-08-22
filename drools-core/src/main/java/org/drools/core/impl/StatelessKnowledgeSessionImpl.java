@@ -43,6 +43,7 @@ import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -80,6 +81,8 @@ public class StatelessKnowledgeSessionImpl
     private KieSessionConfiguration conf;
     private Environment             environment;
 
+    private transient StatefulKnowledgeSession ksession;
+
     private WorkingMemoryFactory wmFactory;
 
     public StatelessKnowledgeSessionImpl() {
@@ -108,6 +111,9 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public StatefulKnowledgeSession newWorkingMemory() {
+        if (ksession != null && ((StatefulKnowledgeSessionImpl)ksession).isAlive()) {
+            return ksession;
+        }
         if (this.kagent != null) {
             // if we have an agent always get the rulebase from there
             this.ruleBase = (InternalRuleBase) ((KnowledgeBaseImpl) this.kagent.getKnowledgeBase()).ruleBase;
@@ -119,8 +125,8 @@ public class StatelessKnowledgeSessionImpl
 
             // we don't pass the mapped listener wrappers to the session constructor anymore,
             // because they would be ignored anyway, since the wm already contains those listeners
-            StatefulKnowledgeSessionImpl ksession = new StatefulKnowledgeSessionImpl(wm,
-                                                                                     new KnowledgeBaseImpl(this.ruleBase));
+            ksession = new StatefulKnowledgeSessionImpl(wm,
+                                                        new KnowledgeBaseImpl(this.ruleBase));
 
             ((Globals) wm.getGlobalResolver()).setDelegate(this.sessionGlobals);
             if (!initialized) {
@@ -261,8 +267,13 @@ public class StatelessKnowledgeSessionImpl
         return Collections.unmodifiableMap( this.channels );
     }
 
+    @Override
+    public KieBase getKieBase() {
+        return newWorkingMemory().getKieBase();
+    }
+
     public <T> T execute(Command<T> command) {
-        StatefulKnowledgeSession ksession = newWorkingMemory();
+        newWorkingMemory();
 
         FixedKnowledgeCommandContext context = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
                                                                                                   null ),
@@ -299,21 +310,23 @@ public class StatelessKnowledgeSessionImpl
         } finally {
             ((StatefulKnowledgeSessionImpl) ksession).session.endBatchExecution();
             ksession.dispose();
+            ksession = null;
         }
     }
 
     public void execute(Object object) {
-        StatefulKnowledgeSession ksession = newWorkingMemory();
+        newWorkingMemory();
         try {
             ksession.insert( object );
             ksession.fireAllRules();
         } finally {
             ksession.dispose();
+            ksession = null;
         }
     }
 
     public void execute(Iterable objects) {
-        StatefulKnowledgeSession ksession = newWorkingMemory();
+        newWorkingMemory();
         try {
             for ( Object object : objects ) {
                 ksession.insert( object );
@@ -321,6 +334,7 @@ public class StatelessKnowledgeSessionImpl
             ksession.fireAllRules();
         } finally {
             ksession.dispose();
+            ksession = null;
         }
     }
 
