@@ -15,6 +15,7 @@
  */
 package org.drools.persistence.kie.persistence.session;
 
+import java.io.Serializable;
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -34,6 +35,9 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.KieServices;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Position;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -57,7 +61,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
 import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import org.junit.Ignore;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -405,4 +411,124 @@ public class JpaPersistentStatefulSessionTest {
 
         assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
     }
+    
+    @Test
+    @Ignore
+    public void testMoreComplexRulesSerialization() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+
+        Resource drlResource = ks.getResources().newClassPathResource("collect_rules.drl", JpaPersistentStatefulSessionTest.class);
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drlResource );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
+        KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        FactType hereType = kbase.getFactType(this.getClass().getPackage().getName(), "Here");
+        assertNotNull(hereType);
+        Object here = hereType.newInstance();
+        hereType.set(here, "place", "office");
+
+        ksession.insert(here);
+        ksession.fireAllRules();
+    }
+
+    public static class ListHolder implements Serializable {
+
+        private static final long serialVersionUID = -3058814255413392428L;
+        private List<String> things;
+        private List<String> food;
+        private List<String> exits;
+
+        ListHolder() {
+            this.things = new ArrayList<String>();
+            this.food = new ArrayList<String>();
+            this.exits = new ArrayList<String>();
+        }
+
+        public void setThings(List<String> things) {
+            this.things = things;
+        }
+
+        public List<String> getThings() {
+            return things;
+        }
+
+        public void setFood(List<String> food) {
+            this.food = food;
+        }
+
+        public List<String> getFood() {
+            return food;
+        }
+
+        public void setExits(List<String> exits) {
+            this.exits = exits;
+        }
+
+        public List<String> getExits() {
+            return exits;
+        }
+    }
+
+    public static class Door implements Serializable {
+
+        private static final long serialVersionUID = 4173662501120948262L;
+        @Position(0)
+        private String fromLocation;
+        @Position(1)
+        private String toLocation;
+
+        public Door() {
+            this(null, null);
+        }
+
+        public Door(String fromLocation, String toLocation) {
+            this.fromLocation = fromLocation;
+            this.toLocation = toLocation;
+        }
+
+        public String getFromLocation() {
+            return fromLocation;
+        }
+
+        public void setFromLocation(String fromLocation) {
+            this.fromLocation = fromLocation;
+        }
+
+        public String getToLocation() {
+            return toLocation;
+        }
+
+        public void setToLocation(String toLocation) {
+            this.toLocation = toLocation;
+        }
+    }
+
+    public static class Edible implements Serializable {
+
+        private static final long serialVersionUID = -7102636642802292131L;
+        @Position(0)
+        private String thing;
+
+        public Edible() {
+            this(null);
+        }
+
+        public Edible(String thing) {
+            this.thing = thing;
+        }
+
+        public String getThing() {
+            return thing;
+        }
+
+        public void setThing(String thing) {
+            this.thing = thing;
+        }
+    }
+
 }
