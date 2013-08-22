@@ -643,8 +643,6 @@ public class RuleNetworkEvaluator {
             }
         }
 
-        RiaNodeMemory rnm = (RiaNodeMemory) wm.getNodeMemory( riaNode );
-
         length--; // subtract one, as first is not in the array;
         for (LeftTuple leftTuple = srcTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();

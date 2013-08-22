@@ -60,6 +60,7 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -314,7 +315,7 @@ public class ProtobufOutputMarshaller {
                     }
                     case NodeTypeEnums.RightInputAdaterNode : {
 
-                        _node = writeRIANodeMemory( i, context.sinks.get(i), memories, memory );
+                        _node = writeRIANodeMemory( i, context, context.sinks.get(i), memories, memory );
                         break;
                     }
                     case NodeTypeEnums.FromNode : {
@@ -368,11 +369,19 @@ public class ProtobufOutputMarshaller {
     }
 
     private static ProtobufMessages.NodeMemory writeRIANodeMemory(final int nodeId,
+                                                                  final MarshallerWriteContext context, 
                                                                   final BaseNode node,
                                                                   final NodeMemories memories,
                                                                   final Memory memory) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) node;
-        BetaNode betaNode = (BetaNode) riaNode.getNextLeftTupleSinkNode();
+
+        BetaNode betaNode = null;
+        if( context.ruleBase.getConfiguration().isPhreakEnabled() ) {
+            ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();
+            betaNode = (BetaNode) sinks[0];
+        } else {
+            betaNode = (BetaNode) riaNode.getNextLeftTupleSinkNode();
+        }
 
         Memory betaMemory = memories.peekNodeMemory( betaNode.getId() );
         BetaMemory bm;
