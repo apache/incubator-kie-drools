@@ -141,6 +141,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         private BitSet cachedLiteral;
         private Object cachedValue;
 
+        public IsAEvaluator() { }
+
         public void setParameterText(String parameterText) {
 
         }
