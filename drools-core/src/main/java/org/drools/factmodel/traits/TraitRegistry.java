@@ -47,6 +47,10 @@ public class TraitRegistry implements Externalizable {
 
     public TraitRegistry() {
 
+        init();
+    }
+
+    private void init() {
         TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
         thingType.setKind( TypeDeclaration.Kind.TRAIT );
         thingType.setTypeClass( Thing.class );
@@ -231,6 +235,7 @@ public class TraitRegistry implements Externalizable {
         masks = (Map<String, Long>) objectInput.readObject();
         hierarchy = (HierarchyEncoderImpl) objectInput.readObject();
         codeSize = objectInput.readInt();
+        init();
     }
 
 
