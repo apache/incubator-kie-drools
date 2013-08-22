@@ -22,8 +22,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -42,7 +42,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private final Map<URI, File> jars = new HashMap<URI, File>();
 
     private final Map<String, TypeMetaInfo> typeMetaInfos = new HashMap<String, TypeMetaInfo>();
-    private final Map<String, List<String>> rulesByKieBase = new HashMap<String, List<String>>();
+    private final Map<String, Set<String>> rulesByPackage = new HashMap<String, Set<String>>();
 
     private ProjectClassLoader classLoader;
 
@@ -99,8 +99,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     @Override
-    public Collection<String> getRuleNames(String packageName) {
-        List<String> rulesPerPackage = rulesByKieBase.get(packageName);
+    public Collection<String> getRuleNamesInPackage(String packageName) {
+        Set<String> rulesPerPackage = rulesByPackage.get(packageName);
 		return rulesPerPackage != null ? rulesPerPackage : Collections.<String>emptyList();
     }
 
@@ -203,7 +203,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private void indexMetaInfo(byte[] bytes) {
         KieModuleMetaInfo info = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes));
         typeMetaInfos.putAll(info.getTypeMetaInfos());
-        rulesByKieBase.putAll(info.getRulesByKieBase());
+        rulesByPackage.putAll(info.getRulesByPackage());
     }
 
     @Override
