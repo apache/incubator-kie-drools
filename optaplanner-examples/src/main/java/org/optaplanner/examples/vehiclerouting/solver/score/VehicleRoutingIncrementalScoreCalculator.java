@@ -21,13 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-import org.optaplanner.examples.tsp.domain.Domicile;
-import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
-import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
 import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
@@ -53,7 +47,12 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         hardScore = 0;
         softScore = 0;
         for (VrpCustomer customer : schedule.getCustomerList()) {
-            insert(customer);
+            insertPreviousStandstill(customer);
+            insertVehicle(customer);
+            // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
+            if (timeWindowed) {
+                insertArrivalTime((VrpTimeWindowedCustomer) customer);
+            }
         }
     }
 
@@ -65,100 +64,160 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         if (entity instanceof VrpVehicle) {
             return;
         }
-        insert((VrpCustomer) entity);
+        insertPreviousStandstill((VrpCustomer) entity);
+        insertVehicle((VrpCustomer) entity);
+        // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
+        if (timeWindowed) {
+            insertArrivalTime((VrpTimeWindowedCustomer) entity);
+        }
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
         if (entity instanceof VrpVehicle) {
             return;
         }
-        retract((VrpCustomer) entity);
+        if (variableName.equals("previousStandstill")) {
+            retractPreviousStandstill((VrpCustomer) entity);
+        } else if (variableName.equals("vehicle"))   {
+            retractVehicle((VrpCustomer) entity);
+        } else if (variableName.equals("nextCustomer"))   {
+            retractNextCustomer((VrpCustomer) entity);
+        } else if (variableName.equals("arrivalTime"))   {
+            retractArrivalTime((VrpTimeWindowedCustomer) entity);
+        } else {
+            throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
+        }
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
         if (entity instanceof VrpVehicle) {
             return;
         }
-        insert((VrpCustomer) entity);
+        if (variableName.equals("previousStandstill")) {
+            insertPreviousStandstill((VrpCustomer) entity);
+        } else if (variableName.equals("vehicle"))   {
+            insertVehicle((VrpCustomer) entity);
+        } else if (variableName.equals("nextCustomer"))   {
+            insertNextCustomer((VrpCustomer) entity);
+        } else if (variableName.equals("arrivalTime"))   {
+            insertArrivalTime((VrpTimeWindowedCustomer) entity);
+        } else {
+            throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
+        }
     }
 
     public void beforeEntityRemoved(Object entity) {
         if (entity instanceof VrpVehicle) {
             return;
         }
-        retract((VrpCustomer) entity);
+        retractPreviousStandstill((VrpCustomer) entity);
+        retractVehicle((VrpCustomer) entity);
+        // Do not do retractNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
+        if (timeWindowed) {
+            retractArrivalTime((VrpTimeWindowedCustomer) entity);
+        }
     }
 
     public void afterEntityRemoved(Object entity) {
         // Do nothing
     }
 
-    private void insert(VrpCustomer customer) {
+    private void insertPreviousStandstill(VrpCustomer customer) {
         VrpStandstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
-            VrpVehicle vehicle = customer.getVehicle();
-            if (vehicle != null) {
-                // Score constraint vehicleCapacity
-                int capacity = vehicle.getCapacity();
-                int oldDemand = vehicleDemandMap.get(vehicle);
-                int newDemand = oldDemand + customer.getDemand();
-                hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
-                vehicleDemandMap.put(vehicle, newDemand);
-                // Score constraint distanceToPreviousStandstill
-                softScore -= customer.getDistanceToPreviousStandstill();
-                if (customer.getNextCustomer() == null) {
-                    // Score constraint distanceFromLastCustomerToDepot
-                    softScore -= vehicle.getLocation().getDistance(customer.getLocation());
-                }
-            }
-            if (timeWindowed) {
-                VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
-                int readyTime = timeWindowedCustomer.getReadyTime();
-                int dueTime = timeWindowedCustomer.getDueTime();
-                Integer arrivalTime = timeWindowedCustomer.getArrivalTime();
-                if (dueTime < arrivalTime) {
-                    // Score constraint arrivalAfterDueTime
-                    hardScore -= (arrivalTime - dueTime);
-                }
-                if (arrivalTime < readyTime) {
-                    // Score constraint arrivalBeforeReadyTime
-                    softScore -= (readyTime - arrivalTime);
-                }
+            // Score constraint distanceToPreviousStandstill
+            softScore -= customer.getDistanceToPreviousStandstill();
+        }
+    }
+
+    private void retractPreviousStandstill(VrpCustomer customer) {
+        VrpStandstill previousStandstill = customer.getPreviousStandstill();
+        if (previousStandstill != null) {
+            // Score constraint distanceToPreviousStandstill
+            softScore += customer.getDistanceToPreviousStandstill();
+        }
+    }
+
+    private void insertVehicle(VrpCustomer customer) {
+        VrpVehicle vehicle = customer.getVehicle();
+        if (vehicle != null) {
+            // Score constraint vehicleCapacity
+            int capacity = vehicle.getCapacity();
+            int oldDemand = vehicleDemandMap.get(vehicle);
+            int newDemand = oldDemand + customer.getDemand();
+            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
+            vehicleDemandMap.put(vehicle, newDemand);
+            if (customer.getNextCustomer() == null) {
+                // Score constraint distanceFromLastCustomerToDepot
+                softScore -= vehicle.getLocation().getDistance(customer.getLocation());
             }
         }
     }
 
-    private void retract(VrpCustomer customer) {
-        VrpStandstill previousStandstill = customer.getPreviousStandstill();
-        if (previousStandstill != null) {
-            VrpVehicle vehicle = customer.getVehicle();
-            if (vehicle != null) {
-                // Score constraint vehicleCapacity
-                int capacity = vehicle.getCapacity();
-                int oldDemand = vehicleDemandMap.get(vehicle);
-                int newDemand = oldDemand - customer.getDemand();
-                hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
-                vehicleDemandMap.put(vehicle, newDemand);
-                // Score constraint distanceToPreviousStandstill
-                softScore += customer.getDistanceToPreviousStandstill();
-                if (customer.getNextCustomer() == null) {
-                    // Score constraint distanceFromLastCustomerToDepot
-                    softScore += vehicle.getLocation().getDistance(customer.getLocation());
-                }
+    private void retractVehicle(VrpCustomer customer) {
+        VrpVehicle vehicle = customer.getVehicle();
+        if (vehicle != null) {
+            // Score constraint vehicleCapacity
+            int capacity = vehicle.getCapacity();
+            int oldDemand = vehicleDemandMap.get(vehicle);
+            int newDemand = oldDemand - customer.getDemand();
+            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
+            vehicleDemandMap.put(vehicle, newDemand);
+            if (customer.getNextCustomer() == null) {
+                // Score constraint distanceFromLastCustomerToDepot
+                softScore += vehicle.getLocation().getDistance(customer.getLocation());
             }
-            if (timeWindowed) {
-                VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
-                int readyTime = timeWindowedCustomer.getReadyTime();
-                int dueTime = timeWindowedCustomer.getDueTime();
-                Integer arrivalTime = timeWindowedCustomer.getArrivalTime();
-                if (dueTime < arrivalTime) {
-                    // Score constraint arrivalAfterDueTime
-                    hardScore += (arrivalTime - dueTime);
-                }
-                if (arrivalTime < readyTime) {
-                    // Score constraint arrivalBeforeReadyTime
-                    softScore += (readyTime - arrivalTime);
-                }
+        }
+    }
+
+    private void insertNextCustomer(VrpCustomer customer) {
+        VrpVehicle vehicle = customer.getVehicle();
+        if (vehicle != null) {
+            if (customer.getNextCustomer() == null) {
+                // Score constraint distanceFromLastCustomerToDepot
+                softScore -= vehicle.getLocation().getDistance(customer.getLocation());
+            }
+        }
+    }
+
+    private void retractNextCustomer(VrpCustomer customer) {
+        VrpVehicle vehicle = customer.getVehicle();
+        if (vehicle != null) {
+            if (customer.getNextCustomer() == null) {
+                // Score constraint distanceFromLastCustomerToDepot
+                softScore += vehicle.getLocation().getDistance(customer.getLocation());
+            }
+        }
+    }
+
+    private void insertArrivalTime(VrpTimeWindowedCustomer customer) {
+        Integer arrivalTime = customer.getArrivalTime();
+        if (arrivalTime != null) {
+            int readyTime = customer.getReadyTime();
+            int dueTime = customer.getDueTime();
+            if (dueTime < arrivalTime) {
+                // Score constraint arrivalAfterDueTime
+                hardScore -= (arrivalTime - dueTime);
+            }
+            if (arrivalTime < readyTime) {
+                // Score constraint arrivalBeforeReadyTime
+                softScore -= (readyTime - arrivalTime);
+            }
+        }
+    }
+
+    private void retractArrivalTime(VrpTimeWindowedCustomer customer) {
+        Integer arrivalTime = customer.getArrivalTime();
+        if (arrivalTime != null) {
+            int readyTime = customer.getReadyTime();
+            int dueTime = customer.getDueTime();
+            if (dueTime < arrivalTime) {
+                // Score constraint arrivalAfterDueTime
+                hardScore += (arrivalTime - dueTime);
+            }
+            if (arrivalTime < readyTime) {
+                // Score constraint arrivalBeforeReadyTime
+                softScore += (readyTime - arrivalTime);
             }
         }
     }
