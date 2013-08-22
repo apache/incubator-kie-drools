@@ -23,7 +23,13 @@ import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class EmailSessionProducer {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EmailSessionProducer.class);
+    private static final String MAIL_JNDI_KEY = System.getProperty("org.kie.mail.session", "mail/jbpmMailSession");
 
     private Session mailSession;
     
@@ -34,15 +40,16 @@ public class EmailSessionProducer {
         if (mailSession == null) {
             
             try {
-                mailSession = InitialContext.doLookup("mail/jbpmMailSession");
+                mailSession = InitialContext.doLookup(MAIL_JNDI_KEY);
             } catch (NamingException e1) {
-               
+                logger.warn("Mail session was not found in JNDI under {} trying to look up email.properties on classspath", MAIL_JNDI_KEY);
                 Properties conf = new Properties();
                 try {
                     conf.load(this.getClass().getResourceAsStream("/email.properties"));
                     
                     mailSession = Session.getInstance(conf);
                 } catch (Exception e) {
+                    logger.error("email.properties was not found on classpath, nor mail session available in JNDI, unable to configure deadlines");
                     return null;
                 }
             }
