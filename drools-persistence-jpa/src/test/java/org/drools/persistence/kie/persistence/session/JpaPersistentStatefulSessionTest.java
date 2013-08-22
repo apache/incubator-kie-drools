@@ -413,7 +413,6 @@ public class JpaPersistentStatefulSessionTest {
     }
     
     @Test
-    @Ignore
     public void testMoreComplexRulesSerialization() throws Exception {
         KieServices ks = KieServices.Factory.get();
 

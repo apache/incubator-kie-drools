@@ -61,7 +61,6 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     public void retractLeftTuple(final LeftTuple tuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
         // retrieve handle from memory
         final InternalFactHandle factHandle = (InternalFactHandle) tuple.getObject();
 
@@ -84,7 +83,6 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        final RiaNodeMemory memory = (RiaNodeMemory) workingMemory.getNodeMemory( this );
         // add it to a memory mapping
         InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
 
