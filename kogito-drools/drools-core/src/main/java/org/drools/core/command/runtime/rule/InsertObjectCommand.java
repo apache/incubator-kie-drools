@@ -53,7 +53,7 @@ public class InsertObjectCommand
     private boolean returnObject = true;
 
     @XmlAttribute(name="entry-point")
-    private String entryPoint;
+    private String entryPoint = "DEFAULT";
     @XmlAttribute(name="disconnected")
     private boolean disconnected = false;
 
