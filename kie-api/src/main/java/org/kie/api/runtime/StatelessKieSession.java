@@ -117,10 +117,10 @@ public interface StatelessKieSession
 
     /**
      * Sets a global value on the globals store
-     * @param identifer the global identifier
+     * @param identifier the global identifier
      * @param value the value assigned to the global identifier
      */
-    void setGlobal(String identifer,
+    void setGlobal(String identifier,
                    Object value);
     
 
@@ -145,10 +145,10 @@ public interface StatelessKieSession
      * 
      * @return
      */
-    Map< String, Channel> getChannels();
+    Map<String, Channel> getChannels();
 
     /**
-     * Returns the KieBase reference from which this stateful session was created.
+     * Returns the KieBase reference from which this stateless session was created.
      */
     KieBase getKieBase();
 }
