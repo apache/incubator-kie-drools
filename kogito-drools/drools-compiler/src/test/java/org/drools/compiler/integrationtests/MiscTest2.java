@@ -2494,4 +2494,55 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals(2, foo.getX());
     }
+
+    @Test
+    public void testIsAWith2KContainers() {
+        // BZ-996056
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "\n" +
+                "global java.util.List students\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "    school : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"create student\" \n" +
+                "    when\n" +
+                "        $student : Person( age < 26, this not isA Student )\n" +
+                "    then\n" +
+                "        Student s = don( $student, Student.class );\n" +
+                "        s.setSchool(\"Masaryk University\");\n" +
+                "        update( $student );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"found student\"\n" +
+                "    salience 10\n" +
+                "    when\n" +
+                "        student : Person( this isA Student )\n" +
+                "    then\n" +
+                "        students.add(student);\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write("src/main/resources/isA.drl", str);
+
+        KieBuilder kbuilder = ks.newKieBuilder(kfs);
+
+        kbuilder.buildAll();
+        assertEquals(0, kbuilder.getResults().getMessages().size());
+
+        ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
+
+        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+        assertNotNull( ksession );
+
+        List students = new ArrayList();
+        ksession.setGlobal("students", students);
+        ksession.insert(new Person("tom", 20));
+        ksession.fireAllRules();
+        assertEquals(1, students.size());
+    }
 }
