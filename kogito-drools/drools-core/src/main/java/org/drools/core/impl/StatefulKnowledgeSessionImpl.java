@@ -268,6 +268,10 @@ public class StatefulKnowledgeSessionImpl
         this.session = DisposedReteooWorkingMemory.INSTANCE;
     }
 
+    public boolean isAlive() {
+        return this.session != DisposedReteooWorkingMemory.INSTANCE;
+    }
+
     public void destroy() {
         dispose();
     }
