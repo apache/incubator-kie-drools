@@ -26,7 +26,6 @@ import org.kie.api.definition.type.FactField;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +45,10 @@ public class TraitRegistry implements Externalizable {
 
 
     public TraitRegistry() {
+        init();
+    }
 
+    private void init() {
         TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
         thingType.setKind( TypeDeclaration.Kind.TRAIT );
         thingType.setTypeClass( Thing.class );
@@ -231,8 +233,8 @@ public class TraitRegistry implements Externalizable {
         masks = (Map<String, Long>) objectInput.readObject();
         hierarchy = (HierarchyEncoderImpl) objectInput.readObject();
         codeSize = objectInput.readInt();
+        init();
     }
-
 
     public HierarchyEncoder getHierarchy() {
         return hierarchy;

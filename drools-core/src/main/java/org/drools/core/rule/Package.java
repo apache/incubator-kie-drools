@@ -21,6 +21,7 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.util.ClassUtils;
@@ -671,6 +672,14 @@ public class Package
         if (inUse.compareAndSet(false, true)) {
             return this;
         }
+
+        if (classLoader instanceof ProjectClassLoader) {
+            ClassLoader originalClassLoader = ((JavaDialectRuntimeData)dialectRuntimeRegistry.getDialectData("java")).getRootClassLoader();
+            if (originalClassLoader instanceof ProjectClassLoader) {
+                ((ProjectClassLoader)classLoader).initFrom((ProjectClassLoader)originalClassLoader);
+            }
+        }
+
         return ClassUtils.deepClone(this, classLoader);
     }
 }

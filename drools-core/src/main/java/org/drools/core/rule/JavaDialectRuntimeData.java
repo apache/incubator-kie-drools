@@ -392,6 +392,10 @@ public class JavaDialectRuntimeData
         return this.classLoader;
     }
 
+    public ClassLoader getRootClassLoader() {
+        return rootClassLoader;
+    }
+
     public void removeRule( Package pkg,
                             Rule rule ) {
 

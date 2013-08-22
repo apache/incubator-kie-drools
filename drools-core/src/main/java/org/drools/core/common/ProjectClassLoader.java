@@ -1,7 +1,6 @@
 package org.drools.core.common;
 
 import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -157,5 +156,15 @@ public class ProjectClassLoader extends ClassLoader {
                 nonExistingClasses.clear();
             }
         }
+    }
+
+    public void initFrom(ProjectClassLoader other) {
+        if (other.store != null) {
+            if (store == null) {
+                store = new HashMap<String, byte[]>();
+            }
+            store.putAll(other.store);
+        }
+        nonExistingClasses.addAll(other.nonExistingClasses);
     }
 }
