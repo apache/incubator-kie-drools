@@ -1130,6 +1130,10 @@ public class InputMarshaller {
                     // New way 
                     else if (index == -2) {
                         String strategyClassName = stream.readUTF();
+                        // fix for backwards compatibility (5.x -> 6.x)
+                        if ("org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy".equals(strategyClassName)) {
+                        	strategyClassName = "org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy";
+                        }
                         strategy = context.resolverStrategyFactory.getStrategyObject( strategyClassName );
                         if (strategy == null) {
                             throw new IllegalStateException( "No strategy of type " + strategyClassName + " available." );
