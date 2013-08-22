@@ -5,18 +5,19 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class KieModuleMetaInfo {
     private static final XStream xStream = new XStream(new DomDriver());
 
     private Map<String, TypeMetaInfo> typeMetaInfos;
-    private Map<String, List<String>> rulesByKieBase;
+    private Map<String, Set<String>> rulesByPackage;
 
     public KieModuleMetaInfo() { }
 
-    public KieModuleMetaInfo(Map<String, TypeMetaInfo> typeMetaInfoMap, Map<String, List<String>> rulesByKieBase) {
+    public KieModuleMetaInfo(Map<String, TypeMetaInfo> typeMetaInfoMap, Map<String, Set<String>> rulesByPackage) {
         this.typeMetaInfos = typeMetaInfoMap;
-        this.rulesByKieBase = rulesByKieBase;
+        this.rulesByPackage = rulesByPackage;
     }
 
     public String marshallMetaInfos() {
@@ -31,7 +32,7 @@ public class KieModuleMetaInfo {
         return typeMetaInfos;
     }
 
-    public Map<String, List<String>> getRulesByKieBase() {
-        return rulesByKieBase;
+    public Map<String, Set<String>> getRulesByPackage() {
+        return rulesByPackage;
     }
 }

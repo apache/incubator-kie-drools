@@ -130,7 +130,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         final KieModule kieModule = kieBuilder.getKieModule();
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
 
-        Collection<String> rules = kieModuleMetaData.getRuleNames("org.test");
+        Collection<String> rules = kieModuleMetaData.getRuleNamesInPackage("org.test");
         assertEquals( 3, rules.size() );
         assertTrue( rules.containsAll(asList("A", "B", "C")) );
     }

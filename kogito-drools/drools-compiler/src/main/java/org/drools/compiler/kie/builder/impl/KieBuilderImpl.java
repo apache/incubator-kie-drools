@@ -9,10 +9,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -189,7 +191,7 @@ public class KieBuilderImpl
     	// in at least one kbase, but I believe it should inspect all packages, even if not included in
     	// any kbase, as they could be included in the future
         Map<String, TypeMetaInfo> typeInfos = new HashMap<String, TypeMetaInfo>();
-        Map<String, List<String>> rulesPerPackage = new HashMap<String, List<String>>();
+        Map<String, Set<String>> rulesPerPackage = new HashMap<String, Set<String>>();
 
         KieModuleModel kieModuleModel = kModule.getKieModuleModel();
         for ( String kieBaseName : kieModuleModel.getKieBaseModels().keySet() ) {
@@ -218,10 +220,9 @@ public class KieBuilderImpl
                     types.add( internalName );
                 }
                 
-                // we need to replace this List<String> by a Set<String>
-                List<String> rules = rulesPerPackage.get( kPkg.getName() );
+                Set<String> rules = rulesPerPackage.get( kPkg.getName() );
                 if( rules == null ) {
-                    rules = new ArrayList<String>();
+                    rules = new HashSet<String>();
                 }
                 for ( Rule rule : kPkg.getRules() ) {
                 	if( !rules.contains( rule.getName() ) ) {
