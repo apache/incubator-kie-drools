@@ -15,6 +15,9 @@
  */
 package org.jbpm.runtime.manager.impl.factory;
 
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
@@ -37,7 +40,7 @@ public class JPASessionFactory implements SessionFactory {
 
         KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(
                 environment.getKieBase(), environment.getConfiguration(), environment.getEnvironment());
-                
+        addInterceptors(ksession);
         return ksession;
     }
 
@@ -48,7 +51,7 @@ public class JPASessionFactory implements SessionFactory {
         }
         KieSession ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
                 environment.getKieBase(), environment.getConfiguration(), environment.getEnvironment());
-        
+        addInterceptors(ksession);
         return ksession;
     }
 
@@ -57,6 +60,11 @@ public class JPASessionFactory implements SessionFactory {
         
     }
     
-
+    protected void addInterceptors(KieSession ksession) {
+        
+        SingleSessionCommandService sscs = (SingleSessionCommandService)
+                ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+        sscs.addInterceptor(new OptimisticLockRetryInterceptor());
+    }
     
 }
