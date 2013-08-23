@@ -263,4 +263,12 @@ public class ClassObjectTypeConf
         return supportsPropertyListeners;
     }
     
+    public String getClassName() { 
+    	return this.cls != null ? this.cls.getName() : "";
+    }
+    
+    public String getTypeName() {
+    	return getClassName();
+    }
+    
 }

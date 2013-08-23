@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -50,6 +52,7 @@ import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
+import org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.core.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.phreak.PhreakTimerNode.Scheduler;
@@ -439,6 +442,7 @@ public class ProtobufInputMarshaller {
         InternalWorkingMemory wm = context.wm;
 
         EntryPoint entryPoint = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
+        
         // load the handles
         for ( ProtobufMessages.FactHandle _handle : _ep.getHandleList() ) {
             InternalFactHandle handle = readFactHandle( context,
@@ -548,6 +552,14 @@ public class ProtobufInputMarshaller {
                                                   List<PropagationContext> pctxs) throws IOException,
                                                                                      ClassNotFoundException {
         TruthMaintenanceSystem tms = ((NamedEntryPoint) wmep).getTruthMaintenanceSystem();
+        
+        boolean wasOTCSerialized = _ep.getOtcCount() > 0; // if 0, then the OTC was not serialized (older versions of drools)
+        Set<String> tmsEnabled = new HashSet<String>();
+        for( ObjectTypeConfiguration _otc : _ep.getOtcList() ) {
+        	if( _otc.getTmsEnabled() ) {
+            	tmsEnabled.add( _otc.getType() );
+        	}
+        }
 
         ProtobufMessages.TruthMaintenanceSystem _tms = _ep.getTms();
 
@@ -557,7 +569,7 @@ public class ProtobufInputMarshaller {
             // ObjectTypeConf state is not marshalled, so it needs to be re-determined
             ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint) handle.getEntryPoint()).getEntryPoint(),
                                                                                                          handle.getObject() );
-            if ( !typeConf.isTMSEnabled() ) {
+            if ( !typeConf.isTMSEnabled() && (!wasOTCSerialized || tmsEnabled.contains(typeConf.getTypeName()) ) ) {
                 typeConf.enableTMS();
             }
 
