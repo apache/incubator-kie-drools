@@ -346,7 +346,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                 jarName = jarName.substring(jarName.lastIndexOf('/')+1);
                 path = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
                 path += jarName;
-            } else {
+            } else if (path.endsWith(KieModuleModelImpl.KMODULE_JAR_PATH)) {
                 path = path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
             }
             log.info( "Virtual file physical path = " + path );
