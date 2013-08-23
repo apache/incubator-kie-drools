@@ -18,8 +18,10 @@ package org.drools.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.SessionConfiguration;
 import org.drools.agent.KnowledgeAgent;
@@ -30,6 +32,7 @@ import org.drools.command.impl.GenericCommand;
 import org.drools.command.impl.FixedKnowledgeCommandContext;
 import org.drools.command.runtime.BatchExecutionCommandImpl;
 import org.drools.command.runtime.rule.FireAllRulesCommand;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.event.AgendaEventSupport;
@@ -66,6 +69,7 @@ public class StatelessKnowledgeSessionImpl
     /** The event mapping */
     public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
     public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
+    public Set<ProcessEventListener>                                          cachedProcessEventListener;
 
     /** The event support */
     public AgendaEventSupport                                                 agendaEventSupport        = new AgendaEventSupport();
@@ -144,8 +148,13 @@ public class StatelessKnowledgeSessionImpl
                 		this.processEventSupport.addEventListener(listener);
                 	}
                 }
+                registerSystemListeners( wm );
+                registerCustomListeners();
                 initialized = true;
+
             }
+
+
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             InternalProcessRuntime processRuntime = wm.getProcessRuntime();
@@ -170,15 +179,47 @@ public class StatelessKnowledgeSessionImpl
         }
     }
 
+    private void registerSystemListeners(AbstractWorkingMemory wm) {
+        for ( org.drools.event.AgendaEventListener listener : wm.getAgendaEventSupport().getEventListeners()) {
+            this.agendaEventSupport.addEventListener( listener );
+        }
+        for ( org.drools.event.WorkingMemoryEventListener listener : wm.getWorkingMemoryEventSupport().getEventListeners()) {
+            this.workingMemoryEventSupport.addEventListener( listener );
+        }
+        InternalProcessRuntime processRuntime = wm.getProcessRuntime();
+        if ( processRuntime != null ) {
+            for ( ProcessEventListener listener : processRuntime.getProcessEventListeners() ) {
+                this.processEventSupport.addEventListener( listener );
+            }
+        }
+    }
+
+    private void registerCustomListeners() {
+        if ( mappedAgendaListeners != null ) {
+            for (AgendaEventListenerWrapper agendaListener : mappedAgendaListeners.values()) {
+                this.agendaEventSupport.addEventListener( agendaListener );
+            }
+        }
+        if ( mappedWorkingMemoryListeners != null ) {
+            for (WorkingMemoryEventListenerWrapper wmListener : mappedWorkingMemoryListeners.values()) {
+                this.workingMemoryEventSupport.addEventListener( wmListener );
+            }
+        }
+        if ( cachedProcessEventListener != null ) {
+            for (ProcessEventListener processListener : cachedProcessEventListener) {
+                this.processEventSupport.addEventListener( processListener );
+            }
+        }
+    }
+    
+
     public void addEventListener(AgendaEventListener listener) {
         if ( this.mappedAgendaListeners == null ) {
             this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
         }
 
         AgendaEventListenerWrapper wrapper = new AgendaEventListenerWrapper( listener );
-        this.mappedAgendaListeners.put( listener,
-                                        wrapper );
-        this.agendaEventSupport.addEventListener( wrapper );
+        this.mappedAgendaListeners.put( listener, wrapper );
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
@@ -190,12 +231,10 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        if ( this.mappedAgendaListeners == null ) {
-            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+        if ( this.mappedAgendaListeners != null ) {
+            AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
+            this.agendaEventSupport.removeEventListener( wrapper );
         }
-
-        AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
-        this.agendaEventSupport.removeEventListener( wrapper );
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
@@ -204,18 +243,14 @@ public class StatelessKnowledgeSessionImpl
         }
 
         WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
-        this.mappedWorkingMemoryListeners.put( listener,
-                                               wrapper );
-        this.workingMemoryEventSupport.addEventListener( wrapper );
+        this.mappedWorkingMemoryListeners.put( listener, wrapper );
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        if ( this.mappedWorkingMemoryListeners == null ) {
-            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+        if ( this.mappedWorkingMemoryListeners != null ) {
+            WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+            this.workingMemoryEventSupport.removeEventListener( wrapper );
         }
-
-        WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
-        this.workingMemoryEventSupport.removeEventListener( wrapper );
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
@@ -227,7 +262,10 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        this.processEventSupport.addEventListener(listener);
+        if ( this.cachedProcessEventListener == null ) {
+            this.cachedProcessEventListener = new HashSet<ProcessEventListener>();
+        }
+        this.cachedProcessEventListener.add(listener);
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
@@ -235,6 +273,9 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void removeEventListener(ProcessEventListener listener) {
+        if (this.cachedProcessEventListener != null) {
+            this.cachedProcessEventListener.remove(listener);
+        }
         this.processEventSupport.removeEventListener(listener);
     }
 
@@ -331,6 +372,9 @@ public class StatelessKnowledgeSessionImpl
             }
         }
         initialized = false;
+
+        ksession.dispose();
+        ksession = null;
     }
 
 

@@ -35,14 +35,23 @@ import org.drools.definition.type.Position;
 import org.drools.definition.type.PropertyReactive;
 import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
+import org.drools.event.rule.ActivationCancelledEvent;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.event.rule.AgendaGroupPushedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.RuleFlowGroupActivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Test;
@@ -59,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1970,4 +1980,78 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( 50, 40, 30, 20, 10 ), list );
     }
+
+
+    @Test
+    public void testListnersOnStatlessSession() {
+        // DROOLS-141
+        // BZ-999491
+        String str =
+                "rule R when\n" +
+                "  String()\n"  +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+
+        final List<String> firings = new ArrayList<String>();
+
+        AgendaEventListener agendaEventListener = new AgendaEventListener() {
+
+            public void activationCreated( ActivationCreatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void activationCancelled( ActivationCancelledEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void beforeActivationFired( BeforeActivationFiredEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void afterActivationFired( AfterActivationFiredEvent event ) {
+                firings.add( "Fired!" );
+            }
+
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+
+        ksession.addEventListener(agendaEventListener);
+
+        ksession.execute("1");
+        ksession.execute("2");
+
+        assertEquals(2, firings.size());
+
+        ksession.removeEventListener(agendaEventListener);
+
+        ksession.execute("3");
+
+        assertEquals(2, firings.size());
+    }
+
 }
