@@ -4,16 +4,18 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
 
 
 public class TraitTypeMap<T extends String, K extends Thing<C>, C>
-        extends TypeHierarchy<Thing<C>>
+        extends TypeHierarchy<Key<Thing<C>>>
         implements Map<String, Thing<C>>, Externalizable {
 
     private Map<String,Thing<C>> innerMap;
@@ -49,7 +51,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public Thing<C> put( String key, Thing<C> value ) {
         BitSet code = ((TraitType) value).getTypeCode();
-        addMember( value, code );
+        addMember( new Key<Thing<C>>( System.identityHashCode( value ), value ), code );
         innerMap.put( key, value );
         currentTypeCode.or( code );
         return value;
@@ -58,22 +60,22 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     public void setBottomCode( BitSet code ) {
         if ( ! hasKey(code) ) {
             super.setBottomCode(code);
-            addMember(new NullTraitType(code), code);
+            addMember( new Key( 0, new NullTraitType(code) ), code );
         }
     }
 
 
     public Thing<C> putSafe( String key, Thing<C> value ) throws LogicalTypeInconsistencyException {
         BitSet code = ((TraitType) value).getTypeCode();
-        addMember( value, code );
+        addMember( new Key<Thing<C>>( System.identityHashCode( value ), value ), code );
         currentTypeCode.or( code );
         innerMap.put( key, value );
         return value;
     }
 
     public Thing<C> remove( Object key ) {
-        removeMember( innerMap.get( key ) );
         Thing<C> t = innerMap.remove( key );
+        removeMember( new Key<Thing<C>>( System.identityHashCode( t ), t ) );
         resetCurrentCode();
         return t;
     }
@@ -87,29 +89,33 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     }
 
     public Collection<Thing<C>> removeCascade( BitSet code ) {
-        Collection<Thing<C>> subs = this.lowerDescendants( code );
-        for ( Thing<C> t : subs ) {
-            TraitType tt = (TraitType) t;
+        Collection<Key<Thing<C>>> subs = this.lowerDescendants( code );
+        List<Thing<C>> ret = new ArrayList<Thing<C>>( subs.size() );
+        for ( Key<Thing<C>> t : subs ) {
+            TraitType tt = (TraitType) t.getValue();
+            ret.add( t.getValue() );
             if ( ! tt.isVirtual() ) {
                 removeMember( tt.getTypeCode() );
                 innerMap.remove( tt.getTraitName() );
             }
         }
         resetCurrentCode();
-        return subs;
+        return ret;
     }
 
     private void resetCurrentCode() {
-        currentTypeCode = new BitSet();
-        for ( Thing x : this.values() ) {
-            currentTypeCode.or( ((TraitType) x).getTypeCode() );
+        currentTypeCode = new BitSet( currentTypeCode.length() );
+        if ( ! this.values().isEmpty() ) {
+            for ( Thing x : this.values() ) {
+                currentTypeCode.or( ((TraitType) x).getTypeCode() );
+            }
         }
     }
 
     public void putAll( Map<? extends String, ? extends Thing<C>> m ) {
         for ( String key : m.keySet() ) {
             Thing<C> proxy = m.get( key );
-            addMember(proxy, ((TraitProxy) proxy).getTypeCode());
+            addMember( new Key<Thing<C>>( System.identityHashCode( proxy ), proxy ), ((TraitProxy) proxy).getTypeCode());
         }
         innerMap.putAll( m );
     }
@@ -151,14 +157,25 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public Collection<Thing<C>> getMostSpecificTraits() {
         if ( hasKey( getBottomCode() ) ) {
-            Thing<C> b = getMember( getBottomCode() );
+            Thing<C> b = getMember( getBottomCode() ).getValue();
             if ( ((TraitType) b).isVirtual() ) {
-                return parents( getBottomCode() );
+                Collection<Key<Thing<C>>> p =  parents( getBottomCode() );
+                List ret = new ArrayList( p.size() );
+                for ( Key<Thing<C>> k : p ) {
+                    ret.add( k.getValue() );
+                }
+                return ret;
             } else {
                 return Collections.singleton( b );
             }
         } else {
-            return immediateParents( getBottomCode() );
+            Collection<Key<Thing<C>>> p =  immediateParents( getBottomCode() );
+            List ret = new ArrayList( p.size() );
+            for ( Key<Thing<C>> k : p ) {
+                ret.add( k.getValue() );
+            }
+            return ret;
+
         }
     }
 

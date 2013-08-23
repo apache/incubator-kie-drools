@@ -25,6 +25,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ import java.util.TreeMap;
 public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable {
 
     protected SortedMap<BitSet, HierNode<T>> line = new TreeMap<BitSet, HierNode<T>>( new HierCodeComparator() );
+    protected Map<T, HierNode<T>> cache = new HashMap<T, HierNode<T>>();
     protected boolean fixedRoot = false;
 
     public int size() {
@@ -53,16 +55,12 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     }
 
     protected HierNode<T> getNode( T name ) {
-        for ( HierNode<T> node : getNodes() ) {
-            if ( node.getValue() != null && node.getValue().equals( name ) ) {
-                return node;
-            }
-        }
-        return null;
+        return cache.get( name );
     }
 
     protected void add( HierNode<T> node ) {
         line.put( node.getBitMask(), node );
+        cache.put( node.getValue(), node );
     }
 
     protected void remove( HierNode<T> node ) {
@@ -90,7 +88,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     }
 
     public BitSet metMembersCode( Collection<T> vals ) {
-        BitSet x = new BitSet();
+        BitSet x = new BitSet( this.size() );
         for ( T val : vals ) {
             x.or( getNode( val ).getBitMask() );
         }
@@ -98,7 +96,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     }
 
     public BitSet jointMembersCode( Collection<T> vals ) {
-        BitSet x = new BitSet();
+        BitSet x = new BitSet( this.size() );
         boolean first = true;
         for ( T val : vals ) {
             if ( first ) {
@@ -113,7 +111,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     }
 
     public BitSet meetCode( Collection<BitSet> codes ) {
-        BitSet x = new BitSet();
+        BitSet x = new BitSet( this.size() );
         for ( BitSet code : codes ) {
             x.or( code );
         }
@@ -121,7 +119,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     }
 
     public BitSet joinCode( Collection<BitSet> codes ) {
-        BitSet x = new BitSet();
+        BitSet x = new BitSet( this.size() );
         boolean first = true;
         for ( BitSet code : codes ) {
             if ( first ) {
@@ -295,11 +293,11 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
     public Collection<T> upperAncestors( BitSet key ) {
         List<T> vals = new LinkedList<T>();
-
+        int l = key.length();
         //System.out.println( key );
 
-        BitSet start = new BitSet();
-        BitSet end = new BitSet();
+        BitSet start = new BitSet( l );
+        BitSet end = new BitSet( l );
 
         int index = 0;
 
@@ -402,7 +400,8 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
     public Collection<T> lowerDescendants( BitSet key ) {
         List<T> vals = new LinkedList<T>();
-        if ( key.length() == 0 ) {
+        int l = key.length();
+        if ( l == 0 ) {
             return new ArrayList( getSortedMembers() );
         }
 
@@ -410,27 +409,31 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 //        System.out.println( "KEY LEN " + key.length() );
         int n = line.lastKey().length();
 
-        for ( int j = key.length(); j <= n; j++ ) {
+        if ( l > n ) { return vals; }
 
-            BitSet start = new BitSet();
-            start.or( key );
-            start.set( j - 1 );
+        BitSet start = new BitSet( n );
+        BitSet end = new BitSet( n );
+        start.or( key );
 
-            BitSet end = new BitSet();
-            end.set( j );
+//        for ( int j = key.length(); j <= n; j++ ) {
+
+        start.set( l - 1 );
+        end.set( n );
 
 //            System.out.println( "S  >> " + toBinaryString( start ) );
 //            System.out.println( "E  >> " + toBinaryString( end ) );
 
-            for ( HierNode<T> val : line.subMap( start, end ).values() ) {
-                BitSet x = val.getBitMask();
-                if ( superset( x, key ) >= 0 ) {
+        for ( HierNode<T> val : line.subMap( start, end ).values() ) {
+            BitSet x = val.getBitMask();
+            if ( superset( x, key ) >= 0 ) {
 //                    System.out.println( "Extracting " + val.getValue() );
-                    vals.add( val.getValue() );
-                }
+                vals.add( val.getValue() );
             }
-
         }
+
+        start.clear( l - 1 );
+
+//        }
         return vals;
     }
 
@@ -475,19 +478,22 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
     List<HierNode<T>> gcsBorderNodes( BitSet key, boolean includeEquals ) {
         List<HierNode<T>> border = new LinkedList<HierNode<T>>();
-
+        int l = key.length();
 
         int n = line.size() != 0 ? line.lastKey().length() : 0;
-        for ( int j = key.length(); j <= n; j++ ) {
+        BitSet start = new BitSet( n );
+        BitSet end = new BitSet( n );
+        start.or( key );
 
-            BitSet start = new BitSet();
-            start.or( key );
-            if ( j > 0 ) {
-                start.set( j - 1 );
+//        for ( int j = l; j <= n; j++ ) {
+        if ( l > n ) { return border; }
+
+            if ( l > 0 ) {
+                start.set( l - 1 );
             }
+            end.set( n );
+//            end.set( j );
 
-            BitSet end = new BitSet();
-            end.set( j );
             for ( HierNode<T> val : line.subMap( start, end ).values() ) {
                 BitSet candidate = val.getBitMask();
                 boolean minimal =  true;
@@ -517,7 +523,12 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
             }
 
-        }
+//            if ( j > 0 ) {
+//                start.clear( j - 1 );
+//            }
+//            end.clear( j );
+//
+//        }
         return border;
     }
 
@@ -561,8 +572,9 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
 //        System.out.println( key );
 
-        BitSet start = new BitSet();
-        BitSet end = new BitSet();
+        int l = key.length();
+        BitSet start = new BitSet( l + 1 );
+        BitSet end = new BitSet( l + 1 );
 
         int index = 0;
 
@@ -648,7 +660,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
 
     BitSet prevKey( BitSet key ) {
-        BitSet b = new BitSet();
+        BitSet b = new BitSet( key.length() );
         b.or( key );
         int x = key.nextSetBit( 0 );
         if ( x == 0 ) {
@@ -662,7 +674,14 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
 
     BitSet nextKey( BitSet key ) {
-        BitSet b = new BitSet();
+        int l = key.length();
+        if ( l == 0 ) {
+            BitSet b = new BitSet( 1 );
+            b.set( 0 );
+            return b;
+        }
+
+        BitSet b = new BitSet( l + 1 );
         b.or( key );
         int x = key.nextSetBit( 0 );
         if ( x == 0 ) {
@@ -677,9 +696,19 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
 
     public static boolean supersetOrEqualset( BitSet n1, BitSet n2 ) {
-        BitSet x = new BitSet();
-        x.or( n1 );
-        x.and( n2 );
+        BitSet x;
+        int l1 = n1.length();
+        int l2 = n2.length();
+
+        if ( l1 > l2 ) {
+            x = new BitSet( l2 );
+            x.or( n2 );
+            x.and( n1 );
+        } else {
+            x = new BitSet( l1 );
+            x.or( n1 );
+            x.and( n2 );
+        }
         return x.equals( n2 );
     }
 
@@ -865,19 +894,26 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
         public int compare( BitSet bitMask, BitSet yset ) {
             int lx = bitMask.length();
             int ly = yset.length();
-            int l = lx > ly ? lx : ly;
 
-            for ( int j = l; j >= 0; j-- ) {
-                boolean x = bitMask.get( j );
-                boolean y = yset.get( j );
-                if ( x && ! y ) {
-                    return 1;
-                }
-                if ( y && ! x ) {
-                    return -1;
-                }
+            if ( lx == 0 && ly == 0 ) { return 0; }
+            if ( lx > ly ) { return 1; }
+            if ( ly > lx ) { return -1; }
+
+            BitSet x;
+            x = new BitSet( ly );
+            x.or( yset );
+            x.xor( bitMask );
+
+            if ( x.isEmpty() ) { return 0; }
+
+            int ix = x.length() - 1;
+            if ( bitMask.get( ix ) ) {
+                return 1;
+            } else if ( yset.get( ix ) ) {
+                return -1;
+            } else {
+                return 0;
             }
-            return 0;
         }
 
         public void writeExternal(ObjectOutput objectOutput) throws IOException {
