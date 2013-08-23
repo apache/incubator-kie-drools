@@ -813,7 +813,7 @@ public class NamedEntryPoint
     
             InternalFactHandle handle = (InternalFactHandle) holder.getValue();
             
-            if ( handle != null) {
+            if ( handle != null && handle.getObject().getClass().equals(object.getClass())) {
                 EqualityKey key = new EqualityKey( handle );
                 handle.setEqualityKey( key );
                 key.setStatus(EqualityKey.STATED);
