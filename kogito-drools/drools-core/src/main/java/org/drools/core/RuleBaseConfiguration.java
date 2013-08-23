@@ -906,6 +906,10 @@ public class RuleBaseConfiguration
                 if (wmFactory == null) {
                     try {
                         wmFactory = (WorkingMemoryFactory) Class.forName("org.drools.reteoo.common.ReteWorkingMemoryFactory").newInstance();
+                    } catch (ClassNotFoundException e) {
+                        logger.warn("Cannot find drools-reteoo.jar on the classpath, switching to phreak");
+                        phreakEnabled = true;
+                        return componentFactory;
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

@@ -32,6 +32,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -2544,5 +2545,26 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.insert(new Person("tom", 20));
         ksession.fireAllRules();
         assertEquals(1, students.size());
+    }
+
+    @Test
+    public void testAutomaticallySwitchFromReteOOToPhreak() {
+        String str = "rule R when then end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write("src/main/resources/rule.drl", str);
+
+        KieBuilder kbuilder = ks.newKieBuilder(kfs);
+
+        kbuilder.buildAll();
+        assertEquals(0, kbuilder.getResults().getMessages().size());
+
+        KieBaseConfiguration conf = ks.newKieBaseConfiguration();
+        conf.setOption(RuleEngineOption.RETEOO);
+        KieBase kbase = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieBase(conf);
+        KieSession ksession = kbase.newKieSession();
+        ksession.fireAllRules();
     }
 }
