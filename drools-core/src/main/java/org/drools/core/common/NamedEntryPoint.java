@@ -795,8 +795,6 @@ public class NamedEntryPoint
      * @param conf the type's configuration.
      */
     private void enableTMS(Object object, ObjectTypeConf conf) {
-
-        
         final Rete source = this.ruleBase.getRete();
         final ClassObjectType cot = new ClassObjectType( object.getClass() );
         final Map<ObjectType, ObjectTypeNode> map = source.getObjectTypeNodes( EntryPointId.DEFAULT );
@@ -813,7 +811,7 @@ public class NamedEntryPoint
     
             InternalFactHandle handle = (InternalFactHandle) holder.getValue();
             
-            if ( handle != null) {
+            if ( handle != null ) {
                 EqualityKey key = new EqualityKey( handle );
                 handle.setEqualityKey( key );
                 key.setStatus(EqualityKey.STATED);

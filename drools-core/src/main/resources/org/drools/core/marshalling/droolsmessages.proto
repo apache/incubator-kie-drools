@@ -202,6 +202,7 @@ message EntryPoint {
     optional string entry_point_id = 1;
     repeated FactHandle handle = 2;
     optional TruthMaintenanceSystem tms = 3;
+    repeated ObjectTypeConfiguration otc = 4;
 }
 
 // a fact handle
@@ -254,6 +255,11 @@ message Tuple {
 message TruthMaintenanceSystem {
     repeated EqualityKey key = 1;
     repeated BeliefSet OBSOLETE_justification = 2;
+}
+
+message ObjectTypeConfiguration {
+	optional string type = 1;
+	optional bool tms_enabled = 2;
 }
 
 message EqualityKey {
