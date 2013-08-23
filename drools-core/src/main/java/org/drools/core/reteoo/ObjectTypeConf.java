@@ -20,6 +20,8 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 
 public interface ObjectTypeConf {
+	public String getTypeName();
+	
     public ObjectTypeNode[] getObjectTypeNodes();
 
     public boolean isShadowEnabled();

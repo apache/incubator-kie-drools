@@ -41,16 +41,19 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LeftTupleIterator;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
+import org.drools.core.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
@@ -60,13 +63,14 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
-import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
@@ -83,8 +87,6 @@ import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.util.index.RightTupleList;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -150,6 +152,11 @@ public class ProtobufOutputMarshaller {
         for ( EntryPoint wmep : wm.getEntryPoints().values() ) {
             org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb = ProtobufMessages.EntryPoint.newBuilder();
             _epb.setEntryPointId( wmep.getEntryPointId() );
+            
+            writeObjectTypeConfiguration( context,
+            		                      ((InternalWorkingMemoryEntryPoint)wmep).getObjectTypeConfigurationRegistry(),
+            		                      _epb );
+            
             writeFactHandles( context,
                               _epb,
                               ((NamedEntryPoint) wmep).getObjectStore() );
@@ -158,7 +165,7 @@ public class ProtobufOutputMarshaller {
                                          wmep,
                                          _epb );
 
-            _ruleData.addEntryPoint( _epb.build() );
+			_ruleData.addEntryPoint( _epb.build() );
         }
 
         writeActionQueue( context,
@@ -197,7 +204,22 @@ public class ProtobufOutputMarshaller {
         return _session.build();
     }
 
-    private static void evaluateRuleActivations(AbstractWorkingMemory wm) {
+    private static void writeObjectTypeConfiguration( MarshallerWriteContext context, 
+    		                                          ObjectTypeConfigurationRegistry otcr,
+    		                                          org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb) {
+    	for( ObjectTypeConf otc : otcr.values() ) {
+    		final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory( otc.getConcreteObjectTypeNode() );
+    		if( memory != null && ! memory.memory.isEmpty() ) {
+        		ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
+                        .setType( otc.getTypeName() )
+                        .setTmsEnabled( otc.isTMSEnabled() )
+                        .build();
+                _epb.addOtc(_otc );
+    		}
+    	}
+	}
+
+	private static void evaluateRuleActivations(AbstractWorkingMemory wm) {
         // ET: NOTE: initially we were only resolving partially evaluated rules
         // but some tests fail because of that. Have to resolve all rule agenda items
         // in order to fix the tests

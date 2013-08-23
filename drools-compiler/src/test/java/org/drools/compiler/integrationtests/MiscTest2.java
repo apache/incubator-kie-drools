@@ -55,12 +55,16 @@ import org.kie.api.event.kiebase.DefaultKieBaseEventListener;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -2629,5 +2633,106 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.execute("3");
 
         assertEquals(2, firings.size());
+    }
+    
+    @Test
+    public void testKsessionSerializationWithInsertLogical() {
+        List<String> firedRules = new ArrayList<String>();
+        String str =
+                "import java.util.Date;\n" +
+                "import org.drools.compiler.integrationtests.MiscTest2.Promotion;\n" +
+                "\n" +
+                "declare Person\n" +
+                "	name : String\n" +
+                "	dateOfBirth : Date\n" +
+                "end\n" +
+                "\n" +
+                "declare Employee extends Person\n" +
+                "	job : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Insert Alice\"\n" +
+                "	when\n" +
+                "	then\n" +
+                "		Employee alice = new Employee(\"Alice\", new Date(1973, 7, 2), \"Vet\");\n" +
+                "		insert(alice);\n" +
+                "		System.out.println(\"Insert Alice\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Insert Bob\"\n" +
+                "	when\n" +
+                "		Person(name == \"Alice\")\n" +
+                "	then\n" +
+                "		Person bob = new Person(\"Bob\", new Date(1973, 7, 2));\n" +
+                "		insertLogical(bob);\n" +
+                "		System.out.println(\"InsertLogical Bob\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Insert Claire\"\n" +
+                "	when\n" +
+                "		Person(name == \"Bob\")\n" +
+                "	then\n" +
+                "		Employee claire = new Employee(\"Claire\", new Date(1973, 7, 2), \"Student\");\n" +
+                "		insert(claire);\n" +
+                "		System.out.println(\"Insert Claire\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Promote\"\n" +
+                "	when\n" +
+                "		p : Promotion(n : name, j : job)\n" +
+                "		e : Employee(name == n)\n" +
+                "	then\n" +
+                "		modify(e) {\n" +
+                "			setJob(j)\n" +
+                "		}\n" +
+                "		retract(p);\n" +
+                "		System.out.printf(\"Promoted %s to %s%n\", n, j);\n" +
+                "end\n";
+        
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        
+        ksession.fireAllRules(); // insertLogical Person(Bob)
+        
+        // Serialize and Deserialize
+        try {
+	        Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
+	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	        marshaller.marshall(baos, ksession);
+	        marshaller = MarshallerFactory.newMarshaller(kbase);
+	        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+	        baos.close();
+	        ksession = (StatefulKnowledgeSession)marshaller.unmarshall(bais);
+	        bais.close();
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	fail("unexpected exception :" + e.getMessage());
+        }
+        
+        ksession.insert(new Promotion("Claire", "Scientist"));
+        int result = ksession.fireAllRules();
+        
+        assertEquals(1, result);
+    }
+    
+    public static class Promotion {
+        private String name;
+        private String job;
+        public Promotion(String name, String job) {
+            this.setName(name);
+            this.setJob(job);
+        }
+        public String getName() {
+            return this.name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getJob() {
+            return this.job;
+        }
+        public void setJob(String job) {
+            this.job = job;
+        }
     }
 }
