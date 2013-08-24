@@ -187,6 +187,7 @@ message NodeMemory {
 message EntryPoint {
     optional string entry_point_id = 1;
     repeated FactHandle handle = 2;
+    repeated ObjectTypeConfiguration otc = 4;
 }
 
 // a fact handle
@@ -236,6 +237,11 @@ message Tuple {
 message TruthMaintenanceSystem {
     repeated EqualityKey key = 1;
     repeated Justification justification = 2;
+}
+
+message ObjectTypeConfiguration {
+  optional string type = 1;
+  optional bool tms_enabled = 2;
 }
 
 message EqualityKey {
