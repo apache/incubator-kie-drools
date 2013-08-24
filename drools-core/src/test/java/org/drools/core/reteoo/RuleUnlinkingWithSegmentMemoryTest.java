@@ -99,12 +99,12 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
-        ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
-        lian = new LeftInputAdapterNode(3, otn, buildContext );
+        ObjectTypeNode otn = new ObjectTypeNode( 4, null, new ClassObjectType( String.class ), buildContext );
+        lian = new LeftInputAdapterNode(5, otn, buildContext );
 
         n1 = (BetaNode) createNetworkNode( 10, type, lian, null );
         n2 = (BetaNode) createNetworkNode( 11, type, n1, null );
-        n3 = (BetaNode) createNetworkNode( 12, type, n2, null );        
+        n3 = (BetaNode) createNetworkNode( 12, type, n2, null );
         rule1 =  new Rule("rule1");
         rule1.setActivationListener( "agenda" );
         rtn1 = ( RuleTerminalNode ) createNetworkNode( 18, RULE_TERMINAL_NODE, n3, rule1);

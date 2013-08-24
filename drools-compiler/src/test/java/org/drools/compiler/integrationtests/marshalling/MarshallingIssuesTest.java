@@ -12,6 +12,7 @@ import java.io.OptionalDataException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.junit.Test;
@@ -23,19 +24,11 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-public class MarshallingIssuesTest {
+public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
     @Test
     public void testJBRULES_1946() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "../Sample.drl" ) ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBase("../Sample.drl" );
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -64,15 +57,7 @@ public class MarshallingIssuesTest {
 
     @Test
     public void testJBRULES_1946_2() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "../Sample.drl" ) ),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBase("../Sample.drl" );
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -101,15 +86,7 @@ public class MarshallingIssuesTest {
 
     @Test
     public void testJBRULES_1946_3() {
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("../Sample.drl")),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBase("../Sample.drl" );
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -144,21 +121,12 @@ public class MarshallingIssuesTest {
         source += "eval( false )\n";
         source += "then\n";
         source += "end\n";
-        Reader reader = new StringReader( source );
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( reader ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( source );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession = org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession,
-                true);
+        ksession = org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
         assertNotNull( ksession );
         ksession.dispose();

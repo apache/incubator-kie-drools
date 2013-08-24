@@ -1,0 +1,37 @@
+package org.drools.compiler.test;
+ 
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+
+global java.util.List list;
+
+global java.lang.String str;
+ 
+rule "simple rule"
+    when
+        Cheese( type == null )
+    then
+        list.add( new Integer(5) );
+end 
+
+rule "another rule"
+    when
+        Person( bigDecimal != null )
+    then 
+        list.add( new Integer(6) );
+end   
+
+rule "number not null"
+    when
+         Person( name== "whee", bigDecimal != 3 )
+    then
+        list.add( new Integer(7) );
+end   
+
+rule "global is null"
+    when
+        p : Person( name == str )
+    then
+        // str is null, we are just testing we don't get a null pointer
+        list.add( p );
+end

@@ -1,0 +1,24 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+global java.util.List list;
+global java.lang.Integer five;
+
+rule "eval rule test"
+    when
+        // some bad stuff here
+        Stilton()
+        Cheese()
+        Poison()
+    then
+        // this is an error
+        list.add( ;
+end  
+
+rule "This is fine"
+    when
+        Cheese()
+    then
+        //System.out.println("hello");
+end

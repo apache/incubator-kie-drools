@@ -151,7 +151,7 @@ public class ReteooBuilder
     public synchronized Map<String, BaseNode[]> getTerminalNodes() {
         return this.rules;
     }
-    
+
     public synchronized void removeRule(final Rule rule) {
         // reset working memories for potential propagation
         InternalWorkingMemory[] workingMemories = this.ruleBase.getWorkingMemories();
@@ -159,102 +159,126 @@ public class ReteooBuilder
         final RuleRemovalContext context = new RuleRemovalContext( rule );
         context.setRuleBase( ruleBase );
 
-        if (  ruleBase.getConfiguration().isPhreakEnabled() ) { // && !( ReteooRuleBuilder.unlinkingAllowedForRule( rule ) ) ) {
-            context.setUnlinkEnabled( true);
-        } else {
-            context.setUnlinkEnabled( false );
-        }
-        
         final BaseNode[] nodes = this.rules.remove( rule.getName() );
 
-        if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
-            for ( BaseNode node : nodes ) {
-                AddRemoveRule.removeRule( (TerminalNode) node, workingMemories, ruleBase);
-            }
-        }
-
         for (BaseNode node : nodes) {
-            NodeSet nodeSet = new NodeSet();
-            node.collectAncestors(nodeSet);
-
-            List<BaseNode> removingNodes = nodeSet.getNodes();
-            Collections.sort(removingNodes, new Comparator<BaseNode>() {
-                private Map<Integer, NodeSet> ancestorsMap = new HashMap<Integer, NodeSet>();
-
-                public int compare(BaseNode o1, BaseNode o2) {
-                    return o2.getId() > o1.getId() ?
-                            ( getAncestors(o1).contains(o2) ? -1 : 1 ) :
-                            ( getAncestors(o2).contains(o1) ? 1 : -1 );
-                }
-
-                private NodeSet getAncestors(BaseNode o2) {
-                    NodeSet ancestors = ancestorsMap.get(o2.getId());
-                    if (ancestors == null) {
-                        ancestors = new NodeSet();
-                        o2.collectAncestors(ancestors);
-                        ancestorsMap.put(o2.getId(), ancestors);
-                    }
-                    return ancestors;
-                }
-            });
-
-            RuleRemovalContext.CleanupAdapter adapter = null;
-            if (node instanceof RuleTerminalNode) {
-                adapter = context.getCleanupAdapter();
-                context.setCleanupAdapter( new RuleTerminalNode.RTNCleanupAdapter( (RuleTerminalNode) node ) );
-            }
-
-            for (BaseNode removingNode : removingNodes) {
-                removingNode.remove(context, this, workingMemories);
-
-                if ( removingNode.getType() != NodeTypeEnums.ObjectTypeNode &&
-                     !removingNode.isInUse() && ruleBase.getConfiguration().isPhreakEnabled() ) {
-                    for (InternalWorkingMemory workingMemory : workingMemories) {
-                        workingMemory.clearNodeMemory( (MemoryFactory) removingNode);
-                    }
-                }
-            }
-
-            if (node instanceof TerminalNode) {
-                for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                    workingMemory.executeQueuedActions();
-                    workingMemory.clearNodeMemory( (MemoryFactory) node);
-                }
-                context.setCleanupAdapter(adapter);
-            }
+            removeTerminalNode(context, (TerminalNode) node, workingMemories);
         }
-        resetMasks(context);
     }
-    
-    /**
-     * Rule removal now keeps a list of all the visited nodes.
-     * We iterate each of those to find the nodes still in use, who's inferred mask is now stale.
-     * For each node we find the tip, which is either BetaNode or RuleTerminalNode and re initialise
-     * the inferred mask, which will trickle back up to the OTN
-     * 
-     */
-    public void resetMasks(RuleRemovalContext context) {
-        List<BaseNode> nodes = context.getRemovedNodes();
+
+    public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, InternalWorkingMemory[] workingMemories) {
+        if ( this.ruleBase.getConfiguration().isPhreakEnabled() ) {
+            AddRemoveRule.removeRule( tn, workingMemories, ruleBase );
+        }
+
+        RuleRemovalContext.CleanupAdapter adapter = null;
+        if ( !this.ruleBase.getConfiguration().isPhreakEnabled() ) {
+            if ( tn instanceof RuleTerminalNode) {
+                adapter = new RuleTerminalNode.RTNCleanupAdapter( (RuleTerminalNode) tn );
+            }
+            context.setCleanupAdapter( adapter );
+        }
+
+        BaseNode node = (BaseNode) tn;
+        LinkedList<BaseNode> betaStack = new LinkedList<BaseNode>();
+        LinkedList<BaseNode> alphaStack = new LinkedList<BaseNode>();
+        LinkedList<BaseNode> stillInUse = new LinkedList<BaseNode>();
+
+        // alpha and beta stacks must be separate
+        // beta stacks processed first.
+        boolean processRian = true;
+        while ( node != null ) {
+            removeNode(node, alphaStack, betaStack, stillInUse, processRian, workingMemories, context);
+            if ( !betaStack.isEmpty() ) {
+                node = betaStack.removeLast();
+                if ( node.getType() == NodeTypeEnums.RightInputAdaterNode ) {
+                    processRian = true;
+                } else {
+                    processRian = false;
+                }
+
+            } else if ( !alphaStack.isEmpty() ) {
+                node = alphaStack.removeLast();
+            } else {
+                node = null;
+            }
+        };
+
+        resetMasks(stillInUse);
+    }
+
+    public void removeNode(BaseNode node, LinkedList<BaseNode> alphaStack, LinkedList<BaseNode> betaStack, LinkedList<BaseNode> stillInUse, boolean processRian, InternalWorkingMemory[] workingMemories, RuleRemovalContext context ) {
+        if ( !betaStack.isEmpty() && node == betaStack.getLast() ) {
+            return;
+        }
+
+        if (node.getType() == NodeTypeEnums.EntryPointNode ) {
+            return;
+        }
+
+        if ( node.isInUse() ) {
+            stillInUse.add(node);
+        }
+
+        if ( NodeTypeEnums.isBetaNode( node ) ) {
+            BaseNode parent = ((LeftTupleSink) node).getLeftTupleSource();
+            node.remove(context, this, workingMemories);
+
+            if ( !((BetaNode)node).isRightInputIsRiaNode() ) {
+                // all right inputs need processing too
+                alphaStack.addLast( ((BetaNode) node).getRightInput() );
+            }
+
+            if ( processRian && ((BetaNode)node).isRightInputIsRiaNode() ) {
+                betaStack.addLast( ((BetaNode) node).getLeftTupleSource() );
+                betaStack.addLast( ((BetaNode) node).getRightInput() );
+            } else {
+                removeNode( parent, alphaStack, betaStack, stillInUse, true, workingMemories, context );
+            }
+        } else if ( NodeTypeEnums.isLeftTupleSink(node) ) {
+            BaseNode parent = ((LeftTupleSink) node).getLeftTupleSource();
+            node.remove(context, this, workingMemories);
+            removeNode( parent, alphaStack, betaStack, stillInUse, true, workingMemories, context );
+        } else if ( NodeTypeEnums.LeftInputAdapterNode == node.getType() ) {
+            BaseNode parent = ((LeftInputAdapterNode) node).getParentObjectSource();
+            node.remove(context, this, workingMemories);
+            removeNode( parent , alphaStack, betaStack, stillInUse, true, workingMemories, context );
+        } else if ( NodeTypeEnums.isObjectSource( node ) ) {
+            BaseNode parent = ((ObjectSource) node).getParentObjectSource();
+            node.remove(context, this, workingMemories);
+            removeNode( parent, alphaStack, betaStack, stillInUse, true, workingMemories, context );
+        } else {
+            throw new IllegalStateException("Defensive exception, should not fall through");
+        }
+
+        if ( node.getType() != NodeTypeEnums.ObjectTypeNode &&
+             !node.isInUse() && ruleBase.getConfiguration().isPhreakEnabled() ) {
+            // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
+            for (InternalWorkingMemory workingMemory : workingMemories) {
+                workingMemory.clearNodeMemory( (MemoryFactory) node);
+            }
+        }
+    }
+
+    public void resetMasks(List<BaseNode> nodes) {
         NodeSet leafSet = new NodeSet();
-        
+
         for ( BaseNode node : nodes ) {
-            if ( node.isInUse() ) {
-                if ( node.getType() == NodeTypeEnums.AlphaNode ) {
-                    updateLeafSet(node, leafSet );
-                } else if( NodeTypeEnums.isBetaNode( node ) ) {
-                    BetaNode betaNode = ( BetaNode ) node;
-                    if ( betaNode.isInUse() ) {
-                        leafSet.add( betaNode );
-                    }
-                } else if ( NodeTypeEnums.isTerminalNode( node )  ) {
-                    RuleTerminalNode rtNode = ( RuleTerminalNode ) node;
-                    if ( rtNode.isInUse() ) {
-                        leafSet.add( rtNode );
-                    }                    
+            if ( node.getType() == NodeTypeEnums.AlphaNode ) {
+                updateLeafSet(node, leafSet );
+            } else if( NodeTypeEnums.isBetaNode( node ) ) {
+                BetaNode betaNode = ( BetaNode ) node;
+                if ( betaNode.isInUse() ) {
+                    leafSet.add( betaNode );
+                }
+            } else if ( NodeTypeEnums.isTerminalNode( node ) ) {
+                RuleTerminalNode rtNode = ( RuleTerminalNode ) node;
+                if ( rtNode.isInUse() ) {
+                    leafSet.add( rtNode );
                 }
             }
         }
-        
+
         for ( BaseNode node : leafSet ) {
             if ( NodeTypeEnums.isTerminalNode( node ) ) {
                 ((TerminalNode)node).initInferredMask();
@@ -263,7 +287,7 @@ public class ReteooBuilder
             }
         }
     }
-    
+
     private void updateLeafSet(BaseNode baseNode, NodeSet leafSet) {
         if ( baseNode.getType() == NodeTypeEnums.AlphaNode ) {
             ((AlphaNode) baseNode).resetInferredMask();
@@ -287,7 +311,7 @@ public class ReteooBuilder
                 }
             }
         } else if ( NodeTypeEnums.isBetaNode( baseNode ) ) {
-            if ( ((BaseNode)baseNode).isInUse() ) {
+            if ( baseNode.isInUse() ) {
                 leafSet.add( baseNode );
             }
         }

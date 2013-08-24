@@ -228,7 +228,7 @@ public class ReteTest extends DroolsTestCase {
         final AbstractWorkingMemory workingMemory = (AbstractWorkingMemory) this.ruleBase.newStatefulSession();
 
         final Rete rete = ruleBase.getRete();
-        assertEquals(0,
+        assertEquals(1,
                      rete.getObjectTypeNodes().size());
 
         List list = new ArrayList();

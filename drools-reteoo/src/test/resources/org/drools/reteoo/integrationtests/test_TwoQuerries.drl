@@ -1,0 +1,12 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+
+query "find stinky cheeses"
+        Cheese(type == "stinky")
+end 
+
+query "find pensioners"
+        Person(age > 65)
+end 

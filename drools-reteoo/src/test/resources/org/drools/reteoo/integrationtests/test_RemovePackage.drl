@@ -1,0 +1,21 @@
+package org.drools.compiler
+
+import org.drools.compiler.Precondition;
+import org.drools.compiler.InsertedObject;
+
+rule rule1
+    salience 10
+    when
+        p: Precondition ( code == "genericcode")
+    then
+        insert( new InsertedObject( "value1") );
+        insert( new InsertedObject( "value2") );
+end
+
+rule rule2
+    when
+        p: Precondition ( code == "genericcode", value=="genericvalue")
+    then
+        insert( new InsertedObject( "value3") );
+        insert( new InsertedObject( "value4") );
+end 

@@ -1,0 +1,20 @@
+package org.drools.compiler.test
+
+import org.drools.compiler.Person
+import org.drools.compiler.Primitives
+
+global java.util.List messages
+
+rule "person with a null name"
+  when
+    Person(name == null)
+  then
+    messages.add("Null name found");
+end
+
+rule "Raises NPE" salience -10
+  when
+    Primitives(arrayAttribute == null)
+  then
+    messages.add("Null elements found");
+end

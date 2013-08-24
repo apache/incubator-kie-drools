@@ -59,14 +59,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.mockito.ArgumentCaptor;
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
-    
-    protected KnowledgeBase getKnowledgeBase() throws Exception {
-        return KnowledgeBaseFactory.newKnowledgeBase();
-    }
-
-    protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration config) throws Exception {
-        return KnowledgeBaseFactory.newKnowledgeBase( config );
-    }
 
     @Test
     public void testLogicalInsertionsDynamicRule() throws Exception {

@@ -1,0 +1,15 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+
+global java.util.List list;
+
+rule delayed
+    timer 100
+    no-loop true
+    when
+        cheese : Cheese( )
+    then
+        list.add( cheese );
+end   

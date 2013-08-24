@@ -15,6 +15,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
+import org.kie.api.KieBase;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -125,9 +126,9 @@ public class SerializationHelper {
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose) throws Exception {
-        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
-            return ksession;
-        }
+//        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+//            return ksession;
+//        }
 
         return getSerialisedStatefulKnowledgeSession( ksession, 
                                                       dispose, 
@@ -138,11 +139,24 @@ public class SerializationHelper {
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
-        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
-            return ksession;
-        }
+        return getSerialisedStatefulKnowledgeSession( ksession,ksession.getKieBase(), dispose, testRoundTrip );
+    }
+
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+                                                                                 KieBase kbase,
+                                                                                 boolean dispose ) throws Exception {
+        return getSerialisedStatefulKnowledgeSession( ksession, kbase, dispose, true );
+    }
+
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+                                                                                 KieBase kbase,
+                                                                                 boolean dispose,
+                                                                                 boolean testRoundTrip ) throws Exception {
+//        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
+//            return ksession;
+//        }
         
-        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( ksession.getKieBase(),
+        ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( kbase,
                                                                  (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
         long time = ksession.<SessionClock>getSessionClock().getCurrentTime();
         // make sure globas are in the environment of the session

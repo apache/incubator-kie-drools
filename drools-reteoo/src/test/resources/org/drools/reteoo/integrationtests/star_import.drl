@@ -1,0 +1,14 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.facts.*
+
+declare TestEvent
+    @role(event)
+end
+
+rule "SendEvent"
+when
+$event : TestEvent()
+then
+        // rule fired
+end

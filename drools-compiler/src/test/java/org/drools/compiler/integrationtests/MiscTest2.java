@@ -277,9 +277,36 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
     @Test
+    public void testEvalBeforeNot() {
+        String str =
+                "package org.drools.compiler.integration; \n" +
+                "import " + A.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule r1\n" +
+                "   salience 10\n" +
+                "   when\n" +
+                "      eval( list.size() == 0 ) \n" +
+                "      not  A( )" +
+                "   then\n" +
+                "       System.out.println('xxx');\n" +
+                "end\n" +
+                "\n";
+
+        System.out.println( str );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+    }
+
+    @Test
     public void testKnowledgeBaseEventSupportLeak() throws Exception {
         // JBRULES-3666
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = getKnowledgeBase();
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
         kbase.addEventListener(listener);
         kbase.addEventListener(listener);
@@ -765,30 +792,14 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         FactHandle fh = ksession.insert(new A(1, 1, 1, 1));
 
         ksession.fireAllRules();
 
-        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str2.getBytes() ),
-                ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages( loadKnowledgePackagesFromString( str2 ) );
 
         ksession.fireAllRules();
 
@@ -811,6 +822,10 @@ public class MiscTest2 extends CommonTestMethodBase {
         private int f2;
         private int f3;
         private int f4;
+
+        public A() {
+
+        }
 
         public A(int f1, int f2, int f3, int f4) {
             this.f1 = f1;
@@ -1095,7 +1110,7 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals( 2, ksession.fireAllRules() );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     @Test

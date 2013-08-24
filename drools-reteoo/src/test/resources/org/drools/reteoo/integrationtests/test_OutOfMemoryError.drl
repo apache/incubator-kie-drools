@@ -1,0 +1,6 @@
+package org.drools.compiler
+
+rule "empty rule"
+when
+then
+end

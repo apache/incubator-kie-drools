@@ -1,0 +1,23 @@
+package org.drools.compiler.test
+
+import org.drools.compiler.Person
+import org.drools.compiler.Cheesery
+import org.drools.compiler.Cheesery.Maturity
+
+global java.util.List list
+
+rule "status, int based enum"
+    salience 10
+    when
+           p : Cheesery(status == Cheesery.SELLING_CHEESE, maturity == Maturity.OLD)
+    then
+        list.add( p );
+
+end   
+
+rule "maturity, object based enum"
+    when
+           p : Cheesery(status == Cheesery.MAKING_CHEESE, maturity == Maturity.YOUNG)
+    then
+        list.add( p );
+end  
