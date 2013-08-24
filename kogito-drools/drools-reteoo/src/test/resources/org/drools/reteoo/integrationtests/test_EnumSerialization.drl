@@ -1,0 +1,13 @@
+package org.drools.compiler.test
+
+import org.drools.Primitives
+import org.drools.TestEnum
+
+global java.util.List list;
+
+rule "enum serialization with isolated classloader"
+    when
+        not Primitives( enumValue == TestEnum.TWO )
+    then
+        list.add("xxx");
+end  

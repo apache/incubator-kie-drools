@@ -1,0 +1,38 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese
+import org.drools.compiler.Cheese;
+
+global java.util.List list;
+global java.util.List list2;
+
+function String someFunction() {
+    return "hello world";
+}
+
+rule "mvel1"
+    dialect "mvel"
+    when
+        $c : Cheese(type == "stilton", price == (new Integer( 5 ) + 5 ), eval(price == (new Integer( 5 ) + 5 ) ) )
+        eval( $c.price == 10 && list == empty)
+    then
+        Cheese cheese = new Cheese("cheddar", 35);
+
+        a = new java.math.BigInteger( "10" );
+        b = new java.math.BigInteger( "10" );
+        c = a + b;
+        list.add( c + $c.price);
+
+        modify ( $c ) { price = c }
+end
+
+
+rule "mvel2"
+    dialect "mvel"
+    when
+        $c : Cheese(type == "stilton", price == 20 )
+    then
+        list.add( $c.price + 2);
+        list2.add( someFunction() );
+        $c.usedBy = "10-Jul-1974"
+end

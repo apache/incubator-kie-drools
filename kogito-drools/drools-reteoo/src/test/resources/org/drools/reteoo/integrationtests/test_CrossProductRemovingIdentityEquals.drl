@@ -1,0 +1,16 @@
+package org.drools.integrationtests
+
+import org.drools.compiler.SpecialString
+import java.util.List
+
+
+global List list1;
+
+rule "A test"
+
+when
+    x : SpecialString()
+    y : SpecialString(this!=x)
+then
+    list1.add( x.getText()  + ":" + y.getText() );
+end 

@@ -34,8 +34,10 @@ public abstract class AbstractFactHandleFactory
     private AtomicLong                 counter;
     
     public AbstractFactHandleFactory() {
-        this.id = new AtomicInteger(-1);
-        this.counter = new AtomicLong(-1);
+        // starts at 0. So first assigned is 1.
+        // 0 is hard coded to Initialfact
+        this.id = new AtomicInteger(0);
+        this.counter = new AtomicLong(0);
     }
     
     public AbstractFactHandleFactory(int id, long counter) {

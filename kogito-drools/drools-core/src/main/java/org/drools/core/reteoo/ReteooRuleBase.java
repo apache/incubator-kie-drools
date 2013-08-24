@@ -95,6 +95,8 @@ import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -114,6 +116,7 @@ public class ReteooRuleBase
         InternalRuleBase,
         Externalizable {
 
+    protected static transient Logger logger = LoggerFactory.getLogger(ReteooRuleBase.class);
 
     /**
      * DO NOT CHANGE BELOW SERIAL_VERSION_ID UNLESS YOU ARE CHANGING DROOLS VERSION
@@ -188,10 +191,16 @@ public class ReteooRuleBase
      * @param id The rete network.
      */
     public ReteooRuleBase(final String id,
-                            final RuleBaseConfiguration config) {
-
+                          final RuleBaseConfiguration config) {
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
+
+        if ( this.config.isPhreakEnabled() ) {
+            logger.debug("Starting Engine in PHREAK mode");
+        } else {
+            logger.debug("Starting Engine in RETEOO mode");
+        }
+
         createRulebaseId(id);
 
         this.rootClassLoader = this.config.getClassLoader();
@@ -205,7 +214,7 @@ public class ReteooRuleBase
         this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
 
         this.classFieldAccessorCache = new ClassFieldAccessorCache(this.rootClassLoader);
-        kieComponentFactory =  getConfiguration().getComponentFactory();
+        kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.factHandleFactory = kieComponentFactory.getFactHandleFactoryService();
         kieComponentFactory.getTraitFactory().setRuleBase(this);
@@ -255,7 +264,7 @@ public class ReteooRuleBase
         boolean isDrools = in instanceof DroolsObjectInputStream;
 
         boolean wasDrools = in.readBoolean();
-        if( wasDrools && !isDrools) {
+        if (wasDrools && !isDrools) {
             throw new IllegalArgumentException("The knowledge base was serialized using a DroolsObjectOutputStream. A DroolsObjectInputStream is required for deserialization.");
         }
 
@@ -278,7 +287,7 @@ public class ReteooRuleBase
 
         this.config = (RuleBaseConfiguration) droolsStream.readObject();
         this.config.setClassLoader(droolsStream.getParentClassLoader());
-        kieComponentFactory =  getConfiguration().getComponentFactory();
+        kieComponentFactory = getConfiguration().getComponentFactory();
 
         this.pkgs = (Map<String, Package>) droolsStream.readObject();
 
@@ -1120,11 +1129,6 @@ public class ReteooRuleBase
                 }
             }
 
-            session.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( session.getInitialFactHandle(),
-                                                                                 false,
-                                                                                 true,
-                                                                                 null,
-                                                                                 null ) );
             return session;
         } finally {
             readUnlock();

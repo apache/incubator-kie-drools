@@ -1,0 +1,13 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese
+import org.drools.compiler.Person
+
+global Cheese cheese
+
+rule "r"
+    when
+        not Person()
+    then
+           insertLogical(cheese);
+end

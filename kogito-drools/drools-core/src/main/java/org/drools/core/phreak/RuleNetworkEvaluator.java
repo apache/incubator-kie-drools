@@ -441,6 +441,11 @@ public class RuleNetworkEvaluator {
         if (visitedRules == Collections.<String>emptySet()) {
             visitedRules = new HashSet<String>();
         }
+
+        if (log.isTraceEnabled()) {
+            int offset = getOffset(node);
+            log.trace("{} query result tuples {}", indent(offset), qmem.getResultLeftTuples().toStringSizes() );
+        }
         visitedRules.add(qnode.getQueryElement().getQueryName());
 
 
@@ -525,13 +530,7 @@ public class RuleNetworkEvaluator {
             return true; // return here, doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
         }
 
-        if ( stagedLeftTuples != null ) {
-            synchronized ( stagedLeftTuples ) {
-                switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);
-            }
-        } else {
-            switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);
-        }
+        switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);
 
 
         return false;
@@ -651,7 +650,7 @@ public class RuleNetworkEvaluator {
             InternalFactHandle handle = riaNode.createFactHandle(leftTuple, pctx, wm);
 
             RightTuple rightTuple = new RightTuple(handle, betaNode);
-            leftTuple.setObject(rightTuple);
+            leftTuple.setObject(handle);
             rightTuple.setPropagationContext(pctx);
             bm.getStagedRightTuples().addInsert(rightTuple);
 
@@ -672,7 +671,8 @@ public class RuleNetworkEvaluator {
         for (LeftTuple leftTuple = srcTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            RightTuple rightTuple = (RightTuple) leftTuple.getObject();
+            InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
+            RightTuple rightTuple = handle.getFirstRightTuple();
             RightTupleSets rightTuples = bm.getStagedRightTuples();
             rightTuples.addDelete(rightTuple);
 
@@ -692,7 +692,8 @@ public class RuleNetworkEvaluator {
         for (LeftTuple leftTuple = srcTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            RightTuple rightTuple = (RightTuple) leftTuple.getObject();
+            InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
+            RightTuple rightTuple = handle.getFirstRightTuple();
             RightTupleSets rightTuples = bm.getStagedRightTuples();
             rightTuples.addUpdate(rightTuple);
 

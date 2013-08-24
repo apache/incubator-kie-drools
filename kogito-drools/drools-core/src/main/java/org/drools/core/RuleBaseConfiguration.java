@@ -891,7 +891,7 @@ public class RuleBaseConfiguration
 
     public void setClassLoader(ClassLoader... classLoaders) {
         this.classLoader = ProjectClassLoader.getClassLoader( classLoaders,
-                                                              getClass(),
+                                                              null,
                                                               isClassLoaderCacheEnabled());
     }
 

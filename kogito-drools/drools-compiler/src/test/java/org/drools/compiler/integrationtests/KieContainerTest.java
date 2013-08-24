@@ -55,12 +55,12 @@ public class KieContainerTest {
         Class cls1 = kieContainer.getClassLoader().loadClass( "org.drools.test.Message");
         Constructor constructor = cls1.getConstructor(String.class);
         ksession.insert(constructor.newInstance("Hello World"));
-        assertEquals( 3, ksession.fireAllRules() ); // R1 fires also for the InitialFact
+        assertEquals( 2, ksession.fireAllRules() );
 
         Class cls2 = kieContainer2.getClassLoader().loadClass( "org.drools.test.Message");
         Constructor constructor2 = cls2.getConstructor(String.class);
         ksession2.insert(constructor2.newInstance("Hello World"));
-        assertEquals( 3, ksession2.fireAllRules() );
+        assertEquals( 2, ksession2.fireAllRules() );
 
         assertNotSame(cls1, cls2);
     }

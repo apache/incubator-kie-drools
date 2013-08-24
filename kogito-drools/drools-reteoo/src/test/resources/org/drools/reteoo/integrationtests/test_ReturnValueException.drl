@@ -1,0 +1,14 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+function String throwException( ) {
+    throw new RuntimeException( "this should throw an exception" );
+}
+
+rule "Throw ReturnValue Exception"
+    when
+        Cheese( type == ( throwException( ) ) )
+    then
+
+end  

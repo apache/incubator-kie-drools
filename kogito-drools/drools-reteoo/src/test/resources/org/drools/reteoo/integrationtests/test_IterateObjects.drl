@@ -1,0 +1,12 @@
+package org.drools.compiler
+import org.drools.compiler.Person
+
+global java.util.List results;
+
+rule "test iterate objects"
+when
+    Cheese( $type : type )
+then
+    results.add( new Person( "Bob", $type ) );
+    insert( results.get(0) );
+end

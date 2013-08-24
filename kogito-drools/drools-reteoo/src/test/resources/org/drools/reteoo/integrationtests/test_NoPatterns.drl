@@ -1,0 +1,35 @@
+package org.drools.compiler.test
+
+global java.util.List list
+
+rule "no patterns1"
+    when
+        eval(true);
+    then
+        list.add("fired1");
+end    
+
+rule "no patterns2"
+    when
+        eval(false);
+    then
+        list.add("fired2");
+end 
+
+rule "no patterns3"
+    when
+        eval(true);
+        eval(1==1);
+    then
+        list.add("fired3");
+end  
+
+ 
+rule "no patterns4"
+    when
+        eval(false);
+        eval(true);
+        eval(1==1);
+    then
+        list.add("fired4");
+end 

@@ -534,6 +534,8 @@ public class AddRemoveRule {
      * @param insert
      */
     public static void processLeftTuples(LeftTupleSource node, LeftTupleSink peerNode, SegmentMemory smem, InternalWorkingMemory wm, boolean insert) {
+        // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
+
         // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples to peer
 
         // creates the propagation path to follow
@@ -625,18 +627,22 @@ public class AddRemoveRule {
     }
 
     private static void followPeerFromLeftInput(LeftTuple lt, LeftTupleSink peerNode, SegmentMemory smem, List<LeftTupleSink> sinks, boolean insert, InternalWorkingMemory wm) {
+        // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
         for (; lt != null; lt = lt.getLeftParentNext()) {
             followPeer(lt, smem, sinks, sinks.size() -1, insert, wm);
         }
     }
 
     private static void followPeerFromRightInput(LeftTuple lt, LeftTupleSink peerNode, SegmentMemory smem, List<LeftTupleSink> sinks, boolean insert, InternalWorkingMemory wm) {
+        // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
         for (; lt != null; lt = lt.getRightParentNext()) {
             followPeer(lt, smem, sinks,  sinks.size()-1, insert, wm);
         }
     }
 
     private static void followPeer(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, int i, boolean insert, InternalWorkingMemory wm) {
+        // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
+
         LeftTupleSink sink = sinks.get(i);
 
         if ( i == 0 ) {

@@ -1,0 +1,10 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+rule simple rule
+    when
+        Cheese( )
+    then
+
+end    

@@ -1,0 +1,24 @@
+package org.drools.compiler
+
+global java.util.List results;
+
+function Address get(Address o) {
+    return o;
+}
+
+rule "test modify with from"
+when
+    $p: Person( $addrs : addresses )
+    $a: Address( street == "abc" ) from $addrs
+then
+    modify( $a ) { 
+        setZipCode("12345") 
+    }
+end
+
+rule "is it chaining correctly?"
+when
+    $a : Address( zipCode == "12345" )
+then
+    results.add( $a );
+end 

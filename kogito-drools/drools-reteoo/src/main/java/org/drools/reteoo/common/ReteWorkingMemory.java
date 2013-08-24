@@ -32,8 +32,8 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
         super(id, ruleBase);
     }
 
-    public ReteWorkingMemory(int id, InternalRuleBase ruleBase, SessionConfiguration config, Environment environment) {
-        super(id, ruleBase, config, environment);
+    public ReteWorkingMemory(int id, InternalRuleBase ruleBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
+        super(id, ruleBase, initInitFactHandle, config, environment);
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
@@ -41,7 +41,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, WorkingMemoryEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
-        super(id, ruleBase, handleFactory, initialFactHandle, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
+        super(id, ruleBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
     }
 
 
@@ -57,10 +57,17 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
         liaPropagations.add( liaNodePropagation );
     }
 
+    public void fireUntilHalt(final AgendaFilter agendaFilter) {
+        initInitialFact();
+        super.fireUntilHalt( agendaFilter );
+    }
+
     public int fireAllRules(final AgendaFilter agendaFilter,
                             int fireLimit) throws FactException {
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
+            initInitialFact();
+
             try {
                 startOperation();
                 ruleBase.readLock();
@@ -115,6 +122,8 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     }
 
     private BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
+        initInitialFact();
+
         BaseNode[] tnodes = ( BaseNode[] ) ruleBase.getReteooBuilder().getTerminalNodes(queryName);
         // no need to call retract, as no leftmemory used.
         getEntryPointNode().assertQuery( handle,
@@ -123,5 +132,16 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
 
         pCtx.evaluateActionQueue( this );
         return tnodes;
+    }
+
+    public void initInitialFact() {
+        if ( initialFactHandle == null ) {
+            synchronized ( this ) {
+                // this sync is lazy, but now we know it's synchronise, retest the null, to avoid duplicate creation
+                if ( initialFactHandle == null ) {
+                    initInitialFact(ruleBase, null);
+                }
+            }
+        }
     }
 }

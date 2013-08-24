@@ -1,0 +1,12 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Person;
+import org.drools.compiler.Cheese;
+
+rule "rule1"
+    when
+        Cheese( type : type, price : price, eval(price > 1))
+        // Cheese( type : type, price > 1 )
+    then
+        insertLogical( new  Person( type ) );
+end

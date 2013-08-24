@@ -1,0 +1,19 @@
+package org.drools.compiler.integrationtests;
+
+import org.drools.compiler.InsertedObject;
+import java.util.ArrayList;
+
+rule rule1
+  when
+  then
+    insert( new InsertedObject( "value1") );
+    insert( new InsertedObject( "value2") );
+end
+
+query "assertedobjquery"
+    assertedobj : InsertedObject( value=="value1" )
+end 
+
+query "collect objects"
+    $list : ArrayList() from collect( InsertedObject() )
+end

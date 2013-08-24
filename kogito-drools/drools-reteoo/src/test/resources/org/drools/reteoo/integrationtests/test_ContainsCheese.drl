@@ -1,0 +1,23 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+
+global java.util.List list;
+
+rule "Cheesery contains stilton"
+    salience 10
+    when
+        stilton : Cheese( type == "stilton" )
+        Cheesery( cheeses contains stilton )
+    then
+        list.add( stilton );
+end   
+
+rule "Cheesery does not contain brie"
+    when
+        brie : Cheese( type == "brie" )
+        Cheesery( cheeses not contains brie )
+    then
+        list.add( brie );
+end   

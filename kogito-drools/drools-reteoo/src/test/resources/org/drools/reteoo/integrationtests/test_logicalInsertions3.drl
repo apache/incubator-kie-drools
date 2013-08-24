@@ -1,0 +1,18 @@
+package org.drools.compiler
+
+global java.util.List events;
+
+rule "#1: hot"
+when
+    $s : Sensor( temperature > 100 )
+then
+    events.add( "It is hot: " + $s );
+    insertLogical(new Alarm("FIRE"));
+end
+
+rule "#2: print out"
+when
+    Alarm( message == "FIRE" )
+then
+    events.add( "Fire alarm is ON" );
+end 

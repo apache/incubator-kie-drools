@@ -1,0 +1,13 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Person;
+
+global java.util.List list
+
+rule "match Person"
+    when
+        $person : Person()
+    then
+        list.add( $person );
+        $person.setStatus("match Person ok");
+end    

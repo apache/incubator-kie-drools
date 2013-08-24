@@ -398,6 +398,7 @@ public class QueryElementNode extends LeftTupleSource
             DroolsQuery query = (DroolsQuery) this.factHandle.getObject();
             LeftTupleSets leftTuples = query.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
+
             switch ( childLeftTuple.getStagedType() ) {
                 // handle clash with already staged entries
                 case LeftTuple.INSERT :
@@ -408,6 +409,8 @@ public class QueryElementNode extends LeftTupleSource
                     break;
             }
             leftTuples.addDelete( childLeftTuple  );
+            childLeftTuple.unlinkFromRightParent();
+            childLeftTuple.unlinkFromLeftParent();
         }
 
         public void rowUpdated(final Rule rule,
@@ -560,6 +563,7 @@ public class QueryElementNode extends LeftTupleSource
 
         public QueryElementNodeMemory(QueryElementNode node) {
             this.node = node;
+            // @FIXME I don't think this is thread safe
             this.resultLeftTuples = new LeftTupleSetsImpl();
         }
 

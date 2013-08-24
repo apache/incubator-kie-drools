@@ -164,7 +164,7 @@ public class ProtobufInputMarshaller {
                                               ProtobufMessages.KnowledgeSession _session) {
         session.reset( _session.getRuleData().getLastId(),
                        _session.getRuleData().getLastRecency(),
-                       0 );
+                       1 );
         InternalAgenda agenda = (InternalAgenda) session.getAgenda();
 
         readAgenda( context,
@@ -181,13 +181,6 @@ public class ProtobufInputMarshaller {
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( _session.getRuleData().getLastId(),
                                                                                  _session.getRuleData().getLastRecency() );
 
-        InternalFactHandle initialFactHandle = new DefaultFactHandle( _session.getRuleData().getInitialFact().getId(),
-                                                                      InitialFactImpl.getInstance(),
-                                                                      _session.getRuleData().getInitialFact().getRecency(),
-                                                                      null );
-        context.handles.put( initialFactHandle.getId(),
-                             initialFactHandle );
-
         InternalAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
         readAgenda( context,
                     _session.getRuleData(),
@@ -197,14 +190,13 @@ public class ProtobufInputMarshaller {
         AbstractWorkingMemory session = ( AbstractWorkingMemory ) wmFactory.createWorkingMemory( id,
                                                                                                  context.ruleBase,
                                                                                                  handleFactory,
-                                                                                                 initialFactHandle,
-                                                                                                 0,
+                                                                                                 null,
+                                                                                                 1, // pCTx starts at 1, as InitialFact is 0
                                                                                                  config,
                                                                                                  agenda,
                                                                                                  environment );
         new StatefulKnowledgeSessionImpl( session );
 
-        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPointId.DEFAULT.getEntryPointId() ) );
         return session;
     }
 
@@ -247,9 +239,10 @@ public class ProtobufInputMarshaller {
 
         List<PropagationContext> pctxs = new ArrayList<PropagationContext>();
 
-        readInitialFactHandle( context,
-                               _session.getRuleData(),
-                               pctxs );
+        if ( context.ruleBase.getConfiguration().isPhreakEnabled() || _session.getRuleData().getInitialFact() != null  ) {
+            ((AbstractWorkingMemory)context.wm).initInitialFact(context.ruleBase, context);
+            context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
+        }
 
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
             EntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );

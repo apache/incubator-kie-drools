@@ -172,20 +172,25 @@ public class ReteooBuilder
         }
 
         BaseNode node = (BaseNode) tn;
-        LinkedList<BaseNode> stack = new LinkedList<BaseNode>();
+        LinkedList<BaseNode> betaStack = new LinkedList<BaseNode>();
+        LinkedList<BaseNode> alphaStack = new LinkedList<BaseNode>();
         LinkedList<BaseNode> stillInUse = new LinkedList<BaseNode>();
 
+        // alpha and beta stacks must be separate
+        // beta stacks processed first.
         boolean processRian = true;
         while ( node != null ) {
-            removeNode(node, stack,stillInUse, processRian, workingMemories, context);
-            if ( !stack.isEmpty() ) {
-                node = stack.removeLast();
+            removeNode(node, alphaStack, betaStack, stillInUse, processRian, workingMemories, context);
+            if ( !betaStack.isEmpty() ) {
+                node = betaStack.removeLast();
                 if ( node.getType() == NodeTypeEnums.RightInputAdaterNode ) {
                     processRian = true;
                 } else {
                     processRian = false;
                 }
 
+            } else if ( !alphaStack.isEmpty() ) {
+                node = alphaStack.removeLast();
             } else {
                 node = null;
             }
@@ -194,8 +199,8 @@ public class ReteooBuilder
         resetMasks(stillInUse);
     }
 
-    public void removeNode(BaseNode node, LinkedList<BaseNode> stack, LinkedList<BaseNode> stillInUse, boolean processRian, InternalWorkingMemory[] workingMemories, RuleRemovalContext context )  {
-        if ( !stack.isEmpty() && node == stack.getLast() ) {
+    public void removeNode(BaseNode node, LinkedList<BaseNode> alphaStack, LinkedList<BaseNode> betaStack, LinkedList<BaseNode> stillInUse, boolean processRian, InternalWorkingMemory[] workingMemories, RuleRemovalContext context )  {
+        if ( !betaStack.isEmpty() && node == betaStack.getLast() ) {
             return;
         }
 
@@ -213,27 +218,27 @@ public class ReteooBuilder
 
             if ( !((BetaNode)node).isRightInputIsRiaNode() ) {
                 // all right inputs need processing too
-                stack.addFirst( ((BetaNode) node).getRightInput() );
+                alphaStack.addLast( ((BetaNode) node).getRightInput() );
             }
 
             if ( processRian && ((BetaNode)node).isRightInputIsRiaNode() ) {
-                stack.addLast( ((BetaNode) node).getLeftTupleSource() );
-                stack.addLast( ((BetaNode) node).getRightInput() );
+                betaStack.addLast( ((BetaNode) node).getLeftTupleSource() );
+                betaStack.addLast( ((BetaNode) node).getRightInput() );
             } else {
-                removeNode( parent, stack, stillInUse, true, workingMemories, context );
+                removeNode( parent, alphaStack, betaStack, stillInUse, true, workingMemories, context );
             }
         } else if ( NodeTypeEnums.isLeftTupleSink(node) ) {
             BaseNode parent =  ((LeftTupleSink) node).getLeftTupleSource();
             node.remove(context, this, workingMemories);
-            removeNode( parent, stack, stillInUse, true, workingMemories, context );
+            removeNode( parent, alphaStack, betaStack, stillInUse, true, workingMemories, context );
         } else if ( NodeTypeEnums.LeftInputAdapterNode == node.getType() ) {
             BaseNode parent =  ((LeftInputAdapterNode) node).getParentObjectSource();
             node.remove(context, this, workingMemories);
-            removeNode( parent , stack, stillInUse, true, workingMemories, context );
+            removeNode( parent , alphaStack, betaStack, stillInUse, true, workingMemories, context );
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {
             BaseNode parent =  ((ObjectSource) node).getParentObjectSource();
             node.remove(context, this, workingMemories);
-            removeNode( parent, stack, stillInUse, true, workingMemories, context );
+            removeNode( parent, alphaStack, betaStack, stillInUse, true, workingMemories, context );
         } else {
             throw new IllegalStateException("Defensive exception, should not fall through");
         }

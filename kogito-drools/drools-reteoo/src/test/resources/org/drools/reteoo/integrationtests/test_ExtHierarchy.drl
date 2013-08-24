@@ -1,0 +1,65 @@
+package org.drools.compiler;
+
+import java.util.LinkedList;
+
+global java.util.LinkedList list
+
+
+declare A2 extends A
+    valA2 : String
+end
+
+
+declare B2 extends B
+    valB2 : String
+end
+
+
+declare B11 extends B1
+    valB11 : String
+end
+
+
+declare A
+    valA : String
+end
+
+
+declare A1 extends A
+    valA1 : String
+end
+
+
+declare A11 extends A1
+    valA11 : String
+end
+
+
+declare B1 extends B
+    valB1 : String
+end
+
+
+declare B
+    valB : String
+end
+
+
+declare A12 extends A1
+    valA12 : String
+end
+
+
+rule "Start"
+when
+then
+    insert( new A12("a","a1","a12") );
+end
+
+rule "Check"
+when
+    $x : A12( valA == "a", valA1 == "a1", valA12 == "a12" )
+then
+    System.out.println($x);
+    list.add($x);
+end

@@ -1,0 +1,19 @@
+package org.drools.compiler
+
+import java.util.ArrayList;
+
+global java.util.List results;
+
+rule "A"
+when
+    $a : ArrayList( size:size == 2 ) from collect (Cheese())
+then
+    results.add( $a );
+end
+
+rule "B"
+when
+    $b : ArrayList( size:size == 3 ) from collect (Cheese())
+then
+    results.add( $b );
+end

@@ -1,0 +1,26 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Person;
+import org.drools.compiler.Cheese;
+
+global java.util.List list;
+
+rule "test lock with modify" @Eager(true)
+    agenda-group "group1"
+    lock-on-active true
+    when
+        $cheese : Cheese( price < 30 )
+        $person : Person( cheese == $cheese )
+    then
+        list.add( $person );
+end  
+
+rule "test group2" @Eager(true)
+    agenda-group "group2"
+    lock-on-active true
+    when
+        $cheese : Cheese( price < 30 )
+        $person : Person( cheese == $cheese )
+    then
+        list.add( $person );
+end  

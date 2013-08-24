@@ -101,7 +101,7 @@ public class KnowledgeBaseImpl
     public Map<KieBaseEventListener, KnowledgeBaseEventListenerWrapper> mappedKnowledgeBaseListeners;
 
     public KnowledgeBaseImpl() {
-
+        this( null );
     }
 
     public KnowledgeBaseImpl(RuleBase ruleBase) {

@@ -1,0 +1,32 @@
+package org.drools.compiler.anothertest;
+
+import org.drools.compiler.test.Person;
+
+declare ABean
+    field : String
+end
+
+declare Worker extends Person
+    company : String
+    wage : double
+    hours : int
+end
+
+declare MyBean extends ABean
+    number : int
+end
+
+
+rule "Init"
+when
+then
+    MyBean mb = new MyBean();
+    insert(mb);
+end
+
+rule "External"
+when
+    $a : ABean()
+then
+    System.out.println($a);
+end

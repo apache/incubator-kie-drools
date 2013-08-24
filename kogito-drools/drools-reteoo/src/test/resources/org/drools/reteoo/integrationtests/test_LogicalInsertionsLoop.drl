@@ -1,0 +1,18 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Person;
+import java.util.List;
+
+global Person a;
+global List l;
+
+rule "r"
+    when
+        not Person()
+    then
+        if (l.size() < 10)
+        {
+            l.add(new Integer(0));
+            insertLogical( a );
+        }
+end

@@ -1,0 +1,25 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+rule "test1"
+    salience 10
+    no-loop true
+    when
+        cheese : Cheese();
+    then
+        retract(cheese);
+        insert(cheese);
+end
+
+
+rule "test2"
+    salience 0
+    no-loop true
+    when
+        cheese : Cheese();
+    then
+        retract(cheese);
+end
+
+

@@ -1,0 +1,21 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+import org.drools.compiler.Person;
+
+global java.util.List results;
+
+rule "Constraints everywhere" salience 80
+    dialect "mvel"
+    when
+        $person      : Person( $likes : likes )
+        $total       : Number( intValue > 20 )
+                               from accumulate( $cheese : Cheese( type == $likes, $p : price ),
+                                                init( int total = 0; ),
+                                                action( total += $p; ),
+                                                reverse( total -= $p; ),
+                                                result( new Integer( total ) ) )
+    then
+        results.add( $total );
+end  

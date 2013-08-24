@@ -1,0 +1,23 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+global java.util.List list;
+
+rule "test group1 1"
+    agenda-group "group1"
+    lock-on-active true
+    when
+        Cheese( type == "brie" )
+    then
+        list.add( "group1" );
+end  
+
+rule "test group2"
+    agenda-group "group2"
+    lock-on-active true
+    when
+        Cheese(  type == "cheddar" )
+    then
+        list.add( "group1" );
+end  

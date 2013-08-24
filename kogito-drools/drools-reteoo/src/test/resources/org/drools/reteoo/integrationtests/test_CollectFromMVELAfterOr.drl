@@ -1,0 +1,20 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Address;
+import org.drools.compiler.Person;
+import java.util.ArrayList;
+
+dialect "mvel"
+
+global java.util.List results;
+
+rule "After Or Evals Collect from MVEL"
+salience 70
+    when
+        $jill : Person( name == "jill" )
+        $bob : Person( name == "bob" )
+        ( eval( $jill != null ) or eval( $bob != null ) )
+        $addressList : ArrayList(size > 2) from collect( Address() from $bob.addresses )
+    then
+        results.add($addressList);
+end

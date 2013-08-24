@@ -191,7 +191,11 @@ public class PhreakActivationIterator
         for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
             InternalFactHandle fh = (InternalFactHandle) entry.getValue();
             if (fh.getFirstLeftTuple() != null ) {
-                collectFromLeftInput(fh.getFirstLeftTuple(), agendaItems, nodeSet, wm);
+                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                    if ( childLt.getSink() == firstLiaSink ) {
+                        collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
+                    }
+                }
             }
         }
     }
@@ -208,7 +212,9 @@ public class PhreakActivationIterator
                 AccumulateContext accctx = (AccumulateContext) peer.getObject();
                 collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
             } else if ( peer.getFirstChild() != null ) {
-                collectFromLeftInput(peer.getFirstChild(), agendaItems, nodeSet, wm);
+                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                    collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
+                }
             } else if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
                 agendaItems.add((AgendaItem) peer);
                 nodeSet.remove(peer.getLeftTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already

@@ -1,0 +1,14 @@
+package evalmodify;
+
+import org.drools.compiler.Cell
+import java.lang.Integer
+
+rule "test eval"
+    when
+        cell1 : Cell(value1:value != 0)
+        cell2 : Cell(value2:value < value1)
+        eval (true)
+    then
+        cell2.setValue(value2 + 1);
+        update(cell2);
+end

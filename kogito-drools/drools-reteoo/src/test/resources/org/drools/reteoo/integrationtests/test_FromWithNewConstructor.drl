@@ -1,0 +1,13 @@
+package org.drools.compiler
+
+import org.drools.compiler.Query;
+import org.drools.compiler.Results;
+import org.drools.compiler.Storage;
+
+rule "Verify_1"
+    when
+        content : Storage()
+        results : Results( ) from content.search(new Query("test","field"))
+    then
+        System.out.println( results );
+end 

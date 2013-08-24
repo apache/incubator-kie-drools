@@ -1,0 +1,14 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+function boolean throwException(Object object) {
+    throw new RuntimeException( "this should throw an exception" );
+}
+
+rule "Throw Predicate Exception"
+    when
+        Cheese( type1:type, eval( throwException( type1 ) ) )
+    then
+
+end  

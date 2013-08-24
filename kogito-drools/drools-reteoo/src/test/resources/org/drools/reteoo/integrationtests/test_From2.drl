@@ -1,0 +1,19 @@
+package org.drools.compiler.test;
+ 
+//we don't use the import, as class is fully qualified below
+//import org.drools.integrationtests.helloworld.Message
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+import java.util.List;
+
+global List list1;
+global List list2;
+global List list3;
+global Cheesery cheesery;
+
+rule "test from using a global against a map lookup"
+    when
+        $cheese : Cheese( type == "stilton" ) from cheesery.getCheeseMap["stilton"]
+    then
+        list1.add( $cheese );
+end

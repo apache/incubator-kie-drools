@@ -161,17 +161,18 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
                 wm.registerChannel( entry.getKey(), entry.getValue() );
             }
 
-            final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
-                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPointId.DEFAULT,
-                                                                                                                                                  InitialFactImpl.getInstance() ),
-                                                                                       wm,
-                                                                                       wm );
+//            final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
+//                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPointId.DEFAULT,
+//                                                                                                                                                  InitialFactImpl.getInstance() ),
+//                                                                                       wm,
+//                                                                                       wm );
+//
+//            wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
+//                                                                            false,
+//                                                                            true,
+//                                                                            null,
+//                                                                            null ) );
 
-            wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
-                                                                            false,
-                                                                            true,
-                                                                            null,
-                                                                            null ) );
             return ksession;
         } finally {
             this.ruleBase.readUnlock();

@@ -1,0 +1,18 @@
+package org.drools.compiler
+
+global java.util.List list;
+
+rule "contains in elements"
+    salience 10
+    when
+        Primitives( stringArray contains "test1" )
+    then
+        list.add( "ok1" );
+end
+
+rule "excludes in elements"
+    when
+        Primitives( stringArray excludes "test2" )
+    then
+        list.add( "ok2" );
+end

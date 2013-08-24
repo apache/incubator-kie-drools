@@ -95,8 +95,8 @@ public class NodeSegmentUnlinkingTest {
         rule2 = new Rule( "rule2" );
         rule3 = new Rule( "rule3" );
         
-        ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
-        liaNode = new LeftInputAdapterNode(3, otn, buildContext );                  
+        ObjectTypeNode otn = new ObjectTypeNode( 3, null, new ClassObjectType( String.class ), buildContext );
+        liaNode = new LeftInputAdapterNode(4, otn, buildContext );
         
         // 3, 4, 5, 6 are in same shared segment
         n1 = createBetaNode( 10, type[0], liaNode );

@@ -138,12 +138,15 @@ public class ProtobufOutputMarshaller {
         _ruleData.setLastRecency( wm.getFactHandleFactory().getRecency() );
 
         InternalFactHandle handle = context.wm.getInitialFactHandle();
-        ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
-                .setType( ProtobufMessages.FactHandle.HandleType.INITIAL_FACT )
-                .setId( handle.getId() )
-                .setRecency( handle.getRecency() )
-                .build();
-        _ruleData.setInitialFact( _ifh );
+        if ( handle != null ) {
+            // can be null for RETE, if fireAllRules has not yet been called
+            ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
+                    .setType( ProtobufMessages.FactHandle.HandleType.INITIAL_FACT )
+                    .setId( handle.getId() )
+                    .setRecency( handle.getRecency() )
+                    .build();
+            _ruleData.setInitialFact( _ifh );
+        }
 
         writeAgenda( context, _ruleData );
 
@@ -397,15 +400,13 @@ public class ProtobufOutputMarshaller {
                                                                   final Memory memory) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) node;
 
-        BetaNode betaNode = null;
-        if( context.ruleBase.getConfiguration().isPhreakEnabled() ) {
-            ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();
-            betaNode = (BetaNode) sinks[0];
-        } else {
-            betaNode = (BetaNode) riaNode.getNextLeftTupleSinkNode();
-        }
+        ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();
+        BetaNode betaNode = (BetaNode) sinks[0];
 
         Memory betaMemory = memories.peekNodeMemory( betaNode.getId() );
+        if ( betaMemory == null ) {
+            return null;
+        }
         BetaMemory bm;
         if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
             bm =  ((AccumulateMemory) betaMemory).getBetaMemory();

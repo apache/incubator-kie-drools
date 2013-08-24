@@ -1,0 +1,16 @@
+package org.drools.compiler
+
+global java.util.List list;
+
+declare StockTick 
+    @role( event )
+end
+
+rule "2 operators"
+when
+    $a : StockTick( ) from entry-point "X"
+    $b : StockTick( this after[1s,10s] $a ) from entry-point "X"
+then
+    list.add( new StockTick[] { $a, $b } );
+end
+

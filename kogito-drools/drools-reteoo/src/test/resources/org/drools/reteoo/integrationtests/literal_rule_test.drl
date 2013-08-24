@@ -1,0 +1,14 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery
+
+global java.util.List list;
+global Cheesery cheesery;
+
+rule "literal test rule"
+    when
+        Cheese( $x: type, type == "stilton" )
+    then
+        list.add( $x );
+end    

@@ -1,0 +1,10 @@
+package SamplePackage
+ 
+import org.drools.compiler.Cheese
+
+rule "Using Predicate as first pattern"
+  when
+    cheese: Cheese( type == "Mussarela", $price:price, eval( $price < 30 ))
+  then
+    cheese.setPrice(40);
+end 

@@ -1,0 +1,15 @@
+//created on: 27-Mar-2006
+package org.drools.compiler.test
+
+import org.drools.compiler.*
+
+global java.util.List list;
+
+rule "Literal with boolean"
+
+    when
+        // conditions
+        alivePerson : PersonInterface(alive ==  true)
+    then
+        list.add( alivePerson );
+end

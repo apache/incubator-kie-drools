@@ -1,0 +1,17 @@
+package com.sample
+
+import org.drools.compiler.Person
+import org.drools.compiler.Cheese
+
+global java.util.List results
+
+rule "MyRule"
+    when
+        c : (Cheese( type == "stilton") or
+             Cheese( type == "brie" ) or
+             Cheese( type == "muzzarella" ) )
+        p : Person()
+    then
+        results.add(c);
+        results.add(p);
+end
