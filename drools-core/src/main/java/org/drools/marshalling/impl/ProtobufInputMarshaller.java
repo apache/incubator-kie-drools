@@ -16,7 +16,18 @@
 
 package org.drools.marshalling.impl;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 import org.drools.SessionConfiguration;
 import org.drools.common.ActivationsFilter;
 import org.drools.common.DefaultAgenda;
@@ -40,6 +51,7 @@ import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
+import org.drools.marshalling.impl.ProtobufMessages.ObjectTypeConfiguration;
 import org.drools.marshalling.impl.ProtobufMessages.RuleData;
 import org.drools.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.reteoo.InitialFactImpl;
@@ -63,15 +75,7 @@ import org.drools.time.impl.IntervalTrigger;
 import org.drools.time.impl.PointInTimeTrigger;
 import org.drools.time.impl.PseudoClockScheduler;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
+import com.google.protobuf.ExtensionRegistry;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -538,13 +542,22 @@ public class ProtobufInputMarshaller {
         TruthMaintenanceSystem tms = context.wm.getTruthMaintenanceSystem();
         ProtobufMessages.TruthMaintenanceSystem _tms = _session.getTms();
         
+        org.drools.marshalling.impl.ProtobufMessages.EntryPoint _ep = _session.getEntryPoint(0);
+        boolean wasOTCSerialized = _ep.getOtcCount() > 0; // if 0, then the OTC was not serialized (older versions of drools)
+        Set<String> tmsEnabled = new HashSet<String>();
+        for( ObjectTypeConfiguration _otc : _ep.getOtcList() ) {
+        	if( _otc.getTmsEnabled() ) {
+        		tmsEnabled.add( _otc.getType() );
+        	}
+        }        
+        
         for( ProtobufMessages.EqualityKey _key : _tms.getKeyList() ) {
             InternalFactHandle handle = (InternalFactHandle) context.handles.get( _key.getHandleId() );
 
             // ObjectTypeConf state is not marshalled, so it needs to be re-determined
             ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( ((NamedEntryPoint)handle.getEntryPoint()).getEntryPoint(),
                                                                                                          handle.getObject() );
-            if (!typeConf.isTMSEnabled()) {
+            if (!typeConf.isTMSEnabled() && (!wasOTCSerialized || tmsEnabled.contains(typeConf.getTypeName()) ) ) {
                 typeConf.enableTMS();
             }
 

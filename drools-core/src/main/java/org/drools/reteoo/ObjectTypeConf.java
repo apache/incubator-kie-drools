@@ -51,5 +51,7 @@ public interface ObjectTypeConf {
     public EntryPoint getEntryPoint();
     
     public boolean isSupportsPropertyChangeListeners();
+    
+    public String getTypeName();
 
 }
