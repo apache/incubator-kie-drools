@@ -148,4 +148,7 @@ public class FactTemplateTypeConf
         return false;
     }
 
+    public String getTypeName() {
+    	return this.factTemplate.getName();
+    }
 }
