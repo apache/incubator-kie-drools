@@ -1,0 +1,17 @@
+package org.drools.compiler
+
+global java.util.List list;
+
+declare StockTick 
+    @role( event )
+end
+
+rule "infinity"
+when
+    $a : StockTick( ) from entry-point "X"
+    $b : StockTick( this after[5s,*] $a ) from entry-point "X"
+then
+    list.add( $a );
+    list.add( $b );
+end
+

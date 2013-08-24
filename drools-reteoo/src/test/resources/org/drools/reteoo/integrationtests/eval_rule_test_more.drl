@@ -1,0 +1,24 @@
+package org.drools.compiler.test
+
+import org.drools.compiler.Cheese
+import org.drools.compiler.Person
+
+global java.util.List list
+ 
+
+rule "another test"
+    when
+        p : Person()
+        eval(p.getName().equals("foo") && p.getName().startsWith("f"))
+    then
+        list.add( p );
+end  
+
+rule "yet more"
+    when
+        p : Person()
+        eval(p.getName().equals("foo") && p.getName().startsWith("f"))
+        eval(p.getName().equals("foo") && p.getName().startsWith("q"))        
+    then
+        list.add( p );
+end  

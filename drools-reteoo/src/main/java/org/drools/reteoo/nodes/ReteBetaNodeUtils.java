@@ -1,4 +1,4 @@
-package org.drools.core.reteoo.compiled;
+package org.drools.reteoo.nodes;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
@@ -11,7 +11,9 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.NodeSet;
+import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -76,6 +78,8 @@ public class ReteBetaNodeUtils {
                                 final RuleRemovalContext context,
                                 final ReteooBuilder builder,
                                 final InternalWorkingMemory[] workingMemories) {
+
+
         if (!betaNode.isInUse() || context.getCleanupAdapter() != null) {
             for (InternalWorkingMemory workingMemory : workingMemories) {
                 BetaMemory memory;
@@ -87,6 +91,15 @@ public class ReteBetaNodeUtils {
                     memory = ((AccumulateMemory) object).betaMemory;
                 } else {
                     memory = (BetaMemory) object;
+                }
+
+                if ( betaNode.isRightInputIsRiaNode() ) {
+                    // right input is RIAN, because RIAN needs sink memory, we must clear it's memory first
+                    // but only if the sink size is 1, i.e. once this is removed, the rian is not in use
+                    ReteRightInputAdapterNode rian = (ReteRightInputAdapterNode) betaNode.getRightInput();
+                    if ( rian.getSinkPropagator().size() == 1 ) {
+                        rian.removeMemory( workingMemory );
+                    }
                 }
 
                 FastIterator it = memory.getLeftTupleMemory().fullFastIterator();

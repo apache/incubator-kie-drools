@@ -26,6 +26,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatelessSession;
+import org.drools.core.command.runtime.rule.InsertElementsCommand;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectSink;
@@ -1589,29 +1590,28 @@ public class AccumulateTest extends CommonTestMethodBase {
 
     @Test (timeout = 10000)
     public void testAccumulateZeroParams() {
-        String rule = "rule fromIt\n" +
+        String rule = "global java.util.List list;\n" +
+                      "rule fromIt\n" +
                       "when\n" +
                       "    Number( $c: intValue ) from accumulate( Integer(), count( ) )\n" +
                       "then\n" +
-                      "    System.out.println( \"got \" + $c );\n" +
+                      "    list.add( $c );\n" +
                       "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
-                      ResourceType.DRL );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(rule);
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
 
-        if ( kbuilder.hasErrors() ) {
-            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
+        ksession.insert( new Integer(1) );
+        ksession.insert(new Integer(2));
+        ksession.insert( new Integer(3) );
 
-            while ( errors.hasNext() ) {
-                System.out.println( "kbuilder error: " + errors.next().getMessage() );
-            }
-        }
+        ksession.fireAllRules();
 
-        assertFalse( kbuilder.hasErrors() );
+        assertEquals( 1, list.size() );
+        assertEquals( 3, list.get(0) );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
     public void execTestAccumulateMultipleFunctions( String fileName ) throws Exception {
@@ -1880,73 +1880,61 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
 
-
-
-
     @Test  (timeout = 10000)
     public void testAccumulateAndRetract() {
-
         String drl = "package org.drools.compiler;\n" +
-                "\n" +
-                "import java.util.ArrayList;\n" +
-                "\n" +
-                "global ArrayList list;\n" +
-                "\n" +
-                "declare Holder\n" +
-                "    list : ArrayList\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "    $l : ArrayList()\n" +
-                "then\n" +
-                "    insert( new Holder($l) );\n" +
-                "end\n" +
-                "\n" +
-                "rule \"axx\"\n" +
-                "when\n" +
-                "    $h : Holder( $l : list )\n" +
-                "    $n : Long() from accumulate (\n" +
-                "                    $b : String( ) from $l\n" +
-                "                    count($b))\n" +
-                "then\n" +
-                "    System.out.println($n);\n" +
-                "    list.add($n);\n" +
-                "end\n" +
-                "\n" +
-                "rule \"clean\"\n" +
-                "salience -10\n" +
-                "when\n" +
-                "    $h : Holder()\n" +
-                "then\n" +
-                "    retract($h);\n" +
-                "end" +
-                "\n";
+                     "\n" +
+                     "import java.util.ArrayList;\n" +
+                     "\n" +
+                     "global ArrayList list;\n" +
+                     "\n" +
+                     "declare Holder\n" +
+                     "    list : ArrayList\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Init\"\n" +
+                     "when\n" +
+                     "    $l : ArrayList()\n" +
+                     "then\n" +
+                     "    insert( new Holder($l) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"axx\"\n" +
+                     "when\n" +
+                     "    $h : Holder( $l : list )\n" +
+                     "    $n : Long() from accumulate (\n" +
+                     "                    $b : String( ) from $l\n" +
+                     "                    count($b))\n" +
+                     "then\n" +
+                     "    System.out.println($n);\n" +
+                     "    list.add($n);\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"clean\"\n" +
+                     "salience -10\n" +
+                     "when\n" +
+                     "    $h : Holder()\n" +
+                     "then\n" +
+                     "    retract($h);\n" +
+                     "end" +
+                     "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()),
-                ResourceType.DRL );
-            if (kbuilder.hasErrors()) {
-                fail(kbuilder.getErrors().toString());
-            }
-        KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kb = loadKnowledgeBaseFromString(drl);
 
-        kb.addKnowledgePackages(kbuilder.getKnowledgePackages());
         StatefulKnowledgeSession ks = createKnowledgeSession(kb);
 
         ArrayList resList = new ArrayList();
-            ks.setGlobal("list",resList);
+        ks.setGlobal("list",resList);
 
         ArrayList<String> list = new ArrayList<String>();
-            list.add("x");
-            list.add("y");
-            list.add("z");
+        list.add("x");
+        list.add("y");
+        list.add("z");
 
         ks.insert(list);
         ks.fireAllRules();
 
         assertEquals(3L, resList.get(0));
-
     }
 
     @Test (timeout = 10000)
@@ -2025,26 +2013,20 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
         // JBRULES-3488
         String rule = "package org.drools.compiler.test;\n" +
-        "import " + AccumulateTest.Triple.class.getCanonicalName() + ";\n" +
-        "rule \"accumulate 2 times\"\n" +
-        "when\n" +
-        "  $LIST : java.util.List( )" +
-                "  from accumulate( $Triple_1 : Triple( $CN : subject," +
-                "    predicate == \"<http://deductions.sf.net/samples/princing.n3p.n3#number>\", $N : object )," +
-                "      collectList( $N ) )\n" +
-                "  $NUMBER : Number() from accumulate(" +
-                "    $NUMBER_STRING_ : String() from $LIST , sum( Double.parseDouble( $NUMBER_STRING_)) )\n" +
-        "then\n" +
-        "  System.out.println(\"ok\");\n" +
-        "end\n";
+                      "import " + AccumulateTest.Triple.class.getCanonicalName() + ";\n" +
+                      "rule \"accumulate 2 times\"\n" +
+                      "when\n" +
+                      "  $LIST : java.util.List( )" +
+                      "  from accumulate( $Triple_1 : Triple( $CN : subject," +
+                      "    predicate == \"<http://deductions.sf.net/samples/princing.n3p.n3#number>\", $N : object )," +
+                      "      collectList( $N ) )\n" +
+                      "  $NUMBER : Number() from accumulate(" +
+                      "    $NUMBER_STRING_ : String() from $LIST , sum( Double.parseDouble( $NUMBER_STRING_)) )\n" +
+                      "then\n" +
+                      "  System.out.println(\"ok\");\n" +
+                      "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
-                ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KnowledgeBase kbase = getKnowledgeBase();
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         // To reproduce, Need to have 3 object asserted (not less) :
@@ -2052,7 +2034,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.insert(new Triple("<http://deductions.sf.net/samples/princing.n3p.n3#CN2>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100"));
         ksession.insert(new Triple("<http://deductions.sf.net/samples/princing.n3p.n3#CN3>", "<http://deductions.sf.net/samples/princing.n3p.n3#number>", "100"));
 
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages( loadKnowledgePackagesFromString(rule) );
         ksession.fireAllRules();
     }
 
@@ -2088,38 +2070,37 @@ public class AccumulateTest extends CommonTestMethodBase {
     public void testAccumulateWithVarsOutOfHashOrder() throws Exception {
         // JBRULES-3494
         String rule = "package com.sample;\n" +
-                "\n" +
-                "import java.util.List;\n" +
-                "\n" +
-                "declare MessageHolder\n" +
-                "  id : String\n" +
-                "  msg: String\n" +
-                "end\n" +
-                "\n" +
-                "query getResults( String $mId, List $holders )\n" +
-                "  accumulate(  \n" +
-                "    $holder  : MessageHolder( id == $mId, $ans : msg ),\n" +
-                "    $holders : collectList( $holder )\n" +
-                "  ) \n" +
-                "end\n" +
-                "\n" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "then\n" +
-                "  insert( new MessageHolder( \"1\", \"x\" ) );\n" +
-                "end\n";
+                      "\n" +
+                      "import java.util.List;\n" +
+                      "\n" +
+                      "declare MessageHolder\n" +
+                      "  id : String\n" +
+                      "  msg: String\n" +
+                      "end\n" +
+                      "\n" +
+                      "query getResults( String $mId, List $holders )\n" +
+                      "  accumulate(  \n" +
+                      "    $holder  : MessageHolder( id == $mId, $ans : msg ),\n" +
+                      "    $holders : collectList( $holder )\n" +
+                      "  ) \n" +
+                      "end\n" +
+                      "\n" +
+                      "rule \"Init\"\n" +
+                      "when\n" +
+                      "then\n" +
+                      "  insert( new MessageHolder( \"1\", \"x\" ) );\n" +
+                      "end\n";
 
         final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ),
-                ResourceType.DRL );
+                      ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KnowledgeBase kbase = getKnowledgeBase();
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages(loadKnowledgePackagesFromString(rule) );
         ksession.fireAllRules();
 
         QueryResults res = ksession.getQueryResults( "getResults", "1", Variable.v );
@@ -2129,7 +2110,6 @@ public class AccumulateTest extends CommonTestMethodBase {
         assertTrue( o instanceof List );
         assertEquals( 1, ((List) o).size() );
     }
-
     @Test (timeout = 10000)
     public void testAccumulateWithWindow() {
         String str = "global java.util.Map map;\n" +
@@ -2240,6 +2220,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         String str =
                 "import java.util.*;\n" +
                 "import " + MyPerson.class.getName() + ";\n" +
+                "global java.util.Map map;\n" +
                 "dialect \"mvel\"\n" +
                 "\n" +
                 "rule \"Test\"\n" +
@@ -2256,28 +2237,60 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "            result( myList )\n" +
                 "        )\n" +
                 "\n" +
-                "        MyPerson(name == \"Jos Jr Jr\")\n" +
+                "        $r : MyPerson(name == \"Jos Jr Jr\")\n" +
 
                 "        or\n" +
-                "        MyPerson(name == \"Jos\")\n" +
+                "        $r : MyPerson(name == \"Jos\")\n" +
 
                 "    then\n" +
-                "        System.out.println(\"hello\");\n" +
+                "        Map pMap = map.get( $r.getName() );\n" +
+                "        pMap.put( 'total', $total );\n" +
+                "        pMap.put( 'p', $p );\n" +
+                "        pMap.put( 'k', $k );\n" +
+                "        pMap.put( 'r', $r );\n" +
+                "        map.put('count', ((Integer)map.get('count')) + 1 );\n " +
                 "end\n";
 
-        PackageBuilder builder = new PackageBuilder();
-        builder.addPackageFromDrl(ResourceFactory.newByteArrayResource(str.getBytes()));
-        RuleBase rb = RuleBaseFactory.newRuleBase();
-        rb.addPackages(builder.getPackages());
-        StatelessSession ss = rb.newStatelessSession();
-        ss.execute(new Object[]{
-                new MyPerson("John", 20, Arrays.asList(
-                        new MyPerson("John Jr 1st", 10, Arrays.asList(new MyPerson("John Jr Jr", 4, Collections.<MyPerson>emptyList()))),
-                        new MyPerson("John Jr 2nd", 8, Collections.<MyPerson>emptyList())))
-                , new MyPerson("Jeff", 30, Arrays.asList(
-                new MyPerson("Jeff Jr 1st", 10, Collections.<MyPerson>emptyList()),
-                new MyPerson("Jeff Jr 2nd", 8, Collections.<MyPerson>emptyList())))
-        });
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        List list = new ArrayList();
+        Map map = new HashMap();
+        ksession.setGlobal( "map", map);
+        map.put( "Jos Jr Jr", new HashMap() );
+        map.put( "Jos", new HashMap() );
+        map.put( "count",0 );
+
+        MyPerson josJr = new MyPerson("Jos Jr Jr", 20,
+                                      Arrays.asList(new MyPerson("John Jr 1st", 10,
+                                                                 Arrays.asList(new MyPerson("John Jr Jrx", 4, Collections.<MyPerson>emptyList()))),
+                                                    new MyPerson("John Jr 2nd", 8, Collections.<MyPerson>emptyList())));
+
+        MyPerson jos =  new MyPerson("Jos", 30,
+                                     Arrays.asList(new MyPerson("Jeff Jr 1st", 10, Collections.<MyPerson>emptyList()),
+                                                   new MyPerson("Jeff Jr 2nd", 8, Collections.<MyPerson>emptyList())) );
+
+        ksession.execute(new InsertElementsCommand(Arrays.asList(new Object[]{ josJr, jos })));
+
+        ksession.fireAllRules();
+
+        System.out.println( map );
+
+        assertEquals( 2, map.get("count") );
+        Map pMap = (Map) map.get("Jos Jr Jr");
+        assertEquals( 50.0, pMap.get("total") );
+        List kids = ( List ) pMap.get("k");
+        assertEquals( 1, kids.size() );
+        assertEquals( "John Jr Jrx", ((MyPerson)kids.get(0)).getName() );
+        assertEquals( josJr, pMap.get("p") );
+        assertEquals( josJr, pMap.get("r") );
+
+        pMap = (Map) map.get("Jos");
+        assertEquals( 50.0, pMap.get("total") );
+        kids = ( List ) pMap.get("k");
+        assertEquals( 1, kids.size() );
+        assertEquals( "John Jr Jrx", ((MyPerson)kids.get(0)).getName() );
+        assertEquals( josJr, pMap.get("p") );
+        assertEquals( jos, pMap.get("r") );
     }
 
     public static class MyPerson {
@@ -2363,8 +2376,9 @@ public class AccumulateTest extends CommonTestMethodBase {
     @Test
     public void testAccumulateWithExists() {
         String str =
-                "import org.drools.compiler.integrationtests.AccumulateTest.Course\n" +
-                "import org.drools.compiler.integrationtests.AccumulateTest.Lecture\n" +
+                "import " + Course.class.getCanonicalName() + "\n" +
+                "import " + Lecture.class.getCanonicalName() + "\n" +
+                "global java.util.List list; \n" +
                 "rule \"minimumWorkingDays\"\n" +
                 "    when\n" +
                 "        $course : Course($minWorkingDaySize : minWorkingDaySize)\n" +
@@ -2376,10 +2390,14 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "        // An uninitialized schedule should have no constraints broken\n" +
                 "        exists Lecture(course == $course)\n" +
                 "    then\n" +
+                "       list.add( $course );\n" +
+                "       list.add( $dayCount );\n" +
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
 
         Integer day1 = 1;
         Integer day2 = 2;
@@ -2398,6 +2416,10 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.insert(l2);
 
         assertEquals(1, ksession.fireAllRules());
+
+        assertEquals( 2, list.size() );
+        assertEquals( c, list.get(0));
+        assertEquals( 2l, list.get(1));
     }
 
     @Test

@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class ReteWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
     public InternalWorkingMemory createWorkingMemory(int id, InternalRuleBase ruleBase, SessionConfiguration config, Environment environment) {
-        return new ReteWorkingMemory(id, ruleBase, config, environment);
+        return new ReteWorkingMemory(id, ruleBase, false, config, environment);
     }
 
     public InternalWorkingMemory createWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {

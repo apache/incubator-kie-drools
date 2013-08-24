@@ -1,0 +1,18 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+//this was missing Person
+import org.drools.compiler.Person;
+
+global java.util.List list;
+
+rule "not rule test"
+    when
+        // and it had like instead of likes
+        $person : Person( $likes:likes )
+        not Cheese( type == $likes )
+    then
+        list.add( $person );
+end    
+

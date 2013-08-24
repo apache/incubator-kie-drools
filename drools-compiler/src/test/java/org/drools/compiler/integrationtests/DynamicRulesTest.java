@@ -872,7 +872,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     public void testRuleBaseAddRemoveSubNetworks() throws Exception {
         try {
             //add and remove
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
+            KnowledgeBase kbase = getKnowledgeBase();
             Collection<KnowledgePackage> kpkgs = loadKnowledgePackages("test_DynamicRulesWithSubnetwork.drl");
             KnowledgePackage kpkg = ( KnowledgePackage ) kpkgs.toArray()[0];
             kbase.addKnowledgePackages(kpkgs);
@@ -892,7 +892,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     @Test (timeout=10000)
     public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
         Collection<KnowledgePackage> kpkgs = loadKnowledgePackages("test_DynamicWithEntryPoint.drl" );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = getKnowledgeBase();
 
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
@@ -929,51 +929,56 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
+            loader1.loadClass( "org.drools.Primitives" );
+            loader1.loadClass( "org.drools.TestEnum" );
 
             // create a builder with the given classloader
-            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                           loader1 );
-            KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
-            builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EnumSerialization.drl" ) ),
-                         ResourceType.DRL );
-            if ( builder.hasErrors() ) {
-                fail( builder.getErrors().toString() );
-            }
-            Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
-            KnowledgePackage pkg = pkgs.iterator().next();
+            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, loader1);
+            Collection<KnowledgePackage> kpkgs = loadKnowledgePackages(conf, "test_EnumSerialization.drl");
 
             // serialize out
-            byte[] out = DroolsStreamUtils.streamOut( ((KnowledgePackageImp) pkg).pkg );
+            byte[] out = DroolsStreamUtils.streamOut( kpkgs );
 
             // adding original packages to a kbase just to make sure they are fine
-            KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
-                                                                                                       loader1 );
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
-            kbase.addKnowledgePackages( pkgs );
+            KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null, loader1 );
+            KnowledgeBase kbase = getKnowledgeBase(kbaseConf);
+            kbase.addKnowledgePackages( kpkgs );
+            StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+            List list = new ArrayList();
+            ksession.setGlobal( "list", list);
+            assertEquals( 1, ksession.fireAllRules() );
+            assertEquals( 1, list.size() );
 
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
+            loader2.loadClass( "org.drools.Primitives" );
+            loader2.loadClass( "org.drools.TestEnum" );
 
-            // create another builder
-            KnowledgeBuilderConfiguration conf2 = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                            loader2 );
-            KnowledgeBuilder builder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( conf2 );
-            builder2.add( ResourceFactory.newByteArrayResource( out ),
-                          ResourceType.PKG );
-            Collection<KnowledgePackage> pkgs2 = builder2.getKnowledgePackages();
+            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            Collection<KnowledgePackage> kpkgs2 = null;
+            try {
+                Thread.currentThread().setContextClassLoader( loader2 );
+                kpkgs2  = (Collection<KnowledgePackage>) DroolsStreamUtils.streamIn( out );
+            } finally {
+                Thread.currentThread().setContextClassLoader( ccl );
+            }
 
             // create another kbase
             KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
-                                                                                                        loader2 );
-            KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
-            kbase2.addKnowledgePackages( pkgs2 );
+                                                                                                  loader2 );
+            KnowledgeBase kbase2 = getKnowledgeBase(kbaseConf2);
+            kbase2.addKnowledgePackages( kpkgs2 );
+            ksession = createKnowledgeSession( kbase2 );
+            list = new ArrayList();
+            ksession.setGlobal( "list", list);
+            assertEquals( 1, ksession.fireAllRules() );
+            assertEquals( 1, list.size() );
 
         } catch ( ClassCastException cce ) {
             cce.printStackTrace();
             fail( "No ClassCastException should be raised." );
         }
-
     }
 
     @Test(timeout=10000)
@@ -982,51 +987,65 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             // Creates first class loader and use it to load fact classes
             ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader1.loadClass( "org.drools.compiler.Primitives" );
-            //loader1.loadClass( "org.drools.compiler.TestEnum" );
+            loader1.loadClass( "org.drools.Primitives" );
+            loader1.loadClass( "org.drools.TestEnum" );
 
-            // create a builder with the given classloader
-            KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration( null,
-                                                                                                           loader1 );
-            KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder( conf );
-            builder.add( ResourceFactory.newInputStreamResource( getClass().getResourceAsStream( "test_EnumSerialization.drl" ) ),
-                         ResourceType.DRL );
-            Collection<KnowledgePackage> pkgs = builder.getKnowledgePackages();
-            KnowledgePackage pkg = pkgs.iterator().next();
+            byte[] out = null;
 
-            // serialize out
-            byte[] out = DroolsStreamUtils.streamOut( pkg );
+            // Build it using the current context
+            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            Collection<KnowledgePackage> kpkgs2 = null;
+            try {
+                Thread.currentThread().setContextClassLoader( loader1 );
+                // create a builder with the given classloader
+                Collection<KnowledgePackage> kpkgs = loadKnowledgePackages( "test_EnumSerialization.drl");
 
-            // adding original packages to a kbase just to make sure they are fine
-            KieBaseConfiguration kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration( null,
-                                                                                                       loader1 );
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf );
-            kbase.addKnowledgePackages( pkgs );
+                // serialize out
+                out = DroolsStreamUtils.streamOut( kpkgs );
+
+                // adding original packages to a kbase just to make sure they are fine
+                KnowledgeBase kbase = getKnowledgeBase();
+                kbase.addKnowledgePackages( kpkgs );
+
+                StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+                List list = new ArrayList();
+                ksession.setGlobal( "list", list);
+                assertEquals( 1, ksession.fireAllRules() );
+                assertEquals( 1, list.size() );
+            } finally {
+                Thread.currentThread().setContextClassLoader( ccl );
+            }
 
             // now, create another classloader and make sure it has access to the classes
             ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
                                                             this.getClass().getClassLoader() );
-            //loader2.loadClass( "org.drools.compiler.Primitives" );
-            //loader2.loadClass( "org.drools.compiler.TestEnum" );
+            loader2.loadClass( "org.drools.Primitives" );
+            loader2.loadClass( "org.drools.TestEnum" );
 
             // set context classloader and use it
-            ClassLoader ccl = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader( loader2 );
-            KnowledgePackage pkg2 = (KnowledgePackage) DroolsStreamUtils.streamIn( out );
-            Collection<KnowledgePackage> pkgs2 = Collections.singleton( pkg2 );
-            Thread.currentThread().setContextClassLoader( ccl );
+            ccl = Thread.currentThread().getContextClassLoader();
+            kpkgs2 = null;
+            try {
+                Thread.currentThread().setContextClassLoader( loader2 );
+                kpkgs2  = (Collection<KnowledgePackage>) DroolsStreamUtils.streamIn( out );
 
-            // create another kbase
-            KieBaseConfiguration kbaseConf2 = KnowledgeBaseFactory.newKnowledgeBaseConfiguration(null,
-                    loader2);
-            KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase( kbaseConf2 );
-            kbase2.addKnowledgePackages( pkgs2 );
+                // create another kbase
+                KnowledgeBase kbase2 = getKnowledgeBase();
+                kbase2.addKnowledgePackages( kpkgs2 );
+
+                StatefulKnowledgeSession ksession = createKnowledgeSession( kbase2 );
+                List list = new ArrayList();
+                ksession.setGlobal( "list", list);
+                assertEquals( 1, ksession.fireAllRules() );
+                assertEquals( 1, list.size() );
+            } finally {
+                Thread.currentThread().setContextClassLoader( ccl );
+            }
 
         } catch ( ClassCastException cce ) {
             cce.printStackTrace();
             fail( "No ClassCastException should be raised." );
         }
-
     }
 
     @Test(timeout=10000)
@@ -1083,7 +1102,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         str += " list.add(\"fired\");\n";
         str += "end\n";
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = getKnowledgeBase( );
         Collection<KnowledgePackage> kpkgs = SerializationHelper.serializeObject( loadKnowledgePackagesFromString( str ) );
 
         // Add once ...
@@ -1136,7 +1155,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         kbuilder.add( ResourceFactory.newByteArrayResource( type.getBytes() ), ResourceType.DRL );
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeBase kbase = getKnowledgeBase( );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -1172,7 +1191,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     public void testJBRULES_2206() {
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
+        KnowledgeBase kbase = getKnowledgeBase( config );
         StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 
         AgendaEventListener ael = mock( AgendaEventListener.class );
@@ -1249,7 +1268,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       "  list.add( $j );\n" +
                       "end\n";
 
-        InternalKnowledgeBase kbase = (InternalKnowledgeBase)KnowledgeBaseFactory.newKnowledgeBase();
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase)getKnowledgeBase( );
 
         kbase.addKnowledgePackages(loadKnowledgePackagesFromString( drl1 ));
 

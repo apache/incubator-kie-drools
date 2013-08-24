@@ -33,6 +33,10 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
+        Memory memory = workingMemory.getNodeMemory( this ); // while we don't do anything with this, it's needed to serialization has a hook point
+                                                             // It will still keep the LT's in the serialization, but sucked form the child
+
+
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = createFactHandle( leftTuple, context, workingMemory );
         boolean useLeftMemory = true;
@@ -52,6 +56,11 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         this.sink.propagateAssertObject( handle,
                                          context,
                                          workingMemory );
+
+//        if ( useLeftMemory) {
+//            leftTuple.setObject( handle.getFirstRightTuple() );
+//        }
+
     }
 
     /**
@@ -97,7 +106,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        BetaNode betaNode = (BetaNode) this.getNextLeftTupleSinkNode();
+        BetaNode betaNode = (BetaNode) this.sink.getSinks()[0];
 
         Memory betaMemory = workingMemory.getNodeMemory( betaNode );
         BetaMemory bm;
@@ -124,32 +133,35 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !this.isInUse() ) {
-            for ( InternalWorkingMemory workingMemory : workingMemories ) {
-                BetaNode betaNode = (BetaNode) this.getNextLeftTupleSinkNode();
-
-                Memory betaMemory = workingMemory.getNodeMemory( betaNode );
-                BetaMemory bm;
-                if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
-                    bm =  ((AccumulateMemory) betaMemory).getBetaMemory();
-                } else {
-                    bm =  (BetaMemory) betaMemory;
-                }
-                bm.getRightTupleMemory().iterator();
-                if ( bm.getRightTupleMemory().size() > 0 ) {
-                    final org.drools.core.util.Iterator it = bm.getRightTupleMemory().iterator();
-                    for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
-                        LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
-                        leftTuple.unlinkFromLeftParent();
-                        leftTuple.unlinkFromRightParent();
-                    }
-                }
-                workingMemory.clearNodeMemory( this );
-            }
-        }
+        // this is now done by the child beta node, as it needs the child beta memory
+        // if ( !this.isInUse() ) {
+        //     removeMemory(workingMemories);
+        // }
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink(this);
         }
+    }
+
+    public void removeMemory(InternalWorkingMemory workingMemory) {
+        BetaNode betaNode = (BetaNode) this.sink.getSinks()[0];
+
+        Memory betaMemory = workingMemory.getNodeMemory( betaNode );
+        BetaMemory bm;
+        if ( betaNode.getType() == NodeTypeEnums.AccumulateNode ) {
+            bm =  ((AccumulateMemory) betaMemory).getBetaMemory();
+        } else {
+            bm =  (BetaMemory) betaMemory;
+        }
+
+        if ( bm.getRightTupleMemory().size() > 0 ) {
+            final Iterator it = bm.getRightTupleMemory().iterator();
+            for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
+                LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
+                leftTuple.unlinkFromLeftParent();
+                leftTuple.unlinkFromRightParent();
+            }
+        }
+        workingMemory.clearNodeMemory( this );
     }
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {

@@ -1,0 +1,18 @@
+package org.drools.compiler
+
+declare LegacyBean
+
+end
+
+declare BetterLegacy extends LegacyBean
+    oneMoreField  : String = "Hello"
+
+    doubleField  : Double    = 3.3                @position(1)  // tag inherited field, will be 1st field
+    strField : String = "XX"
+    intField : int = 245
+    prop : boolean = true
+end
+
+
+
+

@@ -99,8 +99,8 @@ public class RuleUnlinkingTest {
         PropagationContextFactory pctxFactory = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
         context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
 
-        ObjectTypeNode otn = new ObjectTypeNode( 2, null, new ClassObjectType( String.class ), buildContext );
-        liaNode = new LeftInputAdapterNode( 3, otn, buildContext );
+        ObjectTypeNode otn = new ObjectTypeNode( 4, null, new ClassObjectType( String.class ), buildContext );
+        liaNode = new LeftInputAdapterNode( 5, otn, buildContext );
 
         n1 = (BetaNode) createNetworkNode( 10, type, liaNode, null );
         n2 = (BetaNode) createNetworkNode( 11, type, n1, null );

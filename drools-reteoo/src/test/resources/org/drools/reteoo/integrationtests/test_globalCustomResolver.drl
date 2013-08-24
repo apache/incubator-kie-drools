@@ -1,0 +1,23 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+
+global java.util.List list
+global java.lang.String string
+
+
+rule "global rule test"
+    salience 10
+    when
+        eval( "stilton".equals( string ) )
+    then
+        list.add( new Integer(5) );
+end    
+
+rule "global rule test with cheese"
+    when
+        Cheese( price == 100 );
+        eval( "stilton".equals( string ) )
+    then
+        list.add( new Integer(6) );
+end    

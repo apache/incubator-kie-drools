@@ -1,0 +1,15 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+
+rule "test1"
+    no-loop true
+    when
+        cheese : Cheese( price == 15 )
+        $p : Person( cheese == cheese )
+    then
+
+end
+
+

@@ -1,0 +1,13 @@
+package org.drools.compiler.test;
+ 
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+ 
+rule "simple rule"
+    no-loop true
+    when
+        $person : Person( name == "big cheese", $cheese : cheese )
+    then
+        update( $cheese );
+        update( $person );
+end 

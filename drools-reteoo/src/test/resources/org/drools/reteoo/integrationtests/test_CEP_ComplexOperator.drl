@@ -1,0 +1,18 @@
+package org.drools.compiler
+
+global java.util.List list;
+
+declare StockTick 
+    @role( event )
+    @timestamp( time )
+    @duration( duration )
+end
+
+rule "before"
+when
+    $a : StockTick( company == "DROO" )
+    $b : StockTick( company != $a.company, this before[5,8] $a.time || after[20,22] $a )
+then
+    list.add( new StockTick[] { $a, $b } );
+end
+

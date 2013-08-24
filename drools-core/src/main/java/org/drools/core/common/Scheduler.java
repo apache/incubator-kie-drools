@@ -19,10 +19,8 @@ package org.drools.core.common;
 import java.io.IOException;
 
 import org.drools.core.Agenda;
-import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.OutputMarshaller;
 import org.drools.core.marshalling.impl.PersisterEnums;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
@@ -191,16 +189,6 @@ public final class Scheduler {
     
     
     public static class ActivationTimerOutputMarshaller  implements TimersOutputMarshaller {
-        public void write(JobContext jobCtx,
-                          MarshallerWriteContext outputCtx) throws IOException {     
-            outputCtx.writeShort( PersisterEnums.ACTIVATION_TIMER );
-            ActivationTimerJobContext ajobCtx = ( ActivationTimerJobContext ) jobCtx;
-            int leftTupleId = outputCtx.terminalTupleMap.get( ajobCtx.getScheduledAgendaItem().getTuple() );
-            outputCtx.writeInt( leftTupleId );
-            
-            OutputMarshaller.writeTrigger(ajobCtx.getTrigger(), outputCtx);
-        }
-
         public Timer serialize(JobContext jobCtx,
                                MarshallerWriteContext outputCtx) {
             ActivationTimerJobContext ajobCtx = ( ActivationTimerJobContext ) jobCtx;
@@ -218,21 +206,6 @@ public final class Scheduler {
     }
     
     public static class ActivationTimerInputMarshaller implements TimersInputMarshaller  {
-        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {                       
-            int leftTupleId = inCtx.readInt();
-            LeftTuple leftTuple = inCtx.terminalTupleMap.get( leftTupleId  );
-            ScheduledAgendaItem item = ( ScheduledAgendaItem ) leftTuple.getObject();
-            
-            Trigger trigger = InputMarshaller.readTrigger( inCtx );
-
-            InternalAgenda agenda = ( InternalAgenda ) inCtx.wm.getAgenda();
-            ActivationTimerJob job = new ActivationTimerJob();
-            ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
-                    
-            JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
-            item.setJobHandle( jobHandle );            
-        }
-
         public void deserialize(MarshallerReaderContext inCtx,
                                 Timer _timer) throws ClassNotFoundException {
             ActivationTimer _activation = _timer.getActivation();

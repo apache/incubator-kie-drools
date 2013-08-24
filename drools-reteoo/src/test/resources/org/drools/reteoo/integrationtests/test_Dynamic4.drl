@@ -1,0 +1,15 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+
+global java.util.List list
+
+rule "Who likes Stilton"
+    when
+        Cheese( $type:type == "stilton" )    
+        $person:Person( likes == $type )
+    then
+        $person.setStatus("Who likes Stilton ok");    
+        list.add( $person );
+end    
