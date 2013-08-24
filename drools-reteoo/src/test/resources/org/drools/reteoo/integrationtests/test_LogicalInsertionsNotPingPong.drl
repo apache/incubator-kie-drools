@@ -1,0 +1,28 @@
+package org.drools.compiler.test;
+
+import java.util.List;
+import org.drools.compiler.Person
+import org.drools.compiler.Cheese
+
+global Cheese cheese;
+global Person person;
+global java.util.List list;
+
+rule "not person then cheese"
+    when
+        not Person()
+    then
+        if (list.size() < 10) {
+            list.add(new Integer(0));
+               insertLogical( cheese );
+           }
+end
+rule "if cheese then person"
+    when
+        Cheese()
+    then
+        if (list.size() < 10) {
+               list.add(new Integer(0));
+            insertLogical( person );
+           }
+end

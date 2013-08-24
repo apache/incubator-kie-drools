@@ -1,0 +1,21 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Person;
+import java.util.List
+import org.drools.compiler.Person;
+
+global Person a;
+global List l;
+
+rule "r"
+    no-loop true
+    when
+        not Person()
+    then
+           l.add(new org.drools.compiler.Person("0"));
+           if (l.size() > 2)
+        {
+           kcontext.getKieRuntime().halt();
+        }
+           insertLogical( a );
+end

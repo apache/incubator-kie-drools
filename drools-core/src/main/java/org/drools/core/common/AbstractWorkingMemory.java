@@ -56,7 +56,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.common.TupleStartEqualsConstraint.TupleStartEqualsConstraintContextEntry;
 import org.drools.core.event.*;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -70,12 +69,8 @@ import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Assert;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -84,12 +79,9 @@ import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
@@ -113,8 +105,6 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
-import org.drools.core.util.FastIterator;
-import org.drools.core.util.index.RightTupleList;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.marshalling.Marshaller;
@@ -244,6 +234,7 @@ public class AbstractWorkingMemory
                                  final InternalRuleBase ruleBase) {
         this(id,
              ruleBase,
+             true,
              SessionConfiguration.getDefaultInstance(),
              EnvironmentFactory.newEnvironment());
     }
@@ -256,13 +247,14 @@ public class AbstractWorkingMemory
      */
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
+                                 boolean initInitFactHandle,
                                  final SessionConfiguration config,
                                  final Environment environment) {
         this(id,
              ruleBase,
              ruleBase.newFactHandleFactory(),
-             null,
-             0,
+             initInitFactHandle,
+             1,
              config,
              environment,
              new WorkingMemoryEventSupport(),
@@ -282,7 +274,7 @@ public class AbstractWorkingMemory
         this(id,
              ruleBase,
              handleFactory,
-             initialFactHandle,
+             false,
              propagationContext,
              config,
              environment,
@@ -296,7 +288,7 @@ public class AbstractWorkingMemory
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
-                                 final InternalFactHandle initialFactHandle,
+                                 final boolean initInitFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final Environment environment,
@@ -338,14 +330,14 @@ public class AbstractWorkingMemory
 
         this.sequential = conf.isSequential();
 
-        if ( initialFactHandle == null ) {
-            this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
-                                                                  null,
-                                                                  this,
-                                                                  this );
-        } else {
-            this.initialFactHandle = initialFactHandle;
-        }
+//        if ( initialFactHandle == null ) {
+//            this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
+//                                                                  null,
+//                                                                  this,
+//                                                                  this );
+//        } else {
+//            this.initialFactHandle = initialFactHandle;
+//        }
 
         this.evaluatingActionQueue = new AtomicBoolean( false );
 
@@ -375,6 +367,25 @@ public class AbstractWorkingMemory
         this.agenda.setWorkingMemory(this);
 
         initManagementBeans();
+
+        if ( initInitFactHandle ) {
+            initInitialFact(ruleBase, null);
+        }
+    }
+
+    public void initInitialFact(InternalRuleBase ruleBase, MarshallerReaderContext context) {
+        this.initialFactHandle = new DefaultFactHandle(0, InitialFactImpl.getInstance(), 0,  defaultEntryPoint );
+
+        ObjectTypeConf otc = this.defaultEntryPoint.getObjectTypeConfigurationRegistry()
+                                                   .getObjectTypeConf(this.defaultEntryPoint.entryPoint, this.initialFactHandle.getObject());
+        PropagationContextFactory ctxFact = ruleBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
+
+
+        final PropagationContext pctx = ctxFact.createPropagationContext(0, PropagationContext.INSERTION, null,
+                                                                         null , initialFactHandle, defaultEntryPoint.getEntryPoint(),
+                                                                         context );
+
+        otc.getConcreteObjectTypeNode().assertObject(this.initialFactHandle, pctx, this );
     }
 
     private void initManagementBeans() {
@@ -523,9 +534,6 @@ public class AbstractWorkingMemory
         List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
         for ( int i = 0, length = pmems.size(); i < length; i++ ) {
             PathMemory rm = pmems.get( i );
-
-
-
             RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
             evaluator.getRuleExecutor().setDirty(true);
             evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);

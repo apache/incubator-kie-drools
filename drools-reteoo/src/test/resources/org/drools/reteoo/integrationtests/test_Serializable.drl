@@ -1,0 +1,53 @@
+package org.drools.compiler.test;
+
+import org.drools.compiler.Person;
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+import java.util.List
+
+global List list
+
+rule "match Person 1"
+    salience 10
+    dialect "mvel"
+    when
+        $person : Person()
+    then
+        list.add( $person );
+        $person.setStatus("match Person ok");
+end    
+
+
+rule "match Person 2"
+    agenda-group "xxx"
+    salience ($age2 - $age1)
+    when
+       $person : Person(name=="mark", $age1 : age )
+       cheesery : Cheesery( cheeses contains $person )     
+       cheeses : List() from cheesery.getCheeses()           
+       Person( age < ( $age1 ) )
+       Person( $age2 : age, eval( $age1 == $age2 ) )      
+       eval( $age1 == $age2 )
+    then
+        list.add( $person );
+        $person.setStatus("match Person ok");
+end   
+
+rule "match Person 3"
+    agenda-group "xxx"
+    dialect "mvel"
+    when
+       not Person( name == "mark" )
+       exists Person( name == "mark" )       
+    then
+end 
+
+rule "match Integer"
+    agenda-group "yyy"
+    auto-focus true
+    when
+        Person( name ==  "bob" )
+    then
+        insertLogical ( new Person( "help" ) );
+        list.add( new Integer( 4 ) );
+end 

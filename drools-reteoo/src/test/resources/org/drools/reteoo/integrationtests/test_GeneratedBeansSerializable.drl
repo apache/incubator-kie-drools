@@ -1,0 +1,15 @@
+package org.drools.generatedbeans;
+
+global java.util.List results
+
+declare Cheese
+    type: String
+    value: double
+end
+
+rule "Accumulate Count"
+    when
+        $n : Number() from accumulate($c : Cheese(), count($c))
+    then
+        results.add( $n );
+end 

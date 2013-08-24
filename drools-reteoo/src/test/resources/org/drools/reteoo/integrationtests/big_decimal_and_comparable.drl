@@ -1,0 +1,17 @@
+//created on: 27-Mar-2006
+package org.drools.compiler.test
+
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Person;
+import java.math.BigDecimal;
+
+global java.util.List list;
+
+rule "BigDec"
+
+    when
+        Cheese($price : price)
+        p : Person(bigDecimal < $price)
+    then
+        list.add( p );
+end

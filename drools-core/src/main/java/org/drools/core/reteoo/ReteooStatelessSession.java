@@ -100,7 +100,7 @@ public class ReteooStatelessSession
                                                                      this.ruleBase,
                                                                      ruleBase.newFactHandleFactory(),
                                                                      null,
-                                                                     0,
+                                                                     1,
                                                                      this.sessionConf,
                                                                      EnvironmentFactory.newEnvironment(),
                                                                      this.workingMemoryEventSupport,
@@ -110,17 +110,6 @@ public class ReteooStatelessSession
 
             wm.setGlobalResolver(this.globalResolver);
 
-            final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle(InitialFactImpl.getInstance(),
-                                                                                      wm.getObjectTypeConfigurationRegistry().getObjectTypeConf(EntryPointId.DEFAULT,
-                                                                                                                                                InitialFactImpl.getInstance()),
-                                                                                      wm,
-                                                                                      wm);
-
-            wm.queueWorkingMemoryAction(new WorkingMemoryReteAssertAction(handle,
-                                                                          false,
-                                                                          true,
-                                                                          null,
-                                                                          null));
             return wm;
         } finally {
             this.ruleBase.readUnlock();

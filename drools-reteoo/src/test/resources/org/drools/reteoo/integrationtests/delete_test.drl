@@ -1,0 +1,23 @@
+package org.drools.compiler.integrationtests;
+
+import org.drools.compiler.integrationtests.DeleteTest.Person;
+import java.util.List;
+
+query someQuery
+   $names : List() from accumulate (Person($name : name), collectList( $name ))
+end
+
+query informationsAboutPersons
+    accumulate (
+        Person( $age : age, $name : name );
+        $minimalAge : min( $age ),
+        $maximalAge : max( $age ),
+        $averageAge : average( $age ), 
+        $countOfPerson : count( $age ),
+        $sumOfAges : sum ( $age ),
+        $setOfNames : collectSet ( $name ),
+        $listOfNames : collectList( $name ),
+        $expr : average( $age * 1000 );
+        $minimalAge > 0, $maximalAge < 150
+    )
+end

@@ -1,0 +1,20 @@
+package org.drools.integrationtests;
+
+import org.drools.compiler.InsertedObject;
+
+rule rule1
+  when
+  then
+    insert( new InsertedObject( "value1") );
+    insert( new InsertedObject( "value2") );
+end
+
+query "assertedobjquery" ( String $value )
+    assertedobj : InsertedObject( value == $value )
+end 
+
+
+query "assertedobjquery2" ( String $value1, String $value2 )
+    assertedobj : InsertedObject( value == $value2 )
+end
+ 

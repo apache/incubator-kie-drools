@@ -60,6 +60,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     private int               alphaNodeHashingThreshold;
 
+    private ObjectSink[]      sinks;
+
     public CompositeObjectSinkAdapter() {
         this( null,
               3 );
@@ -103,6 +105,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public void addObjectSink(final ObjectSink sink) {
+        this.sinks = null; // dirty it, so it'll rebuild on next get
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
@@ -151,6 +154,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     
 
     public void removeObjectSink(final ObjectSink sink) {
+        this.sinks = null; // dirty it, so it'll rebuild on next get
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
             final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
@@ -541,6 +545,9 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public ObjectSink[] getSinks() {
+        if ( this.sinks != null ) {
+            return sinks;
+        }
         ObjectSink[] sinks = new ObjectSink[size()];
         int at = 0;
 
@@ -573,6 +580,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 sinks[at++] = sink;
             }
         }
+        this.sinks = sinks;
         return sinks;
     }
     
