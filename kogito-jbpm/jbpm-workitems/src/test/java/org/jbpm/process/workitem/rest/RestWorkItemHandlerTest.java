@@ -80,7 +80,7 @@ public class RestWorkItemHandlerTest {
     public void testPOSTOperation() {
         RESTWorkItemHandler handler = new RESTWorkItemHandler();
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-        		"<person><age>25</age><name>Updated john</name></person>";
+        		"<person><age>25</age><name>Post john</name></person>";
         
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"/xml");
@@ -112,6 +112,59 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals("Created resource with name john", result);
+    }
+    
+    @Test
+    public void testPUTOperation() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<person><age>25</age><name>Put john</name></person>";
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL+"/xml");
+        workItem.setParameter( "Method", "PUT" );
+        workItem.setParameter( "ContentType", "application/xml" );
+        workItem.setParameter( "Content", "<person><name>john</name><age>25</age></person>" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    public void testDELETEOperation() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<person><age>-1</age><name>deleted john</name></person>";
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL+"/xml/john");
+        workItem.setParameter( "Method", "DELETE" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals(expected, result);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void testUnsupportedOperation() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL+"/xml/john");
+        workItem.setParameter( "Method", "HEAD" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
     }
     
     private class TestWorkItemManager implements WorkItemManager {

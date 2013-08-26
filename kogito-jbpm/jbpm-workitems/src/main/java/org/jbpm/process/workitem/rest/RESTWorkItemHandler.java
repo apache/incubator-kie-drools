@@ -26,13 +26,17 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * WorkItemHandler that is capable of interacting with REST service. Supports both types of services
@@ -46,8 +50,8 @@ import org.kie.api.runtime.process.WorkItemManager;
  * <ul>
  *  <li>Url - resource location to be invoked - mandatory</li>
  *  <li>Method - HTTP method that will be executed - defaults to GET</li>
- *  <li>ContentType - data type in case of sending data - mandatory for POST</li>
- *  <li>Content - actual data to be sent - mandatory for POST</li>
+ *  <li>ContentType - data type in case of sending data - mandatory for POST,PUT</li>
+ *  <li>Content - actual data to be sent - mandatory for POST,PUT</li>
  *  <li>ConnectTimeout - connection time out - default to 60 seconds</li>
  *  <li>ReadTimeout - read time out - default to 60 seconds</li>
  *  <li>Username - user name for authentication - overrides one given on handler initialization)</li>
@@ -56,6 +60,8 @@ import org.kie.api.runtime.process.WorkItemManager;
  * </ul>
  */
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
+    
+    private static final Logger logger = LoggerFactory.getLogger(RESTWorkItemHandler.class);
 	
 	private String username;
 	private String password;
@@ -124,6 +130,13 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         } else if ("POST".equals(method)) {
         	theMethod = new PostMethod(urlStr);
         	setBody(theMethod, params);
+        } else if ("PUT".equals(method)) {
+            theMethod = new PutMethod(urlStr);
+            setBody(theMethod, params);
+        } else if ("DELETE".equals(method)) {
+            theMethod = new DeleteMethod(urlStr);            
+        } else {
+            throw new IllegalArgumentException("Method " + method + " is not supported");
         }
         doAuthorization(httpclient, theMethod, params);
         try {
@@ -133,6 +146,8 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	        	theMethod.getResponseBody();
 	            postProcessResult(theMethod.getResponseBodyAsString(), results);
 	        } else {
+	            logger.warn("Unsuccessful response from REST server (status {}, endpoint {}, response {}", 
+	                    responseCode, urlStr, theMethod.getResponseBodyAsString());
 	            results.put("Status", responseCode);
 	            results.put("StatusMsg", "endpoint " + urlStr + " could not be reached: " + theMethod.getResponseBodyAsString());
 	        }
@@ -145,7 +160,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     	}
     }
     
-    private void setBody(HttpMethod theMethod, Map<String, Object> params) {
+	protected void setBody(HttpMethod theMethod, Map<String, Object> params) {
         if (params.containsKey("Content")) {
             try {
                 ((EntityEnclosingMethod)theMethod).setRequestEntity(new StringRequestEntity((String)params.get("Content"), (String)params.get("ContentType"), null));
