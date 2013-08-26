@@ -17,6 +17,7 @@
 package org.jbpm.process.workitem.rest;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,13 +26,35 @@ import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.drools.core.process.instance.WorkItemHandler;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 
+/**
+ * WorkItemHandler that is capable of interacting with REST service. Supports both types of services
+ * secured (that requires authentication) and open (no authentication). Authentication methods currently supported:
+ * <ul>
+ *  <li>BASIC</li>
+ *  <li>FORM BASED</li>
+ * </ul>
+ * Authentication information can be given on handler initialization and can be overridden via work item parameters.
+ * All other configuration options must be given via work item parameters map:
+ * <ul>
+ *  <li>Url - resource location to be invoked - mandatory</li>
+ *  <li>Method - HTTP method that will be executed - defaults to GET</li>
+ *  <li>ContentType - data type in case of sending data - mandatory for POST</li>
+ *  <li>Content - actual data to be sent - mandatory for POST</li>
+ *  <li>ConnectTimeout - connection time out - default to 60 seconds</li>
+ *  <li>ReadTimeout - read time out - default to 60 seconds</li>
+ *  <li>Username - user name for authentication - overrides one given on handler initialization)</li>
+ *  <li>Password - password for authentication - overrides one given on handler initialization)</li>
+ *  <li>AuthUrl - url that is handling authentication (usually j_security_check url)</li>
+ * </ul>
+ */
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	
 	private String username;
@@ -39,15 +62,29 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	private AuthenticationType type;
 	private String authUrl;
 	
+	/**
+	 * Used when no authentication is required
+	 */
 	public RESTWorkItemHandler() {
 	}
 	
+	/**
+	 * Dedicated constructor when BASIC authentication method shall be used
+	 * @param username - user name to be used for authentication
+	 * @param password - password to be used for authentication
+	 */
 	public RESTWorkItemHandler(String username, String password) {
 		this.username = username;
 		this.password = password;
 		this.type = AuthenticationType.BASIC;
 	}
 
+	/**
+	 * Dedicated constructor when FORM BASED authentication method shall be used
+	 * @param username - user name to be used for authentication
+	 * @param password - password to be used for authentication
+	 * @param authUrl
+	 */
 	public RESTWorkItemHandler(String username, String password, String authUrl) {
 		this.username = username;
 		this.password = password;
@@ -78,14 +115,15 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         if (readTimeout==null) readTimeout = 60000;
 
         HttpClient httpclient = new HttpClient();
-        httpclient.setConnectionTimeout(connectTimeout);
-        httpclient.setTimeout(readTimeout);
+        httpclient.getHttpConnectionManager().getParams().setConnectionTimeout(connectTimeout);
+        httpclient.getHttpConnectionManager().getParams().setSoTimeout(readTimeout);
 	        
         HttpMethod theMethod = null;
         if ("GET".equals(method)) {
         	theMethod = new GetMethod(urlStr); 
         } else if ("POST".equals(method)) {
         	theMethod = new PostMethod(urlStr);
+        	setBody(theMethod, params);
         }
         doAuthorization(httpclient, theMethod, params);
         try {
@@ -107,6 +145,16 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     	}
     }
     
+    private void setBody(HttpMethod theMethod, Map<String, Object> params) {
+        if (params.containsKey("Content")) {
+            try {
+                ((EntityEnclosingMethod)theMethod).setRequestEntity(new StringRequestEntity((String)params.get("Content"), (String)params.get("ContentType"), null));
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException("Cannot set body for REST request " + theMethod, e);
+            }
+        }
+    }
+
     protected void postProcessResult(String result, Map<String, Object> results) {
         results.put("Result", result);
     }
