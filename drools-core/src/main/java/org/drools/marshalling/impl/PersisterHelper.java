@@ -194,7 +194,8 @@ public class PersisterHelper {
 
 //        System.out.println("=============================================================================================================");
 //        System.out.println(payload);
-        context.stream.write( _header.build().toByteArray() );
+        Header _h = _header.build();
+		context.stream.write( _h.toByteArray() );
     }
     
     private static void writeStrategiesIndex(MarshallerWriteContext context,
