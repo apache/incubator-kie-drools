@@ -66,9 +66,9 @@ public class ChainedMappedByVariableListener extends AbstractPlanningVariableLis
                         + ") with a value (" + shadowValue + ") which is not null.\n"
                         + "Verify the consistency of your input problem for that mappedBy variable.");
             }
-            scoreDirector.beforeVariableChanged(entity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
             shadowVariableDescriptor.setValue(shadowEntity, entity);
-            scoreDirector.afterVariableChanged(entity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
         }
     }
 
@@ -84,9 +84,9 @@ public class ChainedMappedByVariableListener extends AbstractPlanningVariableLis
                         + ") with a value (" + shadowValue + ") which is not that entity.\n"
                         + "Verify the consistency of your input problem for that mappedBy variable.");
             }
-            scoreDirector.beforeVariableChanged(entity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.beforeVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
             shadowVariableDescriptor.setValue(shadowEntity, null);
-            scoreDirector.afterVariableChanged(entity, shadowVariableDescriptor.getVariableName());
+            scoreDirector.afterVariableChanged(shadowEntity, shadowVariableDescriptor.getVariableName());
         }
     }
 

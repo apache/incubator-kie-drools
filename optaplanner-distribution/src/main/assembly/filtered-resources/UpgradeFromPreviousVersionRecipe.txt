@@ -3628,3 +3628,14 @@ After in *.java:
 [MINOR] The ValueRangeType.UNDEFINED has been removed: it is no longer supported.
 
 [IMPL_DETAIL] DefaultDecider has been renamed to LocalSearchDecider.
+
+
+From 6.0.0.CR1 to 6.0.0.CR2
+---------------------------
+
+
+From 6.0.0.CR2 to 6.0.0.CR3
+---------------------------
+
+[MINOR] If you combine a @PlanningVariable(mappedBy = ...) with a Java IncrementalScoreCalculator:
+it now calls before/afterVariableChanged methods correctly.
