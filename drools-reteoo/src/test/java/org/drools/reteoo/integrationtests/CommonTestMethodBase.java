@@ -50,7 +50,7 @@ import java.util.Collection;
  * drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
-    public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
+    public static RuleEngineOption phreak = RuleEngineOption.RETEOO;
 
     // ***********************************************
     // METHODS TO BE REMOVED FOR 6.0.0
