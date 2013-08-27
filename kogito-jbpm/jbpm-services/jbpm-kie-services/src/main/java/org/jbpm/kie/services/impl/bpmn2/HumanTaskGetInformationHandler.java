@@ -107,8 +107,17 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         String mainProcessId = repositoryHelper.getProcess().getId();
         for(String parameter : parameters.keySet()){
             if(parameter.equals("GroupId")){
-               repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(),
-                                     humanTaskNode.getWork().getParameter(parameter).toString());     
+               String currentAssignment = "";
+               if(repository.getProcessDesc(mainProcessId).getTaskAssignments().get(humanTaskNode.getName()) != null){
+                   currentAssignment = repository.getProcessDesc(mainProcessId).getTaskAssignments().get(humanTaskNode.getName());
+               } 
+               if(!currentAssignment.equals("")){
+                    repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(),
+                                     humanTaskNode.getWork().getParameter(parameter).toString()+ ","+ currentAssignment);     
+               }else{
+                    repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(),
+                                     humanTaskNode.getWork().getParameter(parameter).toString());
+               }
             }
         }
         
@@ -117,10 +126,18 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
     
     @Override
     protected String readPotentialOwner(org.w3c.dom.Node xmlNode, HumanTaskNode humanTaskNode) {
-        String userOrGroup = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
+        String user = xmlNode.getFirstChild().getFirstChild().getFirstChild().getTextContent();
         String mainProcessId = repositoryHelper.getProcess().getId();
-        repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(), userOrGroup);
-        return userOrGroup;
+        String currentAssignment = "";
+        if(repository.getProcessDesc(mainProcessId).getTaskAssignments().get(humanTaskNode.getName()) != null){
+            currentAssignment = repository.getProcessDesc(mainProcessId).getTaskAssignments().get(humanTaskNode.getName());
+        }
+        if(!currentAssignment.equals("")){
+            repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(), user + ","+currentAssignment);
+        }else{
+            repository.getProcessDesc(mainProcessId).getTaskAssignments().put(humanTaskNode.getName(), user);
+        }
+        return user;
     }
 
 
