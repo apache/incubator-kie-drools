@@ -19,6 +19,7 @@ import org.jbpm.bpmn2.BPMN2ProcessProviderImpl;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
+import org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
@@ -120,6 +121,38 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
+    public void testServiceInvocationProcessWith2WSImports() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        params.put("mode", "sync");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("org.jboss.qa.jbpm.CallWS", params);
+        String variable = (String) processInstance.getVariable("s");
+        assertEquals("Hello john", variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
+    @Test
+    public void testServiceInvocationProcessWith2WSImportsWSHandler() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new WebServiceWorkItemHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        params.put("mode", "sync");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("org.jboss.qa.jbpm.CallWS", params);
+        String variable = (String) processInstance.getVariable("s");
+        assertEquals("Hello john", variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
     private void startWebService() {
         this.service = new SimpleService();
         this.endpoint = Endpoint.publish("http://127.0.0.1:9876/HelloService/greeting", service);
@@ -136,7 +169,8 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         BPMN2ProcessFactory.setBPMN2ProcessProvider(new BPMN2ProcessProviderImpl());
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTask.bpmn2"), ResourceType.BPMN2);
-        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTaskWithErrorBoundaryEvent.bpmn2"), ResourceType.BPMN2);        
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTaskWithErrorBoundaryEvent.bpmn2"), ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-TwoWebServiceImports.bpmn"), ResourceType.BPMN2);
         return kbuilder.newKnowledgeBase();
     }
     

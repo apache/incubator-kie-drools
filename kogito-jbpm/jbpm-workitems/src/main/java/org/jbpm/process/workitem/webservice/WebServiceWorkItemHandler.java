@@ -84,6 +84,9 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             
         try {
              Client client = getWSClient(workItem, interfaceRef);
+             if (client == null) {
+                 throw new IllegalStateException("Unable to create client for web service " + interfaceRef + " - " + operationRef);
+             }
              switch (mode) {
                 case SYNC:
                     Object[] result = client.invoke(operationRef, parameter);
@@ -168,9 +171,13 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             Client client = null;
             for (Bpmn2Import importObj : typedImports) {
                 if (WSDL_IMPORT_TYPE.equalsIgnoreCase(importObj.getType())) {
-                    client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), classLoader, null);
-                    clients.put(interfaceRef, client);
-                    return client;
+                    try {
+                        client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), classLoader, null);
+                        clients.put(interfaceRef, client);
+                        return client;
+                    } catch (Exception e) {
+                        continue;
+                    }
                 }
             }
         }
