@@ -73,12 +73,7 @@ public class MetByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator        MET_BY        = Operator.addOperatorToRegistry( "metby",
-                                                                                        false );
-    public static final Operator        NOT_MET_BY    = Operator.addOperatorToRegistry( "metby",
-                                                                                        true );
-
-    private static final String[]       SUPPORTED_IDS = {MET_BY.getOperatorString()};
+    private static final String[]       SUPPORTED_IDS = {MetByEvaluator.MET_BY.getOperatorString()};
 
     private Map<String, MetByEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser parser        = new TimeIntervalParser();
@@ -193,7 +188,10 @@ public class MetByEvaluatorDefinition
      */
     public static class MetByEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator        MET_BY        = Operator.addOperatorToRegistry( "metby",
+                false );
+        public static final Operator        NOT_MET_BY    = Operator.addOperatorToRegistry( "metby",
+                true );
         private long              finalRange;
         private String            paramText;
 

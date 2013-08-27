@@ -75,12 +75,7 @@ public class StartedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  STARTED_BY       = Operator.addOperatorToRegistry( "startedby",
-                                                                                  false );
-    public static final Operator  NOT_STARTED_BY   = Operator.addOperatorToRegistry( "startedby",
-                                                                                  true );
-
-    private static final String[] SUPPORTED_IDS = { STARTED_BY.getOperatorString() };
+    private static final String[] SUPPORTED_IDS = { StartedByEvaluator.STARTED_BY.getOperatorString() };
 
     private Map<String, StartedByEvaluator> cache        = Collections.emptyMap();
     private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
@@ -197,7 +192,10 @@ public class StartedByEvaluatorDefinition
 
         private long                  startDev;
         private String            paramText;
-
+        public static final Operator  STARTED_BY       = Operator.addOperatorToRegistry( "startedby",
+                false );
+        public static final Operator  NOT_STARTED_BY   = Operator.addOperatorToRegistry( "startedby",
+                true );
         public StartedByEvaluator() {
         }
 

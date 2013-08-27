@@ -80,12 +80,7 @@ public class AfterEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator        AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                        false );
-    public static final Operator        NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                        true );
-
-    private static final String[]       SUPPORTED_IDS = {AFTER.getOperatorString()};
+    private static final String[]       SUPPORTED_IDS = {AfterEvaluator.AFTER.getOperatorString()};
 
     private Map<String, Evaluator>      cache         = Collections.emptyMap();
     private volatile TimeIntervalParser parser        = new TimeIntervalParser();
@@ -206,6 +201,10 @@ public class AfterEvaluatorDefinition
      */
     public static class AfterEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
+        public static final Operator        AFTER         = Operator.addOperatorToRegistry( "after",
+                false );
+        public static final Operator        NOT_AFTER     = Operator.addOperatorToRegistry( "after",
+                true );
 
         private long              initRange;
         private long              finalRange;

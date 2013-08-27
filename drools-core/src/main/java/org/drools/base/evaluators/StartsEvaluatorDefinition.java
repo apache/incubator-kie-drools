@@ -75,12 +75,7 @@ public class StartsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator         STARTS        = Operator.addOperatorToRegistry( "starts",
-                                                                                         false );
-    public static final Operator         STARTS_NOT    = Operator.addOperatorToRegistry( "starts",
-                                                                                         true );
-
-    private static final String[]        SUPPORTED_IDS = {STARTS.getOperatorString()};
+    private static final String[]        SUPPORTED_IDS = {StartsEvaluator.STARTS.getOperatorString()};
 
     private Map<String, StartsEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
@@ -195,7 +190,10 @@ public class StartsEvaluatorDefinition
      */
     public static class StartsEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator         STARTS        = Operator.addOperatorToRegistry( "starts",
+                false );
+        public static final Operator         STARTS_NOT    = Operator.addOperatorToRegistry( "starts",
+                true );
         private long              startDev;
         private String            paramText;
 

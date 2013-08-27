@@ -83,12 +83,7 @@ public class OverlappedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  OVERLAPPED_BY       = Operator.addOperatorToRegistry( "overlappedby",
-                                                                                  false );
-    public static final Operator  NOT_OVERLAPPED_BY   = Operator.addOperatorToRegistry( "overlappedby",
-                                                                                  true );
-
-    private static final String[] SUPPORTED_IDS = { OVERLAPPED_BY.getOperatorString() };
+    private static final String[] SUPPORTED_IDS = { OverlappedByEvaluator.OVERLAPPED_BY.getOperatorString() };
 
     private Map<String, OverlappedByEvaluator> cache        = Collections.emptyMap();
     private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
@@ -202,7 +197,10 @@ public class OverlappedByEvaluatorDefinition
      */
     public static class OverlappedByEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator  OVERLAPPED_BY       = Operator.addOperatorToRegistry( "overlappedby",
+                false );
+        public static final Operator  NOT_OVERLAPPED_BY   = Operator.addOperatorToRegistry( "overlappedby",
+                true );
         private long                  minDev, maxDev;
         private String                paramText;
 

@@ -75,12 +75,7 @@ public class FinishedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator             FINISHED_BY     = Operator.addOperatorToRegistry( "finishedby",
-                                                                                               false );
-    public static final Operator             NOT_FINISHED_BY = Operator.addOperatorToRegistry( "finishedby",
-                                                                                               true );
-
-    private static final String[]            SUPPORTED_IDS   = {FINISHED_BY.getOperatorString()};
+    private static final String[]            SUPPORTED_IDS   = {FinishedByEvaluator.FINISHED_BY.getOperatorString()};
 
     private Map<String, FinishedByEvaluator> cache           = Collections.emptyMap();
     private volatile TimeIntervalParser      parser          = new TimeIntervalParser();
@@ -195,7 +190,10 @@ public class FinishedByEvaluatorDefinition
      */
     public static class FinishedByEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator             FINISHED_BY     = Operator.addOperatorToRegistry( "finishedby",
+                false );
+        public static final Operator             NOT_FINISHED_BY = Operator.addOperatorToRegistry( "finishedby",
+                true );
         private long              endDev;
         private String            paramText;
 

@@ -20,6 +20,7 @@ import org.drools.StockTick;
 import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.base.evaluators.AfterEvaluatorDefinition;
+import org.drools.base.evaluators.AfterEvaluatorDefinition.AfterEvaluator;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.rule.Declaration;
 import org.drools.rule.GroupElement;
@@ -73,34 +74,34 @@ public class BuildUtilsTest {
 
         b.addConstraint( new EvaluatorConstraint( new Declaration[] { a.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                                      AfterEvaluatorDefinition.AFTER,
+                                                                      AfterEvaluator.AFTER,
                                                                       "-2,2"),
                                                   new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
 
         Pattern c = new Pattern( 2, ot, "$c" );
         c.addConstraint( new EvaluatorConstraint( new Declaration[] { a.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                                      AfterEvaluatorDefinition.AFTER,
+                                                          AfterEvaluator.AFTER,
                                                                       "-3,4"),
                                                   new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
 
         Pattern d = new Pattern( 3, ot, "$d" );
         d.addConstraint( new EvaluatorConstraint( new Declaration[] { b.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                                      AfterEvaluatorDefinition.AFTER,
+                                                          AfterEvaluator.AFTER,
                                                                       "1,2"),
                                                   new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
 
         d.addConstraint( new EvaluatorConstraint( new Declaration[] { c.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
-                                                                      AfterEvaluatorDefinition.AFTER,
+                                                          AfterEvaluator.AFTER,
                                                                       "2,3"),
                                                   new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
 
         Pattern e = new Pattern( 4, ot, "$e" );
         e.addConstraint(new EvaluatorConstraint(new Declaration[]{d.getDeclaration()},
                 evals.getEvaluator(ValueType.OBJECT_TYPE,
-                        AfterEvaluatorDefinition.AFTER,
+                        AfterEvaluator.AFTER,
                         "1,10"),
                 new SelfReferenceClassFieldReader(StockTick.class, "this")));
 
