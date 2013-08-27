@@ -927,7 +927,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     public void testIsolatedClassLoaderWithEnumsPkgBuilder() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
-            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnumReteoo.jar" )},
                                                             this.getClass().getClassLoader() );
 
             // create a builder with the given classloader
@@ -948,7 +948,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             assertEquals( 1, list.size() );
 
             // now, create another classloader and make sure it has access to the classes
-            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnumReteoo.jar" )},
                                                             this.getClass().getClassLoader() );
 
             // create another builder
@@ -985,7 +985,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
     public void testIsolatedClassLoaderWithEnumsContextClassloader() throws Exception {
         try {
             // Creates first class loader and use it to load fact classes
-            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+            ClassLoader loader1 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnumReteoo.jar" )},
                                                             this.getClass().getClassLoader() );
             loader1.loadClass( "org.drools.Primitives" );
             loader1.loadClass( "org.drools.TestEnum" );
@@ -1017,7 +1017,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             }
 
             // now, create another classloader and make sure it has access to the classes
-            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnum.jar" )},
+            ClassLoader loader2 = new SubvertedClassLoader( new URL[]{getClass().getResource( "/testEnumReteoo.jar" )},
                                                             this.getClass().getClassLoader() );
             loader2.loadClass( "org.drools.Primitives" );
             loader2.loadClass( "org.drools.TestEnum" );
