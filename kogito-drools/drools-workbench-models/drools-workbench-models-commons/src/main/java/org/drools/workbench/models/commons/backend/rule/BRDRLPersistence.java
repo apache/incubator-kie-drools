@@ -1819,7 +1819,8 @@ public class BRDRLPersistence
         }
     }
 
-    private static final String[] OPERATORS = new String[]{ "==", "!=", "<=", ">=", "<", ">", "not in", "in" };
+    //The order of these is important to prevent early (incorrect) matches
+    private static final String[] OPERATORS = new String[]{ "==", "!=", "<=", ">=", "<", ">", "matches", "soundslike", "contains", "excludes", "not in", "in" };
 
     private static String findOperator( String expr ) {
         for ( String op : OPERATORS ) {

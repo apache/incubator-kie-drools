@@ -22,6 +22,7 @@ import org.drools.workbench.models.commons.shared.rule.FactPattern;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -361,6 +362,100 @@ public class BRDRLPersistenceUnmarshallingTest {
                       sfp2.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp2.getConstraintValueType() );
+    }
+
+    @Test
+    @Ignore("Unmarshalling of CEP is broken")
+    public void testSingleFieldConstraintCEPOperator() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( dob after \"26-Jun-2013\" )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "Applicant",
+                      sfp.getFactType() );
+        assertEquals( "dob",
+                      sfp.getFieldName() );
+        assertEquals( "after",
+                      sfp.getOperator() );
+        assertEquals( "26-Jun-2013",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp.getConstraintValueType() );
+    }
+
+    @Test
+    public void testSingleFieldConstraintContainsOperator() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "$is : IncomeSource( )\n"
+                + "Applicant( incomes contains $is )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+
+        FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "IncomeSource",
+                      fp0.getFactType() );
+        assertEquals( "$is",
+                      fp0.getBoundName() );
+
+        IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FactPattern );
+
+        FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "Applicant",
+                      fp1.getFactType() );
+
+        assertEquals( 0,
+                      fp0.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      fp1.getNumberOfConstraints() );
+        assertTrue( fp1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp1.getConstraint( 0 );
+        assertEquals( "Applicant",
+                      sfp.getFactType() );
+        assertEquals( "incomes",
+                      sfp.getFieldName() );
+        assertEquals( "contains",
+                      sfp.getOperator() );
+        assertEquals( "$is",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_VARIABLE,
+                      sfp.getConstraintValueType() );
     }
 
 }
