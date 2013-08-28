@@ -75,9 +75,9 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         inHeader = true;
                     } else if (line.startsWith("template")) {
                         inTemplate = true;
+                        inHeader = false;
                         String quotedName = line.substring(8).trim();
-                        quotedName = quotedName.substring(1, quotedName
-                                                                     .length() - 1);
+                        quotedName = quotedName.substring(1, quotedName.length() - 1);
                         template = new RuleTemplate(quotedName, this);
                         addTemplate(template);
 
