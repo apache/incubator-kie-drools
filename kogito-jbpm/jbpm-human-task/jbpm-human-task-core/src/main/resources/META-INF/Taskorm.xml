@@ -51,6 +51,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+    order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -102,6 +103,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+    order by t.id DESC      
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -155,6 +157,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+    order by t.id DESC            
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -208,7 +211,7 @@ where
     ) and
 
     t.taskData.status in (:status) 
-    order by t.id          
+    order by t.id DESC    
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -262,7 +265,7 @@ where
     ) and
 
     t.taskData.status in (:status) 
-    
+    order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -316,6 +319,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+    order by t.id DESC          
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -369,6 +373,7 @@ where
     ) and
 
     t.taskData.status in (:status) 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -423,7 +428,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
- 
+    order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -508,6 +513,7 @@ where
     ) and
     t.taskData.expirationTime = :expirationDate and
     t.taskData.status in (:status) 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -562,7 +568,7 @@ where
     ) and
     (t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null) and
     t.taskData.status in (:status) 
-    order by t.id          
+    order by t.id DESC     
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -693,6 +699,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -745,7 +752,7 @@ where
     ) and
 
     t.taskData.status in ('Created', 'Ready', 'Reserved', 'InProgress', 'Suspended') 
-
+    order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -799,6 +806,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -850,6 +858,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -901,6 +910,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -950,6 +960,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+              order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -1002,6 +1013,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
             ) 
+    order by t.id DESC         
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -1054,6 +1066,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
             ) 
+            order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -1109,7 +1122,7 @@ where
     or t.descriptions.size = 0
     ) 
 
-    
+    order by t.id DESC
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
       </named-query>
@@ -1163,6 +1176,7 @@ where
             description.language = :language
             or t.descriptions.size = 0
             ) 
+            order by t.id DESC
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -1214,6 +1228,8 @@ where
             ) and
 
             t.taskData.activationTime &lt; :since
+            
+            order by t.id DESC
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
@@ -1315,6 +1331,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
+    order by t.id DESC
               
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1365,7 +1382,7 @@ where
     description.language = :language
     or t.descriptions.size = 0
     ) 
-
+    order by t.id DESC
     
           </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
@@ -1545,6 +1562,7 @@ where
             ) and
 
             t.taskData.status in (:status) 
+            order by t.id DESC
         </query>
           <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
