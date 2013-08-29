@@ -19,6 +19,7 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 
 /**
@@ -120,11 +121,15 @@ public class PhreakAccumulateNode {
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = accNode.getRawConstraints();
 
+        boolean leftTupleMemoryEnabled = accNode.isLeftTupleMemoryEnabled();
+        if (leftTupleMemoryEnabled && srcLeftTuples.insertSize() > 32 && ltm instanceof AbstractHashTable) {
+            ((AbstractHashTable) ltm).ensureCapacity(srcLeftTuples.insertSize());
+        }
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(accNode, leftTuple);
+            boolean useLeftMemory = leftTupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(accNode, leftTuple);
 
             if (useLeftMemory) {
                 ltm.add(leftTuple);
@@ -203,6 +208,10 @@ public class PhreakAccumulateNode {
         RightTupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = accNode.getRawConstraints();
+
+        if (srcRightTuples.insertSize() > 32 && rtm instanceof AbstractHashTable) {
+            ((AbstractHashTable) rtm).ensureCapacity(srcRightTuples.insertSize());
+        }
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
