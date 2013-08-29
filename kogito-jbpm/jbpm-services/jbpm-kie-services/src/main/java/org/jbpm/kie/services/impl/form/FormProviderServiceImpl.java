@@ -91,7 +91,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         Map<String, Object> renderContext = new HashMap<String, Object>();
         renderContext.put("process", processDesc);
         renderContext.put("outputs", processData);
-        renderContext.put("marshallerContext", getMarshallerContext(deploymentId, processId));
+        renderContext.put("deploymentId", deploymentId);
 
         for (FormProvider provider : providers) {
             String template = provider.render(processDesc.getName(), processDesc, renderContext);
@@ -160,7 +160,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         // merge template with process variables        
         renderContext.put("task", task);
         renderContext.put("outputs", finalOutput);
-        renderContext.put("marshallerContext", marshallerContext);
+        renderContext.put("deploymentId", task.getTaskData().getDeploymentId());
 
         // add all inputs as direct entries
         if (input instanceof Map) {
