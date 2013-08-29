@@ -34,6 +34,9 @@
         <exclude>**/target/**</exclude>
         <exclude>**/.git</exclude>
         <exclude>**/.metadata/**</exclude>
+        <exclude>**/*.h2.db</exclude>
+        <exclude>**/*.trace.db</exclude>
+        <exclude>**/*.iml</exclude>
         <exclude>jbpm-installer/data/**</exclude>
         <exclude>jbpm-installer/eclipse/**</exclude>
         <exclude>jbpm-installer/jboss*/**</exclude>
