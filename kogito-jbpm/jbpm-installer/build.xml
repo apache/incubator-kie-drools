@@ -33,7 +33,7 @@
     </fileset>
     <fileset dir="${install.home}/runtime/lib/">
       <include name="drools*.jar"/>
-      <include name="knowledge*.jar"/>
+      <include name="kie*.jar"/>
       <include name="protobuf*.jar"/>
       <include name="slf4j*.jar"/>
       <include name="log4j*.jar"/>
@@ -592,8 +592,8 @@
   <target name="download.ddl.dependencies" depends="download.ddl.check" if="ddl.dependencies.not.available">
     <echo message="Getting hibernate4 libs ..." />
     <mkdir dir="${install.home}/lib/ddl-dependencies"/>
-    <get src="${hibernate4.download.url}/hibernate-core/4.1.0.Final/hibernate-core-4.1.0.Final.jar" dest="${install.home}/lib/ddl-dependencies" />
-  	<get src="${hibernate4.download.url}/hibernate-entitymanager/4.1.0.Final/hibernate-entitymanager-4.1.0.Final.jar" dest="${install.home}/lib/ddl-dependencies" />
+    <get src="${hibernate4.download.url}/hibernate-core/4.2.0.Final/hibernate-core-4.2.0.Final.jar" dest="${install.home}/lib/ddl-dependencies" />
+  	<get src="${hibernate4.download.url}/hibernate-entitymanager/4.2.0.Final/hibernate-entitymanager-4.2.0.Final.jar" dest="${install.home}/lib/ddl-dependencies" />
     <get src="${hibernate4.download.url}/common/hibernate-commons-annotations/4.0.1.Final/hibernate-commons-annotations-4.0.1.Final.jar" dest="${install.home}/lib/ddl-dependencies" />
   	<get src="${jboss.logging.download.url}" dest="${install.home}/lib/ddl-dependencies" />
   	
@@ -639,30 +639,4 @@
 	  </hibernatetool>
 	  <delete dir="db/export-jbpm/META-INF"/>
 	</target>
-
-   <target name="ht.schemaexport" depends="install.jBPM.runtime,download.ddl.dependencies">
-      <delete dir="db/export-ht"/>
-      <!-- task definition; project.class.path contains all necessary libs -->
-      <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask"
-          classpathref="generate.ddl.${jpa.version}.class.path" />
-      <mkdir dir="db/export-ht"/>
-      <mkdir dir="db/export-ht/META-INF"/>
-   	  <copy tofile="db/export-ht/META-INF/persistence.xml" file="db/task-persistence-${jpa.version}.xml"/>
-      <copy todir="db/export-ht/META-INF">
-        <fileset dir="db/">
-      	  <include name="Taskorm-${jpa.version}.xml"/>
-        </fileset>
-      </copy>   
-      <hibernatetool destdir="db/export-ht">
-        <jpaconfiguration persistenceunit="org.jbpm.task.ddl" />
-        <classpath>
-            <pathelement path="${runtime.class.path}"/>
-            <dirset dir="db/export-ht/">
-            </dirset>
-        </classpath>
-        <hbm2ddl outputfilename="htschemaexport.sql" format="true"
-            export="false" drop="true" />
-      </hibernatetool>
-      <delete dir="db/export-ht/META-INF"/>
-    </target>
 </project>

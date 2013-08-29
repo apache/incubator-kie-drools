@@ -44,6 +44,8 @@
     <class>org.drools.persistence.info.WorkItemInfo</class>
     <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
     <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+    <!-- manager -->
+    <class>org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo</class>
     
     <!-- bam -->
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
