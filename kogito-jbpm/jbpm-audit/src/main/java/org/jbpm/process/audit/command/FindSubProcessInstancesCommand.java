@@ -17,16 +17,30 @@ package org.jbpm.process.audit.command;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class FindSubProcessInstancesCommand extends AbstractHistoryLogCommand<List<ProcessInstanceLog>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 7334860936916050668L;
 
-    private final long processInstanceId;
+    @XmlAttribute(required=true)
+    @XmlSchemaType(name="long")
+    private Long processInstanceId;
+    
+    public FindSubProcessInstancesCommand() { 
+        // no-arg for JAXB
+    }
     
     public FindSubProcessInstancesCommand(long processInstanceId) {
         this.processInstanceId = processInstanceId;

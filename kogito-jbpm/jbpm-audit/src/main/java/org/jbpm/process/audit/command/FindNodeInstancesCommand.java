@@ -17,17 +17,34 @@ package org.jbpm.process.audit.command;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.kie.internal.command.Context;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class FindNodeInstancesCommand extends AbstractHistoryLogCommand<List<NodeInstanceLog>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 5374910016873481604L;
 
-    private final long processInstanceId;
-    private final String nodeId;
+    @XmlAttribute(required=true)
+    @XmlSchemaType(name="long")
+    private Long processInstanceId;
+    
+    @XmlAttribute 
+    @XmlSchemaType(name="string")
+    private String nodeId;
+    
+    public FindNodeInstancesCommand() { 
+        // no-arg for JAXB
+    }
     
     public FindNodeInstancesCommand(long processInstanceId) {
         this.processInstanceId = processInstanceId;
