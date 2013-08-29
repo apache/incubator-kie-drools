@@ -57,7 +57,6 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         Node node = (Node) parser.getCurrent();
         String attachedTo = element.getAttribute("attachedToRef");
         Attr cancelActivityAttr = element.getAttributeNode("cancelActivity");
-        boolean cancelActivitySpecified = cancelActivityAttr.getSpecified();
         boolean cancelActivity = Boolean.parseBoolean(cancelActivityAttr.getValue());
         
         // determine type of event definition, so the correct type of node can be generated
@@ -66,7 +65,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             String nodeName = xmlNode.getNodeName();
             if ("escalationEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
-                handleEscalationNode(node, element, uri, localName, parser, attachedTo, cancelActivity, cancelActivitySpecified);
+                handleEscalationNode(node, element, uri, localName, parser, attachedTo, cancelActivity);
                 break;
             } else if ("errorEventDefinition".equals(nodeName)) {
                 // reuse already created EventNode
@@ -101,18 +100,18 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
     @SuppressWarnings("unchecked")
 	protected void handleEscalationNode(final Node node, final Element element, final String uri, 
             final String localName, final ExtensibleXmlParser parser, final String attachedTo,
-            boolean cancelActivity, final boolean cancelActivitySpecified) throws SAXException {
+            final boolean cancelActivity) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         BoundaryEventNode eventNode = (BoundaryEventNode) node;
         eventNode.setMetaData("AttachedTo", attachedTo);
-        if( ! cancelActivitySpecified ) { 
-            /**
-             * BPMN2 spec, p. 255, Escalation row: 
-             * "In contrast to an Error, an Escalation by default is assumed to not abort 
-             * the Activity to which the boundary Event is attached."
-             */
-            cancelActivity = false;
-        }
+        /**
+         * TODO: because of how we process bpmn2/xml files, we can't tell 
+         *       if the cancelActivity attribute is set to false or not 
+         *       (because we override with the xsd settings)
+         * BPMN2 spec, p. 255, Escalation row: 
+         * "In contrast to an Error, an Escalation by default is assumed to not abort 
+         * the Activity to which the boundary Event is attached."
+         */
         eventNode.setMetaData("CancelActivity", cancelActivity);
         eventNode.setAttachedToNodeId(attachedTo);
         org.w3c.dom.Node xmlNode = element.getFirstChild();
