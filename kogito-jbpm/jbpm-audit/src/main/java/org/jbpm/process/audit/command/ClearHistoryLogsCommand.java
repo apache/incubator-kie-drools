@@ -15,9 +15,15 @@
  */
 package org.jbpm.process.audit.command;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.kie.internal.command.Context;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class ClearHistoryLogsCommand extends AbstractHistoryLogCommand<Void> {
 
 	/** generated serial version UID */

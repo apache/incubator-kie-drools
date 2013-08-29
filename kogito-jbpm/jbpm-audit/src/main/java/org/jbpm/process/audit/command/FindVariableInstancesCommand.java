@@ -17,17 +17,34 @@ package org.jbpm.process.audit.command;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.kie.internal.command.Context;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class FindVariableInstancesCommand extends AbstractHistoryLogCommand<List<VariableInstanceLog>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 7087452375594067164L;
 
-    private final long processInstanceId;
-    private final String variableId;
+    @XmlAttribute(required=true)
+    @XmlSchemaType(name="long")
+    private Long processInstanceId;
+    
+    @XmlAttribute(required=true)
+    @XmlSchemaType(name="String")
+    private String variableId;
+    
+    public FindVariableInstancesCommand() { 
+        // no-arg for JAXB
+    }
     
     public FindVariableInstancesCommand(long processInstanceId) {
         this.processInstanceId = processInstanceId;
