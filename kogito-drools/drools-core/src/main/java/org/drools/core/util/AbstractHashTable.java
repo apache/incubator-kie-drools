@@ -108,6 +108,17 @@ public abstract class AbstractHashTable
         this.comparator = comparator;
     }
 
+    public void ensureCapacity(int itemsToBeAdded) {
+        int newCapacity = this.size + itemsToBeAdded;
+        if (newCapacity > this.threshold) {
+            int newSize = this.table.length * 2;
+            while (newSize < newCapacity) {
+                newSize *= 2;
+            }
+            resize(newSize);
+        }
+    }
+
     protected void resize(final int newCapacity) {
         final Entry[] oldTable = this.table;
         final int oldCapacity = oldTable.length;
