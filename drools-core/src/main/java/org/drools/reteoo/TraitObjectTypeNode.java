@@ -19,7 +19,12 @@ package org.drools.reteoo;
 import org.drools.base.ClassObjectType;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.PropagationContextImpl;
+import org.drools.factmodel.traits.Key;
+import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitTypeMap;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.spi.ObjectType;
 import org.drools.spi.PropagationContext;
@@ -29,6 +34,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.BitSet;
+import java.util.Collection;
 
 public class TraitObjectTypeNode extends ObjectTypeNode {
 
@@ -57,10 +63,10 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         if ( factHandle.getObject() instanceof TraitProxy )  {
             BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
             if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
-                //System.out.println(" PASS Redundancy " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : Assert PASS " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 super.assertObject( factHandle, context, workingMemory );
             } else {
-                //System.out.println(" BLOCK Redundancy " + factHandle.getObject() + " >> " + vetoMask + " checks in " + typeMask );
+                System.out.println( ( (ClassObjectType) this.getObjectType() ).getClassName() + " : Assert BLOCK " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " >> " + vetoMask + " checks in " + typeMask );
             }
         } else {
             super.assertObject( factHandle, context, workingMemory );
@@ -86,15 +92,46 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     workingMemory );
         } else {
             if ( factHandle.getObject() instanceof TraitProxy )  {
-                BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
-                if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
-                    //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
-                    this.sink.propagateModifyObject( factHandle,
-                            modifyPreviousTuples,
-                            context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
-                            workingMemory );
+                TraitProxy proxy = ((TraitProxy) factHandle.getObject());
+                BitSet vetoMask = proxy.getTypeFilter();
+
+                if ( vetoMask == null                                                               // no vetos
+                     || typeMask.isEmpty()                                                          // Thing is permissive
+                     || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {    // this node is not vetoed
+
+                    // "don" update :
+                    if ( context.getModificationMask() == Long.MIN_VALUE ) {
+                        // property reactivity may block trait proxies which have been asserted and then immediately updated because of another "don"
+                        // however, PR must be disabled only once for each OTN: that is, a proxy will not pass an OTN if one of its ancestors can also pass it
+
+                        // Example: given classes A <- B <-C, at OTN A, a proxy c can only pass if no proxy b exists
+
+                        TraitableBean txBean = (TraitableBean) proxy.getObject();
+                        TraitTypeMap tMap = (TraitTypeMap) txBean._getTraitMap();
+                        Collection<Key<Thing>> x = tMap.immediateParents( this.typeMask );
+                        Key<Thing> k = x.iterator().next();
+
+                        long originalMask = context.getModificationMask();
+                        if ( ! k.getValue().isTop() ) {
+                            ((PropagationContextImpl) context).setModificationMask( -1L );
+                        }
+                        //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                        this.sink.propagateModifyObject( factHandle,
+                                modifyPreviousTuples,
+                                context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                                workingMemory );
+                        ((PropagationContextImpl) context).setModificationMask( originalMask );
+
+                    } else {
+                        //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                        this.sink.propagateModifyObject( factHandle,
+                                modifyPreviousTuples,
+                                context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                                workingMemory );
+                    }
+
                 } else {
-                    //System.out.println(" MODIFY BLOCK !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                    //System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,
@@ -107,6 +144,15 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         }
     }
 
+    public boolean needsMaskUpdate() {
+        return true;
+    }
 
+    public long updateMask(long mask) {
+        long returnMask;
+        returnMask = declaredMask | mask;
+        inferredMask = inferredMask | returnMask;
+        return returnMask;
+    }
 
 }

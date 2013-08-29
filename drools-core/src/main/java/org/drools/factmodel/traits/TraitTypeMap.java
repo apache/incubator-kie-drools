@@ -155,29 +155,22 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     }
 
 
-    public Collection<Thing<C>> getMostSpecificTraits() {
+    public Collection<Key<Thing<C>>> getMostSpecificTraits() {
         if ( hasKey( getBottomCode() ) ) {
-            Thing<C> b = getMember( getBottomCode() ).getValue();
-            if ( ((TraitType) b).isVirtual() ) {
+            Key<Thing<C>> b = getMember( getBottomCode() );
+            if ( ((TraitType) b.getValue()).isVirtual() ) {
                 Collection<Key<Thing<C>>> p =  parents( getBottomCode() );
-                List ret = new ArrayList( p.size() );
-                for ( Key<Thing<C>> k : p ) {
-                    ret.add( k.getValue() );
-                }
-                return ret;
+                return p;
             } else {
                 return Collections.singleton( b );
             }
         } else {
             Collection<Key<Thing<C>>> p =  immediateParents( getBottomCode() );
-            List ret = new ArrayList( p.size() );
-            for ( Key<Thing<C>> k : p ) {
-                ret.add( k.getValue() );
-            }
-            return ret;
-
+            return p;
         }
     }
+
+
 
     public BitSet getCurrentTypeCode() {
         return currentTypeCode;

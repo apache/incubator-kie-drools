@@ -2765,7 +2765,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         int k = ksession.fireAllRules();
 
-        assertEquals( 11, k );
+        assertEquals( 13, k );
 
     }
 
@@ -4596,6 +4596,273 @@ public class TraitTest extends CommonTestMethodBase {
 
         ks.dispose();
     }
+
+
+
+    @Test
+    public void testMultipleModifications() {
+        String drl = "package org.drools.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "" +
+                     "global java.util.List list;" +
+                     "\n" +
+                     "declare Person\n" +
+                     "@Traitable\n" +
+                     "@propertyReactive\n" +
+                     "    ssn : String\n" +
+                     "    pob : String\n" +
+                     "    isStudent : boolean\n" +
+                     "    hasAssistantship : boolean\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait Student\n" +
+                     "@propertyReactive\n" +
+                     "    studyingCountry : String\n" +
+                     "    hasAssistantship : boolean\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait Worker\n" +
+                     "@propertyReactive\n" +
+                     "    pob : String\n" +
+                     "    workingCountry : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait USCitizen\n" +
+                     "@propertyReactive\n" +
+                     "    pob : String = \"US\"\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ITCitizen\n" +
+                     "@propertyReactive\n" +
+                     "    pob : String = \"IT\"\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait IRCitizen\n" +
+                     "@propertyReactive\n" +
+                     "    pob : String = \"IR\"\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( new Person(\"1234\",\"IR\",true,true) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"check for being student\"\n" +
+                     "when\n" +
+                     "    $p : Person( $ssn : ssn, $pob : pob,  isStudent == true )\n" +
+                     "then\n" +
+                     "    Student st = (Student) don( $p , Student.class );\n" +
+                     "    modify( st ){\n" +
+                     "        setStudyingCountry( \"US\" );\n" +
+                     "    }\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"check for IR\"\n" +
+                     "when\n" +
+                     "    $p : Person( pob == \"IR\" )\n" +
+                     "then\n" +
+                     "    don( $p , IRCitizen.class );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"check for being US citizen\"\n" +
+                     "when\n" +
+                     "    $s : Student( studyingCountry == \"US\" )\n" +
+                     "then\n" +
+                     "    don( $s , USCitizen.class );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"check for being worker\"\n" +
+                     "when\n" +
+                     "    $p : Student( hasAssistantship == true, $sc : studyingCountry  )\n" +
+                     "then\n" +
+                     "    Worker wr = (Worker) don( $p , Worker.class );\n" +
+                     "    modify( wr ){\n" +
+                     "        setWorkingCountry( $sc );\n" +
+                     "    }\n" +
+                     "\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Join Full\"\n" +
+                     "salience -1\n" +
+                     "when\n" +
+                     "    Student( )      // $sc := studyingCountry )\n" +
+                     "    USCitizen( )\n" +
+                     "    IRCitizen( )      // $pob := pob )\n" +
+                     "    Worker( )       // pob == $pob , workingCountry == $sc )\n" +
+                     "then\n" +
+                     "    list.add( 1 ); " +
+                     "end\n" +
+                     "\n" +
+                     "\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( drl );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        HashMap map;
+        ks.fireAllRules();
+
+        assertTrue( list.contains( 1 ) );
+        assertEquals( 1, list.size() );
+
+        ks.dispose();
+
+    }
+
+    @Test
+    public void testUpdateLegacyClass(  ) {
+        String source = "package org.drools.text;\n" +
+                        "\n" +
+                        "global java.util.List list;\n" +
+                        "\n" +
+                        "import org.drools.Person;\n" +
+                        "import org.drools.factmodel.traits.Traitable;\n" +
+                        "\n" +
+                        "declare Person @Traitable end \n" +
+                        "" +
+                        "declare trait Student\n" +
+                        "  name : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Init\"\n" +
+                        "salience 10 \n" +
+                        "when\n" +
+                        "  $p : Person( this not isA Student )\n" +
+                        "then\n" +
+                        "  System.out.println( \"Don person\" ); \n" +
+                        "  don( $p, Student.class );\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Go\"\n" +
+                        "when\n" +
+                        "  $s : String( this == \"X\" )\n" +
+                        "  $p : Person()\n" +
+                        "then\n" +
+                        "  System.out.println( \"Change name\" ); \n" +
+                        "  retract( $s ); \n" +
+                        "  modify( $p ) { setName( $s ); }\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Mod\"\n" +
+                        "when\n" +
+                        "  Student( name == \"X\" )\n" +
+                        "then\n" +
+                        "  System.out.println( \"Update detected\" );\n" +
+                        "  list.add( 0 );\n" +
+                        "end";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.insert( new Person( "john", 32 ) );
+        ks.insert( "X" );
+
+        ks.fireAllRules();
+
+        assertTrue( list.contains( 0 ) );
+        assertEquals( 1, list.size() );
+
+        ks.dispose();
+    }
+
+
+    @Test
+    public void testPropagation() {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.factmodel.traits.*; \n" +
+                     "\n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare X @Traitable end \n" +
+                     "" +
+                     "declare trait A @propertyReactive end\n" +
+                     "declare trait B extends A @propertyReactive end\n" +
+                     "declare trait C extends B @propertyReactive end \n" +
+                     "declare trait D extends C @propertyReactive end\n" +
+                     "declare trait E extends B,C @propertyReactive end\n" +
+                     "declare trait F extends E @propertyReactive end\n" +
+                     "declare trait G extends B @propertyReactive end\n" +
+                     "declare trait H extends G @propertyReactive end\n" +
+                     "declare trait I extends E,H @propertyReactive end\n" +
+                     "declare trait J extends I @propertyReactive end\n" +
+                     "" +
+                     "rule Init when then X x = new X(); insert( x ); don( x, F.class); end \n"+
+                     "rule Go when String( this == \"go\" ) $x : X() then don( $x, H.class); end \n" +
+                     "rule Go2 when String( this == \"go2\" ) $x : X() then don( $x, D.class); end \n" +
+                     "";
+
+        for ( int j = 'A'; j <= 'J'; j ++ ) {
+            String x = "" + (char) j;
+            drl += "rule \"Log " + x + "\" when " + x + "() then System.out.println( \"@@ " + x + " detected \" ); list.add( \"" + x + "\" ); end \n";
+
+            drl += "rule \"Log II" + x + "\" salience -1 when " + x + "( ";
+            drl += "this isA H";
+            drl += " ) then System.out.println( \"@@ as H >> " + x + " detected \" ); list.add( \"H" + x + "\" ); end \n";
+        }
+
+        StatefulKnowledgeSession ks = getSessionFromString( drl );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        assertTrue( list.contains( "A" ) );
+        assertTrue( list.contains( "B" ) );
+        assertTrue( list.contains( "C" ) );
+        assertTrue( list.contains( "E" ) );
+        assertTrue( list.contains( "F" ) );
+        assertEquals( 5, list.size() );
+
+        list.clear();
+
+        System.out.println( "---------------------------------------" );
+
+        ks.insert( "go" );
+        ks.fireAllRules();
+
+        assertTrue( list.contains( "H" ) );
+        assertTrue( list.contains( "G" ) );
+        assertTrue( list.contains( "HA" ) );
+        assertTrue( list.contains( "HB" ) );
+        assertTrue( list.contains( "HC" ) );
+        assertTrue( list.contains( "HE" ) );
+        assertTrue( list.contains( "HF" ) );
+        assertTrue( list.contains( "HG" ) );
+        assertTrue( list.contains( "HH" ) );
+        assertEquals( 9, list.size() );
+        list.clear();
+
+        System.out.println( "---------------------------------------" );
+
+        ks.insert( "go2" );
+        ks.fireAllRules();
+
+        assertTrue( list.contains( "D" ) );
+        assertTrue( list.contains( "HA" ) );
+        assertTrue( list.contains( "HB" ) );
+        assertTrue( list.contains( "HC" ) );
+        assertTrue( list.contains( "HE" ) );
+        assertTrue( list.contains( "HF" ) );
+        assertTrue( list.contains( "HG" ) );
+        assertTrue( list.contains( "HH" ) );
+        assertTrue( list.contains( "HH" ) );
+        assertTrue( list.contains( "HD" ) );
+        assertEquals( 9, list.size() );
+
+        ks.dispose();
+
+    }
+
+
 
 
 }

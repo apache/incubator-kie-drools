@@ -46,12 +46,11 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.MapCore;
 import org.drools.factmodel.traits.CoreWrapper;
-import org.drools.factmodel.traits.Entity;
+import org.drools.factmodel.traits.Key;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.TraitType;
-import org.drools.factmodel.traits.TraitTypeMap;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.factmodel.traits.TraitFactory;
 import org.drools.impl.KnowledgeBaseImpl;
@@ -90,7 +89,7 @@ public class DefaultKnowledgeHelper
     private IdentityHashMap<Object, FactHandle> identityMap;
 
     private LinkedList<LogicalDependency>       previousJustified;
-    
+
     private LinkedList<LogicalDependency>       previousBlocked;
 
     public DefaultKnowledgeHelper() {
@@ -103,13 +102,13 @@ public class DefaultKnowledgeHelper
         this.identityMap = null;
 
     }
-    
+
     public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
         this.activation = activation;
         this.identityMap = null;
 
-    }    
+    }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
@@ -144,7 +143,7 @@ public class DefaultKnowledgeHelper
         this.previousJustified = null;
         this.previousBlocked = null;
     }
-      
+
     public void blockActivation(org.drools.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         // iterate to find previous equal logical insertion
@@ -157,12 +156,12 @@ public class DefaultKnowledgeHelper
                 }
             }
         }
-        
+
         if ( dep == null ) {
             dep = new SimpleLogicalDependency( activation, targetMatch );
         }
         this.activation.addBlocked(  dep );
-        
+
         if ( targetMatch.getBlockers().size() == 1 && targetMatch.isActive()  ) {
             // it wasn't blocked before, but is now, so we must remove it from all groups, so it cannot be executed.
             targetMatch.remove();
@@ -177,18 +176,18 @@ public class DefaultKnowledgeHelper
             }
         }
     }
-    
+
     public void unblockAllActivations(org.drools.runtime.rule.Activation act) {
         AgendaItem targetMatch = ( AgendaItem ) act;
         boolean wasBlocked = (targetMatch.getBlockers() != null && !targetMatch.getBlockers().isEmpty() );
-        
+
         for ( LinkedListEntry entry = ( LinkedListEntry ) targetMatch.getBlockers().getFirst(); entry != null;  ) {
             LinkedListEntry tmp = ( LinkedListEntry ) entry.getNext();
             LogicalDependency dep = ( LogicalDependency ) entry.getObject();
             ((AgendaItem)dep.getJustifier()).removeBlocked( dep );
             entry = tmp;
         }
-        
+
         if ( wasBlocked ) {
             // the match is no longer blocked, so stage it
             ((DefaultAgenda)workingMemory.getAgenda()).getStageActivationsGroup().addActivation( targetMatch );
@@ -218,12 +217,12 @@ public class DefaultKnowledgeHelper
         insertLogical( object,
                        false );
     }
-    
+
     public void insertLogical(final Object object,final boolean dynamic) {
         insertLogical( object,
                        null,
                        dynamic );
-    }    
+    }
 
     public void insertLogical(final Object object,
                               final Object value) {
@@ -234,7 +233,7 @@ public class DefaultKnowledgeHelper
     public void insertLogical(final Object object,
                               final Object value,
                               final boolean dynamic) {
-        
+
         if ( !activation.isMatched() ) {
             // Activation is already unmatched, can't do logical insertions against it
             return;
@@ -268,19 +267,19 @@ public class DefaultKnowledgeHelper
             }
         }
     }
-    
+
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
             for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
                 this.workingMemory.getTruthMaintenanceSystem().removeLogicalDependency( activation, dep, activation.getPropagationContext() );
             }
         }
-        
+
         if ( this.previousBlocked != null ) {
             for ( LogicalDependency dep = this.previousBlocked.getFirst(); dep != null; ) {
                 LogicalDependency tmp = dep.getNext();
                 this.previousBlocked.remove( dep );
-                
+
                 AgendaItem justified = ( AgendaItem ) dep.getJustified();
                 justified.getBlockers().remove( dep.getJustifierEntry() );
                 if (justified.getBlockers().isEmpty() ) {
@@ -289,9 +288,9 @@ public class DefaultKnowledgeHelper
                 }
                 dep = tmp;
             }
-        }        
+        }
     }
-    
+
     public void cancelActivation(org.drools.runtime.rule.Activation act) {
         AgendaItem match = ( AgendaItem ) act;
         match.cancel();
@@ -320,19 +319,19 @@ public class DefaultKnowledgeHelper
         if ( identityMap != null ) {
             handle = identityMap.get( object );
         }
-        
+
         if ( handle != null ) {
             return handle;
         }
-        
+
         handle = getFactHandleFromWM( object );
-        
+
         if ( handle == null ) {
             throw new FactException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }
         return handle;
     }
-    
+
     public FactHandle getFactHandle(FactHandle handle) {
         Object object = ((InternalFactHandle)handle).getObject();
         handle = getFactHandleFromWM( object );
@@ -341,7 +340,7 @@ public class DefaultKnowledgeHelper
         }
         return handle;
     }
-    
+
     public void update(final FactHandle handle,
                        final Object newObject){
         InternalFactHandle h = (InternalFactHandle) handle;
@@ -383,21 +382,22 @@ public class DefaultKnowledgeHelper
                             mask,
                             modifiedClass,
                             this.activation );
-                    updateTraits( core, mask, x, modifiedClass, null );
+                    BitSet veto = ((TraitProxy) x).getTypeCode();
+                    updateTraits( core, mask, x, modifiedClass, veto );
                 }
             }
         }
     }
 
     private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto ) {
-        TraitableBean txBean = (TraitableBean) object;
+        updateTraits( object, mask, originator, modifiedClass, veto, ((TraitableBean) object).getMostSpecificTraits() );
+    }
 
-        Collection<Thing> px = txBean.getMostSpecificTraits();
-        if ( originator != null ) {
-            veto = (BitSet) ((TraitProxy) originator).getTypeCode().clone();
-        }
+    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Key<Thing>> px ) {
+        veto = veto != null ? (BitSet) veto.clone() : null;
 
-        for ( Thing t : px ) {
+        for ( Key<Thing> k : px ) {
+            Thing t = k.getValue();
             if ( t != originator ) {
                 TraitProxy proxy = (TraitProxy) t;
 
@@ -405,10 +405,10 @@ public class DefaultKnowledgeHelper
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
                 if ( h != null ) {
                     ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                                  t,
-                                                                                  mask,
-                                                                                  modifiedClass,
-                                                                                  this.activation );
+                            t,
+                            mask,
+                            modifiedClass,
+                            this.activation );
                 }
                 proxy.setTypeFilter( null );
 
@@ -416,7 +416,7 @@ public class DefaultKnowledgeHelper
                 if ( veto == null ) {
                     veto = (BitSet) tc.clone();
                 } else {
-                    veto.and( tc );
+                    veto.or( tc );
                 }
             }
         }
@@ -432,7 +432,7 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(Object object) {
-       retract( getFactHandle(object) );
+        retract( getFactHandle( object ) );
     }
 
     public void retract(final FactHandle handle) {
@@ -478,7 +478,7 @@ public class DefaultKnowledgeHelper
         if ( wmTmp != null ) {
             Object object = declaration.getValue( wmTmp.getInternalWorkingMemory(),
                                                   this.tuple.get( declaration ).getObject() );
-            
+
             if ( identityMap != null ) {
                 getIdentityMap().put( object,
                                       wmTmp.getFactHandleByIdentity( object ) );
@@ -507,7 +507,7 @@ public class DefaultKnowledgeHelper
     public ExitPoint getExitPoint(String id) {
         return this.workingMemory.getExitPoints().get( id );
     }
-    
+
     public Channel getChannel(String id) {
         return this.workingMemory.getChannels().get( id );
     }
@@ -523,7 +523,7 @@ public class DefaultKnowledgeHelper
     public Map<String, ExitPoint> getExitPoints() {
         return Collections.unmodifiableMap( this.workingMemory.getExitPoints() );
     }
-    
+
     public Map<String, Channel> getChannels() {
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
@@ -546,19 +546,19 @@ public class DefaultKnowledgeHelper
         FactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
-            for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
-                handle = (FactHandle) ep.getFactHandle( object );
-                if ( identityMap != null ) {
-                    identityMap.put( object,
-                                     handle );
-                }
-                if( handle != null ) {
-                    break;
-                }
+        for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
+            handle = (FactHandle) ep.getFactHandle( object );
+            if ( identityMap != null ) {
+                identityMap.put( object,
+                        handle );
             }
+            if( handle != null ) {
+                break;
+            }
+        }
         return handle;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T getContext(Class<T> contextClass) {
         if (ProcessContext.class.equals(contextClass)) {
@@ -605,31 +605,39 @@ public class DefaultKnowledgeHelper
             return don( ((Thing) core).getCore(), trait, logical );
         }
         try {
-            BitSet currentType = core instanceof TraitableBean ? ( (TraitableBean) core ).getCurrentTypeCode() : null;
-            BitSet veto =  currentType != null ? (BitSet) currentType.clone() : null;
-
             T thing = applyTrait( core, trait, logical );
-            if ( thing == core ) {
-                return thing;
-            } else {
-                ((TraitProxy) thing).setTypeFilter( veto );
-                T t = doInsertTrait( thing, logical );
-                ( (TraitProxy) thing ).setTypeFilter( null );
-                return t;
-            }
+            return thing;
         } catch ( LogicalTypeInconsistencyException ltie ) {
             ltie.printStackTrace();
             return null;
         }
     }
 
-    protected <T> T doInsertTrait( T thing, boolean logical ) {
+    protected <T> T doInsertTrait( T thing, Object core, boolean logical, BitSet boundary ) {
+        if ( thing == core ) {
+            return thing;
+        }
+
+        ((TraitProxy) thing).setTypeFilter( boundary );
         if ( logical ) {
             insertLogical( thing );
         } else {
             insert( thing );
         }
+        ((TraitProxy) thing).setTypeFilter( null );
         return thing;
+    }
+
+    protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
+        if ( core instanceof Map ) {
+            return new MapCore( (Map) core );
+        }
+        CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
+        if ( wrapper == null ) {
+            throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );
+        }
+        wrapper.init( core );
+        return wrapper;
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) throws LogicalTypeInconsistencyException {
@@ -652,34 +660,11 @@ public class DefaultKnowledgeHelper
             }
         }
 
-        return processTraits( core, trait, builder, needsWrapping, inner, logical );
-    }
-
-    protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
-        if ( core instanceof Map ) {
-            return new MapCore( (Map) core );
-        }
-        CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass() );
-        if ( wrapper == null ) {
-            throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() );
-        }
-        wrapper.init( core );
-        return wrapper;
-    }
-    
-    
-    protected <T,K> T processTraits( K core,
-                                     Class<T> trait,
-                                     TraitFactory builder,
-                                     boolean needsUpdate,
-                                     TraitableBean<K,? extends TraitableBean> inner,
-                                     boolean logical ) throws LogicalTypeInconsistencyException {
         T thing;
-        BitSet veto = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
-        if ( veto != null ) {
-            TraitTypeMap line = (( TraitTypeMap ) inner._getTraitMap());
-            veto = line.metMembersCode( line.immediateParents( veto ) );
-        }
+        boolean needsUpdate = needsWrapping;
+        BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
+
+        Collection px = null;
 
         boolean refresh = false;
         if ( trait.isAssignableFrom( inner.getClass() ) ) {
@@ -687,10 +672,13 @@ public class DefaultKnowledgeHelper
             inner.addTrait( trait.getName(), (Thing<K>) core );
             needsUpdate = true;
         } else if ( inner.hasTrait( trait.getName() ) ) {
-            return (T) inner.getTrait( trait.getName() );
+            thing = (T) inner.getTrait( trait.getName() );
         } else {
+            if ( Thing.class != trait ) {
+                px = inner.getMostSpecificTraits();
+                refresh = true;
+            }
             thing = (T) builder.getProxy( inner, trait );
-            refresh = Thing.class != trait;
         }
 
         if ( needsUpdate ) {
@@ -701,16 +689,18 @@ public class DefaultKnowledgeHelper
             don( inner, Thing.class, false );
         }
 
+        thing = doInsertTrait( thing, core, logical, boundary );
+
         if ( refresh ) {
             FactHandle handle = lookupFactHandle( inner );
             InternalFactHandle h = (InternalFactHandle) handle;
             if ( handle != null ) {
                 ((NamedEntryPoint) h.getEntryPoint()).update( h,
-                                                                              ((InternalFactHandle)handle).getObject(),
-                                                                              Long.MIN_VALUE,
-                                                                              core.getClass(),
-                                                                              this.activation );
-                updateTraits( inner, -1L, null, trait, veto );
+                                                              ((InternalFactHandle)handle).getObject(),
+                                                              Long.MIN_VALUE,
+                                                              core.getClass(),
+                                                              this.activation );
+                updateTraits( inner, Long.MIN_VALUE, (Thing) thing, trait, null, px );
             } else {
                 handle = this.workingMemory.insert( inner,
                                                     null,
@@ -720,7 +710,7 @@ public class DefaultKnowledgeHelper
                                                     this.activation );
                 if ( this.identityMap != null ) {
                     this.getIdentityMap().put( inner,
-                            handle );
+                                               handle );
                 }
             }
         }
@@ -787,7 +777,7 @@ public class DefaultKnowledgeHelper
 
     public void modify(Object newObject) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

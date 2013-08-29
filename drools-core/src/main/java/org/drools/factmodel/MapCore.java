@@ -112,6 +112,7 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
     }
 
     public Collection<Thing> getMostSpecificTraits() {
+        if ( _getTraitMap() == null ) { return Collections.EMPTY_LIST; }
         return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
     }
 

@@ -569,7 +569,7 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
 
     List<HierNode<T>> lcsBorderNodes( BitSet key, boolean includeEquals ) {
         List<HierNode<T>> border = new ArrayList<HierNode<T>>();
-
+        if ( key == null ) { return border; }
 //        System.out.println( key );
 
         int l = key.length();

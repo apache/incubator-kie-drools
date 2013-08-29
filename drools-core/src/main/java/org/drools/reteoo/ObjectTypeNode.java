@@ -255,6 +255,10 @@ public class ObjectTypeNode extends ObjectSource
         return 0;
     }
 
+    public boolean needsMaskUpdate() {
+        return false;
+    }
+
     public boolean isAssignableFrom(final ObjectType objectType) {
         return this.objectType.isAssignableFrom( objectType );
     }
