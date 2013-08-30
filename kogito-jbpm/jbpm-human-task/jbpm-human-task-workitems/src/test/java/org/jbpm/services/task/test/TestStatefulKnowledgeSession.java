@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import org.drools.core.impl.AbstractRuntime;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 
@@ -30,7 +32,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
-public class TestStatefulKnowledgeSession implements StatefulKnowledgeSession {
+public class TestStatefulKnowledgeSession extends AbstractRuntime implements StatefulKnowledgeSession {
 
     public static int testSessionId = 5;
     private Environment env;

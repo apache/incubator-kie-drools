@@ -12,6 +12,7 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -42,7 +43,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
-public class StatefulProcessSession implements StatefulKnowledgeSession, InternalKnowledgeRuntime, CorrelationAwareProcessRuntime {
+public class StatefulProcessSession extends AbstractRuntime implements StatefulKnowledgeSession, InternalKnowledgeRuntime, CorrelationAwareProcessRuntime {
 
 	private KnowledgeBase kbase;
 	private InternalProcessRuntime processRuntime;
