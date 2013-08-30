@@ -81,7 +81,7 @@ public abstract class JbpmJUnitBaseTestCase extends AbstractBaseTest {
     /**
      * Currently supported RuntimeEngine strategies
      */
-    enum Strategy {
+    public enum Strategy {
         SINGLETON,
         REQUEST,
         PROCESS_INSTANCE;
@@ -219,7 +219,7 @@ public abstract class JbpmJUnitBaseTestCase extends AbstractBaseTest {
         for (String p : process) {
             resources.put(p, ResourceType.BPMN2);
         }
-        return createRuntimeManager(resources);
+        return createRuntimeManager(strategy, resources);
     }
 
     /**
