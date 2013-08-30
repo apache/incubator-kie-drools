@@ -27,6 +27,7 @@ import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
 import org.jbpm.runtime.manager.impl.factory.JPASessionFactory;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
+import org.jbpm.runtime.manager.impl.tx.TransactionAwareSchedulerServiceInterceptor;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
@@ -136,8 +137,14 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
                 TimerServiceRegistry.getInstance().registerTimerService(timerServiceId, globalTs);
                 ((SimpleRuntimeEnvironment)environment).addToConfiguration("drools.timerService", 
                         "new org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate(\""+timerServiceId+"\")");
+                
+                if (!schedulerService.isTransactional()) {
+                    schedulerService.setInterceptor(new TransactionAwareSchedulerServiceInterceptor(environment, schedulerService));
+                }
             }
         }
     }
+    
+
 
 }

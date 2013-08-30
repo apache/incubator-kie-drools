@@ -40,4 +40,8 @@ public interface GlobalSchedulerService extends SchedulerService, InternalSchedu
     void shutdown();
     
     JobHandle buildJobHandleForContext(NamedJobContext ctx);
+    
+    boolean isTransactional();
+    
+    void setInterceptor(SchedulerServiceInterceptor interceptor);
 }

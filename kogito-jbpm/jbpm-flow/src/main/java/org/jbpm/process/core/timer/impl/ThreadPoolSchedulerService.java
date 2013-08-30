@@ -35,6 +35,7 @@ import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.NamedJobContext;
+import org.jbpm.process.core.timer.SchedulerServiceInterceptor;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
@@ -48,6 +49,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
     private AtomicLong idCounter = new AtomicLong();
     private ScheduledThreadPoolExecutor scheduler;
     private TimerService globalTimerService;
+    private SchedulerServiceInterceptor interceptor = new DelegateSchedulerServiceInterceptor(this);
     
     private int poolSize;
     
@@ -96,7 +98,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
                                                                                      jobHandle,
                                                                                      (InternalSchedulerService) globalTimerService );
             jobHandle.setTimerJobInstance( (TimerJobInstance) jobInstance );
-            internalSchedule( (TimerJobInstance) jobInstance );
+            interceptor.internalSchedule( (TimerJobInstance) jobInstance );
             if (jobname != null) {
                 activeTimer.put(jobname, jobHandle);
             }
@@ -186,6 +188,18 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
     public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
         // this is in memory scheduler and the building of context is required for permanent ScueduleService only
         return null;
+    }
+
+
+    @Override
+    public boolean isTransactional() {
+        return false;
+    }
+
+
+    @Override
+    public void setInterceptor(SchedulerServiceInterceptor interceptor) {
+        this.interceptor = interceptor;        
     }
 
 

@@ -32,6 +32,7 @@ import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.NamedJobContext;
+import org.jbpm.process.core.timer.SchedulerServiceInterceptor;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
@@ -46,6 +47,8 @@ import org.quartz.SchedulerMetaData;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.jdbcjobstore.JobStoreCMT;
+import org.quartz.impl.jdbcjobstore.JobStoreSupport;
+import org.quartz.spi.JobStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +65,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
+    private SchedulerServiceInterceptor interceptor = new DelegateSchedulerServiceInterceptor(this);
     
     // global data shared across all scheduler service instances
     private static Scheduler scheduler;    
@@ -109,7 +113,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
                                                                     (InternalSchedulerService) globalTimerService );
         quartzJobHandle.setTimerJobInstance( (TimerJobInstance) jobInstance );
 
-        internalSchedule(jobInstance);
+        interceptor.internalSchedule(jobInstance);
         return quartzJobHandle;
     }
 
@@ -338,5 +342,25 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
     @Override
     public JobHandle buildJobHandleForContext(NamedJobContext ctx) {
         return new GlobalQuartzJobHandle(-1, ctx.getJobName(), "jbpm");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean isTransactional() {
+        try {
+            Class<JobStore> jobStoreClass = scheduler.getMetaData().getJobStoreClass();
+            if (JobStoreSupport.class.isAssignableFrom(jobStoreClass)) {
+                return true;
+            }
+        } catch (Exception e) {
+            logger.warn("Unable to determine if quartz is transactional due to problems when checking job store class", e);
+        }
+        return false;
+    }
+
+    @Override
+    public void setInterceptor(SchedulerServiceInterceptor interceptor) {
+        this.interceptor = interceptor;
+        
     }
 }
