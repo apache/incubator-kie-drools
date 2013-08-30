@@ -18,9 +18,17 @@ package org.jbpm.runtime.manager.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.command.CommandService;
+import org.drools.core.command.SingleSessionCommandService;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.factory.CDITaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
+import org.jbpm.runtime.manager.impl.tx.ExtendedJTATransactionManager;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
@@ -130,7 +138,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void disposeRuntimeEngine(RuntimeEngine runtime) {
         removeLocalRuntime(runtime);
-        if (runtime instanceof Disposable) {
+        if (runtime instanceof Disposable && environment.usePersistence()) {
             ((Disposable) runtime).dispose();
         }
     }
@@ -256,7 +264,39 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     public void init() {
         // need to init one session to bootstrap all case - such as start timers
         KieSession ksession = factory.newKieSession();
-        ksession.destroy();
+        ksession.execute(new GenericCommand<Void>() {            
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Void execute(org.kie.internal.command.Context context) {
+                final KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                JtaTransactionManager tm = new ExtendedJTATransactionManager(null, null, null);
+                if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
+                        && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
+                        && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+                    tm.registerTransactionSynchronization(new TransactionSynchronization() {
+                        
+                        @Override
+                        public void beforeCompletion() {
+                            if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
+                                CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+                                ((SingleSessionCommandService) commandService).destroy();
+                             }                            
+                        }
+                        
+                        @Override
+                        public void afterCompletion(int arg0) {
+                            ksession.dispose();
+                            
+                        }
+                    });
+                } else {
+                    ksession.destroy();
+                }
+                return null;
+            }
+        });
+        
         
     }
 
