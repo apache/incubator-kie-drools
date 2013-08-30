@@ -4,6 +4,7 @@ import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -42,6 +43,7 @@ public class KieModuleModelTest {
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType(KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") )
+                .setFileLogger("drools.log", 10, true)
                 .setDefault(true);
 
         ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);
@@ -87,6 +89,12 @@ public class KieModuleModelTest {
         assertSame(kieBaseModelXML, ((KieSessionModelImpl)kieSessionModelXML).getKieBaseModel());
         assertEquals(KieSessionType.STATEFUL, kieSessionModelXML.getType());
         assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
+
+        FileLoggerModel fileLogger = kieSessionModelXML.getFileLogger();
+        assertEquals("drools.log", fileLogger.getFile());
+        assertEquals(10, fileLogger.getInterval());
+        assertEquals(true, fileLogger.isThreaded());
+
         assertTrue(kieSessionModelXML.isDefault());
 
         List<ListenerModel> listeners = kieSessionModelXML.getListenerModels();

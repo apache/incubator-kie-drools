@@ -22,13 +22,17 @@ import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
+import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -303,6 +307,8 @@ public class KieContainerImpl
         KieSession kSession = kBase.newKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel), environment );
         wireListnersAndWIHs(kSessionModel, kSession);
 
+        registerLoggers(kSessionModel, kSession);
+
         KieSession oldSession = kSessions.remove(kSessionName);
         if (oldSession != null) {
             oldSession.dispose();
@@ -310,6 +316,21 @@ public class KieContainerImpl
         kSessions.put(kSessionName, kSession);
 
         return kSession;
+    }
+
+    private void registerLoggers(KieSessionModelImpl kSessionModel, KieRuntimeEventManager kSession) {
+        KieLoggers kieLoggers = KieServices.Factory.get().getLoggers();
+        if (kSessionModel.getConsoleLogger() != null) {
+            kieLoggers.newConsoleLogger(kSession);
+        }
+        FileLoggerModel fileLogger = kSessionModel.getFileLogger();
+        if (fileLogger != null) {
+            if (fileLogger.isThreaded()) {
+                kieLoggers.newThreadedFileLogger(kSession, fileLogger.getFile(), fileLogger.getInterval());
+            } else {
+                kieLoggers.newFileLogger(kSession, fileLogger.getFile());
+            }
+        }
     }
 
     public StatelessKieSession newStatelessKieSession(String kSessionName) {
@@ -331,6 +352,7 @@ public class KieContainerImpl
             return null;
         }
         StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel) );
+        registerLoggers(kSessionModel, statelessKieSession);
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;
     }

@@ -145,6 +145,7 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.alias("listener", ListenerModelImpl.class);
             xStream.alias("qualifier", QualifierModelImpl.class);
             xStream.alias("workItemHandler", WorkItemHandlerModelImpl.class);
+            xStream.alias("fileLogger", FileLoggerModelImpl.class);
             xStream.setClassLoader(KieModuleModelImpl.class.getClassLoader());
         }
 

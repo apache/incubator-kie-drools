@@ -141,10 +141,11 @@ public abstract class WorkingMemoryLogger
                 processRuntime.addEventListener( (ProcessEventListener) this );
             }
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
-            ((StatelessKnowledgeSessionImpl) session).workingMemoryEventSupport.addEventListener( this );
-            ((StatelessKnowledgeSessionImpl) session).agendaEventSupport.addEventListener( this );
-            ((StatelessKnowledgeSessionImpl) session).processEventSupport.addEventListener( this );
-            ((StatelessKnowledgeSessionImpl) session).getRuleBase().addEventListener( this );
+            StatelessKnowledgeSessionImpl statelessSession = ((StatelessKnowledgeSessionImpl) session);
+            statelessSession.addWorkingMemoryEventListener( this );
+            statelessSession.addAgendaEventListener( this );
+            statelessSession.addEventListener( this );
+            statelessSession.getRuleBase().addEventListener( this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             ReteooWorkingMemoryInterface eventManager =
                 ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession()).session;

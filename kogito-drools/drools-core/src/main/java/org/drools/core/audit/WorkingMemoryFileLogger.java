@@ -216,11 +216,10 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
     }
 
     public void stop() {
-        if ( terminate ) {
-            throw new IllegalStateException( "Logger has already been closed." );
+        if ( !terminate ) {
+            terminate = true;
+            writeToDisk();
         }
-        terminate = true;
-        writeToDisk();
     }
 
 }

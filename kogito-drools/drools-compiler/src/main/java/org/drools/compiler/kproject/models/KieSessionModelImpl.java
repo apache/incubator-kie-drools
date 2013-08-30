@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
+import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
@@ -29,7 +30,11 @@ public class KieSessionModelImpl
     private final List<ListenerModel>        listeners = new ArrayList<ListenerModel>();
     private final List<WorkItemHandlerModel> wihs = new ArrayList<WorkItemHandlerModel>();
 
-    private boolean                      isDefault = false;
+    private boolean                          isDefault = false;
+
+    private String                           consoleLogger;
+
+    private FileLoggerModel                  fileLogger;
 
     private KieSessionModelImpl() { }
 
@@ -63,7 +68,7 @@ public class KieSessionModelImpl
     }
 
     public KieSessionModel setName(String name) {
-        ((KieBaseModelImpl)kBase).changeKSessionName(this, this.name, name);
+        kBase.changeKSessionName(this, this.name, name);
         this.name = name;
         return this;
     }
@@ -147,6 +152,29 @@ public class KieSessionModelImpl
         wihs.add(wih);
     }
 
+    public String getConsoleLogger() {
+        return consoleLogger;
+    }
+
+    public KieSessionModel setConsoleLogger(String consoleLogger) {
+        this.consoleLogger = consoleLogger;
+        return this;
+    }
+
+    public FileLoggerModel getFileLogger() {
+        return fileLogger;
+    }
+
+    public KieSessionModel setFileLogger(String fileName) {
+        this.fileLogger = new FileLoggerModelImpl(fileName);
+        return this;
+    }
+
+    public KieSessionModel setFileLogger(String fileName, int interval, boolean threaded) {
+        this.fileLogger = new FileLoggerModelImpl(fileName, interval, threaded);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "KieSessionModel [name=" + name + ", clockType=" + clockType + "]";
@@ -168,6 +196,20 @@ public class KieSessionModelImpl
             }
             if (kSession.getScope() != null) {
                 writer.addAttribute("scope", kSession.getScope() );
+            }
+            if (kSession.getConsoleLogger() != null) {
+                writer.startNode("consoleLogger");
+                if (kSession.getConsoleLogger().length() > 0) {
+                    writer.addAttribute("name", kSession.getConsoleLogger());
+                }
+                writer.endNode();
+            }
+            if (kSession.getFileLogger() != null) {
+                writer.startNode("fileLogger");
+                writer.addAttribute("file", kSession.getFileLogger().getFile());
+                writer.addAttribute("threaded", "" + kSession.getFileLogger().isThreaded());
+                writer.addAttribute("interval", "" + kSession.getFileLogger().getInterval());
+                writer.endNode();
             }
 
             writeObjectList(writer, context, "workItemHandlers", "workItemHandler", kSession.getWorkItemHandlerModels());
@@ -225,6 +267,18 @@ public class KieSessionModelImpl
                             wih.setKSession( kSession );
                             kSession.addWorkItemHandelerModel(wih);
                         }
+                    } else if ( "consoleLogger".equals( name ) ) {
+                        String consoleLogger = reader.getAttribute("name");
+                        kSession.setConsoleLogger(consoleLogger == null ? "" : consoleLogger);
+                    } else if ( "fileLogger".equals( name ) ) {
+                        FileLoggerModelImpl fileLoggerModel = new FileLoggerModelImpl( reader.getAttribute("file") );
+                        try {
+                            fileLoggerModel.setInterval( Integer.parseInt(reader.getAttribute("interval")) );
+                        } catch (Exception e) { }
+                        try {
+                            fileLoggerModel.setThreaded( Boolean.parseBoolean(reader.getAttribute("threaded")) );
+                        } catch (Exception e) { }
+                        kSession.fileLogger = fileLoggerModel;
                     }
                 }
             } );
