@@ -16,6 +16,7 @@
 
 package org.drools.core.audit;
 
+import org.drools.core.impl.AbstractRuntime;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
@@ -32,9 +33,9 @@ public class KnowledgeRuntimeLoggerProviderImpl
                                                 String fileName) {
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( (KnowledgeRuntimeEventManager) session );
         if ( fileName != null ) {
-            logger.setFileName( fileName );
+            logger.setFileName(fileName);
         }
-        return new KnowledgeRuntimeFileLoggerWrapper( logger );
+        return registerRuntimeLogger(session, new KnowledgeRuntimeFileLoggerWrapper(logger));
     }
 
     public KnowledgeRuntimeLogger newThreadedFileLogger(KieRuntimeEventManager session,
@@ -45,12 +46,19 @@ public class KnowledgeRuntimeLoggerProviderImpl
             logger.setFileName( fileName );
         }
         logger.start( interval );
-        return new KnowledgeRuntimeThreadedFileLoggerWrapper( logger );
+        return registerRuntimeLogger(session, new KnowledgeRuntimeFileLoggerWrapper(logger));
     }
 
     public KnowledgeRuntimeLogger newConsoleLogger(KieRuntimeEventManager session) {
         WorkingMemoryConsoleLogger logger = new WorkingMemoryConsoleLogger( (KnowledgeRuntimeEventManager) session );
-        return new KnowledgeRuntimeConsoleLoggerWrapper( logger );
+        return registerRuntimeLogger(session, new KnowledgeRuntimeConsoleLoggerWrapper(logger));
+    }
+
+    private KnowledgeRuntimeLogger registerRuntimeLogger(KieRuntimeEventManager session, KnowledgeRuntimeLogger logger) {
+        if (session instanceof AbstractRuntime) {
+            ((AbstractRuntime) session).setLogger(logger);
+        }
+        return logger;
     }
 
     private class KnowledgeRuntimeFileLoggerWrapper

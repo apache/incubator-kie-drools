@@ -48,7 +48,18 @@ import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
@@ -60,7 +71,7 @@ import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
-public class StatelessKnowledgeSessionImpl
+public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         implements
         StatelessKnowledgeSession,
         StatelessKieSession {
@@ -71,14 +82,14 @@ public class StatelessKnowledgeSessionImpl
     private Map<String, Channel> channels       = new HashMap<String, Channel>();
 
     /** The event mapping */
-    public Map<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper> mappedWorkingMemoryListeners;
-    public Map<AgendaEventListener, AgendaEventListenerWrapper>               mappedAgendaListeners;
-    public Set<ProcessEventListener>                                          cachedProcessEventListener;
+    public Map<WorkingMemoryEventListener, org.drools.core.event.WorkingMemoryEventListener> mappedWorkingMemoryListeners;
+    public Map<AgendaEventListener, org.drools.core.event.AgendaEventListener>               mappedAgendaListeners;
+    public Set<ProcessEventListener>                                                         cachedProcessEventListener;
 
     /** The event support */
-    public AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
-    public WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
-    public ProcessEventSupport       processEventSupport       = new ProcessEventSupport();
+    private AgendaEventSupport        agendaEventSupport        = new AgendaEventSupport();
+    private WorkingMemoryEventSupport workingMemoryEventSupport = new WorkingMemoryEventSupport();
+    private ProcessEventSupport       processEventSupport       = new ProcessEventSupport();
     private boolean initialized;
 
     private KieSessionConfiguration conf;
@@ -138,13 +149,14 @@ public class StatelessKnowledgeSessionImpl
                 registerCustomListeners();
                 initialized = true;
             }
+
             wm.setAgendaEventSupport( this.agendaEventSupport );
             wm.setWorkingMemoryEventSupport( this.workingMemoryEventSupport );
             InternalProcessRuntime processRuntime = wm.getProcessRuntime();
             if ( processRuntime != null ) {
                 processRuntime.setProcessEventSupport( this.processEventSupport );
             }
-            
+
             for( Map.Entry<String, Channel> entry : this.channels.entrySet() ) {
                 wm.registerChannel( entry.getKey(), entry.getValue() );
             }
@@ -183,12 +195,12 @@ public class StatelessKnowledgeSessionImpl
 
     private void registerCustomListeners() {
         if ( mappedAgendaListeners != null ) {
-            for (AgendaEventListenerWrapper agendaListener : mappedAgendaListeners.values()) {
+            for (org.drools.core.event.AgendaEventListener agendaListener : mappedAgendaListeners.values()) {
                 this.agendaEventSupport.addEventListener( agendaListener );
             }
         }
         if ( mappedWorkingMemoryListeners != null ) {
-            for (WorkingMemoryEventListenerWrapper wmListener : mappedWorkingMemoryListeners.values()) {
+            for (org.drools.core.event.WorkingMemoryEventListener wmListener : mappedWorkingMemoryListeners.values()) {
                 this.workingMemoryEventSupport.addEventListener( wmListener );
             }
         }
@@ -200,17 +212,23 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public void addEventListener(AgendaEventListener listener) {
-        if ( this.mappedAgendaListeners == null ) {
-            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
-        }
+        registerAgendaEventListener( listener, new AgendaEventListenerWrapper( listener ) );
+    }
 
-        AgendaEventListenerWrapper wrapper = new AgendaEventListenerWrapper( listener );
+    public void addAgendaEventListener(org.drools.core.event.AgendaEventListener listener) {
+        registerAgendaEventListener( new AgendaEventListenerPlaceholder(), listener );
+    }
+
+    private void registerAgendaEventListener(AgendaEventListener listener, org.drools.core.event.AgendaEventListener wrapper) {
+        if ( this.mappedAgendaListeners == null ) {
+            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, org.drools.core.event.AgendaEventListener>();
+        }
         this.mappedAgendaListeners.put(listener, wrapper);
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
         if ( this.mappedAgendaListeners == null ) {
-            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, AgendaEventListenerWrapper>();
+            this.mappedAgendaListeners = new IdentityHashMap<AgendaEventListener, org.drools.core.event.AgendaEventListener>();
         }
 
         return Collections.unmodifiableCollection( this.mappedAgendaListeners.keySet() );
@@ -218,30 +236,36 @@ public class StatelessKnowledgeSessionImpl
 
     public void removeEventListener(AgendaEventListener listener) {
         if ( this.mappedAgendaListeners != null ) {
-            AgendaEventListenerWrapper wrapper = this.mappedAgendaListeners.remove( listener );
+            org.drools.core.event.AgendaEventListener wrapper = this.mappedAgendaListeners.remove( listener );
             this.agendaEventSupport.removeEventListener( wrapper );
         }
     }
 
-    public void addEventListener(WorkingMemoryEventListener listener) {
-        if ( this.mappedWorkingMemoryListeners == null ) {
-            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
-        }
+    public void addWorkingMemoryEventListener(org.drools.core.event.WorkingMemoryEventListener listener) {
+        registerWorkingMemoryEventListener( new WorkingMemoryEventListenerPlaceholder(), listener );
+    }
 
-        WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
+    public void addEventListener(WorkingMemoryEventListener listener) {
+        registerWorkingMemoryEventListener(listener, new WorkingMemoryEventListenerWrapper( listener ));
+    }
+
+    private void registerWorkingMemoryEventListener(WorkingMemoryEventListener listener, org.drools.core.event.WorkingMemoryEventListener wrapper) {
+        if ( this.mappedWorkingMemoryListeners == null ) {
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, org.drools.core.event.WorkingMemoryEventListener>();
+        }
         this.mappedWorkingMemoryListeners.put( listener, wrapper );
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
         if ( this.mappedWorkingMemoryListeners != null ) {
-            WorkingMemoryEventListenerWrapper wrapper = this.mappedWorkingMemoryListeners.remove( listener );
+            org.drools.core.event.WorkingMemoryEventListener wrapper = this.mappedWorkingMemoryListeners.remove( listener );
             this.workingMemoryEventSupport.removeEventListener( wrapper );
         }
     }
 
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
         if ( this.mappedWorkingMemoryListeners == null ) {
-            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, WorkingMemoryEventListenerWrapper>();
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, org.drools.core.event.WorkingMemoryEventListener>();
         }
 
         return Collections.unmodifiableCollection( this.mappedWorkingMemoryListeners.keySet() );
@@ -255,7 +279,7 @@ public class StatelessKnowledgeSessionImpl
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        return this.processEventSupport.getEventListeners();
+        return Collections.unmodifiableCollection( this.cachedProcessEventListener );
     }
 
     public void removeEventListener(ProcessEventListener listener) {
@@ -381,5 +405,50 @@ public class StatelessKnowledgeSessionImpl
         initialized = false;
         ksession.dispose();
         ksession = null;
+    }
+
+    private static class AgendaEventListenerPlaceholder implements AgendaEventListener {
+
+        @Override
+        public void matchCreated(MatchCreatedEvent event) { }
+
+        @Override
+        public void matchCancelled(MatchCancelledEvent event) { }
+
+        @Override
+        public void beforeMatchFired(BeforeMatchFiredEvent event) { }
+
+        @Override
+        public void afterMatchFired(AfterMatchFiredEvent event) { }
+
+        @Override
+        public void agendaGroupPopped(AgendaGroupPoppedEvent event) { }
+
+        @Override
+        public void agendaGroupPushed(AgendaGroupPushedEvent event) { }
+
+        @Override
+        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { }
+
+        @Override
+        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { }
+
+        @Override
+        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
+
+        @Override
+        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
+    }
+
+    private static class WorkingMemoryEventListenerPlaceholder implements WorkingMemoryEventListener {
+
+        @Override
+        public void objectInserted(ObjectInsertedEvent event) { }
+
+        @Override
+        public void objectUpdated(ObjectUpdatedEvent event) { }
+
+        @Override
+        public void objectDeleted(ObjectDeletedEvent event) { }
     }
 }

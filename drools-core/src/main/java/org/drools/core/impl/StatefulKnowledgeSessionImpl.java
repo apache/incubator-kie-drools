@@ -101,7 +101,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
-public class StatefulKnowledgeSessionImpl
+public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         implements
         StatefulKnowledgeSession,
         InternalWorkingMemoryEntryPoint,
@@ -264,6 +264,11 @@ public class StatefulKnowledgeSessionImpl
     }
 
     public void dispose() {
+        if (logger != null) {
+            try {
+                logger.close();
+            } catch (Exception e) { /* the logger was already closed, swallow */ }
+        }
         this.session.dispose();
         this.session = DisposedReteooWorkingMemory.INSTANCE;
     }
