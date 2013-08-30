@@ -100,6 +100,7 @@ public interface KieSession
      * Releases all the current session resources, setting up the session for garbage collection.
      * This method <b>must</b> always be called after finishing using the session, or the engine
      * will not free the memory used by the session.
+     * If a logger has been registered on this session it will be automatically closed.
      */
     void dispose();
     

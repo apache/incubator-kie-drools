@@ -85,6 +85,31 @@ public interface KieSessionModel {
     String getScope();
 
     /**
+     * Returns the name of the ConsoleLogger if any
+     */
+    String getConsoleLogger();
+
+    /**
+     * Sets a ConsoleLogger with the given name
+     */
+    KieSessionModel setConsoleLogger(String consoleLogger);
+
+    /**
+     * Returns the FileLoggerModel registered on this KieSessionModel if any
+     */
+    FileLoggerModel getFileLogger();
+
+    /**
+     * Sets a non-threaded FileLogger with the given name and 30 seconds of logging interval
+     */
+    KieSessionModel setFileLogger(String fileName);
+
+    /**
+     * Sets a FileLogger with the given name, threaded behavior and logging interval
+     */
+    KieSessionModel setFileLogger(String fileName, int interval, boolean threaded);
+
+    /**
      * Returns true if this KieSessionModel is the default one
      */
     boolean isDefault();
