@@ -59,6 +59,7 @@ import org.drools.core.command.runtime.rule.HaltCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.command.runtime.rule.UpdateCommand;
+import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.rule.EntryPointId;
@@ -90,7 +91,7 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 
-public class CommandBasedStatefulKnowledgeSession
+public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
     StatefulKnowledgeSession, CorrelationAwareProcessRuntime {
 
