@@ -1910,8 +1910,8 @@ public class PropertySpecificTest extends CommonTestMethodBase {
                 "import org.drools.integrationtests.PropertySpecificTest.OrderItem\n" +
                 "rule R1 when\n" +
                 "   $o : Order()\n" +
-                "   $i : Number( doubleValue > 5 ) from accumulate( OrderItem( orderId == $o.id, $value : value ),\n" +
-                "                                                   sum( $value ) )\n" +
+                "   $i : Number( doubleValue > 5 ) from accumulate( $x : OrderItem( orderId == $o.id ),\n" +
+                "                                                   sum( $x.getValue() ) )\n" +
                 "then\n" +
                 "   modify( $o ) { setDiscounted( true ) };\n" +
                 "end\n";

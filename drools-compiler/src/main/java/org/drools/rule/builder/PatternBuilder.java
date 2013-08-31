@@ -16,6 +16,7 @@
 
 package org.drools.rule.builder;
 
+import org.drools.base.ClassFieldReader;
 import org.drools.base.ClassObjectType;
 import org.drools.base.EvaluatorWrapper;
 import org.drools.base.ValueType;
@@ -1121,6 +1122,14 @@ public class PatternBuilder
                                                                      true );
         declr.setReadAccessor( extractor );
 
+        if ( extractor instanceof ClassFieldReader ) {
+            List<String> watchlist = pattern.getListenedProperties();
+            if ( watchlist == null ) {
+                watchlist = new ArrayList<String>( 5 );
+                pattern.setListenedProperties( watchlist );
+            }
+            watchlist.add( (( ClassFieldReader) extractor ).getFieldName() );
+        }
     }
 
     @SuppressWarnings("unchecked")
