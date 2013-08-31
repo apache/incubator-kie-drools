@@ -369,7 +369,7 @@ public class DefaultKnowledgeHelper
         if ( h.isTrait() ) {
             if ( ( (TraitFactHandle) h ).isTraitable() ) {
                 // this is a traitable core object, so its traits must be updated as well
-                updateTraits( h.getObject(), mask, null, modifiedClass, null );
+                updateTraits( h.getObject(), mask, null, modifiedClass, null, ((TraitableBean) h.getObject()).getMostSpecificTraits()  );
             } else {
                 Thing x = (Thing) h.getObject();
                 // in case this is a proxy
@@ -383,15 +383,12 @@ public class DefaultKnowledgeHelper
                             modifiedClass,
                             this.activation );
                     BitSet veto = ((TraitProxy) x).getTypeCode();
-                    updateTraits( core, mask, x, modifiedClass, veto );
+                    updateTraits( core, mask, x, modifiedClass, veto, ((TraitableBean) core).getMostSpecificTraits()  );
                 }
             }
         }
     }
 
-    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto ) {
-        updateTraits( object, mask, originator, modifiedClass, veto, ((TraitableBean) object).getMostSpecificTraits() );
-    }
 
     private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Key<Thing>> px ) {
         veto = veto != null ? (BitSet) veto.clone() : null;
@@ -682,7 +679,12 @@ public class DefaultKnowledgeHelper
         }
 
         if ( needsUpdate ) {
-            this.update( getFactHandle( core ), inner );
+            InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
+            if ( ! h.isTrait() ) {
+                throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
+                                                 "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );
+            }
+            this.update( h, inner );
         }
 
         if ( ! inner.hasTrait( Thing.class.getName() ) ) {
@@ -738,7 +740,7 @@ public class DefaultKnowledgeHelper
         if ( trait.isAssignableFrom( core.getClass() ) ) {
             core.removeTrait( trait.getName() );
             update( core, Long.MIN_VALUE, core.getClass() );
-            updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null );
+            updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             return (Thing<K>) core;
         } else {
             Collection<Thing<K>> removedTypes;
@@ -770,7 +772,7 @@ public class DefaultKnowledgeHelper
             }
 
             update( core, Long.MIN_VALUE, core.getClass() );
-            updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null );
+            updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             return thing;
         }
     }

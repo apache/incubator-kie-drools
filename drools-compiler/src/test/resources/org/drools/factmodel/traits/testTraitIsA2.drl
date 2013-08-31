@@ -1,6 +1,11 @@
 package org.test;
 
 import org.drools.Person
+import org.drools.factmodel.traits.Traitable;
+
+declare Person
+@Traitable
+end
 
 declare trait Student
     school : String

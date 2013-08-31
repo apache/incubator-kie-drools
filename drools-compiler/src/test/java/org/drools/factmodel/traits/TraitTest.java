@@ -76,7 +76,7 @@ import static org.hamcrest.CoreMatchers.is;
 public class TraitTest extends CommonTestMethodBase {
 
     private static long t0;
-    
+
     @BeforeClass
     public static void init() {
         t0 = new Date().getTime();
@@ -682,7 +682,7 @@ public class TraitTest extends CommonTestMethodBase {
                                                     "Student" );
             Class trait = studentClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                                   trait );
+                                                               trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -714,7 +714,7 @@ public class TraitTest extends CommonTestMethodBase {
                                                  "Role" );
             Class trait2 = RoleClass.getFactClass();
             TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
-                                                                    trait2 );
+                                                                trait2 );
 
             Map<String, Object> wrapper2 = proxy2.getFields();
             assertTrue( wrapper2.isEmpty() );
@@ -802,7 +802,7 @@ public class TraitTest extends CommonTestMethodBase {
             TraitableBean ind = new Entity();
 
             TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
-                                                                    trait );
+                                                                trait );
 
             Map virtualFields2 = ind._getDynamicProperties();
             Map wrapper2 = proxy2.getFields();
@@ -826,7 +826,7 @@ public class TraitTest extends CommonTestMethodBase {
             TraitableBean ind2 = new Entity();
 
             TraitProxy proxy99 = (TraitProxy) tFactory.getProxy( ind2,
-                                                                     trait2 );
+                                                                 trait2 );
             Map<String, Object> wrapper99 = proxy99.getFields();
 
             assertFalse( wrapper99.containsKey( "name" ) );
@@ -851,7 +851,7 @@ public class TraitTest extends CommonTestMethodBase {
             TraitableBean ind0 = new Entity();
 
             TraitProxy proxy100 = (TraitProxy) tFactory.getProxy( ind0,
-                                                                      trait2 );
+                                                                  trait2 );
             Map<String, Object> wrapper100 = proxy100.getFields();
             assertFalse( wrapper100.containsKey( "name" ) );
             assertFalse( wrapper100.containsKey( "school" ) );
@@ -859,7 +859,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertFalse( wrapper100.containsKey( "surname" ) );
 
             TraitProxy proxy101 = (TraitProxy) tFactory.getProxy( ind0,
-                                                                      trait );
+                                                                  trait );
             // object gains properties by virtue of another trait
             // so new props are accessible even using the old proxy
             assertTrue( wrapper100.containsKey( "name" ) );
@@ -915,7 +915,7 @@ public class TraitTest extends CommonTestMethodBase {
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                                   trait );
+                                                               trait );
 
             impClass.set( imp,
                           "name",
@@ -1028,7 +1028,7 @@ public class TraitTest extends CommonTestMethodBase {
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                                   trait );
+                                                               trait );
 
             proxy.getFields().put( "surname",
                                    "xxx" );
@@ -1425,7 +1425,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession ks = getSession( source );
         TraitFactory.setMode( mode, ks.getKnowledgeBase() );
-        
+
         List info = new ArrayList();
         ks.setGlobal( "list",
                       info );
@@ -1460,7 +1460,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession ks = getSession( "org/drools/factmodel/traits/testDeclaredFactTrait.drl" );
         TraitFactory.setMode( mode, ks.getKnowledgeBase() );
-        
+
         ks.setGlobal( "trueTraits",
                            trueTraits );
         ks.setGlobal( "untrueTraits",
@@ -1498,7 +1498,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSession session = getSession( "org/drools/factmodel/traits/testPojoFactTrait.drl" );
         TraitFactory.setMode( mode, session.getKnowledgeBase() );
-        
+
         session.setGlobal( "trueTraits",
                            trueTraits );
         session.setGlobal( "untrueTraits",
@@ -1533,8 +1533,8 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "org/drools/factmodel/traits/testTraitIsA2.drl";
         StatefulKnowledgeSession ksession = getSession( source );
         TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
-        
-        
+
+
         AgendaEventListener ael = mock( AgendaEventListener.class );
         ksession.addEventListener( ael );
 
@@ -1616,7 +1616,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "    end";
         StatefulKnowledgeSession ksession = getSessionFromString( source );
         TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
-        
+
 
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2024,6 +2024,10 @@ public class TraitTest extends CommonTestMethodBase {
 
         String s1 = "package org.drools.test;\n" +
                 "import org.drools.Person; \n" +
+                "import org.drools.factmodel.traits.Traitable; \n" +
+                "" +
+                "declare Person @Traitable end \n" +
+                "" +
                 "rule \"Init\"\n" +
                 "when\n" +
                 "then\n" +
@@ -2062,142 +2066,6 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue( conf.isTMSEnabled() );
 
         ksession.dispose();
-    }
-
-
-
-    public void traitWard( TraitFactory.VirtualPropertyMode mode ) {
-
-        String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
-                "import org.drools.factmodel.traits.Thing; \n" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "then\n" +
-                "  insertLogical( new Person( \"x\", 18 ) );\n" +
-                "end\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "  age  : int\n" +
-                "  name : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Trait\"\n" +
-                "when\n" +
-                "    $p : Person( )\n" +
-                "then\n" +
-                "    Thing t = ward( $p, Student.class );\n" +
-                "    Student s = (Student) don( t, Student.class );\n" +
-                "end\n";
-
-
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.fireAllRules();
-
-        for ( Object o : ksession.getObjects( new ClassObjectFilter( Thing.class ) ) ) {
-            Thing t = (Thing) o;
-            Object core = t.getCore();
-            assertTrue( core instanceof Person );
-            assertTrue( core instanceof TraitableBean );
-            assertEquals( 1, ( (TraitableBean) core)._getTraitMap().size() );
-            assertTrue( ( (TraitableBean) core ).hasTrait( Thing.class.getName() ) );
-        }
-
-    }
-
-    @Test
-    @Ignore( "Model negative traits using TMS" )
-    @Deprecated
-    public void testTraitWardTriple() {
-        traitWard( TraitFactory.VirtualPropertyMode.TRIPLES );
-    }
-
-    @Test
-    @Ignore( "Model negative traits using TMS" )
-    @Deprecated
-    public void testTraitWardMap() {
-        traitWard( TraitFactory.VirtualPropertyMode.MAP );
-    }
-
-
-
-    public void traitGrant( TraitFactory.VirtualPropertyMode mode ) {
-
-        String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
-                "import org.drools.factmodel.traits.Thing; \n" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "then\n" +
-                "  insertLogical( new Person( \"x\", 18 ) );\n" +
-                "end\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "  age  : int\n" +
-                "  name : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Trait\"\n" +
-                "no-loop\n" +
-                "when\n" +
-                "    $p : Person( )\n" +
-                "then\n" +
-                "    Thing t = ward( $p, Student.class );\n" +
-                "    Student s = (Student) don( t, Student.class );\n" +
-                "       grant( t, Student.class ); \n" +
-                "   System.out.println( \"HERE WE GO \"); \n" +
-                "    s = (Student) don( t, Student.class );\n" +
-                "end\n";
-
-
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.fireAllRules();
-
-        for ( Object o : ksession.getObjects( new ClassObjectFilter( Thing.class ) ) ) {
-            Thing t = (Thing) o;
-            Object core = t.getCore();
-            assertTrue( core instanceof Person );
-            assertTrue( core instanceof TraitableBean );
-            assertEquals( 2, ( (TraitableBean) core)._getTraitMap().size() );
-            assertTrue( ( (TraitableBean) core ).hasTrait( Thing.class.getName() ) );
-        }
-
-    }
-
-    @Test
-    @Ignore( "Model negative traits using TMS" )
-    @Deprecated
-    public void testTraitGrantTriple() {
-        traitGrant( TraitFactory.VirtualPropertyMode.TRIPLES );
-    }
-
-    @Test
-    @Ignore( "Model negative traits using TMS" )
-    @Deprecated
-    public void testTraitGrantMap() {
-        traitGrant( TraitFactory.VirtualPropertyMode.MAP );
     }
 
 
@@ -2292,7 +2160,7 @@ public class TraitTest extends CommonTestMethodBase {
             assertNotNull( coreTraits );
             assertNotNull( coreProperties );
 
-            assertEquals(proxyFields.getClass().getName(), "org.test.StudentorgtestImpProxyWrapper");
+            assertEquals(proxyFields.getClass().getName(), "org.test.Student.org.test.Imp_ProxyWrapper");
 
             assertTrue(proxyFields instanceof TripleBasedStruct);
             assertTrue( coreTraits instanceof TraitTypeMap);
@@ -2308,92 +2176,23 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public void traitWardOnHierarchy( TraitFactory.VirtualPropertyMode mode ) {
-
-        String s1 = "package org.drools.test;\n" +
-                "import org.drools.Person; \n" +
-                "import org.drools.factmodel.traits.Thing; \n" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "then\n" +
-                "  insertLogical( new Person( \"x\", 18 ) );\n" +
-                "end\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "  age  : int\n" +
-                "  name : String\n" +
-                "end\n" +
-                "declare trait UniversityStudent extends Student\n" +
-                "  uni  : String\n" +
-                "end\n" +
-                "declare trait PhDStudent extends UniversityStudent\n" +
-                "  year : int\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Trait\"\n" +
-                "no-loop\n" +
-                "when\n" +
-                "    $p : Person( )\n" +
-                "then\n" +
-                "    Thing t = ward( $p, UniversityStudent.class );\n" +
-                "    grant( t, PhDStudent.class );\n" +
-                "    Student s = (Student) don( t, Student.class );\n" +
-                "    UniversityStudent u = (UniversityStudent) don( t, UniversityStudent.class );\n" +
-                "    PhDStudent p = (PhDStudent) don( t, PhDStudent.class );\n" +
-                "end\n";
-
-
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        TraitFactory.setMode( mode, kbase );
-
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.fireAllRules();
-
-        for ( Object o : ksession.getObjects( new ClassObjectFilter( Thing.class ) ) ) {
-            Thing t = (Thing) o;
-            Object core = t.getCore();
-            assertTrue( core instanceof Person );
-            assertTrue( core instanceof TraitableBean );
-            assertEquals( 3, ( (TraitableBean) core)._getTraitMap().size() );
-            assertTrue( ( (TraitableBean) core ).hasTrait( Thing.class.getName() ) );
-        }
-
+    public static class TBean {
+        private String fld;
+        public String getFld() { return fld; }
+        public void setFld( String fld ) { this.fld = fld; }
+        public TBean( String fld ) { this.fld = fld; }
     }
-
-    @Test
-    @Ignore( "Model negative traits using TMS" )
-    @Deprecated
-    public void testTraitWardOnHierarchyTriple() {
-        traitWardOnHierarchy( TraitFactory.VirtualPropertyMode.TRIPLES );
-    }
-
-    @Test
-    @Ignore( "Model negative traits using TMS" )
-    @Deprecated
-    public void testTraitWardOnHierarchyMap() {
-        traitWardOnHierarchy( TraitFactory.VirtualPropertyMode.MAP );
-    }
-
-
-
-
 
 
 
     public void traitsLegacyWrapperCoherence( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "import org.drools.factmodel.traits.TraitTest.TBean;\n" +
                 "" +                "" +
                 "declare TBean \n" +
-                "  fld : String \n" +
+                "@Traitable \n" +
                 "end \n " +
                 "" +
                 "declare trait Mask \n" +
@@ -2453,13 +2252,9 @@ public class TraitTest extends CommonTestMethodBase {
         }
         assertNotNull( coreOld );
 
+        assertSame( TBean.class, coreOld.getClass().getSuperclass() );
 
-        FactType tBeanType = kbase.getFactType( "org.drools.trait.test", "TBean" );
-        assertNotNull( tBeanType );
-
-        assertSame( tBeanType.getFactClass(), coreOld.getClass().getSuperclass() );
-
-        assertEquals( "abc", tBeanType.get( coreOld, "fld" ) );
+        assertEquals( "abc", ((TBean) coreOld).getFld() );
         assertEquals( 1, coreOld._getDynamicProperties().size() );
         assertEquals( 2, coreOld._getTraitMap().size() );
     }
@@ -2564,10 +2359,13 @@ public class TraitTest extends CommonTestMethodBase {
 
         String s1 = "package org.drools.factmodel.traits;\n" +
                 "\n" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
+                "" +
                 "declare trait PassMark\n" +
                 "end\n" +
                 "\n" +
                 "declare ExamMark \n" +
+                "@Traitable\n" +
                 "value : long \n" +
                 "end\n" +
                 "" +
@@ -2710,9 +2508,14 @@ public class TraitTest extends CommonTestMethodBase {
                 "  $p : Person( name == \"john\" ) \n" +
                 "then \n" +
                 "  System.out.println( $p ); \n" +
+                "" +
+                "  System.out.println( \" ----------------------------------------------------------------------------------- Don student\" ); \n" +
                 "  don( $p, Student.class ); \n" +
+                "  System.out.println( \" ----------------------------------------------------------------------------------- Don worker\" ); \n" +
                 "  don( $p, Worker.class ); \n" +
+                "  System.out.println( \" ----------------------------------------------------------------------------------- Don studentworker\" ); \n" +
                 "  don( $p, StudentWorker.class ); \n" +
+                "  System.out.println( \" ----------------------------------------------------------------------------------- Don assistant\" ); \n" +
                 "  don( $p, Assistant.class ); \n" +
                 "end \n" +
                 "" +
@@ -2780,6 +2583,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "declare trait Student @propertyReactive name : String end\n" +
                 "declare trait Worker @propertyReactive name : String end\n" +
                 "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end\n" +
+                "declare trait StudentWorker2 extends StudentWorker @propertyReactive name : String end\n" +
                 "declare trait Assistant extends Student, Worker @propertyReactive name : String end\n" +
                 "declare Person @Traitable @propertyReactive name : String end\n" +
                 "" +
@@ -2794,9 +2598,11 @@ public class TraitTest extends CommonTestMethodBase {
                 "when \n" +
                 "  $p : Person( name == \"john\" ) \n" +
                 "then \n" +
-                "  System.out.println( \">>> \" + $p ); \n" +
+                "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  ); \n" +
                 "  don( $p, Worker.class ); \n" +
-                "  don( $p, StudentWorker.class ); \n" +
+                "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER \" + $p ); \n" +
+                "  don( $p, StudentWorker2.class ); \n" +
+                "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON ASSISTANT \" + $p ); \n" +
                 "  don( $p, Assistant.class ); \n" +
                 "end \n" +
                 "" +
@@ -2804,25 +2610,25 @@ public class TraitTest extends CommonTestMethodBase {
                 "when \n" +
                 "  $t : Student() @watch( name ) \n" +
                 "then \n" +
-                "  System.out.println( \"Student >> \" +  $t ); \n" +
+                "  System.out.println( \"@@Student >> \" +  $t ); \n" +
                 "end \n" +
                 "rule \"Log W\" \n" +
                 "when \n" +
                 "  $t : Worker() @watch( name ) \n" +
                 "then \n" +
-                "  System.out.println( \"Worker >> \" + $t ); \n" +
+                "  System.out.println( \"@@Worker >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log SW\" \n" +
                 "when \n" +
                 "  $t : StudentWorker() @watch( name ) \n" +
                 "then \n" +
-                "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
+                "  System.out.println( \"@@StudentWorker >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log RA\" \n" +
                 "when \n" +
                 "  $t : Assistant() @watch( name ) \n" +
                 "then \n" +
-                "  System.out.println( \"Assistant >> \" + $t ); \n" +
+                "  System.out.println( \"@@Assistant >> \" + $t ); \n" +
                 "end \n" +
                 "rule \"Log Px\" \n" +
                 "salience -1 \n" +
@@ -2865,6 +2671,64 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testTraitModifyCore2a() {
+        String s1 = "package test;\n" +
+                    "import org.drools.factmodel.traits.*;\n" +
+                    "global java.util.List list; \n" +
+                    "" +
+                    "declare trait Student @propertyReactive name : String end\n" +
+                    "declare trait Worker @propertyReactive name : String end\n" +
+                    "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end\n" +
+                    "declare trait Assistant extends Student, Worker @propertyReactive name : String end\n" +
+                    "declare Person @Traitable @propertyReactive name : String end\n" +
+                    "" +
+                    "rule \"Init\" \n" +
+                    "when \n" +
+                    "then \n" +
+                    "  Person p = new Person( \"john\" ); \n" +
+                    "  insert( p ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Don\" \n" +
+                    "when \n" +
+                    "  $p : Person( name == \"john\" ) \n" +
+                    "then \n" +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  ); \n" +
+                    "  don( $p, Worker.class ); \n" +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER \" + $p ); \n" +
+                    "  don( $p, StudentWorker.class ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Log W\" \n" +
+                    "when \n" +
+                    "  $t : Worker( this isA StudentWorker ) @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"@@Worker >> \" + $t ); \n" +
+                    "  list.add( true ); \n" +
+                    "end \n" +
+                    "rule \"Log SW\" \n" +
+                    "when \n" +
+                    "  $t : StudentWorker() @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"@@StudentWorker >> \" + $t ); \n" +
+                    "end \n" +
+                    "";
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, kbase ); // not relevant
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+        int k = ksession.fireAllRules();
+        assertTrue( list.contains( true ) );
+        assertEquals( 1, list.size() );
+    }
 
 
 
@@ -2915,7 +2779,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "    don( $x, L.class );\n" +
                 "    don( $x, M.class );\n" +
                 "    don( $x, N.class );\n" +
-                "end\n" +                
+                "end\n" +
                 "\n" +
                 "\n" +
                 "\n" +
@@ -3242,10 +3106,13 @@ public class TraitTest extends CommonTestMethodBase {
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
                 "import java.util.*\n;" +
+                "import org.drools.factmodel.traits.Traitable;\n" +
                 "" +
                 "declare org.drools.factmodel.MapCore end \n" +
                 "" +
                 "global List list; \n" +
+                "" +
+                "declare HashMap @Traitable end \n" +
                 "" +
                 "declare trait PersonMap" +
                 "@propertyReactive \n" +
@@ -3704,16 +3571,27 @@ public class TraitTest extends CommonTestMethodBase {
                         "rule Init when\n" +
                         "then\n" +
                         "   Kore k = new Kore();\n" +
+                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, B.class ); \n" +
+
+                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, C.class ); \n" +
+
+                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, D.class ); \n" +
+
+                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, E.class ); \n" +
+
+                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, A.class ); \n" +
+
+                        "   System.out.println( \"-----------------------------------------------------------------------\" ); \n " +
                         "   don( k, F.class ); \n" +
                         "end\n" +
                         "" +
                         "rule Check_1 when\n" +
-                        "   $x : A(  ) \n" +
+                        "   $x : A( ) \n" +
                         "then \n" +
                         "   list.add( $x ); \n" +
                         "   System.out.println( \" A by \" + $x ); \n" +
@@ -3954,7 +3832,11 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "package org.drools.factmodel.traits.test;\n" +
                         "\n" +
                         "import java.util.*;\n" +
+                        "import org.drools.factmodel.traits.Traitable;\n" +
+                        "" +
                         "global List list;\n " +
+                        "" +
+                        "declare HashMap @Traitable end \n" +
                         "\n" +
                         "declare org.drools.factmodel.MapCore \n" +
                         "end\n" +
@@ -4409,6 +4291,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+    @Traitable
     public static class TraitableFoo {
 
         private String id;
@@ -4426,6 +4309,7 @@ public class TraitTest extends CommonTestMethodBase {
         }
     }
 
+    @Traitable
     public static class XYZ extends TraitableFoo {
 
         public XYZ() {
@@ -4477,8 +4361,12 @@ public class TraitTest extends CommonTestMethodBase {
         String source = "package org.drools.test;\n" +
                         "\n" +
                         "import java.util.*;\n" +
+                        "import org.drools.factmodel.traits.Traitable;\n" +
+                        "" +
                         "global List list;\n " +
                         "\n" +
+                        "declare HashMap @Traitable end \n" +
+                        "" +
                         "declare org.drools.factmodel.MapCore \n" +
                         "end\n" +
                         "\n" +
@@ -4598,6 +4486,142 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testUpdateLegacyClass(  ) {
+        String source = "package org.drools.text;\n" +
+                        "\n" +
+                        "global java.util.List list;\n" +
+                        "\n" +
+                        "import org.drools.Person;\n" +
+                        "import org.drools.factmodel.traits.Traitable;\n" +
+                        "\n" +
+                        "declare Person @Traitable end \n" +
+                        "" +
+                        "declare trait Student\n" +
+                        "  name : String\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Init\"\n" +
+                        "salience 10 \n" +
+                        "when\n" +
+                        "  $p : Person( this not isA Student )\n" +
+                        "then\n" +
+                        "  System.out.println( \"Don person\" ); \n" +
+                        "  don( $p, Student.class );\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Go\"\n" +
+                        "when\n" +
+                        "  $s : String( this == \"X\" )\n" +
+                        "  $p : Person()\n" +
+                        "then\n" +
+                        "  System.out.println( \"Change name\" ); \n" +
+                        "  retract( $s ); \n" +
+                        "  modify( $p ) { setName( $s ); }\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Mod\"\n" +
+                        "when\n" +
+                        "  Student( name == \"X\" )\n" +
+                        "then\n" +
+                        "  System.out.println( \"Update detected\" );\n" +
+                        "  list.add( 0 );\n" +
+                        "end";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.insert( new Person( "john", 32 ) );
+        ks.insert( "X" );
+
+        ks.fireAllRules();
+
+        assertTrue( list.contains( 0 ) );
+        assertEquals( 1, list.size() );
+
+        ks.dispose();
+    }
+
+
+
+    @Test
+    @Ignore
+    public void testPropertyClash(  ) {
+        String source = "package org.drools.text;\n" +
+                        "\n" +
+                        "global java.util.List list;\n" +
+                        "\n" +
+                        "import org.drools.factmodel.traits.Traitable;\n" +
+                        "\n" +
+                        "declare Person @Traitable @propertyReactive \n" +
+                        "end \n" +
+                        "" +
+                        "declare Person1 extends Person @Traitable \n" +
+                        "   id : String \n" +
+                        "end \n" +
+                        "" +
+                        "declare Person2 extends Person @Traitable \n" +
+                        "   id : int \n" +
+                        "end \n" +
+                        "" +
+                        "declare trait Student\n" +
+                        "   @propertyReactive \n" +
+                        "   id : String = \"a\" \n" +
+                        "end\n" +
+                        "declare trait Worker\n" +
+                        "   @propertyReactive \n" +
+                        "   id : int = 3 \n" +
+                        "end\n" +
+                        "" +
+                        "rule \"Init\" when then \n" +
+                        "   insert( new Person() ); \n" +
+                        "   insert( new Person1() ); \n" +
+                        "   insert( new Person2() ); \n" +
+                        "end \n" +
+                        "" +
+                        "\n" +
+                        "rule \"Don\"\n" +
+                        "when\n" +
+                        "   $p : Person() \n" +
+                        "then\n" +
+                        "  System.out.println( \"Don person\" ); \n"
+                        +
+                        "  Student $s = (Student) don( $p, Student.class );\n" +
+                        "  modify ( $s ) { setId( \"xyz\" ); } " +
+                        "  " +
+                        "  Worker $w = don( $p, Worker.class );\n" +
+                        "  modify ( $w ) { setId( 99 ); } " +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Stud\"\n" +
+                        "when\n" +
+                        "  $s : Student( id == \"xyz\" )\n" +
+                        "then\n" +
+                        "  System.out.println( \">>>>>>>>>> Student\" + $s ); \n" +
+                        "end\n" +
+                        "\n" +
+                        "rule \"Mod\"\n" +
+                        "when\n" +
+                        "  $w : Worker( id == 99 )\n" +
+                        "then\n" +
+                        "  System.out.println( \">>>>>>>>>> Worker\" + $w );\n" +
+                        "end";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        HashMap map;
+        ks.fireAllRules();
+
+        ks.dispose();
+    }
+
 
     @Test
     public void testMultipleModifications() {
@@ -4711,65 +4735,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         ks.dispose();
 
-    }
-
-    @Test
-    public void testUpdateLegacyClass(  ) {
-        String source = "package org.drools.text;\n" +
-                        "\n" +
-                        "global java.util.List list;\n" +
-                        "\n" +
-                        "import org.drools.Person;\n" +
-                        "import org.drools.factmodel.traits.Traitable;\n" +
-                        "\n" +
-                        "declare Person @Traitable end \n" +
-                        "" +
-                        "declare trait Student\n" +
-                        "  name : String\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule \"Init\"\n" +
-                        "salience 10 \n" +
-                        "when\n" +
-                        "  $p : Person( this not isA Student )\n" +
-                        "then\n" +
-                        "  System.out.println( \"Don person\" ); \n" +
-                        "  don( $p, Student.class );\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule \"Go\"\n" +
-                        "when\n" +
-                        "  $s : String( this == \"X\" )\n" +
-                        "  $p : Person()\n" +
-                        "then\n" +
-                        "  System.out.println( \"Change name\" ); \n" +
-                        "  retract( $s ); \n" +
-                        "  modify( $p ) { setName( $s ); }\n" +
-                        "end\n" +
-                        "\n" +
-                        "rule \"Mod\"\n" +
-                        "when\n" +
-                        "  Student( name == \"X\" )\n" +
-                        "then\n" +
-                        "  System.out.println( \"Update detected\" );\n" +
-                        "  list.add( 0 );\n" +
-                        "end";
-
-        StatefulKnowledgeSession ks = getSessionFromString( source );
-        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
-
-        List list = new ArrayList();
-        ks.setGlobal( "list", list );
-
-        ks.insert( new Person( "john", 32 ) );
-        ks.insert( "X" );
-
-        ks.fireAllRules();
-
-        assertTrue( list.contains( 0 ) );
-        assertEquals( 1, list.size() );
-
-        ks.dispose();
     }
 
 

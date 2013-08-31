@@ -34,6 +34,7 @@ import org.drools.base.ShadowProxy;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.Traitable;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
@@ -234,7 +235,9 @@ public class ClassObjectTypeConf
             typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
             || typeDecl.getTypeClassDef().isTraitable()
         ) || Thing.class.isAssignableFrom( cls )
-          || TraitableBean.class.isAssignableFrom( cls );
+          || TraitableBean.class.isAssignableFrom( cls )
+          || ( this.getTypeDeclaration() != null
+               && this.getTypeDeclaration().getTypeClass().getAnnotation( Traitable.class ) != null );
     }
 
     public TypeDeclaration getTypeDeclaration() {

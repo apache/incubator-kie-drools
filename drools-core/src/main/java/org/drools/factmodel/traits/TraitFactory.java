@@ -29,6 +29,7 @@ import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassBuilderFactory;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
+import org.drools.factmodel.MapCore;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.rule.JavaDialectRuntimeData;
@@ -47,7 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implements Opcodes, Externalizable {
-    
+
 //    private static TripleStore store = new TripleStore( 500, 0.6f );
 
     public enum VirtualPropertyMode { MAP, TRIPLES }
@@ -183,15 +184,20 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
     public static String getProxyName( ClassDefinition trait, ClassDefinition core ) {
-        return getKey( core.getDefinedClass(), trait.getDefinedClass() ) + "Proxy";
+        return getKey( core.getDefinedClass(), trait.getDefinedClass() ) + "_Proxy";
     }
 
     public static String getPropertyWrapperName( ClassDefinition trait, ClassDefinition core ) {
-        return getKey( core.getDefinedClass(), trait.getDefinedClass() ) + "ProxyWrapper";
+        return getKey( core.getDefinedClass(), trait.getDefinedClass() ) + "_ProxyWrapper";
     }
 
     private static String getKey( Class core, Class trait  ) {
-        return ( trait.getName() + core.getName().replace(".","") );
+        return ( trait.getName() + "." + core.getName() );
+    }
+
+
+    public static String getSoftFieldKey( String fieldName, Class fieldType, Class trait, Class core ) {
+            return fieldName;
     }
 
 
