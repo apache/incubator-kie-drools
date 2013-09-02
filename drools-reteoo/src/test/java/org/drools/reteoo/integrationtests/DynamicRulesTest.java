@@ -37,6 +37,7 @@ import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.DroolsStreamUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -782,7 +783,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
                       kbase.getKnowledgePackages().size() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore
     public void testRemovePackageSubNetwork() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase( "test_DynamicRulesWithSubnetwork.drl" );
         String packageName = kbase.getKnowledgePackages().iterator().next().getName();
@@ -1187,7 +1188,7 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=10000) @Ignore
     public void testJBRULES_2206() {
         KieBaseConfiguration config = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
