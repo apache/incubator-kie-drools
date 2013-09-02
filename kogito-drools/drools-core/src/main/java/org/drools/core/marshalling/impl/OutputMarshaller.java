@@ -126,6 +126,57 @@ public class OutputMarshaller {
 
         }
 
-    }         
+    }
 
+    public static void writeTrigger(Trigger trigger, MarshallerWriteContext outCtx) throws IOException {
+        if ( trigger instanceof CronTrigger ) {
+            outCtx.writeShort( PersisterEnums.CRON_TRIGGER );
+
+            CronTrigger cronTrigger = ( CronTrigger ) trigger;
+            outCtx.writeLong( cronTrigger.getStartTime().getTime() );
+            if ( cronTrigger.getEndTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( cronTrigger.getEndTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }
+            outCtx.writeInt( cronTrigger.getRepeatLimit() );
+            outCtx.writeInt( cronTrigger.getRepeatCount() );
+            outCtx.writeUTF( cronTrigger.getCronEx().getCronExpression() );
+            if ( cronTrigger.getNextFireTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( cronTrigger.getNextFireTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }
+            outCtx.writeObject( cronTrigger.getCalendarNames() );
+        } else if ( trigger instanceof IntervalTrigger ) {
+            outCtx.writeShort( PersisterEnums.INT_TRIGGER );
+
+            IntervalTrigger intTrigger = ( IntervalTrigger ) trigger;
+            outCtx.writeLong( intTrigger.getStartTime().getTime() );
+            if ( intTrigger.getEndTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( intTrigger.getEndTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }
+            outCtx.writeInt( intTrigger.getRepeatLimit() );
+            outCtx.writeInt( intTrigger.getRepeatCount() );
+            if ( intTrigger.getNextFireTime() != null ) {
+                outCtx.writeBoolean( true );
+                outCtx.writeLong( intTrigger.getNextFireTime().getTime() );
+            } else {
+                outCtx.writeBoolean( false );
+            }
+            outCtx.writeLong( intTrigger.getPeriod() );
+            outCtx.writeObject( intTrigger.getCalendarNames() );
+        } else if ( trigger instanceof PointInTimeTrigger ) {
+            outCtx.writeShort( PersisterEnums.POINT_IN_TIME_TRIGGER );
+
+            PointInTimeTrigger pinTrigger = ( PointInTimeTrigger ) trigger;
+
+            outCtx.writeLong( pinTrigger.hasNextFireTime().getTime() );
+        }
+    }
 }

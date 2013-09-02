@@ -231,4 +231,67 @@ public class InputMarshaller {
         return workItem;
     }
 
+    public static Trigger readTrigger( MarshallerReaderContext inCtx ) throws IOException, ClassNotFoundException {
+        short triggerInt = inCtx.readShort();
+
+        switch (triggerInt) {
+            case PersisterEnums.CRON_TRIGGER: {
+                long startTime = inCtx.readLong();
+
+                CronTrigger trigger = new CronTrigger();
+                trigger.setStartTime( new Date( startTime ) );
+                if (inCtx.readBoolean()) {
+                    long endTime = inCtx.readLong();
+                    trigger.setEndTime( new Date( endTime ) );
+                }
+
+                int repeatLimit = inCtx.readInt();
+                trigger.setRepeatLimit( repeatLimit );
+
+                int repeatCount = inCtx.readInt();
+                trigger.setRepeatCount( repeatCount );
+
+                String expr = inCtx.readUTF();
+                trigger.setCronExpression( expr );
+                if (inCtx.readBoolean()) {
+                    long nextFireTime = inCtx.readLong();
+                    trigger.setNextFireTime( new Date( nextFireTime ) );
+                }
+
+                String[] calendarNames = (String[]) inCtx.readObject();
+                trigger.setCalendarNames( calendarNames );
+                return trigger;
+            }
+            case PersisterEnums.INT_TRIGGER: {
+                IntervalTrigger trigger = new IntervalTrigger();
+                long startTime = inCtx.readLong();
+                trigger.setStartTime( new Date( startTime ) );
+                if (inCtx.readBoolean()) {
+                    long endTime = inCtx.readLong();
+                    trigger.setEndTime( new Date( endTime ) );
+                }
+                int repeatLimit = inCtx.readInt();
+                trigger.setRepeatLimit( repeatLimit );
+                int repeatCount = inCtx.readInt();
+                trigger.setRepeatCount( repeatCount );
+                if (inCtx.readBoolean()) {
+                    long nextFireTime = inCtx.readLong();
+                    trigger.setNextFireTime( new Date( nextFireTime ) );
+                }
+                long period = inCtx.readLong();
+                trigger.setPeriod( period );
+                String[] calendarNames = (String[]) inCtx.readObject();
+                trigger.setCalendarNames( calendarNames );
+                return trigger;
+            }
+            case PersisterEnums.POINT_IN_TIME_TRIGGER: {
+                long startTime = inCtx.readLong();
+
+                PointInTimeTrigger trigger = new PointInTimeTrigger( startTime, null, null );
+                return trigger;
+            }
+        }
+        throw new RuntimeException( "Unable to persist Trigger for type: " + triggerInt );
+
+    }
 }
