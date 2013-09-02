@@ -12,6 +12,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.LeftTupleSourceUtils;
 import org.drools.core.reteoo.ModifyPreviousTuples;
+import org.drools.core.reteoo.NodeSet;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RightTuple;
