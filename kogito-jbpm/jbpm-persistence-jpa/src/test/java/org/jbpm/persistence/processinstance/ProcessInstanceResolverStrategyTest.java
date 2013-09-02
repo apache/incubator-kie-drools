@@ -68,7 +68,7 @@ public class ProcessInstanceResolverStrategyTest extends AbstractBaseTest {
    
     @Before
     public void before() { 
-        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         
         // load up the knowledge base
         Environment env = PersistenceUtil.createEnvironment(context);

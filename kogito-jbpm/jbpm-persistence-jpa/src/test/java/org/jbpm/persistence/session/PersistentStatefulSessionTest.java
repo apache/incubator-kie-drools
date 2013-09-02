@@ -80,18 +80,7 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
     @Before
     public void setUp() throws Exception {
         String methodName = testName.getMethodName();
-        // Rules marshalling uses ObjectTypeNodes which screw up marshalling. 
-        if( "testLocalTransactionPerStatement".equals(methodName) 
-            || "testUserTransactions".equals(methodName) 
-            || "testPersistenceRuleSet".equals(methodName)
-            || "testSetFocus".equals(methodName)
-            // Constraints in ruleflows are rules as well (I'm guessing?), so OTN's again.. 
-            || "testPersistenceState".equals(methodName) ) { 
-            context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
-        }
-        else { 
-            context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
-        }
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         
         env = createEnvironment(context);
         if( useLocking ) {

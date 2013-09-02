@@ -46,7 +46,7 @@ public class CorrelationPersistenceTest extends AbstractBaseTest {
          
     @Before
     public void before() throws Exception {
-        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         CorrelationKeyFactory factory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
         // populate table with test data
         EntityManagerFactory emf = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);

@@ -88,12 +88,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
     
     public void setUp() {
         String testMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        if( testMethodName.startsWith("testPersistenceTimer") ) { 
-            context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
-        }
-        else { 
-            context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
-        }
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
     }
 

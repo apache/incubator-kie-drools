@@ -55,7 +55,7 @@ public class ParameterMappingTest extends AbstractBaseTest {
     
     @Before
     public void before() {
-        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         Environment env = createEnvironment(context);
         if( useLocking ) { 
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);

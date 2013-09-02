@@ -91,7 +91,7 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
      
     @Before
     public void setUp() throws Exception {
-        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME, false);
+        context = setupWithPoolingDataSource(JBPM_PERSISTENCE_UNIT_NAME);
         emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
     }
     

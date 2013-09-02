@@ -20,8 +20,6 @@
     <class>org.jbpm.persistence.session.objects.MyVariableExtendingSerializable</class>
     <class>org.jbpm.persistence.processinstance.objects.NonSerializableClass</class>
 
-    <class>org.jbpm.marshalling.util.MarshalledData</class>
-    
     <class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
     <class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
 
@@ -59,8 +57,6 @@
     <class>org.jbpm.persistence.session.objects.MyEntityOnlyFields</class>
     <class>org.jbpm.persistence.session.objects.MyVariableExtendingSerializable</class>
     <class>org.jbpm.persistence.processinstance.objects.NonSerializableClass</class>
-
-    <class>org.jbpm.marshalling.util.MarshalledData</class>
 
     <properties>
       <property name="hibernate.max_fetch_depth" value="3" />
