@@ -22,14 +22,13 @@ import org.kie.api.runtime.Environment;
  * 
  * This test takes time and resources, please only run it locally
  */
-@Ignore
 public class OneProcessPerThreadPersistenceTest extends OneProcessPerThreadTest {
 
     private static HashMap<String, Object> context;
 
     @Before
     public void setup() {
-        context = setupWithPoolingDataSource(PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME, false);
+        context = setupWithPoolingDataSource(PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME);
     }
 
     @After

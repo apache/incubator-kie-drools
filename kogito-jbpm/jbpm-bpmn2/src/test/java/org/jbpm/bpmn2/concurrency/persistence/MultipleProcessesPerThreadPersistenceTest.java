@@ -29,7 +29,7 @@ public class MultipleProcessesPerThreadPersistenceTest extends MultipleProcesses
 
     @Before
     public void setup() {
-        context = setupWithPoolingDataSource(PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME, false);
+        context = setupWithPoolingDataSource(PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME);
     }
 
     @After
