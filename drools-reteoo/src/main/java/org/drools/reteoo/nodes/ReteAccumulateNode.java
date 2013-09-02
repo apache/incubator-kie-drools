@@ -7,6 +7,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.reteoo.NodeSet;
 import org.drools.reteoo.common.RetePropagationContext;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
