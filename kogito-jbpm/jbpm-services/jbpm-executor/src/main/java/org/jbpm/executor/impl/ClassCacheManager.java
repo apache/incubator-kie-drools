@@ -43,7 +43,7 @@ public class ClassCacheManager {
     private final Map<String, CommandCallback> callbackCache = new HashMap<String, CommandCallback>();  
 
     /**
-     * Finds command by FQCN and if not found loads the class and store the <code>Class</code> instance in
+     * Finds command by FQCN and if not found loads the class and store the instance in
      * the cache.
      * @param name - fully qualified class name of the command
      * @return initialized class instance
@@ -51,15 +51,27 @@ public class ClassCacheManager {
     public Command findCommand(String name, ClassLoader cl) {
         synchronized (commandCache) {
             
-                if (!commandCache.containsKey(name)) {
+            if (!commandCache.containsKey(name)) {
+                
+                try {
+                    Command commandInstance = (Command) Class.forName(name, true, cl).newInstance();
+                    commandCache.put(name, commandInstance);
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                }
+    
+            } else {
+                Command cmd = commandCache.get(name);
+                if (!cmd.getClass().getClassLoader().equals(cl)) {
+                    commandCache.remove(name);
                     try {
                         Command commandInstance = (Command) Class.forName(name, true, cl).newInstance();
                         commandCache.put(name, commandInstance);
                     } catch (Exception ex) {
                         throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
-                    }
-
+                    } 
                 }
+            }
 
        
         }
@@ -67,7 +79,7 @@ public class ClassCacheManager {
     }
 
     /**
-     * Finds command callback by FQCN and if not found loads the class and store the <code>Class</code> instance in
+     * Finds command callback by FQCN and if not found loads the class and store the instance in
      * the cache.
      * @param name - fully qualified class name of the command callback
      * @return initialized class instance
@@ -75,15 +87,27 @@ public class ClassCacheManager {
     public CommandCallback findCommandCallback(String name, ClassLoader cl) {
         synchronized (callbackCache) {
             
-                    if (!callbackCache.containsKey(name)) {
-                        try {
-                            CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name, true, cl).newInstance();
-                            callbackCache.put(name, commandCallbackInstance);
-                        } catch (Exception ex) {
-                            throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
-                        }
+            if (!callbackCache.containsKey(name)) {
+                try {
+                    CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name, true, cl).newInstance();
+                    return commandCallbackInstance;
+                    //                            callbackCache.put(name, commandCallbackInstance);
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                }
 
+            } else {
+                CommandCallback cmdCallback = callbackCache.get(name);
+                if (!cmdCallback.getClass().getClassLoader().equals(cl)) {
+                    callbackCache.remove(name);
+                    try {
+                        CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name, true, cl).newInstance();
+                        callbackCache.put(name, commandCallbackInstance);
+                    } catch (Exception ex) {
+                        throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
                     }
+                }
+            }
 
         }
         return callbackCache.get(name);
