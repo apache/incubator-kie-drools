@@ -16,9 +16,6 @@
 
 package org.jbpm.process.instance.timer;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
@@ -27,8 +24,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.marshalling.impl.*;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
+import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
+import org.drools.core.marshalling.impl.TimersInputMarshaller;
+import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
@@ -200,39 +203,6 @@ public class TimerManager {
     }
 
     public static class ProcessTimerOutputMarshaller implements TimersOutputMarshaller {
-        public void write(JobContext ctx, MarshallerWriteContext outCtx) throws IOException {
-            // do not store StartProcess timers as they are registered whenever session starts
-            if (ctx instanceof StartProcessJobContext) {
-                return;
-            }
-            outCtx.writeShort(PersisterEnums.PROCESS_TIMER);
-
-            ProcessJobContext pctx = (ProcessJobContext) ctx;
-
-            outCtx.writeLong(pctx.getProcessInstanceId());
-
-            OutputMarshaller.writeTrigger(pctx.getTrigger(), outCtx);
-
-            writeTimer(outCtx, pctx.getTimer());
-        }
-
-        // This method was moved from the (deleted) ProcessMarshallerImpl class
-        public static void writeTimer(MarshallerWriteContext context, TimerInstance timer) throws IOException {
-            ObjectOutputStream stream = context.stream;
-            stream.writeLong(timer.getId());
-            stream.writeLong(timer.getTimerId());
-            stream.writeLong(timer.getDelay());
-            stream.writeLong(timer.getPeriod());
-            stream.writeLong(timer.getProcessInstanceId());
-            stream.writeLong(timer.getActivated().getTime());
-            Date lastTriggered = timer.getLastTriggered();
-            if (lastTriggered != null) {
-                stream.writeBoolean(true);
-                stream.writeLong(timer.getLastTriggered().getTime());
-            } else {
-                stream.writeBoolean(false);
-            }
-        }
         
         public Timer serialize(JobContext jobCtx, MarshallerWriteContext outputCtx) {
             // do not store StartProcess timers as they are registered whenever session starts
@@ -254,56 +224,6 @@ public class TimerManager {
     }
 
     public static class ProcessTimerInputMarshaller implements TimersInputMarshaller {
-        public void read(MarshallerReaderContext inCtx) throws IOException, ClassNotFoundException {
-            TimerService ts = inCtx.wm.getTimerService();
-
-            long processInstanceId = inCtx.readLong();
-
-            Trigger trigger = InputMarshaller.readTrigger(inCtx);
-
-            TimerInstance timerInstance = readTimer(inCtx);
-
-            TimerManager tm = ((InternalProcessRuntime) inCtx.wm.getProcessRuntime()).getTimerManager();
-
-            // check if the timer instance is not already registered to avoid duplicated timers
-            if (!tm.getTimerMap().containsKey(timerInstance.getId())) {
-                ProcessJobContext pctx = new ProcessJobContext(timerInstance, trigger, processInstanceId,
-                        inCtx.wm.getKnowledgeRuntime());
-
-                Date date = trigger.hasNextFireTime();
-
-                if (date != null) {
-                    long then = date.getTime();
-                    long now = pctx.getKnowledgeRuntime().getSessionClock().getCurrentTime();
-                    // overdue timer
-                    if (then < now) {
-                        trigger = new OverdueTrigger(trigger, pctx.getKnowledgeRuntime());
-                    }
-                }
-                JobHandle jobHandle = ts.scheduleJob(processJob, pctx, trigger);
-                timerInstance.setJobHandle(jobHandle);
-                pctx.setJobHandle(jobHandle);
-
-                tm.getTimerMap().put(timerInstance.getId(), timerInstance);
-            }
-        }
-
-        // This method was moved from the (deleted) ProcessMarshallerImpl class
-        public static TimerInstance readTimer(MarshallerReaderContext context) throws IOException {
-            ObjectInputStream stream = context.stream;
-
-            TimerInstance timer = new TimerInstance();
-            timer.setId(stream.readLong());
-            timer.setTimerId(stream.readLong());
-            timer.setDelay(stream.readLong());
-            timer.setPeriod(stream.readLong());
-            timer.setProcessInstanceId(stream.readLong());
-            timer.setActivated(new Date(stream.readLong()));
-            if (stream.readBoolean()) {
-                timer.setLastTriggered(new Date(stream.readLong()));
-            }
-            return timer;
-        }
 
         public void deserialize(MarshallerReaderContext inCtx, Timer _timer) throws ClassNotFoundException {
             JBPMMessages.ProcessTimer _ptimer = _timer.getExtension(JBPMMessages.procTimer);
@@ -342,6 +262,8 @@ public class TimerManager {
     }
 
     public static class ProcessJob implements Job, Serializable {
+
+        private static final long serialVersionUID = 6004839244692770390L;
 
         public void execute(JobContext c) {
 
@@ -383,6 +305,8 @@ public class TimerManager {
     }
 
     public static class StartProcessJob implements Job, Serializable {
+
+        private static final long serialVersionUID = 1039445333595469160L;
 
         public void execute(JobContext c) {
 
@@ -470,6 +394,7 @@ public class TimerManager {
 
     public static class StartProcessJobContext extends ProcessJobContext {
 
+        private static final long serialVersionUID = -5219141659893424294L;
         private String processId;
         private Map<String, Object> paramaeters;
 
