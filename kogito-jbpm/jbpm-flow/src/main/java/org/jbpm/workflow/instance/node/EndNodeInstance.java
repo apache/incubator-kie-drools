@@ -17,12 +17,12 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.kie.api.runtime.process.NodeInstance;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
+import org.kie.api.runtime.process.NodeInstance;
 
 /**
  * Runtime counterpart of an end node.
@@ -58,6 +58,7 @@ public class EndNodeInstance extends ExtendedNodeInstanceImpl {
         	    if (getEndNode().getScope() == EndNode.PROCESS_SCOPE) {
                     getProcessInstance().setState( ProcessInstance.STATE_COMPLETED );
                 } else {
+                    ((CompositeNodeInstance) getNodeInstanceContainer()).cancel();
                     ((NodeInstanceContainer) getNodeInstanceContainer()).nodeInstanceCompleted(this, null);
                 }
         	} else {

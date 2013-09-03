@@ -15,7 +15,6 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +26,6 @@ import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -180,6 +178,30 @@ public class EndEventTest extends JbpmBpmn2TestCase {
                 .startProcess("OnEntryExitScriptProcess");
         assertProcessInstanceCompleted(processInstance);
         assertEquals(4, myList.size());
+        
+    }
+    
+    @Test
+    public void testTerminateWithinSubprocessEnd() throws Exception {
+        KieBase kbase = createKnowledgeBase("subprocess/BPMN2-SubprocessWithParallelSpitTerminate.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-SubprocessWithParallelSpitTerminate");
+        
+        ksession.signalEvent("signal1", null, processInstance.getId());
+        
+        assertProcessInstanceCompleted(processInstance);
+        
+    }
+    
+    @Test
+    public void testTerminateEnd() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-ParallelSpitTerminate.bpmn2");
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-ParallelSpitTerminate");
+        
+        ksession.signalEvent("Signal_1", null, processInstance.getId());
+        
+        assertProcessInstanceCompleted(processInstance);
         
     }
 
