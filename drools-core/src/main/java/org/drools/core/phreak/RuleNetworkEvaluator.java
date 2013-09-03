@@ -289,7 +289,7 @@ public class RuleNetworkEvaluator {
                 if (log.isTraceEnabled()) {
                     int offset = getOffset(node);
                     log.trace("{} Segment {}", indent(offset), smemIndex);
-                    log.trace("{} {} {} {}", indent(offset), ++cycle, node.toString(), srcTuples.toStringSizes());
+                    log.trace("{} {} {} {}", indent(offset), cycle, node.toString(), srcTuples.toStringSizes());
                 }
             }
 

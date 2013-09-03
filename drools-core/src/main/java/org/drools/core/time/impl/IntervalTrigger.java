@@ -153,7 +153,7 @@ public class IntervalTrigger
         return lastFireTime;
     }
 
-    public void setFirstFireTime() {
+    private void setFirstFireTime() {
         if ( getStartTime().after( this.nextFireTime ) ) {
             this.nextFireTime = new Date( getStartTime().getTime() - 1000l );
         }
@@ -166,7 +166,6 @@ public class IntervalTrigger
         if ( getEndTime() != null && pot != null && pot.after( getEndTime() ) ) {
             this.nextFireTime = null;
         }
-        this.lastFireTime = this.nextFireTime;
     }
 
     public Date hasNextFireTime() {
@@ -207,11 +206,13 @@ public class IntervalTrigger
                                             ClassNotFoundException {
         this.nextFireTime = (Date) in.readObject();
         this.period = in.readLong();
+        this.delay = in.readLong();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( this.nextFireTime );
         out.writeLong( this.period );
+        out.writeLong( this.delay );
     }
 
     public void updateToNextIncludeDate() {

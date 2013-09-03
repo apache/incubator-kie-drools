@@ -105,15 +105,16 @@ public class    IntervalTimer extends BaseTimer
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
         long timeSinceLastFire = 0;
+
         if ( jh != null ) {
             IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
-            if (preTrig.hasNextFireTime() != null) {
+            if (preTrig.getLastFireTime() != null) {
                 timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
             }
         }
 
-
-        long newDelay = delay - timeSinceLastFire;
+        // if it is already fired calculate the new delay using the period instead of the delay
+        long newDelay = timeSinceLastFire > 0 ? period - timeSinceLastFire : delay;
         if (newDelay < 0) {
             newDelay = 0;
         }
