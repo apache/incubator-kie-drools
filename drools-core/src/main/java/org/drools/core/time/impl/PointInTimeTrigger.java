@@ -73,4 +73,8 @@ public class PointInTimeTrigger
         out.writeObject( this.timestamp );
     }
 
+    @Override
+    public String toString() {
+        return "PointInTimeTrigger @ " + timestamp;
+    }
 }
