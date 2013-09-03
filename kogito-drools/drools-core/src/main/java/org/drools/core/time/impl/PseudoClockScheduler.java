@@ -22,8 +22,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.Date;
-import java.util.PriorityQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -55,7 +55,7 @@ public class PseudoClockScheduler
     private Logger logger = LoggerFactory.getLogger( PseudoClockScheduler.class ); 
 
     private AtomicLong                      timer;
-    private PriorityQueue<Callable<Void>>   queue;
+    private PriorityBlockingQueue<Callable<Void>>   queue;
     private transient InternalWorkingMemory session;
 
     private TimerJobFactoryManager          jobFactoryManager = DefaultTimerJobFactoryManager.instance;
@@ -68,7 +68,7 @@ public class PseudoClockScheduler
 
     public PseudoClockScheduler(InternalWorkingMemory session) {
         this.timer = new AtomicLong(0);
-        this.queue = new PriorityQueue<Callable<Void>>();
+        this.queue = new PriorityBlockingQueue<Callable<Void>>();
         this.session = session;
     }
 
@@ -76,7 +76,7 @@ public class PseudoClockScheduler
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         timer = new AtomicLong( in.readLong() );
-        PriorityQueue<Callable<Void>> tmp = (PriorityQueue<Callable<Void>>) in.readObject();
+        PriorityBlockingQueue<Callable<Void>> tmp = (PriorityBlockingQueue<Callable<Void>>) in.readObject();
         if ( tmp != null ) {
             queue = tmp;
         }
@@ -101,7 +101,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      * 
-     * @see org.kie.temporal.SessionClock#getCurrentTime()
+     * @see org.kie.api.time.SessionClock#getCurrentTime()
      */
     public long getCurrentTime() {
         return this.timer.get();
@@ -110,7 +110,7 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      *
-     * @see org.kie.api.time.TimerService#scheduleJob(org.kie.api.time.Job, org.kie.api.time.JobContext, org.kie.api.time.Trigger)
+     * @see org.drools.core.time.TimerService#scheduleJob(Job, JobContext, Trigger)
      */
     public JobHandle scheduleJob(Job job,
                                  JobContext ctx,
@@ -126,7 +126,7 @@ public class PseudoClockScheduler
                                                                                    jobHandle,
                                                                                    this );
             jobHandle.setTimerJobInstance( (TimerJobInstance) jobInstance );
-            internalSchedule( (TimerJobInstance) jobInstance );
+            internalSchedule( jobInstance );
 
             return jobHandle;
         }
@@ -135,7 +135,7 @@ public class PseudoClockScheduler
     }
 
     public void internalSchedule(TimerJobInstance timerJobInstance) {
-        jobFactoryManager.addTimerJobInstance( timerJobInstance );
+        jobFactoryManager.addTimerJobInstance(timerJobInstance);
         synchronized(queue) {
             queue.add( ( Callable<Void> ) timerJobInstance );
         }
@@ -144,13 +144,13 @@ public class PseudoClockScheduler
     /**
      * @inheritDoc
      *
-     * @see org.kie.api.time.TimerService#removeJob(org.kie.api.time.JobHandle)
+     * @see org.drools.core.time.TimerService#removeJob(JobHandle)
      */
     public boolean removeJob(JobHandle jobHandle) {
         jobHandle.setCancel( true );
         jobFactoryManager.removeTimerJobInstance( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
         synchronized( queue ) {
-            return this.queue.remove( (Callable<Void>) ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
+            return this.queue.remove( ((DefaultJobHandle) jobHandle).getTimerJobInstance() );
         }
     }
 
@@ -230,5 +230,4 @@ public class PseudoClockScheduler
     public Collection<TimerJobInstance> getTimerJobInstances(int id) {
         return jobFactoryManager.getTimerJobInstances();
     }
-
 }
