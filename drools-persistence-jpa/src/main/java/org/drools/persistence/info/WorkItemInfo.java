@@ -21,13 +21,17 @@ import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.OutputMarshaller;
+import org.drools.core.marshalling.impl.ProcessMarshaller;
+import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.process.instance.WorkItem;
 import org.kie.api.runtime.Environment;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")
 public class WorkItemInfo  {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="workItemInfoIdSeq")
     private Long   workItemId;
@@ -100,8 +104,21 @@ public class WorkItemInfo  {
                                                                                null,
                                                                                null,
                                                                                null,
-                                                                               env);
-                workItem = InputMarshaller.readWorkItem( context );
+                                                                                   env);
+                try {
+                    workItem = ProtobufInputMarshaller.readWorkItem(context);
+                } catch (Exception e) {
+                    context.close();
+                    bais = new ByteArrayInputStream( workItemByteArray );
+                    context = new MarshallerReaderContext( bais,
+                            ruleBase,
+                            null,
+                            null,
+                            null,
+                            env);
+                    workItem = InputMarshaller.readWorkItem( context );
+                }
+
                 context.close();
             } catch ( IOException e ) {
                 e.printStackTrace();
@@ -116,6 +133,9 @@ public class WorkItemInfo  {
     @PreUpdate
     public void update() {
         this.state = workItem.getState();
+
+
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             MarshallerWriteContext context = new MarshallerWriteContext( baos,
@@ -124,9 +144,7 @@ public class WorkItemInfo  {
                                                                          null,
                                                                          null,
                                                                          this.env);
-            
-            OutputMarshaller.writeWorkItem( context,
-                                                 workItem );
+            ProtobufOutputMarshaller.writeWorkItem(context, workItem);
 
             context.close();
             this.workItemByteArray = baos.toByteArray();
@@ -138,5 +156,6 @@ public class WorkItemInfo  {
     public void setId(Long id){
         this.workItemId = id;
     }
-    
+
+
 }

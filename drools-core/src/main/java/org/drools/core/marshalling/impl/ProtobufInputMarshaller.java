@@ -59,6 +59,7 @@ import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.StackEntry;
+import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -722,6 +723,10 @@ public class ProtobufInputMarshaller {
         }
         throw new RuntimeException( "Unable to deserialize Trigger for type: " + _trigger.getType() );
 
+    }
+
+    public static WorkItem readWorkItem( MarshallerReaderContext context ) {
+        return processMarshaller.readWorkItem( context );
     }
 
     public static class PBActivationsFilter
