@@ -59,6 +59,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
@@ -898,6 +899,10 @@ public class ProtobufOutputMarshaller {
                     .build();
         }
         throw new RuntimeException( "Unable to serialize Trigger for type: " + trigger.getClass() );
+    }
+
+    public static void writeWorkItem( MarshallerWriteContext context, WorkItem workItem ) {
+        processMarshaller.writeWorkItem( context, workItem );
     }
 
 }

@@ -21,13 +21,21 @@ import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.OutputMarshaller;
+import org.drools.core.marshalling.impl.ProcessMarshaller;
+import org.drools.core.marshalling.impl.ProcessMarshallerFactory;
+import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
+import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.process.instance.WorkItem;
 import org.kie.api.runtime.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name="workItemInfoIdSeq", sequenceName="WORKITEMINFO_ID_SEQ")
 public class WorkItemInfo  {
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(WorkItemInfo.class);
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="workItemInfoIdSeq")
     private Long   workItemId;
@@ -100,12 +108,33 @@ public class WorkItemInfo  {
                                                                                null,
                                                                                null,
                                                                                null,
-                                                                               env);
-                workItem = InputMarshaller.readWorkItem( context );
+                                                                                   env);
+                try {
+                    workItem = ProtobufInputMarshaller.readWorkItem(context);
+                } catch (Exception e) {
+                    // for backward compatibility to be able to restore 5.x data
+                    try {
+                        context.close();
+                        bais = new ByteArrayInputStream( workItemByteArray );
+                        context = new MarshallerReaderContext( bais,
+                                ruleBase,
+                                null,
+                                null,
+                                null,
+                                env);
+
+                        workItem = InputMarshaller.readWorkItem( context );
+                    } catch (IOException e1) {
+                        logger.error("Unable to read work item with InputMarshaller", e1);
+                        // throw the original exception produced by failed protobuf op
+                        throw new RuntimeException("Unable to read work item ", e);
+                    }
+                }
+
                 context.close();
             } catch ( IOException e ) {
                 e.printStackTrace();
-                throw new IllegalArgumentException( "IOException while loading process instance: " + e.getMessage() );
+                throw new IllegalArgumentException( "IOException while loading work item: " + e.getMessage() );
             }
         }
         return workItem;
@@ -116,6 +145,9 @@ public class WorkItemInfo  {
     @PreUpdate
     public void update() {
         this.state = workItem.getState();
+
+
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             MarshallerWriteContext context = new MarshallerWriteContext( baos,
@@ -124,9 +156,7 @@ public class WorkItemInfo  {
                                                                          null,
                                                                          null,
                                                                          this.env);
-            
-            OutputMarshaller.writeWorkItem( context,
-                                                 workItem );
+            ProtobufOutputMarshaller.writeWorkItem(context, workItem);
 
             context.close();
             this.workItemByteArray = baos.toByteArray();
@@ -138,5 +168,6 @@ public class WorkItemInfo  {
     public void setId(Long id){
         this.workItemId = id;
     }
-    
+
+
 }
