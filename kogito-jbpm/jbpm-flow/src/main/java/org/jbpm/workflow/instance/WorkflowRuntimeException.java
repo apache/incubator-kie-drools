@@ -6,8 +6,7 @@ import java.util.Map;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
-import org.jbpm.workflow.core.impl.NodeImpl;
-import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 
@@ -19,37 +18,39 @@ public class WorkflowRuntimeException extends RuntimeException {
 
     /** Generated serial version uid */
     private static final long serialVersionUID = 8210449548783940188L;
-    
+
     private long processInstanceId;
     private String processId;
     private long nodeInstanceId;
     private long nodeId;
     private String nodeName;
-    
+
     private Map<String, Object> variables;
 
     public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message) {
         super(message);
         initialize(nodeInstance, processInstance);
     }
-    
+
     public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, String message, Exception e) {
         super(message, e);
         initialize(nodeInstance, processInstance);
     }
-    
+
     public WorkflowRuntimeException(NodeInstance nodeInstance, ProcessInstance processInstance, Exception e) {
         super(e);
         initialize(nodeInstance, processInstance);
     }
-    
+
     private void initialize(NodeInstance nodeInstance, ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         this.processId = processInstance.getProcessId();
         if( nodeInstance != null ) { 
             this.nodeInstanceId = nodeInstance.getId();
             this.nodeId = nodeInstance.getNodeId();
-            this.nodeName = nodeInstance.getNodeName();
+            if( ((ProcessInstanceImpl) processInstance).getKnowledgeRuntime() != null ) { 
+                this.nodeName = nodeInstance.getNodeName();
+            }
         }
         
         VariableScopeInstance variableScope =  (VariableScopeInstance) 
