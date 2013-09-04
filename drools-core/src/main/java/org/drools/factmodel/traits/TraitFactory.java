@@ -85,6 +85,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     }
 
+    public static TraitFactory getTraitBuilderForKnowledgeBase( KnowledgeBase kb ) {
+        AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) kb ).getRuleBase();
+        return arb.getConfiguration().getComponentFactory().getTraitFactory();
+    }
 
 
 

@@ -91,6 +91,7 @@ public class DefaultKnowledgeHelper
     private LinkedList<LogicalDependency>       previousJustified;
 
     private LinkedList<LogicalDependency>       previousBlocked;
+    private Collection<Key<Thing>> traitBoundary;
 
     public DefaultKnowledgeHelper() {
 
@@ -602,7 +603,7 @@ public class DefaultKnowledgeHelper
             return don( ((Thing) core).getCore(), trait, logical );
         }
         try {
-            T thing = applyTrait( core, trait, logical );
+            T thing = applyTrait( core, trait, null, logical );
             return thing;
         } catch ( LogicalTypeInconsistencyException ltie ) {
             ltie.printStackTrace();
@@ -637,44 +638,75 @@ public class DefaultKnowledgeHelper
         return wrapper;
     }
 
-    protected <T, K> T applyTrait( K core, Class<T> trait, boolean logical ) throws LogicalTypeInconsistencyException {
-        AbstractRuleBase arb = (AbstractRuleBase) ((KnowledgeBaseImpl) this.getKnowledgeRuntime().getKnowledgeBase() ).getRuleBase();
-        TraitFactory builder = arb.getConfiguration().getComponentFactory().getTraitFactory();
+    protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical ) throws LogicalTypeInconsistencyException {
+        TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( this.getKnowledgeRuntime().getKnowledgeBase() );
 
-        boolean needsWrapping = ! ( core instanceof TraitableBean );
+        TraitableBean inner = makeTraitable( core, builder );
 
-        TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean<K,? extends TraitableBean>) core;
-        if ( needsWrapping ) {
-            InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
-            InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) h.getEntryPoint();
-            ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
+        boolean needsProxy = trait.isAssignableFrom( inner.getClass() );
+        boolean hasTrait = inner.hasTrait( trait.getName() );
+        boolean needsUpdate = needsProxy || core != inner;
 
-            ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
+        BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
 
-            ObjectTypeConf innerConf = reg.getObjectTypeConf( ep.getEntryPoint(), inner );
-            if ( coreConf.isTMSEnabled() ) {
-                innerConf.enableTMS();
+        Collection<Key<Thing>> mostSpecificTraits = getTraitBoundary( inner, needsProxy, hasTrait, trait );
+
+        T thing = asTrait( core, inner, trait, needsProxy, hasTrait, needsUpdate, builder );
+
+        configureTrait( thing, value );
+
+        thing = doInsertTrait( thing, core, logical, boundary );
+
+        refresh( thing, core, inner, trait, mostSpecificTraits, logical );
+
+        return thing;
+    }
+
+    protected Collection<Key<Thing>> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
+        boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
+        if ( refresh ) {
+            return inner.getMostSpecificTraits();
+        }
+        return null;
+    }
+
+    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Key<Thing>> mostSpecificTraits, boolean logical ) {
+        if ( mostSpecificTraits != null ) {
+            FactHandle handle = lookupFactHandle( inner );
+            InternalFactHandle h = (InternalFactHandle) handle;
+            if ( handle != null ) {
+                ((NamedEntryPoint) h.getEntryPoint()).update( h,
+                        ((InternalFactHandle)handle).getObject(),
+                        Long.MIN_VALUE,
+                        core.getClass(),
+                        this.activation );
+            } else {
+                handle = this.workingMemory.insert( inner,
+                        null,
+                        false,
+                        logical,
+                        this.activation.getRule(),
+                        this.activation );
+                if ( this.identityMap != null ) {
+                    this.getIdentityMap().put( inner,
+                            handle );
+                }
+            }
+            if ( ! mostSpecificTraits.isEmpty() ) {
+                updateTraits( inner, Long.MIN_VALUE, (Thing) thing, trait, null, mostSpecificTraits );
             }
         }
 
+    }
+
+    private <T, K> T asTrait( K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactory builder ) throws LogicalTypeInconsistencyException {
         T thing;
-        boolean needsUpdate = needsWrapping;
-        BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
-
-        Collection px = null;
-
-        boolean refresh = false;
-        if ( trait.isAssignableFrom( inner.getClass() ) ) {
+        if ( needsProxy ) {
             thing = (T) inner;
             inner.addTrait( trait.getName(), (Thing<K>) core );
-            needsUpdate = true;
-        } else if ( inner.hasTrait( trait.getName() ) ) {
+        } else if ( hasTrait ) {
             thing = (T) inner.getTrait( trait.getName() );
         } else {
-            if ( Thing.class != trait ) {
-                px = inner.getMostSpecificTraits();
-                refresh = true;
-            }
             thing = (T) builder.getProxy( inner, trait );
         }
 
@@ -691,33 +723,30 @@ public class DefaultKnowledgeHelper
             don( inner, Thing.class, false );
         }
 
-        thing = doInsertTrait( thing, core, logical, boundary );
+        return thing;
+    }
 
-        if ( refresh ) {
-            FactHandle handle = lookupFactHandle( inner );
-            InternalFactHandle h = (InternalFactHandle) handle;
-            if ( handle != null ) {
-                ((NamedEntryPoint) h.getEntryPoint()).update( h,
-                                                              ((InternalFactHandle)handle).getObject(),
-                                                              Long.MIN_VALUE,
-                                                              core.getClass(),
-                                                              this.activation );
-                updateTraits( inner, Long.MIN_VALUE, (Thing) thing, trait, null, px );
-            } else {
-                handle = this.workingMemory.insert( inner,
-                                                    null,
-                                                    false,
-                                                    logical,
-                                                    this.activation.getRule(),
-                                                    this.activation );
-                if ( this.identityMap != null ) {
-                    this.getIdentityMap().put( inner,
-                                               handle );
-                }
+    private <K> TraitableBean makeTraitable( K core, TraitFactory builder ) {
+        boolean needsWrapping = ! ( core instanceof TraitableBean );
+
+        TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? asTraitable( core, builder ) : (TraitableBean<K,? extends TraitableBean>) core;
+        if ( needsWrapping ) {
+            InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
+            InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) h.getEntryPoint();
+            ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
+
+            ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
+
+            ObjectTypeConf innerConf = reg.getObjectTypeConf( ep.getEntryPoint(), inner );
+            if ( coreConf.isTMSEnabled() ) {
+                innerConf.enableTMS();
             }
         }
+        return inner;
+    }
 
-        return thing;
+    protected <T> void configureTrait( T thing, Object value ) {
+
     }
 
     public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical ) {
@@ -782,4 +811,7 @@ public class DefaultKnowledgeHelper
 
     }
 
+    public Collection<Key<Thing>> getTraitBoundary() {
+        return traitBoundary;
+    }
 }
