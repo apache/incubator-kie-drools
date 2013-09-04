@@ -12,8 +12,10 @@ import java.util.Map;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProcessMarshaller;
 import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.marshalling.impl.JBPMMessages.ProcessTimer.TimerInstance.Builder;
@@ -274,6 +276,31 @@ public class ProtobufProcessMarshaller
         registry.add( JBPMMessages.procTimer );
         registry.add( JBPMMessages.workItem );
         registry.add( JBPMMessages.timerId );
+    }
+
+    @Override
+    public void writeWorkItem(MarshallerWriteContext context, org.drools.core.process.instance.WorkItem workItem) {
+        try {
+            JBPMMessages.WorkItem _workItem = writeWorkItem(context, workItem, true);        
+            PersisterHelper.writeToStreamWithHeader( context, _workItem );
+        } catch (IOException e) {
+            throw new IllegalArgumentException( "IOException while storing work item instance "
+                    + workItem.getId() + ": " + e.getMessage(), e );
+        }
+    }
+
+    @Override
+    public org.drools.core.process.instance.WorkItem readWorkItem(MarshallerReaderContext context) {
+        try {
+            ExtensionRegistry registry = PersisterHelper.buildRegistry(context, null);
+            Header _header = PersisterHelper.readFromStreamWithHeaderPreloaded(context, registry);
+            JBPMMessages.WorkItem _workItem = JBPMMessages.WorkItem.parseFrom(_header.getPayload(), registry); 
+            return (org.drools.core.process.instance.WorkItem) readWorkItem(context, _workItem, true);
+        } catch (IOException e) {
+            throw new IllegalArgumentException( "IOException while fetching work item instance : " + e.getMessage(), e );
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException( "ClassNotFoundException while fetching work item instance : " + e.getMessage(), e );
+        }
     }
 
 }

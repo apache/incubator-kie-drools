@@ -6,6 +6,7 @@ import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
@@ -57,6 +58,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -258,8 +261,16 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );        
         StatefulKnowledgeSession ksession = createSession(kbase);
-        
-        DoNothingWorkItemHandler handler = new DoNothingWorkItemHandler();
+        final List<WorkItem> workItems = new ArrayList<WorkItem>();
+        DoNothingWorkItemHandler handler = new DoNothingWorkItemHandler() {
+
+            @Override
+            public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                super.executeWorkItem(workItem, manager);
+                workItems.add(workItem);
+            }
+            
+        };
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         
         ProcessInstance processInstance = ksession.startProcess("org.drools.humantask");
@@ -295,6 +306,11 @@ public class WorkItemPersistenceTest extends AbstractBaseTest {
                 processInstanceInfoMadeInThisTest.getProcessInstanceByteArray());
         assertTrue("ByteArray of ProcessInstanceInfo from this test is not filled and empty!", 
                 processInstanceInfoMadeInThisTest.getProcessInstanceByteArray().length > 0);
+        assertEquals(1, workItems.size());
+        ksession.getWorkItemManager().completeWorkItem(workItems.get(0).getId(), null);
+        
+        ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
+        assertNull(pi);
     }
     
     @SuppressWarnings("unchecked")

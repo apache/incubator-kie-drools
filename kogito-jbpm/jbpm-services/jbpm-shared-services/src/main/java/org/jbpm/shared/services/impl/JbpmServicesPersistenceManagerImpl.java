@@ -19,6 +19,7 @@ package org.jbpm.shared.services.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,7 +27,6 @@ import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
 import org.drools.persistence.TransactionSynchronization;
-import org.jboss.weld.context.ContextNotActiveException;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.slf4j.Logger;
