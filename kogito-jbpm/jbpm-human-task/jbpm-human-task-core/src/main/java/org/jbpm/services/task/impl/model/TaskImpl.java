@@ -57,7 +57,7 @@ public class TaskImpl implements InternalTask {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="taskIdSeq")
-    @Column(name = "TaskId")
+    @Column(name = "id")
     private Long                 id = 0L;
     
     @Version

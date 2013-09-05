@@ -42,7 +42,7 @@ public class AttachmentImpl implements InternalAttachment {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="attachmentIdSeq")
-    @Column(name = "AttachmentId")
+    @Column(name = "id")
     private Long   id = 0L;
 
     /**

@@ -41,7 +41,7 @@ public class BAMTaskSummaryImpl implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="bamTaskIdSeq")
-    @Column(name = "BAMTaskId")
+    @Column(name = "pk")
     private Long pk  = 0L;
     
     private long taskId;

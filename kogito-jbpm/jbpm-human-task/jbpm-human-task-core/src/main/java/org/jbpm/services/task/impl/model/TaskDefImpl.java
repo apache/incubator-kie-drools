@@ -26,7 +26,7 @@ public class TaskDefImpl implements org.kie.internal.task.api.model.TaskDef {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="taskDefIdSeq")
-    @Column(name = "TaskDefId")
+    @Column(name = "id")
     private long id;
     
     private String name;

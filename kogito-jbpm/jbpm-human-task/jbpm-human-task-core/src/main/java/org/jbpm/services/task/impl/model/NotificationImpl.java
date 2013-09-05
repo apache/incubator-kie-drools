@@ -47,7 +47,7 @@ public class NotificationImpl implements org.kie.internal.task.api.model.Notific
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="notificationIdSeq")
-    @Column(name = "NotificationId")
+    @Column(name = "id")
     private Long                             id;
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=I18NTextImpl.class)

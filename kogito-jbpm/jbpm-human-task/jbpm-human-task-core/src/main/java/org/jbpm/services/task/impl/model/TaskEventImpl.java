@@ -32,7 +32,7 @@ public class TaskEventImpl implements TaskEvent {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator="taskEventIdSeq")
-    @Column(name = "TaskEventId")
+    @Column(name = "id")
     private Long id;
     
     private long taskId;
