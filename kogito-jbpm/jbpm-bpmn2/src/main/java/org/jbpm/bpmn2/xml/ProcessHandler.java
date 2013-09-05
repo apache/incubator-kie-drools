@@ -317,7 +317,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 				result.setMetaData("bendpoints", connection.getBendpoints());
 				result.setMetaData("UniqueId", connection.getId());
 				
-				if (System.getProperty("jbpm.enable.multi.con") != null){
+				if ("true".equals(System.getProperty("jbpm.enable.multi.con"))){
 					NodeImpl nodeImpl = (NodeImpl) source;
 					Constraint constraint = buildConstraint(connection, nodeImpl);
 					if (constraint != null) {

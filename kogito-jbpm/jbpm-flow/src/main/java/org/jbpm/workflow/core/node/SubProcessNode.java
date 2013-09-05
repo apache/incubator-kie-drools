@@ -146,7 +146,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
             throw new IllegalArgumentException(
                 "This type of node only accepts default incoming connection type!");
         }
-        if (getFrom() != null && System.getProperty("jbpm.enable.multi.con") == null) {
+        if (getFrom() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
                  "This type of node cannot have more than one incoming connection!");
         }
@@ -158,7 +158,7 @@ public class SubProcessNode extends StateBasedNode implements Mappable, ContextC
             throw new IllegalArgumentException(
                 "This type of node only accepts default outgoing connection type!");
         }
-        if (getTo() != null && System.getProperty("jbpm.enable.multi.con") == null) {
+        if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
               "This type of node cannot have more than one outgoing connection!");
         }

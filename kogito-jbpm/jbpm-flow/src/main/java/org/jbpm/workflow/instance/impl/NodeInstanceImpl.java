@@ -199,7 +199,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
         Node node = getNode();
         List<Connection> connections = null;
         if (node != null) {
-        	if (System.getProperty("jbpm.enable.multi.con") != null && ((NodeImpl) node).getConstraints().size() > 0) {
+        	if ("true".equals(System.getProperty("jbpm.enable.multi.con")) && ((NodeImpl) node).getConstraints().size() > 0) {
         		int priority = Integer.MAX_VALUE;
         		connections = ((NodeImpl)node).getDefaultOutgoingConnections();
                 boolean found = false;

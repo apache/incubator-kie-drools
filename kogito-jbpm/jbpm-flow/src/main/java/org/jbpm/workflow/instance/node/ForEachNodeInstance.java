@@ -222,7 +222,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
                 if (getForEachNode().isWaitForCompletion()) {
                 	
-                	if (System.getProperty("jbpm.enable.multi.con") == null) {
+                	if (!"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
                 		
                 		triggerConnection(getForEachJoinNode().getTo());
                 	} else {

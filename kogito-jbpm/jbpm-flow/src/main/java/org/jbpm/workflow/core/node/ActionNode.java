@@ -47,7 +47,7 @@ public class ActionNode extends ExtendedNodeImpl {
                 "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
                 + "] only accepts default incoming connection type!");
         }
-        if (getFrom() != null && System.getProperty("jbpm.enable.multi.con") == null) {
+        if (getFrom() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
            throw new IllegalArgumentException(
                 "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
                 + "] cannot have more than one incoming connection!");
@@ -61,7 +61,7 @@ public class ActionNode extends ExtendedNodeImpl {
                 "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
                 + "] only accepts default outgoing connection type!");
         }
-        if (getTo() != null && System.getProperty("jbpm.enable.multi.con") == null) {
+        if (getTo() != null && !"true".equals(System.getProperty("jbpm.enable.multi.con"))) {
             throw new IllegalArgumentException(
                 "This type of node [" + connection.getFrom().getMetaData().get("UniqueId") + ", " + connection.getFrom().getName() 
                 + "] cannot have more than one outgoing connection!");

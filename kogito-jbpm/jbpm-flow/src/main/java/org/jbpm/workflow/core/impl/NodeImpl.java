@@ -202,7 +202,7 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         if (list.size() == 1) {
         	return list.get(0);
         }
-        if (System.getProperty("jbpm.enable.multi.con") != null) { 
+        if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) { 
         	return list.get(0);
         } else {
         	throw new IllegalArgumentException(
@@ -220,7 +220,7 @@ public abstract class NodeImpl implements Node, Serializable, ContextResolver {
         if (list.size() == 1) {
         	return list.get(0);
         }
-        if (System.getProperty("jbpm.enable.multi.con") != null) { 
+        if ("true".equals(System.getProperty("jbpm.enable.multi.con"))) { 
         	return list.get(0);
         } else {
         	throw new IllegalArgumentException(
