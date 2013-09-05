@@ -65,12 +65,12 @@ public class PhreakAccumulateNode {
                                                              srcRightTuples);
         }
 
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(accNode, sink, am, wm, srcLeftTuples, tempLeftTuples);
-        }
-
         if (srcRightTuples.getUpdateFirst() != null) {
             doRightUpdates(accNode, sink, am, wm, srcRightTuples, tempLeftTuples);
+        }
+
+        if (srcLeftTuples.getUpdateFirst() != null) {
+            doLeftUpdates(accNode, sink, am, wm, srcLeftTuples, tempLeftTuples);
         }
 
         if (srcRightTuples.getInsertFirst() != null) {
