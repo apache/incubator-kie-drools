@@ -42,7 +42,7 @@ public class DataType {
     public static final String TYPE_OBJECT = "Object";                                                                                                                                                      // for all other unknown
     public static final String TYPE_FINAL_OBJECT = "FinalObject";                                                                                                                                                 // for all other unknown
     public static final String TYPE_THIS = "this";
-
+    public static final String TYPE_VOID = "void";
 
     public enum DataTypes {
         STRING,
