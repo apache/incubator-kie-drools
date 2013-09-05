@@ -735,7 +735,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 return value2 == null;
             }
             if (value1 instanceof String) {
-                return value1.equals(value2.toString());
+                return value2 != null && value1.equals(value2.toString());
             }
             return value1.equals( value2 );
         }
