@@ -302,7 +302,7 @@ public class BRDRLPersistence
             //Add boiler-plate for actions operating on WorkItems
             if ( !getRHSWorkItemDependencies( model ).isEmpty() ) {
                 buf.append( indentation );
-                buf.append( "org.kie.internal.process.instance.WorkItemManager wim = (org.kie.internal.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
+                buf.append( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
             }
 
             //Marshall the model itself
@@ -1130,9 +1130,9 @@ public class BRDRLPersistence
             instantiatedWorkItems.add( wiName );
 
             buf.append( indentation );
-            buf.append( "org.kie.internal.process.instance.impl.WorkItemImpl " );
+            buf.append( "org.drools.core.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
-            buf.append( " = new org.kie.internal.process.instance.impl.WorkItemImpl();\n" );
+            buf.append( " = new org.drools.core.process.instance.impl.WorkItemImpl();\n" );
             buf.append( indentation );
             buf.append( wiImplName );
             buf.append( ".setName( \"" );
@@ -1892,7 +1892,7 @@ public class BRDRLPersistence
             } else if ( line.startsWith( "retract" ) ) {
                 String variable = unwrapParenthesis( line );
                 m.addRhsItem( new ActionRetractFact( variable ) );
-            } else if ( line.startsWith( "org.kie.internal.process.instance.impl.WorkItemImpl wiWorkItem" ) ) {
+            } else if ( line.startsWith( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem" ) ) {
                 ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
                 pwd = new PortableWorkDefinition();
                 pwd.setName( "WorkItem" );
