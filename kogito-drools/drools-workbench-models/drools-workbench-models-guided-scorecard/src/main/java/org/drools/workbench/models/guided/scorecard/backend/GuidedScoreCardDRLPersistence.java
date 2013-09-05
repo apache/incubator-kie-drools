@@ -31,14 +31,13 @@ import org.dmg.pmml.pmml_4_1.descr.Output;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.core.util.ArrayUtils;
-import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
-import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
-import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.drools.scorecards.ScorecardCompiler;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.PMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
+import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 
 public class GuidedScoreCardDRLPersistence {
 
@@ -47,11 +46,7 @@ public class GuidedScoreCardDRLPersistence {
 
         final StringBuilder sb = new StringBuilder();
 
-        //Append package name and imports to DRL
-        PackageNameWriter.write( sb,
-                                 model );
-        ImportsWriter.write( sb,
-                             model );
+        //Package statement and Imports are appended by org.drools.scorecards.drl.AbstractDRLEmitter
 
         //Build rules
         sb.append( ScorecardCompiler.convertToDRL( pmml,
@@ -76,17 +71,13 @@ public class GuidedScoreCardDRLPersistence {
         extension.setName( PMMLExtensionNames.SCORECARD_IMPORTS );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
         List<String> imports = new ArrayList<String>();
-        imports.add( model.getFactName() );
         StringBuilder importBuilder = new StringBuilder();
-        importBuilder.append( model.getFactName() );
-
-        for ( final org.drools.workbench.models.guided.scorecard.shared.Characteristic characteristic : model.getCharacteristics() ) {
-            if ( !imports.contains( characteristic.getFact() ) ) {
-                imports.add( characteristic.getFact() );
-                importBuilder.append( "," ).append( characteristic.getFact() );
+        for ( Import imp : model.getImports().getImports() ) {
+            if ( !imports.contains( imp.getType() ) ) {
+                imports.add( imp.getType() );
+                importBuilder.append( imp.getType() ).append( "," );
             }
         }
-        imports.clear();
         extension.setValue( importBuilder.toString() );
 
         extension = new Extension();
@@ -96,7 +87,8 @@ public class GuidedScoreCardDRLPersistence {
 
         extension = new Extension();
         extension.setName( PMMLExtensionNames.SCORECARD_PACKAGE );
-        extension.setValue( model.getPackageName() );
+        String pkgName = model.getPackageName();
+        extension.setValue( !( pkgName == null || pkgName.isEmpty() ) ? pkgName : null );
         pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add( extension );
 
         final String modelName = convertToJavaIdentifier( model.getName() );

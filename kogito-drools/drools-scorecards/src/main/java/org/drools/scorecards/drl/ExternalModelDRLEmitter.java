@@ -26,29 +26,37 @@ import org.drools.template.model.Rule;
 
 import java.util.List;
 
-public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
+public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
 
     @Override
-    protected void addDeclaredTypeContents(PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard) {
+    protected void addDeclaredTypeContents( PMML pmmlDocument,
+                                            StringBuilder stringBuilder,
+                                            Scorecard scorecard ) {
         //empty by design
     }
 
     @Override
-    protected void internalEmitDRL(PMML pmml, List<Rule> ruleList, Package aPackage) {
+    protected void internalEmitDRL( PMML pmml,
+                                    List<Rule> ruleList,
+                                    Package aPackage ) {
         //do nothing for now.
     }
 
     @Override
-    protected void addLHSConditions(Rule rule, PMML pmmlDocument, Scorecard scorecard, Characteristic c, Attribute scoreAttribute) {
+    protected void addLHSConditions( Rule rule,
+                                     PMML pmmlDocument,
+                                     Scorecard scorecard,
+                                     Characteristic c,
+                                     Attribute scoreAttribute ) {
         Extension extension = null;
-        for (Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
+        for ( Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas() ) {
             if ( obj instanceof MiningSchema ) {
-                MiningSchema miningSchema = (MiningSchema)obj;
-                String fieldName = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(c);
-                for (MiningField miningField : miningSchema.getMiningFields() ){
-                    if ( miningField.getName().equalsIgnoreCase(fieldName)) {
-                        if (miningField.getExtensions().size() > 0 ) {
-                            extension = miningField.getExtensions().get(0);
+                MiningSchema miningSchema = (MiningSchema) obj;
+                String fieldName = ScorecardPMMLUtils.extractFieldNameFromCharacteristic( c );
+                for ( MiningField miningField : miningSchema.getMiningFields() ) {
+                    if ( miningField.getName().equalsIgnoreCase( fieldName ) ) {
+                        if ( miningField.getExtensions().size() > 0 ) {
+                            extension = miningField.getExtensions().get( 0 );
                         }
                     }
                 }
@@ -57,147 +65,152 @@ public class ExternalModelDRLEmitter  extends AbstractDRLEmitter {
         //Extension extension =  ScorecardPMMLUtils.getExtension(c.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_EXTERNAL_CLASS);
         if ( extension != null ) {
             Condition condition = new Condition();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(c.getName()).append(" : ").append(extension.getValue());
-            createFieldRestriction(pmmlDocument, c, scoreAttribute, stringBuilder);
-            condition.setSnippet(stringBuilder.toString());
-            rule.addCondition(condition);
+            StringBuilder stringBuilder = new StringBuilder( "$" );
+            stringBuilder.append( c.getName() ).append( " : " ).append( extension.getValue() );
+            createFieldRestriction( pmmlDocument, c, scoreAttribute, stringBuilder );
+            condition.setSnippet( stringBuilder.toString() );
+            rule.addCondition( condition );
         }
     }
 
     @Override
-    protected void addAdditionalReasonCodeConsequence(Rule rule, Scorecard scorecard) {
-        if (!scorecard.isUseReasonCodes()) {
+    protected void addAdditionalReasonCodeConsequence( Rule rule,
+                                                       Scorecard scorecard ) {
+        if ( !scorecard.isUseReasonCodes() ) {
             return;
         }
-        String externalClassName =  null;
+        String externalClassName = null;
         String reasonCodesField = null;
-        String fieldName =  null;
+        String fieldName = null;
 
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        for ( Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas() ) {
+            if ( obj instanceof Output ) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
-                final OutputField outputField = outputFields.get(0);
-                externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
+                final OutputField outputField = outputFields.get( 0 );
+                externalClassName = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS ).getValue();
                 fieldName = outputField.getName();
-                Extension e = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD);
-                if (e != null) {
+                Extension e = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD );
+                if ( e != null ) {
                     reasonCodesField = e.getValue();
                 }
                 break;
             }
         }
-        if ( reasonCodesField != null && externalClassName != null && fieldName != null) {
+        if ( !( reasonCodesField == null || reasonCodesField.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) && !( fieldName == null || fieldName.isEmpty() ) ) {
             Consequence consequence = new Consequence();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(fieldName).append("Var").append(".set").append(Character.toUpperCase(reasonCodesField.charAt(0))).append(reasonCodesField.substring(1));
-            stringBuilder.append("($reasons);");
-            consequence.setSnippet(stringBuilder.toString());
-            rule.addConsequence(consequence);
+            StringBuilder stringBuilder = new StringBuilder( "$" );
+            stringBuilder.append( fieldName ).append( "Var" ).append( ".set" ).append( Character.toUpperCase( reasonCodesField.charAt( 0 ) ) ).append( reasonCodesField.substring( 1 ) );
+            stringBuilder.append( "($reasons);" );
+            consequence.setSnippet( stringBuilder.toString() );
+            rule.addConsequence( consequence );
         }
 
     }
 
     @Override
-    protected void addAdditionalReasonCodeCondition(Rule rule, Scorecard scorecard) {
-        if (!scorecard.isUseReasonCodes()) {
+    protected void addAdditionalReasonCodeCondition( Rule rule,
+                                                     Scorecard scorecard ) {
+        if ( !scorecard.isUseReasonCodes() ) {
             return;
         }
-        String externalClassName =  null;
+        String externalClassName = null;
         String reasonCodesField = null;
-        String fieldName =  null;
+        String fieldName = null;
 
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+        for ( Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas() ) {
+            if ( obj instanceof Output ) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
-                final OutputField outputField = outputFields.get(0);
-                externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
+                final OutputField outputField = outputFields.get( 0 );
+                externalClassName = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS ).getValue();
                 fieldName = outputField.getName();
-                Extension e = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD);
-                if (e != null) {
+                Extension e = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD );
+                if ( e != null ) {
                     reasonCodesField = e.getValue();
                 }
                 break;
             }
         }
-        if ( reasonCodesField != null && externalClassName != null && fieldName != null) {
+        if ( !( reasonCodesField == null || reasonCodesField.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) && !( fieldName == null || fieldName.isEmpty() ) ) {
             Condition condition = new Condition();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(fieldName).append("Var : ").append(externalClassName).append("()");
-            condition.setSnippet(stringBuilder.toString());
-            rule.addCondition(condition);
+            StringBuilder stringBuilder = new StringBuilder( "$" );
+            stringBuilder.append( fieldName ).append( "Var : " ).append( externalClassName ).append( "()" );
+            condition.setSnippet( stringBuilder.toString() );
+            rule.addCondition( condition );
         }
 
     }
 
     @Override
-    protected void addAdditionalSummationConsequence(Rule calcTotalRule, Scorecard scorecard) {
-        String externalClassName =  null;
-        String fieldName =  null;
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+    protected void addAdditionalSummationConsequence( Rule calcTotalRule,
+                                                      Scorecard scorecard ) {
+        String externalClassName = null;
+        String fieldName = null;
+        for ( Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas() ) {
+            if ( obj instanceof Output ) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
-                final OutputField outputField = outputFields.get(0);
+                final OutputField outputField = outputFields.get( 0 );
                 fieldName = outputField.getName();
-                externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
+                externalClassName = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS ).getValue();
                 break;
             }
         }
-        if ( fieldName != null && externalClassName != null) {
+        if ( !( fieldName == null || fieldName.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) ) {
             Consequence consequence = new Consequence();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(fieldName).append("Var").append(".set").append(Character.toUpperCase(fieldName.charAt(0))).append(fieldName.substring(1));
-            if (scorecard.getInitialScore() > 0 ) {
-                stringBuilder.append("($calculatedScore+$initialScore);");
+            StringBuilder stringBuilder = new StringBuilder( "$" );
+            stringBuilder.append( fieldName ).append( "Var" ).append( ".set" ).append( Character.toUpperCase( fieldName.charAt( 0 ) ) ).append( fieldName.substring( 1 ) );
+            if ( scorecard.getInitialScore() > 0 ) {
+                stringBuilder.append( "($calculatedScore+$initialScore);" );
             } else {
-                stringBuilder.append("($calculatedScore);");
+                stringBuilder.append( "($calculatedScore);" );
             }
-            consequence.setSnippet(stringBuilder.toString());
-            calcTotalRule.addConsequence(consequence);
+            consequence.setSnippet( stringBuilder.toString() );
+            calcTotalRule.addConsequence( consequence );
         }
 
     }
 
     @Override
-    protected void addAdditionalSummationCondition(Rule calcTotalRule, Scorecard scorecard) {
-        String externalClassName =  null;
-        String fieldName =  null;
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+    protected void addAdditionalSummationCondition( Rule calcTotalRule,
+                                                    Scorecard scorecard ) {
+        String externalClassName = null;
+        String fieldName = null;
+        for ( Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas() ) {
+            if ( obj instanceof Output ) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
-                final OutputField outputField = outputFields.get(0);
+                final OutputField outputField = outputFields.get( 0 );
                 fieldName = outputField.getName();
-                externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
+                externalClassName = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS ).getValue();
                 break;
             }
         }
-        if ( fieldName != null && externalClassName != null) {
+        if ( !( fieldName == null || fieldName.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) ) {
             Condition condition = new Condition();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(fieldName).append("Var : ").append(externalClassName).append("()");
-            condition.setSnippet(stringBuilder.toString());
-            calcTotalRule.addCondition(condition);
+            StringBuilder stringBuilder = new StringBuilder( "$" );
+            stringBuilder.append( fieldName ).append( "Var : " ).append( externalClassName ).append( "()" );
+            condition.setSnippet( stringBuilder.toString() );
+            calcTotalRule.addCondition( condition );
         }
     }
 
-    protected Condition createInitialRuleCondition(Scorecard scorecard, String objectClass) {
-        String externalClassName =  null;
-        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
-            if ( obj instanceof Output) {
-                Output output = (Output)obj;
+    protected Condition createInitialRuleCondition( Scorecard scorecard,
+                                                    String objectClass ) {
+        String externalClassName = null;
+        for ( Object obj : scorecard.getExtensionsAndCharacteristicsAndMiningSchemas() ) {
+            if ( obj instanceof Output ) {
+                Output output = (Output) obj;
                 final List<OutputField> outputFields = output.getOutputFields();
-                final OutputField outputField = outputFields.get(0);
-                externalClassName = ScorecardPMMLUtils.getExtension(outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS).getValue();
+                final OutputField outputField = outputFields.get( 0 );
+                externalClassName = ScorecardPMMLUtils.getExtension( outputField.getExtensions(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS ).getValue();
                 break;
             }
         }
-        if ( externalClassName != null) {
+        if ( !( externalClassName == null || externalClassName.isEmpty() ) ) {
             Condition condition = new Condition();
-            condition.setSnippet(externalClassName+"()");
+            condition.setSnippet( externalClassName + "()" );
             return condition;
         }
         return null;
