@@ -19,6 +19,7 @@ package org.drools.workbench.models.commons.backend.rule;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
+import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
@@ -403,6 +404,98 @@ public class BRDRLPersistenceUnmarshallingTest {
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp.getConstraintValueType() );
+    }
+
+    @Test
+    @Ignore("Extends no picked up")
+    public void testExtends() {
+        String drl = "rule \"rule1\" extends \"rule2 \n"
+                + "when\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals("rule1",
+                m.name);
+
+        assertEquals("rule2", m.parentName);
+    }
+
+    @Test
+    public void testRuleNameWithoutTheQuotes() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                m.name );
+
+    }
+
+
+    @Test
+    @Ignore("Metadata broken")
+    public void testMetaData() {
+        String drl = "rule rule1\n"
+                + "@author( Bob )\n"
+                + "when\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals(1,
+                m.metadataList.length);
+        assertEquals( "author",
+                m.metadataList[0].getAttributeName() );
+        assertEquals( "Bob",
+                m.metadataList[0].getValue() );
+
+    }
+
+    @Test
+    public void testAttributes() {
+        String drl = "rule rule1\n"
+                + "salience 42\n"
+                + "when\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals(1,
+                m.attributes.length);
+        assertEquals( "salience",
+                m.attributes[0].getAttributeName() );
+        assertEquals( "42",
+                m.attributes[0].getValue() );
+
+    }
+
+
+    @Test
+    @Ignore("Eval, or actually the free form line broken, a field in the editor that can contain anything")
+    public void testEval() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "eval( true )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals(1, m.lhs.length);
+        assertTrue(m.lhs[0] instanceof FreeFormLine);
+        assertEquals("eval( true )", ((FreeFormLine)m.lhs[0]).getText());
     }
 
     @Test
