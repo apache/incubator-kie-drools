@@ -16,7 +16,9 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
 import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
 import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
@@ -27,6 +29,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BRDRLPersistenceUnmarshallingTest {
 
@@ -417,10 +420,10 @@ public class BRDRLPersistenceUnmarshallingTest {
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
 
         assertNotNull( m );
-        assertEquals("rule1",
-                m.name);
+        assertEquals( "rule1",
+                      m.name );
 
-        assertEquals("rule2", m.parentName);
+        assertEquals( "rule2", m.parentName );
     }
 
     @Test
@@ -434,10 +437,9 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         assertNotNull( m );
         assertEquals( "rule1",
-                m.name );
+                      m.name );
 
     }
-
 
     @Test
     @Ignore("Metadata broken")
@@ -451,12 +453,12 @@ public class BRDRLPersistenceUnmarshallingTest {
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
 
         assertNotNull( m );
-        assertEquals(1,
-                m.metadataList.length);
+        assertEquals( 1,
+                      m.metadataList.length );
         assertEquals( "author",
-                m.metadataList[0].getAttributeName() );
+                      m.metadataList[ 0 ].getAttributeName() );
         assertEquals( "Bob",
-                m.metadataList[0].getValue() );
+                      m.metadataList[ 0 ].getValue() );
 
     }
 
@@ -471,15 +473,14 @@ public class BRDRLPersistenceUnmarshallingTest {
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
 
         assertNotNull( m );
-        assertEquals(1,
-                m.attributes.length);
+        assertEquals( 1,
+                      m.attributes.length );
         assertEquals( "salience",
-                m.attributes[0].getAttributeName() );
+                      m.attributes[ 0 ].getAttributeName() );
         assertEquals( "42",
-                m.attributes[0].getValue() );
+                      m.attributes[ 0 ].getValue() );
 
     }
-
 
     @Test
     @Ignore("Eval, or actually the free form line broken, a field in the editor that can contain anything")
@@ -493,9 +494,9 @@ public class BRDRLPersistenceUnmarshallingTest {
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
 
         assertNotNull( m );
-        assertEquals(1, m.lhs.length);
-        assertTrue(m.lhs[0] instanceof FreeFormLine);
-        assertEquals("eval( true )", ((FreeFormLine)m.lhs[0]).getText());
+        assertEquals( 1, m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
+        assertEquals( "eval( true )", ( (FreeFormLine) m.lhs[ 0 ] ).getText() );
     }
 
     @Test
@@ -549,6 +550,287 @@ public class BRDRLPersistenceUnmarshallingTest {
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_VARIABLE,
                       sfp.getConstraintValueType() );
+    }
+
+    @Test
+    @Ignore("Composite Fact Patterns are broken")
+    public void testCompositeFactPatternWithOr() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "( Person( age == 42 ) or Person( age == 43 ) )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof CompositeFactPattern );
+        CompositeFactPattern cfp = (CompositeFactPattern) p;
+        assertEquals( CompositeFactPattern.COMPOSITE_TYPE_OR,
+                      cfp.getType() );
+
+        //LHS sub-patterns
+        assertEquals( 2,
+                      cfp.getPatterns().length );
+        IPattern cfp_p1 = cfp.getPatterns()[ 0 ];
+        assertTrue( cfp_p1 instanceof FactPattern );
+        FactPattern fp1 = (FactPattern) cfp_p1;
+        assertEquals( "Person",
+                      fp1.getFactType() );
+        assertEquals( 1,
+                      fp1.getConstraintList().getConstraints().length );
+        assertTrue( fp1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint cfp_sfp1 = (SingleFieldConstraint) fp1.getConstraint( 0 );
+        assertEquals( "Person",
+                      cfp_sfp1.getFactType() );
+        assertEquals( "age",
+                      cfp_sfp1.getFieldName() );
+        assertEquals( "==",
+                      cfp_sfp1.getOperator() );
+        assertEquals( "42",
+                      cfp_sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cfp_sfp1.getConstraintValueType() );
+
+        IPattern cfp_p2 = cfp.getPatterns()[ 1 ];
+        assertTrue( cfp_p2 instanceof FactPattern );
+        FactPattern fp2 = (FactPattern) cfp_p2;
+        assertEquals( "Person",
+                      fp2.getFactType() );
+        assertTrue( fp2.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint cfp_sfp2 = (SingleFieldConstraint) fp2.getConstraint( 0 );
+        assertEquals( "Person",
+                      cfp_sfp2.getFactType() );
+        assertEquals( "age",
+                      cfp_sfp2.getFieldName() );
+        assertEquals( "==",
+                      cfp_sfp2.getOperator() );
+        assertEquals( "43",
+                      cfp_sfp2.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cfp_sfp2.getConstraintValueType() );
+    }
+
+    @Test
+    public void testReciprocal_CompositeFactPatternWithOr() {
+        //This is the inverse of "CompositeFactPatternWithOr"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "( Person( age == 42 ) or Person( age == 43 ) )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        //LHS Patterns
+        CompositeFactPattern cfp = new CompositeFactPattern();
+        cfp.setType( CompositeFactPattern.COMPOSITE_TYPE_OR );
+
+        //LHS sub-patterns
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "Person" );
+
+        SingleFieldConstraint cfp_sfp1 = new SingleFieldConstraint();
+        cfp_sfp1.setFactType( "Person" );
+        cfp_sfp1.setFieldName( "age" );
+        cfp_sfp1.setOperator( "==" );
+        cfp_sfp1.setValue( "42" );
+        cfp_sfp1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        cfp_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        fp1.addConstraint( cfp_sfp1 );
+        cfp.addFactPattern( fp1 );
+
+        FactPattern fp2 = new FactPattern();
+        fp2.setFactType( "Person" );
+
+        SingleFieldConstraint cfp_sfp2 = new SingleFieldConstraint();
+        cfp_sfp2.setFactType( "Person" );
+        cfp_sfp2.setFieldName( "age" );
+        cfp_sfp2.setOperator( "==" );
+        cfp_sfp2.setValue( "43" );
+        cfp_sfp2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        cfp_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        fp2.addConstraint( cfp_sfp2 );
+        cfp.addFactPattern( fp2 );
+
+        m.addLhsItem( cfp );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
+    }
+
+    @Test
+    @Ignore("Composite Fact Patterns are broken")
+    public void testCompositeFactPatternWithOrAndCompositeFieldConstraint() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "( Person( age == 42 ) or Person( age == 43 || age == 44) )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof CompositeFactPattern );
+
+        CompositeFactPattern cfp = (CompositeFactPattern) p;
+        assertEquals( CompositeFactPattern.COMPOSITE_TYPE_OR,
+                      cfp.getType() );
+
+        //LHS sub-patterns
+        assertEquals( 2,
+                      cfp.getPatterns().length );
+        IPattern cfp_p1 = cfp.getPatterns()[ 0 ];
+        assertTrue( cfp_p1 instanceof FactPattern );
+        FactPattern fp1 = (FactPattern) cfp_p1;
+        assertEquals( "Person",
+                      fp1.getFactType() );
+        assertEquals( 1,
+                      fp1.getConstraintList().getConstraints().length );
+        assertTrue( fp1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint cfp_sfp1 = (SingleFieldConstraint) fp1.getConstraint( 0 );
+        assertEquals( "Person",
+                      cfp_sfp1.getFactType() );
+        assertEquals( "age",
+                      cfp_sfp1.getFieldName() );
+        assertEquals( "==",
+                      cfp_sfp1.getOperator() );
+        assertEquals( "42",
+                      cfp_sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cfp_sfp1.getConstraintValueType() );
+
+        IPattern cfp_p2 = cfp.getPatterns()[ 1 ];
+        assertTrue( cfp_p2 instanceof FactPattern );
+        FactPattern fp2 = (FactPattern) cfp_p2;
+        assertEquals( 1,
+                      fp2.getConstraintList().getConstraints().length );
+        assertTrue( fp2.getConstraint( 0 ) instanceof CompositeFieldConstraint );
+
+        CompositeFieldConstraint cfp_p2_cfp = (CompositeFieldConstraint) fp2.getConstraint( 0 );
+        assertEquals( "||",
+                      cfp_p2_cfp.getCompositeJunctionType() );
+        assertEquals( 2,
+                      cfp_p2_cfp.getNumberOfConstraints() );
+        assertTrue( cfp_p2_cfp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue( cfp_p2_cfp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint cfp_p2_sfp1 = (SingleFieldConstraint) cfp_p2_cfp.getConstraint( 0 );
+        assertEquals( "Person",
+                      cfp_p2_sfp1.getFactType() );
+        assertEquals( "age",
+                      cfp_p2_sfp1.getFieldName() );
+        assertEquals( "==",
+                      cfp_p2_sfp1.getOperator() );
+        assertEquals( "43",
+                      cfp_p2_sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cfp_p2_sfp1.getConstraintValueType() );
+
+        SingleFieldConstraint cfp_p2_sfp2 = (SingleFieldConstraint) cfp_p2_cfp.getConstraint( 1 );
+        assertEquals( "Person",
+                      cfp_p2_sfp2.getFactType() );
+        assertEquals( "age",
+                      cfp_p2_sfp2.getFieldName() );
+        assertEquals( "==",
+                      cfp_p2_sfp2.getOperator() );
+        assertEquals( "44",
+                      cfp_p2_sfp2.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cfp_p2_sfp2.getConstraintValueType() );
+    }
+
+    @Test
+    public void testReciprocal_CompositeFactPatternWithOrAndCompositeFieldConstraint() {
+        //This is the inverse of "CompositeFactPatternWithOrAndCompositeFieldConstraint"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "( Person( age == 42 ) or Person( age == 43 || age == 44) )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        //LHS Pattern
+        CompositeFactPattern cfp = new CompositeFactPattern();
+        cfp.setType( CompositeFactPattern.COMPOSITE_TYPE_OR );
+
+        //LHS sub-patterns
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "Person" );
+
+        SingleFieldConstraint fp1_sfp1 = new SingleFieldConstraint();
+        fp1_sfp1.setFactType( "Person" );
+        fp1_sfp1.setFieldName( "age" );
+        fp1_sfp1.setOperator( "==" );
+        fp1_sfp1.setValue( "42" );
+        fp1_sfp1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        fp1_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        fp1.addConstraint( fp1_sfp1 );
+
+        FactPattern fp2 = new FactPattern();
+        fp2.setFactType( "Person" );
+
+        CompositeFieldConstraint fp2_cfp = new CompositeFieldConstraint();
+        fp2_cfp.setCompositeJunctionType( CompositeFieldConstraint.COMPOSITE_TYPE_OR );
+        fp2.addConstraint( fp2_cfp );
+
+        SingleFieldConstraint fp2_sfp1 = new SingleFieldConstraint();
+        fp2_sfp1.setFactType( "Person" );
+        fp2_sfp1.setFieldName( "age" );
+        fp2_sfp1.setOperator( "==" );
+        fp2_sfp1.setValue( "43" );
+        fp2_sfp1.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        fp2_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        fp2_cfp.addConstraint( fp2_sfp1 );
+
+        SingleFieldConstraint fp2_sfp2 = new SingleFieldConstraint();
+        fp2_sfp2.setFactType( "Person" );
+        fp2_sfp2.setFieldName( "age" );
+        fp2_sfp2.setOperator( "==" );
+        fp2_sfp2.setValue( "44" );
+        fp2_sfp2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        fp2_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        fp2_cfp.addConstraint( fp2_sfp2 );
+
+        cfp.addFactPattern( fp1 );
+        cfp.addFactPattern( fp2 );
+        m.addLhsItem( cfp );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
+
+    }
+
+    private void assertEqualsIgnoreWhitespace( final String expected,
+                                               final String actual ) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
+
+        assertEquals( cleanExpected,
+                      cleanActual );
     }
 
 }
