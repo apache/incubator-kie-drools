@@ -1,0 +1,12 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.CepQueryTest.TestEvent;
+
+declare TestEvent
+    @role( event )
+end
+
+query EventsAfterZeroToNineSeconds
+    $event : TestEvent() from entry-point FirstStream
+    $result : TestEvent( this after [0s, 9s] $event) from entry-point SecondStream
+end
