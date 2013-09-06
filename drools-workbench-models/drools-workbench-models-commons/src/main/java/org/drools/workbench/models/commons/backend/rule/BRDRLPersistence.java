@@ -33,6 +33,7 @@ import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
@@ -1760,6 +1761,22 @@ public class BRDRLPersistence
             factPattern.setBoundName( identifier );
             boundParams.put( identifier, type );
         }
+        for (BehaviorDescr behavior : pattern.getBehaviors()) {
+            if ( behavior.getText().equals("window") ) {
+                CEPWindow window = new CEPWindow();
+                window.setOperator( "over window:" + behavior.getSubType() );
+                window.setParameter("org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                    "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder");
+                List<String> params = behavior.getParameters();
+                if (params != null) {
+                    int i = 1;
+                    for (String param : params) {
+                        window.setParameter("" + i++, param);
+                    }
+                }
+                factPattern.setWindow(window);
+            }
+        }
         return factPattern;
     }
 
@@ -2333,47 +2350,115 @@ public class BRDRLPersistence
                 }
             }
 
-            return fieldName.contains( "." ) ?
-                    asExpressionBuilderConstraint( factPattern,
-                                                   fieldName,
-                                                   operator,
-                                                   value ) :
-                    asSingleFieldConstraint( factPattern.getFactType(),
-                                             fieldName,
-                                             operator,
-                                             value );
+            return createFieldConstraint(factPattern, fieldName, value, operator, fieldName.contains( "." ));
         }
 
-        private FieldConstraint asSingleFieldConstraint( String factType,
-                                                         String fieldName,
-                                                         String operator,
-                                                         String value ) {
-            SingleFieldConstraint con = new SingleFieldConstraint();
-            fieldName = setFieldBindingOnContraint( fieldName,
-                                                    con );
-            con.setFactType( factType );
-            con.setFieldName( fieldName );
-            setOperatorAndValueOnConstraint( operator,
-                                             value,
-                                             con );
+        private SingleFieldConstraint createNullCheckFieldConstraint(FactPattern factPattern, String fieldName) {
+            return createFieldConstraint(factPattern, fieldName, null, null, true);
+        }
+
+        private SingleFieldConstraint createFieldConstraint(FactPattern factPattern,
+                                                            String fieldName,
+                                                            String value,
+                                                            String operator,
+                                                            boolean isExpression) {
+            String operatorParams = null;
+            if (value != null && value.startsWith("[")) {
+                int endSquare = value.indexOf(']');
+                operatorParams = value.substring(1, endSquare).trim();
+                value = value.substring(endSquare+1).trim();
+            }
+
+            SingleFieldConstraint fieldConstraint = isExpression ?
+                    createExpressionBuilderConstraint(factPattern, fieldName, operator, value) :
+                    createSingleFieldConstraint(fieldName, operator, value);
+
+            if (operatorParams != null) {
+                int i = 0;
+                for (String param : operatorParams.split(",")) {
+                    ((BaseSingleFieldConstraint) fieldConstraint).setParameter("" + i++, param.trim());
+                }
+                ((BaseSingleFieldConstraint) fieldConstraint).setParameter("org.kie.guvnor.guided.editor.visibleParameterSet", "" + i);
+                ((BaseSingleFieldConstraint) fieldConstraint).setParameter("org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                                                           "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder");
+            }
+
+            if ( fieldName.equals("this") && (operator == null || operator.equals("!= null")) ) {
+                fieldConstraint.setFieldType(DataType.TYPE_THIS);
+            }
+            fieldConstraint.setFactType( factPattern.getFactType() );
+
+            return fieldConstraint;
+        }
+
+        private SingleFieldConstraint createExpressionBuilderConstraint( FactPattern factPattern,
+                                                                         String fieldName,
+                                                                         String operator,
+                                                                         String value ) {
+            // TODO: when is it necessary to use
+            // SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern, fieldName, operator, value );
+
+            int dotPos = fieldName.lastIndexOf('.');
+            SingleFieldConstraint con = createSingleFieldConstraint(dotPos > 0 ? fieldName.substring(dotPos+1) : fieldName, operator, value);
+
+            for (FieldConstraint fieldConstraint : factPattern.getFieldConstraints()) {
+                if (fieldConstraint instanceof SingleFieldConstraint) {
+                    SingleFieldConstraint sfc = (SingleFieldConstraint) fieldConstraint;
+                    if (sfc.getOperator().equals("!= null")) {
+                        int parentPos = fieldName.indexOf(sfc.getFieldName() + ".");
+                        if (parentPos >= 0 && !fieldName.substring(parentPos + sfc.getFieldName().length()+1).contains(".")) {
+                            con.setParent(sfc);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if ( con.getParent() == null ) {
+                con.setParent( createParentFor(factPattern, fieldName) );
+            }
+
             return con;
         }
 
-        private FieldConstraint asExpressionBuilderConstraint( FactPattern factPattern,
-                                                               String fieldName,
-                                                               String operator,
-                                                               String value ) {
+        private SingleFieldConstraint createSingleFieldConstraint( String fieldName,
+                                                                   String operator,
+                                                                   String value ) {
+            SingleFieldConstraint con = new SingleFieldConstraint();
+            fieldName = setFieldBindingOnContraint( fieldName, con );
+            con.setFieldName( fieldName );
+            setOperatorAndValueOnConstraint( operator, value, con );
+            return con;
+        }
+
+        private SingleFieldConstraintEBLeftSide createSingleFieldConstraintEBLeftSide( FactPattern factPattern,
+                                                                                       String fieldName,
+                                                                                       String operator,
+                                                                                       String value ) {
             SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+
             fieldName = setFieldBindingOnContraint( fieldName, con );
             con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
 
             String type = setOperatorAndValueOnConstraint( operator, value, con );
             String[] splits = fieldName.split( "\\." );
+
             for ( int i = 0; i < splits.length - 1; i++ ) {
                 con.getExpressionLeftSide().appendPart( new ExpressionField( splits[ i ].trim(), "", DataType.TYPE_OBJECT ) );
             }
             con.getExpressionLeftSide().appendPart( new ExpressionField( splits[ splits.length - 1 ].trim(), "", type ) );
+
             return con;
+        }
+
+        private SingleFieldConstraint createParentFor( FactPattern factPattern, String fieldName ) {
+            int dotPos = fieldName.lastIndexOf('.');
+            if (dotPos > 0) {
+                SingleFieldConstraint constraint = createNullCheckFieldConstraint(factPattern, fieldName.substring(0, dotPos));
+                factPattern.addConstraint( constraint );
+                return constraint;
+            }
+            return null;
         }
 
         private String setFieldBindingOnContraint( String fieldName,
@@ -2390,35 +2475,32 @@ public class BRDRLPersistence
         private String setOperatorAndValueOnConstraint( String operator,
                                                         String value,
                                                         SingleFieldConstraint con ) {
-            if ( operator != null ) {
-                con.setOperator( operator );
-                String type = null;
-                boolean isAnd = false;
-                String[] splittedValue = new String[ 0 ];
-                if ( value != null ) {
-                    isAnd = value.contains( "&&" );
-                    splittedValue = isAnd ? value.split( "\\&\\&" ) : value.split( "\\|\\|" );
-                    type = setValueOnConstraint( operator,
-                                                 con,
-                                                 splittedValue[ 0 ].trim() );
-                }
-
-                if ( splittedValue.length > 1 ) {
-                    ConnectiveConstraint[] connectiveConstraints = new ConnectiveConstraint[ splittedValue.length - 1 ];
-                    for ( int i = 0; i < connectiveConstraints.length; i++ ) {
-                        String constraint = splittedValue[ i + 1 ].trim();
-                        String connectiveOperator = findOperator( constraint );
-                        String connectiveValue = constraint.substring( connectiveOperator.length() ).trim();
-
-                        connectiveConstraints[ i ] = new ConnectiveConstraint();
-                        connectiveConstraints[ i ].setOperator( ( isAnd ? "&& " : "|| " ) + connectiveOperator );
-                        setValueOnConstraint( operator, connectiveConstraints[ i ], connectiveValue );
-                    }
-                    con.setConnectives( connectiveConstraints );
-                }
-                return type;
+            con.setOperator( operator );
+            String type = null;
+            boolean isAnd = false;
+            String[] splittedValue = new String[ 0 ];
+            if ( value != null ) {
+                isAnd = value.contains( "&&" );
+                splittedValue = isAnd ? value.split( "\\&\\&" ) : value.split( "\\|\\|" );
+                type = setValueOnConstraint( operator,
+                                             con,
+                                             splittedValue[ 0 ].trim() );
             }
-            return null;
+
+            if ( splittedValue.length > 1 ) {
+                ConnectiveConstraint[] connectiveConstraints = new ConnectiveConstraint[ splittedValue.length - 1 ];
+                for ( int i = 0; i < connectiveConstraints.length; i++ ) {
+                    String constraint = splittedValue[ i + 1 ].trim();
+                    String connectiveOperator = findOperator( constraint );
+                    String connectiveValue = constraint.substring( connectiveOperator.length() ).trim();
+
+                    connectiveConstraints[ i ] = new ConnectiveConstraint();
+                    connectiveConstraints[ i ].setOperator( ( isAnd ? "&& " : "|| " ) + connectiveOperator );
+                    setValueOnConstraint( operator, connectiveConstraints[ i ], connectiveValue );
+                }
+                con.setConnectives( connectiveConstraints );
+            }
+            return type;
         }
 
         private String setValueOnConstraint( String operator,
@@ -2430,7 +2512,7 @@ public class BRDRLPersistence
                 con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
                 con.setValue( value.substring( 1, value.length() - 1 ) );
             } else if ( value.startsWith( "(" ) ) {
-                if ( operator.contains( "in" ) ) {
+                if ( operator != null && operator.contains( "in" ) ) {
                     value = unwrapParenthesis( value );
                     type = value.startsWith( "\"" ) ? DataType.TYPE_STRING : DataType.TYPE_NUMERIC_INTEGER;
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
@@ -2454,6 +2536,10 @@ public class BRDRLPersistence
                     } else if ( value.endsWith( "B" ) ) {
                         type = DataType.TYPE_NUMERIC_BIGDECIMAL;
                         value = value.substring( 0, value.length() - 1 );
+                    } else if ( value.endsWith( "f" ) ) {
+                        type = DataType.TYPE_NUMERIC_FLOAT;
+                    } else if ( value.endsWith( "d" ) ) {
+                        type = DataType.TYPE_NUMERIC_DOUBLE;
                     } else {
                         type = DataType.TYPE_NUMERIC_INTEGER;
                     }
