@@ -369,7 +369,6 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Unmarshalling of CEP is broken")
     public void testSingleFieldConstraintCEPOperator() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
@@ -410,9 +409,8 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Extends no picked up")
     public void testExtends() {
-        String drl = "rule \"rule1\" extends \"rule2 \n"
+        String drl = "rule \"rule1\" extends \"rule2\" \n"
                 + "when\n"
                 + "then\n"
                 + "end";
@@ -442,7 +440,6 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Metadata broken")
     public void testMetaData() {
         String drl = "rule rule1\n"
                 + "@author( Bob )\n"
@@ -483,7 +480,6 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Eval, or actually the free form line broken, a field in the editor that can contain anything")
     public void testEval() {
         String drl = "rule rule1\n"
                 + "when\n"
@@ -553,7 +549,6 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Composite Fact Patterns are broken")
     public void testCompositeFactPatternWithOr() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
@@ -670,7 +665,6 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Composite Fact Patterns are broken")
     public void testCompositeFactPatternWithOrAndCompositeFieldConstraint() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
