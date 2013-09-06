@@ -1874,10 +1874,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             String superTypePackageName = qname.getNamespace();
             String fullSuper = qname.getFullName();
 
-            merge = merge || mergeInheritedFields( simpleSuperTypeName,
-                                                   superTypePackageName,
-                                                   fullSuper,
-                                                   typeDescr );
+            merge = mergeInheritedFields( simpleSuperTypeName,
+                                          superTypePackageName,
+                                          fullSuper,
+                                          typeDescr ) || merge;
         }
 
         return merge;

@@ -758,6 +758,42 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testMultipleInheritance() throws Exception {
+        // DROOLS-248
+        String s1 = "package org.drools.test;\n" +
+                "\n" +
+                "\n" +
+                "declare trait Student\n" +
+                "    studyingCountry : String\n" +
+                "    hasAssistantship : boolean\n" +
+                "end\n" +
+                "\n" +
+                "declare trait Worker\n" +
+                "    pob : String\n" +
+                "    workingCountry : String\n" +
+                "end\n" +
+                "\n" +
+                "declare trait StudentWorker extends Student, Worker\n" +
+                "    uniName : String\n" +
+                "end" +
+                "";
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertFalse( kBuilder.hasErrors() );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        FactType sw = knowledgeBase.getFactType( "org.drools.test", "StudentWorker" );
+        assertEquals( 5, sw.getFields().size() );
+
+    }
+
 }
 
 
