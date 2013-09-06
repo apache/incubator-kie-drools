@@ -30,11 +30,13 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDescr;
+import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.NotDescr;
@@ -43,6 +45,8 @@ import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.drools.core.base.evaluators.Operator;
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
@@ -87,6 +91,7 @@ import org.drools.workbench.models.commons.shared.rule.IAction;
 import org.drools.workbench.models.commons.shared.rule.IFactPattern;
 import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
+import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
@@ -120,6 +125,8 @@ public class BRDRLPersistence
     protected Map<String, FieldConstraint> bindingsFields;
 
     protected BRDRLPersistence() {
+        // register custom evaluators
+        new EvaluatorRegistry( getClass().getClassLoader() );
     }
 
     public static BRLPersistence getInstance() {
@@ -1402,6 +1409,13 @@ public class BRDRLPersistence
         model.name = ruleDescr.getName();
         model.parentName = ruleDescr.getParentName();
 
+        Map<String, AnnotationDescr> annotations = ruleDescr.getAnnotations();
+        if (annotations != null) {
+            for (AnnotationDescr annotation : annotations.values()) {
+                model.addMetadata( new RuleMetadata( annotation.getName(), annotation.getValue().toString() ) );
+            }
+        }
+
         //De-serialize Package name
         final String packageName = PackageNameParser.parsePackageName( expandedDRLInfo.plainDrl );
         model.setPackageName( packageName );
@@ -1566,7 +1580,7 @@ public class BRDRLPersistence
 
     private boolean isValidLHSStatement( String lhs ) {
         // TODO: How to identify a non valid (free form) lhs statement?
-        return lhs.indexOf( '(' ) > 0 || lhs.indexOf( ':' ) > 0;
+        return lhs.indexOf( '(' ) >= 0 || lhs.indexOf( ':' ) >= 0;
     }
 
     private enum RuleSection {HEADER, LHS, RHS}
@@ -1640,7 +1654,7 @@ public class BRDRLPersistence
 
     private RuleDescr parseDrl( ExpandedDRLInfo expandedDRLInfo ) {
         DrlParser drlParser = new DrlParser();
-        PackageDescr packageDescr = null;
+        PackageDescr packageDescr;
         try {
             packageDescr = drlParser.parse( true, expandedDRLInfo.plainDrl );
         } catch ( DroolsParserException e ) {
@@ -1718,6 +1732,10 @@ public class BRDRLPersistence
         } else if ( descr instanceof AndDescr ) {
             AndDescr andDescr = (AndDescr) descr;
             return parseBaseDescr( andDescr.getDescrs().get( 0 ), boundParams );
+        } else if ( descr instanceof EvalDescr ) {
+            FreeFormLine freeFormLine = new FreeFormLine();
+            freeFormLine.setText("eval( " + ((EvalDescr) descr).getContent() + " )");
+            return freeFormLine;
         } else if ( descr instanceof ConditionalElementDescr ) {
             return parseExistentialElementDescr( (ConditionalElementDescr) descr, boundParams );
         }
@@ -1819,14 +1837,22 @@ public class BRDRLPersistence
         }
     }
 
-    //The order of these is important to prevent early (incorrect) matches
-    private static final String[] OPERATORS = new String[]{ "==", "!=", "<=", ">=", "<", ">", "matches", "soundslike", "contains", "excludes", "not in", "in" };
-
     private static String findOperator( String expr ) {
-        for ( String op : OPERATORS ) {
-            if ( expr.contains( op ) ) {
-                return op;
+        for ( Operator op : Operator.getAllOperators() ) {
+            if ( op.isNegated() ) {
+                if ( expr.contains( " not " + op.getOperatorString() ) ) {
+                    return "not " + op.getOperatorString();
+                }
             }
+            if ( expr.contains(op.getOperatorString()) ) {
+                return op.getOperatorString();
+            }
+        }
+        if ( expr.contains("not in") ) {
+            return "not in";
+        }
+        if ( expr.contains(" in") ) {
+            return "in";
         }
         return null;
     }
@@ -2296,7 +2322,7 @@ public class BRDRLPersistence
                 int opPos = expr.indexOf( operator );
                 fieldName = expr.substring( 0,
                                             opPos ).trim();
-            } else if ( operator == null ) {
+            } else {
                 operator = findOperator( expr );
                 if ( operator != null ) {
                     int opPos = expr.indexOf( operator );
