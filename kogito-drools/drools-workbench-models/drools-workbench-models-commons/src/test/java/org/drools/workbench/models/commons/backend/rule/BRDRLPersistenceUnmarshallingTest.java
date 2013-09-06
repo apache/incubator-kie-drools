@@ -1159,7 +1159,137 @@ public class BRDRLPersistenceUnmarshallingTest {
         String actualDrl = BRDRLPersistence.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
+    }
 
+    @Test
+    @Ignore("Nested Field Constraints are broken")
+    public void testNestedFieldConstraints() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "ParentType( this != null, this.parentChildField != null, this.parentChildField.childField == \"hello\" )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "ParentType",
+                      fp.getFactType() );
+
+        assertEquals( 3,
+                      fp.getConstraintList().getConstraints().length );
+
+        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint sfp0 = (SingleFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "ParentType",
+                      sfp0.getFactType() );
+        assertEquals( "this",
+                      sfp0.getFieldName() );
+        assertEquals( DataType.TYPE_THIS,
+                      sfp0.getFieldType() );
+        assertEquals( "!= null",
+                      sfp0.getOperator() );
+        assertNull( sfp0.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                      sfp0.getConstraintValueType() );
+        assertNull( sfp0.getParent() );
+
+        assertTrue( fp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint sfp1 = (SingleFieldConstraint) fp.getConstraint( 1 );
+        assertEquals( "ParentType",
+                      sfp1.getFactType() );
+        assertEquals( "parentChildField",
+                      sfp1.getFieldName() );
+        assertEquals( "ChildType",
+                      sfp1.getFieldType() );
+        assertEquals( "!= null",
+                      sfp1.getOperator() );
+        assertNull( sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
+                      sfp1.getConstraintValueType() );
+        assertSame( sfp0,
+                    sfp1.getParent() );
+
+        assertTrue( fp.getConstraint( 2 ) instanceof SingleFieldConstraint );
+        SingleFieldConstraint sfp2 = (SingleFieldConstraint) fp.getConstraint( 2 );
+        assertEquals( "ChildType",
+                      sfp1.getFactType() );
+        assertEquals( "childField",
+                      sfp1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfp1.getFieldType() );
+        assertEquals( "==",
+                      sfp1.getOperator() );
+        assertEquals( "hello",
+                      sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      sfp1.getConstraintValueType() );
+        assertSame( sfp1,
+                    sfp2.getParent() );
+    }
+
+    @Test
+    public void testReciprocal_NestedFieldConstraints() {
+        //This is the inverse of "NestedFieldConstraints"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "ParentType( this != null, this.parentChildField != null, this.parentChildField.childField == \"hello\" )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        //LHS Pattern
+        CompositeFactPattern cfp = new CompositeFactPattern();
+        cfp.setType( CompositeFactPattern.COMPOSITE_TYPE_OR );
+
+        //LHS sub-patterns
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "ParentType" );
+
+        SingleFieldConstraint fp1_sfp1 = new SingleFieldConstraint();
+        fp1_sfp1.setFactType( "ParentType" );
+        fp1_sfp1.setFieldName( "this" );
+        fp1_sfp1.setFieldType( DataType.TYPE_THIS );
+        fp1_sfp1.setOperator( "!= null" );
+        fp1_sfp1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
+        fp1.addConstraint( fp1_sfp1 );
+
+        SingleFieldConstraint fp1_sfp2 = new SingleFieldConstraint();
+        fp1_sfp2.setFactType( "ParentType" );
+        fp1_sfp2.setFieldName( "parentChildField" );
+        fp1_sfp2.setFieldType( "ChildType" );
+        fp1_sfp2.setOperator( "!= null" );
+        fp1_sfp2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_UNDEFINED );
+        fp1.addConstraint( fp1_sfp2 );
+        fp1_sfp2.setParent( fp1_sfp1 );
+
+        SingleFieldConstraint fp1_sfp3 = new SingleFieldConstraint();
+        fp1_sfp3.setFactType( "ChildType" );
+        fp1_sfp3.setFieldName( "childField" );
+        fp1_sfp3.setFieldType( DataType.TYPE_STRING );
+        fp1_sfp3.setOperator( "==" );
+        fp1_sfp3.setValue( "hello" );
+        fp1_sfp3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        fp1.addConstraint( fp1_sfp3 );
+        fp1_sfp3.setParent( fp1_sfp2 );
+
+        m.addLhsItem( fp1 );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
