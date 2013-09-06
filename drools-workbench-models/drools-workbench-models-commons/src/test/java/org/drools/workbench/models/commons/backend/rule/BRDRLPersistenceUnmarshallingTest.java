@@ -18,6 +18,7 @@ package org.drools.workbench.models.commons.backend.rule;
 
 import org.drools.workbench.models.commons.shared.oracle.DataType;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.commons.shared.rule.CEPWindow;
 import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
 import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
@@ -29,7 +30,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class BRDRLPersistenceUnmarshallingTest {
 
@@ -406,6 +406,352 @@ public class BRDRLPersistenceUnmarshallingTest {
                       sfp.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       sfp.getConstraintValueType() );
+    }
+
+    @Test
+    @Ignore("Unmarshalling of CEP is broken")
+    public void testSingleFieldConstraintCEPOperator1Parameter() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "$e : Event()\n"
+                + "Event( this after[1d] $e )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 2,
+                      m.lhs.length );
+
+        IPattern p1 = m.lhs[ 0 ];
+        assertTrue( p1 instanceof FactPattern );
+        FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "Event",
+                      fp1.getFactType() );
+        assertEquals( "$e",
+                      fp1.getBoundName() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        IPattern p2 = m.lhs[ 1 ];
+        assertTrue( p2 instanceof FactPattern );
+        FactPattern fp2 = (FactPattern) p2;
+        assertEquals( "Event",
+                      fp2.getFactType() );
+        assertNull( fp2.getBoundName() );
+        assertEquals( 1,
+                      fp2.getNumberOfConstraints() );
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp2.getConstraint( 0 );
+        assertEquals( "Event",
+                      sfp.getFactType() );
+        assertEquals( "this",
+                      sfp.getFieldName() );
+        assertEquals( "after",
+                      sfp.getOperator() );
+        assertEquals( "$e",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_VARIABLE,
+                      sfp.getConstraintValueType() );
+        assertEquals( 3,
+                      sfp.getParameters().size() );
+        assertEquals( "1d",
+                      sfp.getParameter( "0" ) );
+        assertEquals( "1",
+                      sfp.getParameter( "org.kie.guvnor.guided.editor.visibleParameterSet" ) );
+        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
+                      sfp.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+    }
+
+    @Test
+    public void testReciprocal_SingleFieldConstraintCEPOperator1Parameter() {
+        //This is the inverse of "SingleFieldConstraintCEPOperator1Parameter"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$e : Event()\n"
+                + "Event( this after[1d] $e )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "Event" );
+        fp1.setBoundName( "$e" );
+
+        FactPattern fp2 = new FactPattern();
+        fp2.setFactType( "Event" );
+
+        SingleFieldConstraint sfp = new SingleFieldConstraint();
+        sfp.setFactType( "Event" );
+        sfp.setFieldName( "this" );
+        sfp.setOperator( "after" );
+        sfp.setValue( "$e" );
+        sfp.setConstraintValueType( BaseSingleFieldConstraint.TYPE_VARIABLE );
+        sfp.getParameters().put( "0",
+                                 "1d" );
+        sfp.getParameters().put( "org.kie.guvnor.guided.editor.visibleParameterSet",
+                                 "1" );
+        sfp.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                 "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
+
+        fp2.addConstraint( sfp );
+        m.addLhsItem( fp1 );
+        m.addLhsItem( fp2 );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
+    }
+
+    @Test
+    @Ignore("Unmarshalling of CEP is broken")
+    public void testSingleFieldConstraintCEPOperator2Parameters() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "$e : Event()\n"
+                + "Event( this after[1d, 2d] $e )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 2,
+                      m.lhs.length );
+
+        IPattern p1 = m.lhs[ 0 ];
+        assertTrue( p1 instanceof FactPattern );
+        FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "Event",
+                      fp1.getFactType() );
+        assertEquals( "$e",
+                      fp1.getBoundName() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        IPattern p2 = m.lhs[ 1 ];
+        assertTrue( p2 instanceof FactPattern );
+        FactPattern fp2 = (FactPattern) p2;
+        assertEquals( "Event",
+                      fp2.getFactType() );
+        assertNull( fp2.getBoundName() );
+        assertEquals( 1,
+                      fp2.getNumberOfConstraints() );
+        SingleFieldConstraint sfp = (SingleFieldConstraint) fp2.getConstraint( 0 );
+        assertEquals( "Event",
+                      sfp.getFactType() );
+        assertEquals( "this",
+                      sfp.getFieldName() );
+        assertEquals( "after",
+                      sfp.getOperator() );
+        assertEquals( "$e",
+                      sfp.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_VARIABLE,
+                      sfp.getConstraintValueType() );
+        assertEquals( 4,
+                      sfp.getParameters().size() );
+        assertEquals( "1d",
+                      sfp.getParameter( "0" ) );
+        assertEquals( "2d",
+                      sfp.getParameter( "1" ) );
+        assertEquals( "2",
+                      sfp.getParameter( "org.kie.guvnor.guided.editor.visibleParameterSet" ) );
+        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
+                      sfp.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+    }
+
+    @Test
+    public void testReciprocal_SingleFieldConstraintCEPOperator2Parameters() {
+        //This is the inverse of "SingleFieldConstraintCEPOperator2Parameters"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$e : Event()\n"
+                + "Event( this after[1d, 2d] $e )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "Event" );
+        fp1.setBoundName( "$e" );
+
+        FactPattern fp2 = new FactPattern();
+        fp2.setFactType( "Event" );
+
+        SingleFieldConstraint sfp = new SingleFieldConstraint();
+        sfp.setFactType( "Event" );
+        sfp.setFieldName( "this" );
+        sfp.setOperator( "after" );
+        sfp.setValue( "$e" );
+        sfp.setConstraintValueType( BaseSingleFieldConstraint.TYPE_VARIABLE );
+        sfp.getParameters().put( "0",
+                                 "1d" );
+        sfp.getParameters().put( "1",
+                                 "2d" );
+        sfp.getParameters().put( "org.kie.guvnor.guided.editor.visibleParameterSet",
+                                 "2" );
+        sfp.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                 "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
+
+        fp2.addConstraint( sfp );
+        m.addLhsItem( fp1 );
+        m.addLhsItem( fp2 );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
+    }
+
+    @Test
+    @Ignore("Unmarshalling of CEP is broken")
+    public void testSingleFieldConstraintCEPOperatorTimeWindow() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Event() over window:time (1d)\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+
+        IPattern p1 = m.lhs[ 0 ];
+        assertTrue( p1 instanceof FactPattern );
+        FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "Event",
+                      fp1.getFactType() );
+        assertNull( fp1.getBoundName() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        assertNotNull( fp1.getWindow() );
+        CEPWindow window = fp1.getWindow();
+        assertEquals( "over window:time",
+                      window.getOperator() );
+        assertEquals( 2,
+                      window.getParameters().size() );
+        assertEquals( "1d",
+                      window.getParameter( "1" ) );
+        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
+                      window.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+    }
+
+    @Test
+    public void testReciprocal_SingleFieldConstraintCEPOperatorTimeWindow() {
+        //This is the inverse of "SingleFieldConstraintCEPOperatorTimeWindow"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Event() over window:time (1d)\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "Event" );
+
+        CEPWindow window = new CEPWindow();
+        window.setOperator( "over window:time" );
+        window.getParameters().put( "1",
+                                    "1d" );
+        window.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                    "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
+        fp1.setWindow( window );
+
+        m.addLhsItem( fp1 );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
+    }
+
+    @Test
+    @Ignore("Unmarshalling of CEP is broken")
+    public void testSingleFieldConstraintCEPOperatorTimeLength() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Event() over window:length (10)\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+
+        IPattern p1 = m.lhs[ 0 ];
+        assertTrue( p1 instanceof FactPattern );
+        FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "Event",
+                      fp1.getFactType() );
+        assertNull( fp1.getBoundName() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        assertNotNull( fp1.getWindow() );
+        CEPWindow window = fp1.getWindow();
+        assertEquals( "over window:length",
+                      window.getOperator() );
+        assertEquals( 2,
+                      window.getParameters().size() );
+        assertEquals( "10",
+                      window.getParameter( "1" ) );
+        assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
+                      window.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+    }
+
+    @Test
+    public void testReciprocal_SingleFieldConstraintCEPOperatorTimeLength() {
+        //This is the inverse of "SingleFieldConstraintCEPOperatorTimeLength"
+        String drl = "rule \"rule1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "Event() over window:length (10)\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = new RuleModel();
+        m.name = "rule1";
+
+        FactPattern fp1 = new FactPattern();
+        fp1.setFactType( "Event" );
+
+        CEPWindow window = new CEPWindow();
+        window.setOperator( "over window:length" );
+        window.getParameters().put( "1",
+                                    "10" );
+        window.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                    "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
+        fp1.setWindow( window );
+
+        m.addLhsItem( fp1 );
+
+        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( drl,
+                                      actualDrl );
     }
 
     @Test
