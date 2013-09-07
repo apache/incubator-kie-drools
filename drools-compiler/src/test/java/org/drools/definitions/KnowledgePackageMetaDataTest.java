@@ -107,7 +107,7 @@ public class KnowledgePackageMetaDataTest {
                 assertEquals( "org.drools.test.definitions.Person", type.getSuperClass() );
 
                 FactField fld = type.getField( "bar" );
-                assertEquals( 3, fld.getIndex() );
+                assertEquals( 2, fld.getIndex() );
                 assertEquals( String.class, fld.getType() );
             } else {
                 fail("Unexpected fact type " + type);

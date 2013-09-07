@@ -132,6 +132,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1869,7 +1870,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             return false;
         boolean merge = false;
 
-        for ( QualifiedName qname : typeDescr.getSuperTypes() ) {
+        for ( int j = typeDescr.getSuperTypes().size() - 1; j >= 0; j-- ) {
+            QualifiedName qname = typeDescr.getSuperTypes().get( j );
             String simpleSuperTypeName = qname.getName();
             String superTypePackageName = qname.getNamespace();
             String fullSuper = qname.getFullName();
@@ -1944,7 +1946,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                                   new PatternDescr(
                                                                                                     inspector.getFieldTypes().get( name ).getName() ) );
                             inheritedFlDescr.setInherited( !Modifier.isAbstract( inspector.getGetterMethods().get( name ).getModifiers() ) );
-                            inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
 
                             if (!fieldMap.containsKey( inheritedFlDescr.getFieldName() ))
                                 fieldMap.put( inheritedFlDescr.getFieldName(),
@@ -2022,7 +2023,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             inheritedFldDescr.getAnnotations().put( TypeDeclaration.ATTR_KEY,
                                                     new AnnotationDescr( TypeDeclaration.ATTR_KEY ) );
         }
-            inheritedFldDescr.setIndex( fld.getIndex() );
+            inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
             inheritedFldDescr.setInherited( true );
             inheritedFldDescr.setInitExpr( ( (FieldDefinition) fld ).getInitExpr() );
         return inheritedFldDescr;
@@ -2657,7 +2658,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if (!typeDescr.getFields().isEmpty()) {
             PriorityQueue<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(),
                                                                    pkgRegistry );
-            while (fieldDefs.size() > 0) {
+            int n = fieldDefs.size();
+            for ( int k = 0; k < n; k++ ) {
                 FieldDefinition fld = fieldDefs.poll();
                 if (unresolvedTypeDefinitions != null) {
                     for (TypeDefinition typeDef : unresolvedTypeDefinitions) {
@@ -2667,6 +2669,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         }
                     }
                 }
+                fld.setIndex( k );
                 def.addField( fld );
             }
         }
@@ -2975,18 +2978,20 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      */
     private PriorityQueue<FieldDefinition> sortFields( Map<String, TypeFieldDescr> flds,
                                                        PackageRegistry pkgRegistry ) {
-        PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>();
-        int last = 0;
+        PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>( flds.size() );
+        int maxDeclaredPos = 0;
+        int curr = 0;
 
-        for (TypeFieldDescr field : flds.values()) {
-            last = Math.max( last,
-                             field.getIndex() );
+        BitSet occupiedPositions = new BitSet( flds.size() );
+        for( TypeFieldDescr field : flds.values() ) {
+            int pos = field.getIndex();
+            if ( pos >= 0 ) {
+                occupiedPositions.set( pos );
+            }
+            maxDeclaredPos = Math.max( maxDeclaredPos, pos );
         }
 
-        for (TypeFieldDescr field : flds.values()) {
-            if (field.getIndex() < 0) {
-                field.setIndex( ++last );
-            }
+        for ( TypeFieldDescr field : flds.values() ) {
 
             try {
                 String typeName = field.getPattern().getObjectType();
@@ -2998,7 +3003,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 boolean isKey = field.getAnnotation( TypeDeclaration.ATTR_KEY ) != null;
                 fieldDef.setKey( isKey );
 
-                fieldDef.setIndex( field.getIndex() );
+                fieldDef.setDeclIndex( field.getIndex() );
+                if ( field.getIndex() < 0 ) {
+                    int freePos = occupiedPositions.nextClearBit( 0 );
+                    if ( freePos < maxDeclaredPos ) {
+                        occupiedPositions.set( freePos );
+                    } else {
+                        freePos = maxDeclaredPos + 1;
+                    }
+                    fieldDef.setPriority( freePos * 256 + curr++ );
+                } else {
+                    fieldDef.setPriority( field.getIndex() * 256 + curr++ );
+                }
                 fieldDef.setInherited( field.isInherited() );
                 fieldDef.setInitExpr( field.getInitExpr() );
 
