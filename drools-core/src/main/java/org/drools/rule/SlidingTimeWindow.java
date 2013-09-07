@@ -121,6 +121,10 @@ public class SlidingTimeWindow
                               final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
+        long currentTime = workingMemory.getTimerService().getCurrentTime();
+        if ( isExpired( currentTime, handle ) ) {
+            return false;
+        }
         synchronized (queue.queue) {
             queue.queue.add( handle );
             if ( queue.queue.peek() == handle ) {
@@ -177,7 +181,7 @@ public class SlidingTimeWindow
                                                  handle ) ) {
                 queue.expiringHandle = handle;
                 queue.queue.remove();
-                if( handle.isValid()) {
+                if( handle.isValid() ) {
                     // if not expired yet, expire it
                     final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                               PropagationContext.EXPIRATION,

@@ -178,6 +178,8 @@ public class WindowNode extends ObjectSource
             this.sink.propagateAssertObject(factHandle,
                                             context,
                                             workingMemory);
+            // execute queued assertions before nullifying the window tuple list
+            workingMemory.executeQueuedActions();
             context.setActiveWindowTupleList(null);
         } finally {
             memory.gate.unlock();

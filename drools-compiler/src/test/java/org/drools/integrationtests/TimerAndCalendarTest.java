@@ -7,6 +7,7 @@ import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -29,6 +30,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.StatefulSession;
+import org.drools.StockTick;
 import org.drools.WorkingMemory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
@@ -41,8 +43,10 @@ import org.drools.rule.Package;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
+import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.Calendar;
 import org.drools.time.SessionClock;
+import org.drools.time.SessionPseudoClock;
 import org.drools.time.impl.PseudoClockScheduler;
 import org.junit.Test;
 import org.junit.Ignore;
@@ -1567,5 +1571,98 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertTrue( list.contains( "mark" ) );
     }
 
+
+
+    @Test
+    public void testExpiredPropagations() throws InterruptedException {
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "import org.drools.StockTick;\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "\t@role( event )\n" +
+                     "\t@timestamp( time )\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare window ATicks\n" +
+                     "    StockTick( company == \"AAA\" ) over window:time( 1s ) " +
+                     "      from entry-point \"AAA\"\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare window BTicks\n" +
+                     "    StockTick( company == \"BBB\" ) over window:time( 1s ) " +
+                     "      from entry-point \"BBB\"\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Ticks \n" +
+                     "  when\n" +
+                     "    String()\n" +
+                     "    accumulate( $x : StockTick() from window ATicks, $a : count( $x ) )\n" +
+                     "    accumulate( $y : StockTick() from window BTicks, $b : count( $y ) )\n" +
+                     "    accumulate( $z : StockTick() over window:time( 1s ), $c : count( $z ) )\n" +
+                     "  then\n" +
+                     "    list.add( $a );\n" +
+                     "    list.add( $b );\n" +
+                     "    list.add( $c );\n" +
+                     "end";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ) , ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) { fail( kbuilder.getErrors().toString() ); }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        SessionPseudoClock clock = ( SessionPseudoClock ) ksession.getSessionClock();
+        org.drools.runtime.rule.FactHandle handle;
+
+        clock.advanceTime( 1100, TimeUnit.MILLISECONDS );
+
+        StockTick tick = new StockTick( 0, "AAA", 1.0, 0 );
+        StockTick tock = new StockTick( 1, "BBB", 1.0, 2500 );
+        StockTick tack = new StockTick( 1, "CCC", 1.0, 2700 );
+
+        WorkingMemoryEntryPoint epa = ksession.getWorkingMemoryEntryPoint( "AAA" );
+        WorkingMemoryEntryPoint epb = ksession.getWorkingMemoryEntryPoint( "BBB" );
+
+        epa.insert( tick );
+        epb.insert( tock );
+        ksession.insert( tack );
+
+        handle = ksession.insert( "go1" );
+        ksession.fireAllRules();
+        System.out.println( "***** " + list + " *****");
+        assertEquals( Arrays.asList( 0L, 1L, 1L ), list );
+        list.clear();
+        ksession.retract( handle );
+
+        clock.advanceTime( 2550, TimeUnit.MILLISECONDS );
+
+        handle = ksession.insert( "go2" );
+        ksession.fireAllRules();
+        System.out.println( "***** " + list + " *****");
+        assertEquals( Arrays.asList( 0L, 0L, 1L ), list );
+        list.clear();
+        ksession.retract( handle );
+
+        clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+
+        handle = ksession.insert( "go3" );
+        ksession.fireAllRules();
+        System.out.println( "***** " + list + " *****");
+        assertEquals( Arrays.asList( 0L, 0L, 0L ), list );
+        list.clear();
+        ksession.retract( handle );
+
+        ksession.dispose();
+    }
 
 }
