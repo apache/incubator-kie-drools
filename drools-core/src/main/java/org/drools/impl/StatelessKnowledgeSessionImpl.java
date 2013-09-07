@@ -125,6 +125,7 @@ public class StatelessKnowledgeSessionImpl
         try {
             ReteooWorkingMemory wm = new ReteooWorkingMemory( this.ruleBase.nextWorkingMemoryCounter(),
                                                               this.ruleBase,
+                                                              false,
                                                               (SessionConfiguration) this.conf,
                                                               this.environment );
 
@@ -162,17 +163,6 @@ public class StatelessKnowledgeSessionImpl
                 processRuntime.setProcessEventSupport( this.processEventSupport );
             }
 
-            final InternalFactHandle handle =  wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
-                                                                                        wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPoint.DEFAULT,
-                                                                                                                                                   InitialFactImpl.getInstance() ),
-                                                                                        wm,
-                                                                                        wm);
-
-            wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
-                                                                            false,
-                                                                            true,
-                                                                            null,
-                                                                            null ) );
             return ksession;
         } finally {
             this.ruleBase.readUnlock();

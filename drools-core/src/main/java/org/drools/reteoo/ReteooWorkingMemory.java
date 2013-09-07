@@ -86,6 +86,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                final InternalRuleBase ruleBase) {
         this( id,
               ruleBase,
+              true,
               SessionConfiguration.getDefaultInstance(),
               EnvironmentFactory.newEnvironment() );
     }
@@ -98,15 +99,15 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
      */
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
+                               final boolean initInitialFactHandle,
                                final SessionConfiguration config,
                                final Environment environment) {
         super( id,
                ruleBase,
+               initInitialFactHandle,
                ruleBase.newFactHandleFactory(),
                config,
                environment );
-        this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( ruleBase );
-        this.agenda.setWorkingMemory( this );
     }
 
     public ReteooWorkingMemory(final int id,
@@ -122,15 +123,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                environment,
                workingMemoryEventSupport,
                agendaEventSupport );
-
-        this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( ruleBase );
-        this.agenda.setWorkingMemory( this );
     }
 
     public ReteooWorkingMemory(final int id,
                                final InternalRuleBase ruleBase,
                                final FactHandleFactory handleFactory,
-                               final InternalFactHandle initialFactHandle,
+                               final boolean initInitialFactHandle,
                                final long propagationContext,
                                final SessionConfiguration config,
                                final InternalAgenda agenda,
@@ -138,15 +136,12 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
         super( id,
                ruleBase,
                handleFactory,
-               initialFactHandle,
+               initInitialFactHandle,
                //ruleBase.newFactHandleFactory(context),
                propagationContext,
                config,
+               agenda,
                environment );
-        this.agenda = agenda;
-        this.agenda.setWorkingMemory( this );
-        //        InputPersister.readFactHandles( context );
-        //        super.read( context );
     }
 
     public QueryResults getQueryResults(final String query) {
@@ -157,6 +152,7 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
     @SuppressWarnings("unchecked")
     public QueryResults getQueryResults(final String queryName,
                                         final Object[] arguments) {
+        initInitialFact();
 
         try {
             startOperation();

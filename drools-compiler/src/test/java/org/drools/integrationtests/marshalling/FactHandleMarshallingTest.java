@@ -72,7 +72,7 @@ public class FactHandleMarshallingTest {
         KnowledgeSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksconf.setOption( ClockTypeOption.get( "pseudo" ) );
         SessionConfiguration sessionConf = ((SessionConfiguration) ksconf);
-        AbstractWorkingMemory wm = new ReteooWorkingMemory(1, (InternalRuleBase) ruleBase, 
+        AbstractWorkingMemory wm = new ReteooWorkingMemory(1, (InternalRuleBase) ruleBase, true,
                 sessionConf, EnvironmentFactory.newEnvironment());
         
         return wm;

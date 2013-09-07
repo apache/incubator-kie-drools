@@ -332,8 +332,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( 3, list.size() );
-        assertTrue( list.containsAll( Arrays.asList( "Klass2", "InitialFactImpl" ) ) );
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "Klass2", "Klass2" ), list );
     }
 
     @Test

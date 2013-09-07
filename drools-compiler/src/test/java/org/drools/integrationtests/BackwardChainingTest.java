@@ -2673,7 +2673,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryFindAll() throws Exception {
         Object[] objects = new Object[]{Integer.valueOf( 42 ), "a String", Integer.valueOf( 100 )};
-        int oCount = objects.length + 1; // +1 for InitialFact
+        int oCount = objects.length;
 
         List<Object> queryList = new ArrayList<Object>();
         List<Object> ruleList = new ArrayList<Object>();
@@ -2839,7 +2839,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession.insert( "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 13,
+        assertEquals( 12,
                       list.size() );
         assertContains( new Object[]{"go1", "init",
                                 new Q( 6 ), new R( 6 ), new S( 3 ), new R( 2 ), new R( 1 ), new R( 4 ), new S( 2 ), new S( 6 ), new Q( 1 ), new Q( 5 )},
@@ -2858,7 +2858,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession.insert( "init" );
         ksession.fireAllRules();
 
-        assertEquals( 13,
+        assertEquals( 12,
                       list.size() );
         assertContains( new Object[]{"go1", "init",
                                 new Q( 6 ), new R( 6 ), new S( 3 ), new R( 2 ), new R( 1 ), new R( 4 ), new S( 2 ), new S( 6 ), new Q( 1 ), new Q( 5 )},

@@ -168,7 +168,7 @@ public class JoinNodeTest extends DroolsTestCase {
                 .newRuleBase();
         BuildContext buildContext = new BuildContext( ruleBase, ruleBase
                 .getReteooBuilder().getIdGenerator() );
-        final JoinNode joinNode = new JoinNode( 2, tupleSource, objectSource,
+        final JoinNode joinNode = new JoinNode( 3, tupleSource, objectSource,
                                                 EmptyBetaConstraints.getInstance(),
                                                 buildContext );
 

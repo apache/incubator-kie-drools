@@ -80,6 +80,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                                  final Environment environment) {
         super( id,
                ruleBase,
+               false,
                config,
                environment );
         this.executor = executorService;
@@ -89,7 +90,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
                                  final InternalRuleBase ruleBase,
                                  final ExecutorService executorService,
                                  final FactHandleFactory handleFactory,
-                                 final InternalFactHandle initialFactHandle,
+                                 final boolean initInitialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final InternalAgenda agenda,
@@ -97,7 +98,7 @@ public class ReteooStatefulSession extends ReteooWorkingMemory
         super( id,
                ruleBase,
                handleFactory,
-               initialFactHandle,
+               initInitialFactHandle,
                propagationContext,
                config,
                agenda,

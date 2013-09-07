@@ -126,12 +126,14 @@ public class ProtobufOutputMarshaller {
         _ruleData.setLastRecency(wm.getFactHandleFactory().getRecency());
 
         InternalFactHandle handle = context.wm.getInitialFactHandle();
-        ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
-                .setType(ProtobufMessages.FactHandle.HandleType.INITIAL_FACT)
-                .setId(handle.getId())
-                .setRecency(handle.getRecency())
-                .build();
-        _ruleData.setInitialFact(_ifh);
+        if ( handle != null ) {
+            ProtobufMessages.FactHandle _ifh = ProtobufMessages.FactHandle.newBuilder()
+                    .setType(ProtobufMessages.FactHandle.HandleType.INITIAL_FACT)
+                    .setId(handle.getId())
+                    .setRecency(handle.getRecency())
+                    .build();
+            _ruleData.setInitialFact(_ifh);
+        }
 
         writeAgenda(context, _ruleData);
 

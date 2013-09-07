@@ -160,6 +160,9 @@ public class NamedEntryPoint
         try {
             this.wm.startOperation();
 
+            // ADDED, NOT IN THE ORIGINAL 6.x COMMIT
+            //wm.initInitialFact();
+
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
             if ( logical && !typeConf.isTMSEnabled()) {

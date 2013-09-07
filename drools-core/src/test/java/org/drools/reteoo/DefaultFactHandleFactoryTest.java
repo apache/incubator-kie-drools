@@ -32,35 +32,35 @@ public class DefaultFactHandleFactoryTest {
     public void testNewFactHandle() {
         final ReteooFactHandleFactory factory = new ReteooFactHandleFactory();
         DefaultFactHandle handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 0,
+        assertEquals( 1,
                       handle.getId() );
-        assertEquals( 0,
+        assertEquals( 1,
                       handle.getRecency() );
 
         // issue  new handle
         handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 1,
+        assertEquals( 2,
                       handle.getId() );
-        assertEquals( 1,
+        assertEquals( 2,
                       handle.getRecency() );
 
         // issue  new handle, under a different reference so we  can destroy later        
         final DefaultFactHandle handle2 = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 2,
+        assertEquals( 3,
                       handle2.getId() );
-        assertEquals( 2,
+        assertEquals( 3,
                       handle2.getRecency() );
 
         // Check recency increasion works
         factory.increaseFactHandleRecency( handle );
-        assertEquals( 3,
+        assertEquals( 4,
                       handle.getRecency() );
 
         // issue new handle and make sure  recency is still inline
         handle = (DefaultFactHandle) factory.newFactHandle( "cheese", null, null, null );
-        assertEquals( 3,
-                      handle.getId() );
         assertEquals( 4,
+                      handle.getId() );
+        assertEquals( 5,
                       handle.getRecency() );
 
         // destroy handle

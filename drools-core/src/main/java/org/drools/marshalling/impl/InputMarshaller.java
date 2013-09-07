@@ -207,7 +207,7 @@ public class InputMarshaller {
                                                                    context.ruleBase,
                                                                    executor,
                                                                    handleFactory,
-                                                                   initialFactHandle,
+                                                                   false,
                                                                    propagationCounter,
                                                                    config,
                                                                    agenda,
