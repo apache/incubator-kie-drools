@@ -68,9 +68,11 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -2184,5 +2186,54 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( 1 ), list );
     }
+
+    public static class SQLTimestamped {
+        private Timestamp start;
+
+        public Timestamp getStart() {
+            return start;
+        }
+
+        public void setStart( Timestamp start ) {
+            this.start = start;
+        }
+
+        public SQLTimestamped() {
+            start = new Timestamp( new Date().getTime() );
+        }
+    }
+
+    @Test
+    public void testEventWithSQLTimestamp() throws InterruptedException {
+        // DROOLS-10
+        String str =
+                "import org.drools.integrationtests.MiscTest2.SQLTimestamped;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare SQLTimestamped @role(event) @timestamp(start) end \n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $s1 : SQLTimestamped() \n" +
+                "   $s2 : SQLTimestamped( this != $s1, this after $s1 ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new SQLTimestamped() );
+        Thread.sleep( 100 );
+        ksession.insert( new SQLTimestamped() );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( "ok" ), list );
+    }
+
 
 }
