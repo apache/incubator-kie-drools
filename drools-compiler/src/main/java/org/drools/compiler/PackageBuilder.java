@@ -2519,8 +2519,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         try {
-            return resolver.resolveType( annotation.substring( 0,
-                                                               1 ).toUpperCase() + annotation.substring( 1 ) );
+            if ( annotation.indexOf( '.' ) < 0 ) {
+                annotation = annotation.substring( 0, 1 ).toUpperCase() + annotation.substring( 1 );
+            }
+            return resolver.resolveType( annotation );
         } catch (ClassNotFoundException e) {
             // internal annotation, or annotation which can't be resolved.
             return null;
