@@ -21,6 +21,8 @@ import org.drools.base.AccessorKey.AccessorType;
 import org.drools.base.extractors.MVELDateClassFieldReader;
 import org.drools.base.extractors.MVELNumberClassFieldReader;
 import org.drools.base.extractors.MVELObjectClassFieldReader;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.definition.type.FactField;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.Acceptor;
@@ -34,6 +36,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -122,6 +125,10 @@ public class ClassFieldAccessorStore
 
         if ( this.eagerWire ) {
             wire( entry.getClassFieldReader() );
+            ClassFieldReader reader = (ClassFieldReader) entry.getClassFieldReader();
+            if ( ! reader.hasReadAccessor() ) {
+                return null;
+            }
         }
 
 
@@ -470,6 +477,14 @@ public class ClassFieldAccessorStore
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + wireable.getClassName() + "'" );
         }
+    }
+
+    public Collection<KnowledgeBuilderResult> getWiringResults( Class klass, String fieldName ) {
+        if ( cache == null ) {
+            return Collections.EMPTY_LIST;
+        }
+        Map<Class<?>, ClassFieldInspector> inspectors = cache.getCacheEntry( klass ).getInspectors();
+        return inspectors.containsKey( klass ) ? inspectors.get( klass ).getInspectionResults( fieldName ) : Collections.EMPTY_LIST;
     }
 
     public static abstract class BaseLookupEntry

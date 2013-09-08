@@ -169,11 +169,13 @@ public class ClassFieldAccessorCache {
                 reader = ClassFieldAccessorFactory.getInstance().getClassFieldReader( cls,
                                                                                       key.getFieldName(),
                                                                                       this );
-                BaseClassFieldReader existingReader = this.readCache.putIfAbsent( key,
-                                                                                  reader );
-                if ( existingReader != null ) {
-                    // Raced, use the (now) existing entry
-                    reader = existingReader;
+                if ( reader != null ) {
+                    BaseClassFieldReader existingReader = this.readCache.putIfAbsent( key,
+                                                                                      reader );
+                    if ( existingReader != null ) {
+                        // Raced, use the (now) existing entry
+                        reader = existingReader;
+                    }
                 }
             }
 

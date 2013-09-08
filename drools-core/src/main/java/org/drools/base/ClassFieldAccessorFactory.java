@@ -145,8 +145,11 @@ public class ClassFieldAccessorFactory {
                     final ValueType valueType = ValueType.determineValueType( fieldType );
                     final Object[] params = {index, fieldType, valueType};
                     return (BaseClassFieldReader) newClass.getConstructors()[0].newInstance( params );
+                } else if ( fieldType != null ) {
+                    // must be a public field
+                    return null;
                 } else {
-                    throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'\n" );
+                        throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'\n" );
                 }
             }
         } catch ( final RuntimeDroolsException e ) {
@@ -199,7 +202,18 @@ public class ClassFieldAccessorFactory {
                 final Object[] params = {index, fieldType, valueType};
                 return (BaseClassFieldWriter) newClass.getConstructors()[0].newInstance( params );
             } else {
-                throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'" );
+                if ( inspector.getFieldNames().containsKey( fieldName ) ) {
+                    if ( inspector.getGetterMethods().get( fieldName ) != null ) {
+                        // field without setter
+                        return null;
+                    } else {
+                        // public field
+                        return null;
+                    }
+
+                } else {
+                    throw new RuntimeDroolsException( "Field/method '" + fieldName + "' not found for class '" + clazz.getName() + "'" );
+                }
             }
         } catch ( final RuntimeDroolsException e ) {
             throw e;

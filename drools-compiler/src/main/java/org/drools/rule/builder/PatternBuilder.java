@@ -26,13 +26,17 @@ import org.drools.base.mvel.ActivationPropertyHandler;
 import org.drools.base.mvel.MVELCompilationUnit;
 import org.drools.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.base.mvel.MVELCompileable;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.builder.ResultSeverity;
 import org.drools.common.AgendaItem;
 import org.drools.compiler.AnalysisResult;
 import org.drools.compiler.BoundIdentifiers;
 import org.drools.compiler.DescrBuildError;
 import org.drools.compiler.Dialect;
 import org.drools.compiler.DrlExprParser;
+import org.drools.compiler.DroolsErrorWrapper;
 import org.drools.compiler.DroolsParserException;
+import org.drools.compiler.DroolsWarningWrapper;
 import org.drools.compiler.PackageRegistry;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.index.IndexUtil;
@@ -95,6 +99,7 @@ import org.mvel2.util.PropertyTools;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -116,6 +121,7 @@ public class PatternBuilder
     private static final java.util.regex.Pattern evalRegexp = java.util.regex.Pattern.compile( "^eval\\s*\\(",
                                                                                                java.util.regex.Pattern.MULTILINE );
 
+    private static final java.util.regex.Pattern identifierRegexp = java.util.regex.Pattern.compile( "([\\p{L}_$][\\p{L}\\p{N}_$]*)" );
 
     public PatternBuilder() {
     }
@@ -770,7 +776,7 @@ public class PatternBuilder
                                             String value2,
                                             boolean isConstant) {
 
-        final InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), value1, null, false );
+        final InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), value1, null, true );
         return extractor != null && addConstraintToPattern(context, pattern, relDescr, expr, value1, value2, isConstant, extractor);
     }
 
@@ -1489,7 +1495,8 @@ public class PatternBuilder
             if ( target != null ) {
                 target.setReadAccessor( reader );
             }
-        } else if ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) {
+        } else if ( ! identifierRegexp.matcher( fieldName ).matches()
+                    || ( fieldName.indexOf( '.' ) > -1 || fieldName.indexOf( '[' ) > -1 || fieldName.indexOf( '(' ) > -1 ) ) {
             // we need MVEL extractor for expressions
             Dialect dialect = context.getDialect();
             try {
@@ -1523,7 +1530,7 @@ public class PatternBuilder
                 final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
                 if ( !usedIdentifiers.getDeclrClasses().isEmpty() ) {
-                    if ( reportError ) {
+                    if ( reportError && descr instanceof BindingDescr ) {
                         context.addError(new DescrBuildError(context.getParentDescr(),
                                 descr,
                                 null,
@@ -1556,12 +1563,18 @@ public class PatternBuilder
                 context.setDialect( dialect );
             }
         } else {
+            boolean alternatives = false;
             try {
+                Map<String, Class< ? >> declarations = getDeclarationsMap( descr, context, false );
+                Map<String, Class< ? >> globals = context.getPackageBuilder().getGlobals();
+                alternatives = declarations.containsKey( fieldName ) || globals.containsKey( fieldName );
+
                 reader = context.getPkg().getClassFieldAccessorStore().getReader( ((ClassObjectType) objectType).getClassName(),
                                                                                   fieldName,
                                                                                   target );
+
             } catch ( final Exception e ) {
-                if ( reportError ) {
+                if ( reportError && ! alternatives && context.isTypesafe() ) {
                     copyErrorLocation( e,
                                        descr );
                     context.addError(new DescrBuildError(context.getParentDescr(),
@@ -1571,6 +1584,20 @@ public class PatternBuilder
                 }
                 // if there was an error, set the reader back to null
                 reader = null;
+            } finally {
+
+                if ( reportError && ! alternatives ) {
+                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore().getWiringResults( ((ClassObjectType) objectType).getClassType(), fieldName );
+                    if ( ! results.isEmpty() ) {
+                        for ( KnowledgeBuilderResult res : results ) {
+                            if ( res.getSeverity() == ResultSeverity.ERROR ) {
+                                context.addError( new DroolsErrorWrapper( res ) );
+                            } else {
+                                context.addWarning( new DroolsWarningWrapper( res ) );
+                            }
+                        }
+                    }
+                }
             }
         }
 

@@ -3113,6 +3113,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
+        this.results.addAll( context.getWarnings() );
 
         context.getRule().setResource( ruleDescr.getResource() );
 

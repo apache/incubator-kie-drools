@@ -25,7 +25,9 @@ import org.drools.Person;
 import org.drools.RuleBaseConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.builder.ResourceType;
+import org.drools.builder.ResultSeverity;
 import org.drools.common.DefaultFactHandle;
 import org.drools.conflict.SalienceConflictResolver;
 import org.drools.core.util.FileManager;
@@ -2264,6 +2266,10 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
+        }
+        assertEquals( 2, kbuilder.getResults( ResultSeverity.WARNING ).size() );
+        for ( KnowledgeBuilderResult res : kbuilder.getResults( ResultSeverity.WARNING ) ) {
+            System.out.println( res.getMessage() );
         }
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
