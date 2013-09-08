@@ -3153,5 +3153,53 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+
+    @Test
+    public void testFromWithEvents() {
+        String drl = "\n" +
+                     "\n" +
+                     "package org.drools.test\n" +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "declare MyEvent\n" +
+                     "@role(event)\n" +
+                     "@timestamp( stamp )\n" +
+                     "id : int\n" +
+                     "stamp : long\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare MyBean\n" +
+                     "id : int\n" +
+                     "event : MyEvent\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "MyEvent ev = new MyEvent( 1, 1000 );\n" +
+                     "MyBean bin = new MyBean( 99, ev );\n" +
+                     "MyEvent ev2 = new MyEvent( 2, 2000 );\n" +
+                     "\n" +
+                     "drools.getWorkingMemory().getWorkingMemoryEntryPoint( \"X\" ).insert( ev2 );\n" +
+                     "insert( bin );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Check\"\n" +
+                     "when\n" +
+                     "$e2 : MyEvent( id == 2 ) from entry-point \"X\" \n" +
+                     "$b1 : MyBean( id == 99, $ev : event )\n" +
+                     "MyEvent( this before $e2 ) from $ev\n" +
+                     "then\n" +
+                     "System.out.println( \"Success\" );\n" +
+                     "list.add( 1 ); \n" +
+                     "end\n";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList( 1 );
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+        assertEquals( Arrays.asList( 1 ), list );
+
+    }
 }
 
