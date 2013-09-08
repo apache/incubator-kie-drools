@@ -56,6 +56,8 @@ public class EvalGenerator {
             public void body(MethodVisitor mv) {
                 objAstorePos = 7;
 
+                String[] expectedDeclarations = stub.getExpectedDeclarationTypes();
+
                 int[] declarationsParamsPos = new int[declarations.length];
 
                 mv.visitVarInsn(ALOAD, 1);
@@ -78,14 +80,14 @@ public class EvalGenerator {
                     invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
                     invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getHandle().getObject()
 
-                    storeObjectFromDeclaration(declarations[i], declarations[i].getTypeName());
+                    storeObjectFromDeclaration(declarations[i], expectedDeclarations[i]);
                 }
 
                 // @{ruleClassName}.@{methodName}(@foreach{declarations}, @foreach{globals})
                 StringBuilder evalMethodDescr = new StringBuilder("(");
                 for (int i = 0; i < declarations.length; i++) {
                     load(declarationsParamsPos[i]); // declarations[i]
-                    evalMethodDescr.append(typeDescr(declarations[i].getTypeName()));
+                    evalMethodDescr.append(typeDescr(expectedDeclarations[i]));
                 }
 
                 // @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} = ( @{type} ) workingMemory.getGlobal( "@{identifier}" );

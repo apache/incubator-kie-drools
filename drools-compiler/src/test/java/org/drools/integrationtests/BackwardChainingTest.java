@@ -3330,5 +3330,72 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testQueryWithEvalAndTypeBoxingUnboxing() {
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list \n;" +
+                     "\n" +
+                     "query primitiveInt( int $a )\n" +
+                     "  Integer( intValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query boxedInteger( Integer $a )\n" +
+                     "  Integer( this == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query boxInteger( int $a )\n" +
+                     "  Integer( this == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query unboxInteger( Integer $a )\n" +
+                     "  Integer( intValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query cast( int $a )\n" +
+                     "  Integer( longValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "" +
+                     "query cast2( long $a )\n" +
+                     "  Integer( intValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when then insert( 178 ); end\n" +
+                     "\n" +
+                     "rule Check\n" +
+                     "when\n" +
+                     "  String()\n" +
+                     "  ?primitiveInt( 178 ; )\n" +
+                     "  ?boxedInteger( $x ; )\n" +
+                     "  ?boxInteger( $x ; )\n" +
+                     "  ?unboxInteger( $y ; )\n" +
+                     "  ?cast( $z ; )\n" +
+                     "  ?cast2( $z ; )\n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "  list.add( $y ); \n" +
+                     "  list.add( $z ); \n" +
+                     "end";
+
+        KnowledgeBase knowledgeBase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+        assertTrue( list.isEmpty() );
+
+        knowledgeSession.insert( "go" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 178, 178, 178 ), list );
+
+    }
 
 }

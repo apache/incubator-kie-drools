@@ -1,5 +1,7 @@
 package org.drools.rule.builder.dialect.asm;
 
+import org.drools.rule.Declaration;
+
 import java.util.Map;
 
 public class InvokerContext implements InvokerDataProvider {
@@ -45,5 +47,9 @@ public class InvokerContext implements InvokerDataProvider {
 
     public Boolean[] getNotPatterns() {
         return (Boolean[]) invokerContext.get("notPatterns");
+    }
+
+    public Declaration[] getDeclarations() {
+        return (Declaration[]) invokerContext.get( "declarations" );
     }
 }

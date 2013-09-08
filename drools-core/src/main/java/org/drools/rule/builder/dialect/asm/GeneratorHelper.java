@@ -202,13 +202,22 @@ public final class GeneratorHelper {
         protected int storeObjectFromDeclaration(Declaration declaration, String declarationType, int registry) {
             String readMethod = declaration.getNativeReadMethodName();
             boolean isObject = readMethod.equals("getValue");
-            String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
+            String expectedTypeDescr = typeDescr( declarationType );
+            boolean needsPrimitive = ! ( expectedTypeDescr.startsWith( "L" ) || expectedTypeDescr.startsWith( "[" ) );
+            String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declaration.getTypeName());
             mv.visitMethodInsn(INVOKEVIRTUAL, "org/drools/rule/Declaration", readMethod, "(Lorg/drools/common/InternalWorkingMemory;Ljava/lang/Object;)" + returnedType);
             if (isObject) {
                 InternalReadAccessor extractor = declaration.getExtractor();
                 if (extractor != null) {
                     cast(extractor.getExtractToClass());
                 }
+            }
+            if ( needsPrimitive && isObject ) {
+                castToPrimitive( forPrimitiveName( declarationType ) );
+            } else if ( ! needsPrimitive && ! isObject ) {
+                castFromPrimitive( forPrimitiveName( declaration.getExtractor().getExtractToClassName() ) );
+            } else if ( needsPrimitive && ! isObject && ! returnedType.equals( declarationType ) ) {
+                castPrimitiveToPrimitive( declaration.getExtractor().getExtractToClass(), forPrimitiveName( declarationType ) );
             }
             return store(registry, declarationType);
         }
@@ -299,4 +308,26 @@ public final class GeneratorHelper {
             objAstorePos += storeObjectFromDeclaration(declaration, declarationType, objAstorePos);
         }
     }
+
+    public static Class<?> asPrimitive( String className ) {
+        if ( className.equals( Integer.class.getName() ) ) {
+            return int.class;
+        } else if ( className.equals( Boolean.class.getName() ) ) {
+            return boolean.class;
+        } else if ( className.equals( Character.class.getName() ) ) {
+            return char.class;
+        } else if ( className.equals( Byte.class.getName() ) ) {
+            return byte.class;
+        } else if ( className.equals( Short.class.getName() ) ) {
+            return short.class;
+        } else if ( className.equals( Float.class.getName() ) ) {
+            return float.class;
+        } else if ( className.equals( Long.class.getName() ) ) {
+            return long.class;
+        } else if ( className.equals( Double.class.getName() ) ) {
+            return double.class;
+        }
+        return Object.class;
+    }
+
 }

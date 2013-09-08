@@ -1,5 +1,6 @@
 package org.drools.rule.builder.dialect.asm;
 
+import org.drools.rule.Declaration;
 import org.junit.*;
 
 import java.util.*;
@@ -17,6 +18,7 @@ public class InvokerGeneratorTest {
         invokerContext.put("methodName", "testMethod");
         invokerContext.put("consequenceName", "TestConsequence");
         invokerContext.put("hashCode", 111);
+        invokerContext.put("declarations", new Declaration[0]);
         invokerContext.put("globals", new String[]{"globalList"});
         invokerContext.put("globalTypes", new String[]{"java/util/List"});
 

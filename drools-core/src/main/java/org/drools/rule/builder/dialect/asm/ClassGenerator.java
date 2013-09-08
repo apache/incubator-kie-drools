@@ -466,7 +466,7 @@ public class ClassGenerator {
             convertPrimitiveToObject(primitiveClass.getName());
         }
 
-        private void convertPrimitiveToObject(String typeName) {
+        protected void convertPrimitiveToObject(String typeName) {
             if (typeName.equals("int"))
                 mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
             else if (typeName.equals("boolean"))
@@ -741,6 +741,27 @@ public class ClassGenerator {
                 cast(Number.class);
                 invokeVirtual(Number.class, clazz.getName() + "Value", clazz);
             }
+        }
+
+        protected Class<?> forPrimitiveName( String typeName ) {
+            if (typeName.equals("int"))
+                return int.class;
+            else if (typeName.equals("boolean"))
+                return boolean.class;
+            else if (typeName.equals("char"))
+                return char.class;
+            else if (typeName.equals("byte"))
+                return byte.class;
+            else if (typeName.equals("short"))
+                return short.class;
+            else if (typeName.equals("float"))
+                return float.class;
+            else if (typeName.equals("long"))
+                return long.class;
+            else if (typeName.equals("double"))
+                return double.class;
+            else
+                return Object.class;
         }
 
         protected final void invoke(Method method) {
