@@ -2286,4 +2286,70 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals( Arrays.asList( "ok" ), list );
     }
 
+
+    @Test
+    public void testCollectAccumulate() {
+        // DROOLS-173
+        String drl = "import java.util.ArrayList\n" +
+                     "\n" +
+                     "global java.util.Map map; \n" +
+                     "" +
+                     " declare Item\n" +
+                     "     code: int\n" +
+                     "     price: int\n" +
+                     "     present: boolean\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"Init\"\n" +
+                     " when\n" +
+                     " then\n" +
+                     "     insert(new Item(1,40,false));\n" +
+                     "     insert(new Item(2,40,false));\n" +
+                     "     insert(new Item(3,40,false));\n" +
+                     "     insert(new Item(4,40,false));\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"CollectAndAccumulateRule\"\n" +
+                     " when\n" +
+                     "     //At least two items that aren't presents\n" +
+                     "     objList: ArrayList(size>=2) from collect( Item(present==false))\n" +
+                     "     //Total price bigger than 100\n" +
+                     "     price: Number(intValue>=100) from accumulate( Item($w:price, present==false), sum($w))\n" +
+                     " then\n" +
+                     "\n" +
+                     "     System.out.println(\"Sum: \"+price);\n" +
+                     "     System.out.println(\"Items size: \"+objList.size());\n" +
+                     " " +
+                     "      map.put( objList.size(), price ); \n" +
+                     "     \n" +
+                     "     //Look for the minor price item\n" +
+                     "     Item min = null;\n" +
+                     "     for(Object obj: objList){\n" +
+                     "         if (min!=null){\n" +
+                     "             min = (min.getPrice()>((Item)obj).getPrice())?(Item)obj:min;\n" +
+                     "         }\n" +
+                     "         else {\n" +
+                     "             min = (Item)obj;\n" +
+                     "         }\n" +
+                     "     }\n" +
+                     "     \n" +
+                     "     //And make it a present\n" +
+                     "     if (min!=null){\n" +
+                     "         modify(min){setPresent(true)};\n" +
+                     "     }\n" +
+                     " end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Map map = new HashMap(  );
+        ksession.setGlobal( "map", map );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, map.size() );
+        assertEquals( 160.0, map.get( 4 ) );
+        assertEquals( 120.0, map.get( 3 ) );
+
+    }
+
 }
