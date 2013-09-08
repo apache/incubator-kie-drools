@@ -2235,5 +2235,49 @@ public class MiscTest2 extends CommonTestMethodBase {
         assertEquals( Arrays.asList( "ok" ), list );
     }
 
+    public static class Foo3 {
+        public boolean getX() { return true; }
+        public String isX() { return "x"; }
+        public boolean isY() { return true; }
+        public String getZ() { return "ok"; }
+        public boolean isZ() { return true; }
+    }
+
+    @Test
+    public void testIsGetClash() {
+        // DROOLS-18
+        String str =
+                "import org.drools.integrationtests.MiscTest2.Foo3;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $x : Foo3( x == true, y == true, z == \"ok\", isZ() == true ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Foo3( ) );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( "ok" ), list );
+    }
 
 }
