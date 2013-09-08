@@ -52,7 +52,7 @@ public class DefaultJobHandle
     }
 
     public Object getJob() {
-        return timerJobInstance.getJob();
+        return timerJobInstance != null ? timerJobInstance.getJob() : null;
     }
 
     public void setTimerJobInstance(TimerJobInstance scheduledJob) {
