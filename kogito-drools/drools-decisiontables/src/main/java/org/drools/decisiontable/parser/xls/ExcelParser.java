@@ -142,13 +142,36 @@ public class ExcelParser
                 } else {
                     switch ( cell.getCellType() ) {
                         case Cell.CELL_TYPE_FORMULA:
-                            CellValue cv = formulaEvaluator.evaluate( cell );
-                            String cellValue = getCellValue( cv );
-                            newCell( listeners,
-                                     i,
-                                     cellNum,
-                                     cellValue,
-                                     DataListener.NON_MERGED );
+                            String cellValue = null;
+                            try {
+                                CellValue cv = formulaEvaluator.evaluate( cell );
+                                cellValue = getCellValue( cv );
+                                newCell( listeners,
+                                         i,
+                                         cellNum,
+                                         cellValue,
+                                         DataListener.NON_MERGED );
+                            } catch ( RuntimeException e ) {
+                                //This is thrown in an external link cannot be resolved, so try the cached value
+                                switch ( cell.getCachedFormulaResultType() ) {
+                                    case Cell.CELL_TYPE_NUMERIC:
+                                        num = cell.getNumericCellValue();
+                                    default:
+                                        if ( num - Math.round( num ) != 0 ) {
+                                            newCell( listeners,
+                                                     i,
+                                                     cellNum,
+                                                     String.valueOf( num ),
+                                                     DataListener.NON_MERGED );
+                                        } else {
+                                            newCell( listeners,
+                                                     i,
+                                                     cellNum,
+                                                     formatter.formatCellValue( cell ),
+                                                     DataListener.NON_MERGED );
+                                        }
+                                }
+                            }
                             break;
                         case Cell.CELL_TYPE_NUMERIC:
                             num = cell.getNumericCellValue();
