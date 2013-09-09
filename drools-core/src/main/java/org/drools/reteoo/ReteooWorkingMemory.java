@@ -503,7 +503,6 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         public void execute(InternalWorkingMemory workingMemory) {
             if ( this.factHandle.isValid() ) {
-
                 EventFactHandle eventHandle = (EventFactHandle) factHandle;
                 if ( eventHandle.hasPendingActions() ) {
                     workingMemory.queueWorkingMemoryAction( this );

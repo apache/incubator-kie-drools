@@ -63,10 +63,10 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         if ( factHandle.getObject() instanceof TraitProxy )  {
             BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
             if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
-                System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : Assert PASS " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+//                System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : Assert PASS " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 super.assertObject( factHandle, context, workingMemory );
             } else {
-                System.out.println( ( (ClassObjectType) this.getObjectType() ).getClassName() + " : Assert BLOCK " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " >> " + vetoMask + " checks in " + typeMask );
+//                System.out.println( ( (ClassObjectType) this.getObjectType() ).getClassName() + " : Assert BLOCK " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " >> " + vetoMask + " checks in " + typeMask );
             }
         } else {
             super.assertObject( factHandle, context, workingMemory );
