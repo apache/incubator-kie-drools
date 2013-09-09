@@ -36,6 +36,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.drools.decisiontable.parser.DecisionTableParser;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Parse an excel spreadsheet, pushing cell info into the SheetListener interface.
@@ -43,6 +45,8 @@ import org.drools.template.parser.DecisionTableParseException;
 public class ExcelParser
         implements
         DecisionTableParser {
+
+    private static final Logger log = LoggerFactory.getLogger(ExcelParser.class);
 
     public static final String DEFAULT_RULESHEET_NAME = "Decision Tables";
     private Map<String, List<DataListener>> _listeners = new HashMap<String, List<DataListener>>();
@@ -153,6 +157,8 @@ public class ExcelParser
                                          DataListener.NON_MERGED );
                             } catch ( RuntimeException e ) {
                                 //This is thrown in an external link cannot be resolved, so try the cached value
+                                log.warn("Cannot resolve externally linked value: " + formatter.formatCellValue( cell ));
+
                                 switch ( cell.getCachedFormulaResultType() ) {
                                     case Cell.CELL_TYPE_NUMERIC:
                                         num = cell.getNumericCellValue();
