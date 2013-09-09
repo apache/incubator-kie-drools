@@ -191,8 +191,10 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
         boolean txOwner = pm.beginTransaction();
         try {
             // need to do the lock here to avoid many executor services fetch the same element
-            request = (RequestInfo) pm.queryAndLockWithParametersInTransaction("PendingRequests", pm.addParametersToMap("now", new Date(), "firstResult", 0, "maxResults", 1), true);
+            request = (RequestInfo) pm.queryAndLockWithParametersInTransaction("PendingRequestsForProcessing", 
+                                                    pm.addParametersToMap("now", new Date(), "firstResult", 0, "maxResults", 1), true);
 
+            
             if (request != null) {
                 request.setStatus(STATUS.RUNNING);
                 pm.merge(request);

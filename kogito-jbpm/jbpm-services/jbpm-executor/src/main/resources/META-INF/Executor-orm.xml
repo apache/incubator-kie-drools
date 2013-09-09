@@ -75,5 +75,10 @@
             Select r from RequestInfo as r where r.key = :businessKey
         </query>
     </named-query>
+    <named-query name="PendingRequestsForProcessing"> 
+        <query>
+            Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') and r.time &lt; :now 
+        </query>
+    </named-query>
     
 </entity-mappings>

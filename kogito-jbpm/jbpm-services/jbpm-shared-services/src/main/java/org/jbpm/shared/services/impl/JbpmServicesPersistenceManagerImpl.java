@@ -96,6 +96,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
     public void setEm(EntityManager em) {
         this.em = em;
     }
+    
+    public void setEmf(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
 
     public void setTransactionManager(JbpmServicesTransactionManager ttxm) {
         this.ttxm = ttxm;
@@ -390,8 +394,12 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
 
    public EntityManager getEm() {
         try {
-            this.em.toString();  
-            return this.em;
+            if (this.em != null) {
+                this.em.toString();  
+                return this.em;
+            } else {
+                return this.emf.createEntityManager();
+            }
         } catch (ContextNotActiveException e) {
             /*
              * Special handling in case there is no context (RequestScoped in most cases) available
