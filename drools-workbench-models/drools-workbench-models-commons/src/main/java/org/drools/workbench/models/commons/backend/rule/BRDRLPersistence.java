@@ -78,6 +78,7 @@ import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.drools.workbench.models.commons.shared.rule.ExpressionField;
 import org.drools.workbench.models.commons.shared.rule.ExpressionFormLine;
 import org.drools.workbench.models.commons.shared.rule.ExpressionUnboundFact;
+import org.drools.workbench.models.commons.shared.rule.ExpressionVariable;
 import org.drools.workbench.models.commons.shared.rule.FactPattern;
 import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.FieldNature;
@@ -1685,7 +1686,10 @@ public class BRDRLPersistence
         int lineCounter = -1;
         for ( BaseDescr descr : lhs.getDescrs() ) {
             lineCounter = parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
-            m.addLhsItem( parseBaseDescr( descr, boundParams ) );
+            IPattern pattern = parseBaseDescr( descr, boundParams );
+            if (pattern != null) {
+                m.addLhsItem( parseBaseDescr( descr, boundParams ) );
+            }
         }
         parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
         return boundParams;
@@ -1755,7 +1759,7 @@ public class BRDRLPersistence
                                         Map<String, String> boundParams ) {
         String type = pattern.getObjectType();
         FactPattern factPattern = new FactPattern( type );
-        parseConstraint( factPattern, pattern.getConstraint() );
+        parseConstraint( factPattern, pattern.getConstraint(), boundParams );
         if ( pattern.getIdentifier() != null ) {
             String identifier = pattern.getIdentifier();
             factPattern.setBoundName( identifier );
@@ -1828,7 +1832,8 @@ public class BRDRLPersistence
                         new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_OR ) :
                         new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
         addPatternToComposite( conditionalDescr, comp, boundParams );
-        return comp;
+        IFactPattern[] patterns = comp.getPatterns();
+        return patterns != null && patterns.length > 0 ? comp : null;
     }
 
     private void addPatternToComposite( ConditionalElementDescr conditionalDescr,
@@ -1844,11 +1849,12 @@ public class BRDRLPersistence
     }
 
     private void parseConstraint( FactPattern factPattern,
-                                  ConditionalElementDescr constraint ) {
+                                  ConditionalElementDescr constraint,
+                                  Map<String, String> boundParams ) {
         for ( BaseDescr descr : constraint.getDescrs() ) {
             if ( descr instanceof ExprConstraintDescr ) {
                 ExprConstraintDescr exprConstraint = (ExprConstraintDescr) descr;
-                Expr expr = parseExpr( exprConstraint.getExpression() );
+                Expr expr = parseExpr( exprConstraint.getExpression(), boundParams );
                 factPattern.addConstraint( expr.asFieldConstraint( factPattern ) );
             }
         }
@@ -2196,21 +2202,21 @@ public class BRDRLPersistence
         return type;
     }
 
-    private Expr parseExpr( String expr ) {
+    private Expr parseExpr( String expr, Map<String, String> boundParams ) {
         List<String> splittedExpr = splitExpression( expr );
         if ( splittedExpr.size() == 1 ) {
             String singleExpr = splittedExpr.get( 0 );
             if ( singleExpr.startsWith( "(" ) ) {
-                return parseExpr( singleExpr.substring( 1 ) );
+                return parseExpr( singleExpr.substring( 1 ), boundParams );
             } else if ( singleExpr.startsWith( "eval" ) ) {
                 return new EvalExpr( unwrapParenthesis( singleExpr ) );
             } else {
-                return new SimpleExpr( singleExpr );
+                return new SimpleExpr( singleExpr, boundParams );
             }
         }
         ComplexExpr complexExpr = new ComplexExpr( splittedExpr.get( 1 ) );
         for ( int i = 0; i < splittedExpr.size(); i += 2 ) {
-            complexExpr.subExprs.add( parseExpr( splittedExpr.get( i ) ) );
+            complexExpr.subExprs.add( parseExpr( splittedExpr.get( i ), boundParams ) );
         }
         return complexExpr;
     }
@@ -2325,9 +2331,11 @@ public class BRDRLPersistence
     private static class SimpleExpr implements Expr {
 
         private final String expr;
+        private final Map<String, String> boundParams;
 
-        private SimpleExpr( String expr ) {
+        private SimpleExpr( String expr, Map<String, String> boundParams ) {
             this.expr = expr;
+            this.boundParams = boundParams;
         }
 
         public FieldConstraint asFieldConstraint( FactPattern factPattern ) {
@@ -2395,11 +2403,11 @@ public class BRDRLPersistence
                                                                          String fieldName,
                                                                          String operator,
                                                                          String value ) {
-            // TODO: when is it necessary to use
-            // SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern, fieldName, operator, value );
+            // TODO: we should find a way to know when the expression uses a getter and in this case create a plain SingleFieldConstraint
+            //int dotPos = fieldName.lastIndexOf('.');
+            //SingleFieldConstraint con = createSingleFieldConstraint(dotPos > 0 ? fieldName.substring(dotPos+1) : fieldName, operator, value);
 
-            int dotPos = fieldName.lastIndexOf('.');
-            SingleFieldConstraint con = createSingleFieldConstraint(dotPos > 0 ? fieldName.substring(dotPos+1) : fieldName, operator, value);
+            SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern, fieldName, operator, value );
 
             for (FieldConstraint fieldConstraint : factPattern.getFieldConstraints()) {
                 if (fieldConstraint instanceof SingleFieldConstraint) {
@@ -2414,7 +2422,7 @@ public class BRDRLPersistence
                 }
             }
 
-            if ( con.getParent() == null ) {
+            if ( con.getParent() == null && !(con instanceof SingleFieldConstraintEBLeftSide) ) {
                 con.setParent( createParentFor(factPattern, fieldName) );
             }
 
@@ -2426,7 +2434,7 @@ public class BRDRLPersistence
                                                                    String value ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
             fieldName = setFieldBindingOnContraint( fieldName, con );
-            con.setFieldName( fieldName );
+            con.setFieldName(fieldName);
             setOperatorAndValueOnConstraint( operator, value, con );
             return con;
         }
@@ -2441,14 +2449,24 @@ public class BRDRLPersistence
             con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
 
             String type = setOperatorAndValueOnConstraint( operator, value, con );
-            String[] splits = fieldName.split( "\\." );
 
-            for ( int i = 0; i < splits.length - 1; i++ ) {
-                con.getExpressionLeftSide().appendPart( new ExpressionField( splits[ i ].trim(), "", DataType.TYPE_OBJECT ) );
-            }
-            con.getExpressionLeftSide().appendPart( new ExpressionField( splits[ splits.length - 1 ].trim(), "", type ) );
+            parseExpression(fieldName, type, con.getExpressionLeftSide());
 
             return con;
+        }
+
+        private ExpressionFormLine parseExpression(String fieldName, String type, ExpressionFormLine expression) {
+            String[] splits = fieldName.split( "\\." );
+            for ( int i = 0; i < splits.length - 1; i++ ) {
+                String expressionPart = splits[i].trim();
+                if (i == 0 && boundParams.containsKey(expressionPart)) {
+                    expression.appendPart(new ExpressionVariable(expressionPart, "", DataType.TYPE_OBJECT));
+                } else {
+                    expression.appendPart(new ExpressionField(expressionPart, "", DataType.TYPE_OBJECT));
+                }
+            }
+            expression.appendPart(new ExpressionField(splits[splits.length - 1].trim(), "", type));
+            return expression;
         }
 
         private SingleFieldConstraint createParentFor( FactPattern factPattern, String fieldName ) {
@@ -2482,9 +2500,7 @@ public class BRDRLPersistence
             if ( value != null ) {
                 isAnd = value.contains( "&&" );
                 splittedValue = isAnd ? value.split( "\\&\\&" ) : value.split( "\\|\\|" );
-                type = setValueOnConstraint( operator,
-                                             con,
-                                             splittedValue[ 0 ].trim() );
+                type = setValueOnConstraint( operator, con, splittedValue[ 0 ].trim() );
             }
 
             if ( splittedValue.length > 1 ) {
@@ -2526,6 +2542,10 @@ public class BRDRLPersistence
                     if ( value.equals( "true" ) || value.equals( "false" ) ) {
                         type = DataType.TYPE_BOOLEAN;
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+                    } else if (false && value.indexOf('.') > 0) {
+                        // TODO we need a data model to understand if this is a real expression
+                        con.setExpressionValue( parseExpression(value, null, new ExpressionFormLine()) );
+                        value = "";
                     } else {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
                     }
