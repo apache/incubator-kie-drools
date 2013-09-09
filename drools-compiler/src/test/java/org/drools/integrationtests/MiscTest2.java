@@ -1775,12 +1775,42 @@ public class MiscTest2 extends CommonTestMethodBase {
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
 
+        ks.addEventListener( new AgendaEventListener() {
+            int step = 0;
+
+            public void activationCreated( ActivationCreatedEvent event ) {}
+
+            public void activationCancelled( ActivationCancelledEvent event ) {
+                switch ( step ) {
+                    case 0 : assertEquals( "Rule2", event.getActivation().getRule().getName() );
+                        step++;
+                        break;
+                    case 1 : assertEquals( "Rule1", event.getActivation().getRule().getName() );
+                        step++;
+                        break;
+                    default: fail( "More cancelled activations than expected" );
+                }
+            }
+
+            public void beforeActivationFired( BeforeActivationFiredEvent event ) {}
+
+            public void afterActivationFired( AfterActivationFiredEvent event ) {
+                assertEquals( "Rule1", event.getActivation().getRule().getName() );
+            }
+
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {}
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {}
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+        } );
         ks.fireAllRules();
 
         TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
 
         ks.insert( tb );
-        ks.fireAllRules();
+        assertEquals( 1, ks.fireAllRules() );
     }
 
 
