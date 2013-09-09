@@ -414,4 +414,57 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         System.clearProperty("jbpm.tm.jndi.lookup");
     }
+    
+    @Test
+    public void testCreationOfSessionWithEmptyContext() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefaultInMemory()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+       
+        // ksession for process instance #1
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        assertNotNull(ksession);       
+        int ksession1Id = ksession.getId();
+        assertTrue(ksession1Id == 1);
+        
+        // FIXME quick hack to overcome problems with same pi ids when not using persistence
+        ksession.startProcess("ScriptTask");
+        
+        // ksession for process instance #2
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime2 = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession2 = runtime2.getKieSession();
+
+        assertNotNull(ksession2);       
+        int ksession2Id = ksession2.getId();
+        assertTrue(ksession2Id == 2);
+        
+        ProcessInstance pi1 = ksession.startProcess("UserTask");
+        
+        ProcessInstance pi2 = ksession2.startProcess("UserTask");
+        
+        // both processes started 
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi2.getState());
+        
+        manager.disposeRuntimeEngine(runtime);
+        manager.disposeRuntimeEngine(runtime2);
+        
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        assertEquals(ksession1Id, ksession.getId());
+        
+        runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi2.getId()));
+        ksession2 = runtime2.getKieSession();
+        assertEquals(ksession2Id, ksession2.getId());
+        manager.close();
+    }
 }

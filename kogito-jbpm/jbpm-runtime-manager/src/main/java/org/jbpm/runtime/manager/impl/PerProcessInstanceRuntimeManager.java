@@ -232,7 +232,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
     
     protected void saveLocalRuntime(Object processInstanceId, RuntimeEngine runtime) {
-        if (processInstanceId == null) {
+        // since this manager is strictly for process instance ids it should only store 
+        // process instance ids as local cache keys
+        if (processInstanceId == null || !(processInstanceId instanceof Long)) {
             return;
         }
         Map<Object, RuntimeEngine> map = local.get();
