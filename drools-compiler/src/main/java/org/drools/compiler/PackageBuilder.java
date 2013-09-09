@@ -777,43 +777,32 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    void addPackageFromChangeSet(Resource resource) throws SAXException, IOException {
-        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
-        if (resource instanceof ClassPathResource) {
-            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
-                                   ( (ClassPathResource) resource ).getClazz() );
-        } else {
-            reader.setClassLoader( this.configuration.getClassLoader(),
-                                   null );
-        }
-        Reader resourceReader = null;
-        try {
-            resourceReader = resource.getReader();
-            ChangeSet changeSet = reader.read( resourceReader );
-            if (changeSet == null) {
-                // @TODO should log an error
-            }
-            for (Resource nestedResource : changeSet.getResourcesAdded()) {
-                InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-                if (iNestedResourceResource.isDirectory()) {
-                    for (Resource childResource : iNestedResourceResource.listResources()) {
-                        if (( (InternalResource) childResource ).isDirectory()) {
-                            continue; // ignore sub directories
-                        }
-                        ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
-                        addKnowledgeResource( childResource,
-                                              iNestedResourceResource.getResourceType(),
-                                              iNestedResourceResource.getConfiguration() );
-                    }
-                } else {
-                    addKnowledgeResource( iNestedResourceResource,
-                                          iNestedResourceResource.getResourceType(),
-                                          iNestedResourceResource.getConfiguration() );
+    void addPackageFromChangeSet( final Resource resource) throws SAXException, IOException {
+        ChangeSet changeSet = parseChangeSet( resource );
+        if (changeSet == null) {
+            results.add( new DroolsError() {
+                public String getMessage() {
+                    return "Unable to parse changeset " + resource;
                 }
-            }
-        } finally {
-            if (resourceReader != null) {
-                resourceReader.close();
+                public int[] getLines() { return new int[ 0 ]; }
+            } );
+        }
+        for (Resource nestedResource : changeSet.getResourcesAdded()) {
+            InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+            if (iNestedResourceResource.isDirectory()) {
+                for (Resource childResource : iNestedResourceResource.listResources()) {
+                    if (( (InternalResource) childResource ).isDirectory()) {
+                        continue; // ignore sub directories
+                    }
+                    ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
+                    addKnowledgeResource( childResource,
+                            iNestedResourceResource.getResourceType(),
+                            iNestedResourceResource.getConfiguration() );
+                }
+            } else {
+                addKnowledgeResource( iNestedResourceResource,
+                        iNestedResourceResource.getResourceType(),
+                        iNestedResourceResource.getConfiguration() );
             }
         }
     }
@@ -887,6 +876,28 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 //                w.setResource( res );
 //            }
 //        }
+    }
+
+    private ChangeSet parseChangeSet( Resource resource ) throws IOException, SAXException {
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+        if (resource instanceof ClassPathResource) {
+            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
+                    ( (ClassPathResource) resource ).getClazz() );
+        } else {
+            reader.setClassLoader( this.configuration.getClassLoader(),
+                    null );
+        }
+        Reader resourceReader = null;
+
+        try {
+            resourceReader = resource.getReader();
+            ChangeSet changeSet = reader.read( resourceReader );
+            return changeSet;
+        } finally {
+            if (resourceReader != null) {
+                resourceReader.close();
+            }
+        }
     }
 
     private boolean isSwappable( Resource original, Resource source ) {
@@ -3765,8 +3776,39 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    public void registerBuildResource(final Resource resource) {
-        buildResources.push( new ArrayList<Resource>() {{ add(resource); }} );
+    public void registerBuildResource( final Resource resource, ResourceType type ) {
+        InternalResource ires = (InternalResource) resource;
+        if ( ires.getResourceType() == null ) {
+            ires.setResourceType( type );
+        } else if ( ires.getResourceType() != type ) {
+            this.results.add( new ResourceTypeDeclarationWarning( resource, ires.getResourceType(), type ) );
+        }
+        if ( ResourceType.CHANGE_SET == type ) {
+            try {
+                ChangeSet changeSet = parseChangeSet( resource );
+                List<Resource> resources = new ArrayList<Resource>(  );
+                resources.add( resource );
+                for ( Resource addedRes : changeSet.getResourcesAdded() ) {
+                    resources.add( addedRes );
+                }
+                for ( Resource modifiedRes : changeSet.getResourcesModified() ) {
+                    resources.add( modifiedRes );
+                }
+                for ( Resource removedRes : changeSet.getResourcesRemoved() ) {
+                    resources.add( removedRes );
+                }
+                buildResources.push( resources );
+            } catch ( Exception e ) {
+                results.add( new DroolsError() {
+                    public String getMessage() {
+                        return "Unable to register changeset resource " + resource;
+                    }
+                    public int[] getLines() { return new int[ 0 ]; }
+                } );
+            }
+        } else {
+            buildResources.push( Arrays.asList( resource ) );
+        }
     }
 
     public void registerBuildResources(List<Resource> resources) {

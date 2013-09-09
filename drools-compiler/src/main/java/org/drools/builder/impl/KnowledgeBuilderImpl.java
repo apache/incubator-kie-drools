@@ -47,7 +47,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void add(Resource resource,
                             ResourceType type,
                             ResourceConfiguration configuration) {
-        pkgBuilder.registerBuildResource(resource);
+        pkgBuilder.registerBuildResource( resource, type );
         pkgBuilder.addKnowledgeResource( resource, type, configuration );
     }
 
