@@ -261,8 +261,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     	return new String[] { "timerTriggered", getActivationType()};
     }
     
-    public void triggerCompleted() {
-        ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
+    public void triggerCompleted() {        
         triggerCompleted(org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE, true);
     }
     
@@ -281,6 +280,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     }
 
 	protected void triggerCompleted(String type, boolean remove) {
+	    ((org.jbpm.workflow.instance.NodeInstanceContainer)getNodeInstanceContainer()).setCurrentLevel(getLevel());
 		cancelTimers();
 		removeActivationListener();
 		super.triggerCompleted(type, remove);

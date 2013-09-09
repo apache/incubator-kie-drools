@@ -1300,6 +1300,45 @@ public class FlowTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceCompleted(processInstance);
     }
+    
+    @Test
+    public void testTimerAndGateway() throws Exception {
+        
+        KieBase kbase = createKnowledgeBase("timer/BPMN2-ParallelSplitWithTimerProcess.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler handler1 = new TestWorkItemHandler();
+        TestWorkItemHandler handler2 = new TestWorkItemHandler();
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("task1", handler1);
+        ksession.getWorkItemManager().registerWorkItemHandler("task2", handler2);
+
+        ProcessInstance instance = ksession.createProcessInstance("timer-process", new HashMap<String, Object>());
+        ksession.startProcessInstance(instance.getId());
+
+        WorkItem workItem1 = handler1.getWorkItem();
+        assertNotNull(workItem1);
+        assertNull(handler1.getWorkItem());
+        //first safe state: task1 completed
+        ksession.getWorkItemManager().completeWorkItem(workItem1.getId(), null);        
+        
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("task1", handler1);
+        ksession.getWorkItemManager().registerWorkItemHandler("task2", handler2);
+        //second safe state: timer completed, waiting on task2
+        Thread.sleep(3000);
+
+        WorkItem workItem2 = handler2.getWorkItem();
+                //Both sides of the join are completed. But on the process instance, there are two
+                //JoinInstance for the same Join, and since it is an AND join, it never reaches task2
+                //It fails after the next assertion
+        assertNotNull(workItem2);
+        assertNull(handler2.getWorkItem());
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem2.getId(), null);
+        
+        assertProcessInstanceCompleted(instance);
+    }
 
     private static class GetProcessVariableCommand implements GenericCommand<Object> {
 
