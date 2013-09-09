@@ -3,8 +3,8 @@
             <input type="hidden" name="processId" value="${process.id}"/>
 
                 
-                <#if outputs?size != 0>
-                    <h2>Outputs</h2><br/>
+                <#if outputs?size != 0>                    
+                    <h2>Outputs</h2><br/>                    
                 </#if>
                 
                 <#list outputs?keys as key>
@@ -21,5 +21,5 @@
                      
   
       
-              
+              <i>* Automatically generated form, only supports simple text strings *</i>
         </div>

@@ -4,7 +4,7 @@
             <input type="hidden" name="taskId" value="${task.id}"/>
 
                 <#if inputs?size != 0>
-                    <h2>Inputs</h2><br/>
+                    <h2>Inputs</h2><br/>                    
                 </#if>    
                 <#list inputs?keys as key>
                     <#assign value = inputs[key]>
@@ -40,5 +40,5 @@
                         </div>
                     </#if>
                 </#list>      
-              
+              <i>* Automatically generated form, only supports simple text strings *</i>
         </div>
