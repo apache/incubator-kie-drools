@@ -45,6 +45,8 @@ import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.runtime.rule.QueryResults;
+import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -475,6 +477,64 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         System.out.println( "Final size " + ksession.getObjects().size() );
 
+        ksession.dispose();
+    }
+
+
+
+    @Test( timeout = 5000 )
+    @Ignore
+    public void testConcurrentQueries() {
+        // DROOLS-175
+        StringBuilder drl = new StringBuilder(  );
+        drl.append( "package org.drools.test;\n" +
+                    "query foo( ) end" );
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.toString().getBytes() ), ResourceType.DRL );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+//          ksession.fireAllRules();    // WORKAROUND
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final int THREAD_NR = 5;
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (int i = 0; i < THREAD_NR; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    boolean succ = false;
+                    try {
+                        QueryResults res = ksession.getQueryResults( "foo", Variable.v );
+                        succ = (res.size() == 1);
+                        return succ;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return succ;
+                    }
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < THREAD_NR; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        assertTrue(success);
         ksession.dispose();
     }
 
