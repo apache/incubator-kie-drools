@@ -23,6 +23,12 @@ public class ExpressionVariable extends ExpressionPart {
     public ExpressionVariable() {
     }
 
+    public ExpressionVariable( String fieldName,
+                               String fieldClassType,
+                               String fieldGenericType ) {
+        super( fieldName, fieldClassType, fieldGenericType );
+    }
+
     public ExpressionVariable( FactPattern fact ) {
         super( fact.getBoundName(), fact.getFactType(), fact.getFactType() );
         if ( !fact.isBound() ) {
