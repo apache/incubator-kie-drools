@@ -2352,4 +2352,68 @@ public class MiscTest2 extends CommonTestMethodBase {
 
     }
 
+
+    @Test
+    public void testExistsOr() {
+        // DROOLS-254
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo val : String end \n" +
+                     "" +
+                     "rule Init when $s : String() then retract( $s ); insert( new Foo( $s ) ); end \n" +
+                     "" +
+                     "rule \"Check Pos\"\n" +
+                     "when\n" +
+                     "  exists ( Foo( val == \"1\" ) or Foo( val == \"2\" ) )\n" +
+                     "then\n" +
+                     "  list.add( \"+\" );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Check Neg\"\n" +
+                     "when\n" +
+                     "  not ( not Foo( val == \"1\" ) and not Foo( val == \"2\" ) )\n" +
+                     "then\n" +
+                     "  list.add( \"-\" );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "2" );
+        ksession.insert( "3" );
+        ksession.insert( "1" );
+        ksession.insert( "4" );
+        ksession.insert( "5" );
+        ksession.insert( "7" );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "1" );
+        ksession.insert( "5" );
+        ksession.insert( "7" );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "6" );
+        ksession.insert( "2" );
+        ksession.insert( "2" );
+
+        ksession.fireAllRules();
+
+        System.out.println( list );
+
+        assertEquals( 11, ksession.getObjects().size() );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "+" ) );
+        assertTrue( list.contains( "-" ) );
+    }
+
+
+
+
 }
