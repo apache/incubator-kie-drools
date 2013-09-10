@@ -40,7 +40,6 @@
     <dependency>
       <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp</artifactId>
-      <version>3.1.6</version>
       <scope>test</scope>
     </dependency>
     <!-- Commons -->
@@ -111,13 +110,11 @@
     <dependency>
       <groupId>org.apache.neethi</groupId>
       <artifactId>neethi</artifactId>
-      <version>3.0.2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.ws.xmlschema</groupId>
       <artifactId>xmlschema-core</artifactId>
-      <version>2.0.3</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
