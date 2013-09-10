@@ -17,17 +17,17 @@
 package org.drools.runtime;
 
 public class EnvironmentName {
-    public static final String TRANSACTION_MANAGER                  = "drools.transaction.TransactionManager";
-    public static final String TRANSACTION_SYNCHRONIZATION_REGISTRY = "drools.transaction.TransactionSynchronizationRegistry";
-    public static final String TRANSACTION                          = "drools.transaction.Transaction";
+    public static final String TRANSACTION_MANAGER                  = org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
+    public static final String TRANSACTION_SYNCHRONIZATION_REGISTRY = org.kie.api.runtime.EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY;
+    public static final String TRANSACTION                          = org.kie.api.runtime.EnvironmentName.TRANSACTION;
 
-    public static final String ENTITY_MANAGER_FACTORY               = "drools.persistence.jpa.EntityManagerFactory";
-    public static final String CMD_SCOPED_ENTITY_MANAGER            = "drools.persistence.jpa.CmdScopedEntityManager";
-    public static final String APP_SCOPED_ENTITY_MANAGER            = "drools.persistence.jpa.AppScopedEntityManager";
-    public static final String PERSISTENCE_CONTEXT_MANAGER          = "drools.persistence.PersistenceContextManager";
+    public static final String ENTITY_MANAGER_FACTORY               = org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+    public static final String CMD_SCOPED_ENTITY_MANAGER            = org.kie.api.runtime.EnvironmentName.CMD_SCOPED_ENTITY_MANAGER;
+    public static final String APP_SCOPED_ENTITY_MANAGER            = org.kie.api.runtime.EnvironmentName.APP_SCOPED_ENTITY_MANAGER;
+    public static final String PERSISTENCE_CONTEXT_MANAGER          = org.kie.api.runtime.EnvironmentName.PERSISTENCE_CONTEXT_MANAGER;
 
-    public static final String OBJECT_MARSHALLING_STRATEGIES        = "drools.marshalling.ObjectMarshallingStrategies";
-    public static final String GLOBALS                              = "drools.Globals";
-    public static final String CALENDARS                            = "org.drools.core.time.Calendars";
-    public static final String DATE_FORMATS                         = "org.drools.build.DateFormats";
+    public static final String OBJECT_MARSHALLING_STRATEGIES        = org.kie.api.runtime.EnvironmentName.OBJECT_MARSHALLING_STRATEGIES;
+    public static final String GLOBALS                              = org.kie.api.runtime.EnvironmentName.GLOBALS;
+    public static final String CALENDARS                            = org.kie.api.runtime.EnvironmentName.CALENDARS;
+    public static final String DATE_FORMATS                         = org.kie.api.runtime.EnvironmentName.DATE_FORMATS;
 }
