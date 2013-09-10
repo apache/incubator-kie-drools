@@ -125,6 +125,15 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         //do nothing, this timer service is always active
 
     }
+    
+    public void destroy() {
+        Collection<List<GlobalJobHandle>> activeTimers = timerJobsPerSession.values();
+        for (List<GlobalJobHandle> handles : activeTimers) {
+            for (GlobalJobHandle handle : handles) {
+                this.schedulerService.removeJob(handle);
+            }
+        }
+    }
 
     @Override
     public long getTimeToNextJob() {
@@ -176,6 +185,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         }
         
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(ctx.getProcessInstanceId()));
+        if (runtime == null) {
+            throw new RuntimeException("No runtime engine found, could not be initialized yet");
+        }
+        
         if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
             CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
             ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((KnowledgeCommandContext) cmd.getCommandService().getContext()).getKieSession());

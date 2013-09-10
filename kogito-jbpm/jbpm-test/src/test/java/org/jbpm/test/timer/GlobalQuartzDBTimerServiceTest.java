@@ -9,7 +9,9 @@ import org.drools.core.time.TimerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
+import org.jbpm.test.timer.TimerBaseTest.TestRegisterableItemsFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -20,6 +22,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -79,6 +82,42 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     }
 
     
+    @Test
+    public void testTimerStartManagerClose() throws Exception {
+        QuartzSchedulerService additionalCopy = new QuartzSchedulerService();
+        additionalCopy.initScheduler(null);
+        // prepare listener to assert results
+        final List<Long> timerExporations = new ArrayList<Long>();
+        ProcessEventListener listener = new DefaultProcessEventListener(){
+
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                timerExporations.add(event.getProcessInstance().getId());
+            }
+
+ 
+            
+        };
+        
+        environment = RuntimeEnvironmentBuilder.getDefault()
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-TimerStart2.bpmn2"), ResourceType.BPMN2)
+                .schedulerService(globalScheduler)
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .get();
+        
+        manager = getManager(environment);
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+        
+        assertEquals(0, timerExporations.size());
+       
+        Thread.sleep(3500);
+        manager.disposeRuntimeEngine(runtime);
+        ((AbstractRuntimeManager)manager).close(true);
+        Thread.sleep(3000);
+        assertEquals(3, timerExporations.size());
+        additionalCopy.shutdown();
+    }
     
     /**
      * Test that illustrates that jobs are persisted and survives server restart

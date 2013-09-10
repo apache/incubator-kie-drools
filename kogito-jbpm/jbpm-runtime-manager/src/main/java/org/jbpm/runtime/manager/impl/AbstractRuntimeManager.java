@@ -25,6 +25,7 @@ import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
+import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.tx.ExtendedJTATransactionManager;
 import org.kie.api.event.process.ProcessEventListener;
@@ -112,10 +113,17 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 
     @Override
     public void close() {
+        close(false);
+    }
+    
+    public void close(boolean removeJobs) {
         environment.close();
         activeManagers.remove(identifier);
         TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         if (timerService != null) {
+            if (removeJobs && timerService instanceof GlobalTimerService) {
+                ((GlobalTimerService) timerService).destroy();
+            }
             timerService.shutdown();
             GlobalSchedulerService schedulerService = ((SchedulerProvider) environment).getSchedulerService();  
             if (schedulerService != null) {

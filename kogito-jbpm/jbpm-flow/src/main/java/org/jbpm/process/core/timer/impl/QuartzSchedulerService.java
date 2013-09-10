@@ -41,6 +41,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.JobPersistenceException;
+import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerMetaData;
@@ -117,6 +118,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         return quartzJobHandle;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean removeJob(JobHandle jobHandle) {
         GlobalQuartzJobHandle quartzJobHandle = (GlobalQuartzJobHandle) jobHandle;
@@ -171,6 +173,12 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
                 scheduler.rescheduleJob(quartzJobHandle.getJobName()+"_trigger", quartzJobHandle.getJobGroup(), triggerq);
             }
             
+        } catch (ObjectAlreadyExistsException e) {
+            // in general this should not happen even in clustered environment but just in case
+            // already registered jobs should be caught in scheduleJob but due to race conditions it might not 
+            // catch it in time - clustered deployments only
+            logger.warn("Job has already been scheduled, most likely running in cluster: {}", e.getMessage());
+            
         } catch (JobPersistenceException e) {
             if (e.getCause() instanceof NotSerializableException) {
                 // in case job cannot be persisted, like rule timer then make it in memory
@@ -208,7 +216,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             try {
                 scheduler.shutdown();
             } catch (SchedulerException e) {
-//                e.printStackTrace();
+                logger.warn("Error encountered while shutting down the scheduler", e);
             }
             scheduler = null;
         }
@@ -219,7 +227,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             try {
                 scheduler.shutdown();
             } catch (SchedulerException e) {
-//                e.printStackTrace();
+                logger.warn("Error encountered while shutting down (forced) the scheduler", e);
             }
             scheduler = null;
         }
@@ -274,6 +282,12 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
                 if (failedCount > 5) {
                     logger.error("Timer execution failed 5 times in a roll, unscheduling ({})", quartzContext.getJobDetail().getFullName());
                     reschedule = false;
+                }
+                // let's give it a bit of time before failing/retrying
+                try {
+                    Thread.sleep(failedCount * 1000);
+                } catch (InterruptedException e1) {
+                    logger.debug("Got interrupted", e1);
                 }
                 throw new JobExecutionException("Exception when executing scheduled job", e, reschedule);
             }
@@ -331,6 +345,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
             }
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public Void call() throws Exception {
             findDelegate();

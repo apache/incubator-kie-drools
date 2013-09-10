@@ -17,8 +17,8 @@ import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
 import org.jbpm.kie.services.impl.event.Undeploy;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
@@ -101,7 +101,7 @@ public abstract class AbstractDeploymentService implements DeploymentService {
             DeployedUnit deployed = deploymentsMap.remove(unit.getIdentifier());
             if (deployed != null) {
                 RuntimeManager manager = deployed.getRuntimeManager();
-                manager.close();
+                ((AbstractRuntimeManager)manager).close(true);
             }
             if (undeploymentEvent != null) {
                 undeploymentEvent.fire(new DeploymentEvent(unit.getIdentifier(), deployed));
