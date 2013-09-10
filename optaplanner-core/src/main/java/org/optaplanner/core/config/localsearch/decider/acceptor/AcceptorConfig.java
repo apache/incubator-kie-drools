@@ -53,9 +53,9 @@ public class AcceptorConfig {
     protected Integer fadingEntityTabuSize = null;
     protected Double fadingEntityTabuRatio = null;
     protected Integer valueTabuSize = null;
-    protected Integer valueTabuRatio = null;
+    protected Double valueTabuRatio = null;
     protected Integer fadingValueTabuSize = null;
-    protected Integer fadingValueTabuRatio = null;
+    protected Double fadingValueTabuRatio = null;
     protected Integer moveTabuSize = null;
     protected Integer fadingMoveTabuSize = null;
     protected Integer undoMoveTabuSize = null;
@@ -128,11 +128,11 @@ public class AcceptorConfig {
         this.valueTabuSize = valueTabuSize;
     }
 
-    public Integer getValueTabuRatio() {
+    public Double getValueTabuRatio() {
         return valueTabuRatio;
     }
 
-    public void setValueTabuRatio(Integer valueTabuRatio) {
+    public void setValueTabuRatio(Double valueTabuRatio) {
         this.valueTabuRatio = valueTabuRatio;
     }
 
@@ -144,11 +144,11 @@ public class AcceptorConfig {
         this.fadingValueTabuSize = fadingValueTabuSize;
     }
 
-    public Integer getFadingValueTabuRatio() {
+    public Double getFadingValueTabuRatio() {
         return fadingValueTabuRatio;
     }
 
-    public void setFadingValueTabuRatio(Integer fadingValueTabuRatio) {
+    public void setFadingValueTabuRatio(Double fadingValueTabuRatio) {
         this.fadingValueTabuRatio = fadingValueTabuRatio;
     }
 
