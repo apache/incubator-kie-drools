@@ -1,28 +1,26 @@
 package org.drools.decisiontable;
 
-import java.io.InputStream;
-
-import org.drools.template.parser.DecisionTableParseException;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.*;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertNotNull;
 
 public class LinkedWorkbookTest {
 
-    //This test currently throws a DecisionTableParseException as the RuleTable value in the linked external workbook is not cached in BZ967609_sample.xls
-    @Test(expected = DecisionTableParseException.class)
-    public void testLinkedWorkbook() {
+    @Test
+    public void testBrokenExternalLinkButValueIsCached() throws Exception {
         KieHelper kieHelper = new KieHelper();
-        InputStream is = this.getClass().getResourceAsStream( "BZ967609_sample.xls" );
-        kieHelper.addResource( ResourceFactory.newInputStreamResource( is ),
-                               ResourceType.DTABLE );
-
+        // do not modify this XLS file using OpenOffice or LibreOffice or the external link gets corrupted and the test fails!
+        InputStream dtableIs = this.getClass().getResourceAsStream("BZ967609-brokenExtLinkButValueCached.xls");
+        kieHelper.addResource(ResourceFactory.newInputStreamResource(dtableIs),
+                ResourceType.DTABLE);
         KieBase kbase = kieHelper.build();
-        assertNotNull( kbase );
+        assertNotNull(kbase);
     }
 
 }
