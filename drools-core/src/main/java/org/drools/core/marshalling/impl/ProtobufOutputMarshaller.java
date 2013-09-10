@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import org.drools.core.InitialFact;
 import org.drools.core.beliefsystem.BeliefSet;
@@ -211,7 +212,17 @@ public class ProtobufOutputMarshaller {
     private static void writeObjectTypeConfiguration( MarshallerWriteContext context, 
     		                                          ObjectTypeConfigurationRegistry otcr,
     		                                          org.drools.core.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb) {
-    	for( ObjectTypeConf otc : otcr.values() ) {
+        
+        Collection<ObjectTypeConf> values = otcr.values();
+    	ObjectTypeConf[] otcs = values.toArray( new ObjectTypeConf[ values.size() ] );
+    	Arrays.sort( otcs,
+    	        new Comparator<ObjectTypeConf>() {
+                    @Override
+                    public int compare(ObjectTypeConf o1, ObjectTypeConf o2) {
+                        return o1.getTypeName().compareTo(o2.getTypeName());
+                    }
+    	});
+        for( ObjectTypeConf otc : otcs ) {
     		final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory( otc.getConcreteObjectTypeNode() );
     		if( memory != null && ! memory.memory.isEmpty() ) {
         		ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
