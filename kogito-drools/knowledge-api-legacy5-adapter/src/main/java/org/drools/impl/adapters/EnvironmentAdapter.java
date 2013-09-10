@@ -4,7 +4,7 @@ import org.kie.api.runtime.Environment;
 
 public class EnvironmentAdapter implements org.drools.runtime.Environment {
 
-    private final Environment delegate;
+    public final Environment delegate;
 
     public EnvironmentAdapter(Environment delegate) {
         this.delegate = delegate;

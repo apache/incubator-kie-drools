@@ -26,7 +26,7 @@ import static org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.adaptStat
 
 public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase {
 
-    private final KnowledgeBase delegate;
+    public final KnowledgeBase delegate;
 
     private final Map<KnowledgeBaseEventListener, KieBaseEventListener> listeners = new HashMap<KnowledgeBaseEventListener, KieBaseEventListener>();
 

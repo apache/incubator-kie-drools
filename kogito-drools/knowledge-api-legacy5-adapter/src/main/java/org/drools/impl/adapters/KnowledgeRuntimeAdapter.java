@@ -36,7 +36,7 @@ import static org.drools.impl.adapters.ProcessInstanceAdapter.adaptProcessInstan
 
 public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRuntime {
 
-    protected final KnowledgeRuntime delegate;
+    public final KnowledgeRuntime delegate;
 
     private final Map<WorkingMemoryEventListener, org.kie.api.event.rule.WorkingMemoryEventListener> wimListeners = new HashMap<WorkingMemoryEventListener, org.kie.api.event.rule.WorkingMemoryEventListener>();
 
@@ -152,7 +152,7 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public WorkItemManager getWorkItemManager() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getWorkItemManager -> TODO");
+    	return new WorkItemManagerAdapter(delegate.getWorkItemManager());
     }
 
     public void halt() {
