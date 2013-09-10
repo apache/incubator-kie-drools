@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.*;
 
 import org.codehaus.janino.Java;
+import org.drools.ClockType;
 import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseConfiguration;
 import org.drools.KnowledgeBaseFactory;
@@ -45,9 +46,11 @@ import org.drools.io.internal.InternalResource;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.rule.TypeDeclaration;
+import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
+import org.drools.runtime.conf.ClockTypeOption;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.Is;
 import org.junit.After;
@@ -1133,6 +1136,76 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
 
         KnowledgePackage cpkg = client.getKnowledgePackages().iterator().next();
         assertTrue( ((RuleImpl) cpkg.getRules().iterator().next()).getRule().getResource() instanceof ByteArrayResource );
+    }
+
+    @Test
+    public void testModifyWithTimedRule() throws Exception {
+        String drl = "package org.drools.test; \n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare Integer @role(event) end\n" +
+                     "declare String @role(event) end\n" +
+                     "" +
+                     "rule R \n" +
+                     "when \n" +
+                     "  $i : String() \n" +
+                     "  not Integer( this != $i, this after[1ms, 1s] $i ) \n" +
+                     "then \n" +
+                     "  System.out.println( \"OK\" ); \n " +
+                     "  list.add( new java.util.Date().getTime() ); \n" +
+                     "end \n" +
+                     "";
+
+        fileManager.write( "rule1.drl",
+                drl );
+
+        fileManager.write( "rule2.drl",
+                "package org.drools.test; \n" );
+
+
+        String xml = "";
+        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+        xml += "    <add> ";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rule1.drl' type='DRL' />";
+        xml += "        <resource source='http://localhost:" + this.getPort() + "/rule2.drl' type='DRL' />";
+        xml += "    </add> ";
+        xml += "</change-set>";
+
+        File fxml = fileManager.write( "changeset.xml",
+                xml );
+
+        KnowledgeBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbc.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kbc );
+        KnowledgeAgent kagent = createKAgent( kbase, false );
+
+        applyChangeSet( kagent, ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+
+        KnowledgeSessionConfiguration ksc = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksc.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
+        StatefulKnowledgeSession ksession = createKnowledgeSession( kagent.getKnowledgeBase(), ksc );
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        long now = new Date().getTime();
+
+        ksession.insert( "hello" );
+        ksession.fireAllRules();
+
+        Thread.sleep( 500 );
+        this.fileManager.write( "rule2.drl", createDefaultRule( "rule3" ) );
+        scan( kagent );
+
+        Thread.sleep( 2000 );
+        long delta = ((Long)list.get( 0 )) - now;
+        System.out.println( delta );
+
+        assertTrue( delta > 1000 && delta < 1500 );
+
+        ksession.dispose();
+        kagent.dispose();
     }
 
 
