@@ -211,15 +211,15 @@ public class SlidingTimeWindow
                 queue.expiringHandle = null;
                 handle = queue.queue.peek();
             }
+            // update next expiration time
+            updateNextExpiration( handle,
+                    workingMemory,
+                    memory,
+                    this,
+                    queue,
+                    nodeId );
         }
 
-        // update next expiration time 
-        updateNextExpiration( handle,
-                              workingMemory,
-                              memory,
-                              this,
-                              queue,
-                              nodeId );
     }
 
     private boolean isExpired(final long currentTime,

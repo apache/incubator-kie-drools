@@ -3458,5 +3458,64 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 1L, 2L, 1L, 1L ), list );
     }
 
+
+    @Test
+    public void testPastEventExipration() throws InterruptedException {
+        //DROOLS-257
+        String drl = "package org.test;\n" +
+                     "import org.drools.StockTick;\n " +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare StockTick @role(event) @timestamp( time ) @expires( 200ms ) end \n" +
+                     "" +
+                     "rule \"slidingTimeCount\"\n" +
+                     "when\n" +
+                     "  accumulate ( $e: StockTick() over window:length(10), $n : count($e) )\n" +
+                     "then\n" +
+                     "  list.add( $n ); \n" +
+                     "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
+                     "end" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get("realtime") );
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        long now = new Date().getTime();
+
+        StockTick event1 = new StockTick( 1, "XXX", 1.0, now );
+        StockTick event2 = new StockTick( 2, "XXX", 1.0, now + 240 );
+        StockTick event3 = new StockTick( 2, "XXX", 1.0, now + 380 );
+        StockTick event4 = new StockTick( 2, "XXX", 1.0, now + 500 );
+
+        ksession.insert( event1 );
+        ksession.insert( event2 );
+        ksession.insert( event3 );
+        ksession.insert( event4 );
+
+        Thread.sleep( 220 );
+
+        ksession.fireAllRules();
+
+        Thread.sleep( 400 );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 3L, 1L ), list );
+    }
 }
 
