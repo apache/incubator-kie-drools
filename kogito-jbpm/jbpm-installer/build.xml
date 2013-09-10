@@ -302,6 +302,9 @@
     <copy file="${install.home}/standalone-${jboss.server.version}.xml"
           tofile="${jboss.home}/standalone/configuration/standalone.xml"
           overwrite="true" />
+    <copy file="${install.home}/standalone-full-${jboss.server.version}.xml"
+          tofile="${jboss.home}/standalone/configuration/standalone-full.xml"
+          overwrite="true" />
     <!-- authentication configuration -->
     <copy file="${install.home}/auth/users.properties"
           tofile="${jboss.server.conf.dir}/users.properties"
@@ -419,13 +422,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.dashboard.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.dashboard.into.jboss,install.jBPM.runtime" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
@@ -455,19 +458,22 @@
   <!-- Start JBoss AS -->
   <target name="start.jboss">
     <property name="jboss.full.path.win" location="${jboss.home}/bin/standalone.bat" />
-    <exec executable="${jboss.full.path.win}" spawn="yes"
-          osfamily="windows">
+    <exec executable="${jboss.full.path.win}" spawn="yes" osfamily="windows">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
-      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false -Dorg.jbpm.console.demo=true -Dorg.kie.wb.demo=true" />
+      <arg value="--server-config=standalone-full.xml" />
+      <arg value="-Dorg.jbpm.console.demo=true" />
+      <arg value="-Dorg.kie.wb.demo=true" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
       <env key="JAVA_OPTS" value="-XX:MaxPermSize=256m -Xms256m -Xmx512m" />
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
-      <arg value="-Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false -Dorg.jbpm.console.demo=true -Dorg.kie.wb.demo=true" />
+      <arg value="--server-config=standalone-full.xml" />
+      <arg value="-Dorg.jbpm.console.demo=true" />
+      <arg value="-Dorg.kie.wb.demo=true" />
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
@@ -639,4 +645,30 @@
 	  </hibernatetool>
 	  <delete dir="db/export-jbpm/META-INF"/>
 	</target>
+
+   <target name="ht.schemaexport" depends="install.jBPM.runtime,download.ddl.dependencies">
+      <delete dir="db/export-ht"/>
+      <!-- task definition; project.class.path contains all necessary libs -->
+      <taskdef name="hibernatetool" classname="org.hibernate.tool.ant.HibernateToolTask"
+          classpathref="generate.ddl.${jpa.version}.class.path" />
+      <mkdir dir="db/export-ht"/>
+      <mkdir dir="db/export-ht/META-INF"/>
+   	  <copy tofile="db/export-ht/META-INF/persistence.xml" file="db/task-persistence-${jpa.version}.xml"/>
+      <copy todir="db/export-ht/META-INF">
+        <fileset dir="db/">
+      	  <include name="Taskorm-${jpa.version}.xml"/>
+        </fileset>
+      </copy>   
+      <hibernatetool destdir="db/export-ht">
+        <jpaconfiguration persistenceunit="org.jbpm.task.ddl" />
+        <classpath>
+            <pathelement path="${runtime.class.path}"/>
+            <dirset dir="db/export-ht/">
+            </dirset>
+        </classpath>
+        <hbm2ddl outputfilename="htschemaexport.sql" format="true"
+            export="false" drop="true" />
+      </hibernatetool>
+      <delete dir="db/export-ht/META-INF"/>
+    </target>
 </project>
