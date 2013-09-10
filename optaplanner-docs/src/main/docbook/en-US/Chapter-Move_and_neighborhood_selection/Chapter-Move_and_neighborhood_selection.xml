@@ -712,6 +712,12 @@
       of their planning variables. The <literal>pillarSwapMove</literal> selects 2 different entity pillars and swaps
       the values of all their variables for all their entities.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/pillarSwapMove.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>Simplest configuration:</para>
 
       <programlisting language="xml">    &lt;pillarSwapMoveSelector/&gt;</programlisting>
