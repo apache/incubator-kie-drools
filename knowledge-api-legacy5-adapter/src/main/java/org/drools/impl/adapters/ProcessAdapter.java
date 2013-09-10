@@ -10,7 +10,7 @@ import static org.drools.impl.adapters.AdapterUtil.adaptKnowledgeType;
 
 public class ProcessAdapter implements org.drools.definition.process.Process {
 
-    private final Process delegate;
+    public final Process delegate;
 
     public ProcessAdapter(Process delegate) {
         this.delegate = delegate;
