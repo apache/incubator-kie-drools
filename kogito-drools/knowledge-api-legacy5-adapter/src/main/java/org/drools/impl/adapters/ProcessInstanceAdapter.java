@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ProcessInstanceAdapter implements org.drools.runtime.process.ProcessInstance {
 
-    private final ProcessInstance delegate;
+    public final ProcessInstance delegate;
 
     public ProcessInstanceAdapter(ProcessInstance delegate) {
         this.delegate = delegate;

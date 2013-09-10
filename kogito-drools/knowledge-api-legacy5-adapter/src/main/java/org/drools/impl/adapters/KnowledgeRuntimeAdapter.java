@@ -39,6 +39,7 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     public final KnowledgeRuntime delegate;
 
     private final Map<WorkingMemoryEventListener, org.kie.api.event.rule.WorkingMemoryEventListener> wimListeners = new HashMap<WorkingMemoryEventListener, org.kie.api.event.rule.WorkingMemoryEventListener>();
+    private final Map<ProcessEventListener, org.kie.api.event.process.ProcessEventListener> processListeners = new HashMap<ProcessEventListener, org.kie.api.event.process.ProcessEventListener>();
 
     public KnowledgeRuntimeAdapter(KnowledgeRuntime delegate) {
         this.delegate = delegate;
@@ -100,19 +101,18 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
         return new KnowledgeSessionConfigurationAdapter(delegate.getSessionConfiguration());
     }
 
-    @Override
     public void addEventListener(ProcessEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.addEventListener -> TODO");
+        org.kie.api.event.process.ProcessEventListener adapted = new ProcessEventListenerAdapter(listener);
+        processListeners.put(listener, adapted);
+        delegate.addEventListener(adapted);
     }
 
-    @Override
     public void removeEventListener(ProcessEventListener listener) {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.removeEventListener -> TODO");
+    	delegate.removeEventListener(processListeners.remove(listener));
     }
 
-    @Override
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        throw new UnsupportedOperationException("org.drools.impl.adapters.StatefulKnowledgeSessionAdapter.getProcessEventListeners -> TODO");
+    	return processListeners.keySet();
     }
 
     public ProcessInstance startProcess(String processId) {
