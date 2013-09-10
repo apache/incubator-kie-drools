@@ -194,10 +194,19 @@ public class ProtobufOutputMarshaller {
         return _session.build();
     }
 
-    private static void writeObjectTypeConfiguration(MarshallerWriteContext context,
-            ObjectTypeConfigurationRegistry otcr,
-            org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb) {
-        for (ObjectTypeConf otc : otcr.values()) {
+    private static void writeObjectTypeConfiguration( MarshallerWriteContext context,
+                                                      ObjectTypeConfigurationRegistry otcr,
+                                                      org.drools.marshalling.impl.ProtobufMessages.EntryPoint.Builder _epb ) {
+
+        Collection<ObjectTypeConf> values = otcr.values();
+        ObjectTypeConf[] otcs = values.toArray( new ObjectTypeConf[ values.size() ] );
+        Arrays.sort( otcs,
+                new Comparator<ObjectTypeConf>() {
+                    public int compare(ObjectTypeConf o1, ObjectTypeConf o2) {
+                        return o1.getTypeName().compareTo(o2.getTypeName());
+                    }
+                });
+        for( ObjectTypeConf otc : otcs ) {
             final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory(otc.getConcreteObjectTypeNode());
             if (memory != null && !memory.memory.isEmpty()) {
                 ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
