@@ -20,6 +20,7 @@
     <module>drools-workbench-models-guided-template</module>
     <module>drools-workbench-models-guided-scorecard</module>
     <module>drools-workbench-models-test-scenarios</module>
+    <module>drools-workbench-models-datamodel-api</module>
   </modules>
 
 </project>
