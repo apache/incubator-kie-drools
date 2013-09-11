@@ -161,7 +161,7 @@ public class NamedEntryPoint
             this.wm.startOperation();
 
             // ADDED, NOT IN THE ORIGINAL 6.x COMMIT
-            //wm.initInitialFact();
+            wm.initInitialFact();
 
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );

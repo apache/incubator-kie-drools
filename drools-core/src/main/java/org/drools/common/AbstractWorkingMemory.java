@@ -166,6 +166,8 @@ public abstract class AbstractWorkingMemory
 
     protected InternalFactHandle                                 initialFactHandle;
 
+    protected AtomicBoolean                                      initialFactFlag;
+
     protected SessionConfiguration                               config;
 
     protected PartitionManager                                   partitionManager;
@@ -348,12 +350,14 @@ public abstract class AbstractWorkingMemory
 
         initManagementBeans();
 
+        initialFactFlag = new AtomicBoolean( false );
         if ( initInitFactHandle ) {
             initInitialFact( ruleBase, null );
         }
     }
 
     public void initInitialFact( InternalRuleBase ruleBase, MarshallerReaderContext context ) {
+        ruleBase.lock();
         this.initialFactHandle = new DefaultFactHandle(0, InitialFactImpl.getInstance(), 0,  defaultEntryPoint );
 
         ObjectTypeConf otc = this.defaultEntryPoint.getObjectTypeConfigurationRegistry()
@@ -371,7 +375,8 @@ public abstract class AbstractWorkingMemory
 
         otc.getConcreteObjectTypeNode().assertObject( this.initialFactHandle, pctx, this );
         // ADDED, NOT IN THE ORIGINAL 6.x COMMIT
-        //pctx.evaluateActionQueue( this );
+        pctx.evaluateActionQueue( this );
+        ruleBase.unlock();
     }
 
     private void initManagementBeans() {
@@ -1460,13 +1465,8 @@ public abstract class AbstractWorkingMemory
     }
 
     public void initInitialFact() {
-        if ( initialFactHandle == null ) {
-            synchronized ( this ) {
-                // this sync is lazy, but now we know it's synchronise, retest the null, to avoid duplicate creation
-                if ( initialFactHandle == null ) {
-                    initInitialFact(ruleBase, null);
-                }
-            }
+        if ( initialFactFlag.compareAndSet( false, true ) && initialFactHandle == null ) {
+            initInitialFact(ruleBase, null);
         }
     }
 }

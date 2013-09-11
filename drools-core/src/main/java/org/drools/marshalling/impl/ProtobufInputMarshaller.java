@@ -244,16 +244,16 @@ public class ProtobufInputMarshaller {
         readNodeMemories( context,
                           _session.getRuleData() );
 
-        if ( _session.getRuleData().getInitialFact() != null ) {
-            ((AbstractWorkingMemory)context.wm).initInitialFact(context.ruleBase, context);
-            context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
-        }
-        
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
             WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
             readFactHandles( context,
                              _ep,
                              ((NamedEntryPoint) wmep).getObjectStore() );
+        }
+
+        if ( _session.getRuleData().getInitialFact() != null ) {
+            ((AbstractWorkingMemory)context.wm).initInitialFact(context.ruleBase, context);
+            context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
         }
 
         readActionQueue( context,
