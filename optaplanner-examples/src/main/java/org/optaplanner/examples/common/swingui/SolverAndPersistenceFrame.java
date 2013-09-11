@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.swingui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -59,6 +60,7 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private SolutionBusiness solutionBusiness;
 
+    private JPanel middlePanel;
     private SolutionPanel solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
 
@@ -116,22 +118,17 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JPanel createContentPane() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(createButtonPanel(), BorderLayout.NORTH);
-        if (solutionPanel.isWrapInScrollPane()) {
-            JScrollPane solutionScrollPane = new JScrollPane(solutionPanel);
-            panel.add(solutionScrollPane, BorderLayout.CENTER);
-        } else {
-            panel.add(solutionPanel, BorderLayout.CENTER);
-        }
+        panel.add(createMiddlePanel(), BorderLayout.CENTER);
         panel.add(createScorePanel(), BorderLayout.SOUTH);
         return panel;
     }
 
     private JPanel createButtonPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 0));
-        panel.add(createLoadUnsolvedPanel());
-        panel.add(createLoadSolvedPanel());
-        panel.add(createProcessingPanel());
-        return panel;
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 0));
+        buttonPanel.add(createLoadUnsolvedPanel());
+        buttonPanel.add(createLoadSolvedPanel());
+        buttonPanel.add(createProcessingPanel());
+        return buttonPanel;
     }
 
     private JComponent createLoadUnsolvedPanel() {
@@ -393,18 +390,32 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     }
 
+    private JPanel createMiddlePanel() {
+        middlePanel = new JPanel(new CardLayout());
+        ImageIcon usageExplanationIcon = new ImageIcon(getClass().getResource(solutionPanel.getUsageExplanationPath()));
+        middlePanel.add(new JLabel(usageExplanationIcon), "usageExplanationPanel");
+        JComponent wrappedSolutionPanel;
+        if (solutionPanel.isWrapInScrollPane()) {
+            wrappedSolutionPanel = new JScrollPane(solutionPanel);
+        } else {
+            wrappedSolutionPanel = solutionPanel;
+        }
+        middlePanel.add(wrappedSolutionPanel, "solutionPanel");
+        return middlePanel;
+    }
+
     private JPanel createScorePanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel scorePanel = new JPanel(new BorderLayout());
         progressBar = new JProgressBar(0, 100);
-        panel.add(progressBar, BorderLayout.WEST);
-        resultLabel = new JLabel("Please load a data set and then click the solve button.");
+        scorePanel.add(progressBar, BorderLayout.WEST);
+        resultLabel = new JLabel("Score:");
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-        panel.add(resultLabel, BorderLayout.CENTER);
+        scorePanel.add(resultLabel, BorderLayout.CENTER);
         showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
         showConstraintMatchesDialogAction.setEnabled(false);
         JButton constraintScoreMapButton = new JButton(showConstraintMatchesDialogAction);
-        panel.add(constraintScoreMapButton, BorderLayout.EAST);
-        return panel;
+        scorePanel.add(constraintScoreMapButton, BorderLayout.EAST);
+        return scorePanel;
     }
 
     private class ShowConstraintMatchesDialogAction extends AbstractAction {
@@ -421,6 +432,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private void setSolutionLoaded() {
+        ((CardLayout) middlePanel.getLayout()).show(middlePanel, "solutionPanel");
         solveAction.setEnabled(true);
         saveAction.setEnabled(true);
         exportAction.setEnabled(solutionBusiness.hasExporter());

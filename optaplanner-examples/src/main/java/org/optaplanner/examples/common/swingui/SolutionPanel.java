@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class SolutionPanel extends JPanel implements Scrollable {
 
+    protected static final String USAGE_EXPLANATION_PATH = "/org/optaplanner/examples/common/swingui/exampleUsageExplanation.png";
     protected static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 500);
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
@@ -42,6 +43,10 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
+    }
+
+    public String getUsageExplanationPath() {
+        return USAGE_EXPLANATION_PATH;
     }
 
     public boolean isWrapInScrollPane() {
