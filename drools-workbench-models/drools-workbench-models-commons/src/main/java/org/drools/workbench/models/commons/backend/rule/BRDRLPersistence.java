@@ -55,7 +55,8 @@ import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
 import org.drools.workbench.models.commons.shared.rule.ActionCallMethod;
 import org.drools.workbench.models.commons.shared.rule.ActionExecuteWorkItem;
@@ -1367,9 +1368,9 @@ public class BRDRLPersistence
     }
 
     /**
-     * @see BRLPersistence#unmarshal(String)
+     * @see BRLPersistence#unmarshal(String,PackageDataModelOracle)
      */
-    public RuleModel unmarshal( String str ) {
+    public RuleModel unmarshal( String str, final PackageDataModelOracle dmo ) {
         return getRuleModel( preprocessDRL( str ) );
     }
 
