@@ -16,6 +16,7 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface BRLPersistence {
 
     String marshal( final RuleModel model );
 
-    RuleModel unmarshal( final String str );
+    RuleModel unmarshal( final String str, final PackageDataModelOracle dmo );
 
     RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls );
 }

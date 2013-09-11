@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.models.datamodel.oracle;
+package org.drools.workbench.models.commons.shared.oracle;
 
 import java.util.List;
 
 import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.commons.shared.oracle.model.MethodInfo;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.datamodel.model.MethodInfo;
 
 public interface PackageDataModelOracle extends ProjectDataModelOracle {
 

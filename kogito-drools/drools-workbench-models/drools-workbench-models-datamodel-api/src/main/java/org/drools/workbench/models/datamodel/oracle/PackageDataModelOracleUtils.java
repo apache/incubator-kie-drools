@@ -8,10 +8,10 @@ import java.util.Set;
 
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.datamodel.model.TypeSource;
-import org.drools.workbench.models.datamodel.model.Annotation;
-import org.drools.workbench.models.datamodel.model.MethodInfo;
-import org.drools.workbench.models.datamodel.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
+import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
+import org.drools.workbench.models.commons.shared.oracle.model.MethodInfo;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
 
 /**
  * Utilities for PackageDataModelOracle

@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
 import org.drools.workbench.models.commons.backend.rule.DSLVariableValuesConverter;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
 import org.drools.workbench.models.commons.shared.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
@@ -177,7 +178,7 @@ public class BRXMLPersistence
      * org.drools.ide.common.server.util.BRLPersistence#toModel(java.lang.String
      * )
      */
-    public RuleModel unmarshal( final String xml ) {
+    public RuleModel unmarshal( final String xml, final PackageDataModelOracle dmo) {
         if ( xml == null || xml.trim().length() == 0 ) {
             return createEmptyModel();
         }

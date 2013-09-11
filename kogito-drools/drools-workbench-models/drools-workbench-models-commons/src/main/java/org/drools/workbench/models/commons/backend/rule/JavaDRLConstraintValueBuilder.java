@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.commons.backend.rule;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 
 /**
  * Specific implementation for MVEL

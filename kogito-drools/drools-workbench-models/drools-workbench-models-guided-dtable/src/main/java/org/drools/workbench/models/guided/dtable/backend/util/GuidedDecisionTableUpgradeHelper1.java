@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.backend.IUpgradeHelper;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;

@@ -21,7 +21,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
 import org.drools.workbench.models.commons.shared.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
@@ -42,6 +43,7 @@ import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class BRLPersistenceTest {
 
@@ -79,7 +81,8 @@ public class BRLPersistenceTest {
         assertTrue( xml.indexOf( "org.kie" ) == -1 );
         assertTrue( xml.indexOf( "addToGlobal" ) > -1 );
 
-        RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal( xml );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
         assertEquals( 2,
                       rm_.rhs.length );
 
@@ -103,7 +106,8 @@ public class BRLPersistenceTest {
 
         final String xml = BRXMLPersistence.getInstance().marshal( m );
 
-        final RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        final RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
         assertNotNull( m2 );
         assertEquals( m.name,
                       m2.name );
@@ -195,7 +199,8 @@ public class BRLPersistenceTest {
         String xml = BRXMLPersistence.getInstance().marshal( m );
         //System.err.println(xml);
 
-        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
         assertNotNull( m2 );
         assertEquals( "with composite",
                       m2.name );
@@ -225,7 +230,8 @@ public class BRLPersistenceTest {
         String xml = BRXMLPersistence.getInstance().marshal( m );
         assertNotNull( xml );
 
-        RuleModel m_ = BRXMLPersistence.getInstance().unmarshal( xml );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel m_ = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
         assertEquals( 1,
                       m_.lhs.length );
         assertEquals( 1,
@@ -244,7 +250,8 @@ public class BRLPersistenceTest {
      */
     @Test
     public void testBackwardsCompat() throws Exception {
-        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ), dmo );
 
         assertNotNull( m2 );
         assertEquals( 3,
@@ -313,10 +320,11 @@ public class BRLPersistenceTest {
 
     @Test
     public void testLoadEmpty() {
-        RuleModel m = BRXMLPersistence.getInstance().unmarshal( null );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel m = BRXMLPersistence.getInstance().unmarshal( null, dmo );
         assertNotNull( m );
 
-        m = BRXMLPersistence.getInstance().unmarshal( "" );
+        m = BRXMLPersistence.getInstance().unmarshal( "", dmo );
         assertNotNull( m );
     }
 

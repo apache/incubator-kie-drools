@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
 import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;

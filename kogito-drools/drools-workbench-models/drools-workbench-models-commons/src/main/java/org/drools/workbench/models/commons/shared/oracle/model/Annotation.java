@@ -1,4 +1,4 @@
-package org.drools.workbench.models.datamodel.model;
+package org.drools.workbench.models.commons.shared.oracle.model;
 
 import java.util.Collections;
 import java.util.HashMap;

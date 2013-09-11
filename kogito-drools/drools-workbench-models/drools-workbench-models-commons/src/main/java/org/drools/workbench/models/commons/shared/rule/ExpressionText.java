@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.commons.shared.rule;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 
 public class ExpressionText extends ExpressionPart {
 

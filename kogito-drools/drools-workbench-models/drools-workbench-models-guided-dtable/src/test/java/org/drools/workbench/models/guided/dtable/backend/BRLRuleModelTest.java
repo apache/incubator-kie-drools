@@ -26,7 +26,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Test;
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
 import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;

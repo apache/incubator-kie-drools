@@ -2,7 +2,7 @@ package org.drools.workbench.models.datamodel.events;
 
 import org.drools.workbench.models.commons.shared.imports.Import;
 import org.kie.commons.validation.PortablePreconditions;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 
 /**
  * An event signalling removal of an import

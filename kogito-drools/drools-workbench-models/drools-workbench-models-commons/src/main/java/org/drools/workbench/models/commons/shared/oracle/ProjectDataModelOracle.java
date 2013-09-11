@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.models.datamodel.oracle;
+package org.drools.workbench.models.commons.shared.oracle;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.datamodel.model.TypeSource;
-import org.drools.workbench.models.datamodel.model.Annotation;
-import org.drools.workbench.models.datamodel.model.DropDownData;
-import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.model.MethodInfo;
-import org.drools.workbench.models.datamodel.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
+import org.drools.workbench.models.commons.shared.oracle.model.DropDownData;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.MethodInfo;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
 
 public interface ProjectDataModelOracle {
 
