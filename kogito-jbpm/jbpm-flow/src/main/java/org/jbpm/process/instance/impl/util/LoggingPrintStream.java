@@ -39,10 +39,12 @@ public class LoggingPrintStream extends PrintStream {
     }
     
     protected void log(String s) { 
-        if (isError) {
-            logger.error(s);
-        } else {
-            logger.info(s);
+        synchronized (logger) {                    
+            if (isError) {
+                logger.error(s);
+            } else {
+                logger.info(s);
+            }
         }
     }    
     
