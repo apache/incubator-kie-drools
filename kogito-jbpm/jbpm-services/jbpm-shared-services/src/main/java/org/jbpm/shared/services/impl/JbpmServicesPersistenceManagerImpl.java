@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.LockModeType;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.drools.persistence.TransactionSynchronization;
@@ -478,6 +479,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
             operationSuccessful = true;   
             
             endTransaction(txOwner);
+        }  catch(NoResultException e) {
+            // no result is considered ok so end transaction normally
+            endTransaction(txOwner);
+            throw e;
         } catch(Exception e) {
             rollBackTransaction(txOwner);
             
