@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.workbench.models.commons.shared.oracle.model;
 
-package org.drools.workbench.models.datamodel.model;
-
-public enum FieldAccessorsAndMutators {
-
-    MUTATOR,
-    ACCESSOR,
-    BOTH;
-
-    public static boolean compare( final FieldAccessorsAndMutators field1,
-                                   final FieldAccessorsAndMutators field2 ) {
-
-        if ( field1 == field2 ) {
-            return true;
-        } else if ( field1 == BOTH || field2 == BOTH ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
+public enum TypeSource {
+    JAVA_PROJECT, //Within the project
+    JAVA_DEPENDENCY, //Within a dependency
+    DECLARED //From DRL
 }

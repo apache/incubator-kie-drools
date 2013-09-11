@@ -15,12 +15,14 @@
  */
 package org.drools.workbench.models.guided.template.backend;
 
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.DSLSentence;
 import org.drools.workbench.models.commons.shared.rule.DSLVariableValue;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class BRXMLPersistenceTest {
 
@@ -51,7 +53,9 @@ public class BRXMLPersistenceTest {
                 + "<isNegated>false</isNegated>"
                 + "</rule>";
 
-        RuleModel rm = BRXMLPersistence.getInstance().unmarshal( xml );
+
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel rm = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
 
         assertNotNull( rm );
 
@@ -118,7 +122,8 @@ public class BRXMLPersistenceTest {
                 + "<isNegated>false</isNegated>"
                 + "</rule>";
 
-        RuleModel rm = BRXMLPersistence.getInstance().unmarshal( xml );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        RuleModel rm = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
 
         assertNotNull( rm );
 

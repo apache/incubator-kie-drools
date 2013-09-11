@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
-import org.drools.workbench.models.datamodel.model.TypeSource;
-import org.drools.workbench.models.datamodel.model.Annotation;
-import org.drools.workbench.models.datamodel.model.DropDownData;
-import org.drools.workbench.models.datamodel.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.model.MethodInfo;
-import org.drools.workbench.models.datamodel.model.ModelField;
+import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.TypeSource;
+import org.drools.workbench.models.commons.shared.oracle.model.Annotation;
+import org.drools.workbench.models.commons.shared.oracle.model.DropDownData;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.MethodInfo;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
 
 /**
  * Default implementation of DataModelOracle

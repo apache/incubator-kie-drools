@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.models.commons.shared.oracle;
+package org.drools.workbench.models.commons.shared.oracle.model;
 
 /**
  * An Oracle for all things "data type" related

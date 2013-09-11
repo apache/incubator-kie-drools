@@ -19,6 +19,7 @@ package org.drools.workbench.models.guided.template.backend;
 import java.util.List;
 
 import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
+import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.guided.template.backend.upgrade.TemplateModelUpgradeHelper1;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
@@ -50,8 +51,8 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
     }
 
     @Override
-    public TemplateModel unmarshal( final String xml ) {
-        TemplateModel model = (TemplateModel) super.unmarshal( xml );
+    public TemplateModel unmarshal( final String xml, PackageDataModelOracle dmo) {
+        TemplateModel model = (TemplateModel) super.unmarshal( xml, dmo );
         model.putInSync();
 
         //Upgrade model changes to legacy artifacts

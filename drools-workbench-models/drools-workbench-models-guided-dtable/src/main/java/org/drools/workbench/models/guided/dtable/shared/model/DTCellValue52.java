@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-import org.drools.workbench.models.commons.shared.oracle.DataType;
-import org.drools.workbench.models.commons.shared.oracle.DataType.DataTypes;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.DataType.DataTypes;
 
 /**
  * Holder for cell value and other attributes. This is serialised by GWT RPC and
