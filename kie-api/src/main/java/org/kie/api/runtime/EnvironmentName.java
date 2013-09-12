@@ -21,6 +21,7 @@ public class EnvironmentName {
     public static final String TRANSACTION_SYNCHRONIZATION_REGISTRY = "org.kie.transaction.TransactionSynchronizationRegistry";
     public static final String TRANSACTION                          = "org.kie.transaction.Transaction";
     public static final String USE_LOCAL_TRANSACTIONS               = "org.kie.transaction.local";
+    public static final String USE_SESSION_LOCKING                  = "org.kie.transaction.session.locking";
 
     public static final String ENTITY_MANAGER_FACTORY               = "org.kie.api.persistence.jpa.EntityManagerFactory";
     public static final String CMD_SCOPED_ENTITY_MANAGER            = "org.kie.api.persistence.jpa.CmdScopedEntityManager";
