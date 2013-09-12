@@ -58,4 +58,8 @@ public class ProcessDescr extends BaseDescr
     public void setProcessId(String processId) {
         this.processId = processId;
     }
+    
+    public String toString() {
+    	return "Process " + name + "(" + processId + ")";
+    }
 }
