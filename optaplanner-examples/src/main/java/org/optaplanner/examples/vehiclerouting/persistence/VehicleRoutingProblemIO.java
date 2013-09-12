@@ -23,10 +23,11 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class VehicleRoutingProblemIO implements ProblemIO {
 
+    public static final String FILE_EXTENSION = "vrp";
+
     private VehicleRoutingSolutionImporter importer = new VehicleRoutingSolutionImporter();
 
     public String getFileExtension() {
-        // In sync with importer.getInputFileSuffix() and exporter.getOutputFileSuffix()
         return "vrp";
     }
 

@@ -35,6 +35,11 @@ public class MachineReassignmentSolutionExporter extends AbstractTxtSolutionExpo
         super(new MachineReassignmentDao());
     }
 
+    @Override
+    protected String getOutputFileSuffix() {
+        return MachineReassignmentProblemIO.FILE_EXTENSION;
+    }
+
     public TxtOutputBuilder createTxtOutputBuilder() {
         return new MachineReassignmentOutputBuilder();
     }

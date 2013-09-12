@@ -36,8 +36,6 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindow
 
 public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter {
 
-    private static final String INPUT_FILE_SUFFIX = ".vrp";
-
     public static void main(String[] args) {
         new VehicleRoutingSolutionImporter().convertAll();
     }
@@ -48,7 +46,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
 
     @Override
     public String getInputFileSuffix() {
-        return INPUT_FILE_SUFFIX;
+        return VehicleRoutingProblemIO.FILE_EXTENSION;
     }
 
     public TxtInputBuilder createTxtInputBuilder() {

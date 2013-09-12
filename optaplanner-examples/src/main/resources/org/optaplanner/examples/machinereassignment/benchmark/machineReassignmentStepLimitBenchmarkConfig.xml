@@ -5,7 +5,7 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <problemIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
-      <inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_a1_4.txt</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>

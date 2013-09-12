@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImporter {
 
-    private static final String DEFAULT_INPUT_FILE_SUFFIX = ".txt";
+    private static final String DEFAULT_INPUT_FILE_SUFFIX = "txt";
 
     protected AbstractTxtSolutionImporter(SolutionDao solutionDao) {
         super(solutionDao);

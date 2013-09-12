@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImporter {
 
-    private static final String DEFAULT_INPUT_FILE_SUFFIX = ".xml";
+    private static final String DEFAULT_INPUT_FILE_SUFFIX = "xml";
 
     protected AbstractXmlSolutionImporter(SolutionDao solutionDao) {
         super(solutionDao);

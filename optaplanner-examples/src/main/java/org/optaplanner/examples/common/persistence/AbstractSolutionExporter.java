@@ -25,7 +25,7 @@ import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 public abstract class AbstractSolutionExporter extends LoggingMain {
 
-    private static final String DEFAULT_INPUT_FILE_SUFFIX = ".xml";
+    private static final String DEFAULT_INPUT_FILE_SUFFIX = "xml";
     protected SolutionDao solutionDao;
 
     public AbstractSolutionExporter(SolutionDao solutionDao) {
@@ -37,7 +37,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
     }
 
     protected File getOutputDir() {
-        return new File(solutionDao.getDataDir(), "output");
+        return new File(solutionDao.getDataDir(), "export");
     }
 
     protected String getInputFileSuffix() {
@@ -61,7 +61,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
         Arrays.sort(inputFiles, new ProblemFileComparator());
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
-            if (inputFileName.endsWith(getInputFileSuffix())) {
+            if (inputFileName.endsWith("." + getInputFileSuffix())) {
                 Solution solution = solutionDao.readSolution(inputFile);
                 String outputFileName = inputFileName.substring(0,
                         inputFileName.length() - getInputFileSuffix().length())

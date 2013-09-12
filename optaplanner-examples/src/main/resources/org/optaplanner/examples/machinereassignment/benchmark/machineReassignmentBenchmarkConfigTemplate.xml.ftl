@@ -7,26 +7,26 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <problemIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO</problemIOClass>
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_1.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_2.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_3.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_4.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a1_5.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_1.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_2.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_3.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_4.txt</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/machinereassignment/input/model_a2_5.txt</inputSolutionFile>-->
-      <inputSolutionFile>data/machinereassignment/input/model_b_1.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_2.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_3.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_4.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_5.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_6.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_7.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_8.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_9.txt</inputSolutionFile>
-      <inputSolutionFile>data/machinereassignment/input/model_b_10.txt</inputSolutionFile>
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_1.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_3.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_4.txt</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/machinereassignment/import/model_a2_5.txt</inputSolutionFile>-->
+      <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_2.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_3.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_4.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_5.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_6.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_7.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_9.txt</inputSolutionFile>
+      <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
       <!--<problemStatisticType>BEST_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
       <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->

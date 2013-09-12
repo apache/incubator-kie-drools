@@ -100,7 +100,7 @@ public class SolutionBusiness {
                     " and the release zip (examples).");
         }
         if (hasImporter()) {
-            importDataDir = new File(dataDir, "input");
+            importDataDir = new File(dataDir, "import");
             if (!importDataDir.exists()) {
                 throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
                         + ") does not exist.");
@@ -117,7 +117,7 @@ public class SolutionBusiness {
                     + ") does not exist and could not be created.");
         }
         if (hasExporter()) {
-            exportDataDir = new File(dataDir, "output");
+            exportDataDir = new File(dataDir, "export");
             if (!exportDataDir.exists() && !exportDataDir.mkdir()) {
                 throw new IllegalStateException("The directory exportDataDir (" + exportDataDir.getAbsolutePath()
                         + ") does not exist and could not be created.");

@@ -32,7 +32,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspSolutionImporter extends AbstractTxtSolutionImporter {
 
-    private static final String INPUT_FILE_SUFFIX = ".tsp";
+    private static final String INPUT_FILE_SUFFIX = "tsp";
 
     public static void main(String[] args) {
         new TspSolutionImporter().convertAll();

@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExporter {
 
-    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
+    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";
 
     protected AbstractXmlSolutionExporter(SolutionDao solutionDao) {
         super(solutionDao);

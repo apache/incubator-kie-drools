@@ -79,7 +79,7 @@ rule "periodPenaltyExamCoincidence"
         )
         $leftExam : Exam(topic == $leftSideTopic, $leftSidePeriod : period, period != null)
         $rightExam : Exam(topic == $rightSideTopic, period != $leftSidePeriod, period != null)
-        // LeftSide and rightSide don't share a student because those are filtered out in the InputConvertor
+        // LeftSide and rightSide don't share a student because those are filtered out in ExaminationSolutionImporter
     then
         scoreHolder.addHardConstraintMatch(kcontext,
                 - ($leftSideTopic.getStudentSize() + $rightSideTopic.getStudentSize()));

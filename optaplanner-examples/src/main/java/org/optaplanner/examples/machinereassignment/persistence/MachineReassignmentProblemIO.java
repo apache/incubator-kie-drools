@@ -23,12 +23,13 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public class MachineReassignmentProblemIO implements ProblemIO {
 
+    public static final String FILE_EXTENSION = "txt";
+
     private MachineReassignmentSolutionImporter importer = new MachineReassignmentSolutionImporter();
     private MachineReassignmentSolutionExporter exporter = new MachineReassignmentSolutionExporter();
 
     public String getFileExtension() {
-        // In sync with importer.getInputFileSuffix() and exporter.getOutputFileSuffix()
-        return "txt";
+        return FILE_EXTENSION;
     }
 
     public Solution read(File inputSolutionFile) {

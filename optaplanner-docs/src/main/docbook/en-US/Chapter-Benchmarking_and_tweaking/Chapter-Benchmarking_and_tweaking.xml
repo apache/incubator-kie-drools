@@ -226,7 +226,7 @@
 
         <programlisting language="xml">    &lt;problemBenchmarks&gt;
       &lt;problemIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentProblemIO&lt;/problemIOClass&gt;
-      &lt;inputSolutionFile&gt;data/machinereassignment/input/model_a1_1.txt&lt;/inputSolutionFile&gt;
+      &lt;inputSolutionFile&gt;data/machinereassignment/import/model_a1_1.txt&lt;/inputSolutionFile&gt;
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
 

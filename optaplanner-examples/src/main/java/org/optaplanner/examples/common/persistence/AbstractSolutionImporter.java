@@ -30,7 +30,7 @@ import org.optaplanner.examples.common.business.SolutionFileFilter;
 
 public abstract class AbstractSolutionImporter extends LoggingMain {
 
-    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".xml";
+    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";
 
     protected SolutionDao solutionDao;
 
@@ -39,7 +39,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
     }
 
     protected File getInputDir() {
-        return new File(solutionDao.getDataDir(), "input");
+        return new File(solutionDao.getDataDir(), "import");
     }
 
     public abstract String getInputFileSuffix();
@@ -78,7 +78,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
     }
 
     public boolean acceptInputFile(File inputFile) {
-        return inputFile.getName().endsWith(getInputFileSuffix());
+        return inputFile.getName().endsWith("." + getInputFileSuffix());
     }
 
     /**

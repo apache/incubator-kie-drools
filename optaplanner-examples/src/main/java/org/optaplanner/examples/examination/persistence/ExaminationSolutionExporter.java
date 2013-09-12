@@ -27,7 +27,7 @@ import org.optaplanner.examples.examination.domain.Examination;
 
 public class ExaminationSolutionExporter extends AbstractTxtSolutionExporter {
 
-    private static final String OUTPUT_FILE_SUFFIX = ".sln";
+    private static final String OUTPUT_FILE_SUFFIX = "sln";
 
     public static void main(String[] args) {
         new ExaminationSolutionExporter().convertAll();

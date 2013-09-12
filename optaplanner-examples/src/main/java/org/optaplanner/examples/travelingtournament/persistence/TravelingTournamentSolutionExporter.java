@@ -27,7 +27,7 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 public class TravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
 
-    private static final String OUTPUT_FILE_SUFFIX = ".trick.txt";
+    private static final String OUTPUT_FILE_SUFFIX = "trick.txt";
 
     public static void main(String[] args) {
         new TravelingTournamentSolutionExporter().convertAll();

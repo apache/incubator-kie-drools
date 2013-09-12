@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.solution.Solution;
 
 public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExporter {
 
-    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = ".txt";
+    protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "txt";
 
     protected AbstractTxtSolutionExporter(SolutionDao solutionDao) {
         super(solutionDao);

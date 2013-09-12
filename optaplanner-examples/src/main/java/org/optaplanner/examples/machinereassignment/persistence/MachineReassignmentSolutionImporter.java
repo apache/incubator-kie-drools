@@ -75,6 +75,11 @@ public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImpo
                 "model_b_10.txt").contains(inputFile.getName());
     }
 
+    @Override
+    public String getInputFileSuffix() {
+        return MachineReassignmentProblemIO.FILE_EXTENSION;
+    }
+
     public TxtInputBuilder createTxtInputBuilder() {
         return new MachineReassignmentInputBuilder();
     }

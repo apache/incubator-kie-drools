@@ -25,7 +25,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 
 public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporter {
 
-    private static final String OUTPUT_FILE_SUFFIX = ".sol";
+    private static final String OUTPUT_FILE_SUFFIX = "sol";
 
     public static void main(String[] args) {
         new CurriculumCourseSolutionExporter().convertAll();
