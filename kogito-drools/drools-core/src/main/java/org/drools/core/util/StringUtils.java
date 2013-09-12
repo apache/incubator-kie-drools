@@ -1337,30 +1337,49 @@ public class StringUtils {
         return args;
     }
 
-    public static int findEndMethodArgs(CharSequence string, int startMethodArgs) {
-        boolean isQuoted = false;
+    public static int findEndOfMethodArgsIndex(CharSequence string, int startOfMethodArgsIndex) {
+        boolean isDoubleQuoted = false;
+        boolean isSingleQuoted = false;
         int nestingLevel = 0;
-        for (int i = startMethodArgs; i < string.length(); i++) {
-            switch (string.charAt(i)) {
+        for (int charIndex = startOfMethodArgsIndex; charIndex < string.length(); charIndex++) {
+            boolean isCurrentCharEscaped = charIndex > 0 && string.charAt(charIndex - 1) == '\\';
+            switch (string.charAt(charIndex)) {
                 case '(':
-                    if (!isQuoted) {
+                    if (!isDoubleQuoted && !isSingleQuoted) {
                         nestingLevel++;
                     }
                     break;
+
                 case ')':
-                    if (!isQuoted) {
+                    if (!isDoubleQuoted && !isSingleQuoted) {
                         nestingLevel--;
                         if (nestingLevel == 0) {
-                            return i;
+                            return charIndex;
                         }
                     }
                     break;
+
                 case '"':
-                case '\'':
-                    isQuoted = !isQuoted;
+                    if (isCurrentCharEscaped || isSingleQuoted) {
+                        // ignore escaped double quote and double quote inside single quotes (e.g 'text " text')
+                        continue;
+                    }
+                    isDoubleQuoted = !isDoubleQuoted;
                     break;
+
+                case '\'':
+                    if (isCurrentCharEscaped || isDoubleQuoted) {
+                        // ignore escaped single quote and single quote inside double quotes (e.g. "text ' text")
+                        continue;
+                    }
+                    isSingleQuoted = !isSingleQuoted;
+                    break;
+
+                default:
+                    // nothing to do, just continue with next character
             }
         }
+
         return -1;
     }
 
