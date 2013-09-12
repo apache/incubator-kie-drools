@@ -453,12 +453,12 @@
       <section>
         <title>Problem size</title>
 
-        <programlisting>4   has   4 queens with a search space of    256.
-8   has   8 queens with a search space of   10^7.
-16  has  16 queens with a search space of  10^19.
-32  has  32 queens with a search space of  10^48.
-64  has  64 queens with a search space of 10^115.
-256 has 256 queens with a search space of 10^616.</programlisting>
+        <programlisting>4queens   has   4 queens with a search space of    256.
+8queens   has   8 queens with a search space of   10^7.
+16queens  has  16 queens with a search space of  10^19.
+32queens  has  32 queens with a search space of  10^48.
+64queens  has  64 queens with a search space of 10^115.
+256queens has 256 queens with a search space of 10^616.</programlisting>
 
         <para>The implementation of the N queens example has not been optimized because it functions as a
         beginner example. Nevertheless, it can easily handle 64 queens. With a few changes it has been shown to easily

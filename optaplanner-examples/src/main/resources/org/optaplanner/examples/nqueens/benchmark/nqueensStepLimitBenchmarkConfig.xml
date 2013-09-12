@@ -5,7 +5,7 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
-      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens256.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/256queens.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>

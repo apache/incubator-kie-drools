@@ -49,7 +49,7 @@ public class NQueensGenerator extends LoggingMain {
     }
 
     private void writeNQueens(int n) {
-        String outputFileName = "unsolvedNQueens" + (n < 10 ? "0" : "") + n + ".xml";
+        String outputFileName = n + "queens.xml";
         File outputFile = new File(outputDir, outputFileName);
         NQueens nQueens = createNQueens(n);
         solutionDao.writeSolution(nQueens, outputFile);

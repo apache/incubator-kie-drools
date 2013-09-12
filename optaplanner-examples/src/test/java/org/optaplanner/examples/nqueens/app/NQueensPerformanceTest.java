@@ -41,20 +41,20 @@ public class NQueensPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens16() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens16.xml"),
+    public void solveModel_16queens() {
+        runSpeedTest(new File("data/nqueens/unsolved/16queens.xml"),
                 "0");
     }
 
     @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens08FastAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens08.xml"),
+    public void solveModel_8queensFastAssert() {
+        runSpeedTest(new File("data/nqueens/unsolved/8queens.xml"),
                 "0", EnvironmentMode.FAST_ASSERT);
     }
 
     @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens04FullAssert() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"),
+    public void solveModel_4queensFullAssert() {
+        runSpeedTest(new File("data/nqueens/unsolved/4queens.xml"),
                 "0", EnvironmentMode.FULL_ASSERT);
     }
 

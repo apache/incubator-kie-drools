@@ -79,13 +79,13 @@
     <section>
       <title>Problem size</title>
 
-      <programlisting>cb-0002comp-0006proc has   2 computers and    6 processes with a search space of      64.
-cb-0003comp-0009proc has   3 computers and    9 processes with a search space of    10^4.
-cb-0004comp-0012proc has   4 computers and   12 processes with a search space of    10^7.
-cb-0100comp-0300proc has 100 computers and  300 processes with a search space of  10^600.
-cb-0200comp-0600proc has 200 computers and  600 processes with a search space of 10^1380.
-cb-0400comp-1200proc has 400 computers and 1200 processes with a search space of 10^3122.
-cb-0800comp-2400proc has 800 computers and 2400 processes with a search space of 10^6967.</programlisting>
+      <programlisting>2computers-6processes      has   2 computers and    6 processes with a search space of      64.
+3computers-9processes      has   3 computers and    9 processes with a search space of    10^4.
+4computers-012processes    has   4 computers and   12 processes with a search space of    10^7.
+100computers-300processes  has 100 computers and  300 processes with a search space of  10^600.
+200computers-600processes  has 200 computers and  600 processes with a search space of 10^1380.
+400computers-1200processes has 400 computers and 1200 processes with a search space of 10^3122.
+800computers-2400processes has 800 computers and 2400 processes with a search space of 10^6967.</programlisting>
     </section>
 
     <section>

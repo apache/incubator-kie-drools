@@ -54,8 +54,8 @@ public class NQueensBruteForceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveModel_unsolvedNQueens04() {
-        runSpeedTest(new File("data/nqueens/unsolved/unsolvedNQueens04.xml"), "0", EnvironmentMode.REPRODUCIBLE);
+    public void solveModel_4queens() {
+        runSpeedTest(new File("data/nqueens/unsolved/4queens.xml"), "0", EnvironmentMode.REPRODUCIBLE);
     }
 
 }

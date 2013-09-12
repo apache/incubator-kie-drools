@@ -6,9 +6,9 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xstreamAnnotatedClass>
-      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens32.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens64.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/unsolvedNQueens256.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/256queens.xml</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
     <solver>

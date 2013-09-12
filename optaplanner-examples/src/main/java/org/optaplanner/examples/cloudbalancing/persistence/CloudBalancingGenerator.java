@@ -126,15 +126,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private String determineInputId(int cloudComputerListSize, int cloudProcessListSize) {
-        String cloudComputerListSizeString = Integer.toString(cloudComputerListSize);
-        if (cloudComputerListSizeString.length() < 4) {
-            cloudComputerListSizeString = "0000".substring(0, 4 - cloudComputerListSizeString.length()) + cloudComputerListSizeString;
-        }
-        String cloudProcessListSizeString = Integer.toString(cloudProcessListSize);
-        if (cloudProcessListSizeString.length() < 4) {
-            cloudProcessListSizeString = "0000".substring(0, 4 - cloudProcessListSizeString.length()) + cloudProcessListSizeString;
-        }
-        return "cb-" + cloudComputerListSizeString + "comp-" + cloudProcessListSizeString + "proc";
+        return cloudComputerListSize + "computers-" + cloudProcessListSize + "processes";
     }
 
     public CloudBalance createCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {

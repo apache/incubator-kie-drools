@@ -7,13 +7,13 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</xstreamAnnotatedClass>
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0002comp-0006proc.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0003comp-0009proc.xml</inputSolutionFile>-->
-      <!--<inputSolutionFile>data/cloudbalancing/unsolved/cb-0004comp-0012proc.xml</inputSolutionFile>-->
-      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0100comp-0300proc.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0200comp-0600proc.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0400comp-1200proc.xml</inputSolutionFile>
-      <inputSolutionFile>data/cloudbalancing/unsolved/cb-0800comp-2400proc.xml</inputSolutionFile>
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/2computers-6processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/3computers-9processes.xml</inputSolutionFile>-->
+      <!--<inputSolutionFile>data/cloudbalancing/unsolved/4computers-12processes.xml</inputSolutionFile>-->
+      <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.xml</inputSolutionFile>
+      <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.xml</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
 
