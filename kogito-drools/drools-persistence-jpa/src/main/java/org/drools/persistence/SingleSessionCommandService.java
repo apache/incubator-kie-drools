@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.RuleBase;
 import org.drools.core.SessionConfiguration;
@@ -35,21 +36,21 @@ import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
+import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.drools.persistence.jta.JtaTransactionManager;
-import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
-import org.kie.internal.command.Context;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.command.Context;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,11 +72,11 @@ public class SingleSessionCommandService
     private PersistenceContextManager  jpm;
 
     private volatile boolean           doRollback;
-    private volatile boolean           pessimisticLocking;
 
     private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
 
-    public static Map<Object, Object>  txManagerClasses = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
+    private final ReentrantLock lock = new ReentrantLock();
+    private boolean doSessionLocking = false;
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
@@ -339,11 +340,30 @@ public class SingleSessionCommandService
                      this.jpm );
             env.set( EnvironmentName.TRANSACTION_MANAGER,
                      this.txm );
+            
+            if( env.get(EnvironmentName.USE_SESSION_LOCKING) != null ) { 
+               Object useSessionLockObj = env.get(EnvironmentName.USE_SESSION_LOCKING);
+               if( useSessionLockObj instanceof String ) { 
+                   this.doSessionLocking = Boolean.parseBoolean((String) useSessionLockObj);
+               } else if ( useSessionLockObj instanceof Boolean ) { 
+                   this.doSessionLocking = (Boolean) useSessionLockObj;
+               } 
+            } 
         }
-        Boolean lock = (Boolean) env.get(EnvironmentName.USE_PESSIMISTIC_LOCKING);
-        if( lock != null && lock ) { 
-            this.pessimisticLocking = true;
+    }
+
+    private static String SPRING_TM_CLASSNAME = "org.springframework.transaction.support.AbstractPlatformTransactionManager";
+
+    public static boolean isSpringTransactionManager( Class<?> clazz ) {
+        if ( SPRING_TM_CLASSNAME.equals(clazz.getName()) ) {
+            return true;
         }
+        // Try to find from the ancestors
+        if (clazz.getSuperclass() != null)
+        {
+            return isSpringTransactionManager(clazz.getSuperclass());
+        }
+        return false;
     }
 
     public static class EndOperationListenerImpl
@@ -365,7 +385,6 @@ public class SingleSessionCommandService
     }
 
     public synchronized <T> T execute(Command<T> command) {
-
         return commandService.execute(command);
     }
 
@@ -426,7 +445,6 @@ public class SingleSessionCommandService
             synchronizations.put( this,
                                   this );
         }
-
     }
 
     private static class SynchronizationImpl
@@ -445,7 +463,7 @@ public class SingleSessionCommandService
             }
 
             // always cleanup thread local whatever the result
-            Object removedSynchronization = SingleSessionCommandService.synchronizations.remove( this.service );
+            SingleSessionCommandService.synchronizations.remove( this.service );
 
             this.service.jpm.clearPersistenceContext();
             
@@ -465,6 +483,10 @@ public class SingleSessionCommandService
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
             }
             
+            // Unlock, if it was locked 
+            while( this.service.lock.isLocked() ) { 
+                this.service.lock.unlock();
+            }
         }
 
         public void beforeCompletion() {
@@ -486,19 +508,6 @@ public class SingleSessionCommandService
         this.doRollback = true;
     }
 
-    private static String SPRING_TM_CLASSNAME = "org.springframework.transaction.support.AbstractPlatformTransactionManager";
-    public static boolean isSpringTransactionManager( Class clazz ) {
-        if ( SPRING_TM_CLASSNAME.equals(clazz.getName()) ) {
-            return true;
-        }
-        // Try to find from the ancestors
-        if (clazz.getSuperclass() != null)
-        {
-            return isSpringTransactionManager(clazz.getSuperclass());
-        }
-        return false;
-    }
-
     private class TransactionInterceptor extends AbstractInterceptor {
 
         public TransactionInterceptor(Context context) {
@@ -518,6 +527,21 @@ public class SingleSessionCommandService
             boolean transactionOwner = false;
             try {
                 transactionOwner = txm.begin();
+                if( ! transactionOwner && doSessionLocking ) { 
+                    /** 
+                     * There is a race condition when the tx is not owned by the SSCS. 
+                     * In that case, the commit happens *outside* of the synchronized 
+                     * SSCS.execute(..) block. 
+                     * However, the SynchronizationImpl.afterCompletion(..) method, 
+                     * called (just after) when the commit happens, will then also 
+                     * happen *outside* of the synchronized execute(...) block -- and 
+                     * this class does not expect that. When that happens, and another 
+                     * thread is calling .execute(..) on the same SSCS, bad things happen.  
+                     * 
+                     * This lock prevents the race condition described above from happening.
+                     */
+                    lock.lock(); 
+                }
 
                 persistenceContext.joinTransaction();
 
