@@ -422,13 +422,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse,install.dashboard.into.jboss" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.dashboard.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
