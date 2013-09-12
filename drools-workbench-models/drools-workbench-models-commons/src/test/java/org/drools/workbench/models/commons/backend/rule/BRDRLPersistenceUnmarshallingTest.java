@@ -1,3 +1,4 @@
+package org.drools.workbench.models.commons.backend.rule;
 /*
  * Copyright 2013 JBoss Inc
  *
@@ -13,12 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.workbench.models.commons.backend.rule;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.commons.shared.oracle.model.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
 import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.CEPWindow;
 import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
@@ -32,13 +34,27 @@ import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class BRDRLPersistenceUnmarshallingTest {
+
+    private PackageDataModelOracle dmo;
+    private Map<String,ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
+
+    @Before
+    public void setUp() throws Exception {
+        dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+        ).thenReturn(
+                packageModelFields
+        );
+    }
 
     @Test
     public void testFactPattern() {
@@ -48,7 +64,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -76,7 +91,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -106,7 +120,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -147,7 +160,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -190,7 +202,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -251,7 +262,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -291,7 +301,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -331,7 +340,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -391,7 +399,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -433,7 +440,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -534,7 +540,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -638,7 +643,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -708,7 +712,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl,dmo );
 
         assertNotNull( m );
@@ -777,7 +780,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -794,7 +796,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -811,7 +812,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -832,7 +832,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -853,7 +852,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -871,7 +869,9 @@ public class BRDRLPersistenceUnmarshallingTest {
                         + "then\n"
                         + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        addModelField("Person", "address", "Address", "org.test.Address");
+        addModelField("Address", "postalCode", "Integer", "java.lang.Integer");
+
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
         assertNotNull(m);
@@ -915,6 +915,19 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertEquals(null, expressionField2.getNext());
     }
 
+    private void addModelField(String factName, String fieldName, String clazz, String type) {
+        ModelField[] modelFields = new ModelField[1];
+        modelFields[0]=new ModelField(
+                fieldName,
+                clazz,
+                ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                ModelField.FIELD_ORIGIN.DECLARED,
+                FieldAccessorsAndMutators.BOTH,
+                type
+        );
+        packageModelFields.put(factName,modelFields);
+    }
+
     @Test
     public void testNestedFieldExpressionsWithAFunction() {
         String drl =
@@ -924,7 +937,10 @@ public class BRDRLPersistenceUnmarshallingTest {
                         + "then\n"
                         + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+
+        addModelField("Person", "address", "Address", "org.test.Address");
+        addModelField("Address", "postalCode", "Integer", "java.lang.Integer");
+
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
         assertNotNull(m);
@@ -978,7 +994,9 @@ public class BRDRLPersistenceUnmarshallingTest {
                         + "then\n"
                         + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        addModelField("Person", "address", "Address", "org.test.Address");
+        addModelField("Address", "postalCode", "Integer", "java.lang.Integer");
+
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
         assertNotNull(m);
@@ -1054,7 +1072,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -1107,7 +1124,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -1224,7 +1240,6 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -1376,7 +1391,9 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        addModelField("ParentType", "parentChildField", "ChildType", "org.test.ChildType");
+        addModelField("ChildType", "childField", "String", "java.lang.String");
+
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
@@ -1501,7 +1518,9 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        addModelField("ParentType", "parentChildField", "ChildType", "org.test.ChildType");
+        addModelField("ChildType", "childField", "String", "java.lang.String");
+
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
