@@ -79,14 +79,6 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
     @Before
     public void setUp() {
         solutionDao = createSolutionDao();
-        File dataDir = solutionDao.getDataDir();
-        if (!dataDir.exists()) {
-            throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
-                    + ") does not exist." +
-                    " The working directory should be set to the directory that contains the data directory." +
-                    " This is different in a git clone (optaplanner/optaplanner-examples)" +
-                    " and the release zip (examples).");
-        }
     }
 
     protected abstract String createSolverConfigResource();

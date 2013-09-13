@@ -56,10 +56,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         File inputDir = getInputDir();
         if (!inputDir.exists()) {
             throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
-                    + ") does not exist." +
-                    " The working directory should be set to the directory that contains the data directory." +
-                    " This is different in a git clone (optaplanner/optaplanner-examples)" +
-                    " and the release zip (examples).");
+                    + ") does not exist.");
         }
         File outputDir = getOutputDir();
         File[] inputFiles = inputDir.listFiles();

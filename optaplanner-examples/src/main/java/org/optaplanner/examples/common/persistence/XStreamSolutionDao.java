@@ -35,6 +35,16 @@ public abstract class XStreamSolutionDao implements SolutionDao {
         this.dirName = dirName;
         dataDir = new File("data/" + dirName);
         xStreamProblemIO = new XStreamProblemIO(xstreamAnnotations);
+        if (!dataDir.exists()) {
+            throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
+                    + ") does not exist.\n" +
+                    " The working directory should be set to the directory that contains the data directory" +
+                    " (which is not the data directory itself).\n" +
+                    " The working directory is different in a git clone (optaplanner/optaplanner-examples)" +
+                    " and the release zip (examples).\n" +
+                    " In an IDE (IntelliJ, Eclipse, NetBeans), open the \"Run configuration\""
+                    + " to change the field \"Working directory\".");
+        }
     }
 
     public String getDirName() {

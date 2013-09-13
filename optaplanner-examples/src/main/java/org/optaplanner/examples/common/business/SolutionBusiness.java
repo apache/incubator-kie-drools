@@ -74,10 +74,6 @@ public class SolutionBusiness {
         this.exporter = exporter;
     }
 
-    public File getDataDir() {
-        return solutionDao.getDataDir();
-    }
-
     public String getDirName() {
         return solutionDao.getDirName();
     }
@@ -91,14 +87,7 @@ public class SolutionBusiness {
     }
 
     public void updateDataDirs() {
-        File dataDir = getDataDir();
-        if (!dataDir.exists()) {
-            throw new IllegalStateException("The directory dataDir (" + dataDir.getAbsolutePath()
-                    + ") does not exist." +
-                    " The working directory should be set to the directory that contains the data directory." +
-                    " This is different in a git clone (optaplanner/optaplanner-examples)" +
-                    " and the release zip (examples).");
-        }
+        File dataDir = solutionDao.getDataDir();
         if (hasImporter()) {
             importDataDir = new File(dataDir, "import");
             if (!importDataDir.exists()) {
