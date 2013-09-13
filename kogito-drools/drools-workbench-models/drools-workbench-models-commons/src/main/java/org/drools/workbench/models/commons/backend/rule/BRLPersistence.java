@@ -27,5 +27,5 @@ public interface BRLPersistence {
 
     RuleModel unmarshal( final String str, final PackageDataModelOracle dmo );
 
-    RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final String... dsls );
+    RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final PackageDataModelOracle dmo, final String... dsls );
 }

@@ -51,7 +51,7 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
     }
 
     @Override
-    public TemplateModel unmarshal( final String xml, PackageDataModelOracle dmo) {
+    public TemplateModel unmarshal( final String xml, final PackageDataModelOracle dmo) {
         TemplateModel model = (TemplateModel) super.unmarshal( xml, dmo );
         model.putInSync();
 
@@ -64,6 +64,7 @@ public class BRDRTXMLPersistence extends BRXMLPersistence {
     @Override
     public RuleModel unmarshalUsingDSL( final String str,
                                         final List<String> globals,
+                                        final PackageDataModelOracle dmo,
                                         final String... dsls ) {
         throw new UnsupportedOperationException();
     }

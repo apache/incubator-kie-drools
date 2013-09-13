@@ -17,10 +17,13 @@
 package org.drools.workbench.models.commons.backend.rule;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.oracle.model.DataType;
+import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
 import org.drools.workbench.models.commons.shared.rule.ActionCallMethod;
 import org.drools.workbench.models.commons.shared.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldFunction;
@@ -66,6 +69,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BRDRLPersistenceTest {
 
@@ -83,15 +87,17 @@ public class BRDRLPersistenceTest {
         checkMarshallUnmarshall( expected, new RuleModel() );
     }
 
-    private void checkMarshallUnmarshall( String expected,
-                                          RuleModel m ) {
+    private void checkMarshallUnmarshall( String expected, RuleModel m ) {
+        checkMarshallUnmarshall( expected, m, mock(PackageDataModelOracle.class) );
+    }
+
+    private void checkMarshallUnmarshall( String expected, RuleModel m, PackageDataModelOracle dmo ) {
         String drl = brlPersistence.marshal( m );
         assertNotNull( drl );
         if ( expected != null ) {
             assertEqualsIgnoreWhitespace( expected, drl );
         }
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         RuleModel unmarshalledModel = brlPersistence.unmarshal( drl, dmo );
         if ( expected != null ) {
             assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
@@ -377,7 +383,7 @@ public class BRDRLPersistenceTest {
 
         String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, null, dslFile );
+        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, null, null, dslFile );
 
         IAction[] actions = unmarshalledModel.rhs;
         DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
@@ -431,7 +437,7 @@ public class BRDRLPersistenceTest {
         String dslFile = "[when]" + dslDefinition + "=Credit( rating == {rating} )";
 
         RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl,
-                                                                        null,
+                                                                        null, null,
                                                                         dslFile );
 
         DSLSentence dslSentence = (DSLSentence) unmarshalledModel.lhs[ 0 ];
@@ -496,7 +502,7 @@ public class BRDRLPersistenceTest {
         String dslFile = "[when]" + dslDefinition + "=applicant:Applicant(age<{num})";
 
         RuleModel model = brlPersistence.unmarshalUsingDSL( drl,
-                                                            null,
+                                                            null, null,
                                                             dslFile );
 
         DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
@@ -1070,7 +1076,40 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.name == \"Cheedar\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Person", new ModelField[] {
+                            new ModelField(
+                                    "favouriteCheese",
+                                    "Cheese",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Cheese"
+                            )
+                    });
+                    put("Cheese", new ModelField[] {
+                            new ModelField(
+                                    "name",
+                                    "String",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "String"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Person", "Cheese" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -1099,7 +1138,40 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.age == 55 )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Person", new ModelField[] {
+                            new ModelField(
+                                    "favouriteCheese",
+                                    "Cheese",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Cheese"
+                            )
+                    });
+                    put("Cheese", new ModelField[] {
+                            new ModelField(
+                                    "age",
+                                    "Integer",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Integer"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Person", "Cheese" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -1128,7 +1200,40 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.dateBrought == \"27-Jun-2011\" )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Person", new ModelField[] {
+                            new ModelField(
+                                    "favouriteCheese",
+                                    "Cheese",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Cheese"
+                            )
+                    });
+                    put("Cheese", new ModelField[] {
+                            new ModelField(
+                                    "dateBrought",
+                                    "Date",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Date"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Person", "Cheese" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -1157,7 +1262,40 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.genericName == CHEESE.Cheddar )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Person", new ModelField[] {
+                            new ModelField(
+                                    "favouriteCheese",
+                                    "Cheese",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Cheese"
+                            )
+                    });
+                    put("Cheese", new ModelField[] {
+                            new ModelField(
+                                    "genericName",
+                                    "Type",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Type"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Person", "Cheese" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -1186,7 +1324,40 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.smelly == true )"
                 + " then " + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Person", new ModelField[] {
+                            new ModelField(
+                                    "favouriteCheese",
+                                    "Cheese",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Cheese"
+                            )
+                    });
+                    put("Cheese", new ModelField[] {
+                            new ModelField(
+                                    "smelly",
+                                    "Boolean",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Boolean"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Person", "Cheese" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -2309,7 +2480,40 @@ public class BRDRLPersistenceTest {
                 + "     Person(field1.field2 == variableHere)" + " then "
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Person", new ModelField[] {
+                            new ModelField(
+                                    "field1",
+                                    "Field1",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Field1"
+                            )
+                    });
+                    put("Field1", new ModelField[] {
+                            new ModelField(
+                                    "field2",
+                                    "Field2",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Field2"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Person", "Field1", "Field2" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
@@ -2545,7 +2749,48 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Goober", new ModelField[] {
+                            new ModelField(
+                                    "gooField",
+                                    "Goo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Goo"
+                            ),
+                            new ModelField(
+                                    "fooField",
+                                    "Foo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Foo"
+                            )
+                    });
+                    put("Foo", new ModelField[] {
+                            new ModelField(
+                                    "barField",
+                                    "Bar",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Bar"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Goober", "Goo", "Foo", "Bar" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -2607,7 +2852,56 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+            dmo.getModelFields()
+        ).thenReturn(
+            new HashMap<String, ModelField[]>() {{
+                put("Goober", new ModelField[] {
+                    new ModelField(
+                            "gooField",
+                            "Goo",
+                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                            ModelField.FIELD_ORIGIN.DECLARED,
+                            FieldAccessorsAndMutators.BOTH,
+                            "Goo"
+                    ),
+                    new ModelField(
+                            "fooField",
+                            "Foo",
+                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                            ModelField.FIELD_ORIGIN.DECLARED,
+                            FieldAccessorsAndMutators.BOTH,
+                            "Foo"
+                    ),
+                    new ModelField(
+                            "zooField",
+                            "Zoo",
+                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                            ModelField.FIELD_ORIGIN.DECLARED,
+                            FieldAccessorsAndMutators.BOTH,
+                            "Zoo"
+                    )
+                });
+                put("Foo", new ModelField[] {
+                        new ModelField(
+                                "barField",
+                                "Bar",
+                                ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                ModelField.FIELD_ORIGIN.DECLARED,
+                                FieldAccessorsAndMutators.BOTH,
+                                "Bar"
+                        )
+                });
+            }}
+        );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Goober", "Goo", "Foo", "Zoo", "Bar" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -2660,7 +2954,48 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Goober", new ModelField[] {
+                            new ModelField(
+                                    "gooField",
+                                    "Goo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Goo"
+                            ),
+                            new ModelField(
+                                    "fooField",
+                                    "Foo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Foo"
+                            )
+                    });
+                    put("Foo", new ModelField[] {
+                            new ModelField(
+                                    "barField",
+                                    "Bar",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Bar"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Goober", "Goo", "Foo", "Zoo", "Bar" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -2722,7 +3057,56 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        checkMarshallUnmarshall( expected, m );
+        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        when(
+                dmo.getModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put("Goober", new ModelField[] {
+                            new ModelField(
+                                    "gooField",
+                                    "Goo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Goo"
+                            ),
+                            new ModelField(
+                                    "fooField",
+                                    "Foo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Foo"
+                            ),
+                            new ModelField(
+                                    "zooField",
+                                    "Zoo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Zoo"
+                            )
+                    });
+                    put("Foo", new ModelField[] {
+                            new ModelField(
+                                    "barField",
+                                    "Bar",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Bar"
+                            )
+                    });
+                }}
+            );
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "Goober", "Goo", "Foo", "Zoo", "Bar" }
+            );
+
+        checkMarshallUnmarshall( expected, m, dmo );
     }
 
     @Test
@@ -3061,7 +3445,7 @@ public class BRDRLPersistenceTest {
                         "list.add( $a );\n" +
                         "end\n";
 
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ) );
+        final RuleModel m = BRDRLPersistence.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ), null );
 
         assertNotNull( m );
         assertEqualsIgnoreWhitespace( drl, BRDRLPersistence.getInstance().marshal( m ) );
