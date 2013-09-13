@@ -869,8 +869,8 @@ public class BRDRLPersistenceUnmarshallingTest {
                         + "then\n"
                         + "end";
 
-        addModelField("Person", "address", "Address", "org.test.Address");
-        addModelField("Address", "postalCode", "Integer", "java.lang.Integer");
+        addModelField("org.test.Person", "address", "Address", "org.test.Address");
+        addModelField("org.test.Address", "postalCode", "Integer", "java.lang.Integer");
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
@@ -994,8 +994,8 @@ public class BRDRLPersistenceUnmarshallingTest {
                         + "then\n"
                         + "end";
 
-        addModelField("Person", "address", "Address", "org.test.Address");
-        addModelField("Address", "postalCode", "Integer", "java.lang.Integer");
+        addModelField("org.test.Person", "address", "Address", "org.test.Address");
+        addModelField("org.test.Address", "postalCode", "Integer", "java.lang.Integer");
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
@@ -1015,14 +1015,14 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionValue().getParts().get(0) instanceof ExpressionVariable);
         ExpressionVariable expressionVariable=(ExpressionVariable)ebLeftSide.getExpressionValue().getParts().get(0);
         assertEquals("p",expressionVariable.getName());
-        //assertEquals("Person",expressionVariable.getClassType());
-        //assertEquals("Person",expressionVariable.getGenericType());
+        //assertEquals("org.test.Person",expressionVariable.getClassType());
+        //assertEquals("org.test.Person",expressionVariable.getGenericType());
 
         assertTrue(ebLeftSide.getExpressionValue().getParts().get(1) instanceof ExpressionField);
         ExpressionField ef1=(ExpressionField)ebLeftSide.getExpressionValue().getParts().get(1);
         assertEquals("address",ef1.getName());
-        //assertEquals("Address",ef1.getClassType());
-        //assertEquals("Address",ef1.getGenericType());
+        //assertEquals("org.test.Address",ef1.getClassType());
+        //assertEquals("org.test.Address",ef1.getGenericType());
 
 
         assertTrue(ebLeftSide.getExpressionValue().getParts().get(2) instanceof ExpressionField);
@@ -1037,8 +1037,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
         ExpressionUnboundFact expressionUnboundFact = ((ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get(0));
         assertEquals("Person", expressionUnboundFact.getName());
-        //assertEquals("Person", expressionUnboundFact.getClassType());
-        //assertEquals("Person", expressionUnboundFact.getGenericType());
+        //assertEquals("org.test.Person", expressionUnboundFact.getClassType());
+        //assertEquals("org.test.Person", expressionUnboundFact.getGenericType());
         assertEquals(m.lhs[0], expressionUnboundFact.getFact());
 
         assertEquals(null, expressionUnboundFact.getPrevious());
@@ -1047,8 +1047,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(1) instanceof ExpressionField);
         ExpressionField expressionField1 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(1);
         assertEquals("address", expressionField1.getName());
-        //assertEquals("Address", expressionField1.getClassType()); // Now this needs needs some magic, Address is a declarative model
-        //assertEquals("Address", expressionField1.getGenericType());
+        //assertEquals("org.test.Address", expressionField1.getClassType()); // Now this needs needs some magic, Address is a declarative model
+        //assertEquals("org.test.Address", expressionField1.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(0), expressionField1.getPrevious());
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(2), expressionField1.getNext());
