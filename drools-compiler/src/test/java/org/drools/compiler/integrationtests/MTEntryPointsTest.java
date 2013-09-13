@@ -17,6 +17,7 @@ import org.kie.api.builder.KieFileSystem;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -71,6 +72,7 @@ public class MTEntryPointsTest {
         KieModuleModel kmoduleModel = ks.newKieModuleModel();
         kmoduleModel.newKieBaseModel("defaultKieBase")
                     .addPackage("*")
+                    .setEventProcessingMode(EventProcessingOption.STREAM)
                     .newKieSessionModel("defaultKieSession")
                     .setDefault(true)
                     .setClockType(ClockTypeOption.get("pseudo"));

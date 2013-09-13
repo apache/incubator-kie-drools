@@ -36,6 +36,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -3157,6 +3158,14 @@ public class CepEspTest extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
+        KieModuleModel kieModule = ks.newKieModuleModel();
+        kieModule.newKieBaseModel("KBase")
+                 .setDefault(true)
+                 .setEventProcessingMode(EventProcessingOption.STREAM)
+                 .newKieSessionModel("KSession")
+                 .setDefault(true);
+
+        kfs.writeKModuleXML(kieModule.toXML());
         kfs.write("src/main/resources/lifecycle.drl", drl);
 
         KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
@@ -3198,8 +3207,8 @@ public class CepEspTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("need to find a way to not allow cloud kbases when using sliding window")
-    public void testCompilationFailureWhenUsingWindowsInCloudMode() {
+    @Test
+    public void testThrowsWhenCreatingKieBaseUsingWindowsInCloudMode() {
         String drl =
             "declare TestEvent\n" +
             "    @role( event )\n" +
@@ -3228,8 +3237,10 @@ public class CepEspTest extends CommonTestMethodBase {
         kfs.writeKModuleXML(kieModule.toXML());
         KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
 
-        // TODO: we cannot actually generate a compilation error here since kiebase opitons are not avaialble at compile time
-        assertFalse( "Should have raised a compilation error as you cannot use sliding window in cloud mode",
-                     kieBuilder.getResults().getMessages().isEmpty() );
+        KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        try {
+            kieContainer.getKieBase("KBase");
+            fail("Should throw a RuntimeException because the CLOUD kbase is trying to use features only available in STREAM mode");
+        } catch (Exception e) { }
     }
 }

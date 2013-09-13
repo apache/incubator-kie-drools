@@ -3179,6 +3179,10 @@ public class PackageBuilder
         }
 
         pkg.addRule( context.getRule() );
+
+        if ( context.needsStreamMode() ) {
+            pkg.setNeedStreamMode();
+        }
     }
 
     /**

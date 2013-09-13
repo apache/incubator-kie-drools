@@ -105,6 +105,8 @@ public class Package
      */
     private boolean                        valid            = true;
 
+    private boolean                        needStreamMode   = false;
+
     /**
      * This will keep a summary error message as to why this package is not
      * valid
@@ -181,6 +183,7 @@ public class Package
         out.writeObject( this.ruleFlows );
         out.writeObject( this.globals );
         out.writeBoolean( this.valid );
+        out.writeBoolean( this.needStreamMode );
         out.writeObject( this.rules );
         out.writeObject( this.classFieldAccessorStore );
         out.writeObject( this.entryPointsIds );
@@ -227,6 +230,7 @@ public class Package
         this.ruleFlows = (Map) in.readObject();
         this.globals = (Map<String, String>) in.readObject();
         this.valid = in.readBoolean();
+        this.needStreamMode = in.readBoolean();
         this.rules = (Map<String, Rule>) in.readObject();
         this.classFieldAccessorStore = (ClassFieldAccessorStore) in.readObject();
         this.entryPointsIds = (Set<String>) in.readObject();
@@ -666,6 +670,14 @@ public class Package
             }
         }
         return functionsToBeRemoved;
+    }
+
+    public boolean needsStreamMode() {
+        return needStreamMode;
+    }
+
+    public void setNeedStreamMode() {
+        this.needStreamMode = true;
     }
 
     public Package deepCloneIfAlreadyInUse(ClassLoader classLoader) {
