@@ -14,7 +14,9 @@ package org.drools.workbench.models.commons.backend.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
@@ -34,6 +36,7 @@ import org.drools.workbench.models.commons.shared.rule.IPattern;
 import org.drools.workbench.models.commons.shared.rule.RuleModel;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
 import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -54,6 +57,24 @@ public class BRDRLPersistenceUnmarshallingTest {
         ).thenReturn(
                 packageModelFields
         );
+    }
+
+    @After
+    public void cleanUp() throws Exception {
+        packageModelFields.clear();
+    }
+
+    private void addModelField(String factName, String fieldName, String clazz, String type) {
+        ModelField[] modelFields = new ModelField[1];
+        modelFields[0]=new ModelField(
+                fieldName,
+                clazz,
+                ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                ModelField.FIELD_ORIGIN.DECLARED,
+                FieldAccessorsAndMutators.BOTH,
+                type
+        );
+        packageModelFields.put(factName,modelFields);
     }
 
     @Test
@@ -871,6 +892,11 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField("org.test.Person", "address", "Address", "org.test.Address");
         addModelField("org.test.Address", "postalCode", "Integer", "java.lang.Integer");
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "org.test.Person", "org.test.Address" }
+            );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
@@ -881,7 +907,7 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         SingleFieldConstraintEBLeftSide ebLeftSide = (SingleFieldConstraintEBLeftSide) ((FactPattern) m.lhs[0]).getFieldConstraints()[0];
         assertEquals("postalCode", ebLeftSide.getFieldName());
-        //assertEquals("java.lang.Integer", ebLeftSide.getFieldType());
+        assertEquals("java.lang.Integer", ebLeftSide.getFieldType());
         assertEquals("==", ebLeftSide.getOperator());
         assertEquals("12345", ebLeftSide.getValue());
 
@@ -889,7 +915,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
         ExpressionUnboundFact expressionUnboundFact = ((ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get(0));
         assertEquals("Person", expressionUnboundFact.getName());
-        assertEquals("Person", expressionUnboundFact.getClassType());
+        assertEquals("org.test.Person", expressionUnboundFact.getClassType());
         assertEquals("Person", expressionUnboundFact.getGenericType());
         assertEquals(m.lhs[0], expressionUnboundFact.getFact());
 
@@ -899,8 +925,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(1) instanceof ExpressionField);
         ExpressionField expressionField1 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(1);
         assertEquals("address", expressionField1.getName());
-        //assertEquals("Address", expressionField1.getClassType()); // Now this needs needs some magic, Address is a declarative model
-        //assertEquals("Address", expressionField1.getGenericType());
+        assertEquals("org.test.Address", expressionField1.getClassType());
+        assertEquals("Address", expressionField1.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(0), expressionField1.getPrevious());
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(2), expressionField1.getNext());
@@ -908,24 +934,11 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(2) instanceof ExpressionField);
         ExpressionField expressionField2 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(2);
         assertEquals("postalCode", expressionField2.getName());
-        //assertEquals("java.lang.Integer", expressionField2.getClassType());
+        assertEquals("java.lang.Integer", expressionField2.getClassType());
         assertEquals("Integer", expressionField2.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(1), expressionField2.getPrevious());
         assertEquals(null, expressionField2.getNext());
-    }
-
-    private void addModelField(String factName, String fieldName, String clazz, String type) {
-        ModelField[] modelFields = new ModelField[1];
-        modelFields[0]=new ModelField(
-                fieldName,
-                clazz,
-                ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                ModelField.FIELD_ORIGIN.DECLARED,
-                FieldAccessorsAndMutators.BOTH,
-                type
-        );
-        packageModelFields.put(factName,modelFields);
     }
 
     @Test
@@ -938,8 +951,13 @@ public class BRDRLPersistenceUnmarshallingTest {
                         + "end";
 
 
-        addModelField("Person", "address", "Address", "org.test.Address");
-        addModelField("Address", "postalCode", "Integer", "java.lang.Integer");
+        addModelField("org.test.Person", "address", "Address", "org.test.Address");
+        addModelField("org.test.Address", "postalCode", "Integer", "java.lang.Integer");
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "org.test.Person", "org.test.Address" }
+            );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
@@ -950,7 +968,7 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         SingleFieldConstraintEBLeftSide ebLeftSide = (SingleFieldConstraintEBLeftSide) ((FactPattern) m.lhs[0]).getFieldConstraints()[0];
         assertEquals("postalCode", ebLeftSide.getFieldName());
-        //assertEquals("java.lang.Integer", ebLeftSide.getFieldType());
+        assertEquals("java.lang.Integer", ebLeftSide.getFieldType());
         assertEquals("==", ebLeftSide.getOperator());
         assertEquals("myFunction()", ebLeftSide.getValue());
 
@@ -958,8 +976,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
         ExpressionUnboundFact expressionUnboundFact = ((ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get(0));
         assertEquals("Person", expressionUnboundFact.getName());
-        //assertEquals("Person", expressionUnboundFact.getClassType());
-        //assertEquals("Person", expressionUnboundFact.getGenericType());
+        assertEquals("org.test.Person", expressionUnboundFact.getClassType());
+        assertEquals("Person", expressionUnboundFact.getGenericType());
         assertEquals(m.lhs[0], expressionUnboundFact.getFact());
 
         assertEquals(null, expressionUnboundFact.getPrevious());
@@ -968,8 +986,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(1) instanceof ExpressionField);
         ExpressionField expressionField1 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(1);
         assertEquals("address", expressionField1.getName());
-        //assertEquals("Address", expressionField1.getClassType()); // Now this needs needs some magic, Address is a declarative model
-        //assertEquals("Address", expressionField1.getGenericType());
+        assertEquals("org.test.Address", expressionField1.getClassType());
+        assertEquals("Address", expressionField1.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(0), expressionField1.getPrevious());
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(2), expressionField1.getNext());
@@ -977,15 +995,15 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(2) instanceof ExpressionField);
         ExpressionField expressionField2 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(2);
         assertEquals("postalCode", expressionField2.getName());
-        //assertEquals("java.lang.Integer", expressionField2.getClassType());
-        //assertEquals("Integer", expressionField2.getGenericType());
+        assertEquals("java.lang.Integer", expressionField2.getClassType());
+        assertEquals("Integer", expressionField2.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(1), expressionField2.getPrevious());
         assertEquals(null, expressionField2.getNext());
     }
 
 
-    @Test @Ignore("it is not possible to distinguish an expression from an enum value like CHEESE.Cheddar")
+    @Test
     public void testNestedFieldExpressionsWithAnotherExpression() {
         String drl =
                 "rule rule1\n"
@@ -996,6 +1014,11 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField("org.test.Person", "address", "Address", "org.test.Address");
         addModelField("org.test.Address", "postalCode", "Integer", "java.lang.Integer");
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "org.test.Person", "org.test.Address" }
+        );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
 
@@ -1006,7 +1029,7 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         SingleFieldConstraintEBLeftSide ebLeftSide = (SingleFieldConstraintEBLeftSide) ((FactPattern) m.lhs[0]).getFieldConstraints()[0];
         assertEquals("postalCode", ebLeftSide.getFieldName());
-        //assertEquals("java.lang.Integer", ebLeftSide.getFieldType());
+        assertEquals("java.lang.Integer", ebLeftSide.getFieldType());
         assertEquals("==", ebLeftSide.getOperator());
         assertEquals("", ebLeftSide.getValue());
 
@@ -1015,30 +1038,27 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionValue().getParts().get(0) instanceof ExpressionVariable);
         ExpressionVariable expressionVariable=(ExpressionVariable)ebLeftSide.getExpressionValue().getParts().get(0);
         assertEquals("p",expressionVariable.getName());
-        //assertEquals("org.test.Person",expressionVariable.getClassType());
-        //assertEquals("org.test.Person",expressionVariable.getGenericType());
+        assertEquals("org.test.Person",expressionVariable.getClassType());
+        assertEquals("org.test.Person",expressionVariable.getGenericType());
 
         assertTrue(ebLeftSide.getExpressionValue().getParts().get(1) instanceof ExpressionField);
         ExpressionField ef1=(ExpressionField)ebLeftSide.getExpressionValue().getParts().get(1);
         assertEquals("address",ef1.getName());
-        //assertEquals("org.test.Address",ef1.getClassType());
-        //assertEquals("org.test.Address",ef1.getGenericType());
-
+        assertEquals("org.test.Address",ef1.getClassType());
+        assertEquals("Address",ef1.getGenericType());
 
         assertTrue(ebLeftSide.getExpressionValue().getParts().get(2) instanceof ExpressionField);
         ExpressionField ef2=(ExpressionField)ebLeftSide.getExpressionValue().getParts().get(2);
         assertEquals("postalCode",ef2.getName());
-        //assertEquals("java.lang.Integer",ef2.getClassType());
-        //assertEquals("Integer",ef2.getGenericType());
-
-
+        assertEquals("java.lang.Integer",ef2.getClassType());
+        assertEquals("Integer",ef2.getGenericType());
 
         assertEquals(3, ebLeftSide.getExpressionLeftSide().getParts().size());
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
         ExpressionUnboundFact expressionUnboundFact = ((ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get(0));
         assertEquals("Person", expressionUnboundFact.getName());
-        //assertEquals("org.test.Person", expressionUnboundFact.getClassType());
-        //assertEquals("org.test.Person", expressionUnboundFact.getGenericType());
+        assertEquals("org.test.Person", expressionUnboundFact.getClassType());
+        assertEquals("Person", expressionUnboundFact.getGenericType());
         assertEquals(m.lhs[0], expressionUnboundFact.getFact());
 
         assertEquals(null, expressionUnboundFact.getPrevious());
@@ -1047,8 +1067,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(1) instanceof ExpressionField);
         ExpressionField expressionField1 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(1);
         assertEquals("address", expressionField1.getName());
-        //assertEquals("org.test.Address", expressionField1.getClassType()); // Now this needs needs some magic, Address is a declarative model
-        //assertEquals("org.test.Address", expressionField1.getGenericType());
+        assertEquals("org.test.Address", expressionField1.getClassType());
+        assertEquals("Address", expressionField1.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(0), expressionField1.getPrevious());
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(2), expressionField1.getNext());
@@ -1056,8 +1076,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(2) instanceof ExpressionField);
         ExpressionField expressionField2 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(2);
         assertEquals("postalCode", expressionField2.getName());
-        //assertEquals("java.lang.Integer", expressionField2.getClassType());
-        //assertEquals("Integer", expressionField2.getGenericType());
+        assertEquals("java.lang.Integer", expressionField2.getClassType());
+        assertEquals("Integer", expressionField2.getGenericType());
 
         assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(1), expressionField2.getPrevious());
         assertEquals(null, expressionField2.getNext());
@@ -1391,8 +1411,13 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        addModelField("ParentType", "parentChildField", "ChildType", "org.test.ChildType");
-        addModelField("ChildType", "childField", "String", "java.lang.String");
+        addModelField("org.test.ParentType", "parentChildField", "ChildType", "org.test.ChildType");
+        addModelField("org.test.ChildType", "childField", "String", "java.lang.String");
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "org.test.ParentType", "org.test.ChildType" }
+            );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
@@ -1433,8 +1458,8 @@ public class BRDRLPersistenceUnmarshallingTest {
                       sfp1.getFactType() );
         assertEquals( "parentChildField",
                       sfp1.getFieldName() );
-        //assertEquals( "ChildType",
-        //              sfp1.getFieldType() );
+        assertEquals( "org.test.ChildType",
+                      sfp1.getFieldType() );
         assertEquals( "!= null",
                       sfp1.getOperator() );
         assertNull( sfp1.getValue() );
@@ -1447,8 +1472,8 @@ public class BRDRLPersistenceUnmarshallingTest {
         SingleFieldConstraint sfp2 = (SingleFieldConstraint) fp.getConstraint( 2 );
         assertEquals( "childField",
                       sfp2.getFieldName() );
-        //assertEquals( DataType.TYPE_STRING,
-        //              sfp2.getFieldType() );
+        assertEquals( "java.lang.String",
+                      sfp2.getFieldType() );
         assertEquals( "==",
                       sfp2.getOperator() );
         assertEquals( "hello",
@@ -1510,80 +1535,63 @@ public class BRDRLPersistenceUnmarshallingTest {
                                       actualDrl );
     }
 
-    @Test @Ignore("We always use SingleFieldConstraintEBLeftSide to unmarshall constraints")
+    @Test
     public void testNestedFieldConstraintsOnlyLeafOperator() {
         String drl = "rule \"rule1\"\n"
                 + "when\n"
-                + "ParentType( this.parentChildField.childField == \"hello\" )\n"
+                + "ParentType( parentChildField.childField == \"hello\" )\n"
                 + "then\n"
                 + "end";
 
-        addModelField("ParentType", "parentChildField", "ChildType", "org.test.ChildType");
-        addModelField("ChildType", "childField", "String", "java.lang.String");
+        addModelField("org.test.ParentType", "parentChildField", "ChildType", "org.test.ChildType");
+        addModelField("org.test.ChildType", "childField", "String", "java.lang.String");
+        when(
+                dmo.getAllFactTypes()
+            ).thenReturn(
+                new String[] { "org.test.ParentType", "org.test.ChildType" }
+            );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
-        assertNotNull( m );
-        assertEquals( "rule1",
-                      m.name );
+        assertNotNull(m);
+        assertEquals(1, m.lhs.length);
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        assertTrue(((FactPattern) m.lhs[0]).getFieldConstraints()[0] instanceof SingleFieldConstraintEBLeftSide);
 
-        assertEquals( 1,
-                      m.lhs.length );
-        IPattern p = m.lhs[ 0 ];
-        assertTrue( p instanceof FactPattern );
+        SingleFieldConstraintEBLeftSide ebLeftSide = (SingleFieldConstraintEBLeftSide) ((FactPattern) m.lhs[0]).getFieldConstraints()[0];
+        assertEquals("childField", ebLeftSide.getFieldName());
+        assertEquals("java.lang.String", ebLeftSide.getFieldType());
+        assertEquals("==", ebLeftSide.getOperator());
+        assertEquals("hello", ebLeftSide.getValue());
 
-        FactPattern fp = (FactPattern) p;
-        assertEquals( "ParentType",
-                      fp.getFactType() );
+        assertEquals(3, ebLeftSide.getExpressionLeftSide().getParts().size());
+        assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(0) instanceof ExpressionUnboundFact);
+        ExpressionUnboundFact expressionUnboundFact = ((ExpressionUnboundFact) ebLeftSide.getExpressionLeftSide().getParts().get(0));
+        assertEquals("ParentType", expressionUnboundFact.getName());
+        assertEquals("org.test.ParentType", expressionUnboundFact.getClassType());
+        assertEquals("ParentType", expressionUnboundFact.getGenericType());
+        assertEquals(m.lhs[0], expressionUnboundFact.getFact());
 
-        assertEquals( 3,
-                      fp.getConstraintList().getConstraints().length );
+        assertEquals(null, expressionUnboundFact.getPrevious());
+        assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(1), expressionUnboundFact.getNext());
 
-        assertTrue( fp.getConstraint( 0 ) instanceof SingleFieldConstraint );
-        SingleFieldConstraint sfp0 = (SingleFieldConstraint) fp.getConstraint( 0 );
-        assertEquals( "ParentType",
-                      sfp0.getFactType() );
-        assertEquals( "this",
-                      sfp0.getFieldName() );
-        assertEquals( DataType.TYPE_THIS,
-                      sfp0.getFieldType() );
-        assertNull( sfp0.getOperator() );
-        assertNull( sfp0.getValue() );
-        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
-                      sfp0.getConstraintValueType() );
-        assertNull( sfp0.getParent() );
+        assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(1) instanceof ExpressionField);
+        ExpressionField expressionField1 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(1);
+        assertEquals("parentChildField", expressionField1.getName());
+        assertEquals("org.test.ChildType", expressionField1.getClassType());
+        assertEquals("ChildType", expressionField1.getGenericType());
 
-        assertTrue( fp.getConstraint( 1 ) instanceof SingleFieldConstraint );
-        SingleFieldConstraint sfp1 = (SingleFieldConstraint) fp.getConstraint( 1 );
-        assertEquals( "ParentType",
-                      sfp1.getFactType() );
-        assertEquals( "parentChildField",
-                      sfp1.getFieldName() );
-        //assertEquals( "ChildType",
-        //              sfp1.getFieldType() );
-        assertNull( sfp1.getOperator() );
-        assertNull( sfp1.getValue() );
-        assertEquals( BaseSingleFieldConstraint.TYPE_UNDEFINED,
-                      sfp1.getConstraintValueType() );
-        assertSame( sfp0,
-                    sfp1.getParent() );
+        assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(0), expressionField1.getPrevious());
+        assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(2), expressionField1.getNext());
 
-        assertTrue( fp.getConstraint( 2 ) instanceof SingleFieldConstraint );
-        SingleFieldConstraint sfp2 = (SingleFieldConstraint) fp.getConstraint( 2 );
-        //assertEquals( "ChildType",
-        //              sfp2.getFactType() );
-        assertEquals( "childField",
-                      sfp2.getFieldName() );
-        //assertEquals( DataType.TYPE_STRING,
-        //              sfp2.getFieldType() );
-        assertEquals( "==",
-                      sfp2.getOperator() );
-        assertEquals( "hello",
-                      sfp2.getValue() );
-        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
-                      sfp2.getConstraintValueType() );
-        assertSame( sfp1,
-                    sfp2.getParent() );
+        assertTrue(ebLeftSide.getExpressionLeftSide().getParts().get(2) instanceof ExpressionField);
+        ExpressionField expressionField2 = (ExpressionField) ebLeftSide.getExpressionLeftSide().getParts().get(2);
+        assertEquals("childField", expressionField2.getName());
+        assertEquals("java.lang.String", expressionField2.getClassType());
+        assertEquals("String", expressionField2.getGenericType());
+
+        assertEquals(ebLeftSide.getExpressionLeftSide().getParts().get(1), expressionField2.getPrevious());
+        assertEquals(null, expressionField2.getNext());
     }
 
     @Test

@@ -33,6 +33,9 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -3193,5 +3196,40 @@ public class CepEspTest extends CommonTestMethodBase {
         public String toString() {
             return String.format("TestEvent[name=%s]", name);
         }
+    }
+
+    @Test @Ignore("need to find a way to not allow cloud kbases when using sliding window")
+    public void testCompilationFailureWhenUsingWindowsInCloudMode() {
+        String drl =
+            "declare TestEvent\n" +
+            "    @role( event )\n" +
+            "    name : String\n" +
+            "end\n" +
+            "\n" +
+            "rule R when\n" +
+            "        TestEvent ( name == \"EventA\" ) over window:time( 1s ) from entry-point EventStream\n" +
+            "    then\n" +
+            "        // consequence\n" +
+            "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kieModule = ks.newKieModuleModel();
+        KieBaseModel defaultBase = kieModule.newKieBaseModel("KBase")
+                                            .setDefault(true)
+                                            .addPackage("*")
+                                            .setEventProcessingMode(EventProcessingOption.CLOUD);
+        defaultBase.newKieSessionModel("KSession")
+                   .setClockType(ClockTypeOption.get("pseudo"))
+                   .setDefault(true);
+
+        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drl);
+
+        kfs.writeKModuleXML(kieModule.toXML());
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+
+        // TODO: we cannot actually generate a compilation error here since kiebase opitons are not avaialble at compile time
+        assertFalse( "Should have raised a compilation error as you cannot use sliding window in cloud mode",
+                     kieBuilder.getResults().getMessages().isEmpty() );
     }
 }

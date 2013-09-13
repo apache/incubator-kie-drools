@@ -193,6 +193,7 @@ public class BRXMLPersistence
 
     public RuleModel unmarshalUsingDSL( final String str,
                                         final List<String> globals,
+                                        final PackageDataModelOracle dmo,
                                         final String... dsls ) {
         throw new UnsupportedOperationException();
     }

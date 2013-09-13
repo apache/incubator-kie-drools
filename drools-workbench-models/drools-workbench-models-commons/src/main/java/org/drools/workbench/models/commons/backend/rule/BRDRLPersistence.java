@@ -58,6 +58,7 @@ import org.drools.workbench.models.commons.shared.imports.Imports;
 import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.commons.shared.oracle.model.DataType;
 import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
+import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
 import org.drools.workbench.models.commons.shared.rule.ActionCallMethod;
 import org.drools.workbench.models.commons.shared.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.commons.shared.rule.ActionFieldFunction;
@@ -1371,13 +1372,14 @@ public class BRDRLPersistence
      * @see BRLPersistence#unmarshal(String,PackageDataModelOracle)
      */
     public RuleModel unmarshal( String str, final PackageDataModelOracle dmo ) {
-        return getRuleModel( preprocessDRL( str ) );
+        return getRuleModel( preprocessDRL( str ), dmo );
     }
 
     public RuleModel unmarshalUsingDSL( final String str,
                                         final List<String> globals,
+                                        final PackageDataModelOracle dmo,
                                         final String... dsls ) {
-        return getRuleModel( parseDSLs( preprocessDRL( str ), dsls ).registerGlobals( globals ) );
+        return getRuleModel( parseDSLs( preprocessDRL( str ), dsls ).registerGlobals( globals ), dmo );
     }
 
     private ExpandedDRLInfo parseDSLs( ExpandedDRLInfo expandedDRLInfo,
@@ -1405,7 +1407,7 @@ public class BRDRLPersistence
         return line.substring( 0, line.indexOf( '=' ) ).trim();
     }
 
-    private RuleModel getRuleModel( ExpandedDRLInfo expandedDRLInfo ) {
+    private RuleModel getRuleModel( ExpandedDRLInfo expandedDRLInfo, PackageDataModelOracle dmo ) {
         //De-serialize model
         RuleDescr ruleDescr = parseDrl( expandedDRLInfo );
         RuleModel model = new RuleModel();
@@ -1431,9 +1433,7 @@ public class BRDRLPersistence
 
         boolean isJavaDialect = parseAttributes( model,
                                                  ruleDescr.getAttributes() );
-        Map<String, String> boundParams = parseLhs( model,
-                                                    ruleDescr.getLhs(),
-                                                    expandedDRLInfo );
+        Map<String, String> boundParams = parseLhs( model, ruleDescr.getLhs(), expandedDRLInfo, dmo );
         parseRhs( model,
                   expandedDRLInfo.consequence != null ? expandedDRLInfo.consequence : (String) ruleDescr.getConsequence(),
                   isJavaDialect,
@@ -1682,14 +1682,15 @@ public class BRDRLPersistence
 
     private Map<String, String> parseLhs( RuleModel m,
                                           AndDescr lhs,
-                                          ExpandedDRLInfo expandedDRLInfo ) {
+                                          ExpandedDRLInfo expandedDRLInfo,
+                                          PackageDataModelOracle dmo ) {
         Map<String, String> boundParams = new HashMap<String, String>();
         int lineCounter = -1;
         for ( BaseDescr descr : lhs.getDescrs() ) {
             lineCounter = parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
-            IPattern pattern = parseBaseDescr( descr, boundParams );
+            IPattern pattern = parseBaseDescr( descr, boundParams, dmo );
             if (pattern != null) {
-                m.addLhsItem( parseBaseDescr( descr, boundParams ) );
+                m.addLhsItem( parseBaseDescr( descr, boundParams, dmo ) );
             }
         }
         parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
@@ -1732,40 +1733,45 @@ public class BRDRLPersistence
     }
 
     private IPattern parseBaseDescr( BaseDescr descr,
-                                     Map<String, String> boundParams ) {
+                                     Map<String, String> boundParams,
+                                     PackageDataModelOracle dmo ) {
         if ( descr instanceof PatternDescr ) {
-            return parsePatternDescr( (PatternDescr) descr, boundParams );
+            return parsePatternDescr( (PatternDescr) descr, boundParams, dmo );
         } else if ( descr instanceof AndDescr ) {
             AndDescr andDescr = (AndDescr) descr;
-            return parseBaseDescr( andDescr.getDescrs().get( 0 ), boundParams );
+            return parseBaseDescr( andDescr.getDescrs().get( 0 ), boundParams, dmo );
         } else if ( descr instanceof EvalDescr ) {
             FreeFormLine freeFormLine = new FreeFormLine();
             freeFormLine.setText("eval( " + ((EvalDescr) descr).getContent() + " )");
             return freeFormLine;
         } else if ( descr instanceof ConditionalElementDescr ) {
-            return parseExistentialElementDescr( (ConditionalElementDescr) descr, boundParams );
+            return parseExistentialElementDescr( (ConditionalElementDescr) descr, boundParams, dmo );
         }
         return null;
     }
 
     private IFactPattern parsePatternDescr( PatternDescr pattern,
-                                            Map<String, String> boundParams ) {
+                                            Map<String, String> boundParams,
+                                            PackageDataModelOracle dmo ) {
         if ( pattern.getSource() != null ) {
-            return parsePatternSource( pattern, pattern.getSource(), boundParams );
+            return parsePatternSource( pattern, pattern.getSource(), boundParams, dmo );
         }
-        return getFactPattern( pattern, boundParams );
+        return getFactPattern( pattern, boundParams, dmo );
     }
 
     private FactPattern getFactPattern( PatternDescr pattern,
-                                        Map<String, String> boundParams ) {
+                                        Map<String, String> boundParams,
+                                        PackageDataModelOracle dmo ) {
         String type = pattern.getObjectType();
         FactPattern factPattern = new FactPattern( type );
-        parseConstraint( factPattern, pattern.getConstraint(), boundParams );
         if ( pattern.getIdentifier() != null ) {
             String identifier = pattern.getIdentifier();
             factPattern.setBoundName( identifier );
             boundParams.put( identifier, type );
         }
+
+        parseConstraint( factPattern, pattern.getConstraint(), boundParams, dmo );
+
         for (BehaviorDescr behavior : pattern.getBehaviors()) {
             if ( behavior.getText().equals("window") ) {
                 CEPWindow window = new CEPWindow();
@@ -1787,11 +1793,12 @@ public class BRDRLPersistence
 
     private IFactPattern parsePatternSource( PatternDescr pattern,
                                              PatternSourceDescr patternSource,
-                                             Map<String, String> boundParams ) {
+                                             Map<String, String> boundParams,
+                                             PackageDataModelOracle dmo ) {
         if ( patternSource instanceof AccumulateDescr ) {
             AccumulateDescr accumulate = (AccumulateDescr) patternSource;
             FromAccumulateCompositeFactPattern fac = new FromAccumulateCompositeFactPattern();
-            fac.setSourcePattern( parseBaseDescr( accumulate.getInput(), boundParams ) );
+            fac.setSourcePattern( parseBaseDescr( accumulate.getInput(), boundParams, dmo ) );
             fac.setFactPattern( new FactPattern( pattern.getObjectType() ) );
             for ( AccumulateDescr.AccumulateFunctionCallDescr func : accumulate.getFunctions() ) {
                 String funcName = func.getFunction();
@@ -1812,50 +1819,53 @@ public class BRDRLPersistence
         } else if ( patternSource instanceof CollectDescr ) {
             CollectDescr collect = (CollectDescr) patternSource;
             FromCollectCompositeFactPattern fac = new FromCollectCompositeFactPattern();
-            fac.setRightPattern( parseBaseDescr( collect.getInputPattern(), boundParams ) );
+            fac.setRightPattern( parseBaseDescr( collect.getInputPattern(), boundParams, dmo ) );
             fac.setFactPattern( new FactPattern( pattern.getObjectType() ) );
             return fac;
         } else if ( patternSource instanceof EntryPointDescr ) {
             EntryPointDescr entryPoint = (EntryPointDescr) patternSource;
             FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
             fep.setEntryPointName( entryPoint.getText() );
-            fep.setFactPattern( getFactPattern( pattern, boundParams ) );
+            fep.setFactPattern( getFactPattern( pattern, boundParams, dmo ) );
             return fep;
         }
         throw new RuntimeException( "Unknown pattern source " + patternSource );
     }
 
     private CompositeFactPattern parseExistentialElementDescr( ConditionalElementDescr conditionalDescr,
-                                                               Map<String, String> boundParams ) {
+                                                               Map<String, String> boundParams,
+                                                               PackageDataModelOracle dmo ) {
         CompositeFactPattern comp = conditionalDescr instanceof NotDescr ?
                 new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_NOT ) :
                 conditionalDescr instanceof OrDescr ?
                         new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_OR ) :
                         new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
-        addPatternToComposite( conditionalDescr, comp, boundParams );
+        addPatternToComposite( conditionalDescr, comp, boundParams, dmo );
         IFactPattern[] patterns = comp.getPatterns();
         return patterns != null && patterns.length > 0 ? comp : null;
     }
 
     private void addPatternToComposite( ConditionalElementDescr conditionalDescr,
                                         CompositeFactPattern comp,
-                                        Map<String, String> boundParams ) {
+                                        Map<String, String> boundParams,
+                                        PackageDataModelOracle dmo ) {
         for ( Object descr : conditionalDescr.getDescrs() ) {
             if ( descr instanceof PatternDescr ) {
-                comp.addFactPattern( parsePatternDescr( (PatternDescr) descr, boundParams ) );
+                comp.addFactPattern( parsePatternDescr( (PatternDescr) descr, boundParams, dmo ) );
             } else if ( descr instanceof ConditionalElementDescr ) {
-                addPatternToComposite( (ConditionalElementDescr) descr, comp, boundParams );
+                addPatternToComposite( (ConditionalElementDescr) descr, comp, boundParams, dmo );
             }
         }
     }
 
     private void parseConstraint( FactPattern factPattern,
                                   ConditionalElementDescr constraint,
-                                  Map<String, String> boundParams ) {
+                                  Map<String, String> boundParams,
+                                  PackageDataModelOracle dmo ) {
         for ( BaseDescr descr : constraint.getDescrs() ) {
             if ( descr instanceof ExprConstraintDescr ) {
                 ExprConstraintDescr exprConstraint = (ExprConstraintDescr) descr;
-                Expr expr = parseExpr( exprConstraint.getExpression(), boundParams );
+                Expr expr = parseExpr( exprConstraint.getExpression(), boundParams, dmo );
                 factPattern.addConstraint( expr.asFieldConstraint( factPattern ) );
             }
         }
@@ -2203,21 +2213,21 @@ public class BRDRLPersistence
         return type;
     }
 
-    private Expr parseExpr( String expr, Map<String, String> boundParams ) {
+    private Expr parseExpr( String expr, Map<String, String> boundParams, PackageDataModelOracle dmo ) {
         List<String> splittedExpr = splitExpression( expr );
         if ( splittedExpr.size() == 1 ) {
             String singleExpr = splittedExpr.get( 0 );
             if ( singleExpr.startsWith( "(" ) ) {
-                return parseExpr( singleExpr.substring( 1 ), boundParams );
+                return parseExpr( singleExpr.substring( 1 ), boundParams, dmo );
             } else if ( singleExpr.startsWith( "eval" ) ) {
                 return new EvalExpr( unwrapParenthesis( singleExpr ) );
             } else {
-                return new SimpleExpr( singleExpr, boundParams );
+                return new SimpleExpr( singleExpr, boundParams, dmo );
             }
         }
         ComplexExpr complexExpr = new ComplexExpr( splittedExpr.get( 1 ) );
         for ( int i = 0; i < splittedExpr.size(); i += 2 ) {
-            complexExpr.subExprs.add( parseExpr( splittedExpr.get( i ), boundParams ) );
+            complexExpr.subExprs.add( parseExpr( splittedExpr.get( i ), boundParams, dmo ) );
         }
         return complexExpr;
     }
@@ -2333,10 +2343,12 @@ public class BRDRLPersistence
 
         private final String expr;
         private final Map<String, String> boundParams;
+        private final PackageDataModelOracle dmo;
 
-        private SimpleExpr( String expr, Map<String, String> boundParams ) {
+        private SimpleExpr( String expr, Map<String, String> boundParams, PackageDataModelOracle dmo ) {
             this.expr = expr;
             this.boundParams = boundParams;
+            this.dmo = dmo;
         }
 
         public FieldConstraint asFieldConstraint( FactPattern factPattern ) {
@@ -2447,27 +2459,63 @@ public class BRDRLPersistence
             SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
 
             fieldName = setFieldBindingOnContraint( fieldName, con );
-            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern ) );
+            String classType = getFQFactType( factPattern.getFactType() );
+            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern, classType ) );
 
             String type = setOperatorAndValueOnConstraint( operator, value, con );
 
-            parseExpression(fieldName, type, con.getExpressionLeftSide());
+            parseExpression(classType, fieldName, type, con.getExpressionLeftSide());
 
             return con;
         }
 
-        private ExpressionFormLine parseExpression(String fieldName, String type, ExpressionFormLine expression) {
+        private ExpressionFormLine parseExpression(String factType, String fieldName, String fieldType, ExpressionFormLine expression) {
+            Map<String, ModelField[]> modelFields = dmo.getModelFields();
             String[] splits = fieldName.split( "\\." );
+
+            boolean isBoundParam = false;
+            if (factType == null) {
+                factType = getFQFactType( boundParams.get(splits[0].trim()) );
+                isBoundParam = true;
+            }
+
+            ModelField[] typeFields = modelFields.get(factType);
+
             for ( int i = 0; i < splits.length - 1; i++ ) {
                 String expressionPart = splits[i].trim();
-                if (i == 0 && boundParams.containsKey(expressionPart)) {
-                    expression.appendPart(new ExpressionVariable(expressionPart, "", DataType.TYPE_OBJECT));
+                if ("this".equals(expressionPart)) {
+                    expression.appendPart(new ExpressionField(expressionPart, factType, DataType.TYPE_THIS));
+                } else if (isBoundParam) {
+                    expression.appendPart(new ExpressionVariable(expressionPart, factType, factType));
+                    isBoundParam = false;
                 } else {
-                    expression.appendPart(new ExpressionField(expressionPart, "", DataType.TYPE_OBJECT));
+                    ModelField currentField = findField(typeFields, expressionPart);
+                    expression.appendPart(new ExpressionField(expressionPart, currentField.getType(), currentField.getClassName()));
+                    typeFields = modelFields.get(currentField.getType());
                 }
             }
-            expression.appendPart(new ExpressionField(splits[splits.length - 1].trim(), "", type));
+            String expressionPart = splits[splits.length - 1].trim();
+            ModelField currentField = findField(typeFields, expressionPart);
+            expression.appendPart(new ExpressionField(expressionPart, currentField.getType(), currentField.getClassName()));
             return expression;
+        }
+
+        private String getFQFactType(String factType) {
+            for (String type : dmo.getAllFactTypes()) {
+                if (type.endsWith("." + factType)) {
+                    return type;
+                }
+            }
+            return factType;
+        }
+
+        private ModelField findField(ModelField[] typeFields, String fieldName) {
+            for (ModelField typeField : typeFields) {
+                if (typeField.getName().equals(fieldName)) {
+                    return typeField;
+                }
+            }
+            return null;
         }
 
         private SingleFieldConstraint createParentFor( FactPattern factPattern, String fieldName ) {
@@ -2543,9 +2591,8 @@ public class BRDRLPersistence
                     if ( value.equals( "true" ) || value.equals( "false" ) ) {
                         type = DataType.TYPE_BOOLEAN;
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
-                    } else if (false && value.indexOf('.') > 0) {
-                        // TODO we need a data model to understand if this is a real expression
-                        con.setExpressionValue( parseExpression(value, null, new ExpressionFormLine()) );
+                    } else if (value.indexOf('.') > 0 && boundParams.containsKey(value.substring(0, value.indexOf('.')).trim())) {
+                        con.setExpressionValue( parseExpression(null, value, null, new ExpressionFormLine()) );
                         value = "";
                     } else {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
