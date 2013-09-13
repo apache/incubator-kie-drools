@@ -1,4 +1,21 @@
+/*
+ * Copyright 2013 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jbpm.test;
+
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -23,6 +40,7 @@ import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.kie.api.definition.process.Node;
 import org.kie.api.io.ResourceType;
@@ -76,7 +94,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * * clearHistory - clears history log<br/>
  * * setupPoolingDataSource - sets up data source<br/>
  */
-public abstract class JbpmJUnitBaseTestCase extends AbstractBaseTest {
+public abstract class JbpmJUnitBaseTestCase extends Assert {
     
     /**
      * Currently supported RuntimeEngine strategies
