@@ -52,6 +52,8 @@ public class RuleBuildContext extends PackageBuildContext {
 
     private DroolsCompilerComponentFactory  compilerFactory;
 
+    private boolean                         needStreamMode   = false;
+
     /**
      * Default constructor
      */
@@ -144,5 +146,13 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public void setCompilerFactory(DroolsCompilerComponentFactory compilerFactory) {
         this.compilerFactory = compilerFactory;
+    }
+
+    public boolean needsStreamMode() {
+        return needStreamMode;
+    }
+
+    public void setNeedStreamMode() {
+        this.needStreamMode = true;
     }
 }

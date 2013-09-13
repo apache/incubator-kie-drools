@@ -138,8 +138,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         assertEquals(1, list.size());
     }
 
-    @Ignore
-    @Test
+    @Test @Ignore
     public void testKieContainerBeforeAndAfterDeployOfSnapshot() throws Exception {
         KieServices ks = KieServices.Factory.get();
 
@@ -148,8 +147,11 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         String version = "1.0.0-SNAPSHOT";
 
         ReleaseId releaseId = ks.newReleaseId(group, artifact, version);
-        File kjar = new File("src/test/resources/kjar/kjar-module-before.jar");
-        File pom = new File("src/test/resources/kjar/pom-kjar.xml");
+
+        String prefix = new File(".").getAbsolutePath().contains("kie-ci") ? "" : "kie-ci/";
+
+        File kjar = new File(prefix + "src/test/resources/kjar/kjar-module-before.jar");
+        File pom = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kjar, pom);
 
@@ -164,8 +166,8 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
 
 
         // deploy new version
-        File kjar1 = new File("src/test/resources/kjar/kjar-module-after.jar");
-        File pom1 = new File("src/test/resources/kjar/pom-kjar.xml");
+        File kjar1 = new File(prefix + "src/test/resources/kjar/kjar-module-after.jar");
+        File pom1 = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
 
 
         repository.deployArtifact(releaseId, kjar1, pom1);
