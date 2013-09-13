@@ -34,9 +34,11 @@ public class FieldConverter implements Converter {
         String name = reader.getValue();
         reader.moveUp();
 
-        reader.moveDown();
+        if(!reader.hasMoreChildren()){
 
-        if (reader.getNodeName().equals("collectionFieldList")) {
+            return new FieldPlaceHolder(name);
+
+        } else if (reader.getNodeName().equals("collectionFieldList")) {
 
             CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
             reader.moveUp();
