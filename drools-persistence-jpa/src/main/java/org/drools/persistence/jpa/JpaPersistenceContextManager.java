@@ -23,22 +23,46 @@ import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JpaPersistenceContextManager
     implements
     PersistenceContextManager {
-    protected Environment                  env;
+    
+    protected final Environment                 env;
+    protected final ThreadLocal<EntityManager>  threadLocalCmdScopedEM;
+    private final boolean useSessionLocking;
 
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory          emf;
 
-    private EntityManager        appScopedEntityManager;
-    protected EntityManager        cmdScopedEntityManager;
+    private volatile EntityManager              appScopedEntityManager;
+    protected volatile EntityManager            cmdScopedEntityManager;
 
-    private boolean              internalAppScopedEntityManager;
-    private boolean              internalCmdScopedEntityManager;
+    private volatile boolean                    internalAppScopedEntityManager;
+    private volatile boolean                    internalCmdScopedEntityManager;
 
+    private static Logger        logger = LoggerFactory.getLogger( JpaPersistenceContextManager.class );
+    
     public JpaPersistenceContextManager(Environment env) {
         this.env = env;
+        Object sessionLockingObj =  this.env.get(EnvironmentName.USE_SESSION_LOCKING);
+        if( sessionLockingObj != null ) { 
+            if( sessionLockingObj instanceof Boolean ) { 
+                useSessionLocking = true;
+            } else if( sessionLockingObj instanceof String ) { 
+                useSessionLocking = Boolean.parseBoolean((String) sessionLockingObj);
+            } else { 
+                useSessionLocking = false;
+            }
+        } else { 
+            useSessionLocking = false;
+        }
+        if( useSessionLocking ) { 
+           threadLocalCmdScopedEM = new ThreadLocal<EntityManager>(); 
+        } else { 
+            threadLocalCmdScopedEM = null;
+        }
         this.emf = ( EntityManagerFactory ) env.get( EnvironmentName.ENTITY_MANAGER_FACTORY );
     }
     
@@ -68,16 +92,17 @@ public class JpaPersistenceContextManager
     }
 
     public void beginCommandScopedEntityManager() {
-        EntityManager cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
+        EntityManager cmdScopedEntityManager = getCommandScopedEntityManager();
         if ( cmdScopedEntityManager == null || 
            ( this.cmdScopedEntityManager != null && !this.cmdScopedEntityManager.isOpen() )) {
             internalCmdScopedEntityManager = true;
-            this.cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
+            this.cmdScopedEntityManager = this.emf.createEntityManager(); 
+            logger.debug("Created command scoped entity manager [id: " + System.identityHashCode(this.cmdScopedEntityManager) + "]");
             this.cmdScopedEntityManager.setFlushMode(FlushModeType.COMMIT);
-            this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER,
-                          this.cmdScopedEntityManager );
+            setCommandScopedEntityManager(this.cmdScopedEntityManager); 
             cmdScopedEntityManager = this.cmdScopedEntityManager;
         } else {
+            logger.debug("Using existing command scoped entity manager [id: " + System.identityHashCode(cmdScopedEntityManager) + "]");
             internalCmdScopedEntityManager = false;
         }
         cmdScopedEntityManager.joinTransaction();
@@ -86,8 +111,10 @@ public class JpaPersistenceContextManager
 
     public void endCommandScopedEntityManager() {
         if ( this.internalCmdScopedEntityManager ) {
-            this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, 
-                          null );
+            setCommandScopedEntityManager(null);
+            logger.debug("Setting command scoped entity manager to null [id: " + System.identityHashCode(cmdScopedEntityManager) + "]");
+        } else {
+            logger.debug("Not disposing of non-internal command scoped entity manager [id: " + System.identityHashCode(cmdScopedEntityManager) + "]");
         }
     }
 
@@ -106,7 +133,7 @@ public class JpaPersistenceContextManager
                 this.cmdScopedEntityManager.close();
             }
             this.internalCmdScopedEntityManager = false;
-            this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );
+            setCommandScopedEntityManager(null);
             this.cmdScopedEntityManager = null;
         }
     }
@@ -118,4 +145,20 @@ public class JpaPersistenceContextManager
         
     }
 
+    protected EntityManager getCommandScopedEntityManager() { 
+        if( useSessionLocking ) { 
+            return threadLocalCmdScopedEM.get();
+        } else { 
+            return (EntityManager) this.env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        }
+    }
+    
+    protected void setCommandScopedEntityManager(EntityManager entityManager) { 
+        if( useSessionLocking ) { 
+            threadLocalCmdScopedEM.set(entityManager);
+        } else { 
+            this.env.set(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, entityManager);
+        }
+    }
+    
 }

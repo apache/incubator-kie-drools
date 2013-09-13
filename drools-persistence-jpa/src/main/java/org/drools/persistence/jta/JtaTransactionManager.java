@@ -56,25 +56,25 @@ public class JtaTransactionManager
         }
     }
 
-    UserTransaction                      ut;
     Object                               tsr;
     javax.transaction.TransactionManager tm;
     
     public JtaTransactionManager(Object ut,
                                  Object tsr,
                                  Object tm) {
+        UserTransaction actualUt = null;
         if ( ut instanceof UserTransaction ) {
-            this.ut = ( UserTransaction ) ut;
+            actualUt = ( UserTransaction ) ut;
         } else {
-            this.ut = ( UserTransaction ) ( (ut != null) ? ut : findUserTransaction() );
+            actualUt = ( UserTransaction ) ( (ut != null) ? ut : findUserTransaction() );
         }
         
         if ( tm instanceof javax.transaction.TransactionManager ) {
             this.tm = ( javax.transaction.TransactionManager ) tm;
         } else {
-            this.tm = ( javax.transaction.TransactionManager ) ( (tm != null) ? tm : findTransactionManager( this.ut ) );
+            this.tm = ( javax.transaction.TransactionManager ) ( (tm != null) ? tm : findTransactionManager( actualUt ) );
         }
-        this.tsr = (tsr != null) ? tsr : findTransactionSynchronizationRegistry( this.ut,
+        this.tsr = (tsr != null) ? tsr : findTransactionSynchronizationRegistry( actualUt,
                                                                                  this.tm );
     }
 
@@ -112,8 +112,7 @@ public class JtaTransactionManager
             }
         }
 
-        // OK, so no JTA TransactionManager is available...
-        return null;
+        throw new IllegalStateException("Unable to find transaction manager.");
     }
 
     protected UserTransaction findUserTransaction() {
@@ -170,7 +169,7 @@ public class JtaTransactionManager
     public boolean begin() {
         if ( getStatus() == TransactionManager.STATUS_NO_TRANSACTION ) {
             try {
-                this.ut.begin();
+                this.tm.begin();
                 return true;
             } catch ( Exception e ) {
                 logger.warn( "Unable to begin transaction", e);
@@ -184,7 +183,7 @@ public class JtaTransactionManager
     public void commit(boolean transactionOwner) {
         if ( transactionOwner ) {
             try {
-                this.ut.commit();
+                this.tm.commit();
             } catch ( Exception e ) {
                 logger.warn( "Unable to commit transaction", e);
                 throw new RuntimeException( "Unable to commit transaction",
@@ -198,11 +197,11 @@ public class JtaTransactionManager
         	if (transactionOwner) {
         		// transaction can be already rolled back,
         		// exception thrown during beforeCompletion cycle can cause transaction rollback
-        		if (ut.getStatus() != Status.STATUS_NO_TRANSACTION) {
-            		this.ut.rollback();
+        		if (this.tm.getStatus() != Status.STATUS_NO_TRANSACTION) {
+            		this.tm.rollback();
         		}
         	} else {
-        		this.ut.setRollbackOnly();
+        		this.tm.setRollbackOnly();
         	}
         } catch ( Exception e ) {
             logger.warn( "Unable to rollback transaction", e);
@@ -214,7 +213,7 @@ public class JtaTransactionManager
     public int getStatus() {
         int s;
         try {
-            s = this.ut.getStatus();
+            s = this.tm.getStatus();
         } catch ( SystemException e ) {
             throw new RuntimeException( "Unable to get status for transaction",
                                         e );
