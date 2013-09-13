@@ -324,6 +324,7 @@ public class PatternBuilder
                     SlidingLengthWindow window = new SlidingLengthWindow( Integer.valueOf( behaviorDescr.getParameters().get( 0 ) ) );
                     pattern.addBehavior( window );
                 }
+                context.setNeedStreamMode();
             } else {
                 // Some behaviors can only be assigned to patterns declared as events
                 context.addError(new DescrBuildError(context.getParentDescr(),
