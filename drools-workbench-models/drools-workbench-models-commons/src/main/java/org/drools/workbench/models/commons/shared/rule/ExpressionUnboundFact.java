@@ -24,7 +24,11 @@ public class ExpressionUnboundFact extends ExpressionPart {
     }
 
     public ExpressionUnboundFact( FactPattern fact ) {
-        super( fact.getFactType(), fact.getFactType(), fact.getFactType() );
+        this(fact, fact.getFactType());
+    }
+
+    public ExpressionUnboundFact( FactPattern fact, String classType ) {
+        super( fact.getFactType(), classType, fact.getFactType() );
         this.fact = fact;
     }
 
