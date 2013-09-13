@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -14,16 +15,23 @@ import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.process.*;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.*;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 public class KieModuleMavenTest extends AbstractKieCiTest {
 
@@ -128,6 +136,49 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         kSession.fireAllRules();
 
         assertEquals(1, list.size());
+    }
+
+    @Ignore
+    @Test
+    public void testKieContainerBeforeAndAfterDeployOfSnapshot() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+
+        String group = "org.kie.test";
+        String artifact = "test-module";
+        String version = "1.0.0-SNAPSHOT";
+
+        ReleaseId releaseId = ks.newReleaseId(group, artifact, version);
+        File kjar = new File("src/test/resources/kjar/kjar-module-before.jar");
+        File pom = new File("src/test/resources/kjar/pom-kjar.xml");
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kjar, pom);
+
+        KieContainer kContainer = ks.newKieContainer(releaseId);
+        KieBase kbase = kContainer.getKieBase();
+        assertNotNull(kbase);
+        Collection<KiePackage> packages = kbase.getKiePackages();
+        assertNotNull(packages);
+        assertEquals(1, packages.size());
+        Collection<Rule> rules = packages.iterator().next().getRules();
+        assertEquals(2, rules.size());
+
+
+        // deploy new version
+        File kjar1 = new File("src/test/resources/kjar/kjar-module-after.jar");
+        File pom1 = new File("src/test/resources/kjar/pom-kjar.xml");
+
+
+        repository.deployArtifact(releaseId, kjar1, pom1);
+
+        KieContainer kContainer2 = ks.newKieContainer(releaseId);
+        KieBase kbase2 = kContainer2.getKieBase();
+        assertNotNull(kbase2);
+        Collection<KiePackage> packages2 = kbase2.getKiePackages();
+        assertNotNull(packages2);
+        assertEquals(1, packages2.size());
+        Collection<Rule> rules2 = packages2.iterator().next().getRules();
+        assertEquals(4, rules2.size());
+
     }
 
     public static String generatePomXml(ReleaseId releaseId, ReleaseId... dependencies) {
