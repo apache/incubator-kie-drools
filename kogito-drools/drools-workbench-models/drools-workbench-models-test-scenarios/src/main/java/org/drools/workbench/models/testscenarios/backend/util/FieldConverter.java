@@ -34,85 +34,92 @@ public class FieldConverter implements Converter {
         String name = reader.getValue();
         reader.moveUp();
 
-        if(!reader.hasMoreChildren()){
+        if (!reader.hasMoreChildren()) {
 
             return new FieldPlaceHolder(name);
 
-        } else if (reader.getNodeName().equals("collectionFieldList")) {
+        } else {
+            reader.moveDown();
 
-            CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
-            reader.moveUp();
+            if (reader.getNodeName().equals("collectionFieldList")) {
 
-            return collectionFieldData;
-
-        } else if (reader.getNodeName().equals("value")) {
-            FieldData fieldData = new FieldData();
-
-            fieldData.setName(name);
-
-            fieldData.setValue(reader.getValue());
-            reader.moveUp();
-
-            // Nature is optional
-            if (reader.hasMoreChildren()) {
-                reader.moveDown();
-                String value = reader.getValue();
-                fieldData.setNature(Integer.parseInt(value));
+                CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
                 reader.moveUp();
-            }
-
-            // Could be a legacy CollectionFieldData, let's see
-            if (reader.hasMoreChildren()) {
-                reader.moveDown();
-                if (reader.getNodeName().equals("collectionFieldList")) {
-                    CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
-                    reader.moveUp();
-
-                    if (!collectionFieldData.getCollectionFieldList().isEmpty()) {
-                        return collectionFieldData;
-                    }
-                }
-            }
-            // And since we have a big big big pile of legacy test scenarios with a marvelous design
-            // we do one more check if this field data is after all a collection field data!
-            if (fieldData.getValue() != null && fieldData.getValue().startsWith("=[")) {
-                CollectionFieldData collectionFieldData = new CollectionFieldData();
-                collectionFieldData.setName(name);
-
-                String list = fieldData.getValue().substring(2, fieldData.getValue().length() - 1);
-
-
-                if (list.contains(",")) {
-                    for (String value : list.split(",")) {
-                        FieldData subFieldData = new FieldData();
-                        subFieldData.setName(name);
-                        subFieldData.setValue(value);
-                        collectionFieldData.getCollectionFieldList().add(subFieldData);
-                    }
-                } else {
-                    FieldData subFieldData = new FieldData();
-                    subFieldData.setName(name);
-                    subFieldData.setValue(list);
-                    collectionFieldData.getCollectionFieldList().add(subFieldData);
-                }
 
                 return collectionFieldData;
-            } else {
-                return fieldData;
+
+            } else if (reader.getNodeName().equals("value")) {
+                return createFieldData(reader, context, name);
+
+            } else if (reader.getNodeName().equals("fact")) {
+
+                FactAssignmentField factAssignmentField = new FactAssignmentField();
+                factAssignmentField.setName(name);
+
+                factAssignmentField.setFact((Fact) context.convertAnother(factAssignmentField, Fact.class));
+                reader.moveUp();
+
+                return factAssignmentField;
             }
-
-        } else if (reader.getNodeName().equals("fact")) {
-
-            FactAssignmentField factAssignmentField = new FactAssignmentField();
-            factAssignmentField.setName(name);
-
-            factAssignmentField.setFact((Fact) context.convertAnother(factAssignmentField, Fact.class));
-            reader.moveUp();
-
-            return factAssignmentField;
         }
 
         throw new InvalidParameterException("Unknown Field instance.");
+    }
+
+    private Object createFieldData(HierarchicalStreamReader reader, UnmarshallingContext context, String name) {
+        FieldData fieldData = new FieldData();
+
+        fieldData.setName(name);
+
+        fieldData.setValue(reader.getValue());
+        reader.moveUp();
+
+        // Nature is optional
+        if (reader.hasMoreChildren()) {
+            reader.moveDown();
+            String value = reader.getValue();
+            fieldData.setNature(Integer.parseInt(value));
+            reader.moveUp();
+        }
+
+        // Could be a legacy CollectionFieldData, let's see
+        if (reader.hasMoreChildren()) {
+            reader.moveDown();
+            if (reader.getNodeName().equals("collectionFieldList")) {
+                CollectionFieldData collectionFieldData = createCollectionFieldData(context, name);
+                reader.moveUp();
+
+                if (!collectionFieldData.getCollectionFieldList().isEmpty()) {
+                    return collectionFieldData;
+                }
+            }
+        }
+        // And since we have a big big big pile of legacy test scenarios with a marvelous design
+        // we do one more check if this field data is after all a collection field data!
+        if (fieldData.getValue() != null && fieldData.getValue().startsWith("=[")) {
+            CollectionFieldData collectionFieldData = new CollectionFieldData();
+            collectionFieldData.setName(name);
+
+            String list = fieldData.getValue().substring(2, fieldData.getValue().length() - 1);
+
+            if (list.contains(",")) {
+                for (String value : list.split(",")) {
+                    FieldData subFieldData = new FieldData();
+                    subFieldData.setName(name);
+                    subFieldData.setValue(value);
+                    collectionFieldData.getCollectionFieldList().add(subFieldData);
+                }
+            } else {
+                FieldData subFieldData = new FieldData();
+                subFieldData.setName(name);
+                subFieldData.setValue(list);
+                collectionFieldData.getCollectionFieldList().add(subFieldData);
+            }
+
+            return collectionFieldData;
+        } else {
+            return fieldData;
+        }
     }
 
     private CollectionFieldData createCollectionFieldData(UnmarshallingContext context, String name) {
