@@ -122,7 +122,7 @@ public class ConstraintMatchesDialog extends JDialog {
                 case 1:
                     return "Constraint name";
                 case 2:
-                    return "score level";
+                    return "Score level";
                 case 3:
                     return "Match count";
                 case 4:

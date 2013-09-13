@@ -21,6 +21,7 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -33,6 +34,7 @@ import java.util.concurrent.Executors;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,7 +45,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileFilter;
 
 import org.optaplanner.core.impl.solution.Solution;
@@ -64,8 +69,8 @@ public class SolverAndPersistenceFrame extends JFrame {
     private SolutionPanel solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
 
-    private List<Action> loadUnsolvedActionList;
-    private List<Action> loadSolvedActionList;
+    private List<Action> quickOpenUnsolvedActionList;
+    private List<Action> quickOpenSolvedActionList;
     private Action terminateSolvingEarlyAction;
     private JCheckBox refreshScreenDuringSolvingCheckBox;
     private Action solveAction;
@@ -115,56 +120,71 @@ public class SolverAndPersistenceFrame extends JFrame {
         setLocationRelativeTo(centerForComponent);
     }
 
-    private JPanel createContentPane() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(createButtonPanel(), BorderLayout.NORTH);
-        panel.add(createMiddlePanel(), BorderLayout.CENTER);
-        panel.add(createScorePanel(), BorderLayout.SOUTH);
-        return panel;
+    private JComponent createContentPane() {
+        JComponent quickOpenPanel = createQuickOpenPanel();
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(createProcessingPanel(), BorderLayout.NORTH);
+        mainPanel.add(createMiddlePanel(), BorderLayout.CENTER);
+        mainPanel.add(createScorePanel(), BorderLayout.SOUTH);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, quickOpenPanel, mainPanel);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setResizeWeight(0.2);
+        return splitPane;
     }
 
-    private JPanel createButtonPanel() {
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 0));
-        buttonPanel.add(createLoadUnsolvedPanel());
-        buttonPanel.add(createLoadSolvedPanel());
-        buttonPanel.add(createProcessingPanel());
-        return buttonPanel;
+    private JComponent createQuickOpenPanel() {
+        JSplitPane quickOpenSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+                createQuickOpenUnsolvedPanel(), createQuickOpenSolvedPanel());
+        quickOpenSplitPane.setResizeWeight(0.5);
+        return quickOpenSplitPane;
     }
 
-    private JComponent createLoadUnsolvedPanel() {
-        loadUnsolvedActionList = new ArrayList<Action>();
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        for (File file : solutionBusiness.getUnsolvedFileList()) {
-            Action loadUnsolvedAction = new LoadAction(file);
-            loadUnsolvedActionList.add(loadUnsolvedAction);
-            panel.add(new JButton(loadUnsolvedAction));
+    private JComponent createQuickOpenUnsolvedPanel() {
+        quickOpenUnsolvedActionList = new ArrayList<Action>();
+        List<File> unsolvedFileList = solutionBusiness.getUnsolvedFileList();
+        return createQuickOpenPanel(quickOpenUnsolvedActionList, unsolvedFileList, "Quick open (unsolved)");
+    }
+
+    private JComponent createQuickOpenSolvedPanel() {
+        quickOpenSolvedActionList = new ArrayList<Action>();
+        List<File> solvedFileList = solutionBusiness.getSolvedFileList();
+        return createQuickOpenPanel(quickOpenSolvedActionList, solvedFileList, "Quick open (solved)");
+    }
+
+    private JComponent createQuickOpenPanel(List<Action> quickOpenActionList, List<File> fileList, String title) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        if (fileList.isEmpty()) {
+            JLabel noneLabel = new JLabel("None");
+            noneLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            panel.add(noneLabel);
+        } else {
+            for (File file : fileList) {
+                Action quickOpenAction = new QuickOpenAction(file);
+                quickOpenActionList.add(quickOpenAction);
+                JButton quickOpenButton = new JButton(quickOpenAction);
+                quickOpenButton.setHorizontalAlignment(SwingConstants.LEFT);
+                panel.add(quickOpenButton);
+            }
         }
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(25);
-        scrollPane.setPreferredSize(new Dimension(250, 200));
-        return scrollPane;
+        scrollPane.setMinimumSize(new Dimension(100, 80));
+        // Size fits into screen resolution 1024*768
+        scrollPane.setPreferredSize(new Dimension(180, 200));
+        JPanel titlePanel = new JPanel(new BorderLayout());
+        titlePanel.add(scrollPane, BorderLayout.CENTER);
+        titlePanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(2, 2, 2, 2), BorderFactory.createTitledBorder(title)));
+        return titlePanel;
     }
 
-    private JComponent createLoadSolvedPanel() {
-        loadSolvedActionList = new ArrayList<Action>();
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        for (File file : solutionBusiness.getSolvedFileList()) {
-            Action loadSolvedAction = new LoadAction(file);
-            loadSolvedActionList.add(loadSolvedAction);
-            panel.add(new JButton(loadSolvedAction));
-        }
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(25);
-        scrollPane.setPreferredSize(new Dimension(250, 200));
-        return scrollPane;
-    }
-
-    private class LoadAction extends AbstractAction {
+    private class QuickOpenAction extends AbstractAction {
 
         private File file;
 
-        public LoadAction(File file) {
-            super("Load " + file.getName());
+        public QuickOpenAction(File file) {
+            super(file.getName());
             this.file = file;
         }
 
@@ -181,29 +201,37 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private JComponent createProcessingPanel() {
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        solveAction = new SolveAction();
-        solveAction.setEnabled(false);
-        panel.add(new JButton(solveAction));
-        terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
-        terminateSolvingEarlyAction.setEnabled(false);
-        panel.add(new JButton(terminateSolvingEarlyAction));
-        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
-                solutionPanel.isRefreshScreenDuringSolving());
-        panel.add(refreshScreenDuringSolvingCheckBox);
-        openAction = new OpenAction();
-        openAction.setEnabled(true);
-        panel.add(new JButton(openAction));
-        saveAction = new SaveAction();
-        saveAction.setEnabled(false);
-        panel.add(new JButton(saveAction));
+        JPanel processingPanel = new JPanel(new GridLayout(3, 1));
+        processingPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+
+        JPanel row0Panel = new JPanel(new GridLayout(1, 4));
         importAction = new ImportAction();
         importAction.setEnabled(solutionBusiness.hasImporter());
-        panel.add(new JButton(importAction));
+        row0Panel.add(new JButton(importAction));
+        openAction = new OpenAction();
+        openAction.setEnabled(true);
+        row0Panel.add(new JButton(openAction));
+        saveAction = new SaveAction();
+        saveAction.setEnabled(false);
+        row0Panel.add(new JButton(saveAction));
         exportAction = new ExportAction();
         exportAction.setEnabled(false);
-        panel.add(new JButton(exportAction));
-        return panel;
+        row0Panel.add(new JButton(exportAction));
+        processingPanel.add(row0Panel);
+
+        JPanel row1Panel = new JPanel(new GridLayout(1, 2));
+        solveAction = new SolveAction();
+        solveAction.setEnabled(false);
+        row1Panel.add(new JButton(solveAction));
+        terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
+        terminateSolvingEarlyAction.setEnabled(false);
+        row1Panel.add(new JButton(terminateSolvingEarlyAction));
+        processingPanel.add(row1Panel);
+
+        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
+                solutionPanel.isRefreshScreenDuringSolving());
+        processingPanel.add(refreshScreenDuringSolvingCheckBox);
+        return processingPanel;
     }
 
     private class SolveAction extends AbstractAction {
@@ -248,7 +276,8 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class TerminateSolvingEarlyAction extends AbstractAction {
 
         public TerminateSolvingEarlyAction() {
-            super("Terminate solving early");
+            super("Terminate solving early",
+                    new ImageIcon(SolverAndPersistenceFrame.class.getResource("terminateSolvingEarlyAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -263,7 +292,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         private static final String NAME = "Open...";
 
         public OpenAction() {
-            super(NAME);
+            super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("openAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -297,7 +326,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         private static final String NAME = "Save as...";
 
         public SaveAction() {
-            super(NAME);
+            super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("saveAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -330,7 +359,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         private static final String NAME = "Import...";
 
         public ImportAction() {
-            super(NAME);
+            super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("importAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -363,7 +392,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         private static final String NAME = "Export as...";
 
         public ExportAction() {
-            super(NAME);
+            super(NAME, new ImageIcon(SolverAndPersistenceFrame.class.getResource("exportAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -393,7 +422,10 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JPanel createMiddlePanel() {
         middlePanel = new JPanel(new CardLayout());
         ImageIcon usageExplanationIcon = new ImageIcon(getClass().getResource(solutionPanel.getUsageExplanationPath()));
-        middlePanel.add(new JLabel(usageExplanationIcon), "usageExplanationPanel");
+        JLabel usageExplanationLabel = new JLabel(usageExplanationIcon);
+        // Allow splitPane divider to be moved to the right
+        usageExplanationLabel.setMinimumSize(new Dimension(100, 100));
+        middlePanel.add(usageExplanationLabel, "usageExplanationPanel");
         JComponent wrappedSolutionPanel;
         if (solutionPanel.isWrapInScrollPane()) {
             wrappedSolutionPanel = new JScrollPane(solutionPanel);
@@ -421,7 +453,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private class ShowConstraintMatchesDialogAction extends AbstractAction {
 
         public ShowConstraintMatchesDialogAction() {
-            super("Constraint matches");
+            super("Constraint matches", new ImageIcon(SolverAndPersistenceFrame.class.getResource("showConstraintMatchesDialogAction.png")));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -441,10 +473,10 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private void setSolvingState(boolean solving) {
-        for (Action action : loadUnsolvedActionList) {
+        for (Action action : quickOpenUnsolvedActionList) {
             action.setEnabled(!solving);
         }
-        for (Action action : loadSolvedActionList) {
+        for (Action action : quickOpenSolvedActionList) {
             action.setEnabled(!solving);
         }
         solveAction.setEnabled(!solving);
