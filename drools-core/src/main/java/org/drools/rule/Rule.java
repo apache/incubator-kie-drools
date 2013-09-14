@@ -163,6 +163,7 @@ public class Rule
         out.writeBoolean( lockOnActive );
         out.writeBoolean( hasLogicalDependency );
         out.writeBoolean( semanticallyValid );
+        out.writeObject(calendars);
         out.writeObject( dateEffective );
         out.writeObject( dateExpires );
         out.writeObject( enabled );
@@ -199,6 +200,7 @@ public class Rule
         lockOnActive = in.readBoolean();
         hasLogicalDependency = in.readBoolean();
         semanticallyValid = in.readBoolean();
+        calendars =(String[]) in.readObject();
         dateEffective = (Calendar) in.readObject();
         dateExpires = (Calendar) in.readObject();
         enabled = (Enabled) in.readObject();
