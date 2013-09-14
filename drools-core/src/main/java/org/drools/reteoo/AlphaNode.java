@@ -15,6 +15,8 @@
  */
 
 package org.drools.reteoo;
+import static org.drools.core.util.BitMaskUtil.intersect;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,6 +25,7 @@ import java.util.List;
 
 import org.drools.RuleBaseConfiguration;
 import org.drools.base.evaluators.IsAEvaluatorDefinition;
+import org.drools.base.evaluators.IsAEvaluatorDefinition.IsAEvaluator;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
@@ -31,14 +34,11 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Pattern;
 import org.drools.rule.constraint.EvaluatorConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.runtime.rule.Operator;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
 
 /**
  * <code>AlphaNodes</code> are nodes in the <code>Rete</code> network used
@@ -372,7 +372,7 @@ public class AlphaNode extends ObjectSource
         Long typeBit = 0L;
         if ( constraint instanceof EvaluatorConstraint ) {
             Operator op = ((EvaluatorConstraint) constraint).getEvaluator().getOperator();
-            if ( op == IsAEvaluatorDefinition.ISA || op == IsAEvaluatorDefinition.NOT_ISA ) {
+            if ( op == IsAEvaluator.ISA || op == IsAEvaluator.NOT_ISA ) {
                 typeBit = Long.MIN_VALUE;
             }
         }

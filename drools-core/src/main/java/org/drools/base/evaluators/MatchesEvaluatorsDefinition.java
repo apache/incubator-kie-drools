@@ -35,19 +35,14 @@ import org.drools.spi.InternalReadAccessor;
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
-    public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
-                                                                                  false );
-    public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
-                                                                                  true );
-
-    private static final String[] SUPPORTED_IDS = { MATCHES.getOperatorString() };
+    private static final String[] SUPPORTED_IDS = { StringMatchesEvaluator.MATCHES.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 510l;
         {
-            addEvaluator( ValueType.STRING_TYPE,        MATCHES,         StringMatchesEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        MATCHES,         StringMatchesEvaluator.INSTANCE );
-            addEvaluator( ValueType.STRING_TYPE,        NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        StringMatchesEvaluator.MATCHES,         StringMatchesEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        StringMatchesEvaluator.MATCHES,         StringMatchesEvaluator.INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        StringNotMatchesEvaluator.NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        StringNotMatchesEvaluator.NOT_MATCHES,     StringNotMatchesEvaluator.INSTANCE );
         }
     };
 
@@ -128,6 +123,8 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
+        public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
+                false );
 
         public StringMatchesEvaluator() {
             super( ValueType.STRING_TYPE,
@@ -181,6 +178,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
     }
 
     public static class StringNotMatchesEvaluator extends BaseEvaluator {
+        public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
+                true );
+
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
 
