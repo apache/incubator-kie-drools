@@ -83,15 +83,26 @@ public class OverlappedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  OVERLAPPED_BY       = Operator.addOperatorToRegistry( "overlappedby",
-                                                                                  false );
-    public static final Operator  NOT_OVERLAPPED_BY   = Operator.addOperatorToRegistry( "overlappedby",
-                                                                                  true );
+    public static final String          overlappedbyOp = "overlappedby";
 
-    private static final String[] SUPPORTED_IDS = { OVERLAPPED_BY.getOperatorString() };
+    public static Operator              OVERLAPPED_BY;
 
-    private Map<String, OverlappedByEvaluator> cache        = Collections.emptyMap();
-    private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
+    public static Operator              NOT_OVERLAPPED_BY;
+
+    private static String[]             SUPPORTED_IDS;
+
+    private Map<String, OverlappedByEvaluator> cache   = Collections.emptyMap();
+    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( overlappedbyOp, false ) == null ) {
+            OVERLAPPED_BY = Operator.addOperatorToRegistry( overlappedbyOp, false );
+            NOT_OVERLAPPED_BY = Operator.addOperatorToRegistry( overlappedbyOp, true );
+            SUPPORTED_IDS = new String[] { overlappedbyOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -205,6 +216,10 @@ public class OverlappedByEvaluatorDefinition
 
         private long                  minDev, maxDev;
         private String                paramText;
+
+        {
+            OverlappedByEvaluatorDefinition.init();
+        }
 
         public OverlappedByEvaluator() {
         }

@@ -73,15 +73,27 @@ public class MetByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator        MET_BY        = Operator.addOperatorToRegistry( "metby",
-                                                                                        false );
-    public static final Operator        NOT_MET_BY    = Operator.addOperatorToRegistry( "metby",
-                                                                                        true );
+    protected static final String       metByOp = "metby";
 
-    private static final String[]       SUPPORTED_IDS = {MET_BY.getOperatorString()};
+    public static Operator              MET_BY;
+
+    public static Operator              NOT_MET_BY;
+
+    private static String[]             SUPPORTED_IDS;
 
     private Map<String, MetByEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( metByOp, false ) == null ) {
+            MET_BY = Operator.addOperatorToRegistry( metByOp, false );
+            NOT_MET_BY = Operator.addOperatorToRegistry( metByOp, true );
+            SUPPORTED_IDS = new String[] { metByOp };
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -196,6 +208,10 @@ public class MetByEvaluatorDefinition
 
         private long              finalRange;
         private String            paramText;
+
+        {
+            MetByEvaluatorDefinition.init();
+        }
 
         public MetByEvaluator() {
         }

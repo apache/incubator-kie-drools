@@ -76,15 +76,25 @@ public class CoincidesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator            COINCIDES     = Operator.addOperatorToRegistry( "coincides",
-                                                                                            false );
-    public static final Operator            COINCIDES_NOT = Operator.addOperatorToRegistry( "coincides",
-                                                                                            true );
+    protected static final String   coincidesOp = "coincides";
 
-    private static final String[]           SUPPORTED_IDS = {COINCIDES.getOperatorString()};
+    public static Operator          COINCIDES;
+    public static Operator          COINCIDES_NOT;
 
-    private Map<String, CoincidesEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser     parser        = new TimeIntervalParser();
+    private static String[]         SUPPORTED_IDS;
+
+    private Map<String, CoincidesEvaluator> cache     = Collections.emptyMap();
+    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( coincidesOp, false ) == null ) {
+            COINCIDES = Operator.addOperatorToRegistry( coincidesOp, false );
+            COINCIDES_NOT = Operator.addOperatorToRegistry( coincidesOp, true );
+            SUPPORTED_IDS = new String[] { coincidesOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -204,6 +214,10 @@ public class CoincidesEvaluatorDefinition
         private String            paramText;
         private boolean           unwrapLeft;
         private boolean           unwrapRight;
+
+        {
+            CoincidesEvaluatorDefinition.init();
+        }
 
         public CoincidesEvaluator() {
         }

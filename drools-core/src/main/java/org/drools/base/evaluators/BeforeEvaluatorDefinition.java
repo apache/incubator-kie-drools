@@ -79,15 +79,26 @@ public class BeforeEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator         BEFORE        = Operator.addOperatorToRegistry( "before",
-                                                                                         false );
-    public static final Operator         NOT_BEFORE    = Operator.addOperatorToRegistry( "before",
-                                                                                         true );
+    public static final String          beforeOp = "before";
 
-    private static final String[]        SUPPORTED_IDS = {BEFORE.getOperatorString()};
+    public static Operator              BEFORE;
+
+    public static Operator              NOT_BEFORE;
+
+    private static String[]             SUPPORTED_IDS;
 
     private Map<String, BeforeEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( beforeOp, false ) == null ) {
+            BEFORE = Operator.addOperatorToRegistry( beforeOp, false );
+            NOT_BEFORE = Operator.addOperatorToRegistry( beforeOp, true );
+            SUPPORTED_IDS = new String[] { beforeOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -207,6 +218,10 @@ public class BeforeEvaluatorDefinition
         private String            paramText;
         private boolean           unwrapLeft;
         private boolean           unwrapRight;
+
+        {
+            BeforeEvaluatorDefinition.init();
+        }
 
         public BeforeEvaluator() {
         }

@@ -74,13 +74,22 @@ import org.drools.time.Interval;
 public class FinishedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
+    protected static final String   finishedByOp = "finishedby";
 
-    public static final Operator             FINISHED_BY     = Operator.addOperatorToRegistry( "finishedby",
-                                                                                               false );
-    public static final Operator             NOT_FINISHED_BY = Operator.addOperatorToRegistry( "finishedby",
-                                                                                               true );
+    public static Operator          FINISHED_BY;
+    public static Operator          NOT_FINISHED_BY;
 
-    private static final String[]            SUPPORTED_IDS   = {FINISHED_BY.getOperatorString()};
+    private static String[]         SUPPORTED_IDS;
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( finishedByOp, false ) == null ) {
+            FINISHED_BY = Operator.addOperatorToRegistry( finishedByOp, false );
+            NOT_FINISHED_BY = Operator.addOperatorToRegistry( finishedByOp, true );
+            SUPPORTED_IDS = new String[] { finishedByOp };
+        }
+    }
 
     private Map<String, FinishedByEvaluator> cache           = Collections.emptyMap();
     private volatile TimeIntervalParser      parser          = new TimeIntervalParser();
@@ -198,6 +207,10 @@ public class FinishedByEvaluatorDefinition
 
         private long              endDev;
         private String            paramText;
+
+        {
+            FinishedByEvaluatorDefinition.init();
+        }
 
         public FinishedByEvaluator() {
         }
