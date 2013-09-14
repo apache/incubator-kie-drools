@@ -59,12 +59,12 @@ public class MultithreadTest extends CommonTestMethodBase {
     @Test(timeout = 10000)
     public void testConcurrentInsertions() {
         String str = "import org.drools.integrationtests.MultithreadTest.Bean\n" +
-                "\n" +
-                "rule \"R\"\n" +
-                "when\n" +
-                "    $a : Bean( seed != 1 )\n" +
-                "then\n" +
-                "end";
+                     "\n" +
+                     "rule \"R\"\n" +
+                     "when\n" +
+                     "    $a : Bean( seed != 1 )\n" +
+                     "then\n" +
+                     "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
@@ -144,16 +144,18 @@ public class MultithreadTest extends CommonTestMethodBase {
     @Test(timeout = 15000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
-                "declare StockTick @role(event) end\n" +
-                "rule R\n" +
-                " duration(1s)" +
-                "when\n" +
-                " accumulate( $st : StockTick() over window:time(2s)\n" +
-                "             from entry-point X,\n" +
-                "             $c : count(1) )" +
-                "then\n" +
-                "    //System.out.println( $c );\n" +
-                "end";
+                     "global java.util.List list; \n" +
+                     "declare StockTick @role(event) end\n" +
+                     "rule R\n" +
+                     " duration(1s)" +
+                     "when\n" +
+                     " accumulate( $st : StockTick() over window:time(2s)\n" +
+                     "             from entry-point X,\n" +
+                     "             $c : count(1) )" +
+                     "then\n" +
+                     "   //System.out.println( $c );\n" +
+                     "   list.add( $c ); \n" +
+                     "end \n";
 
         final List<Exception> errors = new ArrayList<Exception>(  );
 
@@ -162,6 +164,8 @@ public class MultithreadTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         final WorkingMemoryEntryPoint ep = ksession.getWorkingMemoryEntryPoint("X");
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -194,7 +198,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                     try {
                         long endTS = System.currentTimeMillis() + RUN_TIME;
                         while( System.currentTimeMillis() < endTS) {
-                            ep.insert(new StockTick());
+                            ep.insert( new StockTick() );
                             Thread.sleep(1);
                         }
                         return true;
@@ -226,7 +230,9 @@ public class MultithreadTest extends CommonTestMethodBase {
             e.printStackTrace();
         }
         assertTrue( errors.isEmpty() );
-        assertTrue(success);
+        assertTrue( success );
+
+        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 1000 );
         ksession.dispose();
     }
 
@@ -402,24 +408,24 @@ public class MultithreadTest extends CommonTestMethodBase {
     @Test
     public void testConcurrencyWithChronThreads() throws InterruptedException {
 
-         String drl = "package it.intext.drools.fusion.bug;\n" +
-                             "\n" +
-                             "import org.drools.integrationtests.MultithreadTest.MyFact;\n" +
-                             " global java.util.List list; \n" +
-                             "\n" +
-                             "declare MyFact\n" +
-                             "\t@role( event )\n" +
-                             "\t@expires( 1s )\n" +
-                             "end\n" +
-                             "\n" +
-                             "rule \"Dummy\"\n" +
-                             "timer( cron: 0/1 * * * * ? )\n" +
-                             "when\n" +
-                             "  Number( $count : intValue ) from accumulate( MyFact( ) over window:time(1s), sum(1) )\n" +
-                             "then\n" +
-                             "    System.out.println($count+\" myfact(s) seen in the last 1 seconds\");\n" +
-                             "    list.add( $count ); \n" +
-                             "end";
+        String drl = "package it.intext.drools.fusion.bug;\n" +
+                     "\n" +
+                     "import org.drools.integrationtests.MultithreadTest.MyFact;\n" +
+                     " global java.util.List list; \n" +
+                     "\n" +
+                     "declare MyFact\n" +
+                     "\t@role( event )\n" +
+                     "\t@expires( 1s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Dummy\"\n" +
+                     "timer( cron: 0/1 * * * * ? )\n" +
+                     "when\n" +
+                     "  Number( $count : intValue ) from accumulate( MyFact( ) over window:time(1s), sum(1) )\n" +
+                     "then\n" +
+                     "    System.out.println($count+\" myfact(s) seen in the last 1 seconds\");\n" +
+                     "    list.add( $count ); \n" +
+                     "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
