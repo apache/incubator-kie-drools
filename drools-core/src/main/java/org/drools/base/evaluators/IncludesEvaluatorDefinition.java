@@ -97,12 +97,7 @@ public class IncludesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator           INCLUDES      = Operator.addOperatorToRegistry( "includes",
-                                                                                           false );
-    public static final Operator           INCLUDES_NOT  = Operator.addOperatorToRegistry( "includes",
-                                                                                           true );
-
-    private static final String[]          SUPPORTED_IDS = {INCLUDES.getOperatorString()};
+    private static final String[]          SUPPORTED_IDS = {IncludesEvaluator.INCLUDES.getOperatorString()};
 
     private Map<String, IncludesEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
@@ -218,6 +213,10 @@ public class IncludesEvaluatorDefinition
     public static class IncludesEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
+        public static final Operator           INCLUDES      = Operator.addOperatorToRegistry( "includes",
+                                                                                               false );
+        public static final Operator           INCLUDES_NOT  = Operator.addOperatorToRegistry( "includes",
+                                                                                               true );
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;
         private String            paramText;

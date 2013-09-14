@@ -73,12 +73,7 @@ public class MeetsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator        MEETS         = Operator.addOperatorToRegistry( "meets",
-                                                                                        false );
-    public static final Operator        MEETS_NOT     = Operator.addOperatorToRegistry( "meets",
-                                                                                        true );
-
-    private static final String[]       SUPPORTED_IDS = {MEETS.getOperatorString()};
+    private static final String[]       SUPPORTED_IDS = {MeetsEvaluator.MEETS.getOperatorString()};
 
     private Map<String, MeetsEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser parser        = new TimeIntervalParser();
@@ -193,7 +188,10 @@ public class MeetsEvaluatorDefinition
      */
     public static class MeetsEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator        MEETS         = Operator.addOperatorToRegistry( "meets",
+                false );
+        public static final Operator        MEETS_NOT     = Operator.addOperatorToRegistry( "meets",
+                true );
         private long              finalRange;
         private String            paramText;
 

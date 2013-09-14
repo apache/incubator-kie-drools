@@ -76,12 +76,7 @@ public class CoincidesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator            COINCIDES     = Operator.addOperatorToRegistry( "coincides",
-                                                                                            false );
-    public static final Operator            COINCIDES_NOT = Operator.addOperatorToRegistry( "coincides",
-                                                                                            true );
-
-    private static final String[]           SUPPORTED_IDS = {COINCIDES.getOperatorString()};
+    private static final String[]           SUPPORTED_IDS = {CoincidesEvaluator.COINCIDES.getOperatorString()};
 
     private Map<String, CoincidesEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser     parser        = new TimeIntervalParser();
@@ -198,7 +193,10 @@ public class CoincidesEvaluatorDefinition
      */
     public static class CoincidesEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator            COINCIDES     = Operator.addOperatorToRegistry( "coincides",
+                false );
+        public static final Operator            COINCIDES_NOT = Operator.addOperatorToRegistry( "coincides",
+                true );
         private long              startDev;
         private long              endDev;
         private String            paramText;

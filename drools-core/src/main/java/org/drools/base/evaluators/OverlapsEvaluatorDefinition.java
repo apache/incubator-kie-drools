@@ -83,12 +83,7 @@ public class OverlapsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator           OVERLAPS      = Operator.addOperatorToRegistry( "overlaps",
-                                                                                           false );
-    public static final Operator           OVERLAPS_NOT  = Operator.addOperatorToRegistry( "overlaps",
-                                                                                           true );
-
-    private static final String[]          SUPPORTED_IDS = {OVERLAPS.getOperatorString()};
+    private static final String[]          SUPPORTED_IDS = {OverlapsEvaluator.OVERLAPS.getOperatorString()};
 
     private Map<String, OverlapsEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
@@ -203,7 +198,10 @@ public class OverlapsEvaluatorDefinition
      */
     public static class OverlapsEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator           OVERLAPS      = Operator.addOperatorToRegistry( "overlaps",
+                false );
+        public static final Operator           OVERLAPS_NOT  = Operator.addOperatorToRegistry( "overlaps",
+                true );
         private long              minDev, maxDev;
         private String            paramText;
 

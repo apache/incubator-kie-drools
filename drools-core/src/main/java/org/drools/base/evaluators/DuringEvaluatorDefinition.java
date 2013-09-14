@@ -96,12 +96,7 @@ public class DuringEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator         DURING        = Operator.addOperatorToRegistry( "during",
-                                                                                         false );
-    public static final Operator         NOT_DURING    = Operator.addOperatorToRegistry( "during",
-                                                                                         true );
-
-    private static final String[]        SUPPORTED_IDS = {DURING.getOperatorString()};
+    private static final String[]        SUPPORTED_IDS = {DuringEvaluator.DURING.getOperatorString()};
 
     private Map<String, DuringEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
@@ -216,7 +211,10 @@ public class DuringEvaluatorDefinition
      */
     public static class DuringEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator         DURING        = Operator.addOperatorToRegistry( "during",
+                false );
+        public static final Operator         NOT_DURING    = Operator.addOperatorToRegistry( "during",
+                true );
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;
         private String            paramText;

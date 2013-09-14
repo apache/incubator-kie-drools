@@ -50,11 +50,8 @@ import java.util.Iterator;
  * <pre>$m : Message( routingValue str[length] 17 )</pre>
  */
 public class IsAEvaluatorDefinition implements EvaluatorDefinition {
-    public static final Operator ISA = Operator.addOperatorToRegistry(
-            "isA", false);
-    public static final Operator NOT_ISA = Operator
-            .addOperatorToRegistry("isA", true);
-    protected static final String[] SUPPORTED_IDS = { ISA
+
+    protected static final String[] SUPPORTED_IDS = { IsAEvaluator.ISA
             .getOperatorString() };
 
     private Evaluator[] evaluator;
@@ -141,6 +138,10 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
     public static class IsAEvaluator extends BaseEvaluator {
 
+    	public static final Operator ISA = Operator.addOperatorToRegistry(
+                "isA", false);
+        public static final Operator NOT_ISA = Operator
+                .addOperatorToRegistry("isA", true);
         private BitSet cachedLiteral;
         private Object cachedValue;
 

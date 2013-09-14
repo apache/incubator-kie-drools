@@ -36,19 +36,14 @@ import org.mvel2.util.Soundex;
  */
 public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
-    public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     false );
-    public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     true );
-
-    private static final String[] SUPPORTED_IDS = { SOUNDSLIKE.getOperatorString() };
+    private static final String[] SUPPORTED_IDS = { StringSoundsLikeEvaluator.SOUNDSLIKE.getOperatorString() };
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 510l;
         {
-            addEvaluator( ValueType.STRING_TYPE,        SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
-            addEvaluator( ValueType.STRING_TYPE,        NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
-            addEvaluator( ValueType.OBJECT_TYPE,        NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        StringSoundsLikeEvaluator.SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
+            addEvaluator( ValueType.STRING_TYPE,        StringNotSoundsLikeEvaluator.NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        StringSoundsLikeEvaluator.SOUNDSLIKE,         StringSoundsLikeEvaluator.INSTANCE );
+            addEvaluator( ValueType.OBJECT_TYPE,        StringNotSoundsLikeEvaluator.NOT_SOUNDSLIKE,     StringNotSoundsLikeEvaluator.INSTANCE );
         }
     };
 
@@ -148,6 +143,9 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
      */
     public static class StringSoundsLikeEvaluator extends BaseEvaluator {
 
+        public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
+                false );
+        
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringSoundsLikeEvaluator();
 
@@ -196,6 +194,8 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
     public static class StringNotSoundsLikeEvaluator extends BaseEvaluator {
 
+        public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
+                true );
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringNotSoundsLikeEvaluator();
 

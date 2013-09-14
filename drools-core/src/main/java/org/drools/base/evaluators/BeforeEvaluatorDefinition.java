@@ -79,12 +79,7 @@ public class BeforeEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator         BEFORE        = Operator.addOperatorToRegistry( "before",
-                                                                                         false );
-    public static final Operator         NOT_BEFORE    = Operator.addOperatorToRegistry( "before",
-                                                                                         true );
-
-    private static final String[]        SUPPORTED_IDS = {BEFORE.getOperatorString()};
+    private static final String[]        SUPPORTED_IDS = {BeforeEvaluator.BEFORE.getOperatorString()};
 
     private Map<String, BeforeEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
@@ -201,7 +196,10 @@ public class BeforeEvaluatorDefinition
      */
     public static class BeforeEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
-
+        public static final Operator         BEFORE        = Operator.addOperatorToRegistry( "before",
+                false );
+        public static final Operator         NOT_BEFORE    = Operator.addOperatorToRegistry( "before",
+                true );
         private long              initRange;
         private long              finalRange;
         private String            paramText;
