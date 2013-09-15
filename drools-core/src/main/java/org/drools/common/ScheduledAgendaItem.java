@@ -31,6 +31,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ScheduledAgendaItem extends AgendaItem
     implements
@@ -47,7 +48,7 @@ public class ScheduledAgendaItem extends AgendaItem
 //
     private InternalAgenda           agenda;
 
-    private boolean                  enqueued;
+    private AtomicBoolean            enqueued;
     
     private JobHandle jobHandle;
 
@@ -58,19 +59,19 @@ public class ScheduledAgendaItem extends AgendaItem
                                final RuleTerminalNode rtn) {
         super(activationNumber, tuple, 0, context, rtn );
         this.agenda = agenda;
-        this.enqueued = false;
+        this.enqueued = new AtomicBoolean( false );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal( in );        
         agenda   = (InternalAgenda)in.readObject();
-        enqueued = in.readBoolean();
+        enqueued = new AtomicBoolean( in.readBoolean() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( agenda );
-        out.writeBoolean( enqueued );
+        out.writeBoolean( enqueued.get() );
     }
     public ScheduledAgendaItem getNext() {
         return this.next;
@@ -109,11 +110,15 @@ public class ScheduledAgendaItem extends AgendaItem
     }
 
     public boolean isEnqueued() {
+        return enqueued.get();
+    }
+
+    public AtomicBoolean getEnqueued() {
         return enqueued;
     }
 
     public void setEnqueued( boolean enqueued ) {
-        this.enqueued = enqueued;
+        this.enqueued.getAndSet( enqueued );
     }
 
     public boolean isPendingReactivation() {

@@ -435,7 +435,7 @@ public class DefaultAgenda
         final Timer timer = rule.getTimer();
         if ( timer != null && item instanceof ScheduledAgendaItem ) {
             ScheduledAgendaItem sitem = (ScheduledAgendaItem) item;
-            if ( sitem.isEnqueued() ) {
+            if ( sitem.getEnqueued().compareAndSet( true, false ) ) {
                 // it's about to be re-added to scheduled list, so remove first
                 this.scheduledActivations.remove( sitem );
             }
@@ -463,9 +463,8 @@ public class DefaultAgenda
     }
     
     public void removeScheduleItem(final ScheduledAgendaItem item) {
-        if ( item.isEnqueued() ) {
+        if ( item.getEnqueued().compareAndSet( true, false ) ) {
             this.scheduledActivations.remove( item );
-            item.setEnqueued( false );
             Scheduler.removeAgendaItem( item,
                                         this );
         }
@@ -1018,7 +1017,7 @@ public class DefaultAgenda
     }
 
     /** (non-Javadoc)
-     * @see org.drools.common.AgendaI#clearAgenda()
+     * @see org.drools.common.AgendaItem#clearAgenda()
      */
     public void clearAndCancel() {
         // Cancel all items and fire a Cancelled event for each Activation
@@ -1029,12 +1028,13 @@ public class DefaultAgenda
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = this.scheduledActivations.removeFirst(); item != null; item = this.scheduledActivations.removeFirst() ) {
-                item.setEnqueued( false );
-                Scheduler.removeAgendaItem( item,
-                                            this );
-                eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
-                                                                              this.workingMemory,
-                                                                              ActivationCancelledCause.CLEAR );
+                if ( item.getEnqueued().compareAndSet( true, false ) ) {
+                    Scheduler.removeAgendaItem( item,
+                                                this );
+                    eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
+                                                                                  this.workingMemory,
+                                                                                  ActivationCancelledCause.CLEAR );
+                }
             }
         }
 
