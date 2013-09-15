@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.PriorityQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -134,7 +136,7 @@ public class SlidingTimeWindow
         if ( isExpired( currentTime, handle ) ) {
             return false;
         }
-        synchronized (queue.queue) {
+        queue.lock.lock();
             queue.queue.add( handle );
             if ( queue.queue.peek() == handle ) {
                 // update next expiration time
@@ -145,7 +147,7 @@ public class SlidingTimeWindow
                                       queue,
                                       nodeId );
             }
-        }
+        queue.lock.unlock();
         return true;
     }
 
@@ -161,7 +163,7 @@ public class SlidingTimeWindow
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
         // it may be a call back to expire the tuple that is already being expired
-        synchronized (queue.queue) {
+        queue.lock.lock();
             if ( queue.expiringHandle != handle ) {
                 if ( queue.queue.peek() == handle ) {
                     // it was the head of the queue
@@ -177,7 +179,7 @@ public class SlidingTimeWindow
                     queue.queue.remove( handle );
                 }
             }
-        }
+        queue.lock.unlock();
     }
 
     public void expireFacts(final WindowMemory memory,
@@ -186,8 +188,8 @@ public class SlidingTimeWindow
         TimerService clock = workingMemory.getTimerService();
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        EventFactHandle handle = queue.queue.peek();
-        synchronized (queue.queue) {
+        queue.lock.lock();
+            EventFactHandle handle = queue.queue.peek();
             while ( handle != null && isExpired( currentTime,
                                                  handle ) ) {
                 queue.expiringHandle = handle;
@@ -207,6 +209,8 @@ public class SlidingTimeWindow
                         propagationContext.evaluateActionQueue( workingMemory );
                         tuple.unlinkFromRightParent();
                     }
+                } else {
+                    memory.events.remove( handle );
                 }
                 queue.expiringHandle = null;
                 handle = queue.queue.peek();
@@ -218,7 +222,7 @@ public class SlidingTimeWindow
                     this,
                     queue,
                     nodeId );
-        }
+        queue.lock.unlock();
 
     }
 
@@ -280,6 +284,7 @@ public class SlidingTimeWindow
 
         public PriorityQueue<EventFactHandle> queue;
         public EventFactHandle                expiringHandle;
+        public Lock                           lock = new ReentrantLock();
 
         public SlidingTimeWindowContext() {
             this.queue = new PriorityQueue<EventFactHandle>( 16 ); // arbitrary size... can we improve it?

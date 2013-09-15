@@ -141,19 +141,21 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 15000)
+    @Test(timeout = 10000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
                      "global java.util.List list; \n" +
                      "declare StockTick @role(event) end\n" +
+                     "" +
+                     "" +
                      "rule R\n" +
-                     " duration(1s)" +
+                     " duration(200ms)" +
                      "when\n" +
-                     " accumulate( $st : StockTick() over window:time(2s)\n" +
+                     " accumulate( $st : StockTick() over window:time(400ms)\n" +
                      "             from entry-point X,\n" +
                      "             $c : count(1) )" +
                      "then\n" +
-                     "   //System.out.println( $c );\n" +
+                     "   System.out.println( $c );\n" +
                      "   list.add( $c ); \n" +
                      "end \n";
 
@@ -175,7 +177,7 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
-        final int RUN_TIME = 10000; // runs for 10 seconds
+        final int RUN_TIME = 5000; // runs for 10 seconds
         final int THREAD_NR = 2;
 
         CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
@@ -196,9 +198,11 @@ public class MultithreadTest extends CommonTestMethodBase {
             ecs.submit(new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     try {
+                        final String s = Thread.currentThread().getName();
                         long endTS = System.currentTimeMillis() + RUN_TIME;
+                        int j = 0;
                         while( System.currentTimeMillis() < endTS) {
-                            ep.insert( new StockTick() );
+                            ep.insert( new StockTick( j++, s, 0.0, 0 ) );
                             Thread.sleep(1);
                         }
                         return true;
@@ -232,7 +236,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         assertTrue( errors.isEmpty() );
         assertTrue( success );
 
-        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 1000 );
+        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 200 );
         ksession.dispose();
     }
 
