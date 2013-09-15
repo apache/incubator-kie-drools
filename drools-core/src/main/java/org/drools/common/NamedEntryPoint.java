@@ -440,7 +440,7 @@ public class NamedEntryPoint
             }
 
 
-            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
+            if ( ! handle.isValid() || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
                 return;
             }
@@ -552,7 +552,7 @@ public class NamedEntryPoint
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
-            if ( handle.getId() == -1 ) {
+            if ( ! handle.isValid() ) {
                 // can't retract an already retracted handle
                 return;
             }

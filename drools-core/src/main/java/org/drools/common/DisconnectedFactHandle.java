@@ -25,6 +25,7 @@ public class DisconnectedFactHandle
     private long   recency;
     private Object object;
     private String entryPointId;
+    private boolean valid;
 
     public DisconnectedFactHandle() {
     }
@@ -34,13 +35,15 @@ public class DisconnectedFactHandle
                                   int objectHashCode,
                                   long recency,
                                   String entryPointId,
-                                  Object object) {
+                                  Object object,
+                                  boolean valid ) {
         this.id = id;
         this.identityHashCode = identityHashCode;
         this.objectHashCode = objectHashCode;
         this.recency = recency;
         this.entryPointId = entryPointId;
         this.object = object;
+        this.valid = valid;
     }
 
     public DisconnectedFactHandle(int id,
@@ -53,7 +56,8 @@ public class DisconnectedFactHandle
               objectHashCode, 
               recency, 
               null, 
-              object );
+              object,
+              true );
     }
 
     public DisconnectedFactHandle(int id,
@@ -65,7 +69,8 @@ public class DisconnectedFactHandle
               objectHashCode, 
               recency, 
               null, 
-              null );
+              null,
+              true );
     }
 
     public DisconnectedFactHandle(String externalFormat) {
@@ -74,7 +79,7 @@ public class DisconnectedFactHandle
 
     private void parseExternalForm(String externalFormat) {
         String[] elements = externalFormat.split( ":" );
-        if ( elements.length < 6 ) {
+        if ( elements.length < 7 ) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements" );
         }
 
@@ -83,6 +88,7 @@ public class DisconnectedFactHandle
         this.objectHashCode = Integer.parseInt( elements[3] );
         this.recency = Long.parseLong( elements[4] );
         this.entryPointId = elements[5];
+        this.valid = Boolean.parseBoolean( elements[6] );
     }
 
     public int getId() {
@@ -125,7 +131,7 @@ public class DisconnectedFactHandle
     }
 
     public void invalidate() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        valid = false;
     }
 
     public boolean isEvent() {
@@ -137,7 +143,7 @@ public class DisconnectedFactHandle
     }
 
     public boolean isValid() {
-        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+        return valid;
     }
 
     public void setEntryPoint(WorkingMemoryEntryPoint ep) {
@@ -169,7 +175,7 @@ public class DisconnectedFactHandle
     }
 
     public String toExternalForm() {
-        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId;
+        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId + ":" + this.valid;
     }
 
     @XmlAttribute(name = "external-form")
@@ -246,12 +252,13 @@ public class DisconnectedFactHandle
             return (DisconnectedFactHandle) handle;
         } else {
             InternalFactHandle ifh = (InternalFactHandle) handle;
-            return new DisconnectedFactHandle(ifh.getId(), 
-                                              ifh.getIdentityHashCode(), 
-                                              ifh.getObjectHashCode(), 
+            return new DisconnectedFactHandle(ifh.getId(),
+                                              ifh.getIdentityHashCode(),
+                                              ifh.getObjectHashCode(),
                                               ifh.getRecency(),
-                                              ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null, 
-                                                  null );
+                                              ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null,
+                                                  null,
+                                              ifh.isValid() );
         }
     }
 

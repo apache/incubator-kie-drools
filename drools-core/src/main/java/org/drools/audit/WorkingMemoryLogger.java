@@ -322,7 +322,7 @@ public abstract class WorkingMemoryLogger
             final FactHandle handle = tuple.get( declaration );
             if ( handle instanceof InternalFactHandle ) {
                 final InternalFactHandle handleImpl = (InternalFactHandle) handle;
-                if ( handleImpl.getId() == -1 ) {
+                if ( ! handleImpl.isValid() ) {
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }

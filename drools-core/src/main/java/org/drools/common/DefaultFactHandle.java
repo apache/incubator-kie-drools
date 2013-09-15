@@ -68,6 +68,7 @@ public class DefaultFactHandle
     private WorkingMemoryEntryPoint entryPoint;
 
     private boolean                 disconnected;
+    private boolean                 valid;
 
     // ----------------------------------------------------------------------
     // Constructors
@@ -109,6 +110,7 @@ public class DefaultFactHandle
         this.object = object;
         this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
         this.identityHashCode = identityHashCode;
+        this.valid = true;
     }
 
     public DefaultFactHandle(int id,
@@ -124,6 +126,7 @@ public class DefaultFactHandle
         this.recency = recency;
         this.object = object;
         this.disconnected = true;
+        this.valid = true;
     }
 
     public DefaultFactHandle(String externalFormat) {
@@ -202,7 +205,9 @@ public class DefaultFactHandle
                ":" +
                getRecency() +
                ":" +
-               ( ( this.entryPoint != null ) ? this.entryPoint.getEntryPointId() : "null" );
+               ( ( this.entryPoint != null ) ? this.entryPoint.getEntryPointId() : "null" ) +
+               ":" +
+               valid;
     }
 
     @XmlAttribute(name = "external-form")
@@ -234,13 +239,13 @@ public class DefaultFactHandle
     }
 
     public void invalidate() {
-        this.id = -1;
+        this.valid = false;
         this.object = null;
         this.entryPoint = null;
     }
 
     public boolean isValid() {
-        return ( this.id != -1 );
+        return valid;
     }
 
     public Object getObject() {
@@ -532,6 +537,7 @@ public class DefaultFactHandle
         clone.objectHashCode = this.objectHashCode;
         clone.identityHashCode = System.identityHashCode( clone.object );
         clone.disconnected = this.disconnected;
+        clone.valid = this.valid;
         return clone;
     }
 
@@ -561,7 +567,7 @@ public class DefaultFactHandle
 
     private void createFromExternalFormat( String externalFormat ) {
         String[] elements = externalFormat.split( ":" );
-        if (elements.length != 6) {
+        if (elements.length != 7) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements" );
         }
 
@@ -573,6 +579,7 @@ public class DefaultFactHandle
                                                                                                        : new DisconnectedWorkingMemoryEntryPoint(
                                                                                                                                                   elements[5].trim() );
         this.disconnected = true;
+        this.valid = Boolean.parseBoolean( elements[6] );
     }
 
 }
