@@ -2444,6 +2444,81 @@ public class MiscTest2 extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testBindingComplexExpression() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo \n" +
+                     "  a : int \n" +
+                     "  b : int \n" +
+                     "end \n" +
+                     "" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "" +
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  Foo(  $a : a + b > 5 && a == 3 && $b : b > 0, $c : b - a ) \n" +
+                     "then\n" +
+                     "  list.add( $a );\n" +
+                     "  list.add( $b );\n" +
+                     "  list.add( $c );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertTrue( ! list.isEmpty() );
+        assertEquals( 3, list.size() );
+        assertEquals( 7, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 1, list.get( 2 ) );
+
+    }
+
+    @Test
+    public void testBindingComplexExpressionErrors() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "declare Foo a : int  b : int end \n" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "\n";
+
+        String err1 =
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  Foo(  $a : a + $b : b > 5  ) \n" +
+                     "then\n" +
+                     "end\n" +
+                     "\n";
+
+        String err2 =
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  Foo(  b - a ) \n" +
+                     "then\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilder knowledgeBuilder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder1.add( new ByteArrayResource( ( drl + err1 ).getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder1.getErrors() );
+        assertTrue( knowledgeBuilder1.hasErrors() );
+
+        KnowledgeBuilder knowledgeBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder2.add( new ByteArrayResource( ( drl + err2 ).getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder2.getErrors() );
+        assertTrue( knowledgeBuilder2.hasErrors() );
+    }
+
 
 
 }
