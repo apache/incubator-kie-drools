@@ -489,12 +489,17 @@ public class MultithreadTest extends CommonTestMethodBase {
 
 
     @Test( timeout = 5000 )
-    @Ignore
     public void testConcurrentQueries() {
         // DROOLS-175
         StringBuilder drl = new StringBuilder(  );
         drl.append( "package org.drools.test;\n" +
-                    "query foo( ) end" );
+                    "" +
+                    "query foo( ) \n" +
+                    "   Object() from new Object() \n" +
+                    "end\n" +
+                    "" +
+                    "rule XYZ when then end \n"
+        );
 
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.toString().getBytes() ), ResourceType.DRL );
@@ -502,7 +507,6 @@ public class MultithreadTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-//          ksession.fireAllRules();    // WORKAROUND
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {

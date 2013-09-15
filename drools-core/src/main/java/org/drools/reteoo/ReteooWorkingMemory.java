@@ -156,8 +156,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
 
         try {
             startOperation();
-            this.ruleBase.readLock();
             this.lock.lock();
+            this.ruleBase.readLock();
 
             this.ruleBase.executeQueuedActions();
             executeQueuedActions();
@@ -206,8 +206,8 @@ public class ReteooWorkingMemory extends AbstractWorkingMemory implements Reteoo
                                      this,
                                      ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
         } finally {
-            this.lock.unlock();
             this.ruleBase.readUnlock();
+            this.lock.unlock();
             endOperation();
         }
     }
