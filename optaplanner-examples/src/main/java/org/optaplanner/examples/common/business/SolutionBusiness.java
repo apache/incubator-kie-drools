@@ -158,7 +158,7 @@ public class SolutionBusiness {
     }
 
     public List<File> extractFileList(File directory) {
-        List<File> fileList = Arrays.asList(directory.listFiles(new SolutionFileFilter(solutionDao)));
+        List<File> fileList = Arrays.asList(directory.listFiles(new ExtensionFileFilter(solutionDao.getFileExtension())));
         for (File subDirectory : directory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)) {
             fileList.addAll(extractFileList(subDirectory));
         }

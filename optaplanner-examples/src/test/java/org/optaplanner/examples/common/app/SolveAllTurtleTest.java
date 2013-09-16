@@ -36,7 +36,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.examples.common.business.SolutionFileFilter;
+import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
 import static org.junit.Assume.*;
@@ -59,7 +59,8 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
-            List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(new SolutionFileFilter(solutionDao)));
+            List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(
+                    new ExtensionFileFilter(solutionDao.getFileExtension())));
             Collections.sort(unsolvedFileList);
             for (File unsolvedFile : unsolvedFileList) {
                 filesAsParameters.add(new Object[]{unsolvedFile});

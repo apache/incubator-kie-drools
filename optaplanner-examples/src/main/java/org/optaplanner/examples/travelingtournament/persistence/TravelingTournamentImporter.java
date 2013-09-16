@@ -30,13 +30,13 @@ import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentSolutionImporter extends AbstractTxtSolutionImporter {
+public class TravelingTournamentImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new TravelingTournamentSolutionImporter().convertAll();
+        new TravelingTournamentImporter().convertAll();
     }
 
-    public TravelingTournamentSolutionImporter() {
+    public TravelingTournamentImporter() {
         super(new TravelingTournamentDao());
     }
 

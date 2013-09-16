@@ -24,8 +24,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionExporter;
-import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionImporter;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseExporter;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseImporter;
 import org.optaplanner.examples.curriculumcourse.swingui.CurriculumCoursePanel;
 
 public class CurriculumCourseApp extends CommonApp {
@@ -57,12 +57,12 @@ public class CurriculumCourseApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new CurriculumCourseSolutionImporter();
+        return new CurriculumCourseImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new CurriculumCourseSolutionExporter();
+        return new CurriculumCourseExporter();
     }
 
 }

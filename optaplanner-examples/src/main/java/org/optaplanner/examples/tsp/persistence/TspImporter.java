@@ -30,15 +30,15 @@ import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspSolutionImporter extends AbstractTxtSolutionImporter {
+public class TspImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = "tsp";
 
     public static void main(String[] args) {
-        new TspSolutionImporter().convertAll();
+        new TspImporter().convertAll();
     }
 
-    public TspSolutionImporter() {
+    public TspImporter() {
         super(new TspDao());
     }
 

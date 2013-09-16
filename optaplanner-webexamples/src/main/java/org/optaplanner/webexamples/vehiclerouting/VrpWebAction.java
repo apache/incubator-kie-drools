@@ -27,7 +27,7 @@ import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 
 public class VrpWebAction {
 
@@ -40,7 +40,7 @@ public class VrpWebAction {
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 
         URL unsolvedSolutionURL = getClass().getResource("/org/optaplanner/webexamples/vehiclerouting/A-n33-k6.vrp");
-        VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingSolutionImporter()
+        VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingImporter()
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
     }

@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.manners2009.persistence.Manners2009Dao;
-import org.optaplanner.examples.manners2009.persistence.Manners2009SolutionImporter;
+import org.optaplanner.examples.manners2009.persistence.Manners2009Importer;
 import org.optaplanner.examples.manners2009.swingui.Manners2009Panel;
 
 public class Manners2009App extends CommonApp {
@@ -55,7 +55,7 @@ public class Manners2009App extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new Manners2009SolutionImporter();
+        return new Manners2009Importer();
     }
 
 }

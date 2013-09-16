@@ -25,13 +25,13 @@ import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 
-public class NurseRosteringSolutionExporter extends AbstractXmlSolutionExporter {
+public class NurseRosteringExporter extends AbstractXmlSolutionExporter {
 
     public static void main(String[] args) {
-        new NurseRosteringSolutionExporter().convertAll();
+        new NurseRosteringExporter().convertAll();
     }
 
-    public NurseRosteringSolutionExporter() {
+    public NurseRosteringExporter() {
         super(new NurseRosteringDao());
     }
 

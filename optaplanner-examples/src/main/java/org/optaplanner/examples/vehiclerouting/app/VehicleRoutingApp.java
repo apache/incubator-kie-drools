@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionImporter;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 
 public class VehicleRoutingApp extends CommonApp {
@@ -55,7 +55,7 @@ public class VehicleRoutingApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new VehicleRoutingSolutionImporter();
+        return new VehicleRoutingImporter();
     }
 
 }

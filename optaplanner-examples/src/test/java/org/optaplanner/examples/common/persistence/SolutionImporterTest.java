@@ -34,21 +34,16 @@ import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 @RunWith(Parameterized.class)
-public abstract class SolutionDaoTest extends LoggingTest {
+public abstract class SolutionImporterTest extends LoggingTest {
 
-    protected static Collection<Object[]> getSolutionFilesAsParameters(SolutionDao solutionDao) {
+    protected static Collection<Object[]> getInputFilesAsParameters(AbstractSolutionImporter solutionImporter) {
         List<File> fileList = new ArrayList<File>(0);
-        File dataDir = solutionDao.getDataDir();
-        File unsolvedDataDir = new File(dataDir, "unsolved");
-        if (!unsolvedDataDir.exists()) {
-            throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
+        File inputDir = solutionImporter.getInputDir();
+        if (!inputDir.exists()) {
+            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
-            addFiles(solutionDao, fileList, unsolvedDataDir);
-        }
-        File solvedDataDir = new File(dataDir, "solved");
-        if (solvedDataDir.exists()) {
-            addFiles(solutionDao, fileList, solvedDataDir);
+            addFiles(solutionImporter, fileList, inputDir);
         }
         Collections.sort(fileList, new ProblemFileComparator());
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
@@ -58,32 +53,36 @@ public abstract class SolutionDaoTest extends LoggingTest {
         return filesAsParameters;
     }
 
-    private static void addFiles(SolutionDao solutionDao, List<File> fileList, File directory) {
-        List<File> newFileList = Arrays.asList(directory.listFiles(new ExtensionFileFilter(solutionDao.getFileExtension())));
+    private static void addFiles(final AbstractSolutionImporter solutionImporter, List<File> fileList, File directory) {
+        List<File> newFileList = Arrays.asList(directory.listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return solutionImporter.acceptInputFile(file);
+            }
+        }));
         fileList.addAll(newFileList);
         for (File subDirectory : directory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)) {
-            addFiles(solutionDao, fileList, subDirectory);
+            addFiles(solutionImporter, fileList, subDirectory);
         }
     }
 
-    protected SolutionDao solutionDao;
+    protected AbstractSolutionImporter solutionImporter;
 
-    protected File solutionFile;
+    protected File importFile;
 
-    protected SolutionDaoTest(File solutionFile) {
-        this.solutionFile = solutionFile;
+    protected SolutionImporterTest(File importFile) {
+        this.importFile = importFile;
     }
 
     @Before
     public void setUp() {
-        solutionDao = createSolutionDao();
+        solutionImporter = createSolutionImporter();
     }
 
-    protected abstract SolutionDao createSolutionDao();
+    protected abstract AbstractSolutionImporter createSolutionImporter();
 
     @Test
     public void readSolution() {
-        solutionDao.readSolution(solutionFile);
+        solutionImporter.readSolution(importFile);
     }
 
 }

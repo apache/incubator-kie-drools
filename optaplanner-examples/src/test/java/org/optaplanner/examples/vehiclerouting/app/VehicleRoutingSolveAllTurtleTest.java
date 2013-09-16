@@ -23,7 +23,6 @@ import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.examples.common.app.SolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.tsp.solver.score.TspSimpleScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator;
 

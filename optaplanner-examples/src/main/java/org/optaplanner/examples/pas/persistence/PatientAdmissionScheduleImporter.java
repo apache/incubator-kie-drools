@@ -47,13 +47,13 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 
-public class PatientAdmissionScheduleSolutionImporter extends AbstractTxtSolutionImporter {
+public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleSolutionImporter().convertAll();
+        new PatientAdmissionScheduleImporter().convertAll();
     }
 
-    public PatientAdmissionScheduleSolutionImporter() {
+    public PatientAdmissionScheduleImporter() {
         super(new PatientAdmissionScheduleDao());
     }
 

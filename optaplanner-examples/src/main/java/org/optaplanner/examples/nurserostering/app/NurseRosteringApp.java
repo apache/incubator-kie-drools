@@ -24,8 +24,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.persistence.NurseRosteringDao;
-import org.optaplanner.examples.nurserostering.persistence.NurseRosteringSolutionExporter;
-import org.optaplanner.examples.nurserostering.persistence.NurseRosteringSolutionImporter;
+import org.optaplanner.examples.nurserostering.persistence.NurseRosteringExporter;
+import org.optaplanner.examples.nurserostering.persistence.NurseRosteringImporter;
 import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 
 public class NurseRosteringApp extends CommonApp {
@@ -57,12 +57,12 @@ public class NurseRosteringApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new NurseRosteringSolutionImporter();
+        return new NurseRosteringImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new NurseRosteringSolutionExporter();
+        return new NurseRosteringExporter();
     }
 
 }

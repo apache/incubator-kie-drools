@@ -49,16 +49,16 @@ import org.optaplanner.examples.examination.domain.Topic;
 import org.optaplanner.examples.examination.domain.solver.ExamBefore;
 import org.optaplanner.examples.examination.domain.solver.ExamCoincidence;
 
-public class ExaminationSolutionImporter extends AbstractTxtSolutionImporter {
+public class ExaminationImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = "exam";
     private static final String SPLIT_REGEX = "\\,\\ ?";
 
     public static void main(String[] args) {
-        new ExaminationSolutionImporter().convertAll();
+        new ExaminationImporter().convertAll();
     }
 
-    public ExaminationSolutionImporter() {
+    public ExaminationImporter() {
         super(new ExaminationDao());
     }
 

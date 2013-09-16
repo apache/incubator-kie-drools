@@ -24,8 +24,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionExporter;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionImporter;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentExporter;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 
 public class MachineReassignmentApp extends CommonApp {
@@ -57,12 +57,12 @@ public class MachineReassignmentApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new MachineReassignmentSolutionImporter();
+        return new MachineReassignmentImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new MachineReassignmentSolutionExporter();
+        return new MachineReassignmentExporter();
     }
 
 }

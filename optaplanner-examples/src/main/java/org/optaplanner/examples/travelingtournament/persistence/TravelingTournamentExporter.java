@@ -25,15 +25,15 @@ import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentSolutionExporter extends AbstractTxtSolutionExporter {
+public class TravelingTournamentExporter extends AbstractTxtSolutionExporter {
 
     private static final String OUTPUT_FILE_SUFFIX = "trick.txt";
 
     public static void main(String[] args) {
-        new TravelingTournamentSolutionExporter().convertAll();
+        new TravelingTournamentExporter().convertAll();
     }
 
-    public TravelingTournamentSolutionExporter() {
+    public TravelingTournamentExporter() {
         super(new TravelingTournamentDao());
     }
 

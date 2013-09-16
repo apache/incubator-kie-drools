@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.curriculumcourse.persistence;
+package org.optaplanner.examples.examination.persistence;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
-import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
-import org.optaplanner.examples.curriculumcourse.domain.Lecture;
+import org.optaplanner.examples.examination.domain.Exam;
+import org.optaplanner.examples.examination.domain.Examination;
 
-public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporter {
+public class ExaminationExporter extends AbstractTxtSolutionExporter {
 
-    private static final String OUTPUT_FILE_SUFFIX = "sol";
+    private static final String OUTPUT_FILE_SUFFIX = "sln";
 
     public static void main(String[] args) {
-        new CurriculumCourseSolutionExporter().convertAll();
+        new ExaminationExporter().convertAll();
     }
 
-    public CurriculumCourseSolutionExporter() {
-        super(new CurriculumCourseDao());
+    public ExaminationExporter() {
+        super(new ExaminationDao());
     }
 
     @Override
@@ -41,25 +43,24 @@ public class CurriculumCourseSolutionExporter extends AbstractTxtSolutionExporte
     }
 
     public TxtOutputBuilder createTxtOutputBuilder() {
-        return new CurriculumCourseOutputBuilder();
+        return new ExaminationOutputBuilder();
     }
 
-    public class CurriculumCourseOutputBuilder extends TxtOutputBuilder {
+    public class ExaminationOutputBuilder extends TxtOutputBuilder {
 
-        private CourseSchedule schedule;
+        private Examination examination;
 
         public void setSolution(Solution solution) {
-            schedule = (CourseSchedule) solution;
+            examination = (Examination) solution;
         }
 
         public void writeSolution() throws IOException {
-            for (Lecture lecture : schedule.getLectureList()) {
-                bufferedWriter.write(lecture.getCourse().getCode()
-                        + " r" + lecture.getRoom().getCode()
-                        + " " + lecture.getPeriod().getDay().getDayIndex()
-                        + " " + lecture.getPeriod().getTimeslot().getTimeslotIndex() + "\r\n");
+            Collections.sort(examination.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
+            for (Exam exam : examination.getExamList()) {
+                bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
             }
         }
+
     }
 
 }

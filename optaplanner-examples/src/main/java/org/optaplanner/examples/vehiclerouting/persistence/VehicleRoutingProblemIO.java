@@ -25,7 +25,7 @@ public class VehicleRoutingProblemIO implements ProblemIO {
 
     public static final String FILE_EXTENSION = "vrp";
 
-    private VehicleRoutingSolutionImporter importer = new VehicleRoutingSolutionImporter();
+    private VehicleRoutingImporter importer = new VehicleRoutingImporter();
 
     public String getFileExtension() {
         return "vrp";

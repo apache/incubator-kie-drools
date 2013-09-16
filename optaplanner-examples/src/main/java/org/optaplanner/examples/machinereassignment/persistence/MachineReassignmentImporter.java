@@ -44,13 +44,13 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessRequirement;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
 
-public class MachineReassignmentSolutionImporter extends AbstractTxtSolutionImporter {
+public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new MachineReassignmentSolutionImporter().convertAll();
+        new MachineReassignmentImporter().convertAll();
     }
 
-    public MachineReassignmentSolutionImporter() {
+    public MachineReassignmentImporter() {
         super(new MachineReassignmentDao());
     }
 

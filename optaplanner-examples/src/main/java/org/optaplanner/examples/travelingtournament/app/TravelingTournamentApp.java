@@ -24,8 +24,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionExporter;
-import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionImporter;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentExporter;
+import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentImporter;
 import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentPanel;
 
 public class TravelingTournamentApp extends CommonApp {
@@ -57,12 +57,12 @@ public class TravelingTournamentApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new TravelingTournamentSolutionImporter();
+        return new TravelingTournamentImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new TravelingTournamentSolutionExporter();
+        return new TravelingTournamentExporter();
     }
 
 }

@@ -27,13 +27,13 @@ import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionScheduleSolutionExporter extends AbstractTxtSolutionExporter {
+public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter {
 
     public static void main(String[] args) {
-        new PatientAdmissionScheduleSolutionExporter().convertAll();
+        new PatientAdmissionScheduleExporter().convertAll();
     }
 
-    public PatientAdmissionScheduleSolutionExporter() {
+    public PatientAdmissionScheduleExporter() {
         super(new PatientAdmissionScheduleDao());
     }
 

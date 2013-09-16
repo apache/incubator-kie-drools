@@ -25,13 +25,13 @@ import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 
-public class MachineReassignmentSolutionExporter extends AbstractTxtSolutionExporter {
+public class MachineReassignmentExporter extends AbstractTxtSolutionExporter {
 
     public static void main(String[] args) {
-        new MachineReassignmentSolutionExporter().convertAll();
+        new MachineReassignmentExporter().convertAll();
     }
 
-    public MachineReassignmentSolutionExporter() {
+    public MachineReassignmentExporter() {
         super(new MachineReassignmentDao());
     }
 

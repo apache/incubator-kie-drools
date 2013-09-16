@@ -29,7 +29,7 @@ public interface SolutionDao {
 
     File getDataDir();
 
-    String getFileSuffix();
+    String getFileExtension();
 
     Solution readSolution(File inputSolutionFile);
 

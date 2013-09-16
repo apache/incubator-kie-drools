@@ -46,13 +46,13 @@ import org.optaplanner.examples.projectjobscheduling.domain.resource.GlobalResou
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
-public class ProjectJobSchedulingSolutionImporter extends AbstractTxtSolutionImporter {
+public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new ProjectJobSchedulingSolutionImporter().convertAll();
+        new ProjectJobSchedulingImporter().convertAll();
     }
 
-    public ProjectJobSchedulingSolutionImporter() {
+    public ProjectJobSchedulingImporter() {
         super(new ProjectJobSchedulingDao());
     }
 

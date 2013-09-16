@@ -34,13 +34,13 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindow
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
-public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter {
+public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new VehicleRoutingSolutionImporter().convertAll();
+        new VehicleRoutingImporter().convertAll();
     }
 
-    public VehicleRoutingSolutionImporter() {
+    public VehicleRoutingImporter() {
         super(new VehicleRoutingDao());
     }
 
@@ -70,7 +70,7 @@ public class VehicleRoutingSolutionImporter extends AbstractTxtSolutionImporter 
                 schedule.setId(0L);
                 schedule.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
                 readBasicSolution();
-            } if (splitBySpace(firstLine).length == 3) {
+            } else if (splitBySpace(firstLine).length == 3) {
                 schedule = new VrpSchedule();
                 schedule.setId(0L);
                 String[] tokens = splitBySpace(firstLine, 3);

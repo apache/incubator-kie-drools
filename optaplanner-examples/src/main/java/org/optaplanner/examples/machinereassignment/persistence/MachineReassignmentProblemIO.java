@@ -25,8 +25,8 @@ public class MachineReassignmentProblemIO implements ProblemIO {
 
     public static final String FILE_EXTENSION = "txt";
 
-    private MachineReassignmentSolutionImporter importer = new MachineReassignmentSolutionImporter();
-    private MachineReassignmentSolutionExporter exporter = new MachineReassignmentSolutionExporter();
+    private MachineReassignmentImporter importer = new MachineReassignmentImporter();
+    private MachineReassignmentExporter exporter = new MachineReassignmentExporter();
 
     public String getFileExtension() {
         return FILE_EXTENSION;

@@ -36,13 +36,13 @@ import org.optaplanner.examples.manners2009.domain.Seat;
 import org.optaplanner.examples.manners2009.domain.SeatDesignation;
 import org.optaplanner.examples.manners2009.domain.Table;
 
-public class Manners2009SolutionImporter extends AbstractTxtSolutionImporter {
+public class Manners2009Importer extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
-        new Manners2009SolutionImporter().convertAll();
+        new Manners2009Importer().convertAll();
     }
 
-    public Manners2009SolutionImporter() {
+    public Manners2009Importer() {
         super(new Manners2009Dao());
     }
 

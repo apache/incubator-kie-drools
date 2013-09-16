@@ -64,13 +64,13 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
 
-public class NurseRosteringSolutionImporter extends AbstractXmlSolutionImporter {
+public class NurseRosteringImporter extends AbstractXmlSolutionImporter {
 
     public static void main(String[] args) {
-        new NurseRosteringSolutionImporter().convertAll();
+        new NurseRosteringImporter().convertAll();
     }
 
-    public NurseRosteringSolutionImporter() {
+    public NurseRosteringImporter() {
         super(new NurseRosteringDao());
     }
 

@@ -23,7 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingDao;
-import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingSolutionImporter;
+import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingImporter;
 import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
 
 public class ProjectJobSchedulingApp extends CommonApp {
@@ -55,7 +55,7 @@ public class ProjectJobSchedulingApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new ProjectJobSchedulingSolutionImporter();
+        return new ProjectJobSchedulingImporter();
     }
 
 }

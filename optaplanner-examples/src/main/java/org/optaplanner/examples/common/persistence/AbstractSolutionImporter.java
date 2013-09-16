@@ -26,7 +26,6 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.examples.common.business.SolutionFileFilter;
 
 public abstract class AbstractSolutionImporter extends LoggingMain {
 

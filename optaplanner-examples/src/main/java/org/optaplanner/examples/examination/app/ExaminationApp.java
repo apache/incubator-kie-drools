@@ -25,8 +25,8 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.examination.persistence.ExaminationDao;
-import org.optaplanner.examples.examination.persistence.ExaminationSolutionExporter;
-import org.optaplanner.examples.examination.persistence.ExaminationSolutionImporter;
+import org.optaplanner.examples.examination.persistence.ExaminationExporter;
+import org.optaplanner.examples.examination.persistence.ExaminationImporter;
 import org.optaplanner.examples.examination.swingui.ExaminationPanel;
 
 /**
@@ -62,12 +62,12 @@ public class ExaminationApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new ExaminationSolutionImporter();
+        return new ExaminationImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new ExaminationSolutionExporter();
+        return new ExaminationExporter();
     }
 
 }

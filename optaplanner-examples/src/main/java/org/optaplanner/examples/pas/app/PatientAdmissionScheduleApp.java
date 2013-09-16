@@ -24,8 +24,8 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleDao;
-import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleSolutionExporter;
-import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleSolutionImporter;
+import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleExporter;
+import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleImporter;
 import org.optaplanner.examples.pas.swingui.PatientAdmissionSchedulePanel;
 
 public class PatientAdmissionScheduleApp extends CommonApp {
@@ -57,12 +57,12 @@ public class PatientAdmissionScheduleApp extends CommonApp {
 
     @Override
     protected AbstractSolutionImporter createSolutionImporter() {
-        return new PatientAdmissionScheduleSolutionImporter();
+        return new PatientAdmissionScheduleImporter();
     }
 
     @Override
     protected AbstractSolutionExporter createSolutionExporter() {
-        return new PatientAdmissionScheduleSolutionExporter();
+        return new PatientAdmissionScheduleExporter();
     }
 
 }

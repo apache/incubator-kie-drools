@@ -37,16 +37,16 @@ import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
 import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
-public class CurriculumCourseSolutionImporter extends AbstractTxtSolutionImporter {
+public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
 
     private static final String INPUT_FILE_SUFFIX = "ctt";
     private static final String SPLIT_REGEX = "[\\ \\t]+";
 
     public static void main(String[] args) {
-        new CurriculumCourseSolutionImporter().convertAll();
+        new CurriculumCourseImporter().convertAll();
     }
 
-    public CurriculumCourseSolutionImporter() {
+    public CurriculumCourseImporter() {
         super(new CurriculumCourseDao());
     }
 

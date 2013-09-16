@@ -21,19 +21,19 @@ import java.io.FileFilter;
 
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class SolutionFileFilter implements FileFilter {
+public class ExtensionFileFilter implements FileFilter {
 
-    private final SolutionDao solutionDao;
+    private final String extensionWithDot;
 
-    public SolutionFileFilter(SolutionDao solutionDao) {
-        this.solutionDao = solutionDao;
+    public ExtensionFileFilter(String extension) {
+        extensionWithDot = "." + extension;
     }
 
     public boolean accept(File file) {
         if (file.isDirectory() || file.isHidden()) {
             return false;
         }
-        return file.getName().endsWith(solutionDao.getFileSuffix());
+        return file.getName().endsWith(extensionWithDot);
     }
 
 }
