@@ -107,8 +107,8 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     
     private static final Logger logger = LoggerFactory.getLogger(JbpmJUnitBaseTestCase.class);
   
-    private boolean setupDataSource = false;
-    private boolean sessionPersistence = false;
+    protected boolean setupDataSource = false;
+    protected boolean sessionPersistence = false;
     private String persistenceUnitName;
     
     private EntityManagerFactory emf;
@@ -117,12 +117,12 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     private TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
     
     private RuntimeManagerFactory managerFactory = RuntimeManagerFactory.Factory.get();
-    private RuntimeManager manager;
+    protected RuntimeManager manager;
 
     private AuditLogService logService;
     private WorkingMemoryInMemoryLogger inMemoryLogger;    
    
-    private List<RuntimeEngine> activeEngines = new ArrayList<RuntimeEngine>();
+    protected List<RuntimeEngine> activeEngines = new ArrayList<RuntimeEngine>();
 
     /**
      * The most simple test case configuration:
@@ -200,15 +200,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
                 ds = null;
             }
         }
-        if (!activeEngines.isEmpty()) {
-            for (RuntimeEngine engine : activeEngines) {
-                manager.disposeRuntimeEngine(engine);
-            }
-        }
-        if (manager != null) {
-            manager.close();
-            manager = null;
-        }
+        disposeRuntimeManager();
     }
 
     /**
@@ -220,7 +212,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * @return new instance of RuntimeManager
      */
     protected RuntimeManager createRuntimeManager(String... process) {
-        return createRuntimeManager(Strategy.SINGLETON, process);
+        return createRuntimeManager(Strategy.SINGLETON, null, process);
     }
     
     /**
@@ -229,15 +221,16 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * <br/>
      * There should be only one <code>RuntimeManager</code> created during single test.
      * @param strategy - selected strategy of those that are supported
+     * @param identifier - identifies the runtime manager
      * @param process - processes that shall be added to knowledge base
      * @return new instance of RuntimeManager
      */
-    protected RuntimeManager createRuntimeManager(Strategy strategy, String... process) {
+    protected RuntimeManager createRuntimeManager(Strategy strategy, String identifier, String... process) {
         Map<String, ResourceType> resources = new HashMap<String, ResourceType>();
         for (String p : process) {
             resources.put(p, ResourceType.BPMN2);
         }
-        return createRuntimeManager(strategy, resources);
+        return createRuntimeManager(strategy, resources, identifier);
     }
 
     /**
@@ -249,7 +242,20 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * @return new instance of RuntimeManager
      */
     protected RuntimeManager createRuntimeManager(Map<String, ResourceType> resources) {
-        return createRuntimeManager(Strategy.SINGLETON, resources);
+        return createRuntimeManager(Strategy.SINGLETON, resources, null);
+    }
+
+    /**
+     * Creates default configuration of <code>RuntimeManager</code> with SINGLETON strategy and all 
+     * <code>resources</code> being added to knowledge base.
+     * <br/>
+     * There should be only one <code>RuntimeManager</code> created during single test.
+     * @param resources - resources (processes, rules, etc) that shall be added to knowledge base
+     * @param identifier - identifies the runtime manager
+     * @return new instance of RuntimeManager
+     */
+    protected RuntimeManager createRuntimeManager(Map<String, ResourceType> resources, String identifier) {
+        return createRuntimeManager(Strategy.SINGLETON, resources, identifier);
     }
     
     /**
@@ -262,6 +268,20 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * @return new instance of RuntimeManager
      */
     protected RuntimeManager createRuntimeManager(Strategy strategy, Map<String, ResourceType> resources) {
+        return createRuntimeManager(strategy, resources, null);
+    }
+    
+    /**
+     * Creates default configuration of <code>RuntimeManager</code> with given <code>strategy</code> and all 
+     * <code>resources</code> being added to knowledge base.
+     * <br/>
+     * There should be only one <code>RuntimeManager</code> created during single test.
+     * @param strategy - selected strategy of those that are supported
+     * @param resources - resources that shall be added to knowledge base
+     * @param identifier - identifies the runtime manager
+     * @return new instance of RuntimeManager
+     */
+    protected RuntimeManager createRuntimeManager(Strategy strategy, Map<String, ResourceType> resources, String identifier) {
         if (manager != null) {
             throw new IllegalStateException("There is already one RuntimeManager active");
         }
@@ -282,22 +302,8 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         for (Map.Entry<String, ResourceType> entry : resources.entrySet()) {            
             builder.addAsset(ResourceFactory.newClassPathResource(entry.getKey()), entry.getValue());
         }
-        switch (strategy) {
-        case SINGLETON:
-            manager = managerFactory.newSingletonRuntimeManager(builder.get());
-            break;
-        case REQUEST:
-            manager = managerFactory.newPerRequestRuntimeManager(builder.get());     
-            break;
-        case PROCESS_INSTANCE:
-            manager = managerFactory.newPerProcessInstanceRuntimeManager(builder.get());
-            break;
-        default:
-            manager = managerFactory.newSingletonRuntimeManager(builder.get());
-            break;
-        }
-         
-        return manager;
+        
+        return createRuntimeManager(strategy, resources, builder.get(), identifier);
     }
     
     /**
@@ -308,25 +314,42 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
      * @param strategy - selected strategy of those that are supported
      * @param resources - resources that shall be added to knowledge base 
      * @param environment - runtime environment used for <code>RuntimeManager</code> creation
+     * @param identifier - identifies the runtime manager
      * @return new instance of RuntimeManager
      */
-    protected RuntimeManager createRuntimeManager(Strategy strategy, Map<String, ResourceType> resources, RuntimeEnvironment environment) {
+    protected RuntimeManager createRuntimeManager(Strategy strategy, Map<String, ResourceType> resources, RuntimeEnvironment environment, String identifier) {
         if (manager != null) {
             throw new IllegalStateException("There is already one RuntimeManager active");
         }
 
         switch (strategy) {
         case SINGLETON:
-            manager = managerFactory.newSingletonRuntimeManager(environment);
+            if (identifier == null) {
+                manager = managerFactory.newSingletonRuntimeManager(environment);
+            } else {
+                manager = managerFactory.newSingletonRuntimeManager(environment, identifier);
+            }
             break;
         case REQUEST:
-            manager = managerFactory.newPerRequestRuntimeManager(environment);     
+            if (identifier == null) {
+                manager = managerFactory.newPerRequestRuntimeManager(environment);   
+            } else {  
+                manager = managerFactory.newPerRequestRuntimeManager(environment, identifier);
+            }
             break;
         case PROCESS_INSTANCE:
-            manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
+            if (identifier == null) {
+                manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
+            } else {
+                manager = managerFactory.newPerProcessInstanceRuntimeManager(environment, identifier);
+            }
             break;
         default:
-            manager = managerFactory.newSingletonRuntimeManager(environment);
+            if (identifier == null) {
+                manager = managerFactory.newSingletonRuntimeManager(environment);
+            } else {
+                manager = managerFactory.newSingletonRuntimeManager(environment, identifier);
+            }
             break;
         }
          
