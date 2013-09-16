@@ -60,6 +60,7 @@ public class SolutionBusiness {
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
     private volatile Solver solver;
+    private String solutionFileName = null;
     private ScoreDirector guiScoreDirector;
 
     public void setSolutionDao(SolutionDao solutionDao) {
@@ -172,6 +173,10 @@ public class SolutionBusiness {
         guiScoreDirector.setWorkingSolution(solution);
     }
 
+    public String getSolutionFileName() {
+        return solutionFileName;
+    }
+
     public Score getScore() {
         return guiScoreDirector.calculateScore();
     }
@@ -215,11 +220,13 @@ public class SolutionBusiness {
 
     public void importSolution(File file) {
         Solution solution = importer.readSolution(file);
+        solutionFileName = file.getName();
         guiScoreDirector.setWorkingSolution(solution);
     }
 
     public void openSolution(File file) {
         Solution solution = solutionDao.readSolution(file);
+        solutionFileName = file.getName();
         guiScoreDirector.setWorkingSolution(solution);
     }
 

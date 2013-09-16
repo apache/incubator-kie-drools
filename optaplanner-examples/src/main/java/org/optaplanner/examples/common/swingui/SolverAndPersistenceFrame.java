@@ -46,11 +46,13 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.filechooser.FileFilter;
 
+import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
@@ -65,20 +67,20 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private SolutionBusiness solutionBusiness;
 
-    private JPanel middlePanel;
     private SolutionPanel solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
 
     private List<Action> quickOpenUnsolvedActionList;
     private List<Action> quickOpenSolvedActionList;
-    private Action terminateSolvingEarlyAction;
-    private JCheckBox refreshScreenDuringSolvingCheckBox;
-    private Action solveAction;
     private Action openAction;
     private Action saveAction;
     private Action importAction;
-
     private Action exportAction;
+    private JTextField solutionFileNameField;
+    private JCheckBox refreshScreenDuringSolvingCheckBox;
+    private Action solveAction;
+    private Action terminateSolvingEarlyAction;
+    private JPanel middlePanel;
     private JProgressBar progressBar;
     private JLabel resultLabel;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
@@ -135,7 +137,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JComponent createQuickOpenPanel() {
         JSplitPane quickOpenSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
                 createQuickOpenUnsolvedPanel(), createQuickOpenSolvedPanel());
-        quickOpenSplitPane.setResizeWeight(0.5);
+        quickOpenSplitPane.setResizeWeight(0.8);
         return quickOpenSplitPane;
     }
 
@@ -220,17 +222,27 @@ public class SolverAndPersistenceFrame extends JFrame {
         processingPanel.add(row0Panel);
 
         JPanel row1Panel = new JPanel(new GridLayout(1, 2));
-        solveAction = new SolveAction();
-        solveAction.setEnabled(false);
-        row1Panel.add(new JButton(solveAction));
-        terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
-        terminateSolvingEarlyAction.setEnabled(false);
-        row1Panel.add(new JButton(terminateSolvingEarlyAction));
-        processingPanel.add(row1Panel);
-
+        JPanel solutionFileNamePanel = new JPanel(new BorderLayout(5, 0));
+        solutionFileNamePanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 0));
+        solutionFileNamePanel.add(new JLabel("File:"), BorderLayout.WEST);
+        solutionFileNameField = new JTextField(10);
+        solutionFileNameField.setEditable(false);
+        solutionFileNamePanel.add(solutionFileNameField, BorderLayout.CENTER);
+        row1Panel.add(solutionFileNamePanel);
         refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
                 solutionPanel.isRefreshScreenDuringSolving());
-        processingPanel.add(refreshScreenDuringSolvingCheckBox);
+        row1Panel.add(refreshScreenDuringSolvingCheckBox);
+        processingPanel.add(row1Panel);
+
+        JPanel row2Panel = new JPanel(new GridLayout(1, 2));
+        solveAction = new SolveAction();
+        solveAction.setEnabled(false);
+        row2Panel.add(new JButton(solveAction));
+        terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
+        terminateSolvingEarlyAction.setEnabled(false);
+        row2Panel.add(new JButton(terminateSolvingEarlyAction));
+        processingPanel.add(row2Panel);
+
         return processingPanel;
     }
 
@@ -341,6 +353,8 @@ public class SolverAndPersistenceFrame extends JFrame {
                 }
             });
             fileChooser.setDialogTitle(NAME);
+            fileChooser.setSelectedFile(new File(solutionBusiness.getSolvedDataDir(),
+                    FilenameUtils.getBaseName(solutionBusiness.getSolutionFileName()) + ".xml"));
             int approved = fileChooser.showSaveDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -464,6 +478,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private void setSolutionLoaded() {
+        solutionFileNameField.setText(solutionBusiness.getSolutionFileName());
         ((CardLayout) middlePanel.getLayout()).show(middlePanel, "solutionPanel");
         solveAction.setEnabled(true);
         saveAction.setEnabled(true);
