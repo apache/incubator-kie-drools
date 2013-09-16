@@ -39,6 +39,8 @@ import org.drools.template.parser.DecisionTableParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.lang.String.format;
+
 /**
  * Parse an excel spreadsheet, pushing cell info into the SheetListener interface.
  */
@@ -156,27 +158,14 @@ public class ExcelParser
                                          cellValue,
                                          DataListener.NON_MERGED );
                             } catch ( RuntimeException e ) {
-                                //This is thrown in an external link cannot be resolved, so try the cached value
+                                // This is thrown if an external link cannot be resolved, so try the cached value
                                 log.warn("Cannot resolve externally linked value: " + formatter.formatCellValue( cell ));
-
-                                switch ( cell.getCachedFormulaResultType() ) {
-                                    case Cell.CELL_TYPE_NUMERIC:
-                                        num = cell.getNumericCellValue();
-                                    default:
-                                        if ( num - Math.round( num ) != 0 ) {
-                                            newCell( listeners,
-                                                     i,
-                                                     cellNum,
-                                                     String.valueOf( num ),
-                                                     DataListener.NON_MERGED );
-                                        } else {
-                                            newCell( listeners,
-                                                     i,
-                                                     cellNum,
-                                                     formatter.formatCellValue( cell ),
-                                                     DataListener.NON_MERGED );
-                                        }
-                                }
+                                String cachedValue = tryToReadCachedValue(cell);
+                                newCell( listeners,
+                                         i,
+                                         cellNum,
+                                         cachedValue,
+                                         DataListener.NON_MERGED );
                             }
                             break;
                         case Cell.CELL_TYPE_NUMERIC:
@@ -200,6 +189,38 @@ public class ExcelParser
             }
         }
         finishSheet( listeners );
+    }
+
+    private String tryToReadCachedValue(Cell cell) {
+        DataFormatter formatter = new DataFormatter();
+        String cachedValue;
+        switch (cell.getCachedFormulaResultType()) {
+            case Cell.CELL_TYPE_NUMERIC:
+                double num = cell.getNumericCellValue();
+                if (num - Math.round(num) != 0) {
+                    cachedValue = String.valueOf(num);
+                } else {
+                    cachedValue = formatter.formatCellValue(cell);
+                }
+                break;
+
+            case Cell.CELL_TYPE_STRING:
+                cachedValue = cell.getStringCellValue();
+                break;
+
+            case Cell.CELL_TYPE_BOOLEAN:
+                cachedValue = String.valueOf(cell.getBooleanCellValue());
+                break;
+
+            case Cell.CELL_TYPE_ERROR:
+                cachedValue = String.valueOf(cell.getErrorCellValue());
+                break;
+
+            default:
+                throw new DecisionTableParseException(format("Can't read cached value for cell[row=%d, col=%d, value=%s]!",
+                        cell.getRowIndex(), cell.getColumnIndex(), cell));
+        }
+        return cachedValue;
     }
 
     private String getCellValue( final CellValue cv ) {
