@@ -78,6 +78,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private Action exportAction;
     private JTextField solutionFileNameField;
     private JCheckBox refreshScreenDuringSolvingCheckBox;
+    private JPanel solveAndTerminateCardPanel;
     private Action solveAction;
     private Action terminateSolvingEarlyAction;
     private JPanel middlePanel;
@@ -234,14 +235,14 @@ public class SolverAndPersistenceFrame extends JFrame {
         row1Panel.add(refreshScreenDuringSolvingCheckBox);
         processingPanel.add(row1Panel);
 
-        JPanel row2Panel = new JPanel(new GridLayout(1, 2));
+        solveAndTerminateCardPanel = new JPanel(new CardLayout());
         solveAction = new SolveAction();
         solveAction.setEnabled(false);
-        row2Panel.add(new JButton(solveAction));
+        solveAndTerminateCardPanel.add(new JButton(solveAction), "solveAction");
         terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
         terminateSolvingEarlyAction.setEnabled(false);
-        row2Panel.add(new JButton(terminateSolvingEarlyAction));
-        processingPanel.add(row2Panel);
+        solveAndTerminateCardPanel.add(new JButton(terminateSolvingEarlyAction), "terminateSolvingEarlyAction");
+        processingPanel.add(solveAndTerminateCardPanel);
 
         return processingPanel;
     }
@@ -293,6 +294,8 @@ public class SolverAndPersistenceFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
+            terminateSolvingEarlyAction.setEnabled(false);
+            progressBar.setString("Terminating...");
             // This async, so it doesn't stop the solving immediately
             solutionBusiness.terminateSolvingEarly();
         }
@@ -494,12 +497,14 @@ public class SolverAndPersistenceFrame extends JFrame {
         for (Action action : quickOpenSolvedActionList) {
             action.setEnabled(!solving);
         }
-        solveAction.setEnabled(!solving);
-        terminateSolvingEarlyAction.setEnabled(solving);
+        importAction.setEnabled(!solving && solutionBusiness.hasImporter());
         openAction.setEnabled(!solving);
         saveAction.setEnabled(!solving);
-        importAction.setEnabled(!solving && solutionBusiness.hasImporter());
         exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
+        solveAction.setEnabled(!solving);
+        terminateSolvingEarlyAction.setEnabled(solving);
+        ((CardLayout) solveAndTerminateCardPanel.getLayout()).show(solveAndTerminateCardPanel,
+                solving ? "terminateSolvingEarlyAction" : "solveAction");
         solutionPanel.setEnabled(!solving);
         progressBar.setIndeterminate(solving);
         progressBar.setStringPainted(solving);
