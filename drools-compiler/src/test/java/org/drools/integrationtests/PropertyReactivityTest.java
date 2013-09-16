@@ -2,8 +2,13 @@ package org.drools.integrationtests;
 
 import org.drools.CommonTestMethodBase;
 import org.drools.KnowledgeBase;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.definition.type.PropertyReactive;
+import org.drools.definition.type.Modifies;
 import org.drools.factmodel.traits.Traitable;
+import org.drools.io.impl.ByteArrayResource;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -665,5 +670,425 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
 
     }
+
+    /**
+     * Tests the use of PR on constraints involving 'virtual' properties 
+     * of a POJO: calculated properties without a setter.
+     * Because getFullName doesn't have a setter, and we are not using
+     * @watch in the rule nor @Modified in setName() or in setLastName(), there
+     * are no way that rule 'Find Heisenberg' gets activated because a modification
+     * or a Klass3 object.
+     */
+    @Test
+    public void testPRConstraintOnAttributesWithoutSetter(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass3;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass3( \"XXX\", \"White\" ) );\n" +
+                "end\n" +
+                
+                "rule \"Find Heisenberg\"\n" +
+                "when\n" +
+                "  $x : Klass3( fullName == 'Walter White' )\n" +
+                "then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                
+                "rule \"XXX -> Walter\"\n" +
+                "when\n" +
+                "  $x : Klass3( name == 'XXX' )\n" +
+                "then\n" +
+                "  modify($x){ setName('Walter') };\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "XXX -> Walter" ), list );
+    }
+    
+    /**
+     * Tests the use of PR on constraints involving 'virtual' properties 
+     * of a POJO: calculated properties without a setter.
+     * getFullName doesn't have a setter and Klass3 doesn't state that setName()
+     * nor setLastName() @Modifies fullName. We are explicitly using @watches
+     * in the rule involving fullName to be aware of modifications in the name
+     * and/or lastName of a Klass3 object.
+     */
+    @Test
+    public void testPRConstraintOnAttributesWithoutSetterUsingWatches(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass3;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass3( \"XXX\", \"White\" ) );\n" +
+                "end\n" +
+                
+                "rule \"Find Heisenberg\"\n" +
+                "when\n" +
+                "  $x : Klass3( fullName == 'Walter White' ) @watch( name, lastName)\n" +
+                "then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                
+                "rule \"XXX -> Walter\"\n" +
+                "when\n" +
+                "  $x : Klass3( name == 'XXX' )\n" +
+                "then\n" +
+                "  modify($x){ setName('Walter') };\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "XXX -> Walter", "Find Heisenberg" ), list );
+    }
+    
+    /**
+     * Tests the use of PR on constraints involving 'virtual' properties 
+     * of a POJO: calculated properties without a setter.
+     * getFullName doesn't have a setter but Klass4 states that setName()
+     * and setLastName() both @Modifies fullName. 
+     */
+    @Test
+    public void testPRConstraintOnAttributesWithoutSetterUsingModifies(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass4;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass4( \"XXX\", \"White\" ) );\n" +
+                "end\n" +
+                
+                "rule \"Find Heisenberg\"\n" +
+                "when\n" +
+                "  $x : Klass4( fullName == 'Walter White' )\n" +
+                "then\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                
+                "rule \"XXX -> Walter\"\n" +
+                "when\n" +
+                "  $x : Klass4( name == 'XXX' )\n" +
+                "then\n" +
+                "  modify($x){ setName('Walter') };\n" +
+                "  list.add( drools.getRule().getName() );\n" +
+                "end\n" +
+                "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "XXX -> Walter", "Find Heisenberg" ), list );
+    }
+    
+    /**
+     * Tests the use of PR on bindings involving 'virtual' properties 
+     * of a POJO: calculated properties without a setter.
+     * Because getFullName doesn't have a setter, and we are not using
+     * @watch in the rule nor @Modified in setName() or in setLastName(), there
+     * are no way that rule 'Get Person name' gets activated because a modification
+     * or a Klass3 object.
+     */
+    @Test
+    public void testPRBindingOnAttributesWithoutSetter(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass3;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass3( \"XXX\", \"White\" ) );\n" +
+                "end\n" +
+                
+                "rule \"Get Person name\"\n" +
+                "salience 1\n" +
+                "when\n" +
+                "  $x : Klass3( $fullName: fullName )\n" +
+                "then\n" +
+                "  list.add( $fullName );\n" +
+                "end\n" +
+                
+                "rule \"XXX -> Walter\"\n" +
+                "when\n" +
+                "  $x : Klass3( name == 'XXX' )\n" +
+                "then\n" +
+                "  modify($x){ setName('Walter') };\n" +
+                "end\n" +
+                "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "XXX White" ), list );
+    }
+    
+    /**
+     * Tests the use of PR on bindings involving 'virtual' properties 
+     * of a POJO: calculated properties without a setter.
+     * getFullName doesn't have a setter but we are explicitly using @watches
+     * annotation in 'Get Person name' rule. After the name of Kalss3 instance is 
+     * modified, rule 'Get Person name' must be re-activated.
+     */
+    @Test
+    public void testPRBindingOnAttributesWithoutSetterUsingWatches(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass3;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass3( \"XXX\", \"White\" ) );\n" +
+                "end\n" +
+                
+                "rule \"Get Person name\"\n" +
+                "salience 1\n" +
+                "when\n" +
+                "  $x : Klass3( $fullName: fullName ) @watch( name, lastName)\n" +
+                "then\n" +
+                "  list.add( $fullName );\n" +
+                "end\n" +
+                
+                "rule \"XXX -> Walter\"\n" +
+                "when\n" +
+                "  $x : Klass3( name == 'XXX' )\n" +
+                "then\n" +
+                "  modify($x){ setName('Walter') };\n" +
+                "end\n" +
+                "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "XXX White", "Walter White"  ), list );
+    }
+    
+    /**
+     * Tests the use of PR on bindings involving 'virtual' properties 
+     * of a POJO: calculated properties without a setter.
+     * getFullName doesn't have a setter but we are explicitly using @Modifies
+     * in Klass4's setName() and setLastName(). After the name of Kalss4 
+     * instance is modified, rule 'Get Person name' must be re-activated.
+     */
+    @Test
+    public void testPRBindingOnAttributesWithoutSetterUsingModifies(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass4;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule \"Init\"\n" +
+                "when\n" +
+                "then\n" +
+                "  insert( new Klass4( \"XXX\", \"White\" ) );\n" +
+                "end\n" +
+                
+                "rule \"Get Person name\"\n" +
+                "salience 1\n" +
+                "when\n" +
+                "  $x : Klass4( $fullName: fullName )\n" +
+                "then\n" +
+                "  list.add( $fullName );\n" +
+                "end\n" +
+                
+                "rule \"XXX -> Walter\"\n" +
+                "when\n" +
+                "  $x : Klass4( name == 'XXX' )\n" +
+                "then\n" +
+                "  modify($x){ setName('Walter') };\n" +
+                "end\n" +
+                "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "XXX White", "Walter White"  ), list );
+    }
+
+
+    @Test
+    public void testPRBindingOnNonexistingAttributes(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass4;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+
+                "rule \"Get Person name\"\n" +
+                "salience 1\n" +
+                "when\n" +
+                "  $x : Klass4( $name: nonexistingName )\n" +
+                "then\n" +
+                "  list.add( $fullName );\n" +
+                "end\n";
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        System.out.println( knowledgeBuilder.getErrors() );
+        assertTrue( knowledgeBuilder.hasErrors() );
+    }
+
+    @Test
+    public void testPRBindingOnNonexistingWatchedAttribute(){
+        String str =
+                "package org.drools.test;\n" +
+                "\n" +
+                "import org.drools.integrationtests.PropertyReactivityTest.Klass4;\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+
+                "rule \"Get Person name\"\n" +
+                "salience 1\n" +
+                "when\n" +
+                "  $x : Klass4( ) @watch( nmae )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        System.out.println( knowledgeBuilder.getErrors() );
+        assertTrue( knowledgeBuilder.hasErrors() );
+    }
+
+
+    @PropertyReactive
+    public static class Klass3 {
+        private String name;
+        private String lastName;
+
+        public Klass3(String name, String lastName) {
+            this.name = name;
+            this.lastName = lastName;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+        
+        public String getFullName(){
+            return this.name + " "+ this.lastName;
+        }
+    }
+    
+    /**
+     * Same as Klass3 but using @Modifies in setName() and setLastName()
+     */
+    @PropertyReactive
+    public static class Klass4 {
+        private String name;
+        private String lastName;
+
+        public Klass4(String name, String lastName) {
+            this.name = name;
+            this.lastName = lastName;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Modifies("fullName")
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        @Modifies("fullName")
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+        
+        public String getFullName(){
+            return this.name + " "+ this.lastName;
+        }
+    } 
 
 }
