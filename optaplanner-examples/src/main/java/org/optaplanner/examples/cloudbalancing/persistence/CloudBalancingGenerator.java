@@ -26,6 +26,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
 public class CloudBalancingGenerator extends LoggingMain {
@@ -142,11 +143,9 @@ public class CloudBalancingGenerator extends LoggingMain {
         createCloudProcessList(cloudBalance, cloudProcessListSize);
         BigInteger possibleSolutionSize = BigInteger.valueOf(cloudBalance.getComputerList().size()).pow(
                 cloudBalance.getProcessList().size());
-        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("CloudBalance {} has {} computers and {} processes with a search space of {}.",
                 inputId, cloudComputerListSize, cloudProcessListSize,
-                possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0
-                        ? possibleSolutionSize : flooredPossibleSolutionSize);
+                AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return cloudBalance;
     }
 

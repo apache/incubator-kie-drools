@@ -18,6 +18,7 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -87,5 +88,17 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
     }
 
     public abstract Solution readSolution(File inputFile);
+
+    public abstract class InputBuilder {
+
+    }
+
+    public static String getFlooredPossibleSolutionSize(BigInteger possibleSolutionSize) {
+        if (possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0) {
+            return possibleSolutionSize.toString();
+        }
+        // TODO this is slow for machinereassingment's biggest dataset
+        return "10^" + (possibleSolutionSize.toString().length() - 1);
+    }
 
 }

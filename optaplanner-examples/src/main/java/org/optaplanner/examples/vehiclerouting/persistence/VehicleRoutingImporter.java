@@ -86,13 +86,12 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             }
             // TODO search space does not take different vehicles into account
             BigInteger possibleSolutionSize = factorial(schedule.getLocationList().size() - 1);
-            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("VrpSchedule {} has {} depots, {} vehicles and {} customers with a search space of {}.",
                     getInputId(),
                     schedule.getDepotList().size(),
                     schedule.getVehicleList().size(),
                     schedule.getCustomerList().size(),
-                    flooredPossibleSolutionSize);
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return schedule;
         }
 

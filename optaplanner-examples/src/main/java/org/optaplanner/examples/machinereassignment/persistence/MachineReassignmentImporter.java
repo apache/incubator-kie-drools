@@ -107,7 +107,6 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
             readProcessAssignmentList();
             BigInteger possibleSolutionSize = BigInteger.valueOf(machineReassignment.getMachineList().size()).pow(
                     machineReassignment.getProcessList().size());
-            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("MachineReassignment {} has {} resources, {} neighborhoods, {} locations, {} machines," +
                     " {} services, {} processes and {} balancePenalties with a search space of {}.",
                     getInputId(),
@@ -118,7 +117,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
                     machineReassignment.getServiceList().size(),
                     machineReassignment.getProcessList().size(),
                     machineReassignment.getBalancePenaltyList().size(),
-                    flooredPossibleSolutionSize);
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return machineReassignment;
         }
 

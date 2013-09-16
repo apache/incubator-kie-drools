@@ -70,4 +70,9 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
     }
 
     public abstract void writeSolution(Solution solution, File outputFile);
+
+    public abstract class OutputBuilder {
+
+    }
+
 }

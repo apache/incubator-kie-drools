@@ -63,7 +63,7 @@ public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExport
         logger.info("Exported: {}", outputFile);
     }
 
-    public abstract class XmlOutputBuilder {
+    public abstract class XmlOutputBuilder extends OutputBuilder {
 
         protected Document document;
 

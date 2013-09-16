@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.domain.Column;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -63,11 +64,9 @@ public class NQueensGenerator extends LoggingMain {
         nQueens.setRowList(createRowList(nQueens));
         nQueens.setQueenList(createQueenList(nQueens));
         BigInteger possibleSolutionSize = BigInteger.valueOf(nQueens.getN()).pow(nQueens.getN());
-        String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
         logger.info("NQueens {} has {} queens with a search space of {}.",
                 n, nQueens.getN(),
-                possibleSolutionSize.compareTo(BigInteger.valueOf(1000L)) < 0
-                ? possibleSolutionSize : flooredPossibleSolutionSize);
+                AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
         return nQueens;
     }
 

@@ -62,7 +62,6 @@ public class Manners2009Importer extends AbstractTxtSolutionImporter {
 
             BigInteger possibleSolutionSize = BigInteger.valueOf(manners2009.getGuestList().size()).pow(
                     manners2009.getSeatDesignationList().size());
-            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("Manners2009 {} has {} jobs, {} guests, {} hobby practicians, {} tables and {} seats"
                     + " with a search space of {}.",
                     getInputId(),
@@ -71,7 +70,7 @@ public class Manners2009Importer extends AbstractTxtSolutionImporter {
                     manners2009.getHobbyPracticianList().size(),
                     manners2009.getTableList().size(),
                     manners2009.getSeatList().size(),
-                    flooredPossibleSolutionSize);
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return manners2009;
         }
 

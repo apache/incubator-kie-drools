@@ -103,7 +103,6 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             // TODO not all nights are planned, only the "planning horizon" nights are planned
             BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
                     patientAdmissionSchedule.getAdmissionPartList().size());
-            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
                     + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
                     getInputId(),
@@ -115,7 +114,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     patientAdmissionSchedule.getNightList().size(),
                     patientAdmissionSchedule.getPatientList().size(),
                     patientAdmissionSchedule.getAdmissionPartList().size(),
-                    flooredPossibleSolutionSize);
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return patientAdmissionSchedule;
         }
 

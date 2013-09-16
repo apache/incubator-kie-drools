@@ -57,13 +57,12 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter {
             createMatchListAndSetDistancesInTeamList(travelingTournament, outerDistanceList);
             initializeMatchDays(travelingTournament);
             BigInteger possibleSolutionSize = factorial(2 * (n - 1)).pow(n / 2);
-            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("TravelingTournament {} has {} days, {} teams and {} matches with a search space of {}.",
                     getInputId(),
                     travelingTournament.getDayList().size(),
                     travelingTournament.getTeamList().size(),
                     travelingTournament.getMatchList().size(),
-                    flooredPossibleSolutionSize);
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return travelingTournament;
         }
 

@@ -71,11 +71,10 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             readConstantLine("EOF");
             createVisitList();
             BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getCityList().size() - 1);
-            String flooredPossibleSolutionSize = "10^" + (possibleSolutionSize.toString().length() - 1);
             logger.info("TravelingSalesmanTour {} has {} cities with a search space of {}.",
                     getInputId(),
                     travelingSalesmanTour.getCityList().size(),
-                    flooredPossibleSolutionSize);
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return travelingSalesmanTour;
         }
 

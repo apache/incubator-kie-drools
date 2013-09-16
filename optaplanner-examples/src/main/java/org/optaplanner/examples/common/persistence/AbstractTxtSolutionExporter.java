@@ -55,7 +55,7 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
         logger.info("Exported: {}", outputFile);
     }
 
-    public abstract class TxtOutputBuilder {
+    public abstract class TxtOutputBuilder extends OutputBuilder {
 
         protected BufferedWriter bufferedWriter;
 
