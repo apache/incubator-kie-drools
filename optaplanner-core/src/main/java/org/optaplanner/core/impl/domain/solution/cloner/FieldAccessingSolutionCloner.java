@@ -174,7 +174,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
         protected boolean isFieldAnEntityPropertyOnSolution(Field field) {
             Class<?> declaringClass = field.getDeclaringClass();
-            if (declaringClass == ((Class) solutionDescriptor.getSolutionClass())) {
+            if (solutionDescriptor.getSolutionClass().isAssignableFrom(declaringClass)) {
                 String fieldName = field.getName();
                 // This assumes we're dealing with a simple getter/setter.
                 // If that assumption is false, validateCloneSolution(...) fails-fast.

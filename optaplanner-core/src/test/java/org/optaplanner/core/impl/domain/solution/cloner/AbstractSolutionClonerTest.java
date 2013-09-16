@@ -43,6 +43,8 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollec
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedEntity;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataExtendedSolution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -143,6 +145,55 @@ public abstract class AbstractSolutionClonerTest {
         assertEntityClone(b, cloneB, "b", "1");
         assertEntityClone(c, cloneC, "c", "3");
         assertEntityClone(d, cloneD, "d", "3");
+
+        b.setValue(val2);
+        assertCode("2", b.getValue());
+        // Clone remains unchanged
+        assertCode("1", cloneB.getValue());
+    }
+
+    @Test
+    public void cloneExtendedSolution() {
+        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        SolutionCloner<TestdataSolution> cloner = createSolutionCloner(solutionDescriptor);
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataExtendedEntity a = new TestdataExtendedEntity("a", val1, null);
+        TestdataExtendedEntity b = new TestdataExtendedEntity("b", val1, "extraObjectOnEntity");
+        TestdataExtendedEntity c = new TestdataExtendedEntity("c", val3);
+        TestdataExtendedEntity d = new TestdataExtendedEntity("d", val3, c);
+        c.setExtraObject(d);
+
+        TestdataExtendedSolution original = new TestdataExtendedSolution("solution", "extraObjectOnSolution");
+        List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
+        original.setValueList(valueList);
+        List<TestdataEntity> originalEntityList = Arrays.<TestdataEntity>asList(a, b, c, d);
+        original.setEntityList(originalEntityList);
+
+        TestdataExtendedSolution clone = (TestdataExtendedSolution) cloner.cloneSolution(original);
+
+        assertNotSame(original, clone);
+        assertCode("solution", clone);
+        assertEquals("extraObjectOnSolution", clone.getExtraObject());
+        assertSame(valueList, clone.getValueList());
+
+        List<TestdataEntity> cloneEntityList = clone.getEntityList();
+        assertNotSame(originalEntityList, cloneEntityList);
+        assertEquals(4, cloneEntityList.size());
+        TestdataExtendedEntity cloneA = (TestdataExtendedEntity) cloneEntityList.get(0);
+        TestdataExtendedEntity cloneB = (TestdataExtendedEntity) cloneEntityList.get(1);
+        TestdataExtendedEntity cloneC = (TestdataExtendedEntity) cloneEntityList.get(2);
+        TestdataExtendedEntity cloneD = (TestdataExtendedEntity) cloneEntityList.get(3);
+        assertEntityClone(a, cloneA, "a", "1");
+        assertEquals(null, cloneA.getExtraObject());
+        assertEntityClone(b, cloneB, "b", "1");
+        assertEquals("extraObjectOnEntity", cloneB.getExtraObject());
+        assertEntityClone(c, cloneC, "c", "3");
+        assertEquals(cloneD, cloneC.getExtraObject());
+        assertEntityClone(d, cloneD, "d", "3");
+        assertEquals(cloneC, cloneD.getExtraObject());
 
         b.setValue(val2);
         assertCode("2", b.getValue());
