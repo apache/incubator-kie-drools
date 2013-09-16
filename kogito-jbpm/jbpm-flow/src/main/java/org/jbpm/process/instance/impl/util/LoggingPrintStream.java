@@ -38,25 +38,26 @@ public class LoggingPrintStream extends PrintStream {
         }
     }
     
-    protected void log(String s) { 
-        synchronized (logger) {                    
-            if (isError) {
-                logger.error(s);
-            } else {
-                logger.info(s);
-            }
+    protected void log(String s) {                   
+        if (isError) {
+            logger.error(s);
+        } else {
+            logger.info(s);
         }
+    
     }    
     
     private void write(String s) { 
-        buffer.append(s);
+        synchronized (buffer) {            
+            buffer.append(s);
+        }
     }
     
-    private void newLine() { 
-        synchronized(buffer) { 
-            log(buffer.toString());
-            buffer.delete(0, buffer.length());
-        }
+    private synchronized void newLine() { 
+    
+        log(buffer.toString());
+        buffer.delete(0, buffer.length());
+        
     }
     
     public void print(boolean b) {
@@ -103,63 +104,63 @@ public class LoggingPrintStream extends PrintStream {
     }
     
     public void println(boolean x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(char x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(int x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(long x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(float x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(double x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(char x[]) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(String x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
     }
     
     public void println(Object x) {
-        synchronized (this) {
+        synchronized (logger) {
             print(x);
             newLine();
         }
