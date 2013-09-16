@@ -1,0 +1,1815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ch.core-basics"
+         version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title id="ch.core-basics.title" >Core Engine: Basics</title>
+
+  <figure>
+    <mediaobject>
+      <imageobject>
+	<imagedata align="center" fileref="images/Chapter-5-CoreEngine/Process.png" format="PNG" role="" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>A business process is a graph that describes the order in which a series of steps need to
+  be executed, using a flow chart.  A process consists of a collection of nodes that are
+  linked to each other using connections.  Each of the nodes represents one step in the
+  overall process while the connections specify how to transition from one node to the other.
+  A large selection of predefined node types have been defined.  This chapter describes how
+  to define such processes and use them in your application.</para>
+
+  <section>
+    <title>Creating a process</title>
+
+    <para>Processes can be created by using one of the following three methods:
+    <orderedlist>
+       <listitem>Using the graphical process editor such as jBPM web designer or Eclipse BPMN2 modeler</listitem>
+       <listitem>As an XML file, according to the XML process format as defined in the
+       XML Schema Definition in the BPMN 2.0 specification.</listitem>
+       <listitem>By directly creating a process using the Process API.</listitem>
+    </orderedlist>
+    </para>
+
+    <section>
+      <title>Using the graphical BPMN2 Editor</title>
+
+      <para>The graphical BPMN2 editor is an editor that allows you to create a process
+      by dragging and dropping different nodes on a canvas and editing the properties of these
+      nodes.  The graphical BPMN2 modeler is an Eclipse plugin hosted on
+      <ulink url="http://www.eclipse.org/bpmn2-modeler/">eclipse.org</ulink> that provides number
+      of contributors where one of them is jBPM project.
+      Once you have set up a jBPM project (see the installer for creating a working Eclipse
+      environment where you can start), you can start adding processes.  When in a project,
+      launch the "New" wizard (use Ctrl+N) or right-click the directory you would like to put
+      your process in and select "New", then "File".  Give the file a name and the extension
+      bpmn (e.g. MyProcess.bpmn).  This will open up the process editor (you can safely ignore
+      the warning that the file could not be read, this is just because the file is still
+      empty).</para>
+
+      <para>First, ensure that you can see the Properties View down the bottom of the Eclipse window,
+      as it will be necessary to fill in the different properties of the elements  in your process.  If you cannot
+      see the properties view, open it using the menu "Window", then "Show View" and
+      "Other...", and under the "General" folder select the Properties View.</para>
+
+      <figure>
+        <title>New process</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/NewProcess.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The process editor consists of a palette, a canvas and an outline view.
+      To add new elements to the canvas, select the element you would like to create
+      in the palette and then add them to the canvas by clicking on the preferred
+      location.  For example,  click on the "End Event" icon in the palette of the GUI.
+      Clicking on an element in your process allows you to set the properties of that element.
+      You can connect the nodes (as long as it is permitted by the different types
+      of nodes) by using "Sequence Flow" from the  palette.</para>
+
+      <para>You can keep adding nodes and connections to your process until it
+      represents the business logic that you want to specify.</para>
+
+    </section>
+
+    <section>
+      <title>Defining processes using XML</title>
+
+      <para>It is also possible to specify processes using the underlying BPMN 2.0 XML directly.
+      The syntax of these XML processes is defined using the BPMN 2.0 XML Schema Definition.
+      For example, the following XML fragment shows a simple process that contains a
+      sequence of a Start Event, a Script Task that prints "Hello World" to the console,
+      and an End Event.</para>
+
+<programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;definitions id="Definition"
+             targetNamespace="http://www.jboss.org/drools"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"Rule Task
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools"&gt;
+
+  &lt;process processType="Private" isExecutable="true" id="com.sample.hello" name="Hello Process" &gt;
+
+    &lt;!-- nodes --&gt;
+    &lt;startEvent id="_1" name="Start" /&gt;
+    &lt;scriptTask id="_2" name="Hello" &gt;
+      &lt;script&gt;System.out.println("Hello World");&lt;/script&gt;
+    &lt;/scriptTask&gt;
+    &lt;endEvent id="_3" name="End" &gt;
+        &lt;terminateEventDefinition/&gt;
+    &lt;/endEvent&gt;
+
+    &lt;!-- connections --&gt;
+    &lt;sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" /&gt;
+    &lt;sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" /&gt;
+
+  &lt;/process&gt;
+
+  &lt;bpmndi:BPMNDiagram&gt;
+    &lt;bpmndi:BPMNPlane bpmnElement="com.sample.hello" &gt;
+      &lt;bpmndi:BPMNShape bpmnElement="_1" &gt;
+        &lt;dc:Bounds x="16" y="16" width="48" height="48" /&gt;
+      &lt;/bpmndi:BPMNShape&gt;
+      &lt;bpmndi:BPMNShape bpmnElement="_2" &gt;
+        &lt;dc:Bounds x="96" y="16" width="80" height="48" /&gt;
+      &lt;/bpmndi:BPMNShape&gt;
+      &lt;bpmndi:BPMNShape bpmnElement="_3" &gt;
+        &lt;dc:Bounds x="208" y="16" width="48" height="48" /&gt;
+      &lt;/bpmndi:BPMNShape&gt;
+      &lt;bpmndi:BPMNEdge bpmnElement="_1-_2" &gt;
+        &lt;di:waypoint x="40" y="40" /&gt;
+        &lt;di:waypoint x="136" y="40" /&gt;
+      &lt;/bpmndi:BPMNEdge&gt;
+      &lt;bpmndi:BPMNEdge bpmnElement="_2-_3" &gt;
+        &lt;di:waypoint x="136" y="40" /&gt;
+        &lt;di:waypoint x="232" y="40" /&gt;
+      &lt;/bpmndi:BPMNEdge&gt;
+    &lt;/bpmndi:BPMNPlane&gt;
+  &lt;/bpmndi:BPMNDiagram&gt;
+
+&lt;/definitions&gt;
+</programlisting>
+
+      <para>The process XML file consists of two parts, the top part (the "process" element)
+      contains the definition of the different nodes and their properties, the lower part (the
+      "BPMNDiagram" element) contains all graphical information, like the location of the nodes.
+      The process XML consist of exactly one &lt;process&gt; element.
+      This element contains parameters related to the process (its type, name, id and
+      package name),  and consists of three subsections: a header section (where
+      process-level information like variables, globals, imports and lanes can be
+      defined), a nodes section that defines each of the nodes in the process,
+      and a connections section that contains the connections between all the nodes
+      in the process. In the nodes section, there is a specific element for each node,
+      defining the various parameters and, possibly, sub-elements for that node type.</para>
+
+    </section>
+
+    <section>
+      <title>Defining Processes Using the Process API</title>
+
+      <para>While it is recommended to define processes using the graphical editor or
+      the underlying XML (to shield yourself from internal APIs), it is also possible
+      to define a process using the Process API directly. The most important process
+      model elements are defined in the packages <code>org.jbpm.workflow.core</code> and
+      <code>org.jbpm.workflow.core.node</code>.  A "fluent API" is provided that
+      allows you to easily construct processes in a readable manner using factories.
+      At the end, you can validate the process that you were constructing manually.
+      </para>
+      
+      <section>
+        <title>Example</title>
+
+      <para>This is a simple example of a basic process with a script task only:</para>
+      <programlisting language="java">
+RuleFlowProcessFactory factory =
+    RuleFlowProcessFactory.createProcess("org.jbpm.HelloWorld");
+factory
+    // Header
+    .name("HelloWorldProcess")
+    .version("1.0")
+    .packageName("org.jbpm")
+    // Nodes
+    .startNode(1).name("Start").done()
+    .actionNode(2).name("Action")
+        .action("java", "System.out.println(\"Hello World\");").done()
+    .endNode(3).name("End").done()
+    // Connections
+    .connection(1, 2)
+    .connection(2, 3);
+RuleFlowProcess process = factory.validate().getProcess();
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add(ResourceFactory.newByteArrayResource(
+    XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.BPMN2);
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
+        
+      <para>You can see that we start by calling the static <code>createProcess()</code>
+      method from the <code>RuleFlowProcessFactory</code> class.  This method creates
+      a new process with the given id and returns the <code>RuleFlowProcessFactory</code>
+      that can be used to create the process.  A typical process consists of three parts.
+      The header part comprises global elements like the name of the process, imports,
+      variables,  etc.  The nodes section contains all the different nodes that are part of the
+      process. The connections section finally links these nodes to each other
+      to create a flow chart.</para>
+
+      <para>In this example, the header contains the name and the version of the
+      process and the package name. After that, you can start adding nodes to the
+      current process. If you have auto-completion you can see that you have
+      different methods to create each of the supported node types at your disposal.</para>
+
+      <para>When you start adding nodes to the process, in this example by calling
+      the <code>startNode()</code>, <code>actionNode()</code> and <code>endNode()</code>
+      methods, you can see that these methods return a specific <code>NodeFactory</code>,
+      that allows you to set the properties of that node.  Once you have finished
+      configuring that specific node, the <code>done()</code> method returns you to the
+      current <code>RuleFlowProcessFactory</code> so you can add more nodes, if necessary.</para>
+
+      <para>When you are finished adding nodes, you must connect them by creating
+      connections between them.  This can be done by calling the  method
+      <code>connection</code>, which will link previously created nodes.</para>
+
+      <para>Finally, you can validate the generated process by calling the
+      <code>validate()</code> method and retrieve the created
+      <code>RuleFlowProcess</code> object.</para>
+
+      </section>
+
+    </section>
+
+  </section>
+  
+  <section>
+    <title>Details of different process constructs: Overview</title>
+  
+  <para>The following chapters will describe the different constructs that you can use
+  to model your processes (and their properties) in detail.  Executable processes in BPMN consist
+  of different types of nodes being connected to each other using sequence flows.
+  The BPMN 2.0 specification defines three main types of nodes:</para>
+  <itemizedlist>
+    <listitem><emphasis>Events</emphasis>: They are used to model the occurrence of a particular
+    event.  This could be a start event (that is used to indicate the start of the process), end
+    events (that define the end of the process, or of that subflow) and intermediate events (that
+    indicate events that might occur during the execution of the process).</listitem>
+    <listitem><emphasis>Activities</emphasis>: These define the different actions that need to be
+    performed during the execution of the process.  Different types of tasks exist, depending on 
+    the type of activity you are trying to model (e.g. human task, service task, etc.) and activities
+    could also be nested (using different types of sub-processes).</listitem>
+    <listitem><emphasis>Gateways</emphasis>: Can be used to define multiple paths in the process.
+    Depending on the type of gateway, these might indicate parallel execution, choice, etc.</listitem>
+  </itemizedlist>
+  
+  <para>The following sections will describe the properties of the process itself and of each of
+  these different node types in detail, as supported by the Eclipse plugin and shown in the
+  following figure of the palette.  Note that the Eclipse property editor might show more properties
+  for some of the supported node types, but only the properties as defined in this section are
+  supported when using the BPMN 2.0 XML format.</para>
+
+    <table>
+    <title>jBPM BPMN2 constructs</title>
+    <tgroup cols="2">
+    <tbody>
+      <row>
+        <entry>
+          <figure>
+            <title>The different types of BPMN2 events</title>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-5-CoreEngine/Events.png" format="PNG" role="" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </entry>
+        <entry>
+          <figure>
+            <title>The different types of BPMN2 activities and gateways</title>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/Chapter-5-CoreEngine/ActivitiesGateways.png" format="PNG" role="" />
+              </imageobject>
+            </mediaobject>
+          </figure>
+        </entry>
+      </row>
+    </tbody>
+    </tgroup>
+    </table>
+  </section>
+  
+  <section>
+    <title>Details: Process properties</title>
+    
+    <para>A BPMN2 process is a flow chart where different types of nodes are
+    linked using connections.  The process itself exposes the following properties:
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>Id</emphasis>: The unique id of the process.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Name</emphasis>: The display name of the process.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Version</emphasis>: The version number of the process.</para>
+        </listitem>
+
+        <listitem>
+           <para><emphasis>Package</emphasis>: The package (namespace) the process is
+           defined in.</para>
+        </listitem>
+      </itemizedlist>
+    </para>
+
+    <figure>
+      <title>BPMN2 process properties</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-5-CoreEngine/ProcessProperties.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>In addition to that following can be defined as well:
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>Variables</emphasis>: Variables can be defined to store data
+          during the execution of your process. See section
+          <quote><link linkend='sec.data' endterm="sec.data.title"/></quote>
+          for details.</para>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Swimlanes</emphasis>: Specify the swimlanes used in this process
+          for assigning human tasks. See chapter
+          <quote><link linkend='ch.human-tasks' endterm="ch.human-tasks.title"/></quote>
+          for details.</para>
+        </listitem>
+
+      </itemizedlist>
+    </para>
+    <figure>
+      <title>BPMN2 process variables</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Chapter-5-CoreEngine/ProcessVariables.png" format="PNG" role="" />
+        </imageobject>
+      </mediaobject>
+    </figure>
+   
+    </section>
+    
+    <section>
+      <title>Details: Events</title>
+      <note>
+        <para>Following sections provide only introduction to BPMN2 constructs and their properties
+        and complete reference can be found in BPMN2 chapter.</para>
+      </note>
+    <section>
+      <title>Start event</title>
+      
+      <figure>
+        <title>Start event</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/StartEvent.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The start of the process.
+        A process should have exactly one start node (none start node which does not have event definitions),
+        which cannot have incoming connections and should have one outgoing connection.  Whenever a
+        process is started, execution will start at this node and 
+        automatically continue to the first node linked to this start event, and
+        so on. It contains the following properties:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+        </itemizedlist>
+    </section>
+    
+    <section>
+      <title>End events</title>
+      
+    <section>
+      <title>End event</title>
+      
+      <figure>
+        <title>End event</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/EndEvent.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>The end of the process.  A process
+        should have one or more end events.  The End Event should have one incoming
+        connection and cannot have any outgoing connections.  It contains the following
+        properties:</para>
+        <itemizedlist>
+          <listitem> 
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Terminate</emphasis>: An End Event can terminate
+            the entire process or just the path. When a process instance is
+            terminated, it means its state is set to completed and all other nodes 
+            that might still be active (on parallel paths) in this
+            process instance are cancelled. Non-terminating end events are simply end
+            for this path (execution of this branch will end here), but other parallel
+            paths can still continue.  A process instance will automatically complete
+            if there are no more active paths inside that process instance (for example,
+            if a process instance reaches a non-terminating end node but there are no
+            more active branches inside the process instance, the process instance
+            will be completed anyway).  Terminating end events are
+            visualized using a full circle inside the event node, non-terminating event
+            nodes are empty.  Note that, if you use a terminating event node inside a sub-process,
+            you are terminating just that sub-process and top level continues.</para>
+          </listitem>
+        </itemizedlist>
+    </section>
+    
+    <section>
+      <title>Throwing error event</title>
+      
+      <figure>
+        <title>Throwing error event</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ErrorEndEvent.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>An Error Event can be used
+        to signal an exceptional condition in the process.  It should
+        have one incoming connection and no outgoing connections.  When an Error Event
+        is reached in the process, it will throw an error with the given name.
+        The process will search for an appropriate error handler that is
+        capable of handling this kind of fault.  If no error handler is found,
+        the process instance will be aborted.  An Error Event contains the following
+        properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>FaultName</emphasis>: The name of the fault.  This
+            name is used to search for appropriate exception handlers that are
+            capable of handling this kind of fault.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>FaultVariable</emphasis>: The name of the variable
+            that contains the data associated with this fault.  This data is also
+            passed on to the exception handler (if one is found).</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>Error handlers can be specified using boundary events.</para>
+    
+    </section>
+    
+    </section>
+    
+    <section>
+      <title>Intermediate events</title>
+      
+    <section>
+      <title>Catching timer event</title>
+      
+      <figure>
+        <title>Catching timer event</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/IntermediateTimerEvent.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents a timer that can
+        trigger one or multiple times after a given period of time.  A Timer Event
+        should have one incoming connection and one outgoing connection.  The timer
+        delay specifies how long the timer should wait before
+        triggering the first time.  When a Timer Event is reached in the process, it will
+        start the associated timer.  The timer is cancelled if the timer node is
+        cancelled (e.g., by completing or aborting the enclosing process instance). Consult the
+        section <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
+        for more information. The Timer Event contains the
+        following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timer delay</emphasis>: The delay that the node should 
+            wait before triggering the first time. The expression should be of the form
+            <code>[#d][#h][#m][#s][#[ms]]</code>.  This allows you to specify the number of days,
+            hours, minutes, seconds and milliseconds (which is the default if you don't
+            specify anything).  For example, the expression "1h" will wait one hour
+            before triggering the timer.  The expression could also use #{expr} to
+            dynamically derive the delay based on some process variable.  Expr in this
+            case could be a process variable, or a more complex expression based on a
+            process variable (e.g. myVariable.getValue()).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Timer period</emphasis>: The period
+            between two subsequent triggers.  If the period is 0, the timer should
+            only be triggered once.   The expression should be of the form
+            <code>[#d][#h][#m][#s][#[ms]]</code>. You can specify the number of days,
+            hours, minutes, seconds and milliseconds (which is the default if you don't
+            specify anything).  For example, the expression "1h" will wait one hour
+            before triggering the timer again.  The expression could also use #{expr} to
+            dynamically derive the period based on some process variable.  Expr in this
+            case could be a process variable, or a more complex expression based on a
+            process variable (e.g. myVariable.getValue()).</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>Timer events could also be specified as boundary events on sub-processes and tasks
+          that are not automatic tasks like script task that have no wait state as timer will
+          not have a change to fire before task completion.</para>
+        
+    </section>
+    
+    <section>
+      <title>Catching signal event</title>
+      
+      <figure>
+        <title>Catching signal event</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/IntermediateSignalEvent.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Signal Event can be used
+        to respond to internal or external events during the execution of the process.
+        A Signal Event should have one incoming connections and one outgoing
+        connection.  It specifies the type of event that is expected.  Whenever
+        that type of event is detected, the node connected to this event node will
+        be triggered.  It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>EventType</emphasis>: The type of event that is 
+            expected.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>VariableName</emphasis>: The name of the variable that
+            will contain the data associated with this event (if any) when this
+            event occurs.</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>A process instance can be signaled that a specific event occurred
+        using</para>
+        <programlisting language="java">ksession.signalEvent(eventType, data, processInstanceId)</programlisting>
+        <para>This will trigger all (active) signal event nodes in the given process
+        instance that are waiting for that event type.  Data related to the event
+        can be passed using the data parameter.  If the event node specifies a
+        variable name, this data will be copied to that variable when the event
+        occurs.</para>
+        
+        <para>It is also possible to use event nodes inside sub-processes.  These
+        event nodes will however only be active when the sub-process is active.</para>
+        
+        <para>You can also generate a signal from inside a process instance.  A script
+        (in a script task or using on entry or on exit actions) can use</para>
+        <programlisting>
+kcontext.getKnowledgeRuntime().signalEvent(eventType, data, kcontext.getProcessInstance().getId());
+        </programlisting>
+
+        <para>A throwing signal event could also be used to model the signaling of an
+        event.</para>
+        
+    </section>
+    
+    </section>
+    
+    </section>
+    
+    <section>
+      <title>Details: Activities</title>
+      
+    <section>
+      <title>Script task</title>
+      
+      <figure>
+        <title>Script task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ScriptTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents a script that
+        should be executed in this process.  A Script Task should have one incoming
+        connection and one outgoing connection.  The associated action specifies what
+        should be executed, the dialect used for coding the action (i.e., Java or MVEL),
+        and the actual action code.  This code can access any variables and globals.
+        There is also a predefined variable <code>kcontext</code> that references the
+        <code>ProcessContext</code> object (which can,
+        for example, be used to access the current <code>ProcessInstance</code> or
+        <code>NodeInstance</code>, and to get and set variables, or get access to the
+        ksession using <code>kcontext.getKnowledgeRuntime()</code>). When a Script Task
+        is reached in the process, it will execute the action and then continue with the
+        next node.  It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Action</emphasis>: The action script associated with this 
+            action node.</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>Note that you can write any valid Java code inside a script node.  This
+        basically allows you to do anything inside such a script node.  There are some
+        caveats however:
+          <itemizedlist>
+            <listitem>When trying to create a higher-level business process, that should
+            also be understood by business users, it is probably wise to avoid low-level
+            implementation details inside the process, including inside these script tasks.
+            A Script Task could still be used to quickly manipulate variables etc. but
+            other concepts like a Service Task could be used to model more complex
+            behaviour in a higher-level manner.</listitem>
+            <listitem>Scripts should be immediate.  They are using the engine thread
+            to execute the script.  Scripts that could take some time to execute should
+            probably be modeled as an asynchronous Service Task.</listitem>
+            <listitem>You should try to avoid contacting external services through a
+            script node.  Not only does this usually violate the first two caveats, it
+            is also interacting with external services without the knowledge of the engine,
+            which can be problematic, especially when using persistence and transactions.
+            In general, it is probably wiser to model communication with an external
+            service using a service task.</listitem>
+            <listitem>Scripts should not throw exceptions.  Runtime exceptions should
+            be caught and for example managed inside the script or transformed into
+            signals or errors that can then be handled inside the process.</listitem>
+          </itemizedlist>
+        </para>
+    
+    </section>
+    
+    <section>
+      <title>Service task</title>
+      
+      <figure>
+        <title>Service task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ServiceTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents an (abstract)
+        unit of work that should be executed in this process.  All work that is
+        executed outside the process engine should be represented (in a declarative
+        way) using a Service Task.  Different types of services are predefined, e.g.,
+        sending an email, logging a message, etc.  Users can define domain-specific
+        services or work items, using a unique name and by defining
+        the parameters (input) and results (output) that are associated with this
+        type of work.  Check the chapter on domain-specific processes for a
+        detailed explanation and illustrative examples of how to define and use
+        work items in your processes.  When a Service Task is reached in the
+        process, the associated work is executed.  A Service Task should
+        have one incoming connection and one outgoing connection.</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the
+            value of process variables to parameters of the work item.  Upon
+            creation of the work item, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value
+            of result parameters of the work item to a process variable.  Each
+            type of work can define result parameters that will (potentially)
+            be returned after the work item has been completed.  A result
+            mapping can be used to copy the value of the given result parameter
+            to the given variable in this process.  For example, the "FileFinder"
+            work item returns a list of files that match the given search
+            criteria within the result parameter <code>Files</code>.  This list
+            of files can then be bound to a process variable for use within the
+            process.  Upon completion of the work item, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Additional parameters</emphasis>: Each type of work
+            item can define additional parameters that are relevant for that
+            type of work.  For example, the "Email" work item defines additional
+            parameters such as <code>From</code>, <code>To</code>, <code>Subject</code>
+            and <code>Body</code>.  The user can either provide values for these
+            parameters directly, or define a
+            parameter mapping that will copy the value of the given variable
+            in this process to the given parameter; if both are specified, the
+            mapping will have precedence.  Parameters of type <code>String</code> can use
+            <emphasis><code>#{expression}</code></emphasis> to embed a value in the
+            string.  The value will be retrieved when creating the work item, and the
+            substitution expression will be replaced by the result of calling
+            <code>toString()</code> on the variable.  The expression could
+            simply be the name of a variable (in which case it resolves
+            to the value of the variable), but more advanced MVEL expressions
+            are possible as well, e.g., <code>#{person.name.firstname}</code>.</para>
+          </listitem>
+        </itemizedlist>
+    
+    </section>
+    
+    <section>
+      <title>User task</title>
+      
+      <figure>
+        <title>User task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/UserTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Processes can also
+        involve tasks that need to be executed by human actors.  A User Task
+        represents an atomic task to be executed by a human actor.  It
+        should have one incoming connection and one outgoing connection.
+        User Tasks can be used in combination with Swimlanes to assign multiple
+        human tasks to similar actors. Refer to the chapter on human tasks
+        for more details.  A User Task is actually nothing more than a specific
+        type of service node (of type "Human Task").  A User Task contains
+        the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>TaskName</emphasis>: The name of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Priority</emphasis>: An integer indicating the priority
+            of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Comment</emphasis>: A comment associated with the human
+            task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ActorId</emphasis>: The actor id that is responsible for
+             executing the human task.  A list of actor id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>GroupId</emphasis>: The group id that is responsible for
+             executing the human task.  A list of group id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+             <para><emphasis>Skippable</emphasis>: Specifies whether the human task
+             can be skipped, i.e., whether the actor may decide not to execute the
+             task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Content</emphasis>: The data associated with this task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Swimlane</emphasis>: The swimlane this human task node
+            is part of.  Swimlanes make it easy to assign multiple human tasks to
+            the same actor.  See the human tasks chapter for more detail on how to
+            use swimlanes.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On entry and on exit actions</emphasis>: Action scripts
+            that are executed upon entry and exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the value
+            of process variables to parameters of the human task.  Upon creation of
+            the human tasks, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value 
+            of result parameters of the human task to a process variable.  Upon
+            completion of the human task, the values will be copied.  A human task
+            has a result variable "Result" that contains
+            the data returned by the human actor.  The variable "ActorId" contains
+            the id of the actor that actually executed the task.</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>A user task should define the type of task that needs to be executed
+        (using properties like TaskName, Comment, etc.) and who needs to perform it
+        (using either actorId or groupId).  Note that if there is data related to
+        this specific process instance that the end user needs when performing the
+        task, this data should be passed as the content of the task.  The task for
+        example does not have access to process variables.  Check out the chapter on
+        human tasks to get more detail on how to pass data between human tasks and
+        the process instance.</para>
+    </section>
+      
+    <section>
+      <title>Reusable sub-process</title>
+    
+      <figure>
+        <title>Reusable sub-process - Call activity</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ReusableSubProcess.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents the invocation
+        of another process from within this process.  A sub-process node should
+        have one incoming connection and one outgoing connection.  When a Reusable Sub-Process
+        node is reached in the process, the engine will start the process with the
+        given id.  It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para></listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ProcessId</emphasis>: The id of the process that should
+            be executed.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Wait for completion</emphasis> (by default true): If this property is true,
+            this sub-process node will only continue if the child process that was started
+            has terminated its execution (completed or aborted); otherwise it will 
+            continue immediately after starting the subprocess (so it will not wait for
+            its completion).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Independent</emphasis> (by default true): If this property is true, the
+            child process is started as an independent process, which means that the
+            child process will not be terminated if this parent process is completed (or
+            this sub-process node is cancelled for some other reason);
+            otherwise the active sub-process will be cancelled on termination of the parent
+            process (or cancellation of the sub-process node).  Note that you can only set
+            independent to "false" only when "Wait for completion" is set to true.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are 
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter in/out mapping</emphasis>: A sub-process node can
+            also define in- and out-mappings for variables.  The variables
+            given in the "in" mapping will be used as parameters (with the associated 
+            parameter name) when starting the process. The variables of the child process
+            that are defined for the "out" mappings will be copied to the variables of this
+            process when the child process has been completed.  Note that you can use
+             "out" mappings only when "Wait for completion" is set to true.</para>
+          </listitem>
+        </itemizedlist>
+    </section>
+      
+    <section>
+      <title>Business rule task</title>
+      
+      <figure>
+        <title>Business rule task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/BusinessRuleTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Business Rule Task Represents a set of rules that need to be 
+        evaluated.  The rules are evaluated when the node is reached.  A Rule 
+        Task should have one incoming connection and one outgoing connection.  
+        Rules are defined in separate files using the Drools rule format.  Rules 
+        can become part of a specific ruleflow group using the <literal>ruleflow-group</literal> 
+        attribute in the header of the rule.</para>
+
+        <para>When a Rule Task is reached in the process, the engine will start 
+        executing rules that are part of the corresponding ruleflow-group (if any).  
+        Execution will automatically continue to the next node if there are 
+        no more active rules in this ruleflow group. As a result, during the 
+        execution of a ruleflow group, new activations belonging to the currently active
+        ruleflow group can be added to the Agenda due to changes made to the facts by
+        the other rules. Note that the process will immediately continue with the
+        next node if it encounters a ruleflow group where there are no active rules
+        at that time.</para>
+        
+        <para>If the ruleflow group was already active, the ruleflow group
+        will remain active and execution will only continue if all active rules of the
+        ruleflow group has been completed. It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>RuleFlowGroup</emphasis>: The name of the ruleflow group
+            that represents the set of rules of this RuleFlowGroup node.</para>
+          </listitem>
+        </itemizedlist>
+        
+    </section>
+    
+    <section>
+      <title>Embedded sub-process</title>
+      
+      <figure>
+        <title>Embedded sub-process</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/EmbeddedSubProcess.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Sub-Process is 
+        a node that can contain other nodes so that it acts as a node container.
+        This allows not only the embedding of a part of the process within such
+        a sub-process node, but also the definition of additional variables that
+        are accessible for all nodes inside this container. A sub-process should
+        have one incoming connection and one
+        outgoing connection. It should also contain one start node that defines
+        where to start (inside the Sub-Process) when you reach the sub-process.
+        It should also contain one or more end events.  Note that, if you use a
+        terminating event node inside a sub-process, you are terminating just that
+        sub-process. A sub-process ends when there are no more active nodes inside
+        the sub-process.
+        It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Variables</emphasis>: Additional variables can be
+            defined to store data during the execution of this node. See section
+            <quote><link linkend='sec.data' endterm="sec.data.title"/></quote>
+            for details.</para>
+          </listitem>
+        </itemizedlist>
+    
+    </section>
+    
+    <section>
+      <title>Multi-instance sub-process</title>
+      
+      <figure>
+        <title>Multi-instance sub-process</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/MultipleInstances.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Multiple Instance sub-process is a
+        special kind of sub-process that allows you to execute the contained
+        process segment multiple times, once for each element in a collection.  A 
+        multiple instance sub-process should have one incoming connection and one
+        outgoing connection. It waits until the embedded process fragment is completed
+        for each of the elements in the given collection before continuing.  It contains
+        the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which
+            is unique within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>CollectionExpression</emphasis>: The name of a
+            variable that represents the collection of elements that should
+            be iterated over.  The collection variable should be an array or
+            of type <code>java.util.Collection</code>.  If the collection
+            expression evaluates to null or an empty collection, the multiple
+            instances sub-process will be completed immediately and follow its
+            outgoing connection.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>VariableName</emphasis>: The name of the variable
+            to contain the current element from the collection.  This
+            gives nodes within the composite node access to the selected
+            element.</para>
+          </listitem>
+        </itemizedlist>
+    
+    </section>
+      
+    </section>
+    
+    <section>
+      <title>Details: Gateways</title>
+      
+    <section>
+      <title>Diverging gateway</title>
+      
+      <figure>
+        <title>Diverging gateway</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/DivergingGateway.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Allows you to create branches
+        in your process.  A Diverging Gateway should have one incoming connection and two or
+        more outgoing connections.  There are three types of gateway nodes currently
+        supported:
+          <itemizedlist>
+           <listitem>
+            <para>AND or parallel means that the control flow will continue in all outgoing
+            connections simultaneously.</para>
+           </listitem>
+           <listitem>
+             <para>XOR or exclusive means that exactly one of the outgoing connections will
+             be chosen.  The decision is made by evaluating the constraints
+             that are linked to each of the outgoing connections.  The
+             constraint with the <emphasis>lowest</emphasis> priority number that
+             evaluates to true is selected.  Constraints can be
+             specified using different dialects.  Note that you should always make sure
+             that at least one  of the outgoing connections will evaluate to true
+             at runtime (the engine will throw an exception at runtime if it
+             cannot find at  least one outgoing connection).</para>
+           </listitem>
+           <listitem>
+             <para>OR or inclusive means that all outgoing connections whose condition evaluates
+             to true are selected.  Conditions are similar to the exclusive gateway, except
+             that no priorities are taken into account.  Note that you should
+             make sure that at least one of the outgoing connections will evaluate
+             to true at runtime because the engine will throw an exception at
+             runtime if it cannot determine an outgoing connection.
+             </para>
+           </listitem>
+          </itemizedlist>
+        It contains the following properties:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Type</emphasis>: The type of the split node, i.e., AND,
+            XOR or OR (see above).</para>
+          </listitem>
+          <listitem><para><emphasis>Constraints</emphasis>: The constraints linked
+            to each of the outgoing connections (in case of an exclusive or inclusive gateway).</para>
+          </listitem>
+        </itemizedlist>
+    </section>
+        
+    <section>
+      <title>Converging gateway</title>
+      
+      <figure>
+        <title>Converging gateway</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ConvergingGateway.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+          <para>Allows you to synchronize
+          multiple branches.  A Converging Gateway should have two or more incoming connections
+          and one outgoing connection.  There are three types of splits currently supported:
+          <itemizedlist>
+           <listitem>
+            <para>AND or parallel means that is will wait until <emphasis>all</emphasis> incoming
+            branches are completed before continuing.
+            </para>
+           </listitem>
+           <listitem>
+             <para>XOR or exclusive means that it continues as soon as <emphasis>one</emphasis> of its
+             incoming branches has been completed.  If it is triggered from more than one
+             incoming connection, it will trigger the next node for each of those triggers.</para>
+           </listitem>
+            <listitem>
+              <para>OR or inclusive means that it continues as soon as <emphasis>all direct active paths</emphasis>
+              of its incoming branches has been completed. This is complex merge behaviour that is described
+              in BPMN2 specification but in most cases it means that OR join will wait for all active flows
+              that started in OR split. Some advanced cases (including other gateways in between or repeatable timers)
+              will be causing different "direct active path" calculation. </para>
+            </listitem>
+          </itemizedlist>
+        It contains the following properties:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Type</emphasis>: The type of the Join node, i.e. AND, OR or XOR.</para>
+          </listitem>
+        </itemizedlist>
+        
+    </section>
+    
+  </section>
+
+  <section>
+    <title>Using a process in your application</title>
+
+    <para>As explained in more detail in the API chapter, there are two things you
+    need to do to be able to execute processes from within your application: (1) you
+    need to create a Knowledge Base that contains the definition of the process, and
+    (2) you need to start the process by creating a session to communicate with the
+    process engine and start the process.</para>
+
+    <orderedlist>
+
+      <listitem><para><emphasis>Creating a Knowledge Base</emphasis>: Once you
+      have a valid process, you can add the process to the Knowledge Base:</para>
+      <programlisting language="java">
+KieHelper kieHelper = new KieHelper();
+KieBase kieBase = kieHelper
+.addResource(ResourceFactory.newClassPathResource("MyProcess.bpmn2"));
+      </programlisting>
+      <para>After adding all your process (you can add more
+      than one process), you can create a new knowledge base
+      like this:</para>
+      <programlisting language="java">
+KieBase kbase = kieHelper.build();
+      </programlisting>
+      <para>Note that this will throw an exception if the knowledge base contains
+      errors (because it could not parse your processes correctly).</para>
+      </listitem>
+
+      <listitem><para><emphasis>Starting a process</emphasis>: To start a particular
+      process, you will need to call the <code>startProcess</code> method on your session
+      and pass the id of the process you want to start. For example:</para>
+      <programlisting language="java">
+KieSession ksession = kbase.newKieSession();
+ksession.startProcess("com.sample.hello");</programlisting>
+      <para>The parameter of the <code>startProcess</code> method is the id
+      of the process that needs to be started. When defining a process, this
+      process id needs to be specified as a property of the process (as for example
+      shown in the Properties View in Eclipse when you click the background canvas
+      of your process).</para>
+
+      <para>When you start the process, you may specify additional parameters that are
+      used to pass additional input data to the process, using the
+      <code>startProcess(String processId, Map parameters)</code> method. The
+      additional set of parameters is a set of name-value pairs. These parameters
+      are copied to the newly created process instance as top-level variables
+      of the process, so they can be accessed in the remainder of your process directly.
+      </para></listitem>
+
+    </orderedlist>
+    
+  </section>
+  
+  <section>
+    <title>Other features</title>
+  
+  <section id='sec.data'>
+    <title id='sec.data.title'>Data</title>
+
+    <para>While the flow chart focuses on specifying the control flow of the
+    process, it is usually also necessary to look at the process from a data
+    perspective.  Throughout the execution of a process, data can be retrieved,
+    stored, passed on and used.</para>
+
+    <para>For storing runtime data, during the execution of the process,
+    process variables can be used.  A variable is defined by a name and a data type.
+    This could be a basic data type, such as boolean, int, or String, or any kind of
+    Object subclass (it must implement Serializable interface).  Variables can be
+    defined inside a variable <emphasis>scope</emphasis>.  The top-level
+    scope is the variable scope of the process itself.  Subscopes can be
+    defined using a Sub-Process.  Variables that are defined in a subscope
+    are only accessible for nodes within that scope.</para>
+
+    <para>Whenever a variable is accessed, the process will search for the
+    appropriate variable scope that defines the variable.  Nesting of variable
+    scopes is allowed. A node will always search for a variable in its parent
+    container.  If the variable cannot be found, it will look in that one's
+    parent container, and so on, until the process instance itself is reached.
+    If the variable cannot be found, a read access yields null, and a write
+    access produces an error message, with the process continuing its
+    execution.</para>
+
+    <para>Variables can be used in various ways:</para>
+      <itemizedlist>
+        <listitem><para>Process-level variables can be set when starting a process
+        by providing a map of parameters to the invocation of the
+        <code>startProcess</code> method.  These parameters will be set as
+        variables on the process scope.</para>
+        </listitem>
+        <listitem><para>Script actions can access variables directly, simply by using the
+        name of the variable as a local parameter in their script.  For example, if the process
+        defines a variable of type "org.jbpm.Person" in the process, a script in the process
+        could access this directly:</para>
+        <programlisting language="java">
+// call method on the process variable "person"
+person.setAge(10);
+        </programlisting>
+        <para>Changing the value of a variable in a script can be done through the knowledge context:</para>
+          <programlisting language="java">kcontext.setVariable(variableName, value);</programlisting>
+        </listitem>
+        <listitem><para>Service tasks (and reusable sub-processes) can pass the value of process
+        variables to the outside world (or another process instance) by mapping the variable
+        to an outgoing parameter.  For example, the parameter mapping of a service task could define
+        that the value of the process variable x should be mapped to a task parameter y right
+        before the service is being invoked.  You can also inject the value of process variable
+        into a hard-coded parameter String using
+        <emphasis><code>#{expression}</code></emphasis>.  For example, the description of a human
+        task could be defined as <code>You need to contact person #{person.getName()}</code> (where
+        person is a process variable), which will replace this expression by the actual name of the
+        person when the service needs to be invoked.  Similarly results of a service (or reusable
+        sub-process) can also be copied back to a variable using a result mapping.</para>
+        </listitem>
+        <listitem><para>Various other nodes can also access data. Event nodes for
+        example can store the data associated to the event in a variable, etc. 
+        Check the properties of the different node types for more information.</para>
+        </listitem>
+        <listitem><para>Process variables can be accessed also from the Java code of your application. It is
+        done by casting of <code>ProcessInstance</code> to <code>WorkflowProcessInstance</code>.
+        See the following example:</para>
+        <programlisting language="java">
+variable = ((WorkflowProcessInstance) processInstance).getVariable("variableName");
+        </programlisting>
+        <para>To list all the process variables see the following code snippet:</para>
+        <programlisting language="java">
+org.jbpm.process.instance.ProcessInstance processInstance = ...;
+VariableScopeInstance variableScope = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+Map&lt;String, Object&gt; variables = variableScope.getVariables();
+        </programlisting>
+        <para>Note that when you use persistence then you have to use a command based
+        approach to get all process variables:</para>
+        <programlisting language="java">
+Map&lt;String, Object&gt; variables = ksession.execute(new GenericCommand&lt;Map&lt;String, Object&gt;&gt;() {
+    public Map&lt;String, Object&gt; execute(Context context) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        org.jbpm.process.instance.ProcessInstance processInstance = (org.jbpm.process.instance.ProcessInstance) ksession.getProcessInstance(piId);
+        VariableScopeInstance variableScope = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        Map&lt;String, Object&gt; variables = variableScope.getVariables();
+        return variables;
+    }
+});</programlisting>
+        </listitem>
+      </itemizedlist>
+
+    <para>Finally, processes (and rules) all have access to globals, i.e.
+    globally defined variables and data in the Knowledge Session.  Globals are directly
+    accessible in actions just like variables.  Globals need to be defined as part of the
+    process before they can be used.  You can for example define globals by clicking the
+    globals button when specifying an action script in the Eclipse action property
+    editor.  You can also set the value of a global from the outside using 
+    <code>ksession.setGlobal(name, value)</code> or from inside process scripts using 
+    <code>kcontext.getKnowledgeRuntime().setGlobal(name,value);</code>.</para>
+
+  </section>
+
+  <section>
+    <title>Constraints</title>
+
+    <para>Constraints can be used in various locations in your processes,
+    for example in a diverging gateway.  jBPM supports two types of constraints:</para>
+      <itemizedlist>
+        <listitem><para><emphasis>Code constraints</emphasis> are boolean expressions,
+        evaluated directly whenever they are reached. We currently support two
+        dialects for expressing these code constraints: Java and MVEL.
+        Both Java and MVEL code constraints have direct access
+        to the globals and variables defined in the process.  Here is an example
+        of a valid Java code constraint, <code>person</code> being a variable
+        in the process:</para>
+          <programlisting language="java">return person.getAge() > 20;</programlisting>
+        <para>A similar example of a valid MVEL code constraint is:</para>
+          <programlisting>
+return person.age > 20;</programlisting>
+        </listitem>
+        <listitem><para><emphasis>Rule constraints</emphasis> are equals to normal
+        Drools rule conditions.  They use the Drools Rule Language syntax to
+        express possibly complex constraints.  These rules can, like any other
+        rule, refer to data in the Working Memory.  They can also refer to
+        globals directly.  Here is an example of a valid rule constraint:</para>
+          <programlisting
+>Person( age > 20 )</programlisting>
+        <para>This tests for a person older than 20 being in the Working
+        Memory.</para></listitem>
+      </itemizedlist>
+
+    <para>Rule constraints do not have direct access to variables defined
+    inside the process.  It is however possible to refer to the current process
+    instance inside a rule constraint, by adding the process instance to the
+    Working Memory and matching for the process instance in your rule
+    constraint.  We have added special logic to make sure that a variable
+    <code>processInstance</code> of type <code>WorkflowProcessInstance</code>
+    will only match to the current process instance and not to other process
+    instances in the Working Memory.  Note that you are however responsible
+    yourself to insert the process instance into the session and, possibly,
+    to update it, for example, using Java code or an on-entry or on-exit or
+    explicit action in your process. The following example of a rule
+    constraint will search for a person with the same name as the value
+    stored in the variable "name" of the process:</para>
+
+    <programlisting>processInstance : WorkflowProcessInstance()
+Person( name == ( processInstance.getVariable("name") ) )
+# add more constraints here ...</programlisting>	
+  </section>
+
+
+  <section>
+    <title>Action scripts</title>
+
+    <para>Action scripts can be used in different ways:
+      <itemizedlist>
+        <listitem>Within a Script Task,</listitem>
+        <listitem>As entry or exit actions, with a number of nodes.</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>Actions have access to globals and the variables that are defined
+    for the process and the predefined variable <code>kcontext</code>.  This
+    variable is of type
+    <code>org.kie.api.runtime.process.ProcessContext</code> and can be used for
+    several tasks:</para>
+      <itemizedlist>
+        <listitem><para>Getting the current node instance (if applicable).  The node
+        instance could be queried for data, such as its name and type.  You can
+        also cancel the current node instance.</para>
+        <programlisting language="java">NodeInstance node = kcontext.getNodeInstance();
+String name = node.getNodeName();</programlisting>
+        </listitem>
+        <listitem><para>Getting the current process instance.  A process instance
+        can be queried for data (name, id, processId, etc.), aborted or
+        signaled an internal event.</para>
+        <programlisting language="java">ProcessInstance proc = kcontext.getProcessInstance();
+proc.signalEvent( type, eventObject );</programlisting>
+        </listitem>
+        <listitem><para>Getting or setting the value of variables.</para></listitem>
+        <listitem><para>Accessing the Knowledge Runtime allows you do things
+        like starting a process, signaling (external) events, inserting data,
+        etc.</para></listitem>
+      </itemizedlist>
+
+    <para>jBPM currently supports two dialects, Java and MVEL.
+    Java actions should be valid Java code.  MVEL actions can use the business
+    scripting language MVEL to express the action.  MVEL accepts any valid Java
+    code but additionally provides support for nested accesses of parameters
+    (e.g., <code>person.name</code> instead of <code>person.getName()</code>),
+    and many other scripting improvements.  Thus, MVEL expressions are more
+    convenient for the business user. For example, an action that prints out
+    the name of the person in the "requester" variable of the process would
+    look like this:</para>
+
+    <programlisting>// Java dialect
+System.out.println( person.getName() );
+
+//  MVEL dialect
+System.out.println( person.name );
+    </programlisting>
+  </section>
+  
+  <section>
+    <title>Events</title>
+
+        <figure>
+          <title>A sample process using events</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-5-CoreEngine/EventProcess.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+    <para>During the execution of a process, the process engine makes sure that all the relevant
+    tasks are executed according to the process plan, by requesting the execution of work items
+    and waiting for the results.  However, it is also possible that the process should respond to
+    events that were not directly requested by the process engine.  Explicitly representing these
+    events in a process allows the process author to specify how the process should react
+    to such events.</para>
+
+    <para>Events have a type and possibly data associated with them.  Users are free to define
+    their own event types and their associated data.</para>
+
+    <para>A process can specify how to respond to events by using a Message Event.  An Event
+    node needs to specify the type of event the node is interested in.  It can also define
+    the name of a variable, which will receive the data that is associated with the event.
+    This allows subsequent nodes in the process to access the event data and take appropriate
+    action based on this data.</para>
+
+    <para>An event can be signaled to a running instance of a process in a number of ways:</para>
+      <itemizedlist>
+        <listitem><para>Internal event: Any action inside a process (e.g., the action of an
+        action node, or an on-entry or on-exit action of some node) can signal the
+        occurrence of an internal event to the surrounding process instance, using code
+        like the following:</para>
+        <programlisting language="java">kcontext.getProcessInstance().signalEvent(type, eventData);</programlisting></listitem>
+        <listitem><para>External event: A process instance can be notified of an event
+        from outside using code such as:</para>
+        <programlisting language="java">processInstance.signalEvent(type, eventData);</programlisting></listitem>
+        <listitem><para>External event using event correlation: Instead of notifying a
+        process instance directly, it is also possible to have the engine
+        automatically determine which process instances might be interested
+        in an event using <emphasis>event correlation</emphasis>, which is based
+        on the event type.  A process instance that contains an event node
+        listening to external events of some type is notified whenever such
+        an event occurs. To signal such an event to the process engine, write
+        code such as:</para>
+        <programlisting language="java">ksession.signalEvent(type, eventData);</programlisting></listitem>
+      </itemizedlist>
+
+    <para>Events could also be used to start a process.  Whenever a Message Start Event
+    defines an event trigger of a specific type, a new process instance will be
+    started every time that type of event is signalled to the process engine.</para>
+
+  </section>
+  
+  <section id="sec.timers">
+    <title id="sec.timers.title">Timers</title>
+
+    <para>Timers wait for a predefined amount of time, before triggering, once
+    or repeatedly.  They can be used to trigger
+    certain logic after a certain period, or to repeat some action at regular
+    intervals.</para>
+
+    <section>
+      <title>Configure timer with delay and period</title>
+      <para>A Timer node is set up with a delay and a period.  The delay specifies
+      the amount of time to wait after node activation before
+      triggering the timer the first time.  The period defines the time between
+      subsequent trigger activations. A period of 0 results in a one-shot timer.</para>
+
+      <para>The (period and delay) expression should be of the form
+      [#d][#h][#m][#s][#[ms]].  You can specify the amount of days,
+      hours, minutes, seconds and milliseconds (which is the default if you don't
+      specify anything).  For example, the expression "1h" will wait one hour
+      before triggering the timer (again).</para>
+
+    </section>
+
+    <section>
+      <title>Configure timer ISO-8601 date format</title>
+      <para>since version 6 timers can be configured with valid <ulink url="http://en.wikipedia.org/wiki/ISO_8601">
+      ISO8601</ulink> date format that supports both one shot timers and repeatable timers. Timers can be defined
+      as data dn time representation, time duration or repeating intervals</para>
+      <itemizedlist>
+        <listitem>Date - 2013-12-24T20:00:00.000+02:00 - fires exactly at Christmas Eve at 8PM</listitem>
+        <listitem>Duration - PT1S - fires once after 1 second</listitem>
+        <listitem>Repeatable intervals - R/PT1S - fires every second, no limit, alternatively R5/PT1S will fire 5 times every second</listitem>
+      </itemizedlist>
+
+    </section>
+
+    <section>
+      <title>Configure timer with process variables</title>
+      In addition to two configuration otpions above timers can be specified using process variable that can consists
+      of string representation of ether delay and period or ISO8601 date format. By specifying #{variable} engine will
+      dynamically extract process variable and use it as timer expression.
+    </section>
+
+    <para>The timer service is responsible for making sure that timers get
+    triggered at the appropriate times.  Timers can also be cancelled, meaning
+    that the timer will no longer be triggered.</para>
+
+    <para>Timers can be used in two ways inside a process:</para>
+      <itemizedlist>
+        <listitem><para>A Timer Event may be added to the process flow. Its activation
+        starts the timer, and when it triggers, once or repeatedly, it activates the
+        Timer node's successor. Subsequently, the outgoing connection of a
+        timer with a positive period is triggered multiple times. Cancelling a
+        Timer node also cancels the associated timer, after which no more triggers
+        will occur.</para></listitem>
+        <listitem><para>Timers can be associated with a Sub-Process or tasks as a boundary event.
+        </para></listitem>
+      </itemizedlist>
+
+  </section>
+  
+  <section>
+    <title>Updating processes</title>
+
+  <para>Over time, processes may evolve, for example because the process itself
+  needs to be improved, or due to changing requirements.  Actually, you cannot really
+  update a process, you can only deploy a new version of the process, the old process
+  will still exist.  That is because existing process instances might still need that
+  process definition.  So the new process should have a different id, though the name
+  could be the same, and you can use the version parameter to show when a process is
+  updated (the version parameter is just a String and is not validated by the process
+  framework itself, so you can select your own format for specifying minor/major
+  updates, etc.).</para>
+
+  <para>Whenever a process is updated, it is important to determine what should happen
+  to the already running process instances.  There are various strategies one could
+  consider for each running instance:</para>
+    <itemizedlist>
+      <listitem><para><emphasis>Proceed</emphasis>: The running process instance proceeds as
+      normal, following the process (definition) as it was defined when the process
+      instance was started.  As a result, the already running instance will proceed as
+      if the process was never updated.  New instances can be started using the updated
+      process.</para></listitem>
+      <listitem><para><emphasis>Abort (and restart)</emphasis>: The already running instance
+      is aborted.  If necessary, the process instance can be restarted using the new
+      process definition.</para></listitem>
+      <listitem><para><emphasis>Transfer</emphasis>: The process instance is migrated to the
+      new process definition, meaning that - once it has been migrated successfully -
+      it will continue executing based on the updated process logic.</para></listitem>
+    </itemizedlist>
+
+  <para>By default, jBPM uses the proceed approach, meaning that multiple
+  versions of the same process can be deployed, but existing process instances will
+  simply continue executing based on the process definition that was used when starting
+  the process instance.  Running process instances could always be aborted as well of
+  course, using the process management API.  Process instance migration is more difficult
+  and is explained in the following paragraphs.</para>
+
+    <section>
+      <title>Process instance migration</title>
+
+    <para>A process instance contains all the runtime information needed to continue
+    execution at some later point in time.  This includes all the data linked to this
+    process instance (as variables), but also the current state in the process diagram.
+    For each node that is currently active, a node instance is used to represent this.
+    This node instance can also contain additional state linked to the execution of that
+    specific node only.  There are different types of node instances, one for each type
+    of node.</para>
+
+    <para>A process instance only contains the runtime state and is linked to a particular
+    process (indirectly, using id references) that represents the process logic that needs
+    to be followed when executing this process instance (this clear separation of definition
+    and runtime state allows reuse of the definition across all process instances based
+    on this process and minimizes runtime state).  As a result, updating a running process
+    instance to a newer version so it uses the new process logic instead of the old one is
+    simply a matter of changing the referenced process id from the old to the new id.</para>
+
+    <para>However, this does not take into account that the state of the process instance (the
+    variable instances and the node instances) might need to be migrated as well.  In cases
+    where the process is only extended and all existing wait states are kept, this is pretty
+    straightforward, the runtime state of the process instance does not need to change at all.
+    However, it is also possible that a more sophisticated mapping is necessary.  For example,
+    when an existing wait state is removed, or split into multiple wait states, an existing 
+    process instance that is waiting in that state cannot simply be updated.  Or when a new
+    process variable is introduced, that variable might need to be initiated correctly so it
+    can be used in the remainder of the (updated) process.</para>
+
+    <para>The WorkflowProcessInstanceUpgrader can be used to upgrade a workflow process
+    instance to a newer process instance.  Of course, you need to provide the process instance
+    and the new process id. By default, jBPM will automatically map old node instances
+    to new node instances with the same id.  But you can provide a mapping of the old (unique)
+    node id to the new node id.  The unique node id is the node id, preceded by the node ids
+    of its parents (with a colon inbetween), to uniquely identify a node when composite
+    nodes are used (as a node id is only unique within its node container.  The new node id
+    is simply the new node id in the node container (so no unique node id here, simply the new
+    node id).  The following code snippet shows a simple example.</para>
+
+    <programlisting language="java">// create the session and start the process "com.sample.process"
+KieSession ksession = ...
+ProcessInstance processInstance = ksession.startProcess("com.sample.process");
+
+// add a new version of the process "com.sample.process2"
+kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add(..., ResourceType.BPMN2);
+kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+// migrate process instance to new version
+Map&lt;String, Long&gt; mapping = new HashMap&lt;String, Long&gt;();
+// top level node 2 is mapped to a new node with id 3
+mapping.put("2", 3L); 
+// node 2, which is part of composite node 5, is mapped to a new node with id 4
+mapping.put("5.2", 4L); 
+WorkflowProcessInstanceUpgrader.upgradeProcessInstance(
+   ksession, processInstance.getId(),
+   "com.sample.process2", mapping);</programlisting>
+
+    <para>If this kind of mapping is still insufficient, you can still describe your own custom
+    mappers for specific situations.  Be sure to first disconnect the process instance, change
+    the state accordingly and then reconnect the process instance, similar to how the 
+    WorkflowProcessinstanceUpgrader does it.</para>
+
+    </section>
+    
+    </section>
+      
+    <section id="sec.multi-threading"> 
+      <title id="sec.multi-threading.title">Multi-threading</title>
+   
+    <para>In the following text, we will refer to two types of "multi-threading": 
+    <emphasis>logical</emphasis> and <emphasis>technical</emphasis>. 
+    <emphasis>Technical multi-threading</emphasis> is what happens when multiple 
+    threads or processes are started on a computer, for example by a Java or 
+    C program. <emphasis>Logical multi-threading</emphasis> is what we see in 
+    a BPM process after the process reaches a parallel gateway, for 
+    example. From a functional standpoint, the original process will then split 
+    into two processes that are executed in a parallel fashion.</para>
+
+    <para>Of course, the jBPM engine supports logical multi-threading: for example, 
+    processes that include a parallel gateway. We've chosen to implement logical 
+    multi-threading using one thread: a jBPM process that includes logical multi-threading 
+    will only be executed in one technical thread. The main reason for doing 
+    this is that multiple (technical) threads need to be be able to communicate 
+    state information with each other if they are working on the same process. 
+    This requirement brings with it a number of complications. While it might 
+    seem that multi-threading would bring performance benefits with it, the extra 
+    logic needed to make sure the different threads work together well means 
+    that this is not guaranteed. There is also the extra overhead incurred because 
+    we need to avoid race conditions and deadlocks.</para> 
+
+    <section>
+      <title>Engine execution</title>
+   
+    <para>In general, the jBPM engine executes actions in serial. For example, 
+    when the engine encounters a script task in a process, it will synchronously 
+    execute that script and wait for it to complete before continuing execution.  
+    Similarly, if a process encounters a parallel gateway, it will sequentially 
+    trigger each of the outgoing branches, one after the other. This is possible 
+    since execution is almost always instantaneous, meaning that it is extremely 
+    fast and produces almost no overhead. As a result, the user will usually 
+    not even notice this.  Similarly, action scripts in a process are also synchronously
+    executed, and the engine will wait for them to finish before continuing the 
+    process. For example, doing a <code>Thread.sleep(...)</code> as part of 
+    a script will not make the engine continue execution elsewhere but will 
+    block the engine thread during that period.</para>
+    
+    <para>The same principle applies to service tasks. When a service task is 
+    reached in a process, the engine will also invoke the handler of this service 
+    synchronously.  The engine will wait for the <code>completeWorkItem(...)</code> 
+    method to return before continuing execution. It is important that your 
+    service handler executes your service asynchronously if its execution is 
+    not instantaneous.</para>
+    
+    <para>An example of this would be a service task that invokes an external 
+    service.  Since the delay in invoking this service remotely and waiting for 
+    the results might be too long, it might be a good idea to invoke this service 
+    asynchronously. This means that the handler will only invoke the service 
+    and will notify the engine later when the results are available.  In the 
+    mean time, the process engine then continues execution of the process.  
+    </para>
+    
+    <para>Human tasks are a typical example of a service that needs to be invoked 
+    asynchronously, as we don't want the engine to wait until a human actor 
+    has responded to the request. The human task handler will only create a new task 
+    (on the task list of the assigned actor) when the human task node is triggered. 
+    The engine will then be able to continue execution on the rest of the process 
+    (if necessary) and the handler will notify the engine asynchronously when 
+    the user has completed the task.</para>
+    
+    </section>
+    <section>
+      <title>Asynchronous handlers</title>
+      
+      <para>How can we implement an asynchronous service handler? To start with, 
+      this depends on the technology you're using.  If you're only using 
+      Java, you could execute the actual service in a new thread:</para>
+      
+      <programlisting language="java">public class MyServiceTaskHandler implements WorkItemHandler {
+        
+  public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+    new Thread(new Runnable() {
+      public void run() {
+        // Do the heavy lifting here ...
+      }
+    }).start();
+  }
+
+  public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+  }
+      
+}</programlisting>
+
+      <para>It's advisable to have your handler contact a service that 
+      executes the business operation, instead of having it perform the actual 
+      work.  If anything goes wrong with a business operation, it doesn't affect 
+      your process. The loose coupling that this provides also gives you greater 
+      flexibility in reusing services and developing them. </para>
+      
+      <para>For example, you can have your human task handler simply invoke the 
+      human task service to add a task there. To implement an asynchronous handler, 
+      you usually have to simply do an asynchronous invocation of this service.  
+      This usually depends on the technology you use to do the communication, 
+      but this might be as simple as asynchronously invoking a web service, 
+      or sending a JMS message to the external service.</para>
+
+      <para>
+        jbpm-executor component provides advanced capabilities for asynchronous execution to ease the development
+        efforts to empower solution when using jBPM. It provides out of the box
+        <itemizedlist>
+          <listitem>persistent storage of the requested operations</listitem>
+          <listitem>retry mechanism</listitem>
+          <listitem>error handling</listitem>
+          <listitem>history log of executions</listitem>
+        </itemizedlist>
+        See chapter jbpm executor for more details.
+      </para>
+
+    </section>
+    <section>
+      <title>Multiple knowledge sessions and persistence</title>
+
+    <para>The simplest way to run multiple processes is to run them all using 
+    one knowledge session. However, there are cases in which it's necessary
+    to run multiple processes in different knowledge sessions, even in
+    different (technical) threads. Both are supported by jBPM.</para>
+
+    <para>When we add persistence (using a database, for example) to a situation
+    in which we have multiple knowledge sessions (and processes), there is a 
+    guideline that users should be aware of. The following paragraphs explain 
+    why this guideline is important to follow. 
+    <itemizedlist>
+       <listitem>Please make sure to use a database that allows row-level locks 
+       as well as table-level locks.</listitem>
+    </itemizedlist>
+    </para> 
+
+    <para>For example, a user could have a situation in which there are 2 
+    (or more) threads running, each with its own knowledge session instance. 
+    On each thread, jBPM processes are being started using the local knowledge 
+    session instance.</para>
+
+    <para>In this use case, a race condition exists in which both thread A and 
+    thread B will have coincidentally simultaneously finished a process. At 
+    this point, because persistence is being used, both thread A and B will 
+    be commiting changes to the databse. If row-level locks are 
+    <emphasis>not</emphasis> possible, then the following situation can occur: 
+    <itemizedlist>
+       <listitem>Thread A has a lock on the <code>ProcessInstanceInfo</code> table, having just
+       committed a change to that table.</listitem>
+       <listitem>Thread A <emphasis>wants</emphasis> a lock on the <code>SessionInfo</code> table
+       in order to commit a change there.</listitem>
+       <listitem>Thread B has the opposite situation: it has a lock on the <code>SessionInfo</code>
+       table, having just committed a change there.</listitem>
+       <listitem>Thread B <emphasis>wants</emphasis> a lock on the <code>ProcessInstanceInfo</code>
+       table, even though Thread <emphasis>A</emphasis> already has a lock on it</listitem>
+    </itemizedlist>
+    This is a deadlock situation which the database and application will not be able to solve. 
+    </para> 
+
+    <para>However, if row-level locks are posible (and enabled!!) in the database (and tables used), 
+    then this situation will not occur.</para>
+    
+    </section>
+
+  </section>
+
+  </section>
+
+</chapter>

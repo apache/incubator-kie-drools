@@ -1,0 +1,1676 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ch.core-bpmn"
+         version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Core Engine: BPMN 2.0</title>
+
+  <section>
+    <title>Business Process Model and Notation (BPMN) 2.0 specification</title>
+        <note>
+          <para>
+            "The primary goal of BPMN is to provide a notation that is readily understandable by all business users,
+            from the business analysts that create the initial drafts of the processes, to the technical developers
+            responsible for implementing the technology that will perform those processes, and finally, to the
+            business people who will manage and monitor those processes."
+          </para>
+        </note>
+
+  <para>The Business Process Model and Notation (BPMN) 2.0 specification is an OMG specification that not only defines a
+  standard on how to graphically represent a business process (like BPMN 1.x), but now also includes execution semantics
+  for the elements defined, and an XML format on how to store (and share) process definitions.</para>
+
+  <para>jBPM6 allows you to execute processes defined using the BPMN 2.0 XML format.  That means that you can use all
+  the different jBPM6 tooling to model, execute, manage and monitor your business processes using the BPMN 2.0 format
+  for specifying your executable business processes.  Actually, the full BPMN 2.0 specification also includes details on
+  how to represent things like choreographies and collaboration.  The jBPM project however focuses on that part of the
+  specification that can be used to specify executable processes.</para>
+
+  <para>Executable processes in BPMN consist of a different types of nodes being connected to each other using sequence
+  flows. The BPMN 2.0 specification defines three main types of nodes:</para>
+  <itemizedlist>
+    <listitem><emphasis>Events</emphasis>: They are used to model the occurrence of a particular
+    event.  This could be a start event (that is used to indicate the start of the process), end
+    events (that define the end of the process, or of that subflow) and intermediate events (that
+    indicate events that might occur during the execution of the process).</listitem>
+    <listitem><emphasis>Activities</emphasis>: These define the different actions that need to be
+    performed during the execution of the process.  Different types of tasks exist, depending on 
+    the type of activity you are trying to model (e.g. human task, service task, etc.) and activities
+    could also be nested (using different types of sub-processes).</listitem>
+    <listitem><emphasis>Gateways</emphasis>: Can be used to define multiple paths in the process.
+    Depending on the type of gateway, these might indicate parallel execution, choice, etc.</listitem>
+  </itemizedlist>
+
+  <para>jBPM6 does not implement all elements and attributes as defined in the BPMN 2.0 specification.  We do however
+  support a significant subset, including the most common node types that can be used inside executable processes. This
+  includes (almost) all elements and attributes as defined in the "Common Executable" subclass of the BPMN 2.0
+  specification, extended with some additional elements and attributes we believe are valuable in that context as well.
+  The full set of elements and attributes that are supported can be found below, but it includes elements like:</para>
+
+  <itemizedlist>
+    <listitem><emphasis>Flow objects</emphasis>
+      <itemizedlist>
+        <listitem>Events
+          <itemizedlist>
+            <listitem>Start Event (None, Conditional, Signal, Message, Timer)</listitem>
+            <listitem>End Event (None, Terminate, Error, Escalation, Signal, Message, Compensation)</listitem>
+            <listitem>Intermediate Catch Event (Signal, Timer, Conditional, Message)</listitem>
+            <listitem>Intermediate Throw Event (None, Signal, Escalation, Message, Compensation)</listitem>
+            <listitem>Non-interrupting Boundary Event (Escalation, Signal, Timer, Conditional, Message)</listitem>
+            <listitem>Interrupting Boundary Event (Escalation, Error, Signal, Timer, Conditional, Message, Compensation)</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Activities
+          <itemizedlist>
+            <listitem>Script Task</listitem>
+            <listitem>Task</listitem>
+            <listitem>Service Task</listitem>
+            <listitem>User Task</listitem>
+            <listitem>Business Rule Task</listitem>
+            <listitem>Manual Task</listitem>
+            <listitem>Send Task</listitem>
+            <listitem>Receive Task</listitem>
+            <listitem>Reusable Sub-Process (Call Activity)</listitem>
+            <listitem>Embedded Sub-Process</listitem>
+            <listitem>Event Sub-Process</listitem>
+            <listitem>Ad-Hoc Sub-Process</listitem>
+            <listitem>Data-Object</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Gateways
+          <itemizedlist>
+            <listitem>Diverging
+              <itemizedlist>
+                <listitem>Exclusive</listitem>
+                <listitem>Inclusive</listitem>
+                <listitem>Parallel</listitem>
+                <listitem>Event-Based</listitem>
+              </itemizedlist>
+            </listitem>
+            <listitem>Converging
+              <itemizedlist>
+                <listitem>Exclusive</listitem>
+                <listitem>Inclusive</listitem>
+                <listitem>Parallel</listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Lanes</listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem><emphasis>Data</emphasis>
+      <itemizedlist>
+        <listitem>Java type language</listitem>
+        <listitem>Process properties</listitem>
+        <listitem>Embedded Sub-Process properties</listitem>
+        <listitem>Activity properties</listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem><emphasis>Connecting objects</emphasis>
+      <itemizedlist>
+        <listitem>Sequence flow</listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para>For example, consider the following "Hello World" BPMN 2.0 process, which does nothing more that
+  writing out a "Hello World" statement when the process is started.</para>
+
+<mediaobject><imageobject><imagedata align="center" format="PNG" role="" fileref="images/Chapter-6-BPMN2/HelloWorld.png"/></imageobject></mediaobject>
+
+  <para>An executable version of this process expressed using BPMN 2.0 XML would look
+  something like this:</para>
+
+  <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt; 
+&lt;definitions id="Definition"
+             targetNamespace="http://www.example.org/MinimalExample"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+             xs:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools"&gt;
+
+  &lt;process processType="Private" isExecutable="true" id="com.sample.HelloWorld" name="Hello World" &gt;
+
+    &lt;!-- nodes --&gt;
+    &lt;startEvent id="_1" name="StartProcess" /&gt;
+    &lt;scriptTask id="_2" name="Hello" &gt;
+      &lt;script&gt;System.out.println("Hello World");&lt;/script&gt;
+    &lt;/scriptTask&gt;
+    &lt;endEvent id="_3" name="EndProcess" &gt;
+        &lt;terminateEventDefinition/&gt;
+    &lt;/endEvent&gt;
+
+    &lt;!-- connections --&gt;
+    &lt;sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" /&gt;
+    &lt;sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" /&gt;
+
+  &lt;/process&gt;
+
+  &lt;bpmndi:BPMNDiagram&gt;
+    &lt;bpmndi:BPMNPlane bpmnElement="Minimal" &gt;
+      &lt;bpmndi:BPMNShape bpmnElement="_1" &gt;
+        &lt;dc:Bounds x="15" y="91" width="48" height="48" /&gt;
+      &lt;/bpmndi:BPMNShape&gt;
+      &lt;bpmndi:BPMNShape bpmnElement="_2" &gt;
+        &lt;dc:Bounds x="95" y="88" width="83" height="48" /&gt;
+      &lt;/bpmndi:BPMNShape&gt;
+      &lt;bpmndi:BPMNShape bpmnElement="_3" &gt;
+        &lt;dc:Bounds x="258" y="86" width="48" height="48" /&gt;
+      &lt;/bpmndi:BPMNShape&gt;
+      &lt;bpmndi:BPMNEdge bpmnElement="_1-_2" &gt;
+        &lt;di:waypoint x="39" y="115" /&gt;
+        &lt;di:waypoint x="75" y="46" /&gt;
+        &lt;di:waypoint x="136" y="112" /&gt;
+      &lt;/bpmndi:BPMNEdge&gt;
+      &lt;bpmndi:BPMNEdge bpmnElement="_2-_3" &gt;
+        &lt;di:waypoint x="136" y="112" /&gt;
+        &lt;di:waypoint x="240" y="240" /&gt;
+        &lt;di:waypoint x="282" y="110" /&gt;
+      &lt;/bpmndi:BPMNEdge&gt;
+    &lt;/bpmndi:BPMNPlane&gt;
+  &lt;/bpmndi:BPMNDiagram&gt;
+
+&lt;/definitions&gt;</programlisting>
+
+  <para>To create your own process using BPMN 2.0 format, you can
+      <itemizedlist>
+        <listitem>
+          <para>The jBPM Designer is an open-source web-based editor that supports the BPMN 2.0 format.  We have embedded it into
+          jbpm console for BPMN 2.0 process visualization and editing.  You could use the Designer (either standalone or
+          integrated) to create / edit BPMN 2.0 processes and then export them to BPMN 2.0 format or save them into
+          repository and import them so they can be executed.</para>
+        </listitem>
+        <listitem>
+          <para>A new BPMN2 Eclipse plugin is being created to support the full BPMN2 specification.</para>
+        </listitem>
+        <listitem>
+          <para>You can always manually create your BPMN 2.0 process files by writing the XML directly.
+          You can validate the syntax of your processes against the BPMN 2.0 XSD, or use the validator
+          in the Eclipse plugin to check both syntax and completeness of your model.</para>
+        </listitem>
+        <listitem>
+          <note>
+            <para>Drools Eclipse Process editor has been deprecated in favor of BPMN2 Modeler for process modeling.
+            It can still be used for limited number of supported elements but should be faced out as it is not
+            being developed any more.</para>
+          </note>
+          <para>Create a new Process file using the Drools Eclipse plugin wizard and in the last page of the wizard,
+            make sure you select Drools 5.1 code compatibility.  This will create a new process using the BPMN 2.0 XML
+            format.  Note however that this is not exactly a BPMN 2.0 editor, as it still uses different attributes names
+            etc.  It does however save the process using valid BPMN 2.0 syntax.  Also note
+            that the editor does not support all node types and attributes that are already supported in the
+            execution engine.</para>
+        </listitem>
+      </itemizedlist>
+  </para>
+
+  <para>The following code fragment shows you how to load a BPMN2 process into your knowledge base ...</para>
+
+  <programlisting language="java">
+private static KnowledgeBase createKnowledgeBase() throws Exception {
+    KieHelper kieHelper = new KieHelper();
+    KieBase kieBase = kieHelper
+    .addResource(ResourceFactory.newClassPathResource("sample.bpmn2"))
+    .build();
+
+    return kieBase;
+}</programlisting>
+
+  <para> ... and how to execute this process ...</para>
+
+  <programlisting language="java">KieBase kbase = createKnowledgeBase();
+KieSession ksession = kbase.newKieSession();
+ksession.startProcess("com.sample.HelloWorld");</programlisting>
+
+  <para>For more detail, check out the chapter on the API and the basics.</para>
+
+  </section>
+
+  <section>
+    <title>Supported elements / attributes</title>
+
+  <table>
+    <title>Keywords</title>
+    <tgroup cols="5">BPMN 2.0 supported elements and attributes
+      <thead>
+        <row>
+          <entry>Element</entry>
+          <entry>Supported attributes</entry>
+          <entry>Supported elements</entry>
+          <entry>Extension attributes</entry>
+          <entry>Extension elements</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry>definitions</entry>
+          <entry></entry>
+          <entry>
+            <para>
+            <itemizedlist>
+              <listitem>rootElement</listitem>
+              <listitem>BPMNDiagram</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>process</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>processType</listitem>
+              <listitem>isExecutable</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>property</listitem>
+              <listitem>laneSet</listitem>
+              <listitem>flowElement</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>packageName</listitem>
+              <listitem>adHoc</listitem>
+              <listitem>version</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>import</listitem>
+              <listitem>global</listitem>
+            </itemizedlist>
+            </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>sequenceFlow</entry>
+          <entry>
+          <para>
+          <itemizedlist>
+            <listitem>sourceRef</listitem>
+            <listitem>targetRef</listitem>
+            <listitem>isImmediate</listitem>
+            <listitem>name</listitem>
+            <listitem>id</listitem>
+          </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>conditionExpression</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+           <para>
+            <itemizedlist>
+              <listitem>priority</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>interface</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+              <listitem>implementationRef</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>operation</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>operation</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+              <listitem>implementationRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>inMessageRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>laneSet</entry>
+          <entry></entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>lane</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>lane</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>flowNodeRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>import*</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>global*</entry>
+          <entry></entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>identifier</listitem>              
+              <listitem>type</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry><emphasis role="strong">Events</emphasis></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>startEvent</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem> 
+              <listitem>id</listitem> 
+              <listitem>isInterrupting</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataOutput</listitem>
+              <listitem>dataOutputAssociation</listitem> 
+              <listitem>outputSet</listitem> 
+              <listitem>eventDefinition</listitem>               
+            </itemizedlist>
+          </para>
+             </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>endEvent</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>  
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataInput</listitem>
+              <listitem>dataInputAssociation</listitem>  
+              <listitem>inputSet</listitem>  
+              <listitem>eventDefinition</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>intermediateCatchEvent</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>dataOutput</listitem>
+              <listitem>dataOutputAssociation</listitem>
+              <listitem>outputSet</listitem>
+              <listitem>eventDefinition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>intermediateThrowEvent</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>dataInput</listitem>
+              <listitem>dataInputAssociation</listitem>
+              <listitem>inputSet</listitem>
+              <listitem>eventDefinition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>boundaryEvent</entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>cancelActivity</listitem> 
+              <listitem>attachedToRef</listitem> 
+              <listitem>name</listitem> 
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>eventDefinition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>terminateEventDefinition</entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>compensateEventDefinition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>activityRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>documentation</listitem>
+              <listitem>extensionElements</listitem>                
+            </itemizedlist>
+          </para>
+           </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>conditionalEventDefinition</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>condition</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>errorEventDefinition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>errorRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>error</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>errorCode</listitem>              
+              <listitem>id</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>escalationEventDefinition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>escalationRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>escalation</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>escalationCode</listitem>              
+              <listitem>id</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>messageEventDefinition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>messageRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>message</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>itemRef</listitem>              
+              <listitem>id</listitem>
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>signalEventDefinition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>signalRef</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>timerEventDefinition</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>timeCycle</listitem>
+              <listitem>timeDuration</listitem> 
+              <listitem>timerDate</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry><emphasis role="strong">Activities</emphasis></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>task</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>  
+              <listitem>id</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>taskName</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>scriptTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>scriptFormat</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>script</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>text[mixed content]</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>userTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem> 
+              <listitem>resourceRole</listitem>    
+              <listitem>loopCharacteristics</listitem>           
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>potentialOwner</entry>
+          <entry></entry>
+          <entry><para>
+            <itemizedlist>
+              <listitem>resourceAssignmentExpression</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>resourceAssignmentExpression</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>expression</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>businessRuleTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ruleFlowGroup</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>manualTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>sendTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>messageRef</listitem> 
+              <listitem>name</listitem>
+              <listitem>id</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>loopCharacteristics</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>receiveTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>messageRef</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataOutputAssociation</listitem>  
+              <listitem>loopCharacteristics</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>serviceTask</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>operationRef</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>
+              <listitem>implementation</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem>
+              <listitem>dataInputAssociation</listitem> 
+              <listitem>dataOutputAssociation</listitem>  
+              <listitem>loopCharacteristics</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>subProcess</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem> 
+              <listitem>triggeredByEvent</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>flowElement</listitem>
+              <listitem>property</listitem> 
+              <listitem>loopCharacteristics</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>adHocSubProcess</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>cancelRemainingInstances</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>completionCondition</listitem>
+              <listitem>flowElement</listitem>
+              <listitem>property</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      
+      <tbody>
+        <row>
+          <entry>callActivity</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>calledElement</listitem>
+              <listitem>name</listitem> 
+              <listitem>id</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>ioSpecification</listitem> 
+              <listitem>dataInputAssociation</listitem>
+              <listitem>dataOutputAssociation</listitem>             
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>waitForCompletion</listitem>
+              <listitem>independent</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>onEntry-script</listitem>
+              <listitem>onExit-script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>multiInstanceLoopCharacteristics</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>loopDataInputRef</listitem>
+              <listitem>inputDataItem</listitem>  
+              <listitem>loopDataOutputRef</listitem>  
+              <listitem>outputDataItem</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>onEntry-script*</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>scriptFormat</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>onExit-script*</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>scriptFormat</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>script</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry><emphasis role="strong">Gateways</emphasis></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>parallelGateway</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>gatewayDirection</listitem>
+              <listitem>name</listitem> 
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>eventBasedGateway</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>gatewayDirection</listitem>
+              <listitem>name</listitem> 
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>exclusiveGateway</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>default</listitem>
+              <listitem>gatewayDirection</listitem>
+              <listitem>name</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>inclusiveGateway</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>default</listitem>
+              <listitem>gatewayDirection</listitem>  
+              <listitem>name</listitem>  
+              <listitem>id</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry><emphasis role="strong">Data</emphasis></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>property</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>itemSubjectRef</listitem>
+              <listitem>id</listitem> 
+              <listitem>name</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>dataObject</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>itemSubjectRef</listitem>
+              <listitem>id</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>itemDefinition</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>structureRef</listitem>
+              <listitem>id</listitem>                
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>ioSpecification</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataInput</listitem>
+              <listitem>dataOutput</listitem> 
+              <listitem>inputSet</listitem> 
+              <listitem>outputSet</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>dataInput</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>dataInputAssociation</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>sourceRef</listitem>
+              <listitem>targetRef</listitem> 
+              <listitem>assignment</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>dataOutput</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>name</listitem>
+              <listitem>id</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>dataOutputAssociation</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>sourceRef</listitem>
+              <listitem>targetRef</listitem> 
+              <listitem>assignment</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>inputSet</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataInputRefs</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>outputSet</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>dataOutputRefs</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>assignment</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>from</listitem>
+              <listitem>to</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>formalExpression</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>language</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>text[mixed content]</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry><emphasis role="strong">BPMNDI</emphasis></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>BPMNDiagram</entry>
+          <entry></entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>BPMNPlane</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>BPMNPlane</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>bpmnElement</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>BPMNEdge</listitem>
+              <listitem>BPMNShape</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>BPMNShape</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>bpmnElement</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>Bounds</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>BPMNEdge</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>bpmnElement</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>waypoint</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>Bounds</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>x</listitem>
+              <listitem>y</listitem> 
+              <listitem>width</listitem> 
+              <listitem>height</listitem>               
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>waypoint</entry>
+          <entry>
+          <para>
+            <itemizedlist>
+              <listitem>x</listitem> 
+              <listitem>y</listitem>              
+            </itemizedlist>
+          </para>
+          </entry>
+          <entry></entry>
+          <entry></entry>
+          <entry></entry>
+        </row>
+      </tbody>
+    </tgroup>
+  </table>
+
+  </section>
+
+  <section>
+    <title>Examples</title>
+
+    <para>The BPMN 2.0 specification defines the attributes and semantics of each of the node types (and other
+      elements).</para>
+
+    TODO: provide more examples with more advanced constructs
+
+    <para>The jbpm-bpmn2 module contains a lot of junit tests for each of the different node types. These test
+      processes can also serve as simple examples: they don't really represent an entire real life business processes
+      but can definitely be used to show how specific features can be used. For example, the following figures shows
+      the flow chart of a few of those examples. The entire list can be found in the src/test/resources folder for
+      the jbpm-bpmn2 module like <ulink url="http://github.com/droolsjbpm/jbpm/tree/master/jbpm-bpmn2/src/test/resources/">
+        here</ulink>.</para>
+
+  </section>
+
+</chapter>

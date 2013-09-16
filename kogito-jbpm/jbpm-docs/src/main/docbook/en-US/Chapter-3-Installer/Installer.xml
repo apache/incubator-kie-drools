@@ -1,0 +1,857 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ch.installer"
+         version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Installer</title>
+
+  <para>This guide will assist you in installing and running a demo setup of the various components of the jBPM project.
+    If you have any feedback on how to improve this guide, if you encounter problems, or if you want to help out, do not
+    hesitate to contact the jBPM community as described in the "What to do if I encounter problems or have questions?"
+    section.</para>
+
+  <section>
+    <title>Prerequisites</title>
+
+    <para>This script assumes you have Java JDK 1.6+ (set as JAVA_HOME), and Ant 1.7+ installed.  If you don't,
+    use the following links to download and install them:</para>
+
+    <para>Java: <ulink url="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</ulink></para>
+    <para>Ant: <ulink url="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindownload.cgi</ulink></para>
+  </section>
+
+  <section>
+    <title>Download the installer</title>
+
+    <para>First of all, you need to <ulink url="https://sourceforge.net/projects/jbpm/files/jBPM%206/">
+    download</ulink> the installer.  There are two versions
+      <itemizedlist>
+      <listitem>full installer - which already contains a lot of the dependencies that are necessary during the installation</listitem>
+      <listitem>minimal installer - which only contains the installer and will download all dependencies</listitem>
+      </itemizedlist>
+    In general, it is probably best to download the full installer: jBPM-{version}-installer-full.zip</para>
+    
+    <para>You can also find the latest snapshot release here (only minimal installer) here:</para>
+    <para><ulink url="https://hudson.jboss.org/jenkins/job/jBPM/lastSuccessfulBuild/artifact/jbpm-distribution/target/">
+    https://hudson.jboss.org/jenkins/job/jBPM/lastSuccessfulBuild/artifact/jbpm-distribution/target/</ulink></para>
+
+  </section>
+
+  <section>
+    <title>Demo setup</title>
+
+  <para>The easiest way to get started is to simply run the installation script to install the demo setup.
+  Simply go into the install folder and run:</para>
+
+  <programlisting>ant install.demo</programlisting>
+
+    <para>This will:
+      <itemizedlist>
+        <listitem>Download JBoss AS</listitem>
+        <listitem>Download Eclipse</listitem>
+        <listitem>Install the jBPM console (including repository, designer, BAM) into JBoss AS</listitem>
+        <listitem>Install the jBPM Eclipse plugin</listitem>
+        <listitem>Install the Drools Eclipse plugin</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>This could take a while (REALLY, not kidding, we are downloading an application server
+    and Eclipse installation, even if you downloaded the full installer).  The script however always
+    shows which file it is downloading (you could for example check whether it is still downloading
+    by checking the whether the size of the file in question in the jbpm-installer/lib folder is still
+    increasing). If you want to avoid downloading specific components (because you will not be using
+    them or you already have them installed somewhere else), check below for running only specific
+    parts of the demo or directing the installer to an already installed component.</para>
+
+    <para>Once the demo setup has finished, you can start playing with the various components by
+    starting the demo setup:</para>
+
+    <programlisting>ant start.demo</programlisting>
+
+    <para>This will:
+      <itemizedlist>
+        <listitem>Start H2 server</listitem>
+        <listitem>Start the JBoss AS</listitem>
+        <listitem>Start Eclipse</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>Once everything is started, you can start playing with the Eclipse tooling,
+      jBPM console, as explained in the next three sections.</para>
+    
+    <para>If you do not wish to use Eclipse in the demo setup, you can use the alternative commands:</para>
+    <programlisting>
+    ant install.demo.noeclipse
+    ant start.demo.noeclipse
+    </programlisting>
+
+    <section>
+      <title>Control options</title>
+      <para>jbpm console started by installer will by default bring in sample processes from jbpm demo repository
+      that is cloned from origin hosted on github. In some cases where access to Internet is not available or there
+      is a need to start completely clean installation of jbpm console the default behavior can be turned off.
+      To do so following system property needs to be added to startup script (build.xml -> start.jboss target)
+      or to standalone.xml:
+      <programlisting>-Dorg.kie.demo=false</programlisting>
+      with this there will not be any organizational unit nor repository created. To be able to start modeling processes
+      user needs to create:
+        <itemizedlist>
+          <listitem>Organizational unit</listitem>
+          <listitem>Repository - brand new or clone existing one</listitem>
+        </itemizedlist>
+      </para>
+    </section>
+  </section>
+
+
+  <section>
+    <title>10-Minute Tutorial: Using the jBPM Console</title>
+
+    <para>Open up the process management console:</para>
+    <para><ulink url="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</ulink></para>
+
+    <para>Log in, using krisv / krisv as username / password.
+      The <ulink url="http://people.redhat.com/kverlaen/jBPM6-console.swf">following screencast</ulink> gives an
+      overview of how to manage your process instances. It shows you:
+      <itemizedlist>
+        <listitem>How to start a new process</listitem>
+        <listitem>How to look up the current status of a running process instance</listitem>
+        <listitem>How to look up your tasks</listitem>
+        <listitem>How to complete a task</listitem>
+        <listitem>How to generate reports to monitor your process execution</listitem>
+      </itemizedlist>
+    </para>
+
+    <ulink url="http://people.redhat.com/kverlaen/jBPM6-console.swf">
+      <figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastConsole.jpg" format="JPG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </ulink>
+
+    <para>
+      <itemizedlist>
+        <listitem>To manage your process definitions and instances, click on the "Process Management" menu option
+          at the top menu bar an select one of available options depending on you interest:
+          <itemizedlist>
+            <listitem>Process Definitions - lists all available process definitions</listitem>
+            <listitem>Process Instances - lists all active process instances (allows to show completed,
+              aborted as well by changing filter criteria)</listitem>
+          </itemizedlist>
+          </listitem>
+
+        <listitem>Process definitions panel allow you to start a new process instance by clicking on the "Play" button.
+          You will see a process form where you need to fill in the
+          necessary information to start the process.  In this case, you need to fill in your username "krisv" and a
+          reason for the request, after which you can complete the form and close the window. After process form
+          window is closed process instance details panel will be shown. From there you can access additional details:
+          <itemizedlist>
+            <listitem>Process model - to visualize current state of the process</listitem>
+            <listitem>Process variables - to see current values of process variables</listitem>
+          </itemizedlist>
+          The process instance that you just started is first requiring a self-evaluation of the user and is waiting until
+          the user has completed this task.</listitem>
+
+        <listitem>To see the tasks that have been assigned to you, choose the "Tasks" menu option on the top bar and select
+          "Task List" (you may need to click refresh to update your task view).  The personal tasks table
+          should show a "Performance Evaluation" task for you.  You can complete this task by selecting it and
+          clicking the "View" button.  This will open the task form for performance evaluations.  You can fill
+          in the necessary data and then complete the form and close the window.  After completing the task, you
+          could check the "Process Instances" once more to check the progress of your process instance.  You
+          should be able to see that the process is now waiting for your HR manager and project manager to also
+          perform an evaluation.  You could log in as "john" / "john" and "mary" / "mary" to complete these
+          tasks.</listitem>
+
+        <listitem>After starting and/or completing a few process instances and human tasks, you can generate a report of
+          what has happened so far.  Under "Dashboards", select "Process &amp; Task Dashboard".  By default, you will
+          see predefined set of charts that allow to directly spot what is going on in the system. Charts can be
+        customized as well which will be described in following chapters.</listitem>
+      </itemizedlist>
+    </para>
+  </section>
+
+  <section>
+    <title>10-Minute Tutorial: Integrate Eclipse and Web tooling</title>
+
+    <para>The <ulink url="http://people.redhat.com/kverlaen/jBPM6-EclipseGitIntegration.swf">following
+    screencast</ulink> gives an overview of how to integrate Web Console and Eclipse. It shows you:
+      <itemizedlist>
+        <listitem>How to create new project inside web console</listitem>
+        <listitem>How to create new process inside web console</listitem>
+        <listitem>How to import an existing project into your workspace</listitem>
+        <listitem>How to apply changes in Eclipse</listitem>
+        <listitem>How to push back changes done in Eclipse to Web Console</listitem>
+      </itemizedlist>
+    </para>
+    
+    <ulink url="http://people.redhat.com/kverlaen/jBPM6-EclipseGitIntegration.swf">
+      <figure>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastEclipse.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </ulink>
+
+    <para>You could also create a new project using the jBPM project wizard.  This sample project
+    contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.
+    Simply select "File - New - jBPM Project" (if you cannot see that (because you're not in the jBPM
+    perspective) you can do "File - New ... - Project ..." and under the "jBPM" category, select 
+    "jBPM project" and click "Next").  Give the project a name and click "Finish".  You should see a new project
+    containing a "sample.bpmn" process and a "com.sample.ProcessMain" Java class and a "com.sample.ProcessTest"
+    JUnit test class.  You can open the BPMN2 process by double-clicking it.  To execute the process,
+    right-click on ProcessMain.java and select "Run As - Java Application".  You should see a 
+    "Hello World" statement in the output console.  To execute the test, right-click on ProcessTest.java
+    and select "Run As - JUnit Test".  You should also see a "Hello World" statement in the output console,
+    and the JUnit test completion in the JUnit view.</para>
+ 
+  </section>
+
+  <section>
+  
+    <title>Using your own database with jBPM</title>
+
+    <section>
+      <title>Introduction</title>
+  
+      <para>In this quickstart, we are going to: 
+        <orderedlist>
+          <listitem><para>modify the persistence settings for the process engine</para></listitem>
+          <listitem><para>test the startup with our new settings!</para></listitem>
+        </orderedlist>
+      </para>
+  
+      <para>You will need a local instance of a database, in this case MySQL in order 
+      to complete this quickstart</para>
+  
+      <para>First though, let's look at the persistence setup that jBPM uses. In the demo, and 
+      in general, there are following types of persistent entities used by jBPM:
+        <itemizedlist> 
+          <listitem>entities used for saving the actual session, process and work item information - aka runtime data.</listitem>
+          <listitem>entities used for logging and generating Business Activity Monitoring (BAM) information - aka history log.</listitem>
+          <listitem>entities used by the task service.</listitem>
+        </itemizedlist>
+      </para>
+  
+      <para><quote>persistent entities</quote> in this context, are java classes that represent information in the database.</para>
+    </section>
+  
+    <section>
+      <title>Database setup</title>
+  
+      <para>In the MySQL database that I use in this quickstart, I've created single user:
+        <itemizedlist>
+          <listitem>user/schema "jbpm" with password "jbpm" (for all mentioned above entities)</listitem>
+        </itemizedlist>
+      </para>
+  
+      <para>If you end up using different names for your user/schemas, please make a note of
+      where we insert "jbpm" in the configuation files.</para>
+  
+      <para>If you want to try this quickstart with <emphasis>another</emphasis> database, I've 
+      included a section at the end of this quickstart that describes what you may need
+      to modify.</para>
+  
+    </section>
+  
+    <section>
+      <title>Configuration</title>
+  
+      <para>The following files define the persistence settings for the jbpm-installer demo:
+        <itemizedlist>
+          <listitem>db/jbpm-persistence-JPA2.xml</listitem>
+          <listitem>Application server configuration
+            <itemizedlist>
+              <listitem>standalone-as-7.1.1.Final.xml</listitem>
+              <listitem>standalone-full-as-7.1.1.Final.xml</listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+        There are two standalone.xml files available as jbpm allows to use JMS component for integration and thus requires
+        standalone-full.xml to be configured. Best practice is to update both to have consistent setup but most important
+        is to have standalone-full-as-7.1.1.Final.xml properly configured.
+      </para>
+    
+      <para>Do the following:
+        <itemizedlist>
+        <listitem>Disable H2 default data base and enable mysql data base in build.properties
+        <programlisting>
+# default is H2
+# H2.version=1.3.168
+# db.name=h2
+# db.driver.jar.name=${db.name}.jar
+# db.driver.download.url=http://repo1.maven.org/maven2/com/h2database/h2/${H2.version}/h2-${H2.version}.jar
+#mysql
+db.name=mysql
+db.driver.module.prefix=com/mysql
+db.driver.jar.name=${db.name}-connector-java.jar
+db.driver.download.url=https://repository.jboss.org/nexus/service/local/repositories/central/content/mysql/mysql-connector-java/5.1.18/mysql-connector-java-5.1.18.jar
+        </programlisting>
+        </listitem>
+        <listitem>
+          <para><filename>db/jbpm-persistence-JPA2.xml</filename>:</para>
+          <para>This is the JPA persistence file that defines the persistence settings used by 
+          jBPM for both the process engine information, the logging/BAM information and task service. The installer
+          ant script moves this file to the expanded web console war before the  war is installed on the server.
+          So if you have already tried with default settings (H2) best would be to clean and install it again
+          <programlisting>ant clean.demo</programlisting> this time it will be much faster as it does not have to
+          download anything.</para>
+          <para>In this file, you will have to change the name of the hibernate dialect used for your database.</para>
+          <para>The original line is:</para> 
+          <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;</programlisting>
+          <para>In the case of a MySql database, you need to change it to:</para> 
+          <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.<emphasis role="bold">MySQL</emphasis>Dialect"/&gt;</programlisting>
+          <para>For those of you who decided to use another database, a list of the available 
+          hibernate dialect classes can be found <ulink 
+          url="http://docs.jboss.org/hibernate/core/3.3/reference/en-US/html/session-configuration.html#configuration-optional-dialects">
+          here</ulink>.</para>
+        </listitem>
+        <listitem>
+          <para><filename>standalone-as-7.1.1.Final.xml and standalone-full-as-7.1.1.Final.xml</filename>:</para>
+          <para>This file is the configuration for the standalone JBoss AS 7 server. When the 
+          installer installs the demo, it moves these files to the <code>standalone/configuration</code>
+          directory in the jboss server directory</para>
+          <para>We need to change datasource configuration in <code>standalone.xml</code>
+          so that the jBPM process engine can use our MySQL database</para>
+          <para>The original file contains the following lines:</para>
+          <programlisting>
+&lt;datasource jndi-name="java:jboss/datasources/jbpmDS" enabled="true" use-java-context="true" pool-name="H2DS"&gt;
+    &lt;connection-url&gt;jdbc:h2:tcp://localhost/runtime/jbpm-demo&lt;/connection-url&gt;
+    &lt;driver&gt;h2&lt;/driver&gt;
+    &lt;pool&gt;&lt;/pool&gt;
+    &lt;security&gt;
+       &lt;user-name&gt;sa&lt;/user-name&gt;
+       &lt;password&gt;&lt;/password&gt;
+    &lt;/security&gt;
+&lt;/datasource&gt;
+&lt;drivers&gt;
+    &lt;driver name="h2" module="com.h2database.h2"&gt;
+        &lt;xa-datasource-class&gt;org.h2.jdbcx.JdbcDataSource&lt;/xa-datasource-class&gt;
+    &lt;/driver&gt;
+&lt;/drivers&gt;
+            </programlisting>
+          <para>Change the lines to the following:</para>
+          <programlisting>
+&lt;datasource jndi-name="java:jboss/datasources/jbpmDS" pool-name="MySQLDS" enabled="true" use-java-context="true"&gt;
+    &lt;connection-url&gt;<emphasis role="bold">jdbc:mysql://localhost:3306/jbpm</emphasis>&lt;/connection-url&gt;
+    &lt;driver&gt;<emphasis role="bold">mysql</emphasis>&lt;/driver&gt;
+    &lt;pool&gt;&lt;/pool&gt;
+    &lt;security&gt;
+       &lt;user-name&gt;<emphasis role="bold">jbpm</emphasis>&lt;/user-name&gt;
+       &lt;password&gt;<emphasis role="bold">jbpm</emphasis>&lt;/password&gt;
+    &lt;/security&gt;
+&lt;/datasource&gt;
+&lt;drivers&gt;
+    &lt;driver name="<emphasis role="bold">mysql</emphasis>" module="<emphasis role="bold">com.mysql</emphasis>"&gt;
+        &lt;xa-datasource-class&gt;<emphasis role="bold">com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+    &lt;/driver&gt;
+&lt;/drivers&gt;
+           </programlisting>
+        </listitem><listitem>
+          <para><filename>Start the demo</filename></para>
+          <para>We've modified all the necessary files at this point. Of course, this would be a good time to start your database up as well!</para>
+          <para>If you haven't installed the demo yet, do that first:
+            If you have already installed and <emphasis>run</emphasis> the demo, it can't hurt to reinstall the demo: 
+            <programlisting>ant clean.demo; ant install.demo</programlisting> alternatively <programlisting>ant install.demo.noeclipse</programlisting>
+            After you've done that, you can finally start the demo using the following command: 
+            <programlisting>ant start.demo</programlisting> alternatively <programlisting>ant start.demo.noeclipse</programlisting>
+          </para>
+          <para>If you're done with the demo, you can stop it using this command: 
+            <programlisting>ant clean.demo; ant stop.demo</programlisting>
+          </para>
+        </listitem><listitem>
+          <para><filename>Problems?</filename></para>
+          <para>If this isn't working for you, please try the following:
+            <itemizedlist>
+              <listitem>Please double check the files you've modified: I <emphasis>wrote</emphasis> this, but still made mistakes when changing files!</listitem>
+              <listitem>Please make sure that you don't secretly have another instance of jboss AS running.</listitem>
+              <listitem>If neither of those work (and you're using MySQL), please do then let us know.</listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist></para>
+    </section>
+  
+    <section>
+      <title>Using a different database</title>
+      
+      <para>If you decide to use a different database with this demo, you need to remember 
+      the following when going through the steps above:
+        <itemizedlist>
+          <listitem>Change the JDBC URLs, usernames and passwords, and Hibernate dialect lines 
+          to match your database information in the configuration files mentioned above.</listitem>
+          <listitem>In order to make sure your driver will be correctly installed in
+          the JBoss AS 7 server, you can do one of two things. Both ways are explained 
+          <ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7">here</ulink>.
+            <itemizedlist>
+              <listitem>
+              <ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7#Installing_a_JDBC_driver_as_a_module">
+              Install</ulink> the driver jar as a <emphasis>module</emphasis>, which is what
+              the install script does. 
+              </listitem>
+              <listitem><ulink url="https://community.jboss.org/wiki/DataSourceConfigurationinAS7#Installing_a_JDBC_driver_as_a_deployment">
+                Otherwise, you can modify and install</ulink> the downloaded jar as a <emphasis>deployment</emphasis>.
+                In this case you will have to copy the jar yourself to the <code>standalone/deployments</code>
+                directory.
+              </listitem>
+            </itemizedlist>
+          If you choose to install driver as JBoss module, please do the following:
+            <itemizedlist>
+              <listitem>Disable default H2 driver properties
+                <programlisting>
+# default is H2
+# H2.version=1.3.168
+# db.name=h2
+# db.driver.jar.name=${db.name}.jar
+# db.driver.download.url=http://repo1.maven.org/maven2/com/h2database/h2/${H2.version}/h2-${H2.version}.jar
+                </programlisting>
+              </listitem>
+              <listitem>Copy one of the example configs (mysql or postgresql)
+              <programlisting>
+#postresql
+db.name=postresql
+db.driver.module.prefix=org/postgresql
+db.driver.jar.name=${db.name}-jdbc.jar
+db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/postgresql/postgresql/9.1-902.jdbc4/postgresql-9.1-902.jdbc4.jar
+              </programlisting>
+              </listitem>
+              <listitem>Change the <code>db.name</code> property in <code>build.properties</code>
+              to the name of the downloaded jdbc driver jar you placed in <code>db/drivers</code>.
+              </listitem>
+              <listitem>Change the <code>&lt;driver&gt;</code> information in
+              the <code>&lt;datasource&gt;</code> section of <code>standalone.xml</code> so 
+              that it refers to the name of your driver module (see next step). For example:
+              <programlisting>&lt;driver&gt;<emphasis role="bold">postgresql</emphasis>&lt;/driver&gt;</programlisting>
+              </listitem>
+              <listitem>Further on in <code>standalone.xml</code> is the
+              <code>&lt;drivers&gt;</code> section of the 
+              <code>&lt;datasources&gt;</code> (note the plural: driver<emphasis>s</emphasis>, 
+              datasource<emphasis>s</emphasis>). We need to do the following with this file:
+              <itemizedlist>
+                <listitem>Change the name of the driver to match the name in the last step,</listitem> 
+                <listitem>Give an appropriate name to the module,</listitem>
+                <listitem>And fill in the correct name of the XA datasource class to use.</listitem>
+              </itemizedlist>
+              For example:
+              <programlisting>
+&lt;drivers&gt;
+  &lt;driver name="<emphasis role="bold">postgresql</emphasis>" module="<emphasis role="bold">org.postgresql</emphasis>"&gt;
+      &lt;xa-datasource-class&gt;<emphasis role="bold">org.postgresql.xa.PGXADataSource</emphasis>&lt;/xa-datasource-class&gt;
+  &lt;/driver&gt;
+&lt;/drivers&gt;
+              </programlisting>
+              </listitem><listitem>Change the <code>db.driver.module.prefix</code> property 
+              in <code>build.properties</code> to the same <quote>value</quote> you used for the module name
+              in <code>standalone.xml</code>. In the example above, I used 
+              <quote><code>org.postgresql</code></quote> which means that I should then use
+              <code>org/postgresql</code> for the <code>db.driver.module.prefix</code> property.
+              </listitem>
+              <listitem>Lastly, you'll have to create the <code>db/${db.name}_module.xml</code>
+              file. As an example you can use db/mysql_module.xml, so just make a copy of it and:
+              <itemizedlist>
+                <listitem>Change the name of the <emphasis>module</emphasis> to match the 
+                          <code>db.driver.module.prefix</code> property above</listitem>
+                <listitem>Change the name of the module resource to the name of the JDBC driver 
+                          jar that was downloaded.</listitem>
+              </itemizedlist>
+              The top of the original file looks like this: 
+              <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="com.mysql"&gt;
+   &lt;resources&gt;
+     &lt;resource-root path="mysql-connector-java.jar"/&gt;
+   &lt;/resources&gt;</programlisting>
+              Change those lines to look like this, for example: 
+              <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="<emphasis role="bold">org.postgresql</emphasis>"&gt;
+   &lt;resources&gt;
+     &lt;resource-root path="<emphasis role="bold">postgresql-9.1-902.jdbc4.jar</emphasis>"/&gt;
+   &lt;/resources&gt;</programlisting>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </para>
+    </section>
+  
+  </section>
+
+  <section>
+    <title>jBPM data base schema scripts (DDL scripts)</title>
+
+    <para>By default demo setup makes use of Hibernate auto ddl generation capabilities to build up complete
+    data base schema including all tables, sequences, etc for given data base. This is not always welcome
+    and thus installer provides DDL scripts for most popular data base</para>
+
+    <table>
+    <title>DDL scripts</title>
+      <tgroup cols="2">jBPM DDL scripts for data bases
+        <thead>
+          <row>
+            <entry>Data base name</entry>
+            <entry>Location</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>db2</entry>
+            <entry>jbpm-installer/db/ddl-scripts/db2</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>derby</entry>
+            <entry>jbpm-installer/db/ddl-scripts/derby</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>h2</entry>
+            <entry>jbpm-installer/db/ddl-scripts/h2</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>hsqldb</entry>
+            <entry>jbpm-installer/db/ddl-scripts/hsqldb</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>mysql5</entry>
+            <entry>jbpm-installer/db/ddl-scripts/mysql5</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>mysqlinnodb</entry>
+            <entry>jbpm-installer/db/ddl-scripts/mysqlinnodb</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>oracle</entry>
+            <entry>jbpm-installer/db/ddl-scripts/oracle</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>postgresql</entry>
+            <entry>jbpm-installer/db/ddl-scripts/postgresql</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>sqlserver</entry>
+            <entry>jbpm-installer/db/ddl-scripts/sqlserver</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>sqlserver2008</entry>
+            <entry>jbpm-installer/db/ddl-scripts/sqlserver2008</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>DDL scripts are provided for both jBPM and Quartz schemas although Quartz schema DDL script is only
+    required when timer service should be configured with Quartz data base job store. See Timer Service section
+    for additional details.</para>
+
+    <para>This can be used to initially create data base schema but it can serve as base for any optimization
+    that needs to be applied - such as indexes, etc.</para>
+
+  </section>
+
+
+  <section>
+    <title>jBPM installer script</title>
+
+    <para>jBPM installer ant script performs most of the work automatically and usually does not require additional
+      attention but in case it does, here is a list of available targets that might be needed to perform some of the steps
+      manually.</para>
+
+    <table>
+      <title>jBPM installer available targets</title>
+      <tgroup cols="2">
+        <thead>
+          <row>
+            <entry>Target</entry>
+            <entry>Description</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry>clean.db</entry>
+            <entry>cleans up data base used by jBPM demo (applies only to H2 data base)</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>clean.demo</entry>
+            <entry>cleans up entire installation so new installation can be performed</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>clean.demo.noeclipse</entry>
+            <entry>same as clean.demo but does not remove eclipse</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>clean.eclipse</entry>
+            <entry>removes eclipse and its workspace</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>clean.generated.ddl</entry>
+            <entry>removes DDL scripts generated if any</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>clean.jboss</entry>
+            <entry>removes application server with all its deployments</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>clean.jboss.repository</entry>
+            <entry>removes repository content for demo setup (guvnor maven repo, niogit, etc)</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.dashboard</entry>
+            <entry>downloads jBPM dashboard component (BAM)</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.db.driver</entry>
+            <entry>downloads db driver configured in build.properties</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.ddl.dependencies</entry>
+            <entry>downloads all dependencies required to run DDL script generation tool</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.droolsjbpm.eclipse</entry>
+            <entry>downloads drools and jbpm eclipse plugin</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.eclipse</entry>
+            <entry>downloads eclipse distribution</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.jboss</entry>
+            <entry>downloads Jboss Application Server</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.jBPM.bin</entry>
+            <entry>downloads jBPM binary distribution (jBPM libs and its dependencies)</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>download.jBPM.console</entry>
+            <entry>downloads jBPM console for JBoss AS</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.dashboard.into.jboss</entry>
+            <entry>installs jBPM dashboard into JBoss AS</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.db.files</entry>
+            <entry>installs db driver as JBoss module</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.demo</entry>
+            <entry>installs complete demo environment</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.demo.eclipse</entry>
+            <entry>installs Eclipse with all jBPM plugins, no server installation</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.demo.noeclipse</entry>
+            <entry>similar to install.demo but skips eclipse installation</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.dependencies</entry>
+            <entry>installs custom libraries (such as work item handlers, etc) into the jbpm console</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.droolsjbpm-eclipse.into.eclipse</entry>
+            <entry>installs droolsjbpm eclipse plugin into eclipse</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.eclipse</entry>
+            <entry>install eclipse IDE</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.jboss</entry>
+            <entry>installs JBoss AS</entry>
+          </row>
+        </tbody>
+        <tbody>
+          <row>
+            <entry>install.jBPM-console.into.jboss</entry>
+            <entry>installs jBPM console application into JBoss AS</entry>
+          </row>
+        </tbody>
+      </tgroup>
+      <tbody>
+        <row>
+          <entry>install.jBPM.runtime</entry>
+          <entry>installs jBPM runtime libraries with their dependencies into jbpm-installer/runtime folder</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>install.modeler.into.eclipse</entry>
+          <entry>installs BPMN2 eclipse modeler into eclipse</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>jbpm.schemaexport</entry>
+          <entry>generates DDL scripts for jBPM data base schema based on persistence.xml located in jbpm-installer/db</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>remove.db.files</entry>
+          <entry>removes db driver module from JBoss AS</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>start.demo</entry>
+          <entry>starts complete demo environment including JBoss AS and eclipse</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>start.demo.eclipse</entry>
+          <entry>starts eclipse with demo setup</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>start.demo.noeclipse</entry>
+          <entry>starts demo with Jboss AS only (no eclipse)</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>start.h2</entry>
+          <entry>starts H2 data base server</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>start.jboss</entry>
+          <entry>starts JBoss AS</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>stop.demo</entry>
+          <entry>Stops all components of the demo setup (JBoss AS, H2)</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>stop.eclipse</entry>
+          <entry>stops H2 server that is used by demo in eclipse</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>stop.h2</entry>
+          <entry>stops H2 db server</entry>
+        </row>
+      </tbody>
+      <tbody>
+        <row>
+          <entry>stop.jboss</entry>
+          <entry>stops JBoss AS</entry>
+        </row>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <title>What to do if I encounter problems or have questions?</title>
+
+    <para>You can always contact the jBPM community for assistance.</para>
+    <para>IRC: #jbpm at chat.freenode.net</para>
+    <para><ulink url="http://community.jboss.org/en/jbpm?view=discussions">jBPM User Forum</ulink></para>
+    <para>Email: jbpm-user@lists.jboss.org</para>
+  
+  </section>
+   
+  <section>
+  
+    <title>Frequently asked questions</title>
+    
+    <para>Some common issues are explained below.</para>
+
+    <para>Q: What if the installer complains it cannot download component X?</para>
+    <para>A: Are you connected to the internet? Do you have a firewall turned on? Do you require a proxy?  It might be possible that one of the locations we're downloading the components from is temporarily offline.  Try downloading the components manually (possibly from alternate locations) and put them in the jbpm-installer/lib folder.</para>
+
+    <para>Q: What if the installer complains it cannot extract / unzip a certain jar/war/zip?</para>
+    <para>A: If your download failed while downloading a component, it is possible that the installer is trying to use an incomplete file.  Try deleting the component in question from the jbpm-installer/lib folder and reinstall, so it will be downloaded again.</para>
+
+    <para>Q: What if I have been changing my installation (and it no longer works) and I want to start over again with a clean installation?</para>
+    <para>A: You can use ant clean.demo to remove all the installed components, so you end up with a fresh installation again.</para>
+
+    <para>Q: I sometimes see exceptions when trying to stop or restart certain services, what should I do?</para>
+    <para>A: If you see errors during shutdown, are you sure the services were still running?  If you see exceptions during restart, are you sure the service you started earlier was successfully shutdown?  Maybe try killing the services manually if necessary.</para>
+
+    <para>Q: Something seems to be going wrong when running Eclipse but I have no idea what.  What can I do?</para>
+    <para>A: Always check the consoles for output like error messages or stack traces.  You can also check the Eclipse Error Log for exceptions.  Try adding an audit logger to your session to figure out what's happening at runtime, or try debugging your application.</para>
+
+    <para>Q: Something seems to be going wrong when running the a web-based application like the jbpm-console.  What can I do?</para>
+    <para>A: You can check the server log for possible exceptions: jbpm-installer/jboss-as-{version}/standalone/log/server.log (for JBoss AS7) or jbpm-installer/jboss-as-{version}/server/default/log/server.log (for earlier versions).</para>
+
+    <para>For all other questions, try contacting the jBPM community as described in the Getting Started chapter.</para>
+
+  </section>
+
+</chapter>

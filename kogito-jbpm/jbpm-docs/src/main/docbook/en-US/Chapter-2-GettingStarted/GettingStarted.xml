@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ch.getting-stated" version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Getting Started</title>
+
+  <section>
+    <title>Downloads</title>
+
+    <para>All releases can be downloaded from <ulink url="https://sourceforge.net/projects/jbpm/files/">SourceForge</ulink>.
+     Select the version you want to download and then select which artifact you want: <itemizedlist>
+        <listitem>bin: all the jBPM binaries (jars) and their dependencies</listitem>
+        <listitem>src: the sources of the core components</listitem>
+        <listitem>docs: the documentation</listitem>
+        <listitem>examples: some jBPM examples, can be imported into Eclipse</listitem>
+        <listitem>installer: the jbpm-installer, downloads and installs a demo setup of jBPM</listitem>
+        <listitem>installer-full: the jbpm-installer, downloads and installs a demo setup of jBPM, already
+        contains a number of dependencies prepackages (so they don't need to be downloaded separately)</listitem>
+      </itemizedlist>
+    </para>
+
+  </section>
+
+  <section>
+    <title>Use with Maven, Gradle, Ivy, Buildr or ANT</title>
+
+    <para>The jars are also available in <link xlink:href="http://search.maven.org/#search|ga|1|org.jbpm">the central
+    maven repository</link> (and also in <link
+    xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.jbpm~~~~">the JBoss maven
+    repository</link>).</para>
+
+    <para>If you use Maven, add KIE and jBPM dependencies in your project's <filename>pom.xml</filename> like
+    this:</para>
+
+    <programlisting language="xml">  &lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;
+        &lt;groupId&gt;org.jbpm&lt;/groupId&gt;
+        &lt;artifactId&gt;jbpm-bom&lt;/artifactId&gt;
+        &lt;type&gt;pom&lt;/type&gt;
+        &lt;version&gt;...&lt;/version&gt;
+        &lt;scope&gt;import&lt;/scope&gt;
+      &lt;/dependency&gt;
+      ...
+    &lt;/dependencies&gt;
+  &lt;/dependencyManagement&gt;
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.kie&lt;/groupId&gt;
+      &lt;artifactId&gt;kie-api&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.jbpm&lt;/groupId&gt;
+      &lt;artifactId&gt;jbpm-flow&lt;/artifactId&gt;
+      &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+    ...
+  &lt;dependencies&gt;</programlisting>
+
+    <para>This is similar for Gradle, Ivy and Buildr. To identify the latest version, check the maven repository.</para>
+
+    <para>If you're still using ANT (without Ivy), copy all the jars from the download zip's
+    <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
+    jars.</para>
+  </section>
+
+  <section>
+    <title>Getting started</title>
+
+    <para>If you like to take a quick tutorial that will guide you through most of the components
+    using a simple example, take a look at the Installer chapter.  This will teach you how to download
+    and use the installer to create a demo setup, including most of the components.  It uses a simple
+    example to guide you through the most important features. Screencasts are available to help you
+    out as well.</para>
+
+    <para>If you like to read more information first, the following chapters first focus on the core
+    engine (API, BPMN 2.0, etc.).  Further chapters will then describe the other components and other
+    more complex topics like domain-specific processes, flexible processes, etc.  After reading the core
+    chapters, you should be able to jump to other chapters that you might find interesting.</para>
+
+    <para>You can also start playing around with some examples that are offered in a separate download.
+    Check out the examples chapter to see how to start playing with these.</para>
+
+    <para>After reading through these chapters, you should be ready to start creating your own processes and integrate the engine
+    with your application. These processes can be started from the installer or be started from scratch.</para>
+  </section>
+
+  <section>
+    <title>Community</title>
+
+    <para>Here are a lot of useful links part of the jBPM community:
+      <itemizedlist>
+        <listitem>A feed of <ulink url="http://planet.jboss.org/view/feed.seam?name=jbossjbpm">
+        blog entries</ulink> related to jBPM</listitem>
+        <listitem>The <ulink url="http://twitter.com/jbossjbpm">#jbossjbpm twitter account</ulink>.</listitem>
+        <listitem>A <ulink url="http://www.jboss.com/index.html?module=bb&amp;op=viewforum&amp;f=217">
+        user forum</ulink> for asking questions and giving answers</listitem>
+        <listitem>A <ulink url="https://jira.jboss.org/jira/browse/JBPM">JIRA bug tracking system</ulink>
+        for bugs, feature requests and roadmap</listitem>
+        <listitem>A <ulink url="https://hudson.jboss.org/hudson/job/jBPM/">continuous build server</ulink>
+        for getting the <ulink url="https://hudson.jboss.org/hudson/job/jBPM/lastSuccessfulBuild/artifact/jbpm-distribution/target/">
+        latest snapshots</ulink></listitem>
+      </itemizedlist>
+    </para>
+
+    <para>Please feel free to join us in our IRC channel at chat.freenode.net #jbpm.  This is where most
+    of the real-time discussion about the project takes place and where you can find most of the
+    developers most of their time as well.  Don't have an IRC client installed? Simply go to
+    <ulink url="http://webchat.freenode.net/">http://webchat.freenode.net/</ulink>, input your desired nickname,
+    and specify #jbpm. Then click login to join the fun.</para>
+
+  </section>
+
+  <section>
+    <title>Sources</title>
+
+    <section>
+      <title>License</title>
+
+      <para>The jBPM code itself is using the Apache License v2.0.</para>
+
+      <para>Some other components we integrate with have their own license:
+      <itemizedlist>
+        <listitem>The new Eclipse BPMN2 plugin is Eclipse Public License (EPL) v1.0.</listitem>
+        <listitem>The web-based designer is based on Oryx/Wapama and is MIT License</listitem>
+        <listitem>The Drools project is Apache License v2.0.</listitem>
+      </itemizedlist>
+      </para>
+    </section>
+
+    <section>
+      <title>Source code</title>
+
+      <para>jBPM now uses git for its source code version control system.  The sources of the jBPM
+      project can be found here (including all releases starting from jBPM 5.0-CR1):</para>
+      <para><ulink url="https://github.com/droolsjbpm/jbpm">https://github.com/droolsjbpm/jbpm</ulink></para>
+
+      <para>The source of some of the other components we integrate with can be found here:
+      <itemizedlist>
+        <listitem>Other components related to the jBPM and Drools project can be found <ulink url="https://github.com/droolsjbpm">here</ulink>.</listitem>
+        <listitem>The new Eclipse BPMN2 plugin can be found <ulink url="https://git.eclipse.org/c/bpmn2-modeler/org.eclipse.bpmn2-modeler.git">here</ulink>.</listitem>
+        <listitem>The web-based designer can be found <ulink url="https://github.com/droolsjbpm/jbpm-designer">here</ulink></listitem>
+        <listitem>The kie workbench can be found <ulink url="https://github.com/droolsjbpm/kie-wb-distribution-wars">here</ulink> note this is an aggragate
+        of other projects (drools-wb, jbpm-console-ng)</listitem>
+      </itemizedlist>
+      </para>
+    </section>
+
+    <section>
+      <title>Building from source</title>
+
+      <para>If you're interested in building the source code, contributing, releasing, etc. make
+      sure to read this <ulink url="https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md">README</ulink>.</para>
+    </section>
+
+  </section>
+
+</chapter>
