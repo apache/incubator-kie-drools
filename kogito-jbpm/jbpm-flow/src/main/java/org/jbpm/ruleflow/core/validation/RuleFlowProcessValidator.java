@@ -324,23 +324,23 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 final WorkItemNode workItemNode = (WorkItemNode) node;
                 if (workItemNode.getFrom() == null && !acceptsNoIncomingConnections(node)) {
                     errors.add(new ProcessValidationErrorImpl(process,
-                        "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
+                        "Task node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection."));
                 }
                 if (workItemNode.getTo() == null && !acceptsNoOutgoingConnections(node)) {
                     Object compensationObj = workItemNode.getMetaData(isForCompensation);
                     if( compensationObj == null || ! ((Boolean) compensationObj) ) {
                       errors.add(new ProcessValidationErrorImpl(process,
-                          "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
+                          "Task node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
                     }
                 }
                 if (workItemNode.getWork() == null) {
                     errors.add(new ProcessValidationErrorImpl(process,
-                        "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no work specified."));
+                        "Task node '" + node.getName() + "' [" + node.getId() + "] has no work specified."));
                 } else {
                     Work work = workItemNode.getWork();
-                    if (work.getName() == null) {
+                    if (work.getName() == null || work.getName().trim().length() == 0) {
                         errors.add(new ProcessValidationErrorImpl(process,
-                            "WorkItem node '" + node.getName() + "' [" + node.getId() + "] has no work name."));
+                            "Task node '" + node.getName() + "' [" + node.getId() + "] has no work name."));
                     }
                 }
                 if (workItemNode.getTimers() != null) {
