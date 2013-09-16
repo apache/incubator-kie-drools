@@ -13,6 +13,7 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
@@ -55,6 +56,17 @@ public class DrlParserTest {
         String result = parser.getExpandedDRL( drl, resolver);
         assertEqualsIgnoreWhitespace( "rule 'foo' \n when \n Something() \n then \n another(); \nend", result );
     }
+
+    private void assertEqualsIgnoreWhitespace(final String expected,
+                                              final String actual) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
+
+        assertEquals( cleanExpected,
+                      cleanActual );
+    }
     
     @Test
     public void testDeclaredSuperType() throws Exception {
@@ -89,12 +101,7 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( 0,
-                      errors.size() );
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
     }
 
     @Test
@@ -109,12 +116,7 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( 0,
-                      errors.size() );
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
     }
 
     @Test
@@ -129,12 +131,7 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( 0,
-                      errors.size() );
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
     }
 
     @Test
@@ -149,12 +146,7 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(drl)),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( 0,
-                      errors.size() );
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
     }
 
     @Test
@@ -169,12 +161,7 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( 0,
-                      errors.size() );
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
     }
 
     @Test
@@ -189,22 +176,60 @@ public class DrlParserTest {
                      + "then \n"
                      + "end";
 
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+    }
+
+    @Test
+    public void testParseConsequenceWithSingleQuoteInsideDoubleQuotesFollowedByUpdate() {
+        String drl = "declare Person\n" +
+                "    name: String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test\"\n" +
+                "when\n" +
+                "    $p: Person()\n" +
+                "then\n" +
+                "    $p.setName(\"Some name with' single quote inside\");\n" +
+                "    update($p);\n" +
+                "end";
+
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+    }
+
+    @Test
+    public void testParseConsequenceWithEscapedDoubleQuoteInsideDoubleQuotesFollowedByUpdate() {
+        String drl = "declare Person\n" +
+                "    name: String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"test\"\n" +
+                "when\n" +
+                "    $p: Person()\n" +
+                "then\n" +
+                "    $p.setName(\"Some name with\\\" escaped double quote inside double quotes\");\n" +
+                "    update($p);\n" +
+                "end";
+
+        createKBuilderAddDrlAndAssertHasNoErrors( drl );
+    }
+
+    private void createKBuilderAddDrlAndAssertHasNoErrors(String drl) {
+        KnowledgeBuilder kbuilder = createKBuilderWithSpecifiedDrl( drl );
+        assertHasNoErrors( kbuilder );
+    }
+
+    private KnowledgeBuilder createKBuilderWithSpecifiedDrl( String drl ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+        kbuilder.add( ResourceFactory.newReaderResource( new StringReader(drl) ),
                       ResourceType.DRL );
+        return kbuilder;
+    }
+
+    private void assertHasNoErrors(KnowledgeBuilder kbuilder) {
         KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( 0,
+        assertEquals( "Expected no build errors, but got: " + errors.toString(),
+                      0,
                       errors.size() );
     }
 
-    private void assertEqualsIgnoreWhitespace(final String expected,
-                                              final String actual) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
-    }
 }

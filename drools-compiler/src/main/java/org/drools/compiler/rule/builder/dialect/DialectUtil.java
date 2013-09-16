@@ -712,7 +712,7 @@ public final class DialectUtil {
             String methodName = exprStr.substring(0, endMethodName).trim();
             String propertyName = setter2property(methodName);
 
-            int endMethodArgs = findEndMethodArgs(exprStr, endMethodName);
+            int endMethodArgs = findEndOfMethodArgsIndex(exprStr, endMethodName);
             String methodParams = exprStr.substring(endMethodName+1, endMethodArgs).trim();
             List<String> args = splitArgumentsList(methodParams);
             int argsNr = args.size();
