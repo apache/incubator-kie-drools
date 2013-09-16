@@ -1230,7 +1230,7 @@ public class DefaultAgenda
                         // decrease the activation count for the event
                         handle.decreaseActivationsCount();
                         // handles "expire" only in stream mode.
-                        if ( handle.isExpired() ) {
+                        if ( handle.isExpired() && handle.isValid() ) {
                             if ( handle.getActivationsCount() <= 0 ) {
                                 // and if no more activations, retract the handle
                                 handle.getEntryPoint().retract( handle );
