@@ -2460,7 +2460,8 @@ public class MiscTest2 extends CommonTestMethodBase {
                      "" +
                      "rule \"Expr\"\n" +
                      "when\n" +
-                     "  Foo(  $a : a + b > 5 && a == 3 && $b : b > 0, $c : b - a ) \n" +
+                     "  $c := Integer() from new Integer( 4 ) \n" +
+                     "  Foo(  $a : a + b == 7 && a == 3 && $b : b > 0, $c := b - a == 1 ) \n" +
                      "then\n" +
                      "  list.add( $a );\n" +
                      "  list.add( $b );\n" +
@@ -2477,9 +2478,9 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         assertTrue( ! list.isEmpty() );
         assertEquals( 3, list.size() );
-        assertEquals( 7, list.get( 0 ) );
+        assertEquals( 3, list.get( 0 ) );
         assertEquals( 4, list.get( 1 ) );
-        assertEquals( 1, list.get( 2 ) );
+        assertEquals( 4, list.get( 2 ) );
 
     }
 

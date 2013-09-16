@@ -371,7 +371,7 @@ scope { BaseDescr lsd; }
                 BindingDescr bind = (BindingDescr) $left.result;
                 int offset = bind.isUnification() ? 2 : 1;
                 String fullExpression = $left.text.substring( $left.text.indexOf( ":" ) + offset ).trim();
-                $result = new BindingDescr( bind.getVariable(), fullExpression, bind.isUnification() );
+                $result = new BindingDescr( bind.getVariable(), bind.getExpression(), fullExpression, bind.isUnification() );
               }
           } else {
               $result = $left.result;

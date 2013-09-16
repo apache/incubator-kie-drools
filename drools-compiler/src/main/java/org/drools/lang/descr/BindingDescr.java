@@ -21,6 +21,7 @@ public class BindingDescr extends BaseDescr {
     private static final long serialVersionUID = 520l;
     
     private String               variable;
+    private String               bindingField;
     private String               expression;
     private boolean              unification;
 
@@ -31,14 +32,21 @@ public class BindingDescr extends BaseDescr {
 
     public BindingDescr(final String variable,
                         final String expression) {
-        this.variable = variable;
-        this.expression = expression;
+        this( variable, expression, expression, false );
     }
 
     public BindingDescr(final String variable,
                         final String expression,
                         final boolean isUnification ) {
+        this( variable, expression, expression, isUnification );
+    }
+
+    public BindingDescr(final String variable,
+                        final String bindingField,
+                        final String expression,
+                        final boolean isUnification ) {
         this.variable = variable;
+        this.bindingField = bindingField;
         this.expression = expression;
         this.unification = isUnification;
     }
@@ -49,6 +57,7 @@ public class BindingDescr extends BaseDescr {
 
     public void setExpression(final String expression) {
         this.expression = expression;
+        this.bindingField = expression;
     }
 
     public String getVariable() {
@@ -71,4 +80,11 @@ public class BindingDescr extends BaseDescr {
         return this.variable + ( this.unification ? " := " : " : " ) + this.expression;
     }
 
+    public String getBindingField() {
+        return bindingField;
+    }
+
+    public void setBindingField( String bindingField ) {
+        this.bindingField = bindingField;
+    }
 }

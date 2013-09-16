@@ -1110,7 +1110,7 @@ public class PatternBuilder
                                       patternDescr,
                                       pattern,
                                       fieldBindingDescr,
-                                      fieldBindingDescr.getExpression(),
+                                      fieldBindingDescr.getBindingField(),
                                       fieldBindingDescr.getVariable(),
                                       context );
             if ( fieldBindingDescr.isUnification() ) {
@@ -1123,7 +1123,7 @@ public class PatternBuilder
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      fieldBindingDescr,
                                                                      pattern.getObjectType(),
-                                                                     fieldBindingDescr.getExpression(),
+                                                                     fieldBindingDescr.getBindingField(),
                                                                      declr,
                                                                      true );
         declr.setReadAccessor( extractor );
