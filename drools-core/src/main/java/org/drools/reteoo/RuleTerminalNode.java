@@ -489,7 +489,15 @@ public class RuleTerminalNode extends BaseNode
                 return;
             }
 
-            final Activation activation = (Activation) leftTuple.getObject();
+            Object obj = leftTuple.getObject();
+
+            // activation can be null if the LeftTuple previous propagated into a no-loop
+            // or could be true due to lock-on-active blocking activation creation
+            if ( obj == null || obj == Boolean.TRUE) {
+                return;
+            }
+
+            final Activation activation = (Activation)obj;
 
             // this is to catch a race condition as activations are activated and unactivated on timers
             if ( activation instanceof ScheduledAgendaItem ) {
