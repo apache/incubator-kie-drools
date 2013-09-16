@@ -1672,12 +1672,35 @@ public class BRDRLPersistence
         boolean isJavaDialect = false;
         for ( Map.Entry<String, AttributeDescr> entry : attributes.entrySet() ) {
             String name = entry.getKey();
-            String value = entry.getValue().getValue();
+            String value = normalizeAtributeValue(entry.getValue().getValue().trim());
             RuleAttribute ruleAttribute = new RuleAttribute( name, value );
             m.addAttribute( ruleAttribute );
             isJavaDialect |= name.equals( "dialect" ) && value.equals( "java" );
         }
         return isJavaDialect;
+    }
+
+    private String normalizeAtributeValue(String value) {
+        if (value.startsWith("[")) {
+            value = value.substring(1, value.length()-1).trim();
+        }
+        if (value.startsWith("\"")) {
+            StringBuilder sb = new StringBuilder();
+            String[] split = value.split(",");
+            sb.append(stripQuotes(split[0].trim()));
+            for (int i = 1; i < split.length; i++) {
+                sb.append(", ").append(stripQuotes(split[i].trim()));
+            }
+            value = sb.toString();
+        }
+        return value;
+    }
+
+    private String stripQuotes(String value) {
+        if (value.startsWith("\"")) {
+            value = value.substring(1, value.length()-1).trim();
+        }
+        return value;
     }
 
     private Map<String, String> parseLhs( RuleModel m,

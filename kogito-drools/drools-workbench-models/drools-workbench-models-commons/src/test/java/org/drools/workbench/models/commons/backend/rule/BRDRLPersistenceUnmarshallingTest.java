@@ -1646,10 +1646,9 @@ public class BRDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("Mario to look into why a calendar's value includes [ \"....\" ]")
     public void testCalendarsAttribute() {
         String drl = "rule \"rule1\"\n"
-                + "calendars \"myCalendar\"\n"
+                + "calendars \"myCalendar\", \"Yet Another Calendar\"\n"
                 + "when\n"
                 + "then\n"
                 + "end";
@@ -1659,7 +1658,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                       m.attributes.length );
         assertEquals( "calendars",
                       m.attributes[ 0 ].getAttributeName() );
-        assertEquals( "myCalendar",
+        assertEquals( "myCalendar, Yet Another Calendar",
                       m.attributes[ 0 ].getValue() );
     }
 
