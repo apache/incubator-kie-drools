@@ -36,6 +36,15 @@ public class ProjectJobSchedulingApp extends CommonApp {
         new ProjectJobSchedulingApp().init();
     }
 
+    public ProjectJobSchedulingApp() {
+        super("Project job scheduling",
+                "Official competition name:" +
+                        " multi-mode resource-constrained multi-project scheduling problem (MRCMPSP)\n\n" +
+                        "Schedule all jobs in time and execution mode.\n\n" +
+                        "Minimize project delays.",
+                ProjectJobSchedulingPanel.LOGO_PATH);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

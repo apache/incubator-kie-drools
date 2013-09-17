@@ -38,6 +38,13 @@ public class MachineReassignmentApp extends CommonApp {
         new MachineReassignmentApp().init();
     }
 
+    public MachineReassignmentApp() {
+        super("Machine reassignment",
+                "Official competition name: Google ROADEF 2012 - Machine reassignment\n\n" +
+                        "Reassign processes to machines.",
+                MachineReassignmentPanel.LOGO_PATH);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

@@ -117,40 +117,10 @@ public class OptaPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColorFactory.CHAMELEON_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("N queens",
-                "Place queens on a chessboard.\n\n" +
-                        "No 2 queens must be able to attack each other.",
-                NQueensPanel.LOGO_PATH, new Runnable() {
-                    public void run() {
-                        new NQueensApp().init(OptaPlannerExamplesApp.this, false);
-                    }
-                }));
-        panel.add(createExampleButton("Cloud balancing",
-                "Assign processes to computers.\n\n" +
-                        "Each computer must have enough hardware to run all of it's processes.\n" +
-                        "Each used computer inflicts a maintenance cost.",
-                CloudBalancingPanel.LOGO_PATH, new Runnable() {
-            public void run() {
-                new CloudBalancingApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Traveling salesman",
-                "Official competition name: TSP - Traveling salesman problem\n\n" +
-                        "Determine the order in which to visit all cities.\n\n" +
-                        "Find the shortest route to visit all cities.",
-                TspPanel.LOGO_PATH, new Runnable() {
-            public void run() {
-                new TspApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Manners 2009",
-                "A much larger variant of the classic Miss Manners problem.\n" +
-                        "Assign guests to seats at tables.",
-                null, new Runnable() {
-            public void run() {
-                new Manners2009App().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
+        panel.add(createExampleButton(new NQueensApp()));
+        panel.add(createExampleButton(new CloudBalancingApp()));
+        panel.add(createExampleButton(new TspApp()));
+        panel.add(createExampleButton(new Manners2009App()));
         return panel;
     }
 
@@ -160,52 +130,11 @@ public class OptaPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColorFactory.BUTTER_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("Course timetabling",
-                "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n\n" +
-                        "Assign lectures to periods and rooms.",
-                null, new Runnable() {
-            public void run() {
-                new CurriculumCourseApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Machine reassignment",
-                "Official competition name: Google ROADEF 2012 - Machine reassignment\n\n" +
-                        "Reassign processes to machines.",
-                MachineReassignmentPanel.LOGO_PATH, new Runnable() {
-            public void run() {
-                new MachineReassignmentApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Vehicle routing",
-                "Official competition name: Capacitated vehicle routing problem (CVRP), " +
-                        "optionally with time windows (CVRPTW)\n\n" +
-                        "Pick up all items of all customers with a few vehicles.\n\n" +
-                        "Find the shortest route possible.\n" +
-                        "Do not overload the capacity of the vehicles.\n" +
-                        "Arrive within the time window of each customer.",
-                VehicleRoutingPanel.LOGO_PATH, new Runnable() {
-            public void run() {
-                new VehicleRoutingApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Project job scheduling",
-                "Official competition name:" +
-                        " multi-mode resource-constrained multi-project scheduling problem (MRCMPSP)\n\n" +
-                        "Schedule all jobs in time and execution mode.\n\n" +
-                        "Minimize project delays.",
-                ProjectJobSchedulingPanel.LOGO_PATH, new Runnable() {
-            public void run() {
-                new ProjectJobSchedulingApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Hospital bed planning",
-                "Official competition name: PAS - Patient admission scheduling\n\n" +
-                        "Assign patients to beds.",
-                null, new Runnable() {
-            public void run() {
-                new PatientAdmissionScheduleApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
+        panel.add(createExampleButton(new CurriculumCourseApp()));
+        panel.add(createExampleButton(new MachineReassignmentApp()));
+        panel.add(createExampleButton(new VehicleRoutingApp()));
+        panel.add(createExampleButton(new ProjectJobSchedulingApp()));
+        panel.add(createExampleButton(new PatientAdmissionScheduleApp()));
         return panel;
     }
 
@@ -215,62 +144,41 @@ public class OptaPlannerExamplesApp extends JFrame {
         titledBorder.setTitleColor(TangoColorFactory.SCARLET_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
                 BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        panel.add(createExampleButton("Exam timetabling",
-                "Official competition name: ITC 2007 track1 - Examination timetabling\n\n" +
-                        "Assign exams to timeslots and rooms.",
-                null, new Runnable() {
-            public void run() {
-                new ExaminationApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Employee rostering",
-                "Official competition name: INRC2010 - Nurse rostering\n\n" +
-                        "Assign shifts to employees.",
-                NurseRosteringPanel.LOGO_PATH, new Runnable() {
-            public void run() {
-                new NurseRosteringApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
-        panel.add(createExampleButton("Sport scheduling",
-                "Official competition name: TTP - Traveling tournament problem\n\n" +
-                        "Assign sport matches to days.",
-                null, new Runnable() {
-            public void run() {
-                new TravelingTournamentApp().init(OptaPlannerExamplesApp.this, false);
-            }
-        }));
+        panel.add(createExampleButton(new ExaminationApp()));
+        panel.add(createExampleButton(new NurseRosteringApp()));
+        panel.add(createExampleButton(new TravelingTournamentApp()));
         panel.add(new JPanel());
         return panel;
     }
-    
-    private JButton createDisabledExampleButton(final String title, final String description, String iconResource) {
-        JButton exampleButton = createExampleButton(title, description, iconResource, null);
-        exampleButton.setEnabled(false);
-        return exampleButton;
-    }
 
-    private JButton createExampleButton(final String title, final String description, String iconResource,
-            final Runnable runnable) {
+    private JButton createExampleButton(final CommonApp commonApp) {
+        String iconResource = commonApp.getIconResource();
         ImageIcon icon = iconResource == null ? null : new ImageIcon(getClass().getResource(iconResource));
-        JButton button = new JButton(new AbstractAction(title, icon) {
+        JButton button = new JButton(new AbstractAction(commonApp.getName(), icon) {
             public void actionPerformed(ActionEvent e) {
-                runnable.run();
+                commonApp.init(OptaPlannerExamplesApp.this, false);
             }
         });
         button.setHorizontalTextPosition(JButton.CENTER);
         button.setVerticalTextPosition(JButton.BOTTOM);
         button.addMouseListener(new MouseAdapter() {
-            
+
             public void mouseEntered(MouseEvent e) {
-                descriptionTextArea.setText(description);
+                descriptionTextArea.setText(commonApp.getDescription());
             }
-            
+
             public void mouseExited(MouseEvent e) {
                 descriptionTextArea.setText("");
             }
-            
+
         });
         return button;
+    }
+
+    private JButton createDisabledExampleButton(final CommonApp commonApp) {
+        JButton exampleButton = createExampleButton(commonApp);
+        exampleButton.setEnabled(false);
+        return exampleButton;
     }
 
     private JPanel createDescriptionPanel() {

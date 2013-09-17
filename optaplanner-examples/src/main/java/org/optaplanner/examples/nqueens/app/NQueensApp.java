@@ -51,6 +51,13 @@ public class NQueensApp extends CommonApp {
         new NQueensApp().init();
     }
 
+    public NQueensApp() {
+        super("N queens",
+                "Place queens on a chessboard.\n\n" +
+                        "No 2 queens must be able to attack each other.",
+                NQueensPanel.LOGO_PATH);
+    }
+
     @Override
     protected Solver createSolver() {
         return createSolverByXml();

@@ -36,6 +36,17 @@ public class VehicleRoutingApp extends CommonApp {
         new VehicleRoutingApp().init();
     }
 
+    public VehicleRoutingApp() {
+        super("Vehicle routing",
+                "Official competition name: Capacitated vehicle routing problem (CVRP), " +
+                        "optionally with time windows (CVRPTW)\n\n" +
+                        "Pick up all items of all customers with a few vehicles.\n\n" +
+                        "Find the shortest route possible.\n" +
+                        "Do not overload the capacity of the vehicles.\n" +
+                        "Arrive within the time window of each customer.",
+                VehicleRoutingPanel.LOGO_PATH);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

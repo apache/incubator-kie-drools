@@ -38,6 +38,13 @@ public class CurriculumCourseApp extends CommonApp {
         new CurriculumCourseApp().init();
     }
 
+    public CurriculumCourseApp() {
+        super("Course timetabling",
+                "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n\n" +
+                        "Assign lectures to periods and rooms.",
+                null);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

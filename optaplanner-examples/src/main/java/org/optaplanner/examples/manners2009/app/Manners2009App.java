@@ -36,6 +36,13 @@ public class Manners2009App extends CommonApp {
         new Manners2009App().init();
     }
 
+    public Manners2009App() {
+        super("Manners 2009",
+                "A much larger variant of the classic Miss Manners problem.\n" +
+                        "Assign guests to seats at tables.",
+                null);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

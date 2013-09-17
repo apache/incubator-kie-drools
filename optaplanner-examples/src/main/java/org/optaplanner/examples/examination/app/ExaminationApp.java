@@ -43,6 +43,13 @@ public class ExaminationApp extends CommonApp {
         new ExaminationApp().init();
     }
 
+    public ExaminationApp() {
+        super("Exam timetabling",
+                "Official competition name: ITC 2007 track1 - Examination timetabling\n\n" +
+                        "Assign exams to timeslots and rooms.",
+                null);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

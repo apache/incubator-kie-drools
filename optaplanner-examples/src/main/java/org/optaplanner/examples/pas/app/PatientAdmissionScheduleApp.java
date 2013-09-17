@@ -38,6 +38,13 @@ public class PatientAdmissionScheduleApp extends CommonApp {
         new PatientAdmissionScheduleApp().init();
     }
 
+    public PatientAdmissionScheduleApp() {
+        super("Hospital bed planning",
+                "Official competition name: PAS - Patient admission scheduling\n\n" +
+                        "Assign patients to beds.",
+                null);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

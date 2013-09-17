@@ -38,6 +38,13 @@ public class NurseRosteringApp extends CommonApp {
         new NurseRosteringApp().init();
     }
 
+    public NurseRosteringApp() {
+        super("Employee rostering",
+                "Official competition name: INRC2010 - Nurse rostering\n\n" +
+                        "Assign shifts to employees.",
+                NurseRosteringPanel.LOGO_PATH);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();

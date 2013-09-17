@@ -64,13 +64,29 @@ public abstract class CommonApp extends LoggingMain {
                 lookAndFeelException);
     }
 
-    private SolverAndPersistenceFrame solverAndPersistenceFrame;
-    private SolutionBusiness solutionBusiness;
+    protected final String name;
+    protected final String description;
+    protected final String iconResource;
 
-    public CommonApp() {
-        solutionBusiness = createSolutionBusiness();
-        solverAndPersistenceFrame = new SolverAndPersistenceFrame(
-                solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName() + " OptaPlanner example");
+    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
+    protected SolutionBusiness solutionBusiness;
+
+    protected CommonApp(String name, String description, String iconResource) {
+        this.name = name;
+        this.description = description;
+        this.iconResource = iconResource;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getIconResource() {
+        return iconResource;
     }
 
     public void init() {
@@ -78,15 +94,17 @@ public abstract class CommonApp extends LoggingMain {
     }
 
     public void init(Component centerForComponent, boolean exitOnClose) {
+        solutionBusiness = createSolutionBusiness();
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame(
+                solutionBusiness, createSolutionPanel(), name + " OptaPlanner example");
         solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
         solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
     }
 
     public SolutionBusiness createSolutionBusiness() {
-        SolutionDao solutionDao = createSolutionDao();
         SolutionBusiness solutionBusiness = new SolutionBusiness();
-        solutionBusiness.setSolutionDao(solutionDao);
+        solutionBusiness.setSolutionDao(createSolutionDao());
         solutionBusiness.setImporter(createSolutionImporter());
         solutionBusiness.setExporter(createSolutionExporter());
         solutionBusiness.updateDataDirs();

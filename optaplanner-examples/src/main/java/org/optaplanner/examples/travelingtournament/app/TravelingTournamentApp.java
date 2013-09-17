@@ -38,6 +38,13 @@ public class TravelingTournamentApp extends CommonApp {
         new TravelingTournamentApp().init();
     }
 
+    public TravelingTournamentApp() {
+        super("Sport scheduling",
+                "Official competition name: TTP - Traveling tournament problem\n\n" +
+                        "Assign sport matches to days.",
+                null);
+    }
+
     @Override
     protected Solver createSolver() {
         XmlSolverFactory solverFactory = new XmlSolverFactory();
