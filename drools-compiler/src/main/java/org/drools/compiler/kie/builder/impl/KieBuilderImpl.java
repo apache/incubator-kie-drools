@@ -45,7 +45,6 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -67,6 +66,7 @@ public class KieBuilderImpl
         InternalKieBuilder {
 
     static final String           RESOURCES_ROOT = "src/main/resources/";
+    static final String           JAVA_ROOT      = "src/main/java/";
 
     private ResultsImpl           results;
     private final ResourceReader  srcMfs;
@@ -565,7 +565,15 @@ public class KieBuilderImpl
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".java" ) && !classFiles.contains( fileName.substring( 0,
                                                                                            fileName.length() - ".java".length() ) ) ) {
-                javaFiles.add( fileName.replace(File.separatorChar, '/') );
+                fileName = fileName.replace(File.separatorChar, '/');
+
+                if ( !fileName.startsWith(JAVA_ROOT) ) {
+                    results.addMessage(Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"");
+                } else if ( fileName.substring(JAVA_ROOT.length()).indexOf('/') < 0 ) {
+                    results.addMessage(Level.ERROR, fileName, "A Java class must have a package: " + fileName.substring(JAVA_ROOT.length()) + " is not allowed");
+                } else {
+                    javaFiles.add( fileName );
+                }
             }
         }
         if ( javaFiles.isEmpty() ) {
@@ -574,7 +582,7 @@ public class KieBuilderImpl
 
         String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
 
-        EclipseJavaCompiler compiler = createCompiler( "src/main/java/" );
+        EclipseJavaCompiler compiler = createCompiler( JAVA_ROOT );
         CompilationResult res = compiler.compile( sourceFiles,
                                                   srcMfs,
                                                   trgMfs,
