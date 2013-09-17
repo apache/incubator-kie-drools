@@ -7,6 +7,7 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -43,7 +44,7 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
             parent = MavenClassLoaderResolver.class.getClassLoader();
         }
         
-        List<ReleaseId> jarDependencies = ((InternalKieModule)kmodule).getJarDependencies();
+        Collection<ReleaseId> jarDependencies = ((InternalKieModule)kmodule).getJarDependencies();
         ArtifactResolver resolver = ArtifactResolver.getResolverFor(kmodule.getReleaseId(),true);
         
         URL[] urls = new URL[jarDependencies.size()];

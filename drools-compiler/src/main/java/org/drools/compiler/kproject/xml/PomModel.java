@@ -2,14 +2,15 @@ package org.drools.compiler.kproject.xml;
 
 import org.kie.api.builder.ReleaseId;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PomModel {
 
     private ReleaseId releaseId;
     private ReleaseId parentReleaseId;
-    private List<ReleaseId> dependencies = new ArrayList<ReleaseId>();
+    private Set<ReleaseId> dependencies = new HashSet<ReleaseId>();
 
 
     public ReleaseId getReleaseId() {
@@ -28,7 +29,7 @@ public class PomModel {
         this.parentReleaseId = parentReleaseId;
     }
 
-    public List<ReleaseId> getDependencies() {
+    public Collection<ReleaseId> getDependencies() {
         return dependencies;
     }
 
