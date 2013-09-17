@@ -549,7 +549,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
         mv.visitVarInsn( ALOAD, 2 );
         if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-            TraitFactory.promote( mv, field.getTypeName() );
+            TraitFactory.primitiveValue( mv, field.getTypeName() );
             mv.visitVarInsn( BuildUtils.storeType( field.getTypeName() ), 3 );
             TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, false, 3 );
         } else {

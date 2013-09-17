@@ -654,34 +654,33 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         mv.visitLdcInsn( fieldName );
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "get", "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
 
-        if ( BuildUtils.isPrimitive( type ) ) {
+        String actualType = BuildUtils.isPrimitive( type ) ? BuildUtils.box( type ) : type;
+
             mv.visitVarInsn( ASTORE, 1 );
             mv.visitVarInsn( ALOAD, 1 );
             Label l0 = new Label();
             mv.visitJumpInsn( IFNULL, l0 );
             mv.visitVarInsn( ALOAD, 1 );
-            Label l1 = new Label();
+            mv.visitTypeInsn( INSTANCEOF, BuildUtils.getInternalType( actualType ) );
+            mv.visitJumpInsn( IFEQ, l0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( actualType ) );
 
-            mv.visitJumpInsn( GOTO, l1 );
+        if ( BuildUtils.isPrimitive( type ) ) {
+            TraitFactory.primitiveValue( mv, type );
+            mv.visitInsn( BuildUtils.returnType( type ) );
             mv.visitLabel( l0 );
             mv.visitInsn( BuildUtils.zero( type ) );
-
-            TraitFactory.valueOf( mv, type );
-            mv.visitLabel( l1 );
-
-            TraitFactory.promote( mv, type );
-
             mv.visitInsn( BuildUtils.returnType( type ) );
-//            mv.visitMaxs( 2, 2 );
-            mv.visitMaxs( 0, 0 );
-
         } else {
-            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( type ) );
             mv.visitInsn( ARETURN );
-//            mv.visitMaxs( 2, 1 );
-            mv.visitMaxs( 0, 0 );
+            mv.visitLabel( l0 );
+            mv.visitInsn( ACONST_NULL );
+            mv.visitInsn( ARETURN );
         }
 
+//        mv.visitMaxs( 2, 2 );
+        mv.visitMaxs( 0, 0 );
         mv.visitEnd();
     }
 

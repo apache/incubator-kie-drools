@@ -767,30 +767,40 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TripleStore.class ), "get", 
                             "(" + Type.getDescriptor( Triple.class ) + ")" + Type.getDescriptor( Triple.class ) );
 
+        String actualType = BuildUtils.isPrimitive( type ) ? BuildUtils.box( type ) : type;
 
         mv.visitVarInsn( ASTORE, 1 );
         mv.visitVarInsn( ALOAD, 1 );
         Label l0 = new Label();
-
         mv.visitJumpInsn( IFNULL, l0 );
         mv.visitVarInsn( ALOAD, 1 );
-
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Triple.class ), "getValue", "()" + Type.getDescriptor( Object.class ) );
+        mv.visitVarInsn( ASTORE, 2 );
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitTypeInsn( INSTANCEOF, BuildUtils.getInternalType( actualType ) );
         Label l1 = new Label();
-        mv.visitJumpInsn( IFNONNULL, l1 );
-        mv.visitLabel( l0 );
-        mv.visitInsn( BuildUtils.zero( type ) );
-        mv.visitInsn( BuildUtils.returnType( type ) );
-        mv.visitLabel( l1 );
-        mv.visitVarInsn( ALOAD, 1 );
-        mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Triple.class ), "getValue", "()" + Type.getDescriptor( Object.class ) );
+        mv.visitJumpInsn( IFEQ, l1 );
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( actualType ) );
 
         if ( BuildUtils.isPrimitive( type ) ) {
-            TraitFactory.promote( mv, type );
+            TraitFactory.primitiveValue( mv, type );
+            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitLabel( l1 );
+            mv.visitInsn( BuildUtils.zero( type ) );
+            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitLabel( l0 );
+            mv.visitInsn( BuildUtils.zero( type ) );
+            mv.visitInsn( BuildUtils.returnType( type ) );
         } else {
-            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( type ) );
+            mv.visitInsn( ARETURN );
+            mv.visitLabel( l1 );
+            mv.visitInsn( ACONST_NULL );
+            mv.visitInsn( ARETURN );
+            mv.visitLabel( l0 );
+            mv.visitInsn( ACONST_NULL );
+            mv.visitInsn( ARETURN );
         }
-        mv.visitInsn( BuildUtils.returnType( type ) );
 //        mv.visitMaxs( 3, 2 );
         mv.visitMaxs( 0, 0 );
 

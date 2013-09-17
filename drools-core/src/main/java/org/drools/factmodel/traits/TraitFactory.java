@@ -463,7 +463,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
     }
 
 
-    public static void promote( MethodVisitor mv, String fieldType ) {
+    public static void primitiveValue( MethodVisitor mv, String fieldType ) {
         mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fieldType ) ) );
         mv.visitMethodInsn(
                 INVOKEVIRTUAL,
