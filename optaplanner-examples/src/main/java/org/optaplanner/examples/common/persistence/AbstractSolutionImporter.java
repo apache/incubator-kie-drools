@@ -32,46 +32,63 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";
 
-    protected SolutionDao solutionDao;
+    protected final SolutionDao solutionDao;
+    protected final File inputDir;
+    protected final File outputDir;
 
     public AbstractSolutionImporter(SolutionDao solutionDao) {
         this.solutionDao = solutionDao;
+        inputDir = new File(solutionDao.getDataDir(), "import");
+        if (!inputDir.exists()) {
+            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
+                    + ") does not exist.");
+        }
+        outputDir = new File(solutionDao.getDataDir(), "unsolved");
     }
 
     protected File getInputDir() {
-        return new File(solutionDao.getDataDir(), "import");
+        return inputDir;
+    }
+
+    protected File getOutputDir() {
+        return outputDir;
     }
 
     public abstract String getInputFileSuffix();
-
-    protected File getOutputDir() {
-        return new File(solutionDao.getDataDir(), "unsolved");
-    }
 
     protected String getOutputFileSuffix() {
         return DEFAULT_OUTPUT_FILE_SUFFIX;
     }
 
     public void convertAll() {
-        File inputDir = getInputDir();
-        if (!inputDir.exists()) {
-            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
-                    + ") does not exist.");
-        }
-        File outputDir = getOutputDir();
         File[] inputFiles = inputDir.listFiles();
         Arrays.sort(inputFiles, new ProblemFileComparator());
         for (File inputFile : inputFiles) {
             if (acceptInputFile(inputFile) && acceptInputFileDuringBulkConvert(inputFile)) {
-                Solution solution = readSolution(inputFile);
                 String inputFileName = inputFile.getName();
                 String outputFileName = inputFileName.substring(0,
                         inputFileName.length() - getInputFileSuffix().length())
                         + getOutputFileSuffix();
                 File outputFile = new File(outputDir, outputFileName);
-                solutionDao.writeSolution(solution, outputFile);
+                convert(inputFile, outputFile);
             }
         }
+    }
+
+    public void convert(String inputFileName, String outputFileName) {
+        File inputFile = new File(inputDir, inputFileName);
+        if (!inputFile.exists()) {
+            throw new IllegalStateException("The file inputFile (" + inputFile.getAbsolutePath()
+                    + ") does not exist.");
+        }
+        File outputFile = new File(outputDir, outputFileName);
+        outputFile.getParentFile().mkdirs();
+        convert(inputFile, outputFile);
+    }
+
+    protected void convert(File inputFile, File outputFile) {
+        Solution solution = readSolution(inputFile);
+        solutionDao.writeSolution(solution, outputFile);
     }
 
     public boolean acceptInputFile(File inputFile) {
@@ -79,7 +96,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
     }
 
     /**
-     * Some files are to big to be serialized to XML or take too long.
+     * Some files are too big to be serialized to XML or take too long.
      * @param inputFile never null
      * @return true if accepted
      */

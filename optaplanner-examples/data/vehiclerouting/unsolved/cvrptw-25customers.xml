@@ -1,0 +1,473 @@
+<org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule id="1">
+  <id>0</id>
+  <name>C101</name>
+  <locationList id="2">
+    <VrpLocation id="3">
+      <id>0</id>
+      <latitude>40.0</latitude>
+      <longitude>50.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="4">
+      <id>1</id>
+      <latitude>45.0</latitude>
+      <longitude>68.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="5">
+      <id>2</id>
+      <latitude>45.0</latitude>
+      <longitude>70.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="6">
+      <id>3</id>
+      <latitude>42.0</latitude>
+      <longitude>66.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="7">
+      <id>4</id>
+      <latitude>42.0</latitude>
+      <longitude>68.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="8">
+      <id>5</id>
+      <latitude>42.0</latitude>
+      <longitude>65.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="9">
+      <id>6</id>
+      <latitude>40.0</latitude>
+      <longitude>69.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="10">
+      <id>7</id>
+      <latitude>40.0</latitude>
+      <longitude>66.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="11">
+      <id>8</id>
+      <latitude>38.0</latitude>
+      <longitude>68.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="12">
+      <id>9</id>
+      <latitude>38.0</latitude>
+      <longitude>70.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="13">
+      <id>10</id>
+      <latitude>35.0</latitude>
+      <longitude>66.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="14">
+      <id>11</id>
+      <latitude>35.0</latitude>
+      <longitude>69.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="15">
+      <id>12</id>
+      <latitude>25.0</latitude>
+      <longitude>85.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="16">
+      <id>13</id>
+      <latitude>22.0</latitude>
+      <longitude>75.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="17">
+      <id>14</id>
+      <latitude>22.0</latitude>
+      <longitude>85.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="18">
+      <id>15</id>
+      <latitude>20.0</latitude>
+      <longitude>80.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="19">
+      <id>16</id>
+      <latitude>20.0</latitude>
+      <longitude>85.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="20">
+      <id>17</id>
+      <latitude>18.0</latitude>
+      <longitude>75.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="21">
+      <id>18</id>
+      <latitude>15.0</latitude>
+      <longitude>75.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="22">
+      <id>19</id>
+      <latitude>15.0</latitude>
+      <longitude>80.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="23">
+      <id>20</id>
+      <latitude>30.0</latitude>
+      <longitude>50.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="24">
+      <id>21</id>
+      <latitude>30.0</latitude>
+      <longitude>52.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="25">
+      <id>22</id>
+      <latitude>28.0</latitude>
+      <longitude>52.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="26">
+      <id>23</id>
+      <latitude>28.0</latitude>
+      <longitude>55.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="27">
+      <id>24</id>
+      <latitude>25.0</latitude>
+      <longitude>50.0</longitude>
+    </VrpLocation>
+    <VrpLocation id="28">
+      <id>25</id>
+      <latitude>25.0</latitude>
+      <longitude>52.0</longitude>
+    </VrpLocation>
+  </locationList>
+  <depotList id="29">
+    <org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot id="30">
+      <id>0</id>
+      <location reference="3"/>
+      <readyTime>0</readyTime>
+      <dueTime>1236</dueTime>
+    </org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot>
+  </depotList>
+  <vehicleList id="31">
+    <VrpVehicle id="32">
+      <id>0</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="33">
+      <id>1</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="34">
+      <id>2</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="35">
+      <id>3</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="36">
+      <id>4</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="37">
+      <id>5</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="38">
+      <id>6</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="39">
+      <id>7</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="40">
+      <id>8</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="41">
+      <id>9</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="42">
+      <id>10</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="43">
+      <id>11</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="44">
+      <id>12</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="45">
+      <id>13</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="46">
+      <id>14</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="47">
+      <id>15</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="48">
+      <id>16</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="49">
+      <id>17</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="50">
+      <id>18</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="51">
+      <id>19</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="52">
+      <id>20</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="53">
+      <id>21</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="54">
+      <id>22</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="55">
+      <id>23</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+    <VrpVehicle id="56">
+      <id>24</id>
+      <capacity>200</capacity>
+      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="30"/>
+    </VrpVehicle>
+  </vehicleList>
+  <customerList id="57">
+    <VrpTimeWindowedCustomer id="58">
+      <id>1</id>
+      <location reference="4"/>
+      <demand>10</demand>
+      <readyTime>912</readyTime>
+      <dueTime>967</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="59">
+      <id>2</id>
+      <location reference="5"/>
+      <demand>30</demand>
+      <readyTime>825</readyTime>
+      <dueTime>870</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="60">
+      <id>3</id>
+      <location reference="6"/>
+      <demand>10</demand>
+      <readyTime>65</readyTime>
+      <dueTime>146</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="61">
+      <id>4</id>
+      <location reference="7"/>
+      <demand>10</demand>
+      <readyTime>727</readyTime>
+      <dueTime>782</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="62">
+      <id>5</id>
+      <location reference="8"/>
+      <demand>10</demand>
+      <readyTime>15</readyTime>
+      <dueTime>67</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="63">
+      <id>6</id>
+      <location reference="9"/>
+      <demand>20</demand>
+      <readyTime>621</readyTime>
+      <dueTime>702</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="64">
+      <id>7</id>
+      <location reference="10"/>
+      <demand>20</demand>
+      <readyTime>170</readyTime>
+      <dueTime>225</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="65">
+      <id>8</id>
+      <location reference="11"/>
+      <demand>20</demand>
+      <readyTime>255</readyTime>
+      <dueTime>324</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="66">
+      <id>9</id>
+      <location reference="12"/>
+      <demand>10</demand>
+      <readyTime>534</readyTime>
+      <dueTime>605</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="67">
+      <id>10</id>
+      <location reference="13"/>
+      <demand>10</demand>
+      <readyTime>357</readyTime>
+      <dueTime>410</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="68">
+      <id>11</id>
+      <location reference="14"/>
+      <demand>10</demand>
+      <readyTime>448</readyTime>
+      <dueTime>505</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="69">
+      <id>12</id>
+      <location reference="15"/>
+      <demand>20</demand>
+      <readyTime>652</readyTime>
+      <dueTime>721</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="70">
+      <id>13</id>
+      <location reference="16"/>
+      <demand>30</demand>
+      <readyTime>30</readyTime>
+      <dueTime>92</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="71">
+      <id>14</id>
+      <location reference="17"/>
+      <demand>10</demand>
+      <readyTime>567</readyTime>
+      <dueTime>620</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="72">
+      <id>15</id>
+      <location reference="18"/>
+      <demand>40</demand>
+      <readyTime>384</readyTime>
+      <dueTime>429</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="73">
+      <id>16</id>
+      <location reference="19"/>
+      <demand>40</demand>
+      <readyTime>475</readyTime>
+      <dueTime>528</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="74">
+      <id>17</id>
+      <location reference="20"/>
+      <demand>20</demand>
+      <readyTime>99</readyTime>
+      <dueTime>148</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="75">
+      <id>18</id>
+      <location reference="21"/>
+      <demand>20</demand>
+      <readyTime>179</readyTime>
+      <dueTime>254</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="76">
+      <id>19</id>
+      <location reference="22"/>
+      <demand>10</demand>
+      <readyTime>278</readyTime>
+      <dueTime>345</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="77">
+      <id>20</id>
+      <location reference="23"/>
+      <demand>10</demand>
+      <readyTime>10</readyTime>
+      <dueTime>73</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="78">
+      <id>21</id>
+      <location reference="24"/>
+      <demand>20</demand>
+      <readyTime>914</readyTime>
+      <dueTime>965</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="79">
+      <id>22</id>
+      <location reference="25"/>
+      <demand>20</demand>
+      <readyTime>812</readyTime>
+      <dueTime>883</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="80">
+      <id>23</id>
+      <location reference="26"/>
+      <demand>10</demand>
+      <readyTime>732</readyTime>
+      <dueTime>777</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="81">
+      <id>24</id>
+      <location reference="27"/>
+      <demand>10</demand>
+      <readyTime>65</readyTime>
+      <dueTime>144</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+    <VrpTimeWindowedCustomer id="82">
+      <id>25</id>
+      <location reference="28"/>
+      <demand>40</demand>
+      <readyTime>169</readyTime>
+      <dueTime>224</dueTime>
+      <serviceDuration>90</serviceDuration>
+    </VrpTimeWindowedCustomer>
+  </customerList>
+</org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule>

@@ -1,5 +1,5 @@
-NAME : demo-04-capacitated-extra-vehicle
-COMMENT : Geoffrey De Smet - OptaPlanner VRP demo 04
+NAME : tutorial-03-capacitated-hard
+COMMENT : Geoffrey De Smet - OptaPlanner VRP demo 02
 TYPE : CVRP
 DIMENSION : 8
 EDGE_WEIGHT_TYPE : EUC_2D 
@@ -25,5 +25,5 @@ DEMAND_SECTION
 DEPOT_SECTION
  1  
  -1  
-VEHICLES : 3
+VEHICLES : 2
 EOF

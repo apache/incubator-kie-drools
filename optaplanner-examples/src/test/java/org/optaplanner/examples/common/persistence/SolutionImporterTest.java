@@ -39,12 +39,7 @@ public abstract class SolutionImporterTest extends LoggingTest {
     protected static Collection<Object[]> getInputFilesAsParameters(AbstractSolutionImporter solutionImporter) {
         List<File> fileList = new ArrayList<File>(0);
         File inputDir = solutionImporter.getInputDir();
-        if (!inputDir.exists()) {
-            throw new IllegalStateException("The directory inputDir (" + inputDir.getAbsolutePath()
-                    + ") does not exist.");
-        } else {
-            addFiles(solutionImporter, fileList, inputDir);
-        }
+        addFiles(solutionImporter, fileList, inputDir);
         Collections.sort(fileList, new ProblemFileComparator());
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
         for (File file : fileList) {
