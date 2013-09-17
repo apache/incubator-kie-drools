@@ -70,7 +70,7 @@ public abstract class CommonApp extends LoggingMain {
     public CommonApp() {
         solutionBusiness = createSolutionBusiness();
         solverAndPersistenceFrame = new SolverAndPersistenceFrame(
-                solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName());
+                solutionBusiness, createSolutionPanel(), solutionBusiness.getDirName() + " OptaPlanner example");
     }
 
     public void init() {

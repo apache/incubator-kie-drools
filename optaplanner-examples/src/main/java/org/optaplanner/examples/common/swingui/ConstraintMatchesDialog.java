@@ -46,7 +46,7 @@ public class ConstraintMatchesDialog extends JDialog {
     protected SolutionBusiness solutionBusiness;
 
     public ConstraintMatchesDialog(SolverAndPersistenceFrame solverAndPersistenceFrame) {
-        super(solverAndPersistenceFrame, "Constraint scores", true);
+        super(solverAndPersistenceFrame, "Constraint matches", true);
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 

@@ -18,11 +18,10 @@ package org.optaplanner.examples.common.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -46,7 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
@@ -65,7 +64,8 @@ public class SolverAndPersistenceFrame extends JFrame {
     public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
-    private SolutionBusiness solutionBusiness;
+    private final String titlePrefix;
+    private final SolutionBusiness solutionBusiness;
 
     private SolutionPanel solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
@@ -76,21 +76,23 @@ public class SolverAndPersistenceFrame extends JFrame {
     private Action saveAction;
     private Action importAction;
     private Action exportAction;
-    private JTextField solutionFileNameField;
     private JCheckBox refreshScreenDuringSolvingCheckBox;
-    private JPanel solveAndTerminateCardPanel;
     private Action solveAction;
+    private JButton solveButton;
     private Action terminateSolvingEarlyAction;
+    private JButton terminateSolvingEarlyButton;
     private JPanel middlePanel;
     private JProgressBar progressBar;
     private JLabel resultLabel;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-    public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel, String exampleName) {
-        super(exampleName + " OptaPlanner example");
-        setIconImage(OPTA_PLANNER_ICON.getImage());
+    public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel,
+            String titlePrefix) {
+        super(titlePrefix);
+        this.titlePrefix = titlePrefix;
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
+        setIconImage(OPTA_PLANNER_ICON.getImage());
         solutionPanel.setSolutionBusiness(solutionBusiness);
         solutionPanel.setSolverAndPersistenceFrame(this);
         registerListeners();
@@ -126,7 +128,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JComponent createContentPane() {
         JComponent quickOpenPanel = createQuickOpenPanel();
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(createProcessingPanel(), BorderLayout.NORTH);
+        mainPanel.add(createToolBar(), BorderLayout.NORTH);
         mainPanel.add(createMiddlePanel(), BorderLayout.CENTER);
         mainPanel.add(createScorePanel(), BorderLayout.SOUTH);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, quickOpenPanel, mainPanel);
@@ -203,48 +205,41 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     }
 
-    private JComponent createProcessingPanel() {
-        JPanel processingPanel = new JPanel(new GridLayout(3, 1));
-        processingPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+    private JComponent createToolBar() {
+        JToolBar toolBar = new JToolBar("File operations");
+        toolBar.setFloatable(false);
 
-        JPanel row0Panel = new JPanel(new GridLayout(1, 4));
         importAction = new ImportAction();
         importAction.setEnabled(solutionBusiness.hasImporter());
-        row0Panel.add(new JButton(importAction));
+        toolBar.add(new JButton(importAction));
         openAction = new OpenAction();
         openAction.setEnabled(true);
-        row0Panel.add(new JButton(openAction));
+        toolBar.add(new JButton(openAction));
         saveAction = new SaveAction();
         saveAction.setEnabled(false);
-        row0Panel.add(new JButton(saveAction));
+        toolBar.add(new JButton(saveAction));
         exportAction = new ExportAction();
         exportAction.setEnabled(false);
-        row0Panel.add(new JButton(exportAction));
-        processingPanel.add(row0Panel);
+        toolBar.add(new JButton(exportAction));
+        toolBar.addSeparator();
 
-        JPanel row1Panel = new JPanel(new GridLayout(1, 2));
-        JPanel solutionFileNamePanel = new JPanel(new BorderLayout(5, 0));
-        solutionFileNamePanel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 0));
-        solutionFileNamePanel.add(new JLabel("File:"), BorderLayout.WEST);
-        solutionFileNameField = new JTextField(10);
-        solutionFileNameField.setEditable(false);
-        solutionFileNamePanel.add(solutionFileNameField, BorderLayout.CENTER);
-        row1Panel.add(solutionFileNamePanel);
-        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
-                solutionPanel.isRefreshScreenDuringSolving());
-        row1Panel.add(refreshScreenDuringSolvingCheckBox);
-        processingPanel.add(row1Panel);
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        toolBar.add(progressBar);
+        toolBar.addSeparator();
 
-        solveAndTerminateCardPanel = new JPanel(new CardLayout());
         solveAction = new SolveAction();
         solveAction.setEnabled(false);
-        solveAndTerminateCardPanel.add(new JButton(solveAction), "solveAction");
+        solveButton = new JButton(solveAction);
         terminateSolvingEarlyAction = new TerminateSolvingEarlyAction();
         terminateSolvingEarlyAction.setEnabled(false);
-        solveAndTerminateCardPanel.add(new JButton(terminateSolvingEarlyAction), "terminateSolvingEarlyAction");
-        processingPanel.add(solveAndTerminateCardPanel);
-
-        return processingPanel;
+        terminateSolvingEarlyButton = new JButton(terminateSolvingEarlyAction);
+        terminateSolvingEarlyButton.setVisible(false);
+        toolBar.add(solveButton, "solveAction");
+        toolBar.add(terminateSolvingEarlyButton, "terminateSolvingEarlyAction");
+        solveButton.setMinimumSize(terminateSolvingEarlyButton.getMinimumSize());
+        solveButton.setPreferredSize(terminateSolvingEarlyButton.getPreferredSize());
+        return toolBar;
     }
 
     private class SolveAction extends AbstractAction {
@@ -455,15 +450,16 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     private JPanel createScorePanel() {
         JPanel scorePanel = new JPanel(new BorderLayout());
-        progressBar = new JProgressBar(0, 100);
-        scorePanel.add(progressBar, BorderLayout.WEST);
+        scorePanel.setBorder(BorderFactory.createEtchedBorder());
+        showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
+        showConstraintMatchesDialogAction.setEnabled(false);
+        scorePanel.add(new JButton(showConstraintMatchesDialogAction), BorderLayout.WEST);
         resultLabel = new JLabel("Score:");
         resultLabel.setBorder(BorderFactory.createLoweredBevelBorder());
         scorePanel.add(resultLabel, BorderLayout.CENTER);
-        showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
-        showConstraintMatchesDialogAction.setEnabled(false);
-        JButton constraintScoreMapButton = new JButton(showConstraintMatchesDialogAction);
-        scorePanel.add(constraintScoreMapButton, BorderLayout.EAST);
+        refreshScreenDuringSolvingCheckBox = new JCheckBox("Refresh screen during solving",
+                solutionPanel.isRefreshScreenDuringSolving());
+        scorePanel.add(refreshScreenDuringSolvingCheckBox, BorderLayout.EAST);
         return scorePanel;
     }
 
@@ -481,7 +477,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private void setSolutionLoaded() {
-        solutionFileNameField.setText(solutionBusiness.getSolutionFileName());
+        setTitle(titlePrefix + " - " + solutionBusiness.getSolutionFileName());
         ((CardLayout) middlePanel.getLayout()).show(middlePanel, "solutionPanel");
         solveAction.setEnabled(true);
         saveAction.setEnabled(true);
@@ -502,9 +498,9 @@ public class SolverAndPersistenceFrame extends JFrame {
         saveAction.setEnabled(!solving);
         exportAction.setEnabled(!solving && solutionBusiness.hasExporter());
         solveAction.setEnabled(!solving);
+        solveButton.setVisible(!solving);
         terminateSolvingEarlyAction.setEnabled(solving);
-        ((CardLayout) solveAndTerminateCardPanel.getLayout()).show(solveAndTerminateCardPanel,
-                solving ? "terminateSolvingEarlyAction" : "solveAction");
+        terminateSolvingEarlyButton.setVisible(solving);
         solutionPanel.setEnabled(!solving);
         progressBar.setIndeterminate(solving);
         progressBar.setStringPainted(solving);
