@@ -5,12 +5,10 @@ import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -65,8 +63,6 @@ public abstract class AbstractKieModule
 
     private Map<ReleaseId, InternalKieModule> kieDependencies;
 
-    private List<ReleaseId> jarDependencies;
-
     // this is a { KBASE_NAME -> DIALECT -> ( RESOURCE, BYTECODE ) } cache
     protected Map<String, Map<String, Map<String, byte[]>>> compilationCache = new HashMap<String, Map<String, Map<String, byte[]>>>();
 
@@ -94,11 +90,11 @@ public abstract class AbstractKieModule
         kieDependencies.put(dependency.getReleaseId(), dependency);
     }
 
-    public List<ReleaseId> getJarDependencies() {
+    public Collection<ReleaseId> getJarDependencies() {
         if( pomModel == null ) {
             getPomModel();
         }
-        List<ReleaseId> deps = null;
+        Collection<ReleaseId> deps = null;
         if( pomModel != null ) {
             deps = pomModel.getDependencies();
         }
@@ -242,7 +238,6 @@ public abstract class AbstractKieModule
     private static void addFiles(Map<String, InternalKieModule> assets,
             KieBaseModel kieBaseModel,
             InternalKieModule kieModule) {
-        int fileCount = 0;
         for (String fileName : kieModule.getFileNames()) {
             if (filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith(".properties")) {
                 assets.put(fileName, kieModule);
@@ -341,6 +336,10 @@ public abstract class AbstractKieModule
             }
         }
         return pomModel;
+    }
+
+    public void setPomModel(PomModel pomModel) {
+        this.pomModel = pomModel;
     }
 
     private void validatePomModel(PomModel pomModel) {

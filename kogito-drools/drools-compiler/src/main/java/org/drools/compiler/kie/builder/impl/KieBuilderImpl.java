@@ -45,6 +45,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -165,8 +166,6 @@ public class KieBuilderImpl
         if ( !isBuilt() && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
             writePomAndKModule();
-
-            compileJavaClasses();
             addKBasesFilesToTrg();
 
             kModule = new MemoryKieModule( releaseId,
@@ -178,8 +177,14 @@ public class KieBuilderImpl
                     kModule.addKieDependency( (InternalKieModule) kieModule );
                 }
             }
+            if (pomModel != null) {
+                kModule.setPomModel(pomModel);
+            }
 
-            if ( buildKieModule( kModule, results ) ) {
+            KieModuleKieProject kProject = new KieModuleKieProject( kModule );
+            compileJavaClasses(kProject.getClassLoader());
+
+            if ( buildKieProject( kModule, results, kProject ) ) {
                 writeKieModuleMetaInfo( generateKieModuleMetaInfo() );
             }
         }
@@ -292,12 +297,15 @@ public class KieBuilderImpl
 
     public static boolean buildKieModule(InternalKieModule kModule,
                                          ResultsImpl messages ) {
-        KieModuleKieProject kProject = new KieModuleKieProject( kModule );
+        return buildKieProject(kModule, messages, new KieModuleKieProject( kModule ));
+    }
+
+    private static boolean buildKieProject(InternalKieModule kModule, ResultsImpl messages, KieModuleKieProject kProject) {
         kProject.init();
-        kProject.verify( messages );
+        kProject.verify(messages);
 
         if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
-            KieServices.Factory.get().getRepository().addKieModule( kModule );
+            KieServices.Factory.get().getRepository().addKieModule(kModule);
             return true;
         }
         return false;
@@ -541,7 +549,7 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    private void compileJavaClasses() {
+    private void compileJavaClasses(ClassLoader classLoader) {
         List<String> classFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
@@ -569,7 +577,8 @@ public class KieBuilderImpl
         EclipseJavaCompiler compiler = createCompiler( "src/main/java/" );
         CompilationResult res = compiler.compile( sourceFiles,
                                                   srcMfs,
-                                                  trgMfs );
+                                                  trgMfs,
+                                                  classLoader );
 
         for ( CompilationProblem problem : res.getErrors() ) {
             results.addMessage( problem );
