@@ -1856,20 +1856,20 @@ public class TraitTest extends CommonTestMethodBase {
                 "" +
                 "declare Person \n" +
                 "  @Traitable \n" +
-                "  name      : String  @key \n" +
+                "  name      : String  @key @Alias(\"fld1\") \n" +
                 "  workPlace : String \n" +
                 "  address   : String \n" +
                 "end \n" +
                 "" +
                 "declare Student\n" +
                 "  @kind(trait)" +
-                // this alias fails, should revert to the hard field
-                "  name      : String @Alias(\"nox1\") \n" +
-                // this alias works
+                // this alias maps to the hard field
+                "  name      : String @Alias(\"fld1\") \n" +
+                // this alias works, binding school to workPlace
                 "  school    : String  @Alias(\"workPlace\") \n" +
-                // this alias fails, should revert to the soft field
-                "  grade     : int @Alias(\"nox2\") \n" +
-                // this is actually a soft field, because both mapping and aliasing should fail
+                // soft field, will use name 'level'
+                "  grade     : int @Alias(\"level\") \n" +
+                // this will try to bind rank to address
                 "  rank      : int @Alias(\"address\") \n" +
                 "end \n" +
                 "\n" +

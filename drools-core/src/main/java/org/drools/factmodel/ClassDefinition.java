@@ -163,6 +163,17 @@ public class ClassDefinition
         return this.fields.get( fieldName );
     }
 
+    public FieldDefinition getFieldByAlias( String alias ) {
+        for ( FactField factField : getFields() ) {
+            FieldDefinition def = (FieldDefinition) factField;
+            if ( def.resolveAlias().equals( alias ) ) {
+                return def;
+            }
+        }
+        return null;
+    }
+
+
 
     /**
      * Returns the field at position index, as defined by the builder using the @position annotation
@@ -335,4 +346,5 @@ public class ClassDefinition
                 ", annotations=" + annotations +
                 '}';
     }
+
 }

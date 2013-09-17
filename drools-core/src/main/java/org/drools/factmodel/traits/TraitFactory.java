@@ -268,14 +268,18 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         for ( FieldDefinition traitField : tdef.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( traitField, j++, mask );
             if ( ! isSoftField ) {
-                FieldDefinition field = cdef.getField( traitField.resolveAlias( cdef ) );
+                String traitFieldHook = traitField.resolveAlias( );
+                FieldDefinition field = cdef.getFieldByAlias( traitFieldHook );
+
                 Field staticField;
                 try {
-                    staticField = proxyClass.getField( traitField.getName() + "_reader" );
-                    staticField.set( null, field.getFieldAccessor().getReadAccessor() );
+                    if ( field.getType().isAssignableFrom( traitField.getType() ) ) {
+                        staticField = proxyClass.getField( traitField.getName() + "_reader" );
+                        staticField.set( null, field.getFieldAccessor().getReadAccessor() );
 
-                    staticField = proxyClass.getField( traitField.getName() + "_writer" );
-                    staticField.set( null, field.getFieldAccessor().getWriteAccessor() );
+                        staticField = proxyClass.getField( traitField.getName() + "_writer" );
+                        staticField.set( null, field.getFieldAccessor().getWriteAccessor() );
+                    }
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 } catch (IllegalAccessException e) {

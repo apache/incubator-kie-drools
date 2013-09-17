@@ -202,16 +202,10 @@ public class TraitRegistry implements Externalizable {
         int j = 0;
         long bitmask = 0;
         for ( FactField field : traitDef.getFields() ) {
-            FieldDefinition fdef = (FieldDefinition) field;
-            boolean isAliased = fdef.hasAlias();
-            String alias = ((FieldDefinition) field).resolveAlias( traitableDef );
-            
-            FieldDefinition concreteField = traitableDef.getField( alias );
-            Class concreteType = concreteField != null ? concreteField.getType() : null;
-            Class virtualType = field.getType();
+            String alias = ((FieldDefinition) field).resolveAlias();
 
-            if ( ( concreteType != null && concreteType.isAssignableFrom( virtualType ) )
-                 || ( traits.containsKey( virtualType.getName() ) && ( (FieldDefinition) field ).hasAlias() ) ) {
+            FieldDefinition concreteField = traitableDef.getFieldByAlias( alias );
+            if ( concreteField != null ) {
                 bitmask |= 1 << j;
             }
             j++;

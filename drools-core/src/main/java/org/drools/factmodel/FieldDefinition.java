@@ -472,12 +472,12 @@ public class FieldDefinition
                 '}';
     }
 
-    public String resolveAlias( ClassDefinition cdef ) {
+    public String resolveAlias( ) {
         if ( getAnnotations() != null ) {
             for ( AnnotationDefinition def : getAnnotations() ) {
                 if ( def.getName().equals( Alias.class.getName() ) ) {
                     String alias =  (String) def.getValues().get( "value" ).getValue();
-                    return cdef.getField( alias ) != null ? alias : getName();
+                    return alias;
                 }
             }
         }
@@ -492,7 +492,7 @@ public class FieldDefinition
                 }
             }
         }
-        return null;
+        return getName();
     }
 
 
