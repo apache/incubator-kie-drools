@@ -35,7 +35,7 @@ public interface InternalKieModule extends KieModule {
     
     void addKieDependency(InternalKieModule dependency);
 
-    List<ReleaseId> getJarDependencies();
+    Collection<ReleaseId> getJarDependencies();
 
     boolean isAvailable( final String pResourceName );
     

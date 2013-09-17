@@ -27,7 +27,7 @@ public class PomModelParserTest {
         assertEquals( "parentVersion", pomModel.getParentReleaseId().getVersion() );
 
         assertEquals( 1, pomModel.getDependencies().size() );
-        ReleaseId dep = pomModel.getDependencies().get(0);
+        ReleaseId dep = pomModel.getDependencies().iterator().next();
         assertEquals( "dep1GroupId", dep.getGroupId() );
         assertEquals( "dep1ArtifactId", dep.getArtifactId() );
         assertEquals( "dep1Version", dep.getVersion() );
