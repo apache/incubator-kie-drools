@@ -65,7 +65,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         final KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML( kproj.toXML() )
                 .writePomXML( generatePomXml( releaseId ) )
-                .write( "src/main/java/Bean.java", createJavaSource() );
+                .write( "src/main/java/test/Bean.java", createJavaSource() );
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();
@@ -75,7 +75,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData(kieModule);
 
         //The call to kieModuleMetaData.getClass() assumes a Java file has an explicit package
-        final Class<?> beanClass = kieModuleMetaData.getClass("", "Bean");
+        final Class<?> beanClass = kieModuleMetaData.getClass("", "test.Bean");
         assertNotNull( beanClass );
 
         final TypeMetaInfo beanMetaInfo = kieModuleMetaData.getTypeMetaInfo( beanClass );
@@ -136,7 +136,8 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     private String createJavaSource() {
-        return "public class Bean {\n" +
+        return "package test;\n" +
+               "public class Bean {\n" +
                 "   private int value;\n" +
                 "   public int getValue() {\n" +
                 "       return value;\n" +

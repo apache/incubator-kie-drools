@@ -11,6 +11,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -112,5 +113,21 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         KieBase kieBase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase(KBASE_NAME);
         assertNotNull(kieBase);
+    }
+
+    @Test
+    public void testReportKBuilderErrorWhenUsingAJavaClassWithNoPkg() throws Exception {
+        // BZ-995018
+        String java = "public class JavaClass { }\n";
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .write("src/main/java/JavaClass.java", java);
+
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+
+        System.out.println(results.getMessages());
+
+        assertEquals(1, results.getMessages().size());
     }
 }
