@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -169,6 +170,7 @@ public class SolverAndPersistenceFrame extends JFrame {
                 quickOpenActionList.add(quickOpenAction);
                 JButton quickOpenButton = new JButton(quickOpenAction);
                 quickOpenButton.setHorizontalAlignment(SwingConstants.LEFT);
+                quickOpenButton.setMargin(new Insets(0, 0, 0, 0));
                 panel.add(quickOpenButton);
             }
         }

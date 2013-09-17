@@ -1,4 +1,4 @@
-<org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule id="1">
+<VrpTimeWindowedSchedule id="1">
   <id>0</id>
   <name>r1_4_1</name>
   <locationList id="2">
@@ -2009,513 +2009,513 @@
     </VrpLocation>
   </locationList>
   <depotList id="404">
-    <org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot id="405">
+    <VrpTimeWindowedDepot id="405">
       <id>0</id>
       <location reference="3"/>
       <readyTime>0</readyTime>
       <dueTime>804</dueTime>
-    </org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot>
+    </VrpTimeWindowedDepot>
   </depotList>
   <vehicleList id="406">
     <VrpVehicle id="407">
       <id>0</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="408">
       <id>1</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="409">
       <id>2</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="410">
       <id>3</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="411">
       <id>4</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="412">
       <id>5</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="413">
       <id>6</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="414">
       <id>7</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="415">
       <id>8</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="416">
       <id>9</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="417">
       <id>10</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="418">
       <id>11</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="419">
       <id>12</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="420">
       <id>13</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="421">
       <id>14</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="422">
       <id>15</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="423">
       <id>16</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="424">
       <id>17</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="425">
       <id>18</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="426">
       <id>19</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="427">
       <id>20</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="428">
       <id>21</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="429">
       <id>22</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="430">
       <id>23</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="431">
       <id>24</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="432">
       <id>25</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="433">
       <id>26</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="434">
       <id>27</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="435">
       <id>28</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="436">
       <id>29</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="437">
       <id>30</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="438">
       <id>31</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="439">
       <id>32</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="440">
       <id>33</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="441">
       <id>34</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="442">
       <id>35</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="443">
       <id>36</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="444">
       <id>37</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="445">
       <id>38</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="446">
       <id>39</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="447">
       <id>40</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="448">
       <id>41</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="449">
       <id>42</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="450">
       <id>43</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="451">
       <id>44</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="452">
       <id>45</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="453">
       <id>46</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="454">
       <id>47</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="455">
       <id>48</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="456">
       <id>49</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="457">
       <id>50</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="458">
       <id>51</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="459">
       <id>52</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="460">
       <id>53</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="461">
       <id>54</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="462">
       <id>55</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="463">
       <id>56</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="464">
       <id>57</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="465">
       <id>58</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="466">
       <id>59</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="467">
       <id>60</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="468">
       <id>61</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="469">
       <id>62</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="470">
       <id>63</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="471">
       <id>64</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="472">
       <id>65</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="473">
       <id>66</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="474">
       <id>67</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="475">
       <id>68</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="476">
       <id>69</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="477">
       <id>70</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="478">
       <id>71</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="479">
       <id>72</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="480">
       <id>73</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="481">
       <id>74</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="482">
       <id>75</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="483">
       <id>76</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="484">
       <id>77</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="485">
       <id>78</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="486">
       <id>79</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="487">
       <id>80</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="488">
       <id>81</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="489">
       <id>82</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="490">
       <id>83</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="491">
       <id>84</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="492">
       <id>85</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="493">
       <id>86</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="494">
       <id>87</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="495">
       <id>88</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="496">
       <id>89</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="497">
       <id>90</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="498">
       <id>91</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="499">
       <id>92</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="500">
       <id>93</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="501">
       <id>94</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="502">
       <id>95</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="503">
       <id>96</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="504">
       <id>97</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="505">
       <id>98</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
     <VrpVehicle id="506">
       <id>99</id>
       <capacity>200</capacity>
-      <depot class="org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot" reference="405"/>
+      <depot class="VrpTimeWindowedDepot" reference="405"/>
     </VrpVehicle>
   </vehicleList>
   <customerList id="507">
@@ -5720,4 +5720,4 @@
       <serviceDuration>10</serviceDuration>
     </VrpTimeWindowedCustomer>
   </customerList>
-</org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule>
+</VrpTimeWindowedSchedule>

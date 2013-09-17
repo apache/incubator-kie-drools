@@ -17,9 +17,15 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
 
 @XStreamAlias("VrpDepot")
+@XStreamInclude({
+        VrpTimeWindowedDepot.class
+})
 public class VrpDepot extends AbstractPersistable {
 
     protected VrpLocation location;
