@@ -16,6 +16,13 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalRuleBase;
@@ -24,15 +31,24 @@ import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.testscenarios.shared.*;
+import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
+import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
+import org.drools.workbench.models.testscenarios.shared.Expectation;
+import org.drools.workbench.models.testscenarios.shared.FactData;
+import org.drools.workbench.models.testscenarios.shared.Field;
+import org.drools.workbench.models.testscenarios.shared.FieldData;
+import org.drools.workbench.models.testscenarios.shared.Fixture;
+import org.drools.workbench.models.testscenarios.shared.RetractFact;
+import org.drools.workbench.models.testscenarios.shared.Scenario;
+import org.drools.workbench.models.testscenarios.shared.VerifyFact;
+import org.drools.workbench.models.testscenarios.shared.VerifyField;
+import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.CompositeClassLoader;
 
-import java.util.*;
-
-import static java.util.Arrays.asList;
+import static java.util.Arrays.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -67,6 +83,28 @@ public class ScenarioRunnerTest extends RuleUnit {
         ).thenReturn(
                 compositeClassLoader
         );
+    }
+
+    @Test
+    public void testImports() throws Exception {
+
+        Scenario scenario = new Scenario();
+        scenario.setPackageName("org.drools.workbench.models.testscenarios.backend");
+
+        ScenarioRunner runner = new ScenarioRunner(ksession);
+
+        scenario.getFixtures().add(
+                new FactData(
+                        "Cheese",
+                        "f1",
+                        Collections.EMPTY_LIST,
+                        false
+                ));
+
+        runner.run(scenario);
+
+        assertTrue(scenario.wasSuccessful());
+
     }
 
     @Test
