@@ -53,9 +53,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         this.traitRegistry = traitRegistry;
     }
 
-    
-    private transient Map<String,FieldDefinition> aliases;
-
 
     public byte[] buildClass( ClassDefinition core ) throws IOException,
             IntrospectionException,
@@ -83,18 +80,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         String internalWrapper  = BuildUtils.getInternalType(name);
         String descrCore        = Type.getDescriptor( core.getDefinedClass() );
         String internalCore     = Type.getInternalName( core.getDefinedClass() );
-
-
-        aliases = new HashMap<String, FieldDefinition>();
-        for ( FieldDefinition tfld : trait.getFieldsDefinitions() ) {            
-            if ( tfld.hasAlias() ) {
-                String alias = tfld.getAlias();
-                FieldDefinition coreField = core.getField( alias );
-                if ( coreField != null ) {
-                    aliases.put( tfld.getName(), coreField );
-                }
-            }            
-        }
 
 
         cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER,
@@ -291,11 +276,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
             invokeRemove( mv, wrapperName, core, field.getName(), field );
         }
-        for ( String alias : aliases.keySet() ) {
-            // no need to review the stack, the alias is a core field anyway!
-            invokeRemove( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
-        
+
 
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
@@ -630,10 +611,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             invokeContainsKey( mv, field.getName() );
         }
-        
-        for ( String alias : aliases.keySet() ) {
-            invokeContainsKey( mv, alias );
-        }
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitVarInsn( ALOAD, 1 );
@@ -734,10 +711,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             }
         }
 
-        for ( String alias : aliases.keySet() ) {
-            invokeGet( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
-
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitVarInsn( ALOAD, 1 );
         mv.visitMethodInsn( INVOKESPECIAL, 
@@ -790,10 +763,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
             }
         }
 
-        for ( String alias : aliases.keySet() ) {
-            invokePut( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
-        
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitVarInsn( ALOAD, 1 );

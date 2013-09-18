@@ -37,8 +37,6 @@ import java.util.Set;
 
 public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
-    private transient Map<String, FieldDefinition> aliases;
-    
     private transient ClassDefinition trait;
 
     private transient TraitRegistry traitRegistry;
@@ -76,16 +74,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         String internalCore     = Type.getInternalName( core.getDefinedClass() );
 
 
-        aliases = new HashMap<String, FieldDefinition>();
-        for ( FieldDefinition tfld : trait.getFieldsDefinitions() ) {
-            if ( tfld.hasAlias() ) {
-                String alias = tfld.getAlias();
-                FieldDefinition coreField = core.getField( alias );
-                if ( coreField != null ) {
-                    aliases.put( tfld.getName(), coreField );
-                }
-            }
-        }
         
         cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
                 internalWrapper,
@@ -211,11 +199,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             invokeRemove( mv, wrapperName, core, field.getName(), field );
         }
-        for ( String alias : aliases.keySet() ) {
-            // no need to review the stack, the alias is a core field anyway!
-            invokeRemove( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
-
 
 
         int j = 0;
@@ -424,9 +407,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             invokeContainsKey( mv, field.getName() );
         }
-        for ( String alias : aliases.keySet() ) {
-            invokeContainsKey( mv, alias );
-        }
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
@@ -516,9 +496,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 invokeGet( mv, wrapperName, core, field.getName(), field );
             }
         }
-        for ( String alias : aliases.keySet() ) {
-            invokeGet( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
@@ -565,9 +542,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             for ( FieldDefinition field : core.getFieldsDefinitions() ) {
                 invokePut( mv, wrapperName, core, field.getName(), field );
             }
-        }
-        for ( String alias : aliases.keySet() ) {
-            invokePut( mv, wrapperName, core, alias, aliases.get( alias ) );
         }
 
 
