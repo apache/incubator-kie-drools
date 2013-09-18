@@ -34,6 +34,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
@@ -3242,5 +3243,60 @@ public class CepEspTest extends CommonTestMethodBase {
             kieContainer.getKieBase("KBase");
             fail("Should throw a RuntimeException because the CLOUD kbase is trying to use features only available in STREAM mode");
         } catch (Exception e) { }
+    }
+
+    @Test @Ignore
+    public void testStreamModeWithSubnetwork() {
+        // BZ-1009348
+
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "\n" +
+                     "declare Event\n" +
+                     "  @role(event)\n" +
+                     "  name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "global java.util.List list\n" +
+                     "\n" +
+                     "rule \"firstRule\"\n" +
+                     "\n" +
+                     "    when\n" +
+                     "        not (\n" +
+                     "            $e : Event() over window:length(3)\n" +
+                     "            and Event( this == $e ) // test pass when you comment this line\n" +
+                     "        )\n" +
+                     "    then\n" +
+                     "        list.add(\"firstRule\");\n" +
+                     "\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write("src/main/resources/notinfusion.drl", drl);
+
+        KieModuleModel kmoduleModel = ks.newKieModuleModel();
+        kmoduleModel.newKieBaseModel("KieBase")
+                    .addPackage("*")
+                    .setDefault(true)
+                    .setEventProcessingMode(EventProcessingOption.STREAM)
+                    .newKieSessionModel("KieSession")
+                    .setDefault(true);
+
+        kfs.writeKModuleXML(kmoduleModel.toXML());
+
+        KieBuilder kbuilder = ks.newKieBuilder(kfs).buildAll();
+
+        List<org.kie.api.builder.Message> res = kbuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+
+        assertEquals(res.toString(), 0, res.size());
+
+        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+
+        ArrayList<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
     }
 }
