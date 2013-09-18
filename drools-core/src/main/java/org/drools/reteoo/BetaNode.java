@@ -370,15 +370,21 @@ public abstract class BetaNode extends LeftTupleSource
                 for (LeftTuple leftTuple = getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
                     LeftTuple tmp = (LeftTuple) it.next(leftTuple);
                     if (context.getCleanupAdapter() != null) {
-                        LeftTuple child;
-                        while ( (child = leftTuple.getFirstChild()) != null ) {
+                        LeftTuple child = leftTuple.getFirstChild();
+                        while ( child != null ) {
                             if (child.getLeftTupleSink() == this) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
                                 child.unlinkFromLeftParent();
                                 child.unlinkFromRightParent();
+                                child = leftTuple.getFirstChild();
                             } else {
                                 // the cleanupAdapter will take care of the unlinking
                                 context.getCleanupAdapter().cleanUp(child, workingMemory);
+                                if (child != leftTuple.getFirstChild()) {
+                                    child = leftTuple.getFirstChild();
+                                } else {
+                                    child = child instanceof RuleTerminalNodeLeftTuple ? null : child.getFirstChild();
+                                }
                             }
                         }
                     }
