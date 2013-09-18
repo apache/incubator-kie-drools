@@ -82,9 +82,7 @@ public class JPAWorkItemManager implements WorkItemManager {
 
     public void internalAbortWorkItem(long id) {
         Environment env = this.kruntime.getEnvironment();
-        //EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
-
         
         WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
         // work item may have been aborted
