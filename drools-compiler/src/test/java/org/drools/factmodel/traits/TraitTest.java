@@ -1962,7 +1962,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "" +
                 "declare Person \n" +
                 "  @Traitable \n" +
-                "  name      : String  @key @Alias(\"fld1\") \n" +
+                "  nomen     : String  @key @Alias(\"fld1\") \n" +
                 "  workPlace : String \n" +
                 "  address   : String \n" +
                 "  serviceYrs: int \n" +
@@ -1989,7 +1989,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "\n" +
                 "rule \"print school\"\n" +
                 "  when\n" +
-                "    $student : Student( $school : school == \"UniBoh\",  $f : fields, fields[ \"school\" ] == \"UniBoh\" )\n" +
+                "    $student : Student( $school : school == \"UniBoh\",  $f : fields, fields[ \"workPlace\" ] == \"UniBoh\" )\n" +
                 "  then \n " +
                 "    $student.setRank( 99 ); \n" +
                 "    System.out.println( $student ); \n" +
@@ -2017,7 +2017,7 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 9, list.size() );
         assertTrue( list.contains( "UniBoh" ) );
         assertTrue( list.contains( "Skool" ) );
-        assertTrue( ( (Collection) list.get(3) ).containsAll( Arrays.asList( "workPlace", "name", "grade" ) ) );
+        assertTrue( ( (Collection) list.get(3) ).containsAll( Arrays.asList( "workPlace", "nomen", "level" ) ) );
         assertTrue( ( (Collection) list.get(5) ).containsAll( Arrays.asList( "davide", "Skool", 0 ) ) );
         assertTrue( list.contains( true ) );
         assertTrue( list.contains( "Floor84" ) );
@@ -4029,6 +4029,76 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     @Test
+    public void testMapCoreAliasing(  ) {
+        String source = "package org.drools.factmodel.traits.test;\n" +
+                        "\n" +
+                        "import java.util.*;\n" +
+                        "import org.drools.factmodel.traits.*;\n" +
+                        "" +
+                        "global List list;\n " +
+                        "" +
+                        "declare HashMap @Traitable end \n" +
+                        "\n" +
+                        "declare org.drools.factmodel.MapCore \n" +
+                        "end\n" +
+                        "\n" +
+                        "global List list; \n" +
+                        "\n" +
+                        "declare trait PersonMap\n" +
+                        "@propertyReactive  \n" +
+                        "   name : String  \n" +
+                        "   age  : Integer  @Alias( \"years\" ) \n" +
+                        "   eta  : Integer  @Alias( \"years\" ) \n" +
+                        "   height : Double  @Alias( \"tall\" ) \n" +
+                        "end\n" +
+                        "\n" +
+                        "rule Don  \n" +
+                        "when  \n" +
+                        "  $m : Map()\n" +
+                        "then  \n" +
+                        "   don( $m, PersonMap.class );\n" +
+                        "\n" +
+                        "end\n" +
+                        "\n" +
+                        "rule Log  \n" +
+                        "when  \n" +
+                        "   $p : PersonMap( name == \"john\", age > 10 && < 35 )\n" +
+                        "then  \n" +
+                        "   modify ( $p ) {  \n" +
+                        "       setHeight( 184.0 ), \n" +
+                        "       setEta( 42 );  \n" +
+                        "   }\n" +
+                        "   System.out.println(\"Log: \" +  $p );\n" +
+                        "end\n" +
+                        "" +
+                        "\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( source );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        Map<String,Object> map = new HashMap<String, Object>(  );
+        map.put( "name", "john" );
+        map.put( "years", new Integer( 18 ) );
+        ks.insert( map );
+
+        ks.fireAllRules();
+
+
+        for ( Object o : ks.getObjects() ) {
+            System.err.println( o );
+        }
+
+        assertEquals( 42, map.get( "years" ) );
+        assertEquals( 184.0, map.get( "tall" ) );
+
+    }
+
+
+
+    @Test
     public void traitLogicalSupportAndRetract() {
         String drl = "package org.drools.trait.test;\n" +
                      "\n" +
@@ -4634,6 +4704,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "global java.util.List list;\n" +
                         "\n" +
                         "import org.drools.factmodel.traits.Traitable;\n" +
+                        "import org.drools.factmodel.traits.Alias;\n" +
                         "\n" +
                         "declare Person @Traitable @propertyReactive \n" +
                         "end \n" +
@@ -4644,6 +4715,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "   fld2 : int = 4 \n" +
                         "   fld3 : double = 4.0 \n" +
                         "   fld4 : String = \"hello\" \n" +
+                        "   fldZ : String = \"hello\" @Alias( \"fld5\" )\n" +
                         "end\n" +
                         "declare trait Worker\n" +
                         "   @propertyReactive \n" +
@@ -4651,6 +4723,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "   fld2 : String = \"b\" \n " +
                         "   fld3 : int = 11 \n " +
                         "   fld4 : Class = Object.class \n " +
+                        "   fldY : int = 42 @Alias( \"fld5\" )\n" +
                         "end\n" +
                         "" +
                         "rule \"Init\" when then \n" +
@@ -4673,24 +4746,26 @@ public class TraitTest extends CommonTestMethodBase {
                         "\n" +
                         "rule \"Stud\"\n" +
                         "when\n" +
-                        "  $s : Student( $sid : id == \"xyz\", $f2 : fld2, $f3 : fld3, $f4 : fld4 )\n" +
+                        "  $s : Student( $sid : id == \"xyz\", $f2 : fld2, $f3 : fld3, $f4 : fld4, $f5 : fldZ )\n" +
                         "then\n" +
                         "  System.out.println( \">>>>>>>>>> Student\" + $s ); \n" +
                         "  list.add( $sid ); \n" +
                         "  list.add( $f2 ); \n" +
                         "  list.add( $f3 ); \n" +
                         "  list.add( $f4 ); \n" +
+                        "  list.add( $f5 ); \n" +
                         "end\n" +
                         "\n" +
                         "rule \"Mod\"\n" +
                         "when\n" +
-                        "  $w : Worker( $wid : id == 99, $f2 : fld2, $f3 : fld3, $f4 : fld4 )\n" +
+                        "  $w : Worker( $wid : id == 99, $f2 : fld2, $f3 : fld3, $f4 : fld4, $f5 : fldY )\n" +
                         "then\n" +
                         "  System.out.println( \">>>>>>>>>> Worker\" + $w );\n" +
                         "  list.add( $wid ); \n" +
                         "  list.add( $f2 ); \n" +
                         "  list.add( $f3 ); \n" +
                         "  list.add( $f4 ); \n" +
+                        "  list.add( $f5 ); \n" +
                         "end";
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
@@ -4701,8 +4776,8 @@ public class TraitTest extends CommonTestMethodBase {
 
         ks.fireAllRules();
 
-        assertEquals( 4, list.size() );
-        assertEquals( Arrays.asList( 99, "b", 11, Object.class ), list );
+        assertEquals( 5, list.size() );
+        assertEquals( Arrays.asList( 99, "b", 11, Object.class, 42 ), list );
 
         ks.dispose();
     }

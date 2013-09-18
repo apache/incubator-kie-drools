@@ -724,7 +724,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "store", Type.getDescriptor( TripleStore.class ) );
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitLdcInsn( fieldName );
+        mv.visitLdcInsn( field.resolveAlias() );
         mv.visitVarInsn( BuildUtils.varType( type ), 1 );
         if ( BuildUtils.isPrimitive( type ) ) {
             TraitFactory.valueOf( mv, type );
@@ -760,7 +760,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "store", Type.getDescriptor( TripleStore.class ) );
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitLdcInsn( fieldName );
+        mv.visitLdcInsn( field.resolveAlias() );
 
         mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "propertyKey", 
                             "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( Triple.class ) );

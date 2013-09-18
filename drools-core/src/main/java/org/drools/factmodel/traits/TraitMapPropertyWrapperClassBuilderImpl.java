@@ -134,7 +134,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
-            int stackSize = initSoftFields( mv, trait, mask, 2 );
+            initSoftFields( mv, trait, mask, 2 );
 
             mv.visitInsn( RETURN );
 //            mv.visitMaxs( 2 + stackSize, 3 );
@@ -223,8 +223,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
-                stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
-
                 mv.visitLdcInsn( field.getName() );
                 mv.visitVarInsn( ALOAD, 1 );
                 mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( String.class ), "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
@@ -269,13 +267,12 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
     private int initSoftFields( MethodVisitor mv, ClassDefinition trait, long mask, int varNum ) {
         int j = 0;
-        int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
 
                 mv.visitVarInsn( ALOAD, varNum );
-                mv.visitLdcInsn( field.getName() );
+                mv.visitLdcInsn( field.resolveAlias() );
                 mv.visitMethodInsn( INVOKEINTERFACE,
                         Type.getInternalName( Map.class ), "containsKey",
                         Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( Object.class ) } ) );
@@ -283,14 +280,10 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 mv.visitJumpInsn( IFNE, l0 );
 
                 mv.visitVarInsn( ALOAD, varNum );
-                mv.visitLdcInsn( field.getName() );
+                mv.visitLdcInsn( field.resolveAlias() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactory.valueOf( mv, field.getTypeName() );
-                    int size = BuildUtils.sizeOf( field.getTypeName() );
-                    stackSize = Math.max( stackSize, size );
-                } else {
-                    stackSize = Math.max( stackSize, 2 );
                 }
                 mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
                                     "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
@@ -299,7 +292,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 mv.visitLabel( l0 );
             }
         }
-        return stackSize;
+        return 0;
     }
 
 

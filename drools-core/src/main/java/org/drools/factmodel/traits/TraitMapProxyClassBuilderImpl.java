@@ -397,8 +397,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
                 if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
-                    buildSoftGetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
-                    buildSoftSetter( cw, field.getName(), field.getTypeName(), masterName, core.getName() );
+                    buildSoftGetter( cw, field, masterName, core.getName() );
+                    buildSoftSetter( cw, field, masterName, core.getName() );
                 } else {
                     //
                 }
@@ -618,15 +618,16 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
 
-    private void buildSoftSetter( ClassVisitor cw, String fieldName, String type, String proxy, String core ) {
+    private void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, String core ) {
+        String fieldName = field.getName();
+        String type = field.getTypeName();
         String setter = BuildUtils.setterName( fieldName, type );
-
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, setter, "(" + BuildUtils.getTypeDescriptor( type ) + ")V", null, null );
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "map", Type.getDescriptor( Map.class ) );
-        mv.visitLdcInsn( fieldName );
+        mv.visitLdcInsn( field.resolveAlias() );
         mv.visitVarInsn( BuildUtils.varType( type ), 1 );
         if ( BuildUtils.isPrimitive( type ) ) {
             TraitFactory.valueOf( mv, type );
@@ -643,7 +644,9 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
 
-    private void buildSoftGetter( ClassVisitor cw, String fieldName, String type, String proxy, String core ) {
+    private void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy, String core ) {
+        String fieldName = field.getName();
+        String type = field.getTypeName();
 
         String getter = BuildUtils.getterName( fieldName, type );
 
@@ -651,7 +654,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         mv.visitCode();
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "map", Type.getDescriptor( Map.class ) );
-        mv.visitLdcInsn( fieldName );
+        mv.visitLdcInsn( field.resolveAlias() );
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "get", "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
 
         String actualType = BuildUtils.isPrimitive( type ) ? BuildUtils.box( type ) : type;

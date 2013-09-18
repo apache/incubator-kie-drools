@@ -401,7 +401,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                            "store", 
                            Type.getDescriptor( TripleStore.class ) );
         mv.visitVarInsn( ALOAD, 0);
-        mv.visitLdcInsn( field.getName() );
+        mv.visitLdcInsn( field.resolveAlias() );
         mv.visitMethodInsn( INVOKEVIRTUAL, 
                             wrapperName, 
                             "propertyKey", 
@@ -417,7 +417,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitFieldInsn(GETFIELD, wrapperName, "store", Type.getDescriptor( TripleStore.class ) );
 
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitLdcInsn( field.getName() );
+        mv.visitLdcInsn( field.resolveAlias() );
 
 
         mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
