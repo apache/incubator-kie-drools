@@ -112,7 +112,9 @@ public class ScenarioRunner {
     private Set<String> getImports(Scenario scenario) {
         Set<String> imports = new HashSet<String>();
         imports.addAll(scenario.getImports().getImportStrings());
-        imports.add(scenario.getPackageName()+".*");
+        if(scenario.getPackageName() !=null && scenario.getPackageName().isEmpty()){
+          imports.add(scenario.getPackageName()+".*");
+        }
         return imports;
     }
 
