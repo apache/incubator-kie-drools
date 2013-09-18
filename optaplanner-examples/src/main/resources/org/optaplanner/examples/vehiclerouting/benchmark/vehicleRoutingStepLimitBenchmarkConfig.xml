@@ -4,8 +4,8 @@
 
   <inheritedSolverBenchmark>
     <problemBenchmarks>
-      <xstreamAnnotatedClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</xstreamAnnotatedClass>
-      <inputSolutionFile>data/vehiclerouting/unsolved/A-n32-k5.xml</inputSolutionFile>
+      <problemIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingProblemIO</problemIOClass>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/A-n32-k5.vrp</inputSolutionFile>
     </problemBenchmarks>
 
     <solver>
