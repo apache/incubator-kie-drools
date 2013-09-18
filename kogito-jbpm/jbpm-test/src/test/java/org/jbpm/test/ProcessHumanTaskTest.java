@@ -98,7 +98,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
     
     @Test
     public void testProcessRequestStrategy() {
-        createRuntimeManager(Strategy.REQUEST, "humantask.bpmn");
+        createRuntimeManager(Strategy.REQUEST, "manager", "humantask.bpmn");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
@@ -130,7 +130,7 @@ public class ProcessHumanTaskTest extends JbpmJUnitBaseTestCase {
 
     @Test
     public void testProcessProcessInstanceStrategy() {
-        RuntimeManager manager = createRuntimeManager(Strategy.PROCESS_INSTANCE, "humantask.bpmn");
+        RuntimeManager manager = createRuntimeManager(Strategy.PROCESS_INSTANCE, "manager", "humantask.bpmn");
         RuntimeEngine runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();

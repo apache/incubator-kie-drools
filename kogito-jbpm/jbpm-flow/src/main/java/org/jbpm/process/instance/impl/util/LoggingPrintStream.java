@@ -167,12 +167,12 @@ public class LoggingPrintStream extends PrintStream {
     }
     
     public static void interceptSysOutSysErr() {
-        System.setOut(new LoggingPrintStream(System.out, false));
-        System.setErr(new LoggingPrintStream(System.err, true));
+//        System.setOut(new LoggingPrintStream(System.out, false));
+//        System.setErr(new LoggingPrintStream(System.err, true));
     }
     
     public static void resetInterceptSysOutSysErr() {
-        System.setOut(System.out);
-        System.setErr(System.err);
+//        System.setOut(System.out);
+//        System.setErr(System.err);
     }
 }
