@@ -196,7 +196,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
         }
 
-        buildInitSoftFields( cw, internalWrapper, trait, mask );
+        buildInitSoftFields( cw, internalWrapper, trait, core, mask );
 
         buildClearSoftFields(cw, internalWrapper, trait, mask);
 
@@ -344,12 +344,12 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         return false;
     }
 
-    protected void buildInitSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, long mask ) {
+    protected void buildInitSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, ClassDefinition core, long mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "initSoftFields", "()V", null, null);
         mv.visitCode();
 
-        int stackSize = initSoftFields( mv, wrapperName, trait, mask );
+        int stackSize = initSoftFields( mv, wrapperName, trait, core, mask );
 
         mv.visitInsn(RETURN);
 //        mv.visitMaxs(4 + stackSize, 2);
@@ -357,14 +357,14 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitEnd();
     }
 
-    protected int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, long mask ) {
+    protected int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, ClassDefinition core, long mask ) {
         int j = 0;
         int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             if ( mustSkip( field ) ) continue;
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
-                int size = initSoftField( mv, wrapperName, field );
+                int size = initSoftField( mv, wrapperName, field, core, wrapperName );
                 stackSize = Math.max( stackSize, size );
             }
         }
@@ -373,7 +373,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected int initSoftField(MethodVisitor mv, String wrapperName, FieldDefinition field ) {
+    protected int initSoftField(MethodVisitor mv, String wrapperName, FieldDefinition field, ClassDefinition core, String internalWrapper ) {
         int size = 0;
 
         mv.visitVarInsn( ALOAD, 0 );
@@ -418,6 +418,26 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                 Type.getInternalName( TripleStore.class ),
                 "put",
                 "(" + Type.getDescriptor( Triple.class ) + "Z)Z" );
+
+
+        if ( core.isFullTraiting() ) {
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, internalWrapper, "object", Type.getDescriptor( core.getDefinedClass() ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+            mv.visitVarInsn( ASTORE, 1 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitLdcInsn( field.resolveAlias() );
+            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitFieldTMS.class ), "isManagingField", Type.getMethodDescriptor( Type.BOOLEAN_TYPE, new Type[] { Type.getType( String.class ) } ) );
+            Label l1 = new Label();
+            mv.visitJumpInsn( IFNE, l1 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( core.getClassName() ) ) );
+            mv.visitLdcInsn( field.resolveAlias() );
+            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitFieldTMS.class ), "registerField", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[]{ Type.getType( Class.class ), Type.getType( String.class ) } ) );
+            mv.visitLabel( l1 );
+        }
+
         mv.visitInsn( POP );
         mv.visitLabel( l0 );
 

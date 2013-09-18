@@ -93,8 +93,6 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         return result;
     }
 
-
-
     public String toString() {
         return "(@Student) : " + getFields().entrySet().toString();
     }

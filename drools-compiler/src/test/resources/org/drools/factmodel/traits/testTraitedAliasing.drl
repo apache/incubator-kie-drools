@@ -6,30 +6,45 @@ import org.drools.factmodel.traits.Alias
 
 global java.util.List list;
 
+declare Back
+@Traitable( logical=true )
+end
+
 declare Procedure
 @propertyReactive
-@Traitable
+@Traitable( logical=true )
     id : int
     approachBodySite : BodySite
     targetBodySite : BodySite
+    effectRegion : Region
+    sideEffectSite : Muscle
 end
 
 declare BodySite
 @propertyReactive
-@Traitable
+@Traitable( logical=true )
     id : int
 end
 
+
+declare trait Region
+@Trait( logical=true )
+@propertyReactive
+end
 
 declare trait SomeProcedure
 @propertyReactive
     approachBodySite : BodySite
     targetBodySite : BodySite
     price   : Double = 1000.0
+    effectRegion : Back
+    sideEffectSite : Region
 end
 
 declare trait LeftNail @propertyReactive end
 declare trait RightNail @propertyReactive end
+
+declare trait Muscle @propertyReactive end
 
 declare trait PolishingProcedure extends SomeProcedure
 @propertyReactive
@@ -42,9 +57,16 @@ end
 rule "Init Data"
 when
 then
+    Back back = new Back();
+    Region r = don( back, Region.class );
+
+    BodySite m = new BodySite( 99 );
+    Muscle msc = don( m, Muscle.class );
+
     BodySite b1 = new BodySite( 11 );
     BodySite b2 = new BodySite( 12 );
-    Procedure pe = new Procedure( 1, b1, b2 );
+    Procedure pe = new Procedure( 1, b1, b2, r, msc );
+
 
     don( b1, LeftNail.class );
     don( b2, RightNail.class );
@@ -57,6 +79,7 @@ rule "Procedures v4"
 when
     $o : PolishingProcedure( approachBodySite isA LeftNail, targetBodySite isA RightNail,
                              $app : approachBodySite, $tgt : targetBodySite,
+                             $eff : effectRegion isA Region,
                              $loc : locus, $foc : focus,
                              price > 100.0 )
 then

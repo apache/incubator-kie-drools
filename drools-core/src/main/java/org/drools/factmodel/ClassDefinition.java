@@ -41,11 +41,13 @@ public class ClassDefinition
     implements
     FactType {
 
+    public static enum TRAITING_MODE { NONE, BASIC, LOGICAL }
+
     private String                       className;
     private String                       superClass;
     private String[]                     interfaces;
     private transient Class< ? >         definedClass;
-    private boolean                      traitable;
+    private TRAITING_MODE                traitable;
     private boolean                      abstrakt       = false;
     private Map<String, Object>          metaData;
 
@@ -91,7 +93,7 @@ public class ClassDefinition
         this.fields = (LinkedHashMap<String, FieldDefinition>) in.readObject();
         this.annotations = (List<AnnotationDefinition>) in.readObject();
         this.modifiedPropsByMethod = (Map<String, List<String>>) in.readObject();
-        this.traitable = in.readBoolean();
+        this.traitable = (ClassDefinition.TRAITING_MODE) in.readObject();
         this.abstrakt = in.readBoolean();
         this.metaData = (HashMap<String,Object>) in.readObject();
     }
@@ -103,7 +105,7 @@ public class ClassDefinition
         out.writeObject( this.fields );
         out.writeObject( this.annotations );
         out.writeObject( this.modifiedPropsByMethod);
-        out.writeBoolean( this.traitable );
+        out.writeObject( this.traitable );
         out.writeBoolean( this.abstrakt );
         out.writeObject( this.metaData );
     }
@@ -319,11 +321,23 @@ public class ClassDefinition
     }
 
     public boolean isTraitable() {
-        return traitable;
+        return traitable != TRAITING_MODE.NONE;
     }
 
-    public void setTraitable(boolean traitable) {
-        this.traitable = traitable;
+    public void setTraitable( boolean traitable ) {
+        setTraitable( traitable, false );
+    }
+
+    public void setTraitable( boolean traitable, boolean enableLogical ) {
+        if ( ! traitable ) {
+            this.traitable = TRAITING_MODE.NONE;
+        } else {
+            this.traitable = enableLogical ? TRAITING_MODE.LOGICAL : TRAITING_MODE.BASIC;
+        }
+    }
+
+    public boolean isFullTraiting() {
+        return this.traitable == TRAITING_MODE.LOGICAL;
     }
 
     public boolean isAbstrakt() {

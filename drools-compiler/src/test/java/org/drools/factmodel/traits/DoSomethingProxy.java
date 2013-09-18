@@ -16,6 +16,7 @@
 
 package org.drools.factmodel.traits;
 
+import java.util.BitSet;
 import java.util.Map;
 
 public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithBehaviour<K> {
@@ -37,6 +38,8 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
         fields = new StudentProxyWrapper2( obj, m );
 
         somethingImpl = new SomethingImpl<K>( this );
+
+        setTypeCode( new BitSet(  ) );
     }
 
 

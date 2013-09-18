@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -122,7 +121,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
-            initSoftFields( mv, trait, mask, 2 );
+            initSoftFields( mv, trait, core, internalWrapper, mask, 2 );
 
             mv.visitInsn( RETURN );
 //            mv.visitMaxs( 2 + stackSize, 3 );
@@ -248,7 +247,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, long mask, int varNum ) {
+    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, ClassDefinition core, String internalWrapper, long mask, int varNum ) {
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
@@ -271,6 +270,24 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
                                     "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
                 mv.visitInsn( POP );
+
+                if ( core.isFullTraiting() ) {
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitFieldInsn( GETFIELD, internalWrapper, "object", Type.getDescriptor( core.getDefinedClass() ) );
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+                    mv.visitVarInsn( ASTORE, 1 );
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitLdcInsn( field.resolveAlias() );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitFieldTMS.class ), "isManagingField", Type.getMethodDescriptor( Type.BOOLEAN_TYPE, new Type[] { Type.getType( String.class ) } ) );
+                    Label l1 = new Label();
+                    mv.visitJumpInsn( IFNE, l1 );
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( core.getClassName() ) ) );
+                    mv.visitLdcInsn( field.resolveAlias() );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitFieldTMS.class ), "registerField", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[]{ Type.getType( Class.class ), Type.getType( String.class ) } ) );
+                    mv.visitLabel( l1 );
+                }
 
                 mv.visitLabel( l0 );
             }
@@ -310,7 +327,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "clear", "()V" );
 
-        int num = initSoftFields( mv, trait, mask, 0 );
+        int num = initSoftFields( mv, trait, core, internalWrapper, mask, 0 );
         stack += num;
 
 

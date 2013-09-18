@@ -207,7 +207,7 @@ public class TraitRegistry implements Externalizable {
             FieldDefinition concreteField = traitableDef.getFieldByAlias( alias );
 
             if ( concreteField != null ) {
-                if ( ! concreteField.getType().isAssignableFrom( field.getType() ) ) {
+                if ( ! traitableDef.isFullTraiting() && ! concreteField.getType().isAssignableFrom( field.getType() ) ) {
                     throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " :" +
                                                              " trait field " + field.getName() + ":" + ( (FieldDefinition) field ).getTypeName() + " is incompatible with" +
                                                              " concrete hard field " + concreteField.getName() + ":" + concreteField.getTypeName() + ". Consider enabling logical traiting" +

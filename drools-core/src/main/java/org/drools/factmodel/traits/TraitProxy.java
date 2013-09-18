@@ -19,12 +19,13 @@ package org.drools.factmodel.traits;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.runtime.rule.Variable;
+import org.drools.util.HierarchyEncoderImpl;
 
 import java.io.*;
 import java.util.BitSet;
 import java.util.Map;
 
-public abstract class TraitProxy implements Externalizable, TraitType {
+public abstract class TraitProxy implements Externalizable, TraitType, Comparable<TraitProxy> {
 
     protected TripleFactory tripleFactory;
 
@@ -141,6 +142,18 @@ public abstract class TraitProxy implements Externalizable, TraitType {
 
     public void setTypeFilter(BitSet typeFilter) {
         this.typeFilter = typeFilter;
+    }
+
+    public void shed() {
+
+    }
+
+    public int compareTo( TraitProxy o ) {
+        if ( HierarchyEncoderImpl.supersetOrEqualset( this.typeCode, o.typeCode ) ) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 }
 

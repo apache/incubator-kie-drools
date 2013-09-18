@@ -104,6 +104,10 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return evaluator;
     }
 
+    public boolean isSelf() {
+        return rightReadAccessor.isSelfReference();
+    }
+
     public FieldValue getField() {
         return field;
     }

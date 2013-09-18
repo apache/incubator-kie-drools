@@ -19,6 +19,8 @@ package org.drools.factmodel;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.TraitFieldTMS;
+import org.drools.factmodel.traits.TraitFieldTMSImpl;
 import org.drools.factmodel.traits.TraitTypeMap;
 import org.drools.factmodel.traits.Traitable;
 import org.drools.factmodel.traits.TraitableBean;
@@ -37,6 +39,7 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
 
     private String id;
 
+    private TraitFieldTMS __$$field_Tms$$;
     private Map<String,Object> __$$dynamic_properties_map$$;
     private Map<String,Thing<Map>> __$$dynamic_traits_map$$;
 
@@ -48,6 +51,18 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         id = UUID.randomUUID().toString();
         __$$dynamic_properties_map$$ = map;
     }
+
+    public TraitFieldTMS _getFieldTMS() {
+        if ( __$$field_Tms$$ == null ) {
+            __$$field_Tms$$ = new TraitFieldTMSImpl();
+        }
+        return __$$field_Tms$$;
+    }
+
+    public void _setFieldTMS( TraitFieldTMS __$$field_Tms$$ ) {
+        this.__$$field_Tms$$ = __$$field_Tms$$;
+    }
+
 
     public String getId() {
         return id;
@@ -101,6 +116,10 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         } else {
             return null;
         }
+    }
+
+    public boolean hasTraits() {
+        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
     }
 
     public Collection<String> getTraits() {

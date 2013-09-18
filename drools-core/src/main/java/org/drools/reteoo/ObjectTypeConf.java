@@ -42,12 +42,14 @@ public interface ObjectTypeConf {
     
     /** Whether or not, TMS is active for this object type. */
     public boolean isTMSEnabled();
-    
+
+    public boolean isTraitTMSEnabled();
+
     /**
      * Enable TMS for this object type. 
      * */
     public void enableTMS();
-    
+
     public EntryPoint getEntryPoint();
     
     public boolean isSupportsPropertyChangeListeners();

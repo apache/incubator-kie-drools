@@ -25,6 +25,8 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
+import org.drools.factmodel.traits.TraitFieldTMS;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.EntryPoint;
@@ -233,6 +235,15 @@ public class EntryPointNode extends ObjectSource
             ((ShadowProxy) handle.getObject()).updateProxy();
         }
 
+        if ( objectTypeConf.isTraitTMSEnabled() ) {
+            if ( handle.isTraitOrTraitable() && handle.isTraitable() ) {
+                TraitFieldTMS tms = ( (TraitableBean) handle.getObject() )._getFieldTMS();
+                if ( tms.needsInit() ) {
+                    tms.init( workingMemory );
+                }
+            }
+        }
+
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
@@ -251,6 +262,15 @@ public class EntryPointNode extends ObjectSource
             // the user has implemented the ShadowProxy interface, let their implementation
             // know it is safe to update the information the engine can see.
             ((ShadowProxy) handle.getObject()).updateProxy();
+        }
+
+        if ( objectTypeConf.isTraitTMSEnabled() ) {
+            if ( handle.isTraitOrTraitable() && handle.isTraitable() ) {
+                TraitFieldTMS tms = ( (TraitableBean) handle.getObject() )._getFieldTMS();
+                if ( tms.needsInit() ) {
+                    tms.init( workingMemory );
+                }
+            }
         }
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         

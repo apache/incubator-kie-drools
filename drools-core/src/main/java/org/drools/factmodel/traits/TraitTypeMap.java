@@ -75,6 +75,9 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public Thing<C> remove( Object key ) {
         Thing<C> t = innerMap.remove( key );
+        if ( t instanceof TraitProxy ) {
+            ((TraitProxy) t).shed();
+        }
         removeMember( new Key<Thing<C>>( System.identityHashCode( t ), t ) );
         resetCurrentCode();
         return t;
@@ -93,10 +96,13 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         List<Thing<C>> ret = new ArrayList<Thing<C>>( subs.size() );
         for ( Key<Thing<C>> t : subs ) {
             TraitType tt = (TraitType) t.getValue();
-            ret.add( t.getValue() );
             if ( ! tt.isVirtual() ) {
+                ret.add( t.getValue() );
                 removeMember( tt.getTypeCode() );
-                innerMap.remove( tt.getTraitName() );
+                Thing<C> thing = innerMap.remove( tt.getTraitName() );
+                if ( thing instanceof TraitProxy ) {
+                    ((TraitProxy) thing).shed();
+                }
             }
         }
         resetCurrentCode();

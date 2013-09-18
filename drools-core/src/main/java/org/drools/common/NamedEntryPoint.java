@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -562,10 +563,10 @@ public class NamedEntryPoint
                 handle = this.objectStore.reconnect( handle );
             }
 
-            if ( handle.getObject() instanceof TraitableBean ) {
-                Collection removedTypes = new ArrayList( ( (TraitableBean) handle.getObject() )._getTraitMap().values() );
-                for ( Object t : removedTypes ) {
-                    retract( getFactHandle( t ),
+            if ( handle.getObject() instanceof TraitableBean && ( (TraitableBean) handle.getObject() ).hasTraits() ) {
+                PriorityQueue removedTypes = new PriorityQueue( ( (TraitableBean) handle.getObject() )._getTraitMap().values() );
+                while ( ! removedTypes.isEmpty() ) {
+                    retract( getFactHandle( removedTypes.poll() ),
                             removeLogical,
                             updateEqualsMap,
                             rule,

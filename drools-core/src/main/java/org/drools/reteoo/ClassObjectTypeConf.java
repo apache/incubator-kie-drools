@@ -64,6 +64,7 @@ public class ClassObjectTypeConf
     private TypeDeclaration            typeDecl;
     
     private boolean                    tmsEnabled;
+    private boolean                    traitTmsEnabled;
     
     private boolean                    supportsPropertyListeners;
 
@@ -109,6 +110,9 @@ public class ClassObjectTypeConf
 
         defineShadowProxyData( clazz );
         this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
+
+        Traitable ttbl = cls.getAnnotation( Traitable.class );
+        this.traitTmsEnabled = ttbl != null && ttbl.logical();
     }
 
     public void readExternal(ObjectInput stream) throws IOException,
@@ -120,6 +124,7 @@ public class ClassObjectTypeConf
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPoint) stream.readObject();
         tmsEnabled = stream.readBoolean();
+        traitTmsEnabled = stream.readBoolean();
         supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
         defineShadowProxyData( cls );
@@ -133,6 +138,7 @@ public class ClassObjectTypeConf
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
+        stream.writeBoolean( traitTmsEnabled );
         stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
     }
@@ -254,6 +260,10 @@ public class ClassObjectTypeConf
 
     public void enableTMS() {
         this.tmsEnabled = true;
+    }
+
+    public boolean isTraitTMSEnabled() {
+        return traitTmsEnabled;
     }
 
     public EntryPoint getEntryPoint() {

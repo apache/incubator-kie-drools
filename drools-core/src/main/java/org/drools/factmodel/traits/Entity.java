@@ -29,6 +29,7 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
     private String id;
 
+    private TraitFieldTMS __$$field_Tms$$ = new TraitFieldTMSImpl();
     private Map<String,Object> __$$dynamic_properties_map$$;
     private Map<String,Thing<Entity>> __$$dynamic_traits_map$$;
 
@@ -57,6 +58,16 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
     }
 
 
+    public TraitFieldTMS _getFieldTMS() {
+        if ( __$$field_Tms$$ == null ) {
+            __$$field_Tms$$ = new TraitFieldTMSImpl();
+        }
+        return __$$field_Tms$$;
+    }
+
+    public void _setFieldTMS( TraitFieldTMS __$$field_Tms$$ ) {
+        this.__$$field_Tms$$ = __$$field_Tms$$;
+    }
 
     public void _setTraitMap(Map map) {
         __$$dynamic_traits_map$$ = map;
@@ -77,6 +88,10 @@ public class Entity implements TraitableBean<Entity,Entity>, Serializable {
 
     public boolean hasTrait(String type) {
         return isTraitMapInitialized() && _getTraitMap().containsKey(type);
+    }
+
+    public boolean hasTraits() {
+        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
     }
 
     public Collection<Thing<Entity>> removeTrait( String type ) {

@@ -68,7 +68,15 @@ public class TripleBasedTypes extends TripleBasedStruct {
 
     public Object get( Object key ) {
         Triple t = store.get( tripleFactory.newTriple( key, TripleStore.PROXY, Variable.v ) );
-        return t == null ? null : t.getValue();
+        while ( t != null ) {
+            Object o = t.getValue();
+            if ( o instanceof TraitProxy && (( TraitProxy ) o ).getObject() == this.object ) {
+                return o;
+            } else {
+                t = (Triple) t.getNext();
+            }
+        }
+        return null;
     }
 
 

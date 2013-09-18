@@ -23,9 +23,26 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
     private String name;
     private String school;
 
+    private int age;
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge( int age ) {
+        this.age = age;
+    }
 
     private Map<String,Object> __$$dynamic_properties_map$$ = new HashMap<String,Object>();
     private Map<String,Thing<Imp2>> __$$dynamic_traits_map$$;
+
+    public Collection foo2() {
+        if ( __$$dynamic_traits_map$$ != null ) {
+            return __$$dynamic_traits_map$$.keySet();
+        } else {
+            return Collections.emptySet();
+        }
+    }
 
     public Map<String,Object> _getDynamicProperties() {
         return __$$dynamic_properties_map$$;
@@ -42,6 +59,9 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
         __$$dynamic_traits_map$$ = map;
     }
 
+    public boolean hasTraits() {
+        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
+    }
 
     public Map<String, Thing<Imp2>> _getTraitMap() {
         if ( __$$dynamic_traits_map$$ == null ) {
@@ -94,6 +114,10 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public TraitFieldTMS _getFieldTMS() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public BitSet _getBottomTypeCode() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
@@ -120,7 +144,7 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
     }
 
     public void setSchool(String school) {
-        this.school = school;
+        this.school = (String) tms.set( "school", school, String.class );
     }
 
     @Override
@@ -141,5 +165,18 @@ public class Imp2 implements TraitableBean<Imp2,Imp2> {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (school != null ? school.hashCode() : 0);
         return result;
+    }
+
+    public void foo() {
+        Object f = __$$dynamic_properties_map$$.get( "goo" );
+        System.out.println( f );
+
+    }
+
+    private TraitFieldTMS tms;
+
+    public void init() {
+        tms = new TraitFieldTMSImpl();
+        tms.registerField( Imp2.class, "name", String.class, this.getName(), "foo" );
     }
 }

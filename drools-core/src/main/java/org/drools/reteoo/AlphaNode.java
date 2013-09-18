@@ -370,7 +370,7 @@ public class AlphaNode extends ObjectSource
 
     public long calculateDeclaredMask(List<String> settableProperties) {
         Long typeBit = 0L;
-        if ( constraint instanceof EvaluatorConstraint ) {
+        if ( constraint instanceof EvaluatorConstraint && ( (EvaluatorConstraint) constraint ).isSelf() ) {
             Operator op = ((EvaluatorConstraint) constraint).getEvaluator().getOperator();
             if ( op == IsAEvaluatorDefinition.ISA || op == IsAEvaluatorDefinition.NOT_ISA ) {
                 typeBit = Long.MIN_VALUE;

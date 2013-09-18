@@ -38,7 +38,7 @@ import java.util.TreeMap;
 public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable {
 
     protected SortedMap<BitSet, HierNode<T>> line = new TreeMap<BitSet, HierNode<T>>( new HierCodeComparator() );
-    protected Map<T, HierNode<T>> cache = new HashMap<T, HierNode<T>>();
+    protected transient Map<T, HierNode<T>> cache = new HashMap<T, HierNode<T>>();
     protected boolean fixedRoot = false;
 
     public int size() {
@@ -740,6 +740,10 @@ public class CodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable 
     public void clear() {
         line.clear();
         fixedRoot = false;
+    }
+
+    public boolean isEmpty() {
+        return line.isEmpty();
     }
 
 
