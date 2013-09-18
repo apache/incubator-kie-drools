@@ -1,0 +1,20 @@
+package org.drools.compiler.integrationtests
+
+declare Event
+  @role(event)
+  name : String
+end
+
+global java.util.List list
+
+rule "firstRule"
+
+    when
+        not (
+            $e : Event() over window:length(3)
+            and Event( this == $e ) // test pass when you comment this line
+        )
+    then
+        list.add("firstRule");
+
+end
