@@ -19,9 +19,11 @@ package org.drools.workbench.models.testscenarios.backend;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.RuleBase;
 import org.drools.core.base.ClassTypeResolver;
@@ -83,7 +85,7 @@ public class ScenarioRunner {
         ClassLoader classloader2 = ((InternalRuleBase) ruleBase).getRootClassLoader();
 
         ClassTypeResolver resolver = new ClassTypeResolver(
-                scenario.getImports().getImportStrings(),
+                getImports(scenario),
                 classloader2 );
 
         this.workingMemoryWrapper = new TestScenarioKSessionWrapper(ksession,
@@ -105,6 +107,13 @@ public class ScenarioRunner {
 
         applyFixtures( scenario.getFixtures(),
                        createScenarioSettings( scenario ) );
+    }
+
+    private Set<String> getImports(Scenario scenario) {
+        Set<String> imports = new HashSet<String>();
+        imports.addAll(scenario.getImports().getImportStrings());
+        imports.add(scenario.getPackageName()+".*");
+        return imports;
     }
 
     private ScenarioSettings createScenarioSettings( Scenario scenario ) {

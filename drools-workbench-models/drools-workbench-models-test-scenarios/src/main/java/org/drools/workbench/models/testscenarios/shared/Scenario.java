@@ -71,11 +71,14 @@ public class Scenario {
     private boolean           inclusive        = false;
 
 
+    private String packageName;
+
     private Imports imports = new Imports();
 
     public Scenario() { }
     
-    public Scenario( String name ) {
+    public Scenario( String packageName, String name ) {
+        this.packageName = packageName;
         this.name = name;
     }
 
@@ -443,5 +446,13 @@ public class Scenario {
 
     public Imports getImports() {
         return imports;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 }
