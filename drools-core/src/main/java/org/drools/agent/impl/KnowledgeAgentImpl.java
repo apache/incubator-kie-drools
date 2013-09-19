@@ -1114,7 +1114,16 @@ public class KnowledgeAgentImpl
         for ( Resource resource : changeSetState.createdPackages.keySet() ) {
             createdDistinctPackages.addAll( changeSetState.createdPackages.get( resource ) );
         }
-        this.kbase.addKnowledgePackages( createdDistinctPackages );
+        try {
+            this.kbase.addKnowledgePackages( createdDistinctPackages );
+        } catch ( RuntimeException re ) {
+            this.listener.exception( re );
+            this.listener.warning( "Runtime error while updating Knowledge Base, packages may be in an inconsistent state and will be removed " );
+            for ( KnowledgePackage kp : createdDistinctPackages ) {
+                this.listener.warning( "- Removing package " + kp.getName() );
+                this.kbase.removeKnowledgePackage( kp.getName() );
+            }
+        }
 
         autoBuildResourceMapping();
 
