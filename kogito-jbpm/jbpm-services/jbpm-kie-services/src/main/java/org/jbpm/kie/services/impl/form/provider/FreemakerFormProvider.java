@@ -1,7 +1,7 @@
 package org.jbpm.kie.services.impl.form.provider;
 
 
-import freemarker.template.DefaultObjectWrapper;
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Template;
 import org.jbpm.kie.services.impl.form.FormProvider;
 
@@ -17,7 +17,9 @@ public abstract class FreemakerFormProvider implements FormProvider {
         String str = null;
         try {
             freemarker.template.Configuration cfg = new freemarker.template.Configuration();
-            cfg.setObjectWrapper(new DefaultObjectWrapper());
+            BeansWrapper defaultInstance = new BeansWrapper();
+            defaultInstance.setSimpleMapWrapper(true);
+            cfg.setObjectWrapper(defaultInstance);
             cfg.setTemplateUpdateDelay(0);
             Template temp = new Template(name, new InputStreamReader(src), cfg);
             StringWriter out = new StringWriter();
