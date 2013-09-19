@@ -1209,4 +1209,36 @@ public class KnowledgeAgentTest extends BaseKnowledgeAgentTest {
     }
 
 
+
+    @Test
+    public void testLoadBadResource() throws Exception {
+        String drl = "package org.drools.test; \n" +
+                     "global int foo; \n" +
+                     "" +
+                     "rule R \n" +
+                     "when \n" +
+                     "then \n" +
+                     "  System.out.println( \"OK\" ); \n " +
+                     "end \n" +
+                     "";
+
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KnowledgeAgent kagent = createKAgent( kbase, false, true );
+        kagent.setSystemEventListener( new PrintStreamSystemEventListener() );
+
+        ByteArrayResource bres = (ByteArrayResource) ResourceFactory.newByteArrayResource( drl.getBytes() );
+        bres.setResourceType( ResourceType.DRL );
+
+        ChangeSetImpl cs = new ChangeSetImpl();
+        cs.setResourcesAdded(Arrays.<Resource>asList(bres));
+        try {
+            kagent.applyChangeSet(cs);
+        } catch ( Throwable t ) {
+            fail( t.getMessage() );
+        }
+
+    }
+
+
 }
