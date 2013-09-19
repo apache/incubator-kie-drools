@@ -2522,4 +2522,18 @@ public class MiscTest2 extends CommonTestMethodBase {
 
 
 
+    @Test
+    public void testPrimitiveGlobals() {
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "\n" +
+                     "global int foo;\n" +
+                     "\n" +
+                     "";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.out.println( kb.getErrors() );
+        assertTrue( kb.hasErrors() );
+    }
+
+
 }

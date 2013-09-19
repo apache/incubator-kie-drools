@@ -1437,12 +1437,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
             try {
                 Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(className);
+                if ( clazz.isPrimitive() ) {
+                    this.results.add( new GlobalError( global, " Primitive types are not allowed in globals : " + className ) );
+                    return;
+                }
                 pkgRegistry.getPackage().addGlobal( identifier,
                                                     clazz );
                 this.globals.put( identifier,
                                   clazz );
             } catch (final ClassNotFoundException e) {
-                this.results.add( new GlobalError( global ) );
+                this.results.add( new GlobalError( global, e.getMessage() ) );
                 e.printStackTrace();
             }
         }

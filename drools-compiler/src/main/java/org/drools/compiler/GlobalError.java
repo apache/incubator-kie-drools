@@ -20,10 +20,12 @@ import org.drools.lang.descr.GlobalDescr;
 
 public class GlobalError extends DroolsError {
     private final GlobalDescr globalDescr;
+    private String message;
 
-    public GlobalError(final GlobalDescr globalDescr) {
+    public GlobalError(final GlobalDescr globalDescr, String message) {
         super(globalDescr.getResource());
         this.globalDescr = globalDescr;
+        this.message = message;
     }
 
     @Override
@@ -40,11 +42,11 @@ public class GlobalError extends DroolsError {
     }
 
     public String getMessage() {
-        return getGlobal();
+        return message;
     }
     
     public String toString() {
-        return "GlobalError: " + getGlobal();
+        return "GlobalError: " + getGlobal() + " : " + message;
     }
 
 }
