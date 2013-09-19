@@ -45,6 +45,7 @@ import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
+import org.drools.common.Scheduler;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -3516,6 +3517,133 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( Arrays.asList( 3L, 1L ), list );
+    }
+
+
+
+    public static class Event {
+        private int type;
+        private int value;
+        private long time;
+
+        public Event( int type, int value, long time ) {
+            this.type = type;
+            this.value = value;
+            this.time = time;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType( int type ) {
+            this.type = type;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue( int value ) {
+            this.value = value;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        public void setTime( long time ) {
+            this.time = time;
+        }
+
+        @Override
+        public String toString() {
+            return "Event{" +
+                   "type=" + type +
+                   ", value=" + value +
+                   ", time=" + ( ( time % 10000 ) )+
+                   '}';
+        }
+    }
+
+    @Test
+    @Ignore
+    public void testLastEvent() throws InterruptedException {
+        String drl = "\n" +
+                     "import org.drools.integrationtests.CepEspTest.Event; \n" +
+                     "import org.drools.time.SessionClock; \n" +
+                     "import java.util.Date; \n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare Event \n" +
+                     "  @role( event )\n" +
+                     "  @timestamp( time ) \n" +
+                     "  @expires( 10000000 ) \n" +
+                     "end \n" +
+                     "" +
+                     "" +
+                     "rule \"inform about E1\"\n" +
+                     "when\n" +
+                     "  $event1 : Event( type == 1 )\n" +
+                     "    //there is an event (T2) with value 0 between 0,2m after doorClosed\n" +
+                     "  $event2: Event( type == 2, value == 1, this after [0, 1200ms] $event1, $timestamp : time )\n" +
+                     "    //there is no newer event (T2) within the timeframe\n" +
+                     "  not Event( type == 2, this after [0, 1200ms] $event1, time > $timestamp ) \n" +
+                     "then\n" +
+                     "  System.out.println( \"E1 valid \" );\n" +
+                     "  list.add( (new Date().getTime() % 10000 ) ); \n " +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.REALTIME_CLOCK.getId() ) );
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+        ksession.addEventListener( new DebugAgendaEventListener(  ) );
+
+        System.out.println( "Insert e1 at " + (new Date().getTime() % 10000 ) );
+        ksession.insert( new Event( 1, -1, new Date().getTime() ) );
+        Thread.sleep( 600 );
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, new Date().getTime() ) );
+        Thread.sleep( 100 );
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, new Date().getTime() ) );
+        Thread.sleep( 300 );
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, new Date().getTime() ) );
+        Thread.sleep( 100 );
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 1, new Date().getTime() ) );
+        Thread.sleep( 100 );
+        ksession.fireAllRules();
+        Thread.sleep( 100 );
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, new Date().getTime() ) );
+
+        Thread.sleep( 1000 );
+        ksession.fireAllRules();
+
+        assertFalse( list.isEmpty() );
+        assertEquals( 1, list.size() );
+        Long time = (Long) list.get( 0 );
+
+        assertTrue( time > 1000 && time < 1500 );
+
+        ksession.dispose();
+
     }
 }
 
