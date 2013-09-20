@@ -14,4 +14,6 @@ public interface InternalKieScanner extends KieScanner {
     KieModule loadArtifact(ReleaseId releaseId);
     
     KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML);
+
+    String getArtifactVersion(ReleaseId releaseId);
 }
