@@ -17,16 +17,9 @@ public class JpaProcessPersistenceContextManager extends JpaPersistenceContextMa
         if( locking == null ) { 
             locking = false;
         }
-        /**
-        Boolean local = (Boolean) env.get(EnvironmentName.USE_LOCAL_TRANSACTIONS);
-        if( local == null ) { 
-            local = false;
-        }
-        boolean useJTA = ! local; // for clarity's sake
-        */
         
         boolean useJTA = true; 
-        return new JpaProcessPersistenceContext( cmdScopedEntityManager, useJTA, locking );
+        return new JpaProcessPersistenceContext( getInternalCommandScopedEntityManager(), useJTA, locking );
     }
 
 }
