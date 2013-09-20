@@ -2750,4 +2750,29 @@ public class MiscTest2 extends CommonTestMethodBase {
             this.job = job;
         }
     }
+
+    @Test
+    public void testImportExceptional() throws java.lang.Exception {
+        // DROOLS-253 imported Exception would have qualified as the default Exception thrown by the RHS
+        String str =
+                "import org.acme.healthcare.Exception;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "then\n" +
+                " list.add( 1 ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
 }
