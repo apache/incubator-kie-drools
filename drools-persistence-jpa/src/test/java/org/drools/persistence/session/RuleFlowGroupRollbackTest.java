@@ -48,9 +48,13 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Parameterized.class)
 public class RuleFlowGroupRollbackTest {
+
+    private static Logger logger = LoggerFactory.getLogger(RuleFlowGroupRollbackTest.class);
     
     private HashMap<String, Object> context;
     private boolean locking;
@@ -91,7 +95,7 @@ public class RuleFlowGroupRollbackTest {
 			ksession.execute(new ExceptionCommand());
 			fail("Process must throw an exception");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.info("The above " + RuntimeException.class.getSimpleName() + " was expected in this test.");
 		}
 		
 		ksession.insert(list);
@@ -140,7 +144,7 @@ public class RuleFlowGroupRollbackTest {
 	public class ExceptionCommand implements GenericCommand<Object> {
 
 	    public Void execute(Context context) {
-	    	throw new RuntimeException();
+	    	throw new RuntimeException("(Expected) exception thrown by test");
 	    }
 
 	}

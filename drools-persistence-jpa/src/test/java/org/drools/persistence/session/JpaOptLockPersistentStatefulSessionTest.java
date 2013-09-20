@@ -23,6 +23,7 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.util.PersistenceUtil;
+import org.hibernate.StaleObjectStateException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,6 +126,7 @@ public class JpaOptLockPersistentStatefulSessionTest {
             ksession2.insert( 3 );
             ksession2.getWorkItemManager().completeWorkItem(0, null);
             ksession2.fireAllRules();
+            logger.info("The above " + StaleObjectStateException.class.getSimpleName() + "'s were expected in this test.");
 
             ksession2.dispose();
         }

@@ -367,41 +367,6 @@ public class PersistenceUtil {
         return useTransactions;
     }
 
-    /**
-     * Reflection method when doing ugly hacks in tests.
-     * 
-     * @param fieldname
-     *            The name of the field to be retrieved.
-     * @param source
-     *            The object containing the field to be retrieved.
-     * @return The value (object instance) stored in the field requested from
-     *         the given source object.
-     */
-    public static Object getValueOfField(String fieldname, Object source) {
-        String sourceClassName = source.getClass().getSimpleName();
-    
-        Field field = null;
-        try {
-            field = source.getClass().getDeclaredField(fieldname);
-            field.setAccessible(true);
-        } catch (SecurityException e) {
-            fail("Unable to retrieve " + fieldname + " field from " + sourceClassName + ": " + e.getCause());
-        } catch (NoSuchFieldException e) {
-            fail("Unable to retrieve " + fieldname + " field from " + sourceClassName + ": " + e.getCause());
-        }
-    
-        assertNotNull("." + fieldname + " field is null!?!", field);
-        Object fieldValue = null;
-        try {
-            fieldValue = field.get(source);
-        } catch (IllegalArgumentException e) {
-            fail("Unable to retrieve value of " + fieldname + " from " + sourceClassName + ": " + e.getCause());
-        } catch (IllegalAccessException e) {
-            fail("Unable to retrieve value of " + fieldname + " from " + sourceClassName + ": " + e.getCause());
-        }
-        return fieldValue;
-    }
-
     public static Environment createEnvironment(HashMap<String, Object> context) { 
         Environment env = EnvironmentFactory.newEnvironment();
         

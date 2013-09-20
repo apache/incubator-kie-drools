@@ -70,6 +70,7 @@ public class TransactionTestCommand implements GenericCommand<Void> {
 
     private void setPersistenceFields(HashMap<String, Object> env) { 
         this.em = (EntityManager) env.get(COMMAND_ENTITY_MANAGER);
+        assert this.em != null : "Command Entity Manager is null";
         this.emf = (EntityManagerFactory) env.get(COMMAND_ENTITY_MANAGER_FACTORY);
     }
     

@@ -21,21 +21,45 @@ import javax.persistence.FlushModeType;
 
 import org.drools.persistence.PersistenceContext;
 import org.drools.persistence.PersistenceContextManager;
+import org.drools.persistence.SingleSessionCommandService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * This class manages {@link JpaPersistenceContext} objects, and the underlying persistence context ({@link EntityManager}) 
+ * instances for a persistent {@link KieSession} and other infrastructure classes that use persistence in KIE projects.
+ * </p>
+ * (For reference in the following documentation: the {@link EntityManager} is the class used to represent a persistence context)
+ * </p>
+ * There are 2 issues to take into account when looking at or modifying the code here: <ol>
+ * <li>One of the features made available here is the ability for the user to supply their own (Command Scoped) persistence 
+ *     context for use by the {@link KieSession}</li>
+ * <li>However, significant race-conditions arise when a Command Scoped persistence context is used in one persistent
+ * {@link KieSession} by multiple threads. In other words, when multiple threads call operations on a Singleton persistent 
+ * {@link KieSession}.</li>
+ * </ol>
+ * 
+ * This class uses {@link ThreadLocal} instances for two things:<ol>
+ * <li>The internal Command Scoped {@link EntityManager} instance.</li>
+ * <li></li>
+ * </ol>
+ */
 public class JpaPersistenceContextManager
     implements
     PersistenceContextManager {
-    protected Environment                  env;
+    
+    protected final Environment                 env;
 
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory          emf;
 
-    private EntityManager        appScopedEntityManager;
-    protected EntityManager        cmdScopedEntityManager;
+    private volatile EntityManager              appScopedEntityManager;
+    protected final ThreadLocal<EntityManager>  localInternalCmdScopedEntityManager = new ThreadLocal<EntityManager>();
 
-    private boolean              internalAppScopedEntityManager;
-    private boolean              internalCmdScopedEntityManager;
+    private volatile boolean                    internalAppScopedEntityManagerFlag;
+    private volatile boolean                    internalCmdScopedEntityManagerFlag;
 
     public JpaPersistenceContextManager(Environment env) {
         this.env = env;
@@ -51,71 +75,103 @@ public class JpaPersistenceContextManager
             }
             
             if ( this.appScopedEntityManager == null ) {
-                internalAppScopedEntityManager = true;
+                internalAppScopedEntityManagerFlag = true;
                 this.appScopedEntityManager = this.emf.createEntityManager();
 
                 this.env.set( EnvironmentName.APP_SCOPED_ENTITY_MANAGER,
                               this.appScopedEntityManager );
             } else {
-                internalAppScopedEntityManager = false;
+                internalAppScopedEntityManagerFlag = false;
             }
         }
         return new JpaPersistenceContext( appScopedEntityManager );
     }
 
     public PersistenceContext getCommandScopedPersistenceContext() {
-        return new JpaPersistenceContext( this.cmdScopedEntityManager );
+        return new JpaPersistenceContext( getInternalCommandScopedEntityManager() );
     }
 
     public void beginCommandScopedEntityManager() {
-        EntityManager cmdScopedEntityManager = (EntityManager) env.get( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER );
-        if ( cmdScopedEntityManager == null || 
-           ( this.cmdScopedEntityManager != null && !this.cmdScopedEntityManager.isOpen() )) {
-            internalCmdScopedEntityManager = true;
-            this.cmdScopedEntityManager = this.emf.createEntityManager(); // no need to call joinTransaction as it will do so if one already exists
-            this.cmdScopedEntityManager.setFlushMode(FlushModeType.COMMIT);
-            this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER,
-                          this.cmdScopedEntityManager );
-            cmdScopedEntityManager = this.cmdScopedEntityManager;
-        } else {
-            internalCmdScopedEntityManager = false;
+        EntityManager externalCmdScopedEntityManager  = (EntityManager) this.env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+        EntityManager internalCmdScopedEntityManager = getInternalCommandScopedEntityManager();
+        
+        EntityManager cmdScopedEntityManager;
+        /**
+         * The following if() check is fairly important for KIE persistence. It should make sure
+         * to correctly implement the following logic: 
+         * 
+         * 1. If there's already an internal Command Scoped EntityManager (CSEM) for this thread, 
+         *    which is also open, then the existing CSEM should be used and *no* new CSEM should be created.
+         * 2. If 1 is not true, AND there's an open, externally managed CSEM (supplied by the user via the Environment), 
+         *    then the externally managed CSEM should be used (and *no* new CSEM should be created.)
+         *    
+         *  Notice that I'm specifying when a new CSEM should *not* be created, while the logic below does the 
+         *  opposite of this: it creates a new CSEM in accordance with the logic described above. 
+         */
+        boolean openInternalCSEM = internalCmdScopedEntityManager != null && internalCmdScopedEntityManager.isOpen();
+        if ( openInternalCSEM ||
+             (externalCmdScopedEntityManager != null && externalCmdScopedEntityManager.isOpen()) ) {
+            if( internalCmdScopedEntityManager != null ) { 
+                cmdScopedEntityManager = internalCmdScopedEntityManager;
+            } else { 
+                internalCmdScopedEntityManagerFlag = false;
+                cmdScopedEntityManager = externalCmdScopedEntityManager;
+                setInternalCommandScopedEntityManager(externalCmdScopedEntityManager);
+            }
+        } else { 
+            internalCmdScopedEntityManagerFlag = true;
+           
+            // Create a new cmd scoped em
+            internalCmdScopedEntityManager = this.emf.createEntityManager();
+            setInternalCommandScopedEntityManager(internalCmdScopedEntityManager); 
+            internalCmdScopedEntityManager.setFlushMode(FlushModeType.COMMIT);
+
+            cmdScopedEntityManager = internalCmdScopedEntityManager;
         }
+        
         cmdScopedEntityManager.joinTransaction();
         appScopedEntityManager.joinTransaction();
     }
 
     public void endCommandScopedEntityManager() {
-        if ( this.internalCmdScopedEntityManager ) {
-            this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, 
-                          null );
-        }
+        EntityManager cmdScopedEntityManager = getInternalCommandScopedEntityManager();
+        if ( this.internalCmdScopedEntityManagerFlag ) {
+            if (cmdScopedEntityManager != null && cmdScopedEntityManager.isOpen()) {
+                cmdScopedEntityManager.clear();
+            }
+        } 
     }
 
     public void dispose() {
-        if ( this.internalAppScopedEntityManager ) {
+        if ( this.internalAppScopedEntityManagerFlag ) {
             if (  this.appScopedEntityManager != null && this.appScopedEntityManager.isOpen() ) {
                 this.appScopedEntityManager.close();
             }
-            this.internalAppScopedEntityManager = false;
+            this.internalAppScopedEntityManagerFlag = false;
             this.env.set( EnvironmentName.APP_SCOPED_ENTITY_MANAGER, null );
             this.appScopedEntityManager = null;
         }
         
-        if ( this.internalCmdScopedEntityManager ) {
-            if (  this.cmdScopedEntityManager != null && this.cmdScopedEntityManager.isOpen() ) {
-                this.cmdScopedEntityManager.close();
+        if ( this.internalCmdScopedEntityManagerFlag ) {
+            EntityManager cmdScopedEntityManager = getInternalCommandScopedEntityManager();
+            if (  cmdScopedEntityManager != null && cmdScopedEntityManager.isOpen() ) {
+                cmdScopedEntityManager.close();
             }
-            this.internalCmdScopedEntityManager = false;
-            this.env.set( EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, null );
-            this.cmdScopedEntityManager = null;
+            this.internalCmdScopedEntityManagerFlag = false;
+            setInternalCommandScopedEntityManager(null);
         }
     }
 
-    public void clearPersistenceContext() {
-        if (this.cmdScopedEntityManager != null && this.cmdScopedEntityManager.isOpen()) {
-            this.cmdScopedEntityManager.clear();
-        }
-        
+    /**
+     * Getter / Setter methods for the Command Scoped {@link EntityManager}
+     */
+
+    protected EntityManager getInternalCommandScopedEntityManager() { 
+        return this.localInternalCmdScopedEntityManager.get();
+    }
+
+    protected void setInternalCommandScopedEntityManager(EntityManager entityManager) { 
+        this.localInternalCmdScopedEntityManager.set(entityManager);
     }
 
 }
