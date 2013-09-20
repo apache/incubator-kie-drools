@@ -62,7 +62,7 @@ public class JpaPersistenceContext implements PersistenceContext {
 
     public void joinTransaction() {
     	if (isJTA) {
-    		this.em.joinTransaction();
+    	    this.em.joinTransaction();
     	}
     }
 
