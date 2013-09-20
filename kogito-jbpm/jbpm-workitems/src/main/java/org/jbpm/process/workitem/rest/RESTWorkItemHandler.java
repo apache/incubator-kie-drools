@@ -145,12 +145,14 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	        if (responseCode >= 200 && responseCode < 300) {
 	        	theMethod.getResponseBody();
 	            postProcessResult(theMethod.getResponseBodyAsString(), results);
+	            results.put("StatusMsg", "request to endpoint " + urlStr + " successfully completed " + theMethod.getStatusText());
 	        } else {
 	            logger.warn("Unsuccessful response from REST server (status {}, endpoint {}, response {}", 
 	                    responseCode, urlStr, theMethod.getResponseBodyAsString());
-	            results.put("Status", responseCode);
 	            results.put("StatusMsg", "endpoint " + urlStr + " could not be reached: " + theMethod.getResponseBodyAsString());
 	        }
+            results.put("Status", responseCode);
+            
 	        // notify manager that work item has been completed
 	        manager.completeWorkItem(workItem.getId(), results);
     	} catch (Exception e) {

@@ -57,6 +57,12 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals("Hello from REST", result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     @Test
@@ -74,6 +80,12 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals("Hello from REST test", result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     @Test
@@ -95,6 +107,12 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals(expected, result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     @Test
@@ -112,6 +130,12 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals("Created resource with name john", result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     @Test
@@ -133,6 +157,12 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals(expected, result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     @Test
@@ -152,6 +182,12 @@ public class RestWorkItemHandlerTest {
         String result = (String) workItem.getResult("Result");
         assertNotNull("result cannot be null", result);
         assertEquals(expected, result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
     @Test(expected=IllegalArgumentException.class)
