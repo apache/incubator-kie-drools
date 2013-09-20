@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("VrpLocation")
-public class VrpLocation extends AbstractPersistable {
+public class Location extends AbstractPersistable {
 
     private String name = null;
     private double latitude;
@@ -59,7 +59,7 @@ public class VrpLocation extends AbstractPersistable {
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getMilliDistance(VrpLocation location) {
+    public int getMilliDistance(Location location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
         double latitudeDifference = location.latitude - latitude;

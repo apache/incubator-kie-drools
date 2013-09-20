@@ -17,10 +17,10 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
 
 @XStreamAlias("VrpTimeWindowedCustomer")
-public class VrpTimeWindowedCustomer extends VrpCustomer {
+public class TimeWindowedCustomer extends Customer {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
     private int milliReadyTime;
@@ -88,8 +88,8 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
     }
 
     @Override
-    public VrpTimeWindowedCustomer getNextCustomer() {
-        return (VrpTimeWindowedCustomer) super.getNextCustomer();
+    public TimeWindowedCustomer getNextCustomer() {
+        return (TimeWindowedCustomer) super.getNextCustomer();
     }
 
 }

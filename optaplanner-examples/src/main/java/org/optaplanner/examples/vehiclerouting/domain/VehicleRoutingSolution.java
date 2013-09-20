@@ -32,22 +32,22 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
-@XStreamAlias("VrpSchedule")
+@XStreamAlias("VrpVehicleRoutingSolution")
 @XStreamInclude({
-        VrpTimeWindowedSchedule.class
+        TimeWindowedVehicleRoutingSolution.class
 })
-public class VrpSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
+public class VehicleRoutingSolution extends AbstractPersistable implements Solution<HardSoftScore> {
 
     protected String name;
-    protected List<VrpLocation> locationList;
-    protected List<VrpDepot> depotList;
-    protected List<VrpVehicle> vehicleList;
+    protected List<Location> locationList;
+    protected List<Depot> depotList;
+    protected List<Vehicle> vehicleList;
 
-    protected List<VrpCustomer> customerList;
+    protected List<Customer> customerList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     protected HardSoftScore score;
@@ -60,39 +60,39 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
         this.name = name;
     }
 
-    public List<VrpLocation> getLocationList() {
+    public List<Location> getLocationList() {
         return locationList;
     }
 
-    public void setLocationList(List<VrpLocation> locationList) {
+    public void setLocationList(List<Location> locationList) {
         this.locationList = locationList;
     }
 
-    public List<VrpDepot> getDepotList() {
+    public List<Depot> getDepotList() {
         return depotList;
     }
 
-    public void setDepotList(List<VrpDepot> depotList) {
+    public void setDepotList(List<Depot> depotList) {
         this.depotList = depotList;
     }
 
     @PlanningEntityCollectionProperty
     @ValueRangeProvider(id = "vehicleRange")
-    public List<VrpVehicle> getVehicleList() {
+    public List<Vehicle> getVehicleList() {
         return vehicleList;
     }
 
-    public void setVehicleList(List<VrpVehicle> vehicleList) {
+    public void setVehicleList(List<Vehicle> vehicleList) {
         this.vehicleList = vehicleList;
     }
 
     @PlanningEntityCollectionProperty
     @ValueRangeProvider(id = "customerRange")
-    public List<VrpCustomer> getCustomerList() {
+    public List<Customer> getCustomerList() {
         return customerList;
     }
 
-    public void setCustomerList(List<VrpCustomer> customerList) {
+    public void setCustomerList(List<Customer> customerList) {
         this.customerList = customerList;
     }
 
@@ -120,16 +120,16 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
         if (this == o) {
             return true;
         }
-        if (id == null || !(o instanceof VrpSchedule)) {
+        if (id == null || !(o instanceof VehicleRoutingSolution)) {
             return false;
         } else {
-            VrpSchedule other = (VrpSchedule) o;
+            VehicleRoutingSolution other = (VehicleRoutingSolution) o;
             if (customerList.size() != other.customerList.size()) {
                 return false;
             }
-            for (Iterator<VrpCustomer> it = customerList.iterator(), otherIt = other.customerList.iterator(); it.hasNext();) {
-                VrpCustomer customer = it.next();
-                VrpCustomer otherCustomer = otherIt.next();
+            for (Iterator<Customer> it = customerList.iterator(), otherIt = other.customerList.iterator(); it.hasNext();) {
+                Customer customer = it.next();
+                Customer otherCustomer = otherIt.next();
                 // Notice: we don't use equals()
                 if (!customer.solutionEquals(otherCustomer)) {
                     return false;
@@ -141,7 +141,7 @@ public class VrpSchedule extends AbstractPersistable implements Solution<HardSof
 
     public int hashCode() {
         HashCodeBuilder hashCodeBuilder = new HashCodeBuilder();
-        for (VrpCustomer customer : customerList) {
+        for (Customer customer : customerList) {
             // Notice: we don't use hashCode()
             hashCodeBuilder.append(customer.solutionHashCode());
         }

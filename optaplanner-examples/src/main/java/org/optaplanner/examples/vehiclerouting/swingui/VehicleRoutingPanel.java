@@ -26,11 +26,11 @@ import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Location;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 /**
  * TODO this code is highly unoptimized
@@ -63,19 +63,19 @@ public class VehicleRoutingPanel extends SolutionPanel {
         return true;
     }
 
-    public VrpSchedule getSchedule() {
-        return (VrpSchedule) solutionBusiness.getSolution();
+    public VehicleRoutingSolution getSchedule() {
+        return (VehicleRoutingSolution) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution solution) {
-        VrpSchedule schedule = (VrpSchedule) solution;
+        VehicleRoutingSolution schedule = (VehicleRoutingSolution) solution;
         vehicleRoutingWorldPanel.resetPanel(schedule);
         resetNextLocationId();
     }
 
     private void resetNextLocationId() {
         long highestLocationId = 0L;
-        for (VrpLocation location : getSchedule().getLocationList()) {
+        for (Location location : getSchedule().getLocationList()) {
             if (highestLocationId < location.getId().longValue()) {
                 highestLocationId = location.getId();
             }
@@ -85,7 +85,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
 
     @Override
     public void updatePanel(Solution solution) {
-        VrpSchedule schedule = (VrpSchedule) solution;
+        VehicleRoutingSolution schedule = (VehicleRoutingSolution) solution;
         vehicleRoutingWorldPanel.updatePanel(schedule);
     }
 
@@ -98,7 +98,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
     }
 
     public void insertLocationAndCustomer(double longitude, double latitude) {
-        final VrpLocation newLocation = new VrpLocation();
+        final Location newLocation = new Location();
         newLocation.setId(nextLocationId);
         nextLocationId++;
         newLocation.setLongitude(longitude);
@@ -106,19 +106,19 @@ public class VehicleRoutingPanel extends SolutionPanel {
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         solutionBusiness.doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
-                VrpSchedule schedule = (VrpSchedule) scoreDirector.getWorkingSolution();
+                VehicleRoutingSolution schedule = (VehicleRoutingSolution) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newLocation);
                 schedule.getLocationList().add(newLocation);
                 scoreDirector.afterProblemFactAdded(newLocation);
-                VrpCustomer newCustomer;
-                if (schedule instanceof VrpTimeWindowedSchedule) {
-                    VrpTimeWindowedCustomer newTimeWindowedCustomer = new VrpTimeWindowedCustomer();
+                Customer newCustomer;
+                if (schedule instanceof TimeWindowedVehicleRoutingSolution) {
+                    TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
                     newTimeWindowedCustomer.setMilliReadyTime(10000);
                     newTimeWindowedCustomer.setMilliDueTime(100000);
                     newTimeWindowedCustomer.setMilliServiceDuration(10000);
                     newCustomer = newTimeWindowedCustomer;
                 } else {
-                    newCustomer = new VrpCustomer();
+                    newCustomer = new Customer();
                 }
                 newCustomer.setId(newLocation.getId());
                 newCustomer.setLocation(newLocation);

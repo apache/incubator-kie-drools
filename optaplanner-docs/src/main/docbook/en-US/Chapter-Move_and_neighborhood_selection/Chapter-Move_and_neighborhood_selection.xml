@@ -764,7 +764,7 @@
       ... &lt;!-- Normal selector properties --&gt;
       &lt;subChainSelector&gt;
         &lt;entitySelector&gt;
-          &lt;entityClass&gt;...VrpCustomer&lt;/entityClass&gt;
+          &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
         &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
@@ -801,7 +801,7 @@
       ... &lt;!-- Normal selector properties --&gt;
       &lt;subChainSelector&gt;
         &lt;entitySelector&gt;
-          &lt;entityClass&gt;...VrpCustomer&lt;/entityClass&gt;
+          &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
         &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;
@@ -809,7 +809,7 @@
       &lt;/subChainSelector&gt;
       &lt;secondarySubChainSelector&gt;
         &lt;entitySelector&gt;
-          &lt;entityClass&gt;...VrpCustomer&lt;/entityClass&gt;
+          &lt;entityClass&gt;...Customer&lt;/entityClass&gt;
           ...
         &lt;/entitySelector&gt;
         &lt;minimumSubChainSize&gt;2&lt;/minimumSubChainSize&gt;

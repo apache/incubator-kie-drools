@@ -22,29 +22,29 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
-public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculator<VrpSchedule> {
+public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculator<VehicleRoutingSolution> {
 
-    public HardSoftScore calculateScore(VrpSchedule schedule) {
-        boolean timeWindowed = schedule instanceof VrpTimeWindowedSchedule;
-        List<VrpCustomer> customerList = schedule.getCustomerList();
-        List<VrpVehicle> vehicleList = schedule.getVehicleList();
-        Map<VrpVehicle, Integer> vehicleDemandMap = new HashMap<VrpVehicle, Integer>(vehicleList.size());
-        for (VrpVehicle vehicle : vehicleList) {
+    public HardSoftScore calculateScore(VehicleRoutingSolution schedule) {
+        boolean timeWindowed = schedule instanceof TimeWindowedVehicleRoutingSolution;
+        List<Customer> customerList = schedule.getCustomerList();
+        List<Vehicle> vehicleList = schedule.getVehicleList();
+        Map<Vehicle, Integer> vehicleDemandMap = new HashMap<Vehicle, Integer>(vehicleList.size());
+        for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
         }
         int hardScore = 0;
         int softScore = 0;
-        for (VrpCustomer customer : customerList) {
-            VrpStandstill previousStandstill = customer.getPreviousStandstill();
+        for (Customer customer : customerList) {
+            Standstill previousStandstill = customer.getPreviousStandstill();
             if (previousStandstill != null) {
-                VrpVehicle vehicle = customer.getVehicle();
+                Vehicle vehicle = customer.getVehicle();
                 vehicleDemandMap.put(vehicle, vehicleDemandMap.get(vehicle) + customer.getDemand());
                 // Score constraint distanceToPreviousStandstill
                 softScore -= customer.getMilliDistanceToPreviousStandstill();
@@ -53,7 +53,7 @@ public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculato
                     softScore -= vehicle.getLocation().getMilliDistance(customer.getLocation());
                 }
                 if (timeWindowed) {
-                    VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
+                    TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
                     int milliReadyTime = timeWindowedCustomer.getMilliReadyTime();
                     int milliDueTime = timeWindowedCustomer.getMilliDueTime();
                     Integer milliArrivalTime = timeWindowedCustomer.getMilliArrivalTime();
@@ -70,7 +70,7 @@ public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculato
                 }
             }
         }
-        for (Map.Entry<VrpVehicle, Integer> entry : vehicleDemandMap.entrySet()) {
+        for (Map.Entry<Vehicle, Integer> entry : vehicleDemandMap.entrySet()) {
             int capacity = entry.getKey().getCapacity();
             int demand = entry.getValue();
             if (demand > capacity) {

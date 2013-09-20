@@ -26,7 +26,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 
 public class VrpWebAction {
@@ -40,7 +40,7 @@ public class VrpWebAction {
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 
         URL unsolvedSolutionURL = getClass().getResource("/org/optaplanner/webexamples/vehiclerouting/A-n33-k6.vrp");
-        VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingImporter()
+        VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) new VehicleRoutingImporter()
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
     }
@@ -48,12 +48,12 @@ public class VrpWebAction {
 
     public void solve(final HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(VrpSessionAttributeName.SOLVER);
-        VrpSchedule unsolvedSolution = (VrpSchedule) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
+        VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
 
         solver.setPlanningProblem(unsolvedSolution);
         solver.addEventListener(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
-                VrpSchedule bestSolution = (VrpSchedule) event.getNewBestSolution();
+                VehicleRoutingSolution bestSolution = (VehicleRoutingSolution) event.getNewBestSolution();
                 session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, bestSolution);
             }
         });

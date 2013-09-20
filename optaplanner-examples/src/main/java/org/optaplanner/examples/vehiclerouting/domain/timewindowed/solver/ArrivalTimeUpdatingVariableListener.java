@@ -3,46 +3,46 @@ package org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver;
 import org.apache.commons.lang.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 
-// TODO When this class is added only for VrpTimeWindowedCustomer, use VrpTimeWindowedCustomer instead of VrpCustomer
-public class ArrivalTimeUpdatingVariableListener implements PlanningVariableListener<VrpCustomer> {
+// TODO When this class is added only for TimeWindowedCustomer, use TimeWindowedCustomer instead of Customer
+public class ArrivalTimeUpdatingVariableListener implements PlanningVariableListener<Customer> {
 
-    public void beforeEntityAdded(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    public void afterEntityAdded(ScoreDirector scoreDirector, VrpCustomer customer) {
-        if (customer instanceof VrpTimeWindowedCustomer) {
-            updateVehicle(scoreDirector, (VrpTimeWindowedCustomer) customer);
+    public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
+        if (customer instanceof TimeWindowedCustomer) {
+            updateVehicle(scoreDirector, (TimeWindowedCustomer) customer);
         }
     }
 
-    public void beforeVariableChanged(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void beforeVariableChanged(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, VrpCustomer customer) {
-        if (customer instanceof VrpTimeWindowedCustomer) {
-            updateVehicle(scoreDirector, (VrpTimeWindowedCustomer) customer);
+    public void afterVariableChanged(ScoreDirector scoreDirector, Customer customer) {
+        if (customer instanceof TimeWindowedCustomer) {
+            updateVehicle(scoreDirector, (TimeWindowedCustomer) customer);
         }
     }
 
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    public void afterEntityRemoved(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    protected void updateVehicle(ScoreDirector scoreDirector, VrpTimeWindowedCustomer sourceCustomer) {
-        VrpStandstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        Integer milliDepartureTime = (previousStandstill instanceof VrpTimeWindowedCustomer)
-                ? ((VrpTimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
-        VrpTimeWindowedCustomer shadowCustomer = sourceCustomer;
+    protected void updateVehicle(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
+        Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
+        Integer milliDepartureTime = (previousStandstill instanceof TimeWindowedCustomer)
+                ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
+        TimeWindowedCustomer shadowCustomer = sourceCustomer;
         Integer milliArrivalTime = calculateMilliArrivalTime(shadowCustomer, milliDepartureTime);
         while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getMilliArrivalTime(), milliArrivalTime)) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "milliArrivalTime");
@@ -54,7 +54,7 @@ public class ArrivalTimeUpdatingVariableListener implements PlanningVariableList
         }
     }
 
-    private Integer calculateMilliArrivalTime(VrpTimeWindowedCustomer customer, Integer previousMilliDepartureTime) {
+    private Integer calculateMilliArrivalTime(TimeWindowedCustomer customer, Integer previousMilliDepartureTime) {
         if (customer == null) {
             return null;
         }

@@ -17,12 +17,12 @@
 package org.optaplanner.examples.vehiclerouting.persistence;
 
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 public class VehicleRoutingDao extends XStreamSolutionDao {
 
     public VehicleRoutingDao() {
-        super("vehiclerouting", VrpSchedule.class);
+        super("vehiclerouting", VehicleRoutingSolution.class);
     }
 
 }

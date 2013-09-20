@@ -1,10 +1,10 @@
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
+import org.optaplanner.examples.vehiclerouting.domain.Depot;
 
 @XStreamAlias("VrpTimeWindowedDepot")
-public class VrpTimeWindowedDepot extends VrpDepot {
+public class TimeWindowedDepot extends Depot {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
     private int milliReadyTime;

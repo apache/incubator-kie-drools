@@ -1,4 +1,4 @@
-<VrpTimeWindowedSchedule id="1">
+<VrpTimeWindowedVehicleRoutingSolution id="1">
   <id>0</id>
   <name>R201</name>
   <locationList id="2">
@@ -1445,4 +1445,4 @@
       <milliServiceDuration>10000</milliServiceDuration>
     </VrpTimeWindowedCustomer>
   </customerList>
-</VrpTimeWindowedSchedule>
+</VrpTimeWindowedVehicleRoutingSolution>

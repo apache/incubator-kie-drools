@@ -20,11 +20,11 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
 
-public class VrpCustomerDifficultyComparator implements Comparator<VrpCustomer>, Serializable {
+public class VrpCustomerDifficultyComparator implements Comparator<Customer>, Serializable {
 
-    public int compare(VrpCustomer a, VrpCustomer b) {
+    public int compare(Customer a, Customer b) {
         return new CompareToBuilder()
                 // TODO experiment with (aLatitude - bLatitude) % 10
                 .append(a.getLocation().getLatitude(), b.getLocation().getLatitude())

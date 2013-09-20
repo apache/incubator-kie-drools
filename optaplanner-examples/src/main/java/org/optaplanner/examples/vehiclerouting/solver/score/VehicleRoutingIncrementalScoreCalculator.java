@@ -22,36 +22,36 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
-public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<VrpSchedule> {
+public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<VehicleRoutingSolution> {
 
     private boolean timeWindowed;
-    private Map<VrpVehicle, Integer> vehicleDemandMap;
+    private Map<Vehicle, Integer> vehicleDemandMap;
 
     private int hardScore;
     private int softScore;
 
-    public void resetWorkingSolution(VrpSchedule schedule) {
-        timeWindowed = schedule instanceof VrpTimeWindowedSchedule;
-        List<VrpVehicle> vehicleList = schedule.getVehicleList();
-        vehicleDemandMap = new HashMap<VrpVehicle, Integer>(vehicleList.size());
-        for (VrpVehicle vehicle : vehicleList) {
+    public void resetWorkingSolution(VehicleRoutingSolution schedule) {
+        timeWindowed = schedule instanceof TimeWindowedVehicleRoutingSolution;
+        List<Vehicle> vehicleList = schedule.getVehicleList();
+        vehicleDemandMap = new HashMap<Vehicle, Integer>(vehicleList.size());
+        for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
         }
         hardScore = 0;
         softScore = 0;
-        for (VrpCustomer customer : schedule.getCustomerList()) {
+        for (Customer customer : schedule.getCustomerList()) {
             insertPreviousStandstill(customer);
             insertVehicle(customer);
             // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
             if (timeWindowed) {
-                insertMilliArrivalTime((VrpTimeWindowedCustomer) customer);
+                insertMilliArrivalTime((TimeWindowedCustomer) customer);
             }
         }
     }
@@ -61,60 +61,60 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     }
 
     public void afterEntityAdded(Object entity) {
-        if (entity instanceof VrpVehicle) {
+        if (entity instanceof Vehicle) {
             return;
         }
-        insertPreviousStandstill((VrpCustomer) entity);
-        insertVehicle((VrpCustomer) entity);
+        insertPreviousStandstill((Customer) entity);
+        insertVehicle((Customer) entity);
         // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
         if (timeWindowed) {
-            insertMilliArrivalTime((VrpTimeWindowedCustomer) entity);
+            insertMilliArrivalTime((TimeWindowedCustomer) entity);
         }
     }
 
     public void beforeVariableChanged(Object entity, String variableName) {
-        if (entity instanceof VrpVehicle) {
+        if (entity instanceof Vehicle) {
             return;
         }
         if (variableName.equals("previousStandstill")) {
-            retractPreviousStandstill((VrpCustomer) entity);
+            retractPreviousStandstill((Customer) entity);
         } else if (variableName.equals("vehicle"))   {
-            retractVehicle((VrpCustomer) entity);
+            retractVehicle((Customer) entity);
         } else if (variableName.equals("nextCustomer"))   {
-            retractNextCustomer((VrpCustomer) entity);
+            retractNextCustomer((Customer) entity);
         } else if (variableName.equals("milliArrivalTime"))   {
-            retractMilliArrivalTime((VrpTimeWindowedCustomer) entity);
+            retractMilliArrivalTime((TimeWindowedCustomer) entity);
         } else {
             throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
     }
 
     public void afterVariableChanged(Object entity, String variableName) {
-        if (entity instanceof VrpVehicle) {
+        if (entity instanceof Vehicle) {
             return;
         }
         if (variableName.equals("previousStandstill")) {
-            insertPreviousStandstill((VrpCustomer) entity);
+            insertPreviousStandstill((Customer) entity);
         } else if (variableName.equals("vehicle"))   {
-            insertVehicle((VrpCustomer) entity);
+            insertVehicle((Customer) entity);
         } else if (variableName.equals("nextCustomer"))   {
-            insertNextCustomer((VrpCustomer) entity);
+            insertNextCustomer((Customer) entity);
         } else if (variableName.equals("milliArrivalTime"))   {
-            insertMilliArrivalTime((VrpTimeWindowedCustomer) entity);
+            insertMilliArrivalTime((TimeWindowedCustomer) entity);
         } else {
             throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
     }
 
     public void beforeEntityRemoved(Object entity) {
-        if (entity instanceof VrpVehicle) {
+        if (entity instanceof Vehicle) {
             return;
         }
-        retractPreviousStandstill((VrpCustomer) entity);
-        retractVehicle((VrpCustomer) entity);
+        retractPreviousStandstill((Customer) entity);
+        retractVehicle((Customer) entity);
         // Do not do retractNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
         if (timeWindowed) {
-            retractMilliArrivalTime((VrpTimeWindowedCustomer) entity);
+            retractMilliArrivalTime((TimeWindowedCustomer) entity);
         }
     }
 
@@ -122,24 +122,24 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         // Do nothing
     }
 
-    private void insertPreviousStandstill(VrpCustomer customer) {
-        VrpStandstill previousStandstill = customer.getPreviousStandstill();
+    private void insertPreviousStandstill(Customer customer) {
+        Standstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
             // Score constraint distanceToPreviousStandstill
             softScore -= customer.getMilliDistanceToPreviousStandstill();
         }
     }
 
-    private void retractPreviousStandstill(VrpCustomer customer) {
-        VrpStandstill previousStandstill = customer.getPreviousStandstill();
+    private void retractPreviousStandstill(Customer customer) {
+        Standstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
             // Score constraint distanceToPreviousStandstill
             softScore += customer.getMilliDistanceToPreviousStandstill();
         }
     }
 
-    private void insertVehicle(VrpCustomer customer) {
-        VrpVehicle vehicle = customer.getVehicle();
+    private void insertVehicle(Customer customer) {
+        Vehicle vehicle = customer.getVehicle();
         if (vehicle != null) {
             // Score constraint vehicleCapacity
             int capacity = vehicle.getCapacity();
@@ -154,8 +154,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    private void retractVehicle(VrpCustomer customer) {
-        VrpVehicle vehicle = customer.getVehicle();
+    private void retractVehicle(Customer customer) {
+        Vehicle vehicle = customer.getVehicle();
         if (vehicle != null) {
             // Score constraint vehicleCapacity
             int capacity = vehicle.getCapacity();
@@ -170,8 +170,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    private void insertNextCustomer(VrpCustomer customer) {
-        VrpVehicle vehicle = customer.getVehicle();
+    private void insertNextCustomer(Customer customer) {
+        Vehicle vehicle = customer.getVehicle();
         if (vehicle != null) {
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
@@ -180,8 +180,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    private void retractNextCustomer(VrpCustomer customer) {
-        VrpVehicle vehicle = customer.getVehicle();
+    private void retractNextCustomer(Customer customer) {
+        Vehicle vehicle = customer.getVehicle();
         if (vehicle != null) {
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
@@ -190,7 +190,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    private void insertMilliArrivalTime(VrpTimeWindowedCustomer customer) {
+    private void insertMilliArrivalTime(TimeWindowedCustomer customer) {
         Integer milliArrivalTime = customer.getMilliArrivalTime();
         if (milliArrivalTime != null) {
             int milliReadyTime = customer.getMilliReadyTime();
@@ -208,7 +208,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    private void retractMilliArrivalTime(VrpTimeWindowedCustomer customer) {
+    private void retractMilliArrivalTime(TimeWindowedCustomer customer) {
         Integer milliArrivalTime = customer.getMilliArrivalTime();
         if (milliArrivalTime != null) {
             int milliReadyTime = customer.getMilliReadyTime();

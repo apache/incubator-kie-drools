@@ -25,7 +25,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
 /**
  * TODO this code is highly unoptimized
@@ -42,7 +42,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                VrpSchedule schedule = VehicleRoutingWorldPanel.this.vehicleRoutingPanel.getSchedule();
+                VehicleRoutingSolution schedule = VehicleRoutingWorldPanel.this.vehicleRoutingPanel.getSchedule();
                 if (schedule != null) {
                     resetPanel(schedule);
                 }
@@ -61,12 +61,12 @@ public class VehicleRoutingWorldPanel extends JPanel {
         });
     }
 
-    public void resetPanel(VrpSchedule schedule) {
+    public void resetPanel(VehicleRoutingSolution schedule) {
         schedulePainter.reset(schedule, getSize(), this);
         repaint();
     }
 
-    public void updatePanel(VrpSchedule schedule) {
+    public void updatePanel(VehicleRoutingSolution schedule) {
         resetPanel(schedule);
     }
 

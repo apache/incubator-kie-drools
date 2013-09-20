@@ -2,40 +2,40 @@ package org.optaplanner.examples.vehiclerouting.domain.solver;
 
 import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Standstill;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 
-public class VehicleUpdatingVariableListener implements PlanningVariableListener<VrpCustomer> {
+public class VehicleUpdatingVariableListener implements PlanningVariableListener<Customer> {
 
-    public void beforeEntityAdded(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    public void afterEntityAdded(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void afterEntityAdded(ScoreDirector scoreDirector, Customer customer) {
         updateVehicle(scoreDirector, customer);
     }
 
-    public void beforeVariableChanged(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void beforeVariableChanged(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    public void afterVariableChanged(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void afterVariableChanged(ScoreDirector scoreDirector, Customer customer) {
         updateVehicle(scoreDirector, customer);
     }
 
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    public void afterEntityRemoved(ScoreDirector scoreDirector, VrpCustomer customer) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, Customer customer) {
         // Do nothing
     }
 
-    protected void updateVehicle(ScoreDirector scoreDirector, VrpCustomer sourceCustomer) {
-        VrpStandstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        VrpVehicle vehicle = previousStandstill == null ? null : previousStandstill.getVehicle();
-        VrpCustomer shadowCustomer = sourceCustomer;
+    protected void updateVehicle(ScoreDirector scoreDirector, Customer sourceCustomer) {
+        Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
+        Vehicle vehicle = previousStandstill == null ? null : previousStandstill.getVehicle();
+        Customer shadowCustomer = sourceCustomer;
         while (shadowCustomer != null && shadowCustomer.getVehicle() != vehicle) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "vehicle");
             shadowCustomer.setVehicle(vehicle);

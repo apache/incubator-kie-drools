@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingSchedulePainter;
 
 public class VrpShowScheduleServlet extends HttpServlet {
@@ -40,7 +40,7 @@ public class VrpShowScheduleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
-        VrpSchedule shownSolution = (VrpSchedule) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
+        VehicleRoutingSolution shownSolution = (VehicleRoutingSolution) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);
         Dimension size = new Dimension(800, 600);
         BufferedImage image;
         if (shownSolution == null) {

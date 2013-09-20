@@ -84,9 +84,9 @@
 
     <solver>
       <!--<environmentMode>FAST_ASSERT</environmentMode>-->
-      <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VrpSchedule</solutionClass>
-      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpCustomer</planningEntityClass>
-      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.VrpStandstill</planningEntityClass>
+      <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</planningEntityClass>
+      <planningEntityClass>org.optaplanner.examples.vehiclerouting.domain.Standstill</planningEntityClass>
 
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>

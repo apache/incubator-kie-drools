@@ -25,14 +25,14 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
-import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Depot;
+import org.optaplanner.examples.vehiclerouting.domain.Location;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
@@ -62,23 +62,23 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
     public class VrpScheduleInputBuilder extends TxtInputBuilder {
 
-        private VrpSchedule schedule;
+        private VehicleRoutingSolution schedule;
 
         private int locationListSize;
         private int vehicleListSize;
         private int capacity;
-        private Map<Long, VrpLocation> locationMap;
-        private List<VrpDepot> depotList;
+        private Map<Long, Location> locationMap;
+        private List<Depot> depotList;
 
         public Solution readSolution() throws IOException {
             String firstLine = readStringValue();
             if (firstLine.trim().startsWith("NAME :")) {
-                schedule = new VrpSchedule();
+                schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
                 schedule.setName(removePrefixSuffixFromLine(firstLine, "NAME :", ""));
                 readBasicSolution();
             } else if (splitBySpace(firstLine).length == 3) {
-                schedule = new VrpSchedule();
+                schedule = new VehicleRoutingSolution();
                 schedule.setId(0L);
                 String[] tokens = splitBySpace(firstLine, 3);
                 locationListSize = Integer.parseInt(tokens[0]);
@@ -86,14 +86,14 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 capacity = Integer.parseInt(tokens[2]);
                 readAlternativeBasicSolution();
             } else {
-                schedule = new VrpTimeWindowedSchedule();
+                schedule = new TimeWindowedVehicleRoutingSolution();
                 schedule.setId(0L);
                 schedule.setName(firstLine);
                 readTimeWindowedSolution();
             }
             // TODO search space does not take different vehicles into account
             BigInteger possibleSolutionSize = factorial(schedule.getLocationList().size() - 1);
-            logger.info("VrpSchedule {} has {} depots, {} vehicles and {} customers with a search space of {}.",
+            logger.info("VehicleRoutingSolution {} has {} depots, {} vehicles and {} customers with a search space of {}.",
                     getInputId(),
                     schedule.getDepotList().size(),
                     schedule.getVehicleList().size(),
@@ -120,7 +120,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationListSize = readIntegerValue("DIMENSION :");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
             if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
-                // Only Euclidean distance is implemented in VrpLocation.getMilliDistance(VrpLocation)
+                // Only Euclidean distance is implemented in Location.getMilliDistance(Location)
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
             capacity = readIntegerValue("CAPACITY :");
@@ -128,12 +128,12 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private void readBasicLocationList() throws IOException {
             readConstantLine("NODE_COORD_SECTION");
-            List<VrpLocation> locationList = new ArrayList<VrpLocation>(locationListSize);
-            locationMap = new HashMap<Long, VrpLocation>(locationListSize);
+            List<Location> locationList = new ArrayList<Location>(locationListSize);
+            locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 3);
-                VrpLocation location = new VrpLocation();
+                Location location = new Location();
                 location.setId(Long.parseLong(lineTokens[0]));
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -148,14 +148,14 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private void readBasicCustomerList() throws IOException {
             readConstantLine("DEMAND_SECTION");
-            List<VrpCustomer> customerList = new ArrayList<VrpCustomer>(locationListSize);
+            List<Customer> customerList = new ArrayList<Customer>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 2);
-                VrpCustomer customer = new VrpCustomer();
+                Customer customer = new Customer();
                 long id = Long.parseLong(lineTokens[0]);
                 customer.setId(id);
-                VrpLocation location = locationMap.get(id);
+                Location location = locationMap.get(id);
                 if (location == null) {
                     throw new IllegalArgumentException("The customer with id (" + id
                             + ") has no location (" + location + ").");
@@ -174,12 +174,12 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private void readBasicDepotList() throws IOException {
             readConstantLine("DEPOT_SECTION");
-            depotList = new ArrayList<VrpDepot>(locationListSize);
+            depotList = new ArrayList<Depot>(locationListSize);
             long id = readLongValue();
             while (id != -1) {
-                VrpDepot depot = new VrpDepot();
+                Depot depot = new Depot();
                 depot.setId(id);
-                VrpLocation location = locationMap.get(id);
+                Location location = locationMap.get(id);
                 if (location == null) {
                     throw new IllegalArgumentException("The depot with id (" + id
                             + ") has no location (" + location + ").");
@@ -213,10 +213,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         }
 
         private void createVehicleList() {
-            List<VrpVehicle> vehicleList = new ArrayList<VrpVehicle>(vehicleListSize);
+            List<Vehicle> vehicleList = new ArrayList<Vehicle>(vehicleListSize);
             long id = 0;
             for (int i = 0; i < vehicleListSize; i++) {
-                VrpVehicle vehicle = new VrpVehicle();
+                Vehicle vehicle = new Vehicle();
                 vehicle.setId(id);
                 id++;
                 vehicle.setCapacity(capacity);
@@ -231,14 +231,14 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         // ************************************************************************
 
         public void readAlternativeBasicSolution() throws IOException {
-            List<VrpLocation> locationList = new ArrayList<VrpLocation>(locationListSize);
-            depotList = new ArrayList<VrpDepot>(1);
-            List<VrpCustomer> customerList = new ArrayList<VrpCustomer>(locationListSize);
-            locationMap = new HashMap<Long, VrpLocation>(locationListSize);
+            List<Location> locationList = new ArrayList<Location>(locationListSize);
+            depotList = new ArrayList<Depot>(1);
+            List<Customer> customerList = new ArrayList<Customer>(locationListSize);
+            locationMap = new HashMap<Long, Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line.trim().replaceAll(" +", " "), 3);
-                VrpLocation location = new VrpLocation();
+                Location location = new Location();
                 location.setId((long) i);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -247,12 +247,12 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 }
                 locationList.add(location);
                 if (i == 0) {
-                    VrpDepot depot = new VrpDepot();
+                    Depot depot = new Depot();
                     depot.setId((long) i);
                     depot.setLocation(location);
                     depotList.add(depot);
                 } else {
-                    VrpCustomer customer = new VrpCustomer();
+                    Customer customer = new Customer();
                     customer.setId((long) i);
                     customer.setLocation(location);
                     int demand = Integer.parseInt(lineTokens[0]);
@@ -296,15 +296,15 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         private void readTimeWindowedDepotAndCustomers() throws IOException {
             String line = bufferedReader.readLine();
             int locationListSizeEstimation = 25;
-            List<VrpLocation> locationList = new ArrayList<VrpLocation>(locationListSizeEstimation);
-            depotList = new ArrayList<VrpDepot>(1);
-            List<VrpCustomer> customerList = new ArrayList<VrpCustomer>(locationListSizeEstimation);
+            List<Location> locationList = new ArrayList<Location>(locationListSizeEstimation);
+            depotList = new ArrayList<Depot>(1);
+            List<Customer> customerList = new ArrayList<Customer>(locationListSizeEstimation);
             boolean first = true;
             while (line != null && !line.trim().isEmpty()) {
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);
                 long id = Long.parseLong(lineTokens[0]);
 
-                VrpLocation location = new VrpLocation();
+                Location location = new Location();
                 location.setId(id);
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
@@ -314,7 +314,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 int milliDueTime = Integer.parseInt(lineTokens[5]) * 1000;
                 int milliServiceDuration = Integer.parseInt(lineTokens[6]) * 1000;
                 if (first) {
-                    VrpTimeWindowedDepot depot = new VrpTimeWindowedDepot();
+                    TimeWindowedDepot depot = new TimeWindowedDepot();
                     depot.setId(id);
                     depot.setLocation(location);
                     if (demand != 0) {
@@ -330,7 +330,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                     depotList.add(depot);
                     first = false;
                 } else {
-                    VrpTimeWindowedCustomer customer = new VrpTimeWindowedCustomer();
+                    TimeWindowedCustomer customer = new TimeWindowedCustomer();
                     customer.setId(id);
                     customer.setLocation(location);
                     customer.setDemand(demand);

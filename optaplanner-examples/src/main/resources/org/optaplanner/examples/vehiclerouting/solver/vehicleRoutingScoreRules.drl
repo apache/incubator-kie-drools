@@ -19,14 +19,15 @@ package org.optaplanner.examples.tsp.solver;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 
-import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
-import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.Depot;
+import org.optaplanner.examples.vehiclerouting.domain.Location;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 
 global HardSoftScoreHolder scoreHolder;
 
@@ -36,9 +37,9 @@ global HardSoftScoreHolder scoreHolder;
 
 rule "vehicleCapacity"
     when
-        $vehicle : VrpVehicle($capacity : capacity)
+        $vehicle : Vehicle($capacity : capacity)
         $demandTotal : Number(intValue > $capacity) from accumulate(
-            VrpCustomer(
+            Customer(
                 vehicle == $vehicle,
                 $demand : demand),
             sum($demand)
@@ -53,17 +54,17 @@ end
 
 rule "distanceToPreviousStandstill"
     when
-        $customer : VrpCustomer(previousStandstill != null, $distanceToPreviousStandstill : milliDistanceToPreviousStandstill)
+        $customer : Customer(previousStandstill != null, $distanceToPreviousStandstill : milliDistanceToPreviousStandstill)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousStandstill);
 end
 
 rule "distanceFromLastCustomerToDepot"
     when
-        $customer : VrpCustomer(previousStandstill != null)
-        not VrpCustomer(previousStandstill == $customer)
+        $customer : Customer(previousStandstill != null)
+        not Customer(previousStandstill == $customer)
     then
-        VrpVehicle vehicle = $customer.getVehicle();
+        Vehicle vehicle = $customer.getVehicle();
         scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getMilliDistanceTo(vehicle));
 end
 
@@ -74,7 +75,7 @@ end
 
 rule "arrivalAfterDueTime"
     when
-        VrpTimeWindowedCustomer(milliDueTime < milliArrivalTime, $milliDueTime : milliDueTime, $milliArrivalTime : milliArrivalTime)
+        TimeWindowedCustomer(milliDueTime < milliArrivalTime, $milliDueTime : milliDueTime, $milliArrivalTime : milliArrivalTime)
     then
         scoreHolder.addHardConstraintMatch(kcontext, $milliDueTime - $milliArrivalTime.intValue());
 end
@@ -87,7 +88,7 @@ end
 // That heavily affects the attainable score.
 rule "arrivalBeforeReadyTime"
     when
-        VrpTimeWindowedCustomer(milliArrivalTime < milliReadyTime, $milliReadyTime : milliReadyTime, $milliArrivalTime : milliArrivalTime)
+        TimeWindowedCustomer(milliArrivalTime < milliReadyTime, $milliReadyTime : milliReadyTime, $milliArrivalTime : milliArrivalTime)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, $milliArrivalTime.intValue() - $milliReadyTime);
 end

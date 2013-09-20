@@ -29,14 +29,14 @@ import javax.swing.ImageIcon;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
-import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
-import org.optaplanner.examples.vehiclerouting.domain.VrpLocation;
-import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
-import org.optaplanner.examples.vehiclerouting.domain.VrpVehicle;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.Customer;
+import org.optaplanner.examples.vehiclerouting.domain.Depot;
+import org.optaplanner.examples.vehiclerouting.domain.Location;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
 public class VehicleRoutingSchedulePainter {
 
@@ -76,9 +76,9 @@ public class VehicleRoutingSchedulePainter {
         return translator;
     }
 
-    public void reset(VrpSchedule schedule, Dimension size, ImageObserver imageObserver) {
+    public void reset(VehicleRoutingSolution schedule, Dimension size, ImageObserver imageObserver) {
         translator = new LatitudeLongitudeTranslator();
-        for (VrpLocation location : schedule.getLocationList()) {
+        for (Location location : schedule.getLocationList()) {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
 
@@ -91,16 +91,16 @@ public class VehicleRoutingSchedulePainter {
         Graphics2D g = createCanvas(width, height);
         g.setFont(g.getFont().deriveFont((float) TEXT_SIZE));
         g.setStroke(TangoColorFactory.NORMAL_STROKE);
-        for (VrpCustomer customer : schedule.getCustomerList()) {
-            VrpLocation location = customer.getLocation();
+        for (Customer customer : schedule.getCustomerList()) {
+            Location location = customer.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
             int y = translator.translateLatitudeToY(location.getLatitude());
             g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
             String demandString = Integer.toString(customer.getDemand());
             g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE/2);
-            if (customer instanceof VrpTimeWindowedCustomer) {
-                VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
+            if (customer instanceof TimeWindowedCustomer) {
+                TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
                 g.setColor(TangoColorFactory.ALUMINIUM_3);
                 int circleX = x - (TIME_WINDOW_DIAMETER / 2);
                 int circleY = y + 5;
@@ -128,7 +128,7 @@ public class VehicleRoutingSchedulePainter {
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_3);
-        for (VrpDepot depot : schedule.getDepotList()) {
+        for (Depot depot : schedule.getDepotList()) {
             int x = translator.translateLongitudeToX(depot.getLocation().getLongitude());
             int y = translator.translateLatitudeToY(depot.getLocation().getLatitude());
             g.fillRect(x - 2, y - 2, 5, 5);
@@ -137,24 +137,24 @@ public class VehicleRoutingSchedulePainter {
         }
         int colorIndex = 0;
         // TODO Too many nested for loops
-        for (VrpVehicle vehicle : schedule.getVehicleList()) {
+        for (Vehicle vehicle : schedule.getVehicleList()) {
             g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
-            VrpCustomer vehicleInfoCustomer = null;
+            Customer vehicleInfoCustomer = null;
             int longestNonDepotDistance = -1;
             int load = 0;
-            for (VrpCustomer customer : schedule.getCustomerList()) {
+            for (Customer customer : schedule.getCustomerList()) {
                 if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
                     load += customer.getDemand();
-                    VrpLocation previousLocation = customer.getPreviousStandstill().getLocation();
+                    Location previousLocation = customer.getPreviousStandstill().getLocation();
                     int previousX = translator.translateLongitudeToX(previousLocation.getLongitude());
                     int previousY = translator.translateLatitudeToY(previousLocation.getLatitude());
-                    VrpLocation location = customer.getLocation();
+                    Location location = customer.getLocation();
                     int x = translator.translateLongitudeToX(location.getLongitude());
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     g.drawLine(previousX, previousY, x, y);
                     // Determine where to draw the vehicle info
                     int distance = customer.getMilliDistanceToPreviousStandstill();
-                    if (customer.getPreviousStandstill() instanceof VrpCustomer) {
+                    if (customer.getPreviousStandstill() instanceof Customer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
                             vehicleInfoCustomer = customer;
@@ -165,7 +165,7 @@ public class VehicleRoutingSchedulePainter {
                     }
                     // Line back to the vehicle depot
                     if (customer.getNextCustomer() == null) {
-                        VrpLocation vehicleLocation = vehicle.getLocation();
+                        Location vehicleLocation = vehicle.getLocation();
                         int vehicleX = translator.translateLongitudeToX(vehicleLocation.getLongitude());
                         int vehicleY = translator.translateLatitudeToY(vehicleLocation.getLatitude());
                         g.setStroke(TangoColorFactory.FAT_DASHED_STROKE);
@@ -179,8 +179,8 @@ public class VehicleRoutingSchedulePainter {
                 if (load > vehicle.getCapacity()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                VrpLocation previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
-                VrpLocation location = vehicleInfoCustomer.getLocation();
+                Location previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
+                Location location = vehicleInfoCustomer.getLocation();
                 double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
                 int x = translator.translateLongitudeToX(longitude);
                 double latitude = (previousLocation.getLatitude() + location.getLatitude()) / 2.0;
@@ -207,7 +207,7 @@ public class VehicleRoutingSchedulePainter {
                 ((int) width - g.getFontMetrics().stringWidth(vehiclesSizeString)) / 2, (int) height - 10 - TEXT_SIZE);
         g.setColor(TangoColorFactory.ALUMINIUM_4);
         g.fillRect(6, (int) height - 6 - (TEXT_SIZE / 2), 3, 3);
-        g.drawString((schedule instanceof VrpTimeWindowedSchedule)
+        g.drawString((schedule instanceof TimeWindowedVehicleRoutingSolution)
                 ? "Customer: demand, time window and arrival time" : "Customer: demand", 15, (int) height - 5);
         String customersSizeString = schedule.getCustomerList().size() + " customers";
         g.drawString(customersSizeString,
@@ -222,7 +222,7 @@ public class VehicleRoutingSchedulePainter {
             } else {
                 double fuelTime = ((double) - score.getSoftScore()) / 1000.0;
                 totalDistanceString = NUMBER_FORMAT.format(fuelTime)
-                        + ((schedule instanceof VrpTimeWindowedSchedule) ? " time" : " fuel");
+                        + ((schedule instanceof TimeWindowedVehicleRoutingSolution) ? " time" : " fuel");
             }
             g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(totalDistanceString,
@@ -230,19 +230,19 @@ public class VehicleRoutingSchedulePainter {
         }
     }
 
-    private int determineMaximumTimeWindowTime(VrpSchedule schedule) {
+    private int determineMaximumTimeWindowTime(VehicleRoutingSolution schedule) {
         int maximumTimeWindowTime = 0;
-        for (VrpDepot depot : schedule.getDepotList()) {
-            if (depot instanceof VrpTimeWindowedDepot) {
-                int timeWindowTime = ((VrpTimeWindowedDepot) depot).getMilliDueTime();
+        for (Depot depot : schedule.getDepotList()) {
+            if (depot instanceof TimeWindowedDepot) {
+                int timeWindowTime = ((TimeWindowedDepot) depot).getMilliDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }
             }
         }
-        for (VrpCustomer customer : schedule.getCustomerList()) {
-            if (customer instanceof VrpTimeWindowedCustomer) {
-                int timeWindowTime = ((VrpTimeWindowedCustomer) customer).getMilliDueTime();
+        for (Customer customer : schedule.getCustomerList()) {
+            if (customer instanceof TimeWindowedCustomer) {
+                int timeWindowTime = ((TimeWindowedCustomer) customer).getMilliDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }

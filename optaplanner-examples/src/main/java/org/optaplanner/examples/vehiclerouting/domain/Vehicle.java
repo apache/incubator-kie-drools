@@ -20,13 +20,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("VrpVehicle")
-public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
+public class Vehicle extends AbstractPersistable implements Standstill {
 
     protected int capacity;
-    protected VrpDepot depot;
+    protected Depot depot;
 
     // Shadow variables
-    protected VrpCustomer nextCustomer;
+    protected Customer nextCustomer;
 
     public int getCapacity() {
         return capacity;
@@ -36,19 +36,19 @@ public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
         this.capacity = capacity;
     }
 
-    public VrpDepot getDepot() {
+    public Depot getDepot() {
         return depot;
     }
 
-    public void setDepot(VrpDepot depot) {
+    public void setDepot(Depot depot) {
         this.depot = depot;
     }
 
-    public VrpCustomer getNextCustomer() {
+    public Customer getNextCustomer() {
         return nextCustomer;
     }
 
-    public void setNextCustomer(VrpCustomer nextCustomer) {
+    public void setNextCustomer(Customer nextCustomer) {
         this.nextCustomer = nextCustomer;
     }
 
@@ -56,11 +56,11 @@ public class VrpVehicle extends AbstractPersistable implements VrpStandstill {
     // Complex methods
     // ************************************************************************
 
-    public VrpVehicle getVehicle() {
+    public Vehicle getVehicle() {
         return this;
     }
 
-    public VrpLocation getLocation() {
+    public Location getLocation() {
         return depot.getLocation();
     }
 

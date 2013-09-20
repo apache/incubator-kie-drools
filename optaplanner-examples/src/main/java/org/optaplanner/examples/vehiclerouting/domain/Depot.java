@@ -19,22 +19,21 @@ package org.optaplanner.examples.vehiclerouting.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedDepot;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedSchedule;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 
 @XStreamAlias("VrpDepot")
 @XStreamInclude({
-        VrpTimeWindowedDepot.class
+        TimeWindowedDepot.class
 })
-public class VrpDepot extends AbstractPersistable {
+public class Depot extends AbstractPersistable {
 
-    protected VrpLocation location;
+    protected Location location;
 
-    public VrpLocation getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(VrpLocation location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 

@@ -1,4 +1,4 @@
-<VrpSchedule id="1">
+<VrpVehicleRoutingSolution id="1">
   <id>0</id>
   <name>A-n55-k9</name>
   <locationList id="2">
@@ -603,4 +603,4 @@
       <demand>12</demand>
     </VrpCustomer>
   </customerList>
-</VrpSchedule>
+</VrpVehicleRoutingSolution>

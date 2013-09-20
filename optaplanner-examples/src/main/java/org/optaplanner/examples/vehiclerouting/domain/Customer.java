@@ -25,31 +25,31 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VehicleUpdatingVariableListener;
 import org.optaplanner.examples.vehiclerouting.domain.solver.VrpCustomerDifficultyComparator;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.ArrivalTimeUpdatingVariableListener;
 
 @PlanningEntity(difficultyComparatorClass = VrpCustomerDifficultyComparator.class)
 @XStreamAlias("VrpCustomer")
 @XStreamInclude({
-        VrpTimeWindowedCustomer.class
+        TimeWindowedCustomer.class
 })
-public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
+public class Customer extends AbstractPersistable implements Standstill {
 
-    protected VrpLocation location;
+    protected Location location;
     protected int demand;
 
     // Planning variables: changes during planning, between score calculations.
-    protected VrpStandstill previousStandstill;
+    protected Standstill previousStandstill;
 
     // Shadow variables
-    protected VrpCustomer nextCustomer;
-    protected VrpVehicle vehicle;
+    protected Customer nextCustomer;
+    protected Vehicle vehicle;
 
-    public VrpLocation getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(VrpLocation location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
@@ -64,27 +64,27 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     // HACK TODO remove ArrivalTimeUpdatingVariableListener.class and add it only for VrpTimeWindowedCustomer
     @PlanningVariable(chained = true, valueRangeProviderRefs = {"vehicleRange", "customerRange"},
             variableListenerClasses = {VehicleUpdatingVariableListener.class, ArrivalTimeUpdatingVariableListener.class})
-    public VrpStandstill getPreviousStandstill() {
+    public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
 
-    public void setPreviousStandstill(VrpStandstill previousStandstill) {
+    public void setPreviousStandstill(Standstill previousStandstill) {
         this.previousStandstill = previousStandstill;
     }
 
-    public VrpCustomer getNextCustomer() {
+    public Customer getNextCustomer() {
         return nextCustomer;
     }
 
-    public void setNextCustomer(VrpCustomer nextCustomer) {
+    public void setNextCustomer(Customer nextCustomer) {
         this.nextCustomer = nextCustomer;
     }
 
-    public VrpVehicle getVehicle() {
+    public Vehicle getVehicle() {
         return vehicle;
     }
 
-    public void setVehicle(VrpVehicle vehicle) {
+    public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
 
@@ -106,7 +106,7 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getMilliDistanceTo(VrpStandstill standstill) {
+    public int getMilliDistanceTo(Standstill standstill) {
         return location.getMilliDistance(standstill.getLocation());
     }
 
@@ -118,8 +118,8 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     public boolean solutionEquals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof VrpCustomer) {
-            VrpCustomer other = (VrpCustomer) o;
+        } else if (o instanceof Customer) {
+            Customer other = (Customer) o;
             return new EqualsBuilder()
                     .append(id, other.id)
                     .append(location, other.location) // TODO performance leak: not needed?

@@ -20,23 +20,23 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
 @PlanningEntity
-public interface VrpStandstill {
+public interface Standstill {
 
     /**
      * @return never null
      */
-    VrpLocation getLocation();
+    Location getLocation();
 
     /**
      * @return sometimes null
      */
-    VrpVehicle getVehicle();
+    Vehicle getVehicle();
 
     /**
      * @return sometimes null
      */
     @PlanningVariable(mappedBy = "previousStandstill")
-    VrpCustomer getNextCustomer();
-    void setNextCustomer(VrpCustomer nextCustomer);
+    Customer getNextCustomer();
+    void setNextCustomer(Customer nextCustomer);
 
 }
