@@ -71,7 +71,7 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
                 return executeNext(command);
 
             } catch (RuntimeException ex) {
-
+                logger.trace(ex.getClass().getSimpleName() + " caught in " + this.getClass().getSimpleName() + ": " + ex.getMessage());
                 if (!isCausedByOptimisticLockingFailure(ex)) {
                     throw ex;
                 }

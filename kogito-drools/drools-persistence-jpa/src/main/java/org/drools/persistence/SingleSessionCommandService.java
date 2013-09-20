@@ -58,7 +58,7 @@ public class SingleSessionCommandService
     implements
     org.drools.core.command.SingleSessionCommandService {
 
-    Logger                             logger           = LoggerFactory.getLogger( getClass() );
+    private static Logger              logger           = LoggerFactory.getLogger( SingleSessionCommandService.class );
 
     private SessionInfo                sessionInfo;
     private SessionMarshallingHelper   marshallingHelper;
@@ -74,9 +74,6 @@ public class SingleSessionCommandService
     private volatile boolean           doRollback;
 
     private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
-
-    private final ReentrantLock lock = new ReentrantLock();
-    private boolean doSessionLocking = false;
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
@@ -124,7 +121,6 @@ public class SingleSessionCommandService
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
-
             registerRollbackSync();
 
             persistenceContext.joinTransaction();
@@ -194,7 +190,6 @@ public class SingleSessionCommandService
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
-
             registerRollbackSync();
 
             persistenceContext.joinTransaction();
@@ -266,7 +261,7 @@ public class SingleSessionCommandService
 
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
         this.ksession = (StatefulKnowledgeSession)
-    		this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
+            this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
                                                  this.ksession );
 
         // update the session id to be the same as the session info id
@@ -295,10 +290,10 @@ public class SingleSessionCommandService
         } else {
             if ( tm != null && isSpringTransactionManager(tm.getClass()) ) {
                 try {
+                    logger.debug( "Instantiating KieSpringTransactionManager" );
                     Class< ? > cls = Class.forName( "org.kie.spring.persistence.KieSpringTransactionManager" );
                     Constructor< ? > con = cls.getConstructors()[0];
                     this.txm = (TransactionManager) con.newInstance( tm );
-                    logger.debug( "Instantiating  KieSpringTransactionManager" );
                     cls = Class.forName( "org.kie.spring.persistence.KieSpringJpaManager" );
                     con = cls.getConstructors()[0];
                     this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
@@ -306,10 +301,10 @@ public class SingleSessionCommandService
                     //fall back for drools5-legacy spring module
                     logger.warn( "Could not instantiate KieSpringTransactionManager. Trying with DroolsSpringTransactionManager." );
                     try {
+                        logger.debug( "Instantiating DroolsSpringTransactionManager" );
                         Class< ? > cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
                         Constructor< ? > con = cls.getConstructors()[0];
                         this.txm = (TransactionManager) con.newInstance( tm );
-                        logger.debug( "Instantiating  DroolsSpringTransactionManager" );
 
                         // configure spring for JPA and local transactions
                         cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
@@ -317,11 +312,11 @@ public class SingleSessionCommandService
                         this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
                     } catch ( Exception ex ) {
                         logger.warn( "Could not instantiate DroolsSpringTransactionManager" );
-                        throw new RuntimeException( "Could not instatiate org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager", ex );
+                        throw new RuntimeException( "Could not instantiate org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager", ex );
                     }
                 }
             } else {
-                logger.debug( "Instantiating  JtaTransactionManager" );
+                logger.debug( "Instantiating JtaTransactionManager" );
                 this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                                                       env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
                                                       tm );
@@ -340,15 +335,6 @@ public class SingleSessionCommandService
                      this.jpm );
             env.set( EnvironmentName.TRANSACTION_MANAGER,
                      this.txm );
-            
-            if( env.get(EnvironmentName.USE_SESSION_LOCKING) != null ) { 
-               Object useSessionLockObj = env.get(EnvironmentName.USE_SESSION_LOCKING);
-               if( useSessionLockObj instanceof String ) { 
-                   this.doSessionLocking = Boolean.parseBoolean((String) useSessionLockObj);
-               } else if ( useSessionLockObj instanceof Boolean ) { 
-                   this.doSessionLocking = (Boolean) useSessionLockObj;
-               } 
-            } 
         }
     }
 
@@ -415,6 +401,7 @@ public class SingleSessionCommandService
         boolean transactionOwner = false;
         try {
             transactionOwner = txm.begin();
+            
             persistenceContext.joinTransaction();
             
             initExistingKnowledgeSession( this.sessionInfo.getId(),
@@ -465,8 +452,6 @@ public class SingleSessionCommandService
             // always cleanup thread local whatever the result
             SingleSessionCommandService.synchronizations.remove( this.service );
 
-            this.service.jpm.clearPersistenceContext();
-            
             this.service.jpm.endCommandScopedEntityManager();
 
             KieSession ksession = this.service.ksession;
@@ -477,20 +462,16 @@ public class SingleSessionCommandService
                     if (this.service.doRollback) {
                         internalProcessRuntime.clearProcessInstancesState();
                     } 
-                    
+
                     internalProcessRuntime.clearProcessInstances();
                 }
                 ((JPAWorkItemManager) ksession.getWorkItemManager()).clearWorkItems();
             }
-            
-            // Unlock, if it was locked 
-            while( this.service.lock.isLocked() ) { 
-                this.service.lock.unlock();
-            }
+
         }
 
         public void beforeCompletion() {
-
+            // not used
         }
 
     }
@@ -521,30 +502,16 @@ public class SingleSessionCommandService
                 jpm.dispose();
                 return result;
             }
+
             // Open the entity manager before the transaction begins.
             PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
 
             boolean transactionOwner = false;
             try {
                 transactionOwner = txm.begin();
-                if( ! transactionOwner && doSessionLocking ) { 
-                    /** 
-                     * There is a race condition when the tx is not owned by the SSCS. 
-                     * In that case, the commit happens *outside* of the synchronized 
-                     * SSCS.execute(..) block. 
-                     * However, the SynchronizationImpl.afterCompletion(..) method, 
-                     * called (just after) when the commit happens, will then also 
-                     * happen *outside* of the synchronized execute(...) block -- and 
-                     * this class does not expect that. When that happens, and another 
-                     * thread is calling .execute(..) on the same SSCS, bad things happen.  
-                     * 
-                     * This lock prevents the race condition described above from happening.
-                     */
-                    lock.lock(); 
-                }
-
-                persistenceContext.joinTransaction();
-
+                
+                    persistenceContext.joinTransaction();
+                
                 initExistingKnowledgeSession( sessionInfo.getId(),
                         marshallingHelper.getKbase(),
                         marshallingHelper.getConf(),
@@ -561,6 +528,7 @@ public class SingleSessionCommandService
                     result = ksession.execute(command);
                 }
                 else {
+                    logger.trace("Executing " + command.getClass().getSimpleName());
                     result = executeNext((GenericCommand<T>) command);
                 }
 
@@ -585,4 +553,5 @@ public class SingleSessionCommandService
             }
         }
     }
+
 }

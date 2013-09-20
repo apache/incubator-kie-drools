@@ -16,13 +16,13 @@
 package org.drools.persistence.jta;
 
 import static junit.framework.Assert.assertTrue;
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.drools.persistence.util.PersistenceUtil.getValueOfField;
-import static org.drools.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import javax.naming.InitialContext;
@@ -41,15 +41,15 @@ import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -255,17 +255,18 @@ public class JtaTransactionManagerTest {
     public static String COMMAND_ENTITY_MANAGER_FACTORY = "drools.persistence.test.EntityManagerFactory";
     
     @Test
-    public void testSingleSessionCommandServiceAndJtaTransactionManagerTogether() { 
-            
+    public void testSingleSessionCommandServiceAndJtaTransactionManagerTogether() throws Exception { 
         // Initialize drools environment stuff
         Environment env = createEnvironment(context);
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        commandKSession.getId(); // initialize CSEM
         SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) commandKSession).getCommandService();
         JpaPersistenceContextManager jpm = (JpaPersistenceContextManager) getValueOfField("jpm", commandService);
 
-        jpm.getApplicationScopedPersistenceContext();
-        EntityManager em = (EntityManager) getValueOfField("appScopedEntityManager", jpm);
+        Method csemMethod = JpaPersistenceContextManager.class.getDeclaredMethod("getInternalCommandScopedEntityManager");
+        csemMethod.setAccessible(true);
+        EntityManager em = (EntityManager) csemMethod.invoke(jpm);
         
         TransactionTestObject mainObject = new TransactionTestObject();
         mainObject.setName("mainCommand");
@@ -278,10 +279,42 @@ public class JtaTransactionManagerTest {
         emEnv.put(COMMAND_ENTITY_MANAGER, em);
         
         TransactionTestCommand txTestCmd = new TransactionTestCommand(mainObject, subObject, emEnv);
-       
         
         commandKSession.execute(txTestCmd);
-        
     }
 
+    /**
+     * Reflection method when doing ugly hacks in tests.
+     * 
+     * @param fieldname
+     *            The name of the field to be retrieved.
+     * @param source
+     *            The object containing the field to be retrieved.
+     * @return The value (object instance) stored in the field requested from
+     *         the given source object.
+     */
+    public static Object getValueOfField(String fieldname, Object source) {
+        String sourceClassName = source.getClass().getSimpleName();
+    
+        Field field = null;
+        try {
+            field = source.getClass().getDeclaredField(fieldname);
+            field.setAccessible(true);
+        } catch (SecurityException e) {
+            fail("Unable to retrieve " + fieldname + " field from " + sourceClassName + ": " + e.getCause());
+        } catch (NoSuchFieldException e) {
+            fail("Unable to retrieve " + fieldname + " field from " + sourceClassName + ": " + e.getCause());
+        }
+    
+        assertNotNull("." + fieldname + " field is null!?!", field);
+        Object fieldValue = null;
+        try {
+            fieldValue = field.get(source);
+        } catch (IllegalArgumentException e) {
+            fail("Unable to retrieve value of " + fieldname + " from " + sourceClassName + ": " + e.getCause());
+        } catch (IllegalAccessException e) {
+            fail("Unable to retrieve value of " + fieldname + " from " + sourceClassName + ": " + e.getCause());
+        }
+        return fieldValue;
+    }
 }
