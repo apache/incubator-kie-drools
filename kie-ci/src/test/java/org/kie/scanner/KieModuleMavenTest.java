@@ -24,8 +24,6 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.process.*;
-import org.kie.api.definition.process.Process;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -138,8 +136,9 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         assertEquals(1, list.size());
     }
 
-    @Test @Ignore
+    @Test
     public void testKieContainerBeforeAndAfterDeployOfSnapshot() throws Exception {
+        // BZ-1007977
         KieServices ks = KieServices.Factory.get();
 
         String group = "org.kie.test";
@@ -180,7 +179,6 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         assertEquals(1, packages2.size());
         Collection<Rule> rules2 = packages2.iterator().next().getRules();
         assertEquals(4, rules2.size());
-
     }
 
     public static String generatePomXml(ReleaseId releaseId, ReleaseId... dependencies) {
