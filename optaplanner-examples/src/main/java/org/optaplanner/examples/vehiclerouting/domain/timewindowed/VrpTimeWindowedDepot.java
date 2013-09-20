@@ -6,23 +6,24 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpDepot;
 @XStreamAlias("VrpTimeWindowedDepot")
 public class VrpTimeWindowedDepot extends VrpDepot {
 
-    private int readyTime;
-    private int dueTime;
+    // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
+    private int milliReadyTime;
+    private int milliDueTime;
 
-    public int getReadyTime() {
-        return readyTime;
+    public int getMilliReadyTime() {
+        return milliReadyTime;
     }
 
-    public void setReadyTime(int readyTime) {
-        this.readyTime = readyTime;
+    public void setMilliReadyTime(int milliReadyTime) {
+        this.milliReadyTime = milliReadyTime;
     }
 
-    public int getDueTime() {
-        return dueTime;
+    public int getMilliDueTime() {
+        return milliDueTime;
     }
 
-    public void setDueTime(int dueTime) {
-        this.dueTime = dueTime;
+    public void setMilliDueTime(int milliDueTime) {
+        this.milliDueTime = milliDueTime;
     }
 
     // ************************************************************************
@@ -30,7 +31,7 @@ public class VrpTimeWindowedDepot extends VrpDepot {
     // ************************************************************************
 
     public String getTimeWindowLabel() {
-        return readyTime + "-" + dueTime;
+        return milliReadyTime + "-" + milliDueTime;
     }
 
 }

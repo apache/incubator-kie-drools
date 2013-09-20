@@ -20,9 +20,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.ImageIcon;
 
@@ -41,14 +41,13 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.VrpTimeWindow
 public class VehicleRoutingSchedulePainter {
 
     private static final int TEXT_SIZE = 12;
-
     private static final int TIME_WINDOW_DIAMETER = 26;
+    private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#,##0.00");
 
     private static final String IMAGE_PATH_PREFIX = "/org/optaplanner/examples/vehiclerouting/swingui/";
 
     private ImageIcon depotImageIcon;
     private ImageIcon[] vehicleImageIcons;
-    private NumberFormat numberFormat = NumberFormat.getInstance();
 
     private BufferedImage canvas = null;
     private LatitudeLongitudeTranslator translator = null;
@@ -107,10 +106,10 @@ public class VehicleRoutingSchedulePainter {
                 int circleY = y + 5;
                 g.drawOval(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER);
                 g.fillArc(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER,
-                        90 - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime()),
-                        calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime())
-                                - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getDueTime()));
-                if (timeWindowedCustomer.getArrivalTime() != null) {
+                        90 - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliReadyTime()),
+                        calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliReadyTime())
+                                - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliDueTime()));
+                if (timeWindowedCustomer.getMilliArrivalTime() != null) {
                     if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
                     } else if (timeWindowedCustomer.isArrivalBeforeReadyTime()) {
@@ -120,7 +119,7 @@ public class VehicleRoutingSchedulePainter {
                     }
                     g.setStroke(TangoColorFactory.THICK_STROKE);
                     int circleCenterY = y + 5 + TIME_WINDOW_DIAMETER / 2;
-                    int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getArrivalTime());
+                    int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getMilliArrivalTime());
                     g.drawLine(x, circleCenterY,
                             x + (int) (Math.sin(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)),
                             circleCenterY - (int) (Math.cos(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)));
@@ -154,7 +153,7 @@ public class VehicleRoutingSchedulePainter {
                     int y = translator.translateLatitudeToY(location.getLatitude());
                     g.drawLine(previousX, previousY, x, y);
                     // Determine where to draw the vehicle info
-                    int distance = customer.getDistanceToPreviousStandstill();
+                    int distance = customer.getMilliDistanceToPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof VrpCustomer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
@@ -191,8 +190,10 @@ public class VehicleRoutingSchedulePainter {
 
                 ImageIcon vehicleImageIcon = vehicleImageIcons[colorIndex];
                 int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
-                g.drawImage(vehicleImageIcon.getImage(), x + 1, (ascending ? y - vehicleInfoHeight - 1 : y + 1), imageObserver);
-                g.drawString(load + " / " + vehicle.getCapacity(), x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
+                g.drawImage(vehicleImageIcon.getImage(),
+                        x + 1, (ascending ? y - vehicleInfoHeight - 1 : y + 1), imageObserver);
+                g.drawString(load + " / " + vehicle.getCapacity(),
+                        x + 1, (ascending ? y - 1 : y + vehicleInfoHeight + 1));
             }
             colorIndex = (colorIndex + 1) % TangoColorFactory.SEQUENCE_2.length;
         }
@@ -219,7 +220,8 @@ public class VehicleRoutingSchedulePainter {
             if (!score.isFeasible()) {
                 totalDistanceString = "Not feasible";
             } else {
-                totalDistanceString = numberFormat.format(- score.getSoftScore())
+                double fuelTime = ((double) - score.getSoftScore()) / 1000.0;
+                totalDistanceString = NUMBER_FORMAT.format(fuelTime)
                         + ((schedule instanceof VrpTimeWindowedSchedule) ? " time" : " fuel");
             }
             g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
@@ -232,7 +234,7 @@ public class VehicleRoutingSchedulePainter {
         int maximumTimeWindowTime = 0;
         for (VrpDepot depot : schedule.getDepotList()) {
             if (depot instanceof VrpTimeWindowedDepot) {
-                int timeWindowTime = ((VrpTimeWindowedDepot) depot).getDueTime();
+                int timeWindowTime = ((VrpTimeWindowedDepot) depot).getMilliDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }
@@ -240,7 +242,7 @@ public class VehicleRoutingSchedulePainter {
         }
         for (VrpCustomer customer : schedule.getCustomerList()) {
             if (customer instanceof VrpTimeWindowedCustomer) {
-                int timeWindowTime = ((VrpTimeWindowedCustomer) customer).getDueTime();
+                int timeWindowTime = ((VrpTimeWindowedCustomer) customer).getMilliDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }

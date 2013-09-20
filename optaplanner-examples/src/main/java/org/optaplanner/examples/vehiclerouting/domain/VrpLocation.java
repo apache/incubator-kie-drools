@@ -57,16 +57,16 @@ public class VrpLocation extends AbstractPersistable {
     /**
      * The distance is not in miles or km, but in the TSPLIB's unit of measurement.
      * @param location never null
-     * @return a positive number
+     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDistance(VrpLocation location) {
+    public int getMilliDistance(VrpLocation location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
-        double latitudeDifference = Math.abs(location.latitude - latitude);
-        double longitudeDifference = Math.abs(location.longitude - longitude);
+        double latitudeDifference = location.latitude - latitude;
+        double longitudeDifference = location.longitude - longitude;
         double distance = Math.sqrt(
                 (latitudeDifference * latitudeDifference) + (longitudeDifference * longitudeDifference));
-        return (int) (distance + 0.5);
+        return (int) (distance * 1000.0 + 0.5);
     }
 
     @Override

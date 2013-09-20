@@ -51,7 +51,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
             insertVehicle(customer);
             // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
             if (timeWindowed) {
-                insertArrivalTime((VrpTimeWindowedCustomer) customer);
+                insertMilliArrivalTime((VrpTimeWindowedCustomer) customer);
             }
         }
     }
@@ -68,7 +68,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         insertVehicle((VrpCustomer) entity);
         // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
         if (timeWindowed) {
-            insertArrivalTime((VrpTimeWindowedCustomer) entity);
+            insertMilliArrivalTime((VrpTimeWindowedCustomer) entity);
         }
     }
 
@@ -82,8 +82,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
             retractVehicle((VrpCustomer) entity);
         } else if (variableName.equals("nextCustomer"))   {
             retractNextCustomer((VrpCustomer) entity);
-        } else if (variableName.equals("arrivalTime"))   {
-            retractArrivalTime((VrpTimeWindowedCustomer) entity);
+        } else if (variableName.equals("milliArrivalTime"))   {
+            retractMilliArrivalTime((VrpTimeWindowedCustomer) entity);
         } else {
             throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
@@ -99,8 +99,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
             insertVehicle((VrpCustomer) entity);
         } else if (variableName.equals("nextCustomer"))   {
             insertNextCustomer((VrpCustomer) entity);
-        } else if (variableName.equals("arrivalTime"))   {
-            insertArrivalTime((VrpTimeWindowedCustomer) entity);
+        } else if (variableName.equals("milliArrivalTime"))   {
+            insertMilliArrivalTime((VrpTimeWindowedCustomer) entity);
         } else {
             throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
@@ -114,7 +114,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         retractVehicle((VrpCustomer) entity);
         // Do not do retractNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
         if (timeWindowed) {
-            retractArrivalTime((VrpTimeWindowedCustomer) entity);
+            retractMilliArrivalTime((VrpTimeWindowedCustomer) entity);
         }
     }
 
@@ -126,7 +126,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         VrpStandstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
             // Score constraint distanceToPreviousStandstill
-            softScore -= customer.getDistanceToPreviousStandstill();
+            softScore -= customer.getMilliDistanceToPreviousStandstill();
         }
     }
 
@@ -134,7 +134,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         VrpStandstill previousStandstill = customer.getPreviousStandstill();
         if (previousStandstill != null) {
             // Score constraint distanceToPreviousStandstill
-            softScore += customer.getDistanceToPreviousStandstill();
+            softScore += customer.getMilliDistanceToPreviousStandstill();
         }
     }
 
@@ -149,7 +149,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
             vehicleDemandMap.put(vehicle, newDemand);
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
-                softScore -= vehicle.getLocation().getDistance(customer.getLocation());
+                softScore -= vehicle.getLocation().getMilliDistance(customer.getLocation());
             }
         }
     }
@@ -165,7 +165,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
             vehicleDemandMap.put(vehicle, newDemand);
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
-                softScore += vehicle.getLocation().getDistance(customer.getLocation());
+                softScore += vehicle.getLocation().getMilliDistance(customer.getLocation());
             }
         }
     }
@@ -175,7 +175,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         if (vehicle != null) {
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
-                softScore -= vehicle.getLocation().getDistance(customer.getLocation());
+                softScore -= vehicle.getLocation().getMilliDistance(customer.getLocation());
             }
         }
     }
@@ -185,39 +185,43 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         if (vehicle != null) {
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
-                softScore += vehicle.getLocation().getDistance(customer.getLocation());
+                softScore += vehicle.getLocation().getMilliDistance(customer.getLocation());
             }
         }
     }
 
-    private void insertArrivalTime(VrpTimeWindowedCustomer customer) {
-        Integer arrivalTime = customer.getArrivalTime();
-        if (arrivalTime != null) {
-            int readyTime = customer.getReadyTime();
-            int dueTime = customer.getDueTime();
-            if (dueTime < arrivalTime) {
+    private void insertMilliArrivalTime(VrpTimeWindowedCustomer customer) {
+        Integer milliArrivalTime = customer.getMilliArrivalTime();
+        if (milliArrivalTime != null) {
+            int milliReadyTime = customer.getMilliReadyTime();
+            int milliDueTime = customer.getMilliDueTime();
+            if (milliDueTime < milliArrivalTime) {
                 // Score constraint arrivalAfterDueTime
-                hardScore -= (arrivalTime - dueTime);
+                hardScore -= (milliArrivalTime - milliDueTime);
             }
-            if (arrivalTime < readyTime) {
+            if (milliArrivalTime < milliReadyTime) {
                 // Score constraint arrivalBeforeReadyTime
-                softScore -= (readyTime - arrivalTime);
+                // Many external benchmark records tend to ignore this constraint.
+                // That heavily affects the attainable score.
+                softScore -= (milliReadyTime - milliArrivalTime);
             }
         }
     }
 
-    private void retractArrivalTime(VrpTimeWindowedCustomer customer) {
-        Integer arrivalTime = customer.getArrivalTime();
-        if (arrivalTime != null) {
-            int readyTime = customer.getReadyTime();
-            int dueTime = customer.getDueTime();
-            if (dueTime < arrivalTime) {
+    private void retractMilliArrivalTime(VrpTimeWindowedCustomer customer) {
+        Integer milliArrivalTime = customer.getMilliArrivalTime();
+        if (milliArrivalTime != null) {
+            int milliReadyTime = customer.getMilliReadyTime();
+            int milliDueTime = customer.getMilliDueTime();
+            if (milliDueTime < milliArrivalTime) {
                 // Score constraint arrivalAfterDueTime
-                hardScore += (arrivalTime - dueTime);
+                hardScore += (milliArrivalTime - milliDueTime);
             }
-            if (arrivalTime < readyTime) {
+            if (milliArrivalTime < milliReadyTime) {
                 // Score constraint arrivalBeforeReadyTime
-                softScore += (readyTime - arrivalTime);
+                // Many external benchmark records tend to ignore this constraint.
+                // That heavily affects the attainable score.
+                softScore += (milliReadyTime - milliArrivalTime);
             }
         }
     }

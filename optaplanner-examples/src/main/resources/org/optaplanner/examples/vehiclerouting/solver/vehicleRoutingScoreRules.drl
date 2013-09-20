@@ -53,7 +53,7 @@ end
 
 rule "distanceToPreviousStandstill"
     when
-        $customer : VrpCustomer(previousStandstill != null, $distanceToPreviousStandstill : distanceToPreviousStandstill)
+        $customer : VrpCustomer(previousStandstill != null, $distanceToPreviousStandstill : milliDistanceToPreviousStandstill)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $distanceToPreviousStandstill);
 end
@@ -64,7 +64,7 @@ rule "distanceFromLastCustomerToDepot"
         not VrpCustomer(previousStandstill == $customer)
     then
         VrpVehicle vehicle = $customer.getVehicle();
-        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getMilliDistanceTo(vehicle));
 end
 
 
@@ -74,18 +74,20 @@ end
 
 rule "arrivalAfterDueTime"
     when
-        VrpTimeWindowedCustomer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
+        VrpTimeWindowedCustomer(milliDueTime < milliArrivalTime, $milliDueTime : milliDueTime, $milliArrivalTime : milliArrivalTime)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.intValue());
+        scoreHolder.addHardConstraintMatch(kcontext, $milliDueTime - $milliArrivalTime.intValue());
 end
 
 // ############################################################################
 // TimeWindowed: extra soft constraints
 // ############################################################################
 
+// Many external benchmark records tend to ignore this constraint.
+// That heavily affects the attainable score.
 rule "arrivalBeforeReadyTime"
     when
-        VrpTimeWindowedCustomer(arrivalTime < readyTime, $readyTime : readyTime, $arrivalTime : arrivalTime)
+        VrpTimeWindowedCustomer(milliArrivalTime < milliReadyTime, $milliReadyTime : milliReadyTime, $milliArrivalTime : milliArrivalTime)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, $arrivalTime.intValue() - $readyTime);
+        scoreHolder.addSoftConstraintMatch(kcontext, $milliArrivalTime.intValue() - $milliReadyTime);
 end

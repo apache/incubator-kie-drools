@@ -17,18 +17,11 @@
 package org.optaplanner.examples.vehiclerouting.solver.score;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.examples.tsp.domain.Domicile;
-import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
-import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.VrpSchedule;
 import org.optaplanner.examples.vehiclerouting.domain.VrpStandstill;
@@ -54,23 +47,25 @@ public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculato
                 VrpVehicle vehicle = customer.getVehicle();
                 vehicleDemandMap.put(vehicle, vehicleDemandMap.get(vehicle) + customer.getDemand());
                 // Score constraint distanceToPreviousStandstill
-                softScore -= customer.getDistanceToPreviousStandstill();
+                softScore -= customer.getMilliDistanceToPreviousStandstill();
                 if (customer.getNextCustomer() == null) {
                     // Score constraint distanceFromLastCustomerToDepot
-                    softScore -= vehicle.getLocation().getDistance(customer.getLocation());
+                    softScore -= vehicle.getLocation().getMilliDistance(customer.getLocation());
                 }
                 if (timeWindowed) {
                     VrpTimeWindowedCustomer timeWindowedCustomer = (VrpTimeWindowedCustomer) customer;
-                    int readyTime = timeWindowedCustomer.getReadyTime();
-                    int dueTime = timeWindowedCustomer.getDueTime();
-                    Integer arrivalTime = timeWindowedCustomer.getArrivalTime();
-                    if (dueTime < arrivalTime) {
+                    int milliReadyTime = timeWindowedCustomer.getMilliReadyTime();
+                    int milliDueTime = timeWindowedCustomer.getMilliDueTime();
+                    Integer milliArrivalTime = timeWindowedCustomer.getMilliArrivalTime();
+                    if (milliDueTime < milliArrivalTime) {
                         // Score constraint arrivalAfterDueTime
-                        hardScore -= (arrivalTime - dueTime);
+                        hardScore -= (milliArrivalTime - milliDueTime);
                     }
-                    if (arrivalTime < readyTime) {
+                    if (milliArrivalTime < milliReadyTime) {
                         // Score constraint arrivalBeforeReadyTime
-                        softScore -= (readyTime - arrivalTime);
+                        // Many external benchmark records tend to ignore this constraint.
+                        // That heavily affects the attainable score.
+                        softScore -= (milliReadyTime - milliArrivalTime);
                     }
                 }
             }

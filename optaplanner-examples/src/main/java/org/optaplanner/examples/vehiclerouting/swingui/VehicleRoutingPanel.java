@@ -113,9 +113,9 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 VrpCustomer newCustomer;
                 if (schedule instanceof VrpTimeWindowedSchedule) {
                     VrpTimeWindowedCustomer newTimeWindowedCustomer = new VrpTimeWindowedCustomer();
-                    newTimeWindowedCustomer.setReadyTime(10);
-                    newTimeWindowedCustomer.setDueTime(100);
-                    newTimeWindowedCustomer.setServiceDuration(10);
+                    newTimeWindowedCustomer.setMilliReadyTime(10000);
+                    newTimeWindowedCustomer.setMilliDueTime(100000);
+                    newTimeWindowedCustomer.setMilliServiceDuration(10000);
                     newCustomer = newTimeWindowedCustomer;
                 } else {
                     newCustomer = new VrpCustomer();

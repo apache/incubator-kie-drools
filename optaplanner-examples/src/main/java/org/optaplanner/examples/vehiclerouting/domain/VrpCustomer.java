@@ -92,15 +92,22 @@ public class VrpCustomer extends AbstractPersistable implements VrpStandstill {
     // Complex methods
     // ************************************************************************
 
-    public int getDistanceToPreviousStandstill() {
+    /**
+     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getMilliDistanceToPreviousStandstill() {
         if (previousStandstill == null) {
             return 0;
         }
-        return getDistanceTo(previousStandstill);
+        return getMilliDistanceTo(previousStandstill);
     }
 
-    public int getDistanceTo(VrpStandstill standstill) {
-        return location.getDistance(standstill.getLocation());
+    /**
+     * @param standstill never null
+     * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
+     */
+    public int getMilliDistanceTo(VrpStandstill standstill) {
+        return location.getMilliDistance(standstill.getLocation());
     }
 
     /**

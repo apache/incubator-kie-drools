@@ -137,8 +137,8 @@
     <VrpTimeWindowedDepot id="30">
       <id>0</id>
       <location reference="3"/>
-      <readyTime>0</readyTime>
-      <dueTime>1236</dueTime>
+      <milliReadyTime>0</milliReadyTime>
+      <milliDueTime>1236000</milliDueTime>
     </VrpTimeWindowedDepot>
   </depotList>
   <vehicleList id="31">
@@ -202,70 +202,70 @@
                             <demand>10</demand>
                             <previousStandstill class="VrpTimeWindowedCustomer" reference="42"/>
                             <vehicle reference="32"/>
-                            <readyTime>912</readyTime>
-                            <dueTime>967</dueTime>
-                            <serviceDuration>90</serviceDuration>
-                            <arrivalTime>941</arrivalTime>
+                            <milliReadyTime>912000</milliReadyTime>
+                            <milliDueTime>967000</milliDueTime>
+                            <milliServiceDuration>90000</milliServiceDuration>
+                            <milliArrivalTime>940807</milliArrivalTime>
                           </nextCustomer>
                           <vehicle reference="32"/>
-                          <readyTime>825</readyTime>
-                          <dueTime>870</dueTime>
-                          <serviceDuration>90</serviceDuration>
-                          <arrivalTime>849</arrivalTime>
+                          <milliReadyTime>825000</milliReadyTime>
+                          <milliDueTime>870000</milliDueTime>
+                          <milliServiceDuration>90000</milliServiceDuration>
+                          <milliArrivalTime>848807</milliArrivalTime>
                         </nextCustomer>
                         <vehicle reference="32"/>
-                        <readyTime>727</readyTime>
-                        <dueTime>782</dueTime>
-                        <serviceDuration>90</serviceDuration>
-                        <arrivalTime>755</arrivalTime>
+                        <milliReadyTime>727000</milliReadyTime>
+                        <milliDueTime>782000</milliDueTime>
+                        <milliServiceDuration>90000</milliServiceDuration>
+                        <milliArrivalTime>755201</milliArrivalTime>
                       </nextCustomer>
                       <vehicle reference="32"/>
-                      <readyTime>621</readyTime>
-                      <dueTime>702</dueTime>
-                      <serviceDuration>90</serviceDuration>
-                      <arrivalTime>663</arrivalTime>
+                      <milliReadyTime>621000</milliReadyTime>
+                      <milliDueTime>702000</milliDueTime>
+                      <milliServiceDuration>90000</milliServiceDuration>
+                      <milliArrivalTime>662965</milliArrivalTime>
                     </nextCustomer>
                     <vehicle reference="32"/>
-                    <readyTime>534</readyTime>
-                    <dueTime>605</dueTime>
-                    <serviceDuration>90</serviceDuration>
-                    <arrivalTime>571</arrivalTime>
+                    <milliReadyTime>534000</milliReadyTime>
+                    <milliDueTime>605000</milliDueTime>
+                    <milliServiceDuration>90000</milliServiceDuration>
+                    <milliArrivalTime>570729</milliArrivalTime>
                   </nextCustomer>
                   <vehicle reference="32"/>
-                  <readyTime>448</readyTime>
-                  <dueTime>505</dueTime>
-                  <serviceDuration>90</serviceDuration>
-                  <arrivalTime>478</arrivalTime>
+                  <milliReadyTime>448000</milliReadyTime>
+                  <milliDueTime>505000</milliDueTime>
+                  <milliServiceDuration>90000</milliServiceDuration>
+                  <milliArrivalTime>477567</milliArrivalTime>
                 </nextCustomer>
                 <vehicle reference="32"/>
-                <readyTime>357</readyTime>
-                <dueTime>410</dueTime>
-                <serviceDuration>90</serviceDuration>
-                <arrivalTime>385</arrivalTime>
+                <milliReadyTime>357000</milliReadyTime>
+                <milliDueTime>410000</milliDueTime>
+                <milliServiceDuration>90000</milliServiceDuration>
+                <milliArrivalTime>384567</milliArrivalTime>
               </nextCustomer>
               <vehicle reference="32"/>
-              <readyTime>255</readyTime>
-              <dueTime>324</dueTime>
-              <serviceDuration>90</serviceDuration>
-              <arrivalTime>291</arrivalTime>
+              <milliReadyTime>255000</milliReadyTime>
+              <milliDueTime>324000</milliDueTime>
+              <milliServiceDuration>90000</milliServiceDuration>
+              <milliArrivalTime>290961</milliArrivalTime>
             </nextCustomer>
             <vehicle reference="32"/>
-            <readyTime>170</readyTime>
-            <dueTime>225</dueTime>
-            <serviceDuration>90</serviceDuration>
-            <arrivalTime>198</arrivalTime>
+            <milliReadyTime>170000</milliReadyTime>
+            <milliDueTime>225000</milliDueTime>
+            <milliServiceDuration>90000</milliServiceDuration>
+            <milliArrivalTime>198133</milliArrivalTime>
           </nextCustomer>
           <vehicle reference="32"/>
-          <readyTime>65</readyTime>
-          <dueTime>146</dueTime>
-          <serviceDuration>90</serviceDuration>
-          <arrivalTime>106</arrivalTime>
+          <milliReadyTime>65000</milliReadyTime>
+          <milliDueTime>146000</milliDueTime>
+          <milliServiceDuration>90000</milliServiceDuration>
+          <milliArrivalTime>106133</milliArrivalTime>
         </nextCustomer>
         <vehicle reference="32"/>
-        <readyTime>15</readyTime>
-        <dueTime>67</dueTime>
-        <serviceDuration>90</serviceDuration>
-        <arrivalTime>15</arrivalTime>
+        <milliReadyTime>15000</milliReadyTime>
+        <milliDueTime>67000</milliDueTime>
+        <milliServiceDuration>90000</milliServiceDuration>
+        <milliArrivalTime>15133</milliArrivalTime>
       </nextCustomer>
     </VrpVehicle>
     <VrpVehicle id="44">
@@ -378,40 +378,40 @@
                   <demand>20</demand>
                   <previousStandstill class="VrpTimeWindowedCustomer" reference="64"/>
                   <vehicle reference="59"/>
-                  <readyTime>914</readyTime>
-                  <dueTime>965</dueTime>
-                  <serviceDuration>90</serviceDuration>
-                  <arrivalTime>917</arrivalTime>
+                  <milliReadyTime>914000</milliReadyTime>
+                  <milliDueTime>965000</milliDueTime>
+                  <milliServiceDuration>90000</milliServiceDuration>
+                  <milliArrivalTime>917000</milliArrivalTime>
                 </nextCustomer>
                 <vehicle reference="59"/>
-                <readyTime>812</readyTime>
-                <dueTime>883</dueTime>
-                <serviceDuration>90</serviceDuration>
-                <arrivalTime>825</arrivalTime>
+                <milliReadyTime>812000</milliReadyTime>
+                <milliDueTime>883000</milliDueTime>
+                <milliServiceDuration>90000</milliServiceDuration>
+                <milliArrivalTime>825000</milliArrivalTime>
               </nextCustomer>
               <vehicle reference="59"/>
-              <readyTime>732</readyTime>
-              <dueTime>777</dueTime>
-              <serviceDuration>90</serviceDuration>
-              <arrivalTime>291</arrivalTime>
+              <milliReadyTime>732000</milliReadyTime>
+              <milliDueTime>777000</milliDueTime>
+              <milliServiceDuration>90000</milliServiceDuration>
+              <milliArrivalTime>291243</milliArrivalTime>
             </nextCustomer>
             <vehicle reference="59"/>
-            <readyTime>169</readyTime>
-            <dueTime>224</dueTime>
-            <serviceDuration>90</serviceDuration>
-            <arrivalTime>197</arrivalTime>
+            <milliReadyTime>169000</milliReadyTime>
+            <milliDueTime>224000</milliDueTime>
+            <milliServiceDuration>90000</milliServiceDuration>
+            <milliArrivalTime>197000</milliArrivalTime>
           </nextCustomer>
           <vehicle reference="59"/>
-          <readyTime>65</readyTime>
-          <dueTime>144</dueTime>
-          <serviceDuration>90</serviceDuration>
-          <arrivalTime>105</arrivalTime>
+          <milliReadyTime>65000</milliReadyTime>
+          <milliDueTime>144000</milliDueTime>
+          <milliServiceDuration>90000</milliServiceDuration>
+          <milliArrivalTime>105000</milliArrivalTime>
         </nextCustomer>
         <vehicle reference="59"/>
-        <readyTime>10</readyTime>
-        <dueTime>73</dueTime>
-        <serviceDuration>90</serviceDuration>
-        <arrivalTime>10</arrivalTime>
+        <milliReadyTime>10000</milliReadyTime>
+        <milliDueTime>73000</milliDueTime>
+        <milliServiceDuration>90000</milliServiceDuration>
+        <milliArrivalTime>10000</milliArrivalTime>
       </nextCustomer>
     </VrpVehicle>
     <VrpVehicle id="66">
@@ -474,52 +474,52 @@
                       <demand>20</demand>
                       <previousStandstill class="VrpTimeWindowedCustomer" reference="76"/>
                       <vehicle reference="69"/>
-                      <readyTime>652</readyTime>
-                      <dueTime>721</dueTime>
-                      <serviceDuration>90</serviceDuration>
-                      <arrivalTime>688</arrivalTime>
+                      <milliReadyTime>652000</milliReadyTime>
+                      <milliDueTime>721000</milliDueTime>
+                      <milliServiceDuration>90000</milliServiceDuration>
+                      <milliArrivalTime>687806</milliArrivalTime>
                     </nextCustomer>
                     <vehicle reference="69"/>
-                    <readyTime>567</readyTime>
-                    <dueTime>620</dueTime>
-                    <serviceDuration>90</serviceDuration>
-                    <arrivalTime>595</arrivalTime>
+                    <milliReadyTime>567000</milliReadyTime>
+                    <milliDueTime>620000</milliDueTime>
+                    <milliServiceDuration>90000</milliServiceDuration>
+                    <milliArrivalTime>594806</milliArrivalTime>
                   </nextCustomer>
                   <vehicle reference="69"/>
-                  <readyTime>475</readyTime>
-                  <dueTime>528</dueTime>
-                  <serviceDuration>90</serviceDuration>
-                  <arrivalTime>503</arrivalTime>
+                  <milliReadyTime>475000</milliReadyTime>
+                  <milliDueTime>528000</milliDueTime>
+                  <milliServiceDuration>90000</milliServiceDuration>
+                  <milliArrivalTime>502806</milliArrivalTime>
                 </nextCustomer>
                 <vehicle reference="69"/>
-                <readyTime>384</readyTime>
-                <dueTime>429</dueTime>
-                <serviceDuration>90</serviceDuration>
-                <arrivalTime>408</arrivalTime>
+                <milliReadyTime>384000</milliReadyTime>
+                <milliDueTime>429000</milliDueTime>
+                <milliServiceDuration>90000</milliServiceDuration>
+                <milliArrivalTime>407806</milliArrivalTime>
               </nextCustomer>
               <vehicle reference="69"/>
-              <readyTime>278</readyTime>
-              <dueTime>345</dueTime>
-              <serviceDuration>90</serviceDuration>
-              <arrivalTime>313</arrivalTime>
+              <milliReadyTime>278000</milliReadyTime>
+              <milliDueTime>345000</milliDueTime>
+              <milliServiceDuration>90000</milliServiceDuration>
+              <milliArrivalTime>312806</milliArrivalTime>
             </nextCustomer>
             <vehicle reference="69"/>
-            <readyTime>179</readyTime>
-            <dueTime>254</dueTime>
-            <serviceDuration>90</serviceDuration>
-            <arrivalTime>218</arrivalTime>
+            <milliReadyTime>179000</milliReadyTime>
+            <milliDueTime>254000</milliDueTime>
+            <milliServiceDuration>90000</milliServiceDuration>
+            <milliArrivalTime>217806</milliArrivalTime>
           </nextCustomer>
           <vehicle reference="69"/>
-          <readyTime>99</readyTime>
-          <dueTime>148</dueTime>
-          <serviceDuration>90</serviceDuration>
-          <arrivalTime>125</arrivalTime>
+          <milliReadyTime>99000</milliReadyTime>
+          <milliDueTime>148000</milliDueTime>
+          <milliServiceDuration>90000</milliServiceDuration>
+          <milliArrivalTime>124806</milliArrivalTime>
         </nextCustomer>
         <vehicle reference="69"/>
-        <readyTime>30</readyTime>
-        <dueTime>92</dueTime>
-        <serviceDuration>90</serviceDuration>
-        <arrivalTime>31</arrivalTime>
+        <milliReadyTime>30000</milliReadyTime>
+        <milliDueTime>92000</milliDueTime>
+        <milliServiceDuration>90000</milliServiceDuration>
+        <milliArrivalTime>30806</milliArrivalTime>
       </nextCustomer>
     </VrpVehicle>
     <VrpVehicle id="78">
@@ -570,5 +570,5 @@
     <VrpTimeWindowedCustomer reference="61"/>
     <VrpTimeWindowedCustomer reference="62"/>
   </customerList>
-  <score id="83">0hard/-633soft</score>
+  <score id="83">0hard/-632572soft</score>
 </VrpTimeWindowedSchedule>

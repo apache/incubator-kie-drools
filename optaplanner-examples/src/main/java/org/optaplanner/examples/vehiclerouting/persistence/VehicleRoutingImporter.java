@@ -120,7 +120,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             locationListSize = readIntegerValue("DIMENSION :");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE :");
             if (!edgeWeightType.equalsIgnoreCase("EUC_2D")) {
-                // Only Euclidean distance is implemented in VrpLocation.getDistance(VrpLocation)
+                // Only Euclidean distance is implemented in VrpLocation.getMilliDistance(VrpLocation)
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
             capacity = readIntegerValue("CAPACITY :");
@@ -309,21 +309,23 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 location.setLatitude(Double.parseDouble(lineTokens[1]));
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
                 locationList.add(location);
+                int demand = Integer.parseInt(lineTokens[3]);
+                int milliReadyTime = Integer.parseInt(lineTokens[4]) * 1000;
+                int milliDueTime = Integer.parseInt(lineTokens[5]) * 1000;
+                int milliServiceDuration = Integer.parseInt(lineTokens[6]) * 1000;
                 if (first) {
                     VrpTimeWindowedDepot depot = new VrpTimeWindowedDepot();
                     depot.setId(id);
                     depot.setLocation(location);
-                    int demand = Integer.parseInt(lineTokens[3]);
                     if (demand != 0) {
                         throw new IllegalArgumentException("The depot with id (" + id
                                 + ") has a demand (" + demand + ").");
                     }
-                    depot.setReadyTime(Integer.parseInt(lineTokens[4]));
-                    depot.setDueTime(Integer.parseInt(lineTokens[5]));
-                    int serviceDuration = Integer.parseInt(lineTokens[6]);
-                    if (serviceDuration != 0) {
+                    depot.setMilliReadyTime(milliReadyTime);
+                    depot.setMilliDueTime(milliDueTime);
+                    if (milliServiceDuration != 0) {
                         throw new IllegalArgumentException("The depot with id (" + id
-                                + ") has a serviceDuration (" + serviceDuration + ").");
+                                + ") has a milliServiceDuration (" + milliServiceDuration + ").");
                     }
                     depotList.add(depot);
                     first = false;
@@ -331,11 +333,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                     VrpTimeWindowedCustomer customer = new VrpTimeWindowedCustomer();
                     customer.setId(id);
                     customer.setLocation(location);
-                    int demand = Integer.parseInt(lineTokens[3]);
                     customer.setDemand(demand);
-                    customer.setReadyTime(Integer.parseInt(lineTokens[4]));
-                    customer.setDueTime(Integer.parseInt(lineTokens[5]));
-                    customer.setServiceDuration(Integer.parseInt(lineTokens[6]));
+                    customer.setMilliReadyTime(milliReadyTime);
+                    customer.setMilliDueTime(milliDueTime);
+                    customer.setMilliServiceDuration(milliServiceDuration);
                     // Notice that we leave the PlanningVariable properties on null
                     // Do not add a customer that has no demand
                     if (demand != 0) {

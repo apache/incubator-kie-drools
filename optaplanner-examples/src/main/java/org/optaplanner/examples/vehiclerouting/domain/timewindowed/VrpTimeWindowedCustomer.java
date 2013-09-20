@@ -22,43 +22,44 @@ import org.optaplanner.examples.vehiclerouting.domain.VrpCustomer;
 @XStreamAlias("VrpTimeWindowedCustomer")
 public class VrpTimeWindowedCustomer extends VrpCustomer {
 
-    private int readyTime;
-    private int dueTime;
-    private int serviceDuration;
+    // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
+    private int milliReadyTime;
+    private int milliDueTime;
+    private int milliServiceDuration;
 
     // Shadow variable
-    private Integer arrivalTime;
+    private Integer milliArrivalTime;
 
-    public int getReadyTime() {
-        return readyTime;
+    public int getMilliReadyTime() {
+        return milliReadyTime;
     }
 
-    public void setReadyTime(int readyTime) {
-        this.readyTime = readyTime;
+    public void setMilliReadyTime(int milliReadyTime) {
+        this.milliReadyTime = milliReadyTime;
     }
 
-    public int getDueTime() {
-        return dueTime;
+    public int getMilliDueTime() {
+        return milliDueTime;
     }
 
-    public void setDueTime(int dueTime) {
-        this.dueTime = dueTime;
+    public void setMilliDueTime(int milliDueTime) {
+        this.milliDueTime = milliDueTime;
     }
 
-    public int getServiceDuration() {
-        return serviceDuration;
+    public int getMilliServiceDuration() {
+        return milliServiceDuration;
     }
 
-    public void setServiceDuration(int serviceDuration) {
-        this.serviceDuration = serviceDuration;
+    public void setMilliServiceDuration(int milliServiceDuration) {
+        this.milliServiceDuration = milliServiceDuration;
     }
 
-    public Integer getArrivalTime() {
-        return arrivalTime;
+    public Integer getMilliArrivalTime() {
+        return milliArrivalTime;
     }
 
-    public void setArrivalTime(Integer arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setMilliArrivalTime(Integer milliArrivalTime) {
+        this.milliArrivalTime = milliArrivalTime;
     }
 
     // ************************************************************************
@@ -66,24 +67,24 @@ public class VrpTimeWindowedCustomer extends VrpCustomer {
     // ************************************************************************
 
     public String getTimeWindowLabel() {
-        return readyTime + "-" + dueTime;
+        return milliReadyTime + "-" + milliDueTime;
     }
 
     public Integer getDepartureTime() {
-        if (arrivalTime == null) {
+        if (milliArrivalTime == null) {
             return null;
         }
-        return Math.max(arrivalTime, readyTime) + serviceDuration;
+        return Math.max(milliArrivalTime, milliReadyTime) + milliServiceDuration;
     }
 
     public boolean isArrivalBeforeReadyTime() {
-        return arrivalTime != null
-                && arrivalTime < readyTime;
+        return milliArrivalTime != null
+                && milliArrivalTime < milliReadyTime;
     }
 
     public boolean isArrivalAfterDueTime() {
-        return arrivalTime != null
-                && dueTime < arrivalTime;
+        return milliArrivalTime != null
+                && milliDueTime < milliArrivalTime;
     }
 
     @Override
