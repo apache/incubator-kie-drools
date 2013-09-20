@@ -41,14 +41,14 @@ public class VehicleRoutingPerformanceTest extends SolverPerformanceTest {
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveModel_a2_1() {
-        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/A-n33-k6.xml");
+    public void solveModel_cvrp_32customers() {
+        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrp-32customers.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-750soft");
     }
 
     @Test(timeout = 600000)
-    public void solveModel_a2_1FastAssert() {
-        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/A-n33-k6.xml");
+    public void solveModel_cvrp_32customersFastAssert() {
+        File unsolvedDataFile = new File("data/vehiclerouting/unsolved/cvrp-32customers.xml");
         runSpeedTest(unsolvedDataFile, "0hard/-770soft", EnvironmentMode.FAST_ASSERT);
     }
 
