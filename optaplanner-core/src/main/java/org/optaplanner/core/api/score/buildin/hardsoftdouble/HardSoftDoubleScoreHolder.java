@@ -18,9 +18,12 @@ package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
+ * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
+ * Use {@link HardSoftBigDecimalScoreHolder} instead.
  * @see HardSoftDoubleScore
  */
 public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {

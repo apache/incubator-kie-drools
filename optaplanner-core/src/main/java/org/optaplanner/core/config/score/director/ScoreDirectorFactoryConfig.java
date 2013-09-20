@@ -370,10 +370,18 @@ public class ScoreDirectorFactoryConfig {
     public static enum ScoreDefinitionType {
         SIMPLE,
         SIMPLE_LONG,
+        /**
+         * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
+         * Use {@link #SIMPLE_BIG_DECIMAL} instead.
+         */
         SIMPLE_DOUBLE,
         SIMPLE_BIG_DECIMAL,
         HARD_SOFT,
         HARD_SOFT_LONG,
+        /**
+         * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
+         * Use {@link #HARD_SOFT_BIG_DECIMAL} instead.
+         */
         HARD_SOFT_DOUBLE,
         HARD_SOFT_BIG_DECIMAL,
         HARD_MEDIUM_SOFT,

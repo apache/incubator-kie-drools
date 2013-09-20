@@ -25,9 +25,9 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
  * This {@link Score} is based on 2 levels of double constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
  * <p/>
- * Warning: Summing 2 doubles can cause a rounding error, which can cause score corruption.
+ * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
  * For example, this prints false: <code>System.out.println((0.01 + 0.05) == (0.01 + 0.02 + 0.03));</code>
- * Use {@link HardSoftBigDecimalScore} to avoid such problems.
+ * Use {@link HardSoftBigDecimalScore} instead.
  * <p/>
  * This class is immutable.
  * @see Score

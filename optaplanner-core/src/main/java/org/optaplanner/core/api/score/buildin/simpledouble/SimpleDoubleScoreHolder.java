@@ -21,6 +21,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
 
 /**
+ * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
+ * Use {@link SimpleDoubleScoreHolder} instead.
  * @see SimpleDoubleScore
  */
 public class SimpleDoubleScoreHolder extends AbstractScoreHolder {

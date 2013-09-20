@@ -171,8 +171,8 @@
       3 oranges).</para>
 
       <para>To implement pareto scoring in Planner, <link linkend="customScore">implement a custom
-      <literal>ScoreDefinition</literal> and <literal>Score</literal></link>. Future versions will provide
-      out-of-the-box support.</para>
+      <literal>ScoreDefinition</literal> and <literal>Score</literal></link> (and replace the
+      <literal>BestSolutionRecaller</literal>). Future versions will provide out-of-the-box support.</para>
 
       <note>
         <para>A pareto <literal>Score</literal>'s method <literal>compareTo</literal> is not transitive because it does
@@ -206,9 +206,9 @@
 }</programlisting>
 
       <para>The <literal>Score</literal> implementation to use depends on your use case. Your score might not
-      efficiently fit in a single <literal>double</literal> value. Planner has several build-in Score implementations,
-      but you can implement a custom Score too. Most use cases will just use the build-in
-      <literal>HardSoftScore</literal>.</para>
+      efficiently fit in a single <literal>long</literal> value. Planner has several build-in <literal>Score</literal>
+      implementations, but you can implement a custom <literal>Score</literal> too. Most use cases tend to use the
+      build-in <literal>HardSoftScore</literal>.</para>
 
       <mediaobject>
         <imageobject>
@@ -224,9 +224,18 @@
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
+    </section>
 
-      <para>As for all calculations with a computer, choose the correct type. Don't use a <literal>double</literal> for
-      financial data.</para>
+    <section xml:id="avoidFloatingPointNumbersInScoreCalculation">
+      <title>Avoid floating point numbers in score calculation</title>
+
+      <para>Avoid the use of <literal>float</literal> and <literal>double</literal> for score calculation. Use
+      <literal>BigDecimal</literal> instead.</para>
+
+      <para>Floating point numbers (<literal>float</literal> and <literal>double</literal>) cannot represent a decimal
+      number correctly. For example: a <literal>double</literal> cannot hold the value <literal>0.05</literal>
+      correctly. Instead, it holds the nearest representable value. Arithmetic (including addition and subtraction) with
+      floating point numbers, especially for planning problems, leads to incorrect decisions:</para>
 
       <mediaobject>
         <imageobject>
@@ -234,8 +243,23 @@
         </imageobject>
       </mediaobject>
 
-      <para>Based on your score constraints and score level requirements, you'll choose a certain
-      <literal>ScoreDefinition</literal>:</para>
+      <para>Additionally, floating point number addition is not associative:</para>
+
+      <programlisting language="java">System.out.println( ((0.01 + 0.02) + 0.03) == (0.01 + (0.02 + 0.03)) ); // returns false</programlisting>
+
+      <para>This leads to <emphasis>score corruption</emphasis>.</para>
+
+      <para>Decimal numbers (<literal>BigDecimal</literal>) have none of these problems.</para>
+
+      <note>
+        <para>BigDecimal arithmetic is considerably slower than <literal>int</literal>, <literal>long</literal> or
+        <literal>double</literal> arithmetic. In experiments we've seen the average calculation count get divided by
+        5.</para>
+
+        <para>Therefore, in some cases, it can be worthwhile to multiply <emphasis>all</emphasis> numbers for a single
+        score weight by a plural of ten (for example <literal>1000</literal>), so the score weight fits in an
+        <literal>int</literal> or <literal>long</literal>.</para>
+      </note>
     </section>
   </section>
 
@@ -266,7 +290,8 @@
 
         <listitem>
           <para><literal>SIMPLE_DOUBLE</literal>: Uses <literal>SimpleDoubleScore</literal> which has a
-          <literal>double</literal> value instead of an <literal>int</literal> value.</para>
+          <literal>double</literal> value instead of an <literal>int</literal> value. <link
+          linkend="avoidFloatingPointNumbersInScoreCalculation">Not recommended to use.</link></para>
         </listitem>
 
         <listitem>
@@ -297,7 +322,8 @@
 
         <listitem>
           <para><literal>HARD_SOFT_DOUBLE</literal>: Uses <literal>HardSoftDoubleScore</literal> which has
-          <literal>double</literal> values instead of <literal>int</literal> values.</para>
+          <literal>double</literal> values instead of <literal>int</literal> values. <link
+          linkend="avoidFloatingPointNumbersInScoreCalculation">Not recommended to use.</link></para>
         </listitem>
 
         <listitem>
@@ -806,7 +832,7 @@
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
 
           <note>
-            <para>To be able to define your score rules in Drools Workbench, you'll want to: </para>
+            <para>To be able to define your score rules in Drools Workbench, you'll want to:</para>
 
             <orderedlist>
               <listitem>
@@ -1053,10 +1079,10 @@ end</programlisting>
       <title>Build-in hard constraint</title>
 
       <para>Instead of implementing a hard constraint, you can sometimes make it build-in too. For example: If
-      <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRangeProvider on
-      Solution, the <literal>Solver</literal> will often try to assign it to <literal>Room</literal> X too (only to find
-      out that it breaks a hard constraint). Use <link linkend="filteredSelection">filtered selection</link> to define
-      that Course A should only be assigned a <literal>Room</literal> other than X.</para>
+      <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses ValueRangeProvider
+      on Solution, the <literal>Solver</literal> will often try to assign it to <literal>Room</literal> X too (only to
+      find out that it breaks a hard constraint). Use <link linkend="filteredSelection">filtered selection</link> to
+      define that Course A should only be assigned a <literal>Room</literal> other than X.</para>
 
       <para>This tends to give a good performance gain, not just because the score calculation is faster, but mainly
       because most optimization algorithms will spend less time evaluating unfeasible solutions.</para>
