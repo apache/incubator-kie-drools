@@ -26,4 +26,5 @@ public interface ReleaseId {
     String getArtifactId();
     String getVersion();
     String toExternalForm();
+    boolean isSnapshot();
 }
