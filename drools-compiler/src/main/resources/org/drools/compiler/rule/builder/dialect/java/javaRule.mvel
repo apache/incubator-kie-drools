@@ -1,7 +1,7 @@
 @declare{"returnValueMethod"}
 public static org.drools.core.spi.FieldValue @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
-                                                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
+                                                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
     return org.drools.core.base.FieldFactory.getInstance().getFieldValue( @{text} );
 }
 @end{}
@@ -9,14 +9,14 @@ public static org.drools.core.spi.FieldValue @{methodName}(@foreach{declr : decl
 @declare{"predicateMethod"}
 public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{localDeclarations != empty && declarations != empty},@end{}
                                                       @foreach{declr : localDeclarations } @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && (localDeclarations != empty || declarations != empty)},@end{}
-                                                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
+                                                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
     return ( @{text} );
 }
 @end{}
 
 @declare{"evalMethod"}
 public static boolean @{methodName}(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier} @end{","} @if{globals != empty && declarations != empty},@end{}
-                                    @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws Exception {
+                                    @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","} ) throws java.lang.Exception {
     return ( @{text} );
 }
 @end{}
@@ -38,7 +38,7 @@ public static class @{className} implements java.io.Serializable {
 
     public void init(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
                      @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
-                     ) throws Exception {
+                     ) throws java.lang.Exception {
         @{initCode}
     }
     
@@ -49,7 +49,7 @@ public static class @{className} implements java.io.Serializable {
                            @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}@if{innerDeclarations != empty},@end{}
                            @foreach{declr : innerDeclarations}@{declr.extractor.extractToClassName} @{declr.identifier}@end{","}
-                           ) throws Exception {
+                           ) throws java.lang.Exception {
         @if{supportsReverse == "true"}
         this.reverseMap.put( Integer.valueOf( handle.getId() ),
                              new ReverseSnapshot(
@@ -64,7 +64,7 @@ public static class @{className} implements java.io.Serializable {
                            org.drools.core.common.InternalFactHandle handle,
                            Object object@if{globals != empty},@end{}
                            @foreach{type : globalTypes, identifier : globals} @{type} @{identifier} @end{","}
-                           ) throws Exception {
+                           ) throws java.lang.Exception {
         @if{supportsReverse == "true"}
         ReverseSnapshot snapshot = (ReverseSnapshot) this.reverseMap.remove( Integer.valueOf( handle.getId() ) );
         @foreach{declr : declarations}@{declr.typeName} @{declr.identifier} = snapshot.@{declr.identifier};@end{}
@@ -75,7 +75,7 @@ public static class @{className} implements java.io.Serializable {
     
     public Object getResult(@foreach{declr : declarations} @{declr.typeName} @{declr.identifier}@end{","}@if{globals != empty && declarations != empty},@end{}
                             @foreach{type : globalTypes, identifier : globals}@{type} @{identifier} @end{","}
-                           ) throws Exception {
+                           ) throws java.lang.Exception {
         return ( @{resultCode} );
     }
     
@@ -100,20 +100,20 @@ public static class @{className} implements java.io.Serializable {
 @end{}
 
 @declare{"consequenceMethod"}
-public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.core.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
+public static void @{methodName}(KnowledgeHelper drools@if{declarations != empty},@end{} @foreach{declr : declarations} @{declr.typeName} @{declr.identifier}, org.drools.core.FactHandle @{declr.identifier}__Handle__ @end{","}@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} ) throws java.lang.Exception { org.kie.api.runtime.rule.RuleContext kcontext = drools;
     @{text}
 }
 @end{}
 
 @declare{"actionMethod"}
-public static void @{methodName}(KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","}, ProcessContext context ) throws Exception {
+public static void @{methodName}(KnowledgeHelper drools@if{globals != empty},@end{} @foreach{type :globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","}, ProcessContext context ) throws java.lang.Exception {
     org.kie.api.runtime.process.ProcessContext kcontext = context;
     @{text}
 }
 @end{}
 
 @declare{"returnValueEvaluatorMethod"}
-public static Object @{methodName}(ProcessContext context@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws Exception {
+public static Object @{methodName}(ProcessContext context@if{globals != empty},@end{} @foreach{type : globalTypes, identifier : globals}  @{type} @{identifier} @end{","} @if{variables != empty},@end{} @foreach{type2 :variableTypes, identifier2 : variables}  @{type2} @{identifier2} @end{","} ) throws java.lang.Exception {
     org.kie.api.runtime.process.ProcessContext kcontext = context;
     @{text}
 }
