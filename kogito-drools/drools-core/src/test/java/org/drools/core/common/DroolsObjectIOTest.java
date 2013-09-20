@@ -32,6 +32,7 @@ import java.io.Serializable;
 
 import static org.junit.Assert.*;
 
+import org.drools.core.rule.Rule;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Package;
@@ -155,5 +156,20 @@ public class DroolsObjectIOTest {
 
         buf = serialize(pkg);
         assertEquals(deserialize(buf), pkg);
+    }
+
+    @Test
+    public void testRuleStreamingWithCalendar() throws Exception {
+        // DROOLS-260
+        Rule rule = new Rule("test");
+
+        rule.setCalendars(new String[] {"mycalendar"});
+        byte[] buf = marshal(rule);
+        Rule retrievedRule = (Rule)unmarshal(buf);
+        assertNotNull(retrievedRule);
+        assertNotNull(retrievedRule.getCalendars());
+        assertEquals(1, retrievedRule.getCalendars().length);
+        assertEquals("mycalendar", retrievedRule.getCalendars()[0]);
+
     }
 }
