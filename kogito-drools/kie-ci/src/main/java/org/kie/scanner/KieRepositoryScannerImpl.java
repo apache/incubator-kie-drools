@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieModule;
@@ -87,6 +88,14 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         Artifact artifact = resolver.resolveArtifact(artifactName);
         return artifact != null ? buildArtifact(releaseId, artifact, resolver) : loadPomArtifact(releaseId);
     }
+
+    public String getArtifactVersion(ReleaseId releaseId) {
+        if (!releaseId.isSnapshot()) {
+            return releaseId.getVersion();
+        }
+        Artifact artifact = getArtifactResolver().resolveArtifact(releaseId.toString());
+        return artifact != null ? artifact.getVersion() : null;
+    }
     
     private KieModule loadPomArtifact(ReleaseId releaseId) {
         ArtifactResolver resolver = getResolverFor(releaseId, false);
@@ -101,6 +110,9 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private InternalKieModule buildArtifact(ReleaseId releaseId, Artifact artifact, ArtifactResolver resolver) {
+        if (releaseId.isSnapshot()) {
+            ((ReleaseIdImpl)releaseId).setSnapshotVersion(artifact.getVersion());
+        }
         ZipKieModule kieModule = createZipKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, resolver, resolver.getArtifactDependecies(new DependencyDescriptor(artifact).toString()));

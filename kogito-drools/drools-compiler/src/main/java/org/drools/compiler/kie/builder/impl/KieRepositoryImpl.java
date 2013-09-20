@@ -46,13 +46,18 @@ public class KieRepositoryImpl
 
     public static final KieRepository INSTANCE = new KieRepositoryImpl();
 
-    private final KieModuleRepo kieModuleRepo = new KieModuleRepo();
+    private final KieModuleRepo kieModuleRepo;
+
+    private InternalKieScanner internalKieScanner;
+
+    public KieRepositoryImpl() {
+        internalKieScanner = getInternalKieScanner();
+        kieModuleRepo = new KieModuleRepo(internalKieScanner);
+    }
 
     private final AtomicReference<ReleaseId> defaultGAV = new AtomicReference(new ReleaseIdImpl(DEFAULT_GROUP,
             DEFAULT_ARTIFACT,
             DEFAULT_VERSION));
-
-    private InternalKieScanner internalKieScanner;
 
     public void setDefaultGAV(ReleaseId releaseId) {
         this.defaultGAV.set(releaseId);
@@ -122,10 +127,6 @@ public class KieRepositoryImpl
             implements
             InternalKieScanner {
 
-        public KieModule loadArtifact(ReleaseId releaseId) {
-            return null;
-        }
-
         public void start(long pollingInterval) {
         }
 
@@ -138,7 +139,15 @@ public class KieRepositoryImpl
         public void setKieContainer(KieContainer kieContainer) {
         }
 
+        public KieModule loadArtifact(ReleaseId releaseId) {
+            return null;
+        }
+
         public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
+            return null;
+        }
+
+        public String getArtifactVersion(ReleaseId releaseId) {
             return null;
         }
     }
@@ -195,8 +204,13 @@ public class KieRepositoryImpl
 
     private static class KieModuleRepo {
 
+        private final InternalKieScanner kieScanner;
         private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new HashMap<String, TreeMap<ComparableVersion, KieModule>>();
         private final Map<ReleaseId, KieModule> oldKieModules = new HashMap<ReleaseId, KieModule>();
+
+        private KieModuleRepo(InternalKieScanner kieScanner) {
+            this.kieScanner = kieScanner;
+        }
 
         void store(KieModule kieModule) {
             ReleaseId releaseId = kieModule.getReleaseId();
@@ -225,12 +239,23 @@ public class KieRepositoryImpl
         KieModule load(ReleaseId releaseId, VersionRange versionRange) {
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
             TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
-            if (artifactMap == null) {
+            if ( artifactMap == null ) {
                 return null;
             }
 
             if (versionRange.fixed) {
-                return artifactMap.get(new ComparableVersion(releaseId.getVersion()));
+                KieModule kieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
+                if ( kieModule != null && releaseId.isSnapshot() ) {
+                    String oldSnapshotVersion = ((ReleaseIdImpl)kieModule.getReleaseId()).getSnapshotVersion();
+                    String currentSnapshotVersion = kieScanner.getArtifactVersion(releaseId);
+                    if ( oldSnapshotVersion != null && currentSnapshotVersion != null &&
+                         new ComparableVersion(currentSnapshotVersion).compareTo(new ComparableVersion(oldSnapshotVersion)) > 0) {
+                        // if the snapshot currently available on the maven repo is newer than the cached one
+                        // return null to enforce the building of this newer version
+                        return null;
+                    }
+                }
+                return kieModule;
             }
 
             if (versionRange.upperBound == null) {
@@ -241,11 +266,11 @@ public class KieRepositoryImpl
                     artifactMap.ceilingEntry(new ComparableVersion(versionRange.upperBound)) :
                     artifactMap.lowerEntry(new ComparableVersion(versionRange.upperBound));
 
-            if (entry == null) {
+            if ( entry == null ) {
                 return null;
             }
 
-            if (versionRange.lowerBound == null) {
+            if ( versionRange.lowerBound == null ) {
                 return entry.getValue();
             }
 

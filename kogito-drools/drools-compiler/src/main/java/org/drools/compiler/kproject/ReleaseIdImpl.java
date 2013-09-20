@@ -12,6 +12,8 @@ public class ReleaseIdImpl implements ReleaseId {
     private final String artifactId;
     private final String version;
 
+    private String snapshotVersion;
+
     public ReleaseIdImpl(String releaseId) {
         String[] split = releaseId.split(":");
         this.groupId = split[0];
@@ -60,6 +62,10 @@ public class ReleaseIdImpl implements ReleaseId {
         //return "META-INF/maven/" + groupId + "/" + artifactId + "/";
         return "META-INF/";
     }
+
+    public boolean isSnapshot() {
+        return version.endsWith("-SNAPSHOT");
+    }
     
     public static ReleaseId fromPropertiesString(String string) {
         Properties props = new Properties();
@@ -100,5 +106,13 @@ public class ReleaseIdImpl implements ReleaseId {
         result = 31 * result + (artifactId != null ? artifactId.hashCode() : 0);
         result = 31 * result + (version != null ? version.hashCode() : 0);
         return result;
+    }
+
+    public String getSnapshotVersion() {
+        return snapshotVersion;
+    }
+
+    public void setSnapshotVersion(String snapshotVersion) {
+        this.snapshotVersion = snapshotVersion;
     }
 }
