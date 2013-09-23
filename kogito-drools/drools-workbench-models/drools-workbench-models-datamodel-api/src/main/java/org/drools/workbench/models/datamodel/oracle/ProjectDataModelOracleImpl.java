@@ -2,6 +2,7 @@ package org.drools.workbench.models.datamodel.oracle;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -59,7 +60,7 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     protected Map<String, Boolean> projectCollectionTypes = new HashMap<String, Boolean>();
 
     // List of available rule names
-    private List<String> ruleNames = new ArrayList<String>();
+    private Map<String, Collection<String>> ruleNames = new HashMap<String, Collection<String>>();
 
     // List of available package names
     private List<String> packageNames = new ArrayList<String>();
@@ -775,13 +776,27 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
         return this.projectCollectionTypes;
     }
 
-    public void addRuleNames(List<String> ruleNames) {
-        this.ruleNames.addAll(ruleNames);
+    public void addRuleNames(String packageName, Collection<String> ruleNames) {
+        this.ruleNames.put(packageName, ruleNames);
+    }
+
+    @Override
+    public Map<String, Collection<String>> getRuleNamesMap() {
+        return ruleNames;
     }
 
     @Override
     public List<String> getRuleNames() {
-        return ruleNames;
+        List<String> allTheRuleNames = new ArrayList<String>();
+        for (String packageName : ruleNames.keySet()) {
+            allTheRuleNames.addAll(ruleNames.get(packageName));
+        }
+        return allTheRuleNames;
+    }
+
+    @Override
+    public Collection<String> getRuleNamesForPackage(String packageName) {
+        return ruleNames.get(packageName);
     }
 
     public void addPackageNames(List<String> packageNames) {
