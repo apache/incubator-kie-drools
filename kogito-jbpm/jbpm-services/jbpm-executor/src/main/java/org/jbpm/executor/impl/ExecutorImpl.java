@@ -26,8 +26,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.entities.RequestInfo;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * Additionally executor can be disable to not start at all when system property org.kie.executor.disabled is 
  * set to true
  */
-@Singleton
+@ApplicationScoped
 @Transactional
 public class ExecutorImpl implements Executor {
 

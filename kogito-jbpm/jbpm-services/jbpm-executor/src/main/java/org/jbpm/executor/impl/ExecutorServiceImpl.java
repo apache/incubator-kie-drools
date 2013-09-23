@@ -21,8 +21,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import org.jboss.seam.transaction.Transactional;
 import org.kie.commons.services.cdi.Startup;
@@ -41,7 +41,7 @@ import org.kie.internal.executor.api.STATUS;
  *
  */
 @Startup
-@Singleton
+@ApplicationScoped
 @Transactional
 public class ExecutorServiceImpl implements ExecutorService {
     @Inject
