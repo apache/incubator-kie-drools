@@ -16,6 +16,7 @@
 
 package org.drools.workbench.models.commons.shared.oracle;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +33,11 @@ public interface ProjectDataModelOracle {
     //Fact and Field related methods
     String[] getFactTypes();
 
+    Map<String,Collection<String>> getRuleNamesMap();
+
     List<String> getRuleNames();
+
+    Collection<String> getRuleNamesForPackage(String packageName);
 
     String getFactNameFromType( final String classType );
 
