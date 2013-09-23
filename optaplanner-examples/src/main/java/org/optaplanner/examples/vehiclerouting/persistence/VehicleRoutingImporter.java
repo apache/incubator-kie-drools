@@ -193,7 +193,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private void createBasicVehicleList() throws IOException {
             String inputFileName = inputFile.getName();
-            if (inputFileName.toLowerCase().startsWith("demo")) {
+            if (inputFileName.toLowerCase().startsWith("tutorial")) {
                 vehicleListSize = readIntegerValue("VEHICLES :");
             } else {
                 String inputFileNameRegex = "^.+\\-k(\\d+)\\.vrp$";

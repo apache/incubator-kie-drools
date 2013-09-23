@@ -205,7 +205,7 @@
 
             <entry>&lt;= <literal>134</literal></entry>
 
-            <entry>&lt;= <literal>144</literal></entry>
+            <entry>&lt;= <literal>141</literal></entry>
 
             <entry>&lt;= <literal>10^285</literal></entry>
 
@@ -221,11 +221,11 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>&lt;= <literal>?</literal></entry>
+            <entry>&lt;= <literal>250</literal></entry>
 
-            <entry>&lt;= <literal>?</literal></entry>
+            <entry>&lt;= <literal>1250</literal></entry>
 
-            <entry>&lt;= <literal>?</literal></entry>
+            <entry>&lt;= <literal>10^3000</literal></entry>
 
             <entry>Unrealistic</entry>
           </row>
@@ -460,9 +460,9 @@
 64queens  has  64 queens with a search space of 10^115.
 256queens has 256 queens with a search space of 10^616.</programlisting>
 
-        <para>The implementation of the N queens example has not been optimized because it functions as a
-        beginner example. Nevertheless, it can easily handle 64 queens. With a few changes it has been shown to easily
-        handle 5000 queens and more.</para>
+        <para>The implementation of the N queens example has not been optimized because it functions as a beginner
+        example. Nevertheless, it can easily handle 64 queens. With a few changes it has been shown to easily handle
+        5000 queens and more.</para>
       </section>
 
       <section>
@@ -876,12 +876,56 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
           </imageobject>
         </mediaobject>
 
-        <para>The capacitated vehicle routing problem (CRVP) is defined by <link
+        <para>Besides the basic case (CVRP), there is also a variant with time windows (CVRPTW).</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Vehicle capacity: a vehicle cannot carry more items then its capacity.</para>
+          </listitem>
+
+          <listitem>
+            <para>Time windows (only in CVRPTW):</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Travel time: Traveling from one location to another takes time.</para>
+              </listitem>
+
+              <listitem>
+                <para>Customer service duration: a vehicle must stay at the customer for the length of the service
+                duration.</para>
+              </listitem>
+
+              <listitem>
+                <para>Customer ready time: a vehicle may arrive before the customer's ready time, but it must wait until
+                the ready time before servicing.</para>
+              </listitem>
+
+              <listitem>
+                <para>Customer due time: a vehicle must arrive in time, before the customer's due time.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Total distance: minimize the total distance driven (fuel consumption) of all vehicles.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The capacitated vehicle routing problem (CVRP) and it's timewindowed variant (CVRPTW) are defined by <link
         xlink:href="http://neo.lcc.uma.es/vrp/">the VRP web</link>.</para>
       </section>
 
       <section>
         <title>Problem size</title>
+
+        <para>CVRP instances (without time windows):</para>
 
         <programlisting>A-n32-k5  has 1 depots,  5 vehicles and  31 customers with a search space of  10^46.
 A-n33-k5  has 1 depots,  5 vehicles and  32 customers with a search space of  10^48.
@@ -913,6 +957,51 @@ A-n80-k10 has 1 depots, 10 vehicles and  79 customers with a search space of 10^
 F-n135-k7 has 1 depots,  7 vehicles and 134 customers with a search space of 10^285.
 F-n45-k4  has 1 depots,  4 vehicles and  44 customers with a search space of  10^72.
 F-n72-k4  has 1 depots,  4 vehicles and  71 customers with a search space of 10^131.</programlisting>
+
+        <para>CVRPTW instances (with time windows):</para>
+
+        <programlisting>Solomon_025_C101       has 1 depots,  25 vehicles and   25 customers with a search space of   10^34.
+Solomon_025_C201       has 1 depots,  25 vehicles and   25 customers with a search space of   10^34.
+Solomon_025_R101       has 1 depots,  25 vehicles and   25 customers with a search space of   10^34.
+Solomon_025_R201       has 1 depots,  25 vehicles and   25 customers with a search space of   10^34.
+Solomon_025_RC101      has 1 depots,  25 vehicles and   25 customers with a search space of   10^34.
+Solomon_025_RC201      has 1 depots,  25 vehicles and   25 customers with a search space of   10^34.
+Solomon_100_C101       has 1 depots,  25 vehicles and  100 customers with a search space of  10^200.
+Solomon_100_C201       has 1 depots,  25 vehicles and  100 customers with a search space of  10^200.
+Solomon_100_R101       has 1 depots,  25 vehicles and  100 customers with a search space of  10^200.
+Solomon_100_R201       has 1 depots,  25 vehicles and  100 customers with a search space of  10^200.
+Solomon_100_RC101      has 1 depots,  25 vehicles and  100 customers with a search space of  10^200.
+Solomon_100_RC201      has 1 depots,  25 vehicles and  100 customers with a search space of  10^200.
+Homberger_0200_C1_2_1  has 1 depots,  50 vehicles and  200 customers with a search space of  10^460.
+Homberger_0200_C2_2_1  has 1 depots,  50 vehicles and  200 customers with a search space of  10^460.
+Homberger_0200_R1_2_1  has 1 depots,  50 vehicles and  200 customers with a search space of  10^460.
+Homberger_0200_R2_2_1  has 1 depots,  50 vehicles and  200 customers with a search space of  10^460.
+Homberger_0200_RC1_2_1 has 1 depots,  50 vehicles and  200 customers with a search space of  10^460.
+Homberger_0200_RC2_2_1 has 1 depots,  50 vehicles and  200 customers with a search space of  10^460.
+Homberger_0400_C1_4_1  has 1 depots, 100 vehicles and  400 customers with a search space of 10^1040.
+Homberger_0400_C2_4_1  has 1 depots, 100 vehicles and  400 customers with a search space of 10^1040.
+Homberger_0400_R1_4_1  has 1 depots, 100 vehicles and  400 customers with a search space of 10^1040.
+Homberger_0400_R2_4_1  has 1 depots, 100 vehicles and  400 customers with a search space of 10^1040.
+Homberger_0400_RC1_4_1 has 1 depots, 100 vehicles and  400 customers with a search space of 10^1040.
+Homberger_0400_RC2_4_1 has 1 depots, 100 vehicles and  400 customers with a search space of 10^1040.
+Homberger_0600_C1_6_1  has 1 depots, 150 vehicles and  600 customers with a search space of 10^1666.
+Homberger_0600_C2_6_1  has 1 depots, 150 vehicles and  600 customers with a search space of 10^1666.
+Homberger_0600_R1_6_1  has 1 depots, 150 vehicles and  600 customers with a search space of 10^1666.
+Homberger_0600_R2_6_1  has 1 depots, 150 vehicles and  600 customers with a search space of 10^1666.
+Homberger_0600_RC1_6_1 has 1 depots, 150 vehicles and  600 customers with a search space of 10^1666.
+Homberger_0600_RC2_6_1 has 1 depots, 150 vehicles and  600 customers with a search space of 10^1666.
+Homberger_0800_C1_8_1  has 1 depots, 200 vehicles and  800 customers with a search space of 10^2322.
+Homberger_0800_C2_8_1  has 1 depots, 200 vehicles and  800 customers with a search space of 10^2322.
+Homberger_0800_R1_8_1  has 1 depots, 200 vehicles and  800 customers with a search space of 10^2322.
+Homberger_0800_R2_8_1  has 1 depots, 200 vehicles and  800 customers with a search space of 10^2322.
+Homberger_0800_RC1_8_1 has 1 depots, 200 vehicles and  800 customers with a search space of 10^2322.
+Homberger_0800_RC2_8_1 has 1 depots, 200 vehicles and  800 customers with a search space of 10^2322.
+Homberger_1000_C110_1  has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
+Homberger_1000_C210_1  has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
+Homberger_1000_R110_1  has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
+Homberger_1000_R210_1  has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
+Homberger_1000_RC110_1 has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
+Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.</programlisting>
       </section>
     </section>
 
