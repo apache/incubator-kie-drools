@@ -222,7 +222,7 @@ public class QueuedEntityPlacerTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA1);
         assertAllCodesOfIterator(placementIterator.next().iterator(),
-                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9");
+                "a->1+a->8", "a->1+a->9", "a->2+a->8", "a->2+a->9", "a->3+a->8", "a->3+a->9");
         placer.stepEnded(stepScopeA1);
 
         assertEquals(true, placementIterator.hasNext());
@@ -230,7 +230,7 @@ public class QueuedEntityPlacerTest {
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         placer.stepStarted(stepScopeA2);
         assertAllCodesOfIterator(placementIterator.next().iterator(),
-                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
+                "b->1+b->8", "b->1+b->9", "b->2+b->8", "b->2+b->9", "b->3+b->8", "b->3+b->9");
         placer.stepEnded(stepScopeA2);
 
         assertEquals(false, placementIterator.hasNext());

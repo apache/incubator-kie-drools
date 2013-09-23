@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.nullable.TestdataNullableEntity;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -38,7 +39,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNull;
 
 public class InitializedValueSelectorTest {
 
@@ -67,7 +67,7 @@ public class InitializedValueSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
-        runAsserts(valueSelector, e1, "v1", null, "v3");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, e1, PlannerAssert.DO_NOT_ASSERT_SIZE, "v1", null, "v3");
         e1.setValue(v1);
         valueSelector.stepEnded(stepScopeA1);
 
@@ -102,14 +102,14 @@ public class InitializedValueSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
-        runAsserts(valueSelector, a1, "a0");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, a1, PlannerAssert.DO_NOT_ASSERT_SIZE, "a0");
         a1.setChainedObject(a0);
         valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA2);
-        runAsserts(valueSelector, a2, "a0", "a1");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, a2, PlannerAssert.DO_NOT_ASSERT_SIZE, "a0", "a1");
         a2.setChainedObject(a1);
         valueSelector.stepEnded(stepScopeA2);
 
@@ -122,13 +122,13 @@ public class InitializedValueSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB1);
-        runAsserts(valueSelector, a1, "a0", "a1", "a2");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, a1, PlannerAssert.DO_NOT_ASSERT_SIZE, "a0", "a1", "a2");
         valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB2);
-        runAsserts(valueSelector, a2, "a0", "a1", "a2");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, a2, PlannerAssert.DO_NOT_ASSERT_SIZE, "a0", "a1", "a2");
         valueSelector.stepEnded(stepScopeB2);
 
         valueSelector.phaseEnded(phaseScopeB);
@@ -137,23 +137,6 @@ public class InitializedValueSelectorTest {
 
         verifySolverPhaseLifecycle(childValueSelector, 1, 2, 4);
         verify(childValueSelector, times(4)).iterator(any());
-    }
-
-    private void runAsserts(ValueSelector valueSelector, TestdataObject entity, String... valueCodes) {
-        Iterator<Object> iterator = valueSelector.iterator(entity);
-        assertNotNull(iterator);
-        for (String valueCode : valueCodes) {
-            assertTrue(iterator.hasNext());
-            Object next = iterator.next();
-            if (valueCode == null) {
-                assertNull(next);
-            } else {
-                assertCode(valueCode, next);
-            }
-        }
-        assertFalse(iterator.hasNext());
-        assertEquals(false, valueSelector.isContinuous());
-        assertEquals(false, valueSelector.isNeverEnding());
     }
 
 }

@@ -26,12 +26,14 @@ import org.mockito.stubbing.Answer;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.step.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
@@ -76,7 +78,7 @@ public class SameValuePillarSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
-        runAssertsOriginal1(pillarSelector);
+        assertAllCodesOfPillarSelector(pillarSelector, "[a]", "[b, d]", "[c, e, f]");
         pillarSelector.stepEnded(stepScopeA1);
 
         b.setValue(val3);
@@ -85,7 +87,7 @@ public class SameValuePillarSelectorTest {
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
-        runAssertsOriginal2(pillarSelector);
+        assertAllCodesOfPillarSelector(pillarSelector, "[a]", "[b, c, e]", "[d]", "[f]");
         pillarSelector.stepEnded(stepScopeA2);
 
         pillarSelector.phaseEnded(phaseScopeA);
@@ -97,7 +99,7 @@ public class SameValuePillarSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
-        runAssertsOriginal2(pillarSelector);
+        assertAllCodesOfPillarSelector(pillarSelector, "[a]", "[b, c, e]", "[d]", "[f]");
         pillarSelector.stepEnded(stepScopeB1);
 
         pillarSelector.phaseEnded(phaseScopeB);
@@ -105,31 +107,6 @@ public class SameValuePillarSelectorTest {
         pillarSelector.solvingEnded(solverScope);
 
         verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
-    }
-
-    private void runAssertsOriginal1(SameValuePillarSelector pillarSelector) {
-        Iterator<List<Object>> iterator = pillarSelector.iterator();
-        assertNotNull(iterator);
-        assertNextPillar(iterator, "a");
-        assertNextPillar(iterator, "b", "d");
-        assertNextPillar(iterator, "c", "e", "f");
-        assertFalse(iterator.hasNext());
-        assertEquals(false, pillarSelector.isContinuous());
-        assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(3L, pillarSelector.getSize());
-    }
-
-    private void runAssertsOriginal2(SameValuePillarSelector pillarSelector) {
-        Iterator<List<Object>> iterator = pillarSelector.iterator();
-        assertNotNull(iterator);
-        assertNextPillar(iterator, "a");
-        assertNextPillar(iterator, "b", "c", "e");
-        assertNextPillar(iterator, "d");
-        assertNextPillar(iterator, "f");
-        assertFalse(iterator.hasNext());
-        assertEquals(false, pillarSelector.isContinuous());
-        assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(4L, pillarSelector.getSize());
     }
 
     @Test
@@ -155,13 +132,13 @@ public class SameValuePillarSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
-        runAssertsEmptyOriginal(pillarSelector);
+        assertAllCodesOfPillarSelector(pillarSelector);
         pillarSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
-        runAssertsEmptyOriginal(pillarSelector);
+        assertAllCodesOfPillarSelector(pillarSelector);
         pillarSelector.stepEnded(stepScopeA2);
 
         pillarSelector.phaseEnded(phaseScopeA);
@@ -173,7 +150,7 @@ public class SameValuePillarSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
-        runAssertsEmptyOriginal(pillarSelector);
+        assertAllCodesOfPillarSelector(pillarSelector);
         pillarSelector.stepEnded(stepScopeB1);
 
         pillarSelector.phaseEnded(phaseScopeB);
@@ -183,24 +160,11 @@ public class SameValuePillarSelectorTest {
         verifySolverPhaseLifecycle(entitySelector, 1, 2, 3);
     }
 
-    private void runAssertsEmptyOriginal(SameValuePillarSelector pillarSelector) {
-        Iterator<List<Object>> iterator = pillarSelector.iterator();
-        assertNotNull(iterator);
-        assertFalse(iterator.hasNext());
+    private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
+        assertAllCodesOfIterator(pillarSelector.iterator(), codes);
         assertEquals(false, pillarSelector.isContinuous());
         assertEquals(false, pillarSelector.isNeverEnding());
-        assertEquals(0L, pillarSelector.getSize());
-    }
-
-    private void assertNextPillar(Iterator<List<Object>> iterator, String... entityCodes) {
-        assertTrue(iterator.hasNext());
-        List<Object> pillar = iterator.next();
-        String message = "Expected entityCodes (" + Arrays.toString(entityCodes)
-                + ") but received pillar (" + pillar + ").";
-        assertEquals(message, entityCodes.length, pillar.size());
-        for (int i = 0; i < entityCodes.length; i++) {
-            assertCode(message, entityCodes[i], pillar.get(i));
-        }
+        assertEquals(codes.length, pillarSelector.getSize());
     }
 
 }

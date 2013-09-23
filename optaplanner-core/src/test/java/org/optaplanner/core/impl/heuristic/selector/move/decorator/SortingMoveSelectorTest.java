@@ -84,13 +84,13 @@ public class SortingMoveSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfMoveSelector(moveSelector, "apr", "feb", "jan", "jun", "mar", "may");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfMoveSelector(moveSelector, "apr", "feb", "jan", "jun", "mar", "may");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -102,19 +102,19 @@ public class SortingMoveSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfMoveSelector(moveSelector, "apr", "feb", "jan", "jun", "mar", "may");
         moveSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB2);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfMoveSelector(moveSelector, "apr", "feb", "jan", "jun", "mar", "may");
         moveSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         moveSelector.stepStarted(stepScopeB3);
-        runAsserts(moveSelector, cacheType);
+        assertAllCodesOfMoveSelector(moveSelector, "apr", "feb", "jan", "jun", "mar", "may");
         moveSelector.stepEnded(stepScopeB3);
 
         moveSelector.phaseEnded(phaseScopeB);
@@ -124,27 +124,6 @@ public class SortingMoveSelectorTest {
         verifySolverPhaseLifecycle(childMoveSelector, 1, 2, 5);
         verify(childMoveSelector, times(timesCalled)).iterator();
         verify(childMoveSelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(MoveSelector moveSelector, SelectionCacheType cacheType) {
-        Iterator<Move> iterator = moveSelector.iterator();
-        assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("apr", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("feb", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("jan", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("jun", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("mar", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("may", iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(false, moveSelector.isContinuous());
-        assertEquals(false, moveSelector.isNeverEnding());
-        assertEquals(6L, moveSelector.getSize());
     }
 
 }

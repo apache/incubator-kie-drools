@@ -17,15 +17,20 @@
 package org.optaplanner.core.impl.testdata.util;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
 import org.mockito.Matchers;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
+import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.move.CompositeMove;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
@@ -88,7 +93,16 @@ public class PlannerAssert extends Assert {
         } else if (o instanceof ChangeMove) {
             ChangeMove changeMove = (ChangeMove) o;
             final String code = convertToCodeAssertable(changeMove.getEntity()).getCode()
-                    + "=>" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
+                    + "->" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
+            return new CodeAssertable() {
+                public String getCode() {
+                    return code;
+                }
+            };
+        } else if (o instanceof SwapMove) {
+            SwapMove swapMove = (SwapMove) o;
+            final String code = convertToCodeAssertable(swapMove.getLeftEntity()).getCode()
+                    + "<->" + convertToCodeAssertable(swapMove.getRightEntity()).getCode();
             return new CodeAssertable() {
                 public String getCode() {
                     return code;
@@ -106,13 +120,44 @@ public class PlannerAssert extends Assert {
                     return code;
                 }
             };
+        } else if (o instanceof List) {
+            List list = (List) o;
+            StringBuilder codeBuilder = new StringBuilder("[");
+            boolean firstElement = true;
+            for (Object element : list) {
+                if (firstElement) {
+                    firstElement = false;
+                } else {
+                    codeBuilder.append(", ");
+                }
+                codeBuilder.append(convertToCodeAssertable(element).getCode());
+            }
+            codeBuilder.append("]");
+            final String code = codeBuilder.toString();
+            return new CodeAssertable() {
+                public String getCode() {
+                    return code;
+                }
+            };
+        } else if (o instanceof SubChain) {
+            SubChain subChain = (SubChain) o;
+            final String code = convertToCodeAssertable(subChain.getEntityList()).getCode();
+            return new CodeAssertable() {
+                public String getCode() {
+                    return code;
+                }
+            };
         }
         throw new AssertionError(("o's class (" + o.getClass() + ") cannot be converted to CodeAssertable."));
     }
 
     public static void assertCode(String expectedCode, Object o) {
-        CodeAssertable codeAssertable = convertToCodeAssertable(o);
-        assertCode(expectedCode, codeAssertable);
+        if (expectedCode == null) {
+            assertNull(o);
+        } else {
+            CodeAssertable codeAssertable = convertToCodeAssertable(o);
+            assertCode(expectedCode, codeAssertable);
+        }
     }
 
     public static void assertCode(String message, String expectedCode, Object o) {
@@ -196,6 +241,19 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
+        assertAllCodesOfPillarSelector(pillarSelector, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, long size, String... codes) {
+        assertAllCodesOfIterator(pillarSelector.iterator(), codes);
+        assertEquals(false, pillarSelector.isContinuous());
+        assertEquals(false, pillarSelector.isNeverEnding());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, pillarSelector.getSize());
+        }
+    }
+
     public static void assertAllCodesOfValueSelector(EntityIndependentValueSelector valueSelector,
             String... codes) {
         assertAllCodesOfValueSelector(valueSelector, (long) codes.length, codes);
@@ -223,6 +281,21 @@ public class PlannerAssert extends Assert {
         assertEquals(false, valueSelector.isNeverEnding());
         if (size != DO_NOT_ASSERT_SIZE) {
             assertEquals(size, valueSelector.getSize(entity));
+        }
+    }
+
+    public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector,
+            String... codes) {
+        assertAllCodesOfSubChainSelector(subChainSelector, (long) codes.length, codes);
+    }
+
+    public static void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, long size,
+            String... codes) {
+        assertAllCodesOfIterator(subChainSelector.iterator(), codes);
+        assertEquals(false, subChainSelector.isContinuous());
+        assertEquals(false, subChainSelector.isNeverEnding());
+        if (size != DO_NOT_ASSERT_SIZE) {
+            assertEquals(size, subChainSelector.getSize());
         }
     }
 

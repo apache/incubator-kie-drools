@@ -81,13 +81,13 @@ public class FilteringEntitySelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         entitySelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         entitySelector.stepStarted(stepScopeA2);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         entitySelector.stepEnded(stepScopeA2);
 
         entitySelector.phaseEnded(phaseScopeA);
@@ -99,19 +99,19 @@ public class FilteringEntitySelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB1);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         entitySelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB2);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         entitySelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         entitySelector.stepStarted(stepScopeB3);
-        runAsserts(entitySelector, cacheType);
+        assertAllCodesOfEntitySelector(entitySelector, (cacheType.isNotCached() ? 4L : 3L), "e1", "e2", "e4");
         entitySelector.stepEnded(stepScopeB3);
 
         entitySelector.phaseEnded(phaseScopeB);
@@ -121,21 +121,6 @@ public class FilteringEntitySelectorTest {
         verifySolverPhaseLifecycle(childEntitySelector, 1, 2, 5);
         verify(childEntitySelector, times(timesCalled)).iterator();
         verify(childEntitySelector, times(timesCalled)).getSize();
-    }
-
-    private void runAsserts(EntitySelector entitySelector, SelectionCacheType cacheType) {
-        Iterator<Object> iterator = entitySelector.iterator();
-        assertNotNull(iterator);
-        assertTrue(iterator.hasNext());
-        assertCode("e1", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e2", iterator.next());
-        assertTrue(iterator.hasNext());
-        assertCode("e4", iterator.next());
-        assertFalse(iterator.hasNext());
-        assertEquals(false, entitySelector.isContinuous());
-        assertEquals(false, entitySelector.isNeverEnding());
-        assertEquals((cacheType.isNotCached() ? 4L : 3L), entitySelector.getSize());
     }
 
 }

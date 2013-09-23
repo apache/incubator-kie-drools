@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.value.chained;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -37,9 +36,6 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertFalse;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNotNull;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertTrue;
 
 public class DefaultSubChainSelectorTest {
 
@@ -81,7 +77,13 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
-        runAssertsOriginal1(subChainSelector);
+        assertAllCodesOfSubChainSelector(subChainSelector,
+                "[a1]", "[a1, a2]", "[a1, a2, a3]", "[a1, a2, a3, a4]",
+                "[a2]", "[a2, a3]", "[a2, a3, a4]",
+                "[a3]", "[a3, a4]",
+                "[a4]",
+                "[b1]", "[b1, b2]",
+                "[b2]");
         subChainSelector.stepEnded(stepScopeA1);
 
         a4.setChainedObject(a2);
@@ -91,7 +93,13 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
-        runAssertsOriginal2(subChainSelector);
+        assertAllCodesOfSubChainSelector(subChainSelector,
+                "[a1]", "[a1, a2]", "[a1, a2, a4]",
+                "[a2]", "[a2, a4]",
+                "[a4]",
+                "[b1]", "[b1, a3]", "[b1, a3, b2]",
+                "[a3]", "[a3, b2]",
+                "[b2]");
         subChainSelector.stepEnded(stepScopeA2);
 
         subChainSelector.phaseEnded(phaseScopeA);
@@ -103,7 +111,13 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
-        runAssertsOriginal2(subChainSelector);
+        assertAllCodesOfSubChainSelector(subChainSelector,
+                "[a1]", "[a1, a2]", "[a1, a2, a4]",
+                "[a2]", "[a2, a4]",
+                "[a4]",
+                "[b1]", "[b1, a3]", "[b1, a3, b2]",
+                "[a3]", "[a3, b2]",
+                "[b2]");
         subChainSelector.stepEnded(stepScopeB1);
 
         subChainSelector.phaseEnded(phaseScopeB);
@@ -111,49 +125,6 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.solvingEnded(solverScope);
 
         verifySolverPhaseLifecycle(valueSelector, 1, 2, 3);
-    }
-
-    private void runAssertsOriginal1(DefaultSubChainSelector subChainSelector) {
-        Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
-        assertNextSubChain(iterator, "a1");
-        assertNextSubChain(iterator, "a1", "a2");
-        assertNextSubChain(iterator, "a1", "a2", "a3");
-        assertNextSubChain(iterator, "a1", "a2", "a3", "a4");
-        assertNextSubChain(iterator, "a2");
-        assertNextSubChain(iterator, "a2", "a3");
-        assertNextSubChain(iterator, "a2", "a3", "a4");
-        assertNextSubChain(iterator, "a3");
-        assertNextSubChain(iterator, "a3", "a4");
-        assertNextSubChain(iterator, "a4");
-        assertNextSubChain(iterator, "b1");
-        assertNextSubChain(iterator, "b1", "b2");
-        assertNextSubChain(iterator, "b2");
-        assertFalse(iterator.hasNext());
-        assertEquals(false, subChainSelector.isContinuous());
-        assertEquals(false, subChainSelector.isNeverEnding());
-        assertEquals(13L, subChainSelector.getSize());
-    }
-
-    private void runAssertsOriginal2(DefaultSubChainSelector subChainSelector) {
-        Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
-        assertNextSubChain(iterator, "a1");
-        assertNextSubChain(iterator, "a1", "a2");
-        assertNextSubChain(iterator, "a1", "a2", "a4");
-        assertNextSubChain(iterator, "a2");
-        assertNextSubChain(iterator, "a2", "a4");
-        assertNextSubChain(iterator, "a4");
-        assertNextSubChain(iterator, "b1");
-        assertNextSubChain(iterator, "b1", "a3");
-        assertNextSubChain(iterator, "b1", "a3", "b2");
-        assertNextSubChain(iterator, "a3");
-        assertNextSubChain(iterator, "a3", "b2");
-        assertNextSubChain(iterator, "b2");
-        assertFalse(iterator.hasNext());
-        assertEquals(false, subChainSelector.isContinuous());
-        assertEquals(false, subChainSelector.isNeverEnding());
-        assertEquals(12L, subChainSelector.getSize());
     }
 
     @Test
@@ -187,13 +158,13 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
-        runAssertsEmptyOriginal(subChainSelector);
+        assertAllCodesOfSubChainSelector(subChainSelector);
         subChainSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA2);
-        runAssertsEmptyOriginal(subChainSelector);
+        assertAllCodesOfSubChainSelector(subChainSelector);
         subChainSelector.stepEnded(stepScopeA2);
 
         subChainSelector.phaseEnded(phaseScopeA);
@@ -205,7 +176,7 @@ public class DefaultSubChainSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         subChainSelector.stepStarted(stepScopeB1);
-        runAssertsEmptyOriginal(subChainSelector);
+        assertAllCodesOfSubChainSelector(subChainSelector);
         subChainSelector.stepEnded(stepScopeB1);
 
         subChainSelector.phaseEnded(phaseScopeB);
@@ -215,13 +186,11 @@ public class DefaultSubChainSelectorTest {
         verifySolverPhaseLifecycle(valueSelector, 1, 2, 3);
     }
 
-    private void runAssertsEmptyOriginal(DefaultSubChainSelector subChainSelector) {
-        Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
-        assertFalse(iterator.hasNext());
+    private void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, String... codes) {
+        assertAllCodesOfIterator(subChainSelector.iterator(), codes);
         assertEquals(false, subChainSelector.isContinuous());
         assertEquals(false, subChainSelector.isNeverEnding());
-        assertEquals(0L, subChainSelector.getSize());
+        assertEquals(codes.length, subChainSelector.getSize());
     }
 
     @Test
@@ -263,18 +232,8 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
 
-        Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
-        assertNextSubChain(iterator, "a1", "a2");
-        assertNextSubChain(iterator, "a1", "a2", "a3");
-        assertNextSubChain(iterator, "a2", "a3");
-        assertNextSubChain(iterator, "a2", "a3", "a4");
-        assertNextSubChain(iterator, "a3", "a4");
-        assertNextSubChain(iterator, "b1", "b2");
-        assertFalse(iterator.hasNext());
-        assertEquals(false, subChainSelector.isContinuous());
-        assertEquals(false, subChainSelector.isNeverEnding());
-        assertEquals(6L, subChainSelector.getSize());
+        assertAllCodesOfSubChainSelector(subChainSelector,
+                "[a1, a2]", "[a1, a2, a3]", "[a2, a3]", "[a2, a3, a4]", "[a3, a4]", "[b1, b2]");
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -324,14 +283,7 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
 
-        Iterator<SubChain> iterator = subChainSelector.iterator();
-        assertNotNull(iterator);
-        assertNextSubChain(iterator, "a1", "a2", "a3");
-        assertNextSubChain(iterator, "a2", "a3", "a4");
-        assertFalse(iterator.hasNext());
-        assertEquals(false, subChainSelector.isContinuous());
-        assertEquals(false, subChainSelector.isNeverEnding());
-        assertEquals(2L, subChainSelector.getSize());
+        assertAllCodesOfSubChainSelector(subChainSelector, "[a1, a2, a3]", "[a2, a3, a4]");
 
         subChainSelector.stepEnded(stepScopeA1);
 
@@ -340,18 +292,6 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.solvingEnded(solverScope);
 
         verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
-    }
-
-    private void assertNextSubChain(Iterator<SubChain> iterator, String... entityCodes) {
-        assertTrue(iterator.hasNext());
-        SubChain subChain = iterator.next();
-        List<Object> entityList = subChain.getEntityList();
-        String message = "Expected entityCodes (" + Arrays.toString(entityCodes)
-                + ") but received entityList (" + entityList + ").";
-        assertEquals(message, entityCodes.length, entityList.size());
-        for (int i = 0; i < entityCodes.length; i++) {
-            assertCode(message, entityCodes[i], entityList.get(i));
-        }
     }
 
     @Test
@@ -390,7 +330,7 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
 
-        iterateAndCollectAndAssert(subChainSelector,
+        assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
                 new SubChain(Arrays.<Object>asList(a1)),
                 new SubChain(Arrays.<Object>asList(a2)),
                 new SubChain(Arrays.<Object>asList(a3)),
@@ -447,7 +387,7 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
 
-        iterateAndCollectAndAssert(subChainSelector,
+        assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
                 new SubChain(Arrays.<Object>asList(a1, a2)),
                 new SubChain(Arrays.<Object>asList(a2, a3)),
                 new SubChain(Arrays.<Object>asList(a3, a4)),
@@ -499,7 +439,7 @@ public class DefaultSubChainSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         subChainSelector.stepStarted(stepScopeA1);
 
-        iterateAndCollectAndAssert(subChainSelector,
+        assertContainsCodesOfNeverEndingSubChainSelector(subChainSelector,
                 new SubChain(Arrays.<Object>asList(a1, a2, a3)),
                 new SubChain(Arrays.<Object>asList(a2, a3, a4)));
 
@@ -512,7 +452,8 @@ public class DefaultSubChainSelectorTest {
         verifySolverPhaseLifecycle(valueSelector, 1, 1, 1);
     }
 
-    private void iterateAndCollectAndAssert(DefaultSubChainSelector subChainSelector, SubChain... subChains) {
+    private void assertContainsCodesOfNeverEndingSubChainSelector(
+            DefaultSubChainSelector subChainSelector, SubChain... subChains) {
         Iterator<SubChain> iterator = subChainSelector.iterator();
         assertNotNull(iterator);
         int selectionSize = subChains.length;

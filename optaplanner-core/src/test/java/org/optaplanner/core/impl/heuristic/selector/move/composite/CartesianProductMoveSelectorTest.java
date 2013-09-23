@@ -418,16 +418,16 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertAllCodesOfMoveSelector(moveSelector, DO_NOT_ASSERT_SIZE,
-                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9",
-                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
+                "a->1+a->8", "a->1+a->9", "a->2+a->8", "a->2+a->9", "a->3+a->8", "a->3+a->9",
+                "b->1+b->8", "b->1+b->9", "b->2+b->8", "b->2+b->9", "b->3+b->8", "b->3+b->9");
         moveSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
         assertAllCodesOfMoveSelector(moveSelector, DO_NOT_ASSERT_SIZE,
-                "a=>1+a=>8", "a=>1+a=>9", "a=>2+a=>8", "a=>2+a=>9", "a=>3+a=>8", "a=>3+a=>9",
-                "b=>1+b=>8", "b=>1+b=>9", "b=>2+b=>8", "b=>2+b=>9", "b=>3+b=>8", "b=>3+b=>9");
+                "a->1+a->8", "a->1+a->9", "a->2+a->8", "a->2+a->9", "a->3+a->8", "a->3+a->9",
+                "b->1+b->8", "b->1+b->9", "b->2+b->8", "b->2+b->9", "b->3+b->8", "b->3+b->9");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
@@ -484,7 +484,7 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 24L,
-                "a=>1+a=>8", "a=>2+a=>9", "a=>3+a=>8", "b=>1+a=>9", "b=>2+b=>8", "b=>3+b=>9");
+                "a->1+a->8", "a->2+a->9", "a->3+a->8", "b->1+a->9", "b->2+b->8", "b->3+b->9");
         moveSelector.stepEnded(stepScopeA1);
 
         moveSelector.phaseEnded(phaseScopeA);
