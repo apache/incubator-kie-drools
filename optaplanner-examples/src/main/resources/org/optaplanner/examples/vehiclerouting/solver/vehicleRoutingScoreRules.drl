@@ -79,16 +79,3 @@ rule "arrivalAfterDueTime"
     then
         scoreHolder.addHardConstraintMatch(kcontext, $milliDueTime - $milliArrivalTime.intValue());
 end
-
-// ############################################################################
-// TimeWindowed: extra soft constraints
-// ############################################################################
-
-// Many external benchmark records tend to ignore this constraint.
-// That heavily affects the attainable score.
-rule "arrivalBeforeReadyTime"
-    when
-        TimeWindowedCustomer(milliArrivalTime < milliReadyTime, $milliReadyTime : milliReadyTime, $milliArrivalTime : milliArrivalTime)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, $milliArrivalTime.intValue() - $milliReadyTime);
-end

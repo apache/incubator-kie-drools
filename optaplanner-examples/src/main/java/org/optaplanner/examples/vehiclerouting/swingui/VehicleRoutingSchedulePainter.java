@@ -220,9 +220,8 @@ public class VehicleRoutingSchedulePainter {
             if (!score.isFeasible()) {
                 totalDistanceString = "Not feasible";
             } else {
-                double fuelTime = ((double) - score.getSoftScore()) / 1000.0;
-                totalDistanceString = NUMBER_FORMAT.format(fuelTime)
-                        + ((schedule instanceof TimeWindowedVehicleRoutingSolution) ? " time" : " fuel");
+                double fuel = ((double) - score.getSoftScore()) / 1000.0;
+                totalDistanceString = NUMBER_FORMAT.format(fuel) + " fuel";
             }
             g.setFont( g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(totalDistanceString,

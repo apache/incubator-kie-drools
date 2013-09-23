@@ -54,18 +54,11 @@ public class VehicleRoutingSimpleScoreCalculator implements SimpleScoreCalculato
                 }
                 if (timeWindowed) {
                     TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
-                    int milliReadyTime = timeWindowedCustomer.getMilliReadyTime();
                     int milliDueTime = timeWindowedCustomer.getMilliDueTime();
                     Integer milliArrivalTime = timeWindowedCustomer.getMilliArrivalTime();
                     if (milliDueTime < milliArrivalTime) {
                         // Score constraint arrivalAfterDueTime
                         hardScore -= (milliArrivalTime - milliDueTime);
-                    }
-                    if (milliArrivalTime < milliReadyTime) {
-                        // Score constraint arrivalBeforeReadyTime
-                        // Many external benchmark records tend to ignore this constraint.
-                        // That heavily affects the attainable score.
-                        softScore -= (milliReadyTime - milliArrivalTime);
                     }
                 }
             }

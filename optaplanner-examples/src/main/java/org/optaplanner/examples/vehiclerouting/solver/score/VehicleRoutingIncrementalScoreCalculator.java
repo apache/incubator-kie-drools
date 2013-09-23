@@ -193,17 +193,10 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     private void insertMilliArrivalTime(TimeWindowedCustomer customer) {
         Integer milliArrivalTime = customer.getMilliArrivalTime();
         if (milliArrivalTime != null) {
-            int milliReadyTime = customer.getMilliReadyTime();
             int milliDueTime = customer.getMilliDueTime();
             if (milliDueTime < milliArrivalTime) {
                 // Score constraint arrivalAfterDueTime
                 hardScore -= (milliArrivalTime - milliDueTime);
-            }
-            if (milliArrivalTime < milliReadyTime) {
-                // Score constraint arrivalBeforeReadyTime
-                // Many external benchmark records tend to ignore this constraint.
-                // That heavily affects the attainable score.
-                softScore -= (milliReadyTime - milliArrivalTime);
             }
         }
     }
@@ -211,17 +204,10 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     private void retractMilliArrivalTime(TimeWindowedCustomer customer) {
         Integer milliArrivalTime = customer.getMilliArrivalTime();
         if (milliArrivalTime != null) {
-            int milliReadyTime = customer.getMilliReadyTime();
             int milliDueTime = customer.getMilliDueTime();
             if (milliDueTime < milliArrivalTime) {
                 // Score constraint arrivalAfterDueTime
                 hardScore += (milliArrivalTime - milliDueTime);
-            }
-            if (milliArrivalTime < milliReadyTime) {
-                // Score constraint arrivalBeforeReadyTime
-                // Many external benchmark records tend to ignore this constraint.
-                // That heavily affects the attainable score.
-                softScore += (milliReadyTime - milliArrivalTime);
             }
         }
     }
