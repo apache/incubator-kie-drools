@@ -147,6 +147,10 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
         return new ProcessInstanceAdapter(delegate.getProcessInstance(processInstanceId));
     }
 
+    public ProcessInstance getProcessInstance(long processInstanceId, boolean readonly) {
+        return new ProcessInstanceAdapter(delegate.getProcessInstance(processInstanceId, readonly));
+    }
+
     public void abortProcessInstance(long processInstanceId) {
         delegate.abortProcessInstance(processInstanceId);
     }
