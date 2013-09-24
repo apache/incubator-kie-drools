@@ -33,8 +33,8 @@ public class UpdateCommand
     private static final long serialVersionUID = 3255044102543531497L;
     
     private DisconnectedFactHandle handle;
-    private Object     object;
-    private String     entryPoint;
+    private Object object;
+    private String entryPoint = "DEFAULT";
     
     public UpdateCommand() {
     }
@@ -58,6 +58,9 @@ public class UpdateCommand
     }
 
     public void setEntryPoint(String entryPoint) {
+    	if (entryPoint == null) {
+    		entryPoint = "DEFAULT";
+    	}
         this.entryPoint = entryPoint;
     }
 
