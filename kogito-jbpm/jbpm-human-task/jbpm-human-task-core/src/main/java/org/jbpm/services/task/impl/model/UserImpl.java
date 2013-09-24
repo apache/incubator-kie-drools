@@ -20,11 +20,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.kie.api.task.model.User;
 
 @Entity
+@DiscriminatorValue("User")
 public class UserImpl extends OrganizationalEntityImpl implements User {
     
     public UserImpl() {
