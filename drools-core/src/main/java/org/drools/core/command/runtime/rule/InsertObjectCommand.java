@@ -137,6 +137,9 @@ public class InsertObjectCommand
     }
 
     public void setEntryPoint(String entryPoint) {
+    	if (entryPoint == null) {
+    		entryPoint = "DEFAULT";
+    	}
         this.entryPoint = entryPoint;
     }
 
