@@ -55,7 +55,7 @@ public class InsertElementsCommand
     private boolean returnObject = true;
     
     @XmlAttribute(name="entry-point")
-    private String entryPoint;
+    private String entryPoint = "DEFAULT";
 
     public InsertElementsCommand() {
         this.objects = new ArrayList<Object>();
@@ -125,6 +125,9 @@ public class InsertElementsCommand
     }
 
     public void setEntryPoint(String entryPoint) {
+    	if (entryPoint == null) {
+    		entryPoint = "DEFAULT";
+    	}
         this.entryPoint = entryPoint;
     }
 
