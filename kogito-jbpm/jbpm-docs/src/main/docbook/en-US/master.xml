@@ -37,4 +37,6 @@
   <xi:include href="Chapter-4-API/API.xml" />
   <xi:include href="Chapter-5-CoreEngine/CoreEngine.xml" />
   <xi:include href="Chapter-6-BPMN2/BPMN2.xml" />
+  <xi:include href="Chapter-7-Persistence/Persistence.xml" />
+  <xi:include href="Chapter-8-Examples/Examples.xml" />
 </book>
