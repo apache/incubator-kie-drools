@@ -1,9 +1,11 @@
 package org.jbpm.services.task.identity;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -24,15 +26,35 @@ import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.Reassignment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractUserGroupCallbackDecorator {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractUserGroupCallbackDecorator.class);
 
     @Inject 
     private JbpmServicesPersistenceManager pm;
     @Inject
     private UserGroupCallback userGroupCallback;
     private Map<String, Boolean> userGroupsMap = new HashMap<String, Boolean>();
+    
+    private List<String> restrictedGroups = new ArrayList<String>();
 
+    public AbstractUserGroupCallbackDecorator() {
+        try {
+            InputStream in = this.getClass().getResourceAsStream("/restricted-groups.properties");
+            if (in != null) {
+                Properties props = new Properties();
+                props.load(in);
+                
+                restrictedGroups.addAll(props.stringPropertyNames());
+            }
+        } catch (Exception e) {
+            logger.warn("Error when loading restricted groups for human task service {}", e.getMessage());
+        }
+    }
+    
     public void setPm(JbpmServicesPersistenceManager pm) {
         this.pm = pm;
     }
@@ -48,7 +70,7 @@ public class AbstractUserGroupCallbackDecorator {
         doCallbackGroupsOperation(userId, groupIds);
         List<String> allGroupIds = null;
 
-        return userGroupCallback.getGroupsForUser(userId, groupIds, allGroupIds);
+        return filterGroups(userGroupCallback.getGroupsForUser(userId, groupIds, allGroupIds));
 
     }
 
@@ -64,7 +86,7 @@ public class AbstractUserGroupCallbackDecorator {
 
     protected boolean doCallbackGroupOperation(String groupId) {
 
-        if (groupId != null && userGroupCallback.existsGroup(groupId)) {
+        if (groupId != null && userGroupCallback.existsGroup(groupId) && !restrictedGroups.contains(groupId)) {
             addGroupFromCallbackOperation(groupId);
             return true;
         }
@@ -87,7 +109,7 @@ public class AbstractUserGroupCallbackDecorator {
 
             if (groupIds != null && groupIds.size() > 0) {
 
-                List<String> userGroups = userGroupCallback.getGroupsForUser(userId, groupIds, null);
+                List<String> userGroups = filterGroups(userGroupCallback.getGroupsForUser(userId, groupIds, null));
                 for (String groupId : groupIds) {
 
                     if (userGroupCallback.existsGroup(groupId) && userGroups != null && userGroups.contains(groupId)) {
@@ -96,7 +118,7 @@ public class AbstractUserGroupCallbackDecorator {
                 }
             } else {
                 if (!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) {
-                    List<String> userGroups = userGroupCallback.getGroupsForUser(userId, null, null);
+                    List<String> userGroups = filterGroups(userGroupCallback.getGroupsForUser(userId, null, null));
                     if (userGroups != null && userGroups.size() > 0) {
                         for (String group : userGroups) {
                             addGroupFromCallbackOperation(group);
@@ -407,4 +429,12 @@ public class AbstractUserGroupCallbackDecorator {
             }
         }
     }
+     
+     protected List<String> filterGroups(List<String> groups) {
+         if (groups != null) {
+             groups.removeAll(restrictedGroups);
+         }
+         
+         return groups;
+     }
 }

@@ -1,4 +1,4 @@
 usersgroups = [ 
-				new User('sales-rep') : [new Group( "Crusaders" )]
+				new User('sales-rep') : [new Group( "Crusaders" ),  new Group( "analyst" )]
               ];       
 return usersgroups;
