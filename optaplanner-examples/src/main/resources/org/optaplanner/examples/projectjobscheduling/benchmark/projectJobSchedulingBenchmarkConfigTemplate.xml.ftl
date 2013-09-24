@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/projectjobscheduling/template</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <warmUpSecondsSpend>30</warmUpSecondsSpend>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xstreamAnnotatedClass>org.optaplanner.examples.projectjobscheduling.domain.Schedule</xstreamAnnotatedClass>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-1.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-2.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-3.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-4.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-5.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-6.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-7.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-8.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-9.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/A-10.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-1.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-2.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-3.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-4.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-5.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-6.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-7.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-8.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-9.xml</inputSolutionFile>
+      <inputSolutionFile>data/projectjobscheduling/unsolved/B-10.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.projectjobscheduling.domain.Schedule</solutionClass>
+      <planningEntityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</planningEntityClass>
+
+      <scoreDirectorFactory>
+        <scoreDefinitionType>BENDABLE</scoreDefinitionType>
+        <bendableHardLevelCount>1</bendableHardLevelCount>
+        <bendableSoftLevelCount>2</bendableSoftLevelCount>
+        <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+      </scoreDirectorFactory>
+      <termination>
+        <maximumSecondsSpend>290</maximumSecondsSpend>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+<#list [1000, 6000, 12000] as lateAcceptanceSize>
+  <solverBenchmark>
+    <name>lateAcceptanceSize ${lateAcceptanceSize}</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>executionMode</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>delay</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <entityTabuRatio>0.2</entityTabuRatio>
+          <fadingEntityTabuRatio>0.7</fadingEntityTabuRatio>
+          <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</#list>
+</plannerBenchmark>
