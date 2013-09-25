@@ -16,6 +16,9 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.util.StringUtils;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
@@ -23,8 +26,13 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStrategyStore {
     private ObjectMarshallingStrategy[] strategiesList;
     
+    private Map<String, String> backwardCompatible = new HashMap<String, String>();
+    
     public ObjectMarshallingStrategyStoreImpl(ObjectMarshallingStrategy[] strategiesList) {
         this.strategiesList = strategiesList;
+        // store backward compatibility values due to package change
+        this.backwardCompatible.put("org.drools.marshalling.impl.SerializablePlaceholderResolverStrategy", 
+                                    "org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy");
     }
    
     // Old marshalling algorithm methods
@@ -54,6 +62,9 @@ public class ObjectMarshallingStrategyStoreImpl implements ObjectMarshallingStra
     public ObjectMarshallingStrategy getStrategyObject(String strategyClassName) {
         if( StringUtils.isEmpty(strategyClassName) ) { 
             return null;
+        }
+        if (backwardCompatible.containsKey(strategyClassName)) {
+            strategyClassName = backwardCompatible.get(strategyClassName);
         }
         ObjectMarshallingStrategy objectMarshallingStrategy = null; 
         for( int i = 0; i < this.strategiesList.length; ++i ) { 
