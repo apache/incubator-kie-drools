@@ -3171,6 +3171,14 @@ After in *.java:
 Note: the justificationList might have more or different elements than the causes,
 but it should be possible to extract the same information.
 
+[MINOR] If you use a DRL query to extract the ConstraintOccurrence, use ConstraintMatch and ConstraintMatchTotal instead.
+Before in *.drl:
+    query "selectAllBrokenRules"
+       $brokenRule : IntConstraintOccurrence(constraintType == ConstraintType.HARD)
+    end
+After in *.java:
+    guiScoreDirector.getConstraintMatchTotals()
+
 [MINOR] If you have a custom ScoreDefinition implementation: the method buildScoreHolder() has changed signature.
 Before in *ScoreDefinition.java:
     public ScoreHolder buildScoreHolder() {
