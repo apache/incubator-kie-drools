@@ -40,7 +40,7 @@
     <acceptor>
       <entityTabuRatio>0.2</entityTabuRatio>
       <fadingEntityTabuRatio>0.7</fadingEntityTabuRatio>
-      <lateAcceptanceSize>12000</lateAcceptanceSize>
+      <lateAcceptanceSize>1000</lateAcceptanceSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>4</acceptedCountLimit>
