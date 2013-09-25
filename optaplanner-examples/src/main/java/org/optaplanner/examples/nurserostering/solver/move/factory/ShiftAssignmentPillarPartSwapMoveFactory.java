@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeWorkSequence;
 import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.solver.move.EmployeeMultipleChangeMove;
 

@@ -46,14 +46,14 @@ import org.optaplanner.examples.nurserostering.domain.request.DayOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.DayOnRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOffRequest;
 import org.optaplanner.examples.nurserostering.domain.request.ShiftOnRequest;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeAssignmentTotal;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentEnd;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeConsecutiveAssignmentStart;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentEnd;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeConsecutiveWeekendAssignmentStart;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeFreeSequence;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeWeekendSequence;
-import org.optaplanner.examples.nurserostering.domain.solver.EmployeeWorkSequence;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeAssignmentTotal;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveAssignmentEnd;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveAssignmentStart;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveWeekendAssignmentEnd;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeConsecutiveWeekendAssignmentStart;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeFreeSequence;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeWeekendSequence;
+import org.optaplanner.examples.nurserostering.solver.drools.EmployeeWorkSequence;
 
 global HardSoftScoreHolder scoreHolder;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain.solver;
+package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 
@@ -23,13 +23,13 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 
-public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, Serializable {
+public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, Serializable {
 
     private Employee employee;
     private int firstDayIndex;
     private int lastDayIndex;
 
-    public EmployeeFreeSequence(Employee employee, int firstDayIndex, int lastDayIndex) {
+    public EmployeeWorkSequence(Employee employee, int firstDayIndex, int lastDayIndex) {
         this.employee = employee;
         this.firstDayIndex = firstDayIndex;
         this.lastDayIndex = lastDayIndex;
@@ -62,8 +62,8 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeFreeSequence) {
-            EmployeeFreeSequence other = (EmployeeFreeSequence) o;
+        } else if (o instanceof EmployeeWorkSequence) {
+            EmployeeWorkSequence other = (EmployeeWorkSequence) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
                     .append(firstDayIndex, other.firstDayIndex)
@@ -82,7 +82,7 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeFreeSequence other) {
+    public int compareTo(EmployeeWorkSequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
                 .append(firstDayIndex, other.firstDayIndex)
@@ -92,7 +92,7 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
 
     @Override
     public String toString() {
-        return employee + " is free between " + firstDayIndex + " - " + lastDayIndex;
+        return employee + " is working between " + firstDayIndex + " - " + lastDayIndex;
     }
 
     public int getDayLength() {

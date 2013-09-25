@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.domain.solver;
+package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 
@@ -22,34 +22,36 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
-import org.optaplanner.examples.machinereassignment.domain.MrService;
+import org.optaplanner.examples.machinereassignment.domain.MrMachine;
+import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
+import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-public class MrServiceMovedProcessesCount implements Serializable, Comparable<MrServiceMovedProcessesCount> {
+public class MrMachineTransientUsage implements Serializable, Comparable<MrMachineTransientUsage> {
 
-    private MrService service;
-    private int movedProcessesCount;
+    private MrMachineCapacity machineCapacity;
+    private long usage;
 
-    public MrServiceMovedProcessesCount(MrService service, int movedProcessesCount) {
-        this.service = service;
-        this.movedProcessesCount = movedProcessesCount;
+    public MrMachineTransientUsage(MrMachineCapacity machineCapacity, long usage) {
+        this.machineCapacity = machineCapacity;
+        this.usage = usage;
     }
 
-    public MrService getService() {
-        return service;
+    public MrMachineCapacity getMachineCapacity() {
+        return machineCapacity;
     }
 
-    public int getMovedProcessesCount() {
-        return movedProcessesCount;
+    public long getUsage() {
+        return usage;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MrServiceMovedProcessesCount) {
-            MrServiceMovedProcessesCount other = (MrServiceMovedProcessesCount) o;
+        } else if (o instanceof MrMachineTransientUsage) {
+            MrMachineTransientUsage other = (MrMachineTransientUsage) o;
             return new EqualsBuilder()
-                    .append(service, other.service)
-                    .append(movedProcessesCount, other.movedProcessesCount)
+                    .append(machineCapacity, other.machineCapacity)
+                    .append(usage, other.usage)
                     .isEquals();
         } else {
             return false;
@@ -58,8 +60,8 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(service)
-                .append(movedProcessesCount)
+                .append(machineCapacity)
+                .append(usage)
                 .toHashCode();
     }
 
@@ -69,20 +71,24 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
      * @param other never null
      * @return comparison
      */
-    public int compareTo(MrServiceMovedProcessesCount other) {
+    public int compareTo(MrMachineTransientUsage other) {
         return new CompareToBuilder()
-                .append(service, other.service)
-                .append(movedProcessesCount, other.movedProcessesCount)
+                .append(machineCapacity, other.machineCapacity)
+                .append(usage, other.usage)
                 .toComparison();
     }
 
-    public Long getServiceId() {
-        return service.getId();
+    public MrMachine getMachine() {
+        return machineCapacity.getMachine();
+    }
+
+    public MrResource getResource() {
+        return machineCapacity.getResource();
     }
 
     @Override
     public String toString() {
-        return service + "=" + movedProcessesCount;
+        return getMachine() + "-" + getResource() + "=" + usage;
     }
 
 }

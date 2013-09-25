@@ -30,10 +30,10 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcess;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 import org.optaplanner.examples.machinereassignment.domain.MrService;
-import org.optaplanner.examples.machinereassignment.domain.solver.MrMachineTransientUsage;
-import org.optaplanner.examples.machinereassignment.domain.solver.MrMachineUsage;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceDependency;
-import org.optaplanner.examples.machinereassignment.domain.solver.MrServiceMovedProcessesCount;
+import org.optaplanner.examples.machinereassignment.solver.drools.MrMachineTransientUsage;
+import org.optaplanner.examples.machinereassignment.solver.drools.MrMachineUsage;
+import org.optaplanner.examples.machinereassignment.solver.drools.MrServiceMovedProcessesCount;
 
 global HardSoftLongScoreHolder scoreHolder;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain.solver;
+package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 
@@ -22,17 +22,16 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
+import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
-public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, Serializable {
+public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTotal>, Serializable {
 
     private Employee employee;
-    private int firstDayIndex;
-    private int lastDayIndex;
+    private int total;
 
-    public EmployeeWorkSequence(Employee employee, int firstDayIndex, int lastDayIndex) {
+    public EmployeeAssignmentTotal(Employee employee, int total) {
         this.employee = employee;
-        this.firstDayIndex = firstDayIndex;
-        this.lastDayIndex = lastDayIndex;
+        this.total = total;
     }
 
     public Employee getEmployee() {
@@ -43,31 +42,22 @@ public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, S
         this.employee = employee;
     }
 
-    public int getFirstDayIndex() {
-        return firstDayIndex;
+    public int getTotal() {
+        return total;
     }
 
-    public void setFirstDayIndex(int firstDayIndex) {
-        this.firstDayIndex = firstDayIndex;
-    }
-
-    public int getLastDayIndex() {
-        return lastDayIndex;
-    }
-
-    public void setLastDayIndex(int lastDayIndex) {
-        this.lastDayIndex = lastDayIndex;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeWorkSequence) {
-            EmployeeWorkSequence other = (EmployeeWorkSequence) o;
+        } else if (o instanceof EmployeeAssignmentTotal) {
+            EmployeeAssignmentTotal other = (EmployeeAssignmentTotal) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
-                    .append(firstDayIndex, other.firstDayIndex)
-                    .append(lastDayIndex, other.lastDayIndex)
+                    .append(total, other.total)
                     .isEquals();
         } else {
             return false;
@@ -77,26 +67,24 @@ public class EmployeeWorkSequence implements Comparable<EmployeeWorkSequence>, S
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)
-                .append(firstDayIndex)
-                .append(lastDayIndex)
+                .append(total)
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeWorkSequence other) {
+    public int compareTo(EmployeeAssignmentTotal other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
-                .append(firstDayIndex, other.firstDayIndex)
-                .append(lastDayIndex, other.lastDayIndex)
+                .append(total, other.total)
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return employee + " is working between " + firstDayIndex + " - " + lastDayIndex;
+        return employee + " = " + total;
     }
 
-    public int getDayLength() {
-        return lastDayIndex - firstDayIndex + 1;
+    public Contract getEmployeeContract() {
+        return employee.getContract();
     }
 
 }

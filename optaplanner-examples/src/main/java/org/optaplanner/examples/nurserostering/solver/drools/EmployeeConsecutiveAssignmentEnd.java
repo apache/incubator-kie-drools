@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain.solver;
+package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.optaplanner.examples.nurserostering.domain.DayOfWeek;
 import org.optaplanner.examples.nurserostering.domain.Employee;
+import org.optaplanner.examples.nurserostering.domain.ShiftDate;
+import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
-public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<EmployeeConsecutiveWeekendAssignmentStart>,
-        Serializable {
+public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeConsecutiveAssignmentEnd>, Serializable {
 
     private Employee employee;
-    private int sundayIndex;
+    private ShiftDate shiftDate;
 
-    public EmployeeConsecutiveWeekendAssignmentStart(Employee employee, int sundayIndex) {
+    public EmployeeConsecutiveAssignmentEnd(Employee employee, ShiftDate shiftDate) {
         this.employee = employee;
-        this.sundayIndex = sundayIndex;
+        this.shiftDate = shiftDate;
     }
 
     public Employee getEmployee() {
@@ -43,22 +45,22 @@ public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<Emp
         this.employee = employee;
     }
 
-    public int getSundayIndex() {
-        return sundayIndex;
+    public ShiftDate getShiftDate() {
+        return shiftDate;
     }
 
-    public void setSundayIndex(int sundayIndex) {
-        this.sundayIndex = sundayIndex;
+    public void setShiftDate(ShiftDate shiftDate) {
+        this.shiftDate = shiftDate;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeConsecutiveWeekendAssignmentStart) {
-            EmployeeConsecutiveWeekendAssignmentStart other = (EmployeeConsecutiveWeekendAssignmentStart) o;
+        } else if (o instanceof EmployeeConsecutiveAssignmentEnd) {
+            EmployeeConsecutiveAssignmentEnd other = (EmployeeConsecutiveAssignmentEnd) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
-                    .append(sundayIndex, other.sundayIndex)
+                    .append(shiftDate, other.shiftDate)
                     .isEquals();
         } else {
             return false;
@@ -68,24 +70,40 @@ public class EmployeeConsecutiveWeekendAssignmentStart implements Comparable<Emp
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)
-                .append(sundayIndex)
+                .append(shiftDate)
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeConsecutiveWeekendAssignmentStart other) {
+    public int compareTo(EmployeeConsecutiveAssignmentEnd other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
-                .append(sundayIndex, other.sundayIndex)
+                .append(shiftDate, other.shiftDate)
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return employee + " weekend " + sundayIndex + " - ...";
+        return employee + " ... - " + shiftDate;
     }
 
     public Contract getContract() {
         return employee.getContract();
+    }
+
+    public int getShiftDateDayIndex() {
+        return shiftDate.getDayIndex();
+    }
+
+    public boolean isWeekendAndNotLastDayOfWeekend() {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
+        return weekendDefinition.isWeekend(dayOfWeek) && weekendDefinition.getLastDayOfWeekend() != dayOfWeek;
+    }
+
+    public int getDistanceToLastDayOfWeekend() {
+        WeekendDefinition weekendDefinition = employee.getContract().getWeekendDefinition();
+        DayOfWeek dayOfWeek = shiftDate.getDayOfWeek();
+        return dayOfWeek.getDistanceToNext(weekendDefinition.getLastDayOfWeekend());
     }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain.solver;
+package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 
@@ -22,16 +22,17 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
-import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
-public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd>, Serializable {
+public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequence>, Serializable {
 
     private Employee employee;
-    private int sundayIndex;
+    private int firstSundayIndex;
+    private int lastSundayIndex;
 
-    public EmployeeConsecutiveWeekendAssignmentEnd(Employee employee, int sundayIndex) {
+    public EmployeeWeekendSequence(Employee employee, int firstSundayIndex, int lastSundayIndex) {
         this.employee = employee;
-        this.sundayIndex = sundayIndex;
+        this.firstSundayIndex = firstSundayIndex;
+        this.lastSundayIndex = lastSundayIndex;
     }
 
     public Employee getEmployee() {
@@ -42,22 +43,31 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
         this.employee = employee;
     }
 
-    public int getSundayIndex() {
-        return sundayIndex;
+    public int getFirstSundayIndex() {
+        return firstSundayIndex;
     }
 
-    public void setSundayIndex(int sundayIndex) {
-        this.sundayIndex = sundayIndex;
+    public void setFirstSundayIndex(int firstSundayIndex) {
+        this.firstSundayIndex = firstSundayIndex;
+    }
+
+    public int getLastSundayIndex() {
+        return lastSundayIndex;
+    }
+
+    public void setLastSundayIndex(int lastSundayIndex) {
+        this.lastSundayIndex = lastSundayIndex;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeConsecutiveWeekendAssignmentEnd) {
-            EmployeeConsecutiveWeekendAssignmentEnd other = (EmployeeConsecutiveWeekendAssignmentEnd) o;
+        } else if (o instanceof EmployeeWeekendSequence) {
+            EmployeeWeekendSequence other = (EmployeeWeekendSequence) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
-                    .append(sundayIndex, other.sundayIndex)
+                    .append(firstSundayIndex, other.firstSundayIndex)
+                    .append(lastSundayIndex, other.lastSundayIndex)
                     .isEquals();
         } else {
             return false;
@@ -67,24 +77,26 @@ public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<Emplo
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)
-                .append(sundayIndex)
+                .append(firstSundayIndex)
+                .append(lastSundayIndex)
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeConsecutiveWeekendAssignmentEnd other) {
+    public int compareTo(EmployeeWeekendSequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
-                .append(sundayIndex, other.sundayIndex)
+                .append(firstSundayIndex, other.firstSundayIndex)
+                .append(lastSundayIndex, other.lastSundayIndex)
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return employee + " weekend ... - " + sundayIndex;
+        return employee + " is working the weekend of " + firstSundayIndex + " - " + lastSundayIndex;
     }
 
-    public Contract getContract() {
-        return employee.getContract();
+    public int getWeekendLength() {
+        return ((lastSundayIndex - firstSundayIndex) / 7) + 1;
     }
 
 }

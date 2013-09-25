@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.machinereassignment.domain.solver;
+package org.optaplanner.examples.machinereassignment.solver.drools;
 
 import java.io.Serializable;
 
@@ -26,12 +26,12 @@ import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-public class MrMachineTransientUsage implements Serializable, Comparable<MrMachineTransientUsage> {
+public class MrMachineUsage implements Serializable, Comparable<MrMachineUsage> {
 
     private MrMachineCapacity machineCapacity;
     private long usage;
 
-    public MrMachineTransientUsage(MrMachineCapacity machineCapacity, long usage) {
+    public MrMachineUsage(MrMachineCapacity machineCapacity, long usage) {
         this.machineCapacity = machineCapacity;
         this.usage = usage;
     }
@@ -47,8 +47,8 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof MrMachineTransientUsage) {
-            MrMachineTransientUsage other = (MrMachineTransientUsage) o;
+        } else if (o instanceof MrMachineUsage) {
+            MrMachineUsage other = (MrMachineUsage) o;
             return new EqualsBuilder()
                     .append(machineCapacity, other.machineCapacity)
                     .append(usage, other.usage)
@@ -71,7 +71,7 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
      * @param other never null
      * @return comparison
      */
-    public int compareTo(MrMachineTransientUsage other) {
+    public int compareTo(MrMachineUsage other) {
         return new CompareToBuilder()
                 .append(machineCapacity, other.machineCapacity)
                 .append(usage, other.usage)
@@ -84,6 +84,22 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
 
     public MrResource getResource() {
         return machineCapacity.getResource();
+    }
+
+    public boolean isTransientlyConsumed() {
+        return machineCapacity.getResource().isTransientlyConsumed();
+    }
+
+    public long getLoadCostWeight() {
+        return machineCapacity.getResource().getLoadCostWeight();
+    }
+
+    public long getMaximumAvailable() {
+        return machineCapacity.getMaximumCapacity() - usage;
+    }
+
+    public long getSafetyAvailable() {
+        return machineCapacity.getSafetyCapacity() - usage;
     }
 
     @Override

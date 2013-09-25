@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.nurserostering.domain.solver;
+package org.optaplanner.examples.nurserostering.solver.drools;
 
 import java.io.Serializable;
 
@@ -24,14 +24,14 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.contract.Contract;
 
-public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTotal>, Serializable {
+public class EmployeeConsecutiveWeekendAssignmentEnd implements Comparable<EmployeeConsecutiveWeekendAssignmentEnd>, Serializable {
 
     private Employee employee;
-    private int total;
+    private int sundayIndex;
 
-    public EmployeeAssignmentTotal(Employee employee, int total) {
+    public EmployeeConsecutiveWeekendAssignmentEnd(Employee employee, int sundayIndex) {
         this.employee = employee;
-        this.total = total;
+        this.sundayIndex = sundayIndex;
     }
 
     public Employee getEmployee() {
@@ -42,22 +42,22 @@ public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTot
         this.employee = employee;
     }
 
-    public int getTotal() {
-        return total;
+    public int getSundayIndex() {
+        return sundayIndex;
     }
 
-    public void setTotal(int total) {
-        this.total = total;
+    public void setSundayIndex(int sundayIndex) {
+        this.sundayIndex = sundayIndex;
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof EmployeeAssignmentTotal) {
-            EmployeeAssignmentTotal other = (EmployeeAssignmentTotal) o;
+        } else if (o instanceof EmployeeConsecutiveWeekendAssignmentEnd) {
+            EmployeeConsecutiveWeekendAssignmentEnd other = (EmployeeConsecutiveWeekendAssignmentEnd) o;
             return new EqualsBuilder()
                     .append(employee, other.employee)
-                    .append(total, other.total)
+                    .append(sundayIndex, other.sundayIndex)
                     .isEquals();
         } else {
             return false;
@@ -67,23 +67,23 @@ public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTot
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(employee)
-                .append(total)
+                .append(sundayIndex)
                 .toHashCode();
     }
 
-    public int compareTo(EmployeeAssignmentTotal other) {
+    public int compareTo(EmployeeConsecutiveWeekendAssignmentEnd other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)
-                .append(total, other.total)
+                .append(sundayIndex, other.sundayIndex)
                 .toComparison();
     }
 
     @Override
     public String toString() {
-        return employee + " = " + total;
+        return employee + " weekend ... - " + sundayIndex;
     }
 
-    public Contract getEmployeeContract() {
+    public Contract getContract() {
         return employee.getContract();
     }
 
