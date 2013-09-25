@@ -15,6 +15,7 @@
   <modules>
     <module>jbpm-human-task-core</module>
     <module>jbpm-human-task-workitems</module>
+    <module>jbpm-human-task-audit</module>
   </modules>
 
   <dependencies>

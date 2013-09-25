@@ -90,6 +90,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jboss.solder</groupId>
+      <artifactId>solder-logging</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core</artifactId>
       <scope>test</scope>

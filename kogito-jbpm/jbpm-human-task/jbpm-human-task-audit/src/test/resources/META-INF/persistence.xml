@@ -6,11 +6,11 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
                       http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
 
-  <persistence-unit name="org.jbpm.services.task" transaction-type="${maven.tx.type}">
+  <persistence-unit name="org.jbpm.services.task" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    ${maven.data.source}
+    
     <mapping-file>META-INF/Taskorm.xml</mapping-file>
-    <!--mapping-file>META-INF/TaskEventsorm.xml</mapping-file-->
+    <mapping-file>META-INF/TaskAuditorm.xml</mapping-file>
 
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.ContentImpl</class>
@@ -28,7 +28,6 @@
     <class>org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl</class>
     <class>org.jbpm.services.task.impl.model.PeopleAssignmentsImpl</class>
     <class>org.jbpm.services.task.impl.model.ReassignmentImpl</class>
-    
     <class>org.jbpm.services.task.impl.model.TaskImpl</class>
     <class>org.jbpm.services.task.impl.model.TaskDataImpl</class>
     <class>org.jbpm.services.task.impl.model.UserImpl</class>
@@ -36,29 +35,25 @@
     <!--BAM for task service -->
     <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
     
+    <!-- Event Classes -->
+    <class>org.jbpm.services.task.audit.TaskEventImpl</class>
    
     <properties>
-      <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
       <property name="hibernate.connection.autocommit" value="false" />
 
       <property name="hibernate.max_fetch_depth" value="3" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
       <property name="hibernate.show_sql" value="false" />
 
-      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-      <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-      <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-      <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:test;MVCC=true" />
+      <property name="hibernate.connection.username" value="sa" />
+      <property name="hibernate.connection.password" value="sasa" />
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />            
-
-      <!-- needed for JTA testing 
-      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
-        -->
     </properties>
   </persistence-unit>
-
- 
   
 </persistence>

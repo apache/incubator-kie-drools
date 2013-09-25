@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.jbpm.services.task.impl.model;
+package org.jbpm.services.task.audit;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import org.jbpm.services.task.impl.model.UserImpl;
 
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.TaskEvent;
@@ -35,7 +36,7 @@ public class TaskEventImpl implements TaskEvent {
     @Column(name = "id")
     private Long id;
     
-    private long taskId;
+    private Long taskId;
     
     private TaskEventType type;
     

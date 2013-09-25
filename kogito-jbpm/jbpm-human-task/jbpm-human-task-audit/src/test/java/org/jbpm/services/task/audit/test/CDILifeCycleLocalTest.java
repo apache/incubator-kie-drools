@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.services.task;
+package org.jbpm.services.task.audit.test;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -32,7 +32,7 @@ public class CDILifeCycleLocalTest extends LifeCycleBaseTest {
 
     @Deployment()
     public static Archive<?> createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class, "jbpm-human-task-cdi.jar")
+        return ShrinkWrap.create(JavaArchive.class, "jbpm-human-task-audit-cdi.jar")
                 .addPackage("org.jboss.seam.transaction") //seam-persistence
                 .addPackage("org.jbpm.shared.services.api")
                 .addPackage("org.jbpm.shared.services.impl")
@@ -54,11 +54,15 @@ public class CDILifeCycleLocalTest extends LifeCycleBaseTest {
                 .addPackage("org.jbpm.services.task.subtask")
                 .addPackage("org.jbpm.services.task.rule")
                 .addPackage("org.jbpm.services.task.rule.impl")
+                .addPackage("org.jbpm.task.audit")
+                .addPackage("org.jbpm.task.audit.internals")// for testing purposes
                 //.addPackage("org.jbpm.services.task.commands") // This should not be required here 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
+                .addAsManifestResource("META-INF/TaskAuditorm.xml", ArchivePaths.create("TaskAuditorm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
 
     }
+
    
 }

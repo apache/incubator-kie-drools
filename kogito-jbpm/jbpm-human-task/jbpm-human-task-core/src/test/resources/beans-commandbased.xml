@@ -24,7 +24,6 @@
        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd">
     
     <alternatives>
-        <class>org.jbpm.services.task.lifecycle.listeners.JPATaskLifeCycleEventListener</class>
         <class>org.jbpm.services.task.impl.command.CommandBasedTaskInstanceServiceImpl</class>
         <class>org.jbpm.services.task.identity.MvelUserGroupCallbackImpl</class>
     </alternatives>
