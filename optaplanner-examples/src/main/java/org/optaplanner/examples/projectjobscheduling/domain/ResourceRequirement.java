@@ -55,4 +55,8 @@ public class ResourceRequirement extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public boolean isResourceRenewable() {
+        return resource.isRenewable();
+    }
+
 }

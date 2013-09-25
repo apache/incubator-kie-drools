@@ -9,6 +9,7 @@
     <bendableHardLevelCount>1</bendableHardLevelCount>
     <bendableSoftLevelCount>2</bendableSoftLevelCount>
     <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+    <!--TODO broken: <scoreDrl>/org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingScoreRules.drl</scoreDrl>-->
   </scoreDirectorFactory>
   <termination>
     <maximumSecondsSpend>290</maximumSecondsSpend>
