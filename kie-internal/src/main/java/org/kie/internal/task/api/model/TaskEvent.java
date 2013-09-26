@@ -16,15 +16,14 @@
 package org.kie.internal.task.api.model;
 
 import java.io.Externalizable;
-
-import org.kie.api.task.model.User;
-
+import java.util.Date;
 
 public interface TaskEvent extends Externalizable {
     
     public enum TaskEventType{STARTED, ACTIVATED, COMPLETED, 
                                 STOPPED, EXITED, FAILED, ADDED,
-                                CLAIMED, SKIPPED, SUSPENDED, CREATED, FORWARDED, RELEASED};
+                                CLAIMED, SKIPPED, SUSPENDED, CREATED, 
+                                FORWARDED, RELEASED, RESUMED, DELEGATED};
    
     long getId();
 
@@ -38,8 +37,12 @@ public interface TaskEvent extends Externalizable {
 
     void setType(TaskEventType type);
 
-    User getUser();
+    String getUserId();
 
-    void setUser(User user);
+    void setUserId(String userId);
+    
+    Date getLogTime();
+    
+    void setLogTime(Date timestamp);
     
 }
