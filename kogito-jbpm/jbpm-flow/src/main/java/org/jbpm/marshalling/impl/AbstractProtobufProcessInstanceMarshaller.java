@@ -562,7 +562,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         nodeInstance.setNodeInstanceContainer( nodeInstanceContainer );
         nodeInstance.setProcessInstance( (org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance );
         nodeInstance.setId( _node.getId() );
-        nodeInstance.setLevel(_node.getLevel());
+        nodeInstance.setLevel(_node.getLevel()==0?1:_node.getLevel());
 
         switch ( _node.getContent().getType() ) {
             case COMPOSITE_CONTEXT_NODE :

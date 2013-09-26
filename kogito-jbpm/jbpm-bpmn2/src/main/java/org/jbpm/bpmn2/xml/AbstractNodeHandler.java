@@ -106,9 +106,28 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         node.setMetaData("UniqueId", id);
         final String name = attrs.getValue("name");
         node.setName(name);
-        
-        AtomicInteger idGen = (AtomicInteger) parser.getMetaData().get("idGen");
-        node.setId(idGen.getAndIncrement());
+        if ("true".equalsIgnoreCase(System.getProperty("jbpm.v5.id.strategy"))) {
+            try {
+                // remove starting _
+                id = id.substring(1);
+                // remove ids of parent nodes
+                id = id.substring(id.lastIndexOf("-") + 1);
+                node.setId(new Integer(id));
+            } catch (NumberFormatException e) {
+                // id is not in the expected format, generating a new one
+                long newId = 0;
+                NodeContainer nodeContainer = (NodeContainer) parser.getParent();
+                for (org.kie.api.definition.process.Node n: nodeContainer.getNodes()) {
+                    if (n.getId() > newId) {
+                        newId = n.getId();
+                    }
+                }
+                ((org.jbpm.workflow.core.Node) node).setId(++newId);
+            }
+        } else {
+            AtomicInteger idGen = (AtomicInteger) parser.getMetaData().get("idGen");
+            node.setId(idGen.getAndIncrement());
+        }
         return node;
     }
 
