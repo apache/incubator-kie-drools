@@ -406,10 +406,29 @@ public class ProtobufInputMarshaller {
             agenda.getAgendaGroupsMap().put( group.getName(),
                                              group );
         }
-
+        
         for ( String _groupName : _agenda.getFocusStack().getGroupNameList() ) {
             agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( _groupName ) );
         }
+        
+        for ( ProtobufMessages.Agenda.RuleFlowGroup _ruleFlowGroup : _agenda.getRuleFlowGroupList() ) {
+            AgendaGroupQueueImpl group = (AgendaGroupQueueImpl) agenda.getAgendaGroup( _ruleFlowGroup.getName(), context.ruleBase );
+            group.setActive( _ruleFlowGroup.getIsActive() );
+            group.setAutoDeactivate( _ruleFlowGroup.getIsAutoDeactivate() );
+            
+
+            for ( org.drools.core.marshalling.impl.ProtobufMessages.Agenda.RuleFlowGroup.NodeInstance _nodeInstance : _ruleFlowGroup.getNodeInstanceList() ) {
+                group.addNodeInstance( _nodeInstance.getProcessInstanceId(),
+                                       _nodeInstance.getNodeInstanceId() );
+            }
+            agenda.getAgendaGroupsMap().put( group.getName(),
+                                             group );
+            if (group.isActive()) {
+                agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( group.getName() ) );
+            }
+        }
+
+        
 
         readActivations( context,
                          _agenda.getMatchList(),
