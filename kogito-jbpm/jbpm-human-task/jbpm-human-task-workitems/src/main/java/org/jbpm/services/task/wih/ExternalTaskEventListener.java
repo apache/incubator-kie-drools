@@ -25,9 +25,16 @@ import javax.enterprise.event.Reception;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.annotations.External;
+import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.events.AfterTaskCompletedEvent;
+import org.jbpm.services.task.events.AfterTaskDelegatedEvent;
+import org.jbpm.services.task.events.AfterTaskExitedEvent;
 import org.jbpm.services.task.events.AfterTaskFailedEvent;
+import org.jbpm.services.task.events.AfterTaskForwardedEvent;
+import org.jbpm.services.task.events.AfterTaskReleasedEvent;
+import org.jbpm.services.task.events.AfterTaskResumedEvent;
 import org.jbpm.services.task.events.AfterTaskSkippedEvent;
+import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
@@ -154,12 +161,12 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
         processTaskState(task);
     }
 
-    public void afterTaskAddedEvent(Task ti) {
+    public void afterTaskAddedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskAddedEvent Task ti) {
         
         // DO NOTHING
     }
 
-    public void afterTaskExitedEvent(Task ti) {
+    public void afterTaskExitedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskExitedEvent Task ti) {
         // DO NOTHING
     }
     
@@ -183,5 +190,30 @@ public class ExternalTaskEventListener extends JbpmServicesEventListener<Task>  
     
     public void addMappedManger(String name, RuntimeManager manager) {
         this.mappedManagers.put(name, manager);
+    }
+
+    @Override
+    public void afterTaskReleasedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskReleasedEvent Task ti) {
+        
+    }
+
+    @Override
+    public void afterTaskResumedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskResumedEvent Task ti) {
+        
+    }
+
+    @Override
+    public void afterTaskSuspendedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskSuspendedEvent Task ti) {
+        
+    }
+
+    @Override
+    public void afterTaskForwardedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskForwardedEvent Task ti) {
+        
+    }
+
+    @Override
+    public void afterTaskDelegatedEvent(@Observes(notifyObserver=Reception.IF_EXISTS) @AfterTaskDelegatedEvent Task ti) {
+        
     }
 }

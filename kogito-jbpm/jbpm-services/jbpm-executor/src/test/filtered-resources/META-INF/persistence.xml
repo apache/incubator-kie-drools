@@ -77,9 +77,6 @@
     
     <!--BAM for task service -->
     <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
-    
-    <!-- Event Classes -->
-    <class>org.jbpm.services.task.impl.model.TaskEventImpl</class>
 
     <properties>
       <property name="hibernate.max_fetch_depth" value="3" />

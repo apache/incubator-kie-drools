@@ -36,9 +36,6 @@
     
     <!--BAM for task service -->
     <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
-    
-    <!-- Event Classes -->
-    <class>org.jbpm.services.task.impl.model.TaskEventImpl</class>
 
     <class>org.drools.persistence.info.SessionInfo</class>
     <class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
