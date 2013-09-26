@@ -24,6 +24,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -39,24 +40,26 @@ import org.kie.api.time.SessionClock;
  * scheduler and the system clock as the clock.
  */
 public class JDKTimerService
-    implements
-    TimerService,
-    SessionClock,
-    InternalSchedulerService,
-    AcceptsTimerJobFactoryManager {
+        implements
+        TimerService,
+        SessionClock,
+        InternalSchedulerService,
+        AcceptsTimerJobFactoryManager {
 
-    private AtomicLong                    idCounter = new AtomicLong();
+    private AtomicLong                      idCounter         = new AtomicLong();
 
-    protected ScheduledThreadPoolExecutor scheduler;
+    protected ScheduledThreadPoolExecutor   scheduler;
 
     protected TimerJobFactoryManager        jobFactoryManager = DefaultTimerJobFactoryManager.instance;
 
+    private transient InternalWorkingMemory session;
+
     public JDKTimerService() {
-        this( 1 );
+        this(1);
     }
 
     public JDKTimerService(int size) {
-        this.scheduler = new ScheduledThreadPoolExecutor( size );
+        this.scheduler = new ScheduledThreadPoolExecutor(size);
     }
 
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
@@ -64,9 +67,9 @@ public class JDKTimerService
     }
 
     public void setCounter(long counter) {
-        idCounter = new AtomicLong( counter );
+        idCounter = new AtomicLong(counter);
     }
-    
+
     public TimerJobFactoryManager getTimerJobFactoryManager() {
         return this.jobFactoryManager;
     }
@@ -86,19 +89,19 @@ public class JDKTimerService
     }
 
     public JobHandle scheduleJob(Job job,
-                                 JobContext ctx,
-                                 Trigger trigger) {
+            JobContext ctx,
+            Trigger trigger) {
         Date date = trigger.hasNextFireTime();
-        if ( date != null ) {
-            JDKJobHandle jobHandle = new JDKJobHandle( idCounter.getAndIncrement() );
-            
-            TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance( job,
-                                                                                     ctx,
-                                                                                     trigger,
-                                                                                     jobHandle,
-                                                                                     this );
-            jobHandle.setTimerJobInstance( (TimerJobInstance) jobInstance );
-            internalSchedule( (TimerJobInstance) jobInstance );
+        if (date != null) {
+            JDKJobHandle jobHandle = new JDKJobHandle(idCounter.getAndIncrement());
+
+            TimerJobInstance jobInstance = jobFactoryManager.createTimerJobInstance(job,
+                    ctx,
+                    trigger,
+                    jobHandle,
+                    this);
+            jobHandle.setTimerJobInstance((TimerJobInstance) jobInstance);
+            internalSchedule((TimerJobInstance) jobInstance);
 
             return jobHandle;
         } else {
@@ -114,45 +117,45 @@ public class JDKTimerService
         long then = date.getTime();
         long now = System.currentTimeMillis();
         ScheduledFuture<Void> future = null;
-        if ( then >= now ) {
-            future = scheduler.schedule( item,
-                                         then - now,
-                                         TimeUnit.MILLISECONDS );
+        if (then >= now) {
+            future = scheduler.schedule(item,
+                    then - now,
+                    TimeUnit.MILLISECONDS);
         } else {
-            future = scheduler.schedule( item,
-                                         0,
-                                         TimeUnit.MILLISECONDS );
+            future = scheduler.schedule(item,
+                    0,
+                    TimeUnit.MILLISECONDS);
         }
 
-        jobHandle.setFuture( future );
-        jobFactoryManager.addTimerJobInstance( timerJobInstance );
+        jobHandle.setFuture(future);
+        jobFactoryManager.addTimerJobInstance(timerJobInstance);
     }
 
     public boolean removeJob(JobHandle jobHandle) {
-        jobHandle.setCancel( true );
-        jobFactoryManager.removeTimerJobInstance( ((JDKJobHandle) jobHandle).getTimerJobInstance() );
-        return this.scheduler.remove( (Runnable) ((JDKJobHandle) jobHandle).getFuture() );
+        jobHandle.setCancel(true);
+        jobFactoryManager.removeTimerJobInstance(((JDKJobHandle) jobHandle).getTimerJobInstance());
+        return this.scheduler.remove((Runnable) ((JDKJobHandle) jobHandle).getFuture());
     }
 
     public static class JDKJobHandle extends DefaultJobHandle
-        implements
-        JobHandle {
+            implements
+            JobHandle {
 
         private static final long     serialVersionUID = 510l;
 
-        private ScheduledFuture<Void> future;       
+        private ScheduledFuture<Void> future;
 
         public JDKJobHandle(long id) {
             super(id);
         }
-        
+
         public ScheduledFuture<Void> getFuture() {
             return future;
         }
 
         public void setFuture(ScheduledFuture<Void> future) {
             this.future = future;
-        }    
+        }
 
     }
 
@@ -162,6 +165,16 @@ public class JDKTimerService
 
     public Collection<TimerJobInstance> getTimerJobInstances(int id) {
         return jobFactoryManager.getTimerJobInstances();
+    }
+
+    @Override
+    public void setSession(InternalWorkingMemory wm) {
+        this.session = wm;
+    }
+
+    @Override
+    public InternalWorkingMemory getSession() {
+        return session;
     }
 
 }

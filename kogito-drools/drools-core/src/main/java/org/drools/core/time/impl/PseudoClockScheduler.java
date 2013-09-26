@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
@@ -217,6 +218,9 @@ public class PseudoClockScheduler
             }
         }
         this.timer.set( endTime );
+        if( session != null ) {
+            ((InternalAgenda)session.getAgenda()).notifyHalt();
+        }
         return this.timer.get(); 
     }
 

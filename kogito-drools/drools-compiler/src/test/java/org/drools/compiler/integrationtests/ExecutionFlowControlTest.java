@@ -4,6 +4,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.Assert;
 
@@ -11,7 +12,6 @@ import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
-import org.drools.core.FactHandle;
 import org.drools.compiler.Father;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Message;
@@ -19,8 +19,9 @@ import org.drools.compiler.Neighbor;
 import org.drools.compiler.Person;
 import org.drools.compiler.PersonInterface;
 import org.drools.compiler.Pet;
-import org.drools.core.RuleBase;
 import org.drools.compiler.TotalHolder;
+import org.drools.core.FactHandle;
+import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
@@ -35,10 +36,23 @@ import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
 import org.junit.Test;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import static org.mockito.Mockito.*;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
@@ -911,7 +925,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         assertEquals( 0, list.size() );
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testRuleFlowGroupInActiveMode() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("ruleflowgroup.drl");
         final KieSession ksession = createKnowledgeSession(kbase);
@@ -919,6 +933,17 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         final List list = new ArrayList();
         ksession.setGlobal( "list",
                                  list );
+        
+        final AtomicBoolean fired = new AtomicBoolean(false);
+        ksession.addEventListener(new org.kie.api.event.rule.DefaultAgendaEventListener() {
+            @Override
+            public void afterMatchFired(AfterMatchFiredEvent event) {
+                synchronized( fired ) {
+                    fired.set(true);
+                    fired.notifyAll();
+                }
+            }
+        });
 
         new Thread(new Runnable() {
             public void run() {
@@ -931,8 +956,12 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
                       list.size() );
 
         ((AgendaImpl) ksession.getAgenda()).getAgenda().activateRuleFlowGroup( "Group1" );
-
-        Thread.sleep(1000);
+        
+        synchronized( fired ) {
+            if( !fired.get() ) {
+                fired.wait();
+            }
+        }
 
         assertEquals( 1,
                       list.size() );
