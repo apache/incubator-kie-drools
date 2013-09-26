@@ -134,6 +134,10 @@ public class AgendaGroupQueueImpl
 
     public void add(final Activation activation) {
         this.priorityQueue.enqueue((Activation) activation);
+        if( this.workingMemory.getAgenda() instanceof DefaultAgenda ) {
+            // this is phreak, as reteoo uses ReteAgenda
+            ((DefaultAgenda)this.workingMemory.getAgenda()).notifyHalt();
+        }
     }
 
     public Activation remove() {

@@ -107,7 +107,8 @@ public class DefaultAgenda
 
     private org.kie.api.runtime.rule.ConsequenceExceptionHandler consequenceExceptionHandler;
 
-    protected volatile AtomicBoolean                             halt               = new AtomicBoolean( false );
+    protected AtomicBoolean                                      halt               = new AtomicBoolean( true );
+    protected volatile boolean                                 fireUntilHalt      = false;
 
     protected int                                                activationCounter;
 
@@ -116,12 +117,6 @@ public class DefaultAgenda
     private ObjectTypeConf                                       activationObjectTypeConf;
 
     private ActivationsFilter                                    activationsFilter;
-
-    private volatile boolean                                     isFiringActivation = false;
-
-    private volatile boolean                                     mustNotifyHalt     = false;
-
-    private volatile boolean                                     fireUntilHalt = false;
 
     // ------------------------------------------------------------
     // Constructors
@@ -279,6 +274,7 @@ public class DefaultAgenda
             log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
         }
         eager.add( item );
+        notifyHalt();
     }
 
     @Override
@@ -672,6 +668,7 @@ public class DefaultAgenda
         setFocus( group );
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
                                                                                                      this.workingMemory );
+        this.notifyHalt();
     }
 
     public void deactivateRuleFlowGroup(final String name) {
@@ -985,7 +982,6 @@ public class DefaultAgenda
         // on an empty pattern
         // we need to make sure it re-activates
         this.workingMemory.startOperation();
-        isFiringActivation = true;
         try {
             final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
@@ -1051,11 +1047,6 @@ public class DefaultAgenda
 
             unstageActivations();
         } finally {
-            isFiringActivation = false;
-            if ( mustNotifyHalt ) {
-                mustNotifyHalt = false;
-                notifyHalt();
-            }
             this.workingMemory.endOperation();
         }
     }
@@ -1142,45 +1133,68 @@ public class DefaultAgenda
     }
 
     public void fireUntilHalt() {
-        fireUntilHalt = true;
         fireUntilHalt( null );
     }
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
-        this.halt.set( false );
-        if ( log.isTraceEnabled() ) {
-            log.trace("Starting fireUntilHalt");
-        }
-        while ( continueFiring( -1 ) ) {
-            boolean fired = fireNextItem( agendaFilter, 0, -1 ) >= 0 ||
-                            !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
-            this.workingMemory.executeQueuedActions();
-            if ( !fired ) {
-                Thread.yield();
-            } else {
-                this.workingMemory.executeQueuedActions();
+        if( this.halt.compareAndSet( true, false ) ) { // if this was false already means someone else is firing rules already
+            fireUntilHalt = true;
+            try {
+                if ( log.isTraceEnabled() ) {
+                    log.trace("Starting fireUntilHalt");
+                }
+                while ( continueFiring( -1 ) ) {
+                    boolean fired = fireNextItem( agendaFilter, 0, -1 ) > 0 ||
+                                    !((AbstractWorkingMemory) this.workingMemory).getActionQueue().isEmpty();
+                    this.workingMemory.executeQueuedActions();
+                    if ( !fired ) {
+                        synchronized ( this.halt ) {
+                            // has to check in here because a different thread might have set the halt flag already
+                            if( ! this.halt.get() ) {
+                                // need to check again the agenda is still empty as a new activation
+                                // could have been created between the time it did not fire the last 
+                                // one and the synchronized block started
+                                InternalAgendaGroup nextFocus = getNextFocus();
+                                if( nextFocus == null || nextFocus.isEmpty() ) {
+                                    try {
+                                        this.halt.wait();
+                                    } catch (InterruptedException e) {
+                                        // nothing to do
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if ( log.isTraceEnabled() ) {
+                    log.trace("Ending fireUntilHalt");
+                }
+            } finally {
+                fireUntilHalt = false;
+                this.halt.set(true);
             }
         }
-        if ( log.isTraceEnabled() ) {
-            log.trace("Ending fireUntilHalt");
-        }
-        fireUntilHalt = false;
     }
 
     public int fireAllRules(AgendaFilter agendaFilter,
                             int fireLimit) {
         unstageActivations();
-        this.halt.set( false );
         int fireCount = 0;
-        int returnedFireCount = 0;
-        do {
-            returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit );
-            fireCount += returnedFireCount;
-            this.workingMemory.executeQueuedActions();
-        } while ( continueFiring( 0 ) && returnedFireCount != 0 && (fireLimit == -1 || (fireCount < fireLimit)) );
-        if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
-            // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
-            getMainAgendaGroup().setActive( false );
+        if( this.halt.compareAndSet( true, false ) ) { // if this was false already means someone else is firing rules already
+            try {
+                int returnedFireCount = 0;
+                do {
+                    returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit );
+                    fireCount += returnedFireCount;
+                    this.workingMemory.executeQueuedActions();
+                } while ( continueFiring( 0 ) && returnedFireCount != 0 && (fireLimit == -1 || (fireCount < fireLimit)) );
+                if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
+                    // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
+                    getMainAgendaGroup().setActive( false );
+                }
+            } finally {
+                this.halt.set(true);
+            }
         }
         return fireCount;
     }

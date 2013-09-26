@@ -17,17 +17,21 @@
 package org.drools.core.time;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.common.InternalWorkingMemory;
 
 public class TimerServiceFactory {
     
-    public static TimerService getTimerService( SessionConfiguration config ) {
+    public static TimerService getTimerService( InternalWorkingMemory wm, SessionConfiguration config ) {
+        TimerService service = null;
         switch( config.getClockType() ) {
             case REALTIME_CLOCK:
-                return config.newTimerService();
+                service = config.newTimerService();
             case PSEUDO_CLOCK:
-                return new PseudoClockScheduler();
+                service = (TimerService) config.getClockType().createInstance();
         }
-        return null;
+        if( service != null ) {
+            service.setSession(wm);
+        }
+        return service;
     }
 }
