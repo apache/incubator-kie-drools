@@ -194,7 +194,8 @@ public class InputMarshaller {
         InternalFactHandle initialFactHandle = new DefaultFactHandle( context.readInt(), //id
                                                                       InitialFactImpl.getInstance(),
                                                                       context.readLong(),
-                                                                      null );
+                                                                      null,
+                                                                      false );
 
         context.handles.put( initialFactHandle.getId(),
                              initialFactHandle );
@@ -518,6 +519,15 @@ public class InputMarshaller {
                 entryPoint = context.wm.getEntryPoints().get( entryPointId );
             }
         }
+
+        org.drools.rule.EntryPoint confEP = null;
+        if ( entryPoint != null ) {
+            confEP = ((InternalWorkingMemoryEntryPoint) entryPoint).getEntryPoint();
+        } else {
+            confEP = context.wm.getEntryPoint();
+        }
+        ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
+
         InternalFactHandle handle = null;
         switch (type) {
             case 0: {
@@ -525,7 +535,8 @@ public class InputMarshaller {
                 handle = new DefaultFactHandle( id,
                                                 object,
                                                 recency,
-                                                entryPoint );
+                                                entryPoint,
+                                                typeConf != null && typeConf.isTrait() );
                 break;
 
             }
@@ -536,7 +547,7 @@ public class InputMarshaller {
                 break;
             }
             case 2: {
-                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );
+                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint, typeConf != null && typeConf.isTrait() );
                 ( (EventFactHandle) handle ).setExpired( expired );
                 ( (EventFactHandle) handle ).setActivationsCount( activationsCount );
                 break;
@@ -767,7 +778,8 @@ public class InputMarshaller {
                                                                    id,
                                                                    parentLeftTuple,
                                                                    recency,
-                                                                   context.wm.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
+                                                                   context.wm.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ),
+                                                                   false );
                 memory.put( parentLeftTuple,
                             handle );
 

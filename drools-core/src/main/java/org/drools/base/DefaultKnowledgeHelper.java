@@ -41,7 +41,6 @@ import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
-import org.drools.common.TraitFactHandle;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.factmodel.MapCore;
@@ -367,8 +366,8 @@ public class DefaultKnowledgeHelper
                                                                      mask,
                                                                      modifiedClass,
                                                                      this.activation );
-        if ( h.isTrait() ) {
-            if ( ( (TraitFactHandle) h ).isTraitable() ) {
+        if ( h.isTraitOrTraitable() ) {
+            if (  h.isTraitable() ) {
                 // this is a traitable core object, so its traits must be updated as well
                 updateTraits( h.getObject(), mask, null, modifiedClass, null, ((TraitableBean) h.getObject()).getMostSpecificTraits()  );
             } else {
@@ -712,7 +711,7 @@ public class DefaultKnowledgeHelper
 
         if ( needsUpdate ) {
             InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
-            if ( ! h.isTrait() ) {
+            if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
                                                  "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );
             }

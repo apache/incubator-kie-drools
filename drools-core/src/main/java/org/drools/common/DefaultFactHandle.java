@@ -26,6 +26,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.FactHandle;
 import org.drools.core.util.StringUtils;
+import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitTypeEnum;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.RightTuple;
@@ -70,6 +73,8 @@ public class DefaultFactHandle
     private boolean                 disconnected;
     private boolean                 valid;
 
+    private TraitTypeEnum           traitType;
+
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
@@ -83,7 +88,8 @@ public class DefaultFactHandle
         this( id,
               object,
               id,
-              null );
+              null,
+              false);
     }
 
     /**
@@ -95,15 +101,24 @@ public class DefaultFactHandle
     public DefaultFactHandle(final int id,
             final Object object,
             final long recency,
-            final WorkingMemoryEntryPoint wmEntryPoint) {
-        this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint );
+            final WorkingMemoryEntryPoint wmEntryPoint ) {
+        this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, false );
+    }
+
+    public DefaultFactHandle(final int id,
+            final Object object,
+            final long recency,
+            final WorkingMemoryEntryPoint wmEntryPoint,
+            final boolean isTraitOrTraitable ) {
+        this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, isTraitOrTraitable );
     }
 
     public DefaultFactHandle(final int id,
             final int identityHashCode,
             final Object object,
             final long recency,
-            final WorkingMemoryEntryPoint wmEntryPoint) {
+            final WorkingMemoryEntryPoint wmEntryPoint,
+            final boolean isTraitOrTraitable ) {
         this.id = id;
         this.entryPoint = wmEntryPoint;
         this.recency = recency;
@@ -111,6 +126,7 @@ public class DefaultFactHandle
         this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
         this.identityHashCode = identityHashCode;
         this.valid = true;
+        this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
     public DefaultFactHandle(int id,
@@ -127,6 +143,7 @@ public class DefaultFactHandle
         this.object = object;
         this.disconnected = true;
         this.valid = true;
+        this.traitType = TraitTypeEnum.NON_TRAIT;
     }
 
     public DefaultFactHandle(String externalFormat) {
@@ -207,7 +224,9 @@ public class DefaultFactHandle
                ":" +
                ( ( this.entryPoint != null ) ? this.entryPoint.getEntryPointId() : "null" ) +
                ":" +
-               valid;
+               valid +
+               ":" +
+               this.traitType.name();
     }
 
     @XmlAttribute(name = "external-form")
@@ -256,6 +275,9 @@ public class DefaultFactHandle
         this.object = object;
         this.objectHashCode = ( object != null ) ? object.hashCode() : 0;
         this.identityHashCode = determineIdentityHashCode( object );
+        if ( isTraitOrTraitable() ) {
+            this.traitType = determineTraitType();
+        }
     }
 
     /**
@@ -280,8 +302,8 @@ public class DefaultFactHandle
         return false;
     }
 
-    public boolean isTrait() {
-        return false;
+    public boolean isTraitOrTraitable() {
+        return traitType != TraitTypeEnum.NON_TRAIT;
     }
 
     public RightTuple getFirstRightTuple() {
@@ -526,7 +548,7 @@ public class DefaultFactHandle
     }
 
     public DefaultFactHandle clone() {
-        DefaultFactHandle clone = new DefaultFactHandle( this.id, this.object, this.recency, this.entryPoint );
+        DefaultFactHandle clone = new DefaultFactHandle( this.id, this.object, this.recency, this.entryPoint, this.isTraitOrTraitable() );
         clone.key = this.key;
         clone.firstLeftTuple = this.firstLeftTuple;
         clone.lastLeftTuple = this.lastLeftTuple;
@@ -538,6 +560,7 @@ public class DefaultFactHandle
         clone.identityHashCode = System.identityHashCode( clone.object );
         clone.disconnected = this.disconnected;
         clone.valid = this.valid;
+        clone.traitType = this.traitType;
         return clone;
     }
 
@@ -567,7 +590,7 @@ public class DefaultFactHandle
 
     private void createFromExternalFormat( String externalFormat ) {
         String[] elements = externalFormat.split( ":" );
-        if (elements.length != 7) {
+        if (elements.length != 8) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements" );
         }
 
@@ -580,6 +603,30 @@ public class DefaultFactHandle
                                                                                                                                                   elements[5].trim() );
         this.disconnected = true;
         this.valid = Boolean.parseBoolean( elements[6] );
+        this.traitType = TraitTypeEnum.valueOf( elements[7] );
+    }
+
+
+    private TraitTypeEnum determineTraitType() {
+        if ( isTraitOrTraitable() ) {
+            if ( object instanceof TraitProxy ) {
+                return TraitTypeEnum.TRAIT;
+            } else if ( object instanceof TraitableBean ) {
+                return TraitTypeEnum.TRAITABLE;
+            } else {
+                return TraitTypeEnum.LEGACY_TRAITABLE;
+            }
+        } else {
+            return TraitTypeEnum.NON_TRAIT;
+        }
+    }
+
+    public boolean isTraitable() {
+        return traitType == TraitTypeEnum.TRAITABLE;
+    }
+
+    public boolean isTraiting() {
+        return traitType == TraitTypeEnum.TRAIT.TRAIT;
     }
 
 }

@@ -358,7 +358,7 @@ public abstract class AbstractWorkingMemory
 
     public void initInitialFact( InternalRuleBase ruleBase, MarshallerReaderContext context ) {
         ruleBase.lock();
-        this.initialFactHandle = new DefaultFactHandle(0, InitialFactImpl.getInstance(), 0,  defaultEntryPoint );
+        this.initialFactHandle = new DefaultFactHandle(0, InitialFactImpl.getInstance(), 0,  defaultEntryPoint, false );
 
         ObjectTypeConf otc = this.defaultEntryPoint.getObjectTypeConfigurationRegistry()
                 .getObjectTypeConf( this.defaultEntryPoint.entryPoint, this.initialFactHandle.getObject() );

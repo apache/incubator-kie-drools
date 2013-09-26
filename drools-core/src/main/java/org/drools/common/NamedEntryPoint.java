@@ -627,7 +627,7 @@ public class NamedEntryPoint
                 }
             }
 
-            if ( handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
+            if ( handle.isTraitOrTraitable() && handle.getObject() instanceof TraitProxy ) {
                 ((TraitableBean) ( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
             }
 

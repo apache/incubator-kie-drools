@@ -583,6 +583,7 @@ public class ProtobufOutputMarshaller {
         _handle.setType(getHandleType(handle));
         _handle.setId(handle.getId());
         _handle.setRecency(handle.getRecency());
+        _handle.setEntryPoint( handle.getEntryPoint().getEntryPointId() );
 
         if (_handle.getType() == ProtobufMessages.FactHandle.HandleType.EVENT) {
             // is event

@@ -47,6 +47,7 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
+import org.drools.factmodel.traits.TraitProxy;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
@@ -498,12 +499,18 @@ public class ProtobufInputMarshaller {
         }
 
         InternalFactHandle handle = null;
+
+        ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf(
+                ((InternalWorkingMemoryEntryPoint) context.wm.getEntryPoints().get( _handle.getEntryPoint() ) ).getEntryPoint(),
+                object );
+
         switch ( _handle.getType() ) {
             case FACT : {
                 handle = new DefaultFactHandle( _handle.getId(),
                                                 object,
                                                 _handle.getRecency(),
-                                                entryPoint );
+                                                entryPoint,
+                                                typeConf != null && typeConf.isTrait() );
                 break;
             }
             case QUERY : {
@@ -518,7 +525,8 @@ public class ProtobufInputMarshaller {
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
                                               _handle.getDuration(),
-                                              entryPoint );
+                                              entryPoint,
+                                              typeConf != null && typeConf.isTrait() );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
                 // the event is re-propagated through the network, so the activations counter will be recalculated
                 //((EventFactHandle) handle).setActivationsCount( _handle.getActivationsCount() );

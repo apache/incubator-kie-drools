@@ -138,7 +138,15 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public boolean isTrait() {
+    public boolean isTraitOrTraitable() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public boolean isTraitable() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public boolean isTraiting() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
