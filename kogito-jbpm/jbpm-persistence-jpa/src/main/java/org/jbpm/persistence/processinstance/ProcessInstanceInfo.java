@@ -68,6 +68,7 @@ public class ProcessInstanceInfo{
 
     @ElementCollection
     @CollectionTable(name="EventTypes", joinColumns=@JoinColumn(name="InstanceId"))
+    @Column(name="element")
     private Set<String>                       eventTypes         = new HashSet<String>();
     
     @Transient
