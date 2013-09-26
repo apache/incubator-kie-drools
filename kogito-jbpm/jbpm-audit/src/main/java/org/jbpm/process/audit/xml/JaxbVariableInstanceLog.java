@@ -64,36 +64,72 @@ public class JaxbVariableInstanceLog extends AbstractJaxbHistoryObject<VariableI
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public String getProcessId() {
         return processId;
     }
 
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
     public Date getDate() {
         return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getVariableInstanceId() {
         return variableInstanceId;
     }
 
+    public void setVariableInstanceId(String variableInstanceId) {
+        this.variableInstanceId = variableInstanceId;
+    }
+
     public String getVariableId() {
         return variableId;
+    }
+
+    public void setVariableId(String variableId) {
+        this.variableId = variableId;
     }
 
     public String getValue() {
         return value;
     }
 
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     public String getOldValue() {
         return oldValue;
+    }
+
+    public void setOldValue(String oldValue) {
+        this.oldValue = oldValue;
     }
 
     public String getExternalId() {
         return externalId;
     }
-    
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
 }

@@ -76,48 +76,96 @@ public class JaxbNodeInstanceLog extends AbstractJaxbHistoryObject<NodeInstanceL
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public String getProcessId() {
         return processId;
     }
 
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
     public Date getDate() {
         return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Integer getType() {
         return type;
     }
 
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public String getNodeInstanceId() {
         return nodeInstanceId;
+    }
+
+    public void setNodeInstanceId(String nodeInstanceId) {
+        this.nodeInstanceId = nodeInstanceId;
     }
 
     public String getNodeId() {
         return nodeId;
     }
 
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
     public String getNodeName() {
         return nodeName;
+    }
+
+    public void setNodeName(String nodeName) {
+        this.nodeName = nodeName;
     }
 
     public String getNodeType() {
         return nodeType;
     }
 
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     public long getWorkItemId() {
         return workItemId;
+    }
+
+    public void setWorkItemId(long workItemId) {
+        this.workItemId = workItemId;
     }
 
     public String getConnection() {
         return connection;
     }
 
+    public void setConnection(String connection) {
+        this.connection = connection;
+    }
+
     public String getExternalId() {
         return externalId;
     }
-    
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
 }

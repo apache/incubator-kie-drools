@@ -79,52 +79,104 @@ public class JaxbProcessInstanceLog extends AbstractJaxbHistoryObject<ProcessIns
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
     public String getProcessId() {
         return processId;
     }
 
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
+
     public Date getStart() {
         return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
     }
 
     public Date getEnd() {
         return end;
     }
 
+    public void setEnd(Date end) {
+        this.end = end;
+    }
+
     public Integer getStatus() {
         return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Long getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
 
+    public void setParentProcessInstanceId(Long parentProcessInstanceId) {
+        this.parentProcessInstanceId = parentProcessInstanceId;
+    }
+
     public String getOutcome() {
         return outcome;
+    }
+
+    public void setOutcome(String outcome) {
+        this.outcome = outcome;
     }
 
     public Long getDuration() {
         return duration;
     }
 
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
     public String getIdentity() {
         return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
     }
 
     public String getProcessVersion() {
         return processVersion;
     }
 
+    public void setProcessVersion(String processVersion) {
+        this.processVersion = processVersion;
+    }
+
     public String getProcessName() {
         return processName;
+    }
+
+    public void setProcessName(String processName) {
+        this.processName = processName;
     }
 
     public String getExternalId() {
         return externalId;
     }
-    
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
+    }
+
 }
