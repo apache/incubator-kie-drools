@@ -8,7 +8,6 @@ import org.kie.api.task.model.Task;
 
 public interface TaskLifeCycleEventListener {
     
-    //@TODO: add all the methods
     public void afterTaskActivatedEvent(Task ti);
     public void afterTaskClaimedEvent(Task ti);
     public void afterTaskSkippedEvent(Task ti);
@@ -18,5 +17,10 @@ public interface TaskLifeCycleEventListener {
     public void afterTaskFailedEvent(Task ti);
     public void afterTaskAddedEvent(Task ti);
     public void afterTaskExitedEvent(Task ti);
+    public void afterTaskReleasedEvent(Task ti);
+    public void afterTaskResumedEvent(Task ti);
+    public void afterTaskSuspendedEvent(Task ti);
+    public void afterTaskForwardedEvent(Task ti);
+    public void afterTaskDelegatedEvent(Task ti);
     
 }

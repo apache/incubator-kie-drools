@@ -31,3 +31,4 @@ bitronix-default-config.properties
 # files used for external db testing
 jdbc_driver.jar
 db-settings.xml
+/jbpm-human-task/jbpm-human-task-audit/target/

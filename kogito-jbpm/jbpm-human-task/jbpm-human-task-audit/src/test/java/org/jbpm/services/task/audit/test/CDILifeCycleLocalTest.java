@@ -54,8 +54,8 @@ public class CDILifeCycleLocalTest extends LifeCycleBaseTest {
                 .addPackage("org.jbpm.services.task.subtask")
                 .addPackage("org.jbpm.services.task.rule")
                 .addPackage("org.jbpm.services.task.rule.impl")
-                .addPackage("org.jbpm.task.audit")
-                .addPackage("org.jbpm.task.audit.internals")// for testing purposes
+                .addPackage("org.jbpm.services.task.audit")
+                .addPackage("org.jbpm.services.task.audit.internals")// for testing purposes
                 //.addPackage("org.jbpm.services.task.commands") // This should not be required here 
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))

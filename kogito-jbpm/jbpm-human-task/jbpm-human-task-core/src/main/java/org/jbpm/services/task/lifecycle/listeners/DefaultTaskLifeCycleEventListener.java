@@ -12,11 +12,16 @@ import org.jbpm.services.task.events.AfterTaskActivatedEvent;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.events.AfterTaskClaimedEvent;
 import org.jbpm.services.task.events.AfterTaskCompletedEvent;
+import org.jbpm.services.task.events.AfterTaskDelegatedEvent;
 import org.jbpm.services.task.events.AfterTaskExitedEvent;
 import org.jbpm.services.task.events.AfterTaskFailedEvent;
+import org.jbpm.services.task.events.AfterTaskForwardedEvent;
+import org.jbpm.services.task.events.AfterTaskReleasedEvent;
+import org.jbpm.services.task.events.AfterTaskResumedEvent;
 import org.jbpm.services.task.events.AfterTaskSkippedEvent;
 import org.jbpm.services.task.events.AfterTaskStartedEvent;
 import org.jbpm.services.task.events.AfterTaskStoppedEvent;
+import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
 import org.kie.api.task.model.Task;
 
 @ApplicationScoped
@@ -59,6 +64,26 @@ public class DefaultTaskLifeCycleEventListener implements TaskLifeCycleEventList
 
     public void afterTaskExitedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskExitedEvent Task ti) {
         
+    }
+
+    @Override
+    public void afterTaskReleasedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskReleasedEvent Task ti) {
+    }
+
+    @Override
+    public void afterTaskResumedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskResumedEvent Task ti) {
+    }
+
+    @Override
+    public void afterTaskSuspendedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskSuspendedEvent Task ti) {
+    }
+
+    @Override
+    public void afterTaskForwardedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskForwardedEvent Task ti) {
+    }
+
+    @Override
+    public void afterTaskDelegatedEvent(@Observes(notifyObserver= Reception.IF_EXISTS) @AfterTaskDelegatedEvent Task ti) {
     }
     
 }

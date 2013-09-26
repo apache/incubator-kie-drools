@@ -33,6 +33,7 @@ import org.jbpm.services.task.events.AfterTaskReleasedEvent;
 import org.jbpm.services.task.events.AfterTaskResumedEvent;
 import org.jbpm.services.task.events.AfterTaskSkippedEvent;
 import org.jbpm.services.task.events.AfterTaskStartedEvent;
+import org.jbpm.services.task.events.AfterTaskStoppedEvent;
 import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
 import org.jbpm.services.task.events.BeforeTaskActivatedEvent;
 import org.jbpm.services.task.events.BeforeTaskClaimedEvent;
@@ -440,7 +441,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     break;
                 }
                 case Stop: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskSuspendedEvent>() {
+                    taskEvents.select(new AnnotationLiteral<AfterTaskStoppedEvent>() {
                     }).fire(task);
                     break;
                 }    

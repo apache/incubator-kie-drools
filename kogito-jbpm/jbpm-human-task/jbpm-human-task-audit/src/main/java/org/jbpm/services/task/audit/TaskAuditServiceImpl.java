@@ -16,7 +16,9 @@
 package org.jbpm.services.task.audit;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.internal.task.api.model.TaskEvent;
 
@@ -24,6 +26,8 @@ import org.kie.internal.task.api.model.TaskEvent;
  *
  * @author salaboy
  */
+@ApplicationScoped
+@Transactional
 public class TaskAuditServiceImpl implements TaskAuditService{
     
     @Inject 

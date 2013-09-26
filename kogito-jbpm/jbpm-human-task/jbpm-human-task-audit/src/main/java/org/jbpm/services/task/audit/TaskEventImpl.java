@@ -7,18 +7,18 @@ package org.jbpm.services.task.audit;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Date;
 import javax.persistence.Column;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import org.jbpm.services.task.impl.model.UserImpl;
-
-import org.kie.api.task.model.User;
+import javax.persistence.Temporal;
 import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.internal.task.api.model.TaskEvent.TaskEventType;
 
@@ -38,19 +38,32 @@ public class TaskEventImpl implements TaskEvent {
     
     private Long taskId;
     
+    @Enumerated(EnumType.STRING)
     private TaskEventType type;
     
-    @ManyToOne(targetEntity=UserImpl.class)
-    private User user;
+    
+    private String userId;
+    
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date logTime;
 
     public TaskEventImpl() {
     }
 
-    public TaskEventImpl(long taskId, TaskEventType type, User user) {
+    public TaskEventImpl(long taskId, TaskEventType type, String userId) {
         this.taskId = taskId;
         this.type = type;
-        this.user = user;
+        this.userId = userId;
     }
+
+    public TaskEventImpl(Long taskId, TaskEventType type, String userId, Date logTime) {
+        this.taskId = taskId;
+        this.type = type;
+        this.userId = userId;
+        this.logTime = logTime;
+    }
+    
+    
 
     public long getId() {
         return id;
@@ -76,12 +89,20 @@ public class TaskEventImpl implements TaskEvent {
         this.type = type;
     }
 
-    public User getUser() {
-        return user;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Date getLogTime() {
+        return logTime;
+    }
+
+    public void setLogTime(Date logTime) {
+        this.logTime = logTime;
     }
 
     @Override

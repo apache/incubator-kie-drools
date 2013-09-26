@@ -184,6 +184,11 @@ public class BAMTaskEventListener implements TaskLifeCycleEventListener {
     public void afterTaskSuspendedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskSuspendedEvent Task ti) {
         createOrUpdateTask(ti);
     }
+    
+    @Override
+    public void afterTaskForwardedEvent(@Observes(notifyObserver = Reception.ALWAYS) @AfterTaskForwardedEvent Task ti) {
+        createOrUpdateTask(ti);
+    }
 
     /**
      * Creates or updates a bam task summary instance.

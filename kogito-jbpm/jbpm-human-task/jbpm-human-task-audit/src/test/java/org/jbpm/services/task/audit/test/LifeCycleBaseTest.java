@@ -40,7 +40,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         // One potential owner, should go straight to state Reserved
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Knights Templer' )],businessAdministrators = [ new User('Administrator') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
 
@@ -49,6 +49,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         long taskId = task.getId();
 
+        taskService.claim(taskId, "Darth Vader");    
+        
+        taskService.release(taskId, "Darth Vader");
+        
+        taskService.claim(taskId, "Darth Vader");    
+        
         // Go straight from Ready to Inprogress
 
         taskService.start(taskId, "Darth Vader");
@@ -68,7 +74,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         List<TaskEvent> allTaskEvents = taskAudit.getAllTaskEvents(taskId);
         
-        assertEquals(3, allTaskEvents.size());
+        assertEquals(6, allTaskEvents.size());
         
     }
 
