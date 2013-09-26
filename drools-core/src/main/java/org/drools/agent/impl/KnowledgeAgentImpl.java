@@ -930,15 +930,6 @@ public class KnowledgeAgentImpl
                     JavaDialectRuntimeData.TypeDeclarationClassLoader tdClassLoader = (JavaDialectRuntimeData.TypeDeclarationClassLoader)
                             ((AbstractRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getTypeDeclarationClassLoader();
 
-                    JavaDialectRuntimeData jdata = (JavaDialectRuntimeData) newPackage.pkg.getDialectRuntimeRegistry().getDialectData( "java" );
-                    Map<String,byte[]> definedClasses = jdata.getClassDefinitions();
-                    for ( String className : definedClasses.keySet() ) {
-                        if ( tdClassLoader.getStore().getClassDefinition( className ) != null ) {
-                            jdata.removeClassDefinition( className );
-                            jdata.getStore().remove( className );
-                        }
-                    }
-
                     newPackage.pkg.getDialectRuntimeRegistry().onAdd( rootClassLoader );
                     newPackage.pkg.getDialectRuntimeRegistry().onBeforeExecute();
                     newPackage.pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( abstractRuleBase.getClassFieldAccessorCache() );
