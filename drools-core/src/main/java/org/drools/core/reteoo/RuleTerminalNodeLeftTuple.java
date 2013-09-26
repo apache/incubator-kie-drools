@@ -412,4 +412,9 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     public boolean isRuleAgendaItem() {
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "["+toExternalForm()+" [ " + super.toString()+ " ] ]";
+    }
 }

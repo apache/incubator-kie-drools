@@ -38,6 +38,7 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -46,6 +47,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
@@ -753,7 +755,7 @@ public class StreamsTest extends CommonTestMethodBase {
     }
     
     
-    @Test (timeout=10000)
+    @Test(timeout=10000)
     public void testAtomicActivationFiring() throws Exception {
         // JBRULES-3383
         String str = "package org.drools.compiler.test\n" +
@@ -797,6 +799,8 @@ public class StreamsTest extends CommonTestMethodBase {
         kBaseConfig.setOption(EventProcessingOption.STREAM);
         KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConfig, str);
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        
+        ksession.addEventListener(new org.kie.api.event.rule.DebugAgendaEventListener());
 
         FactType eventType = kbase.getFactType("org.drools.compiler.test", "Event");
 

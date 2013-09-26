@@ -356,7 +356,8 @@ public class AbstractWorkingMemory
         this.__ruleBaseEventListeners = new LinkedList();
         this.lock = new ReentrantLock();
 
-        timerService = TimerServiceFactory.getTimerService( this.config );        
+        timerService = TimerServiceFactory.getTimerService( this, this.config );     
+        timerService.setSession(this);
         ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
 
         this.propagationIdCounter = new AtomicLong( propagationContext );

@@ -18,6 +18,7 @@ package org.drools.core.time;
 
 import java.util.Collection;
 
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.impl.TimerJobInstance;
 
 /**
@@ -31,8 +32,6 @@ public interface TimerService extends SchedulerService {
      * @return the current timestamp
      */
     public long getCurrentTime();
-    
-   
 
     /**
      * Shuts the service down
@@ -53,5 +52,13 @@ public interface TimerService extends SchedulerService {
      * @return
      */
     public Collection<TimerJobInstance> getTimerJobInstances(int id);
+    
+    /**
+     * Sets the reference to the associated session
+     * @param wm
+     */
+    public void setSession( InternalWorkingMemory wm );
+    
+    public InternalWorkingMemory getSession();
 
 }

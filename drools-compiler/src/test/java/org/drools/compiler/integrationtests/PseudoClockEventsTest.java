@@ -53,6 +53,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
             "\n" +
             "declare StockTick\n" +
             "    @role( event )\n" +
+            //"    @expires( 1m )\n" +
             "end\n\n";
     private static final String evalFirePseudoClockRuleA       =
             "rule A\n" +
@@ -87,7 +88,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
                 any(AfterMatchFiredEvent.class));
     }
 
-    @Test (timeout = 6000)
+    @Test(timeout = 6000)
     public void testEvenFirePseudoClockRuleB() throws Exception {
 
         AgendaEventListener ael = mock(AgendaEventListener.class);
@@ -142,6 +143,7 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 
         for (int stIndex = 1; stIndex <= stockCount; stIndex++) {
             clock.advanceTime(20, TimeUnit.SECONDS);
+            Thread.sleep(100);
             final StockTickInterface st = new StockTick(stIndex,
                                                         "RHT",
                                                         100 * stIndex,
@@ -152,6 +154,8 @@ public class PseudoClockEventsTest extends CommonTestMethodBase {
 
         Thread.sleep(100);
         ksession.halt();
+        
+        fireUntilHaltThread.join(5000);
 
         return stockCount;
     }
