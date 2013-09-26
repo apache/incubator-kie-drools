@@ -227,10 +227,14 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     }
 
     public String getRuleFlowGroup() {
+        if (ruleFlowGroup == null || ruleFlowGroup.trim().length() == 0) {
+            ruleFlowGroup = getRuleSetNode().getRuleFlowGroup();
+        }
         return ruleFlowGroup;
     }
 
     public void setRuleFlowGroup(String ruleFlowGroup) {
+        
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
