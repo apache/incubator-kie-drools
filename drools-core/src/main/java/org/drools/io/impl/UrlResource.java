@@ -367,4 +367,12 @@ public class UrlResource extends BaseResource
             return new File(root);
         }
     }
+
+    public boolean exists() {
+        try {
+            return this.url.openStream() != null;
+        } catch ( IOException e ) {
+            return false;
+        }
+    }
 }

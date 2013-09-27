@@ -158,4 +158,9 @@ public class FileSystemResource  extends BaseResource implements InternalResourc
     public int hashCode() {
         return this.file.hashCode();
     }
+
+    public boolean exists() {
+        System.out.println( "Checkgin for existence of " + file.getAbsolutePath() + " >> " + file.exists() );
+        return this.file.exists();
+    }
 }

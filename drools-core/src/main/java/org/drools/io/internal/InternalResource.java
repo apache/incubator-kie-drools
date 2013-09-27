@@ -73,4 +73,6 @@ public interface InternalResource extends Resource {
     void setCategories( String categories );
 
     void addCategory( String category );
+
+    boolean exists();
 }

@@ -305,7 +305,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireBeforeResourceProcessed( changeSet,
                                                                resource,
                                                                ((InternalResource) resource).getResourceType(),
-                                                               ResourceStatus.RESOURCE_MODIFIED );
+                                                               ResourceStatus.RESOURCE_REMOVED );
                 if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
                     this.notifier.unsubscribeResourceChangeListener( this,
                                                                      resource );
@@ -335,7 +335,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireAfterResourceProcessed( changeSet,
                                                               resource,
                                                               ((InternalResource) resource).getResourceType(),
-                                                              ResourceStatus.RESOURCE_MODIFIED );
+                                                              ResourceStatus.RESOURCE_REMOVED );
             }
 
             /*
@@ -348,7 +348,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireBeforeResourceProcessed( changeSet,
                                                                resource,
                                                                ((InternalResource) resource).getResourceType(),
-                                                               ResourceStatus.RESOURCE_REMOVED );
+                                                               ResourceStatus.RESOURCE_MODIFIED );
                 if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
                     try {
                         this.retrieveDSLResource( resource );
@@ -410,7 +410,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireAfterResourceProcessed( changeSet,
                                                               resource,
                                                               ((InternalResource) resource).getResourceType(),
-                                                              ResourceStatus.RESOURCE_REMOVED );
+                                                              ResourceStatus.RESOURCE_MODIFIED );
             }
 
             this.eventSupport.fireAfterChangeSetProcessed( changeSet,
@@ -1184,7 +1184,7 @@ public class KnowledgeAgentImpl
                                       boolean notify) {
         boolean newMapping = this.registeredResources.createNewResourceEntry( resource );
 
-        if ( notify && newMapping ) {
+        if ( notify && newMapping && ((InternalResource)resource).exists() ) {
             this.listener.debug( "KnowledgeAgent notifier subscribing to resource="
                                  + resource );
             this.notifier.subscribeResourceChangeListener( this,
@@ -1234,7 +1234,7 @@ public class KnowledgeAgentImpl
                                                                       definition );
         }
 
-        if ( notify && isNewResource ) {
+        if ( notify && isNewResource && ((InternalResource) resource).exists() ) {
             this.listener.debug( "KnowledgeAgent notifier subscribing to resource="
                                  + resource );
 

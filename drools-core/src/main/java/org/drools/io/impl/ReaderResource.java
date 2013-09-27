@@ -114,4 +114,8 @@ public class ReaderResource  extends BaseResource implements InternalResource {
     public String toString() {
         return "[ReaderResource resource=" + this.reader + " encoding='" + this.encoding + "']";
     }
+
+    public boolean exists() {
+        return this.reader != null;
+    }
 }
