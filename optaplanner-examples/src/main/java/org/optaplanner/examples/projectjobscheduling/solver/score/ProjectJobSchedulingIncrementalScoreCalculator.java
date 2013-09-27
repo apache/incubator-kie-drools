@@ -1,10 +1,8 @@
 package org.optaplanner.examples.projectjobscheduling.solver.score;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
@@ -40,13 +38,13 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
                     : new NonrenewableResourceCapacityTracker(resource));
         }
         List<Project> projectList = schedule.getProjectList();
-        projectEndDateMap = new HashMap<Project, Integer>(schedule.getProjectList().size());
+        projectEndDateMap = new HashMap<Project, Integer>(projectList.size());
         maximumProjectEndDate = 0;
         hardScore = 0;
         soft0Score = 0;
         soft1Score = 0;
         int minimumReleaseDate = Integer.MAX_VALUE;
-        for (Project p: schedule.getProjectList()) {
+        for (Project p: projectList) {
             minimumReleaseDate = Math.min(p.getReleaseDate(), minimumReleaseDate);
         }
         soft1Score += minimumReleaseDate;
@@ -132,17 +130,21 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
                 soft0Score += endDate - project.getCriticalPathEndDate();
                 // Total make span
                 if (endDate == maximumProjectEndDate) {
-                    int newMaximumProjectEndDate = 0;
-                    for (Integer otherEndDate : projectEndDateMap.values()) {
-                        if (otherEndDate > newMaximumProjectEndDate) {
-                            newMaximumProjectEndDate = otherEndDate;
-                        }
-                    }
-                    soft1Score += endDate - newMaximumProjectEndDate;
-                    maximumProjectEndDate = newMaximumProjectEndDate;
+                    updateMaximumProjectEndDate();
+                    soft1Score += endDate - maximumProjectEndDate;
                 }
             }
         }
+    }
+
+    private void updateMaximumProjectEndDate() {
+        int maximum = 0;
+        for (Integer endDate : projectEndDateMap.values()) {
+            if (endDate > maximum) {
+                maximum = endDate;
+            }
+        }
+        maximumProjectEndDate = maximum;
     }
 
     public Score calculateScore() {
