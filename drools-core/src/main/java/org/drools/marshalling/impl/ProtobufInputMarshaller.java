@@ -251,7 +251,7 @@ public class ProtobufInputMarshaller {
                              ((NamedEntryPoint) wmep).getObjectStore() );
         }
 
-        if ( _session.getRuleData().getInitialFact() != null ) {
+        if ( _session.getRuleData().hasInitialFact() ) {
             ((AbstractWorkingMemory)context.wm).initInitialFact(context.ruleBase, context);
             context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
         }

@@ -5394,7 +5394,7 @@ public final class ProtobufMessages {
     private void initFields() {
       lastId_ = 0;
       lastRecency_ = 0L;
-      initialFact_ = null;
+      initialFact_ = org.drools.marshalling.impl.ProtobufMessages.FactHandle.getDefaultInstance();
       agenda_ = org.drools.marshalling.impl.ProtobufMessages.Agenda.getDefaultInstance();
       nodeMemory_ = java.util.Collections.emptyList();
       entryPoint_ = java.util.Collections.emptyList();
