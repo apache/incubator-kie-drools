@@ -51,6 +51,14 @@ public class FindSubProcessInstancesCommand extends AbstractHistoryLogCommand<Li
         return this.auditLogService.findSubProcessInstances(processInstanceId);
     }
     
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
     public String toString() {
         return JPAAuditLogService.class.getSimpleName() + ".findSubProcessInstances("+ processInstanceId + ")";
     }

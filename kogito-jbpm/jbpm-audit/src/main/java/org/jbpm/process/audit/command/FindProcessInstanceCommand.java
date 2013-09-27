@@ -49,6 +49,14 @@ public class FindProcessInstanceCommand extends AbstractHistoryLogCommand<Proces
         return this.auditLogService.findProcessInstance(processInstanceId);
     }
     
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
     public String toString() {
         return JPAAuditLogService.class.getSimpleName() + ".findProcessInstance("+ processInstanceId + ")";
     }

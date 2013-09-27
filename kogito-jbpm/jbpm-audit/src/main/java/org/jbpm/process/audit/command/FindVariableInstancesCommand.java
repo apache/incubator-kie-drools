@@ -68,6 +68,22 @@ public class FindVariableInstancesCommand extends AbstractHistoryLogCommand<List
         }
     }
     
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getVariableId() {
+        return variableId;
+    }
+
+    public void setVariableId(String variableId) {
+        this.variableId = variableId;
+    }
+
     public String toString() {
         if( variableId == null || variableId.isEmpty() ) { 
             return JPAAuditLogService.class.getSimpleName() + ".findNodeInstances("+ processInstanceId + ")";

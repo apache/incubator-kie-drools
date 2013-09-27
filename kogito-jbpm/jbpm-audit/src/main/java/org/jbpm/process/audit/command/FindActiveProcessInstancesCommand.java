@@ -53,6 +53,14 @@ public class FindActiveProcessInstancesCommand extends AbstractHistoryLogCommand
         setLogEnvironment(cntxt);
         return this.auditLogService.findActiveProcessInstances(processId);
     }
+
+    public String getProcessId() {
+        return processId;
+    }
+
+    public void setProcessId(String processId) {
+        this.processId = processId;
+    }
     
     public String toString() {
         return JPAAuditLogService.class.getSimpleName() + ".findActiveProcessInstances("+ processId + ")";

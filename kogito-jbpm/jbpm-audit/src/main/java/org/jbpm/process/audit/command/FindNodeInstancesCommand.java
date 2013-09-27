@@ -68,6 +68,22 @@ public class FindNodeInstancesCommand extends AbstractHistoryLogCommand<List<Nod
         }
     }
     
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public void setProcessInstanceId(Long processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
     public String toString() {
         if( nodeId == null || nodeId.isEmpty() ) { 
             return JPAAuditLogService.class.getSimpleName() + ".findNodeInstances("+ processInstanceId + ")";
