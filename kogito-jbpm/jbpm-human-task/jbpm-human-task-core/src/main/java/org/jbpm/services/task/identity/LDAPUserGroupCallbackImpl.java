@@ -321,14 +321,14 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
         
         String binduser = this.config.getProperty(BIND_USER); 
 
-        if (binduser == null) {
+        if (binduser != null) {
 
             this.config.setProperty(Context.SECURITY_PRINCIPAL, binduser);
         }
 
         String bindpwd = this.config.getProperty(BIND_PWD); 
 
-        if (binduser == null) {
+        if (binduser != null) {
 
             this.config.setProperty(Context.SECURITY_CREDENTIALS, bindpwd);
         }
