@@ -23,15 +23,13 @@ import org.optaplanner.examples.projectjobscheduling.solver.score.capacity.Resou
 public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<Schedule> {
 
     private Map<Resource, ResourceCapacityTracker> resourceCapacityTrackerMap;
-    private Map<Project, Integer> projectDelayMap;
-    private Map<Project, Set<Allocation>> allocationsPerProjectMap;
+    private Map<Project, Integer> projectEndDateMap;
+    private int maximumProjectEndDate;
 
     private int hardScore;
-    private int mediumScore;
-    private int softScore;
-    
-    private int minimalReleaseDate;
-    private int maximalEndDate;
+    private int soft0Score;
+    private int soft1Score;
+
 
     public void resetWorkingSolution(Schedule schedule) {
         List<Resource> resourceList = schedule.getResourceList();
@@ -41,17 +39,17 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
                     ? new RenewableResourceCapacityTracker(resource)
                     : new NonrenewableResourceCapacityTracker(resource));
         }
+        List<Project> projectList = schedule.getProjectList();
+        projectEndDateMap = new HashMap<Project, Integer>(schedule.getProjectList().size());
+        maximumProjectEndDate = 0;
         hardScore = 0;
-        mediumScore = 0;
-        softScore = 0;
-        totalProjectDelay = 0;
-        minimalReleaseDate = Integer.MAX_VALUE;
-        maximalEndDate = 0;
+        soft0Score = 0;
+        soft1Score = 0;
+        int minimumReleaseDate = Integer.MAX_VALUE;
         for (Project p: schedule.getProjectList()) {
-            minimalReleaseDate = Math.min(p.getReleaseDate(), minimalReleaseDate); 
+            minimumReleaseDate = Math.min(p.getReleaseDate(), minimumReleaseDate);
         }
-        projectDelayMap = new HashMap<Project, Integer>();
-        allocationsPerProjectMap = new HashMap<Project, Set<Allocation>>();
+        soft1Score += minimumReleaseDate;
         for (Allocation allocation : schedule.getAllocationList()) {
             insert(allocation);
         }
@@ -80,38 +78,10 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     public void afterEntityRemoved(Object entity) {
         // Do nothing
     }
-    
-    private int totalProjectDelay;
-    
-    private int getTotalProjectDelay(Allocation allocation) {
-        Project p = allocation.getJob().getProject(); 
-        // first remove previous delay
-        int previousProjectDelay = projectDelayMap.containsKey(p) ? projectDelayMap.get(p) : 0;
-        totalProjectDelay -= previousProjectDelay;
-        Allocation sink = allocation.getSinkAllocation();
-        Integer endDate = sink.getEndDate();
-        // now calculate and add new delay
-        if (endDate == null) {
-            projectDelayMap.put(p, 0);
-        } else {
-            int delay = endDate - p.getReleaseDate() - p.getCriticalPathDuration();
-            totalProjectDelay += delay;
-            projectDelayMap.put(p, delay);
-        }
-        return totalProjectDelay;
-    }
 
     private void insert(Allocation allocation) {
-        trackAllocation(allocation);
-        // identify the maximal end date to calculate total makespan
-        Integer endDate = allocation.getEndDate();
-        if (endDate != null && endDate > maximalEndDate) {
-            maximalEndDate = endDate;
-            softScore = -(maximalEndDate - minimalReleaseDate);
-        }
-        // calculate total project delay
-        mediumScore = -getTotalProjectDelay(allocation);
-        // track capacity
+        // Job precedence is build-in
+        // Resource capacity
         ExecutionMode executionMode = allocation.getExecutionMode();
         if (executionMode != null && allocation.getJob().getJobType() == JobType.STANDARD) {
             for (ResourceRequirement resourceRequirement : executionMode.getResourceRequirementList()) {
@@ -122,40 +92,26 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
                 hardScore += tracker.getHardScore();
             }
         }
-    }
-    
-    private void trackAllocation(Allocation a) {
-        Project p = a.getJob().getProject();
-        if (!allocationsPerProjectMap.containsKey(p)) {
-            allocationsPerProjectMap.put(p, new HashSet<Allocation>());
-        }
-        allocationsPerProjectMap.get(p).add(a);
-    }
-    
-    private int getMaximalEndDate() {
-        int max = 0;
-        for (Set<Allocation> allocations: allocationsPerProjectMap.values()) {
-            for (Allocation allocation: allocations) {
-                Integer otherEndDate = allocation.getEndDate();
-                if (otherEndDate != null) {
-                    max = Math.max(otherEndDate, max);
+        // Total project delay and total make span
+        if (allocation.getJob().getJobType() == JobType.SINK) {
+            Integer endDate = allocation.getEndDate();
+            if (endDate != null) {
+                Project project = allocation.getProject();
+                projectEndDateMap.put(project, endDate);
+                // Total project delay
+                soft0Score -= endDate - project.getCriticalPathEndDate();
+                // Total make span
+                if (endDate > maximumProjectEndDate) {
+                    soft1Score -= endDate - maximumProjectEndDate;
+                    maximumProjectEndDate = endDate;
                 }
             }
         }
-        return max;
     }
 
     private void retract(Allocation allocation) {
-        allocationsPerProjectMap.get(allocation.getJob().getProject()).remove(allocation);
-        // identify the maximal end date to calculate total makespan
-        Integer endDate = allocation.getEndDate();
-        if (endDate != null && endDate >= maximalEndDate) {
-            maximalEndDate = getMaximalEndDate();
-            softScore = -(maximalEndDate - minimalReleaseDate);
-        }
-        // calculate total project delay
-        mediumScore = -getTotalProjectDelay(allocation);
-        // track capacity
+        // Job precedence is build-in
+        // Resource capacity
         ExecutionMode executionMode = allocation.getExecutionMode();
         if (executionMode != null && allocation.getJob().getJobType() == JobType.STANDARD) {
             for (ResourceRequirement resourceRequirement : executionMode.getResourceRequirementList()) {
@@ -166,10 +122,31 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
                 hardScore += tracker.getHardScore();
             }
         }
+        // Total project delay and total make span
+        if (allocation.getJob().getJobType() == JobType.SINK) {
+            Integer endDate = allocation.getEndDate();
+            if (endDate != null) {
+                Project project = allocation.getProject();
+                projectEndDateMap.remove(project);
+                // Total project delay
+                soft0Score += endDate - project.getCriticalPathEndDate();
+                // Total make span
+                if (endDate == maximumProjectEndDate) {
+                    int newMaximumProjectEndDate = 0;
+                    for (Integer otherEndDate : projectEndDateMap.values()) {
+                        if (otherEndDate > newMaximumProjectEndDate) {
+                            newMaximumProjectEndDate = otherEndDate;
+                        }
+                    }
+                    soft1Score += endDate - newMaximumProjectEndDate;
+                    maximumProjectEndDate = newMaximumProjectEndDate;
+                }
+            }
+        }
     }
 
     public Score calculateScore() {
-        return BendableScore.valueOf(new int[] {hardScore}, new int[] {mediumScore, softScore});
+        return BendableScore.valueOf(new int[] {hardScore}, new int[] {soft0Score, soft1Score});
     }
 
 }

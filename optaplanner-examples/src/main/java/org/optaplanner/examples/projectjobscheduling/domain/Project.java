@@ -67,6 +67,10 @@ public class Project extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public int getCriticalPathEndDate() {
+        return releaseDate + criticalPathDuration;
+    }
+
     public String getLabel() {
         return "Project " + id;
     }
