@@ -30,7 +30,6 @@ public class Project extends AbstractPersistable {
 
     private List<LocalResource> localResourceList;
     private List<Job> jobList;
-    // TODO resources, jobs,
 
     public int getReleaseDate() {
         return releaseDate;

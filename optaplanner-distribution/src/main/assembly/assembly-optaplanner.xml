@@ -51,10 +51,10 @@
       <directory>../optaplanner-examples/data</directory>
       <outputDirectory>examples/data</outputDirectory>
       <includes>
-        <include>**/import/*.*</include>
-        <include>**/unsolved/*.xml</include>
-        <include>**/solved/*.xml</include>
-        <include>**/export/*.*</include>
+        <include>**/import/**/*.*</include>
+        <include>**/unsolved/**/*.xml</include>
+        <include>**/solved/**/*.xml</include>
+        <include>**/export/**/*.*</include>
       </includes>
     </fileSet>
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
