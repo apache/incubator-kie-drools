@@ -298,6 +298,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             int locationListSizeEstimation = 25;
             List<Location> locationList = new ArrayList<Location>(locationListSizeEstimation);
             depotList = new ArrayList<Depot>(1);
+            TimeWindowedDepot depot = null;
             List<Customer> customerList = new ArrayList<Customer>(locationListSizeEstimation);
             boolean first = true;
             while (line != null && !line.trim().isEmpty()) {
@@ -314,7 +315,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 int milliDueTime = Integer.parseInt(lineTokens[5]) * 1000;
                 int milliServiceDuration = Integer.parseInt(lineTokens[6]) * 1000;
                 if (first) {
-                    TimeWindowedDepot depot = new TimeWindowedDepot();
+                    depot = new TimeWindowedDepot();
                     depot.setId(id);
                     depot.setLocation(location);
                     if (demand != 0) {
@@ -335,6 +336,15 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                     customer.setLocation(location);
                     customer.setDemand(demand);
                     customer.setMilliReadyTime(milliReadyTime);
+                    // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
+                    int maximumMilliDueTime = depot.getMilliDueTime()
+                            - milliServiceDuration - location.getMilliDistance(depot.getLocation());
+                    if (milliDueTime > maximumMilliDueTime) {
+                        logger.warn("The customer ({})'s milliDueTime ({}) was automatically reduced" +
+                                " to maximumMilliDueTime ({}) because of the depot's milliDueTime ({}).",
+                                customer, milliDueTime, maximumMilliDueTime, depot.getMilliDueTime());
+                        milliDueTime = maximumMilliDueTime;
+                    }
                     customer.setMilliDueTime(milliDueTime);
                     customer.setMilliServiceDuration(milliServiceDuration);
                     // Notice that we leave the PlanningVariable properties on null

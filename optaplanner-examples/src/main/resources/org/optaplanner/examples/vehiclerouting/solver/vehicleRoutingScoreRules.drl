@@ -79,3 +79,5 @@ rule "arrivalAfterDueTime"
     then
         scoreHolder.addHardConstraintMatch(kcontext, $milliDueTime - $milliArrivalTime.intValue());
 end
+
+// Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter

@@ -5100,7 +5100,7 @@
       <location reference="326"/>
       <demand>23</demand>
       <milliReadyTime>729000</milliReadyTime>
-      <milliDueTime>739000</milliDueTime>
+      <milliDueTime>738027</milliDueTime>
       <milliServiceDuration>10000</milliServiceDuration>
     </VrpTimeWindowedCustomer>
     <VrpTimeWindowedCustomer id="831">

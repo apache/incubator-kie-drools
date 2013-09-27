@@ -199,6 +199,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
                 hardScore -= (milliArrivalTime - milliDueTime);
             }
         }
+        // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
     }
 
     private void retractMilliArrivalTime(TimeWindowedCustomer customer) {
