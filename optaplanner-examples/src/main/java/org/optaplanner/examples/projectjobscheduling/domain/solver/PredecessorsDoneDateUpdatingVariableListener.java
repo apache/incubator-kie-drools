@@ -55,11 +55,7 @@ public class PredecessorsDoneDateUpdatingVariableListener implements PlanningVar
         // For the source the doneDate must be 0.
         Integer doneDate = 0;
         for (Allocation predecessorAllocation : allocation.getPredecessorAllocationList()) {
-            Integer endDate = predecessorAllocation.getEndDate();
-            if (endDate == null) {
-                doneDate = null;
-                break;
-            }
+            int endDate = predecessorAllocation.getEndDate();
             doneDate = Math.max(doneDate, endDate);
         }
         if (ObjectUtils.equals(doneDate, allocation.getPredecessorsDoneDate())) {

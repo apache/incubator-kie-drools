@@ -122,17 +122,18 @@ public class Allocation extends AbstractPersistable {
     // ************************************************************************
 
     public Integer getStartDate() {
-        if (predecessorsDoneDate == null || delay == null) {
+        if (predecessorsDoneDate == null) {
             return null;
         }
-        return predecessorsDoneDate + delay;
+        return predecessorsDoneDate + (delay == null ? 0 : delay);
     }
 
     public Integer getEndDate() {
-        if (predecessorsDoneDate == null || delay == null || executionMode == null) {
+        if (predecessorsDoneDate == null) {
             return null;
         }
-        return predecessorsDoneDate + delay + executionMode.getDuration();
+        return predecessorsDoneDate + (delay == null ? 0 : delay)
+                + (executionMode == null ? 0 : executionMode.getDuration());
     }
 
     public Project getProject() {

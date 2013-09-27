@@ -55,7 +55,6 @@ rule "renewableResourceUsedDay"
     when
         ResourceRequirement(resourceRenewable == true, $executionMode : executionMode, $resource : resource)
         Allocation(executionMode == $executionMode,
-                startDate != null, endDate != null,
                 $startDate : startDate, $endDate : endDate)
     then
         for (int i = $startDate; i < $endDate; i++) {

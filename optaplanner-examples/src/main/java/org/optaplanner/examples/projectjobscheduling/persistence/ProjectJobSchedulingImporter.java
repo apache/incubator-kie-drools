@@ -418,8 +418,9 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                 allocation.setJob(job);
                 allocation.setPredecessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
                 allocation.setSuccessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
+                // Uninitialized allocations take no time, but don't break the predecessorsDoneDate cascade to sink.
+                allocation.setPredecessorsDoneDate(job.getProject().getReleaseDate());
                 if (job.getJobType() == JobType.SOURCE) {
-                    allocation.setPredecessorsDoneDate(job.getProject().getReleaseDate());
                     allocation.setDelay(0);
                     if (job.getExecutionModeList().size() != 1) {
                         throw new IllegalArgumentException("The job (" + job

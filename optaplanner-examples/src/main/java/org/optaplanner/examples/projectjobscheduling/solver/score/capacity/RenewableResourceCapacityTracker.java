@@ -26,47 +26,43 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
 
     @Override
     public void insert(ResourceRequirement resourceRequirement, Allocation allocation) {
-        Integer startDate = allocation.getStartDate();
-        Integer endDate = allocation.getEndDate();
-        if (startDate != null && endDate != null) {
-            int requirement = resourceRequirement.getRequirement();
-            for (int i = startDate; i < endDate; i++) {
-                Integer used = usedPerDay.get(i);
-                if (used == null) {
-                    used = 0;
-                }
-                if (used > capacityEveryDay) {
-                    hardScore += (used - capacityEveryDay);
-                }
-                used += requirement;
-                if (used > capacityEveryDay) {
-                    hardScore -= (used - capacityEveryDay);
-                }
-                usedPerDay.put(i, used);
+        int startDate = allocation.getStartDate();
+        int endDate = allocation.getEndDate();
+        int requirement = resourceRequirement.getRequirement();
+        for (int i = startDate; i < endDate; i++) {
+            Integer used = usedPerDay.get(i);
+            if (used == null) {
+                used = 0;
             }
+            if (used > capacityEveryDay) {
+                hardScore += (used - capacityEveryDay);
+            }
+            used += requirement;
+            if (used > capacityEveryDay) {
+                hardScore -= (used - capacityEveryDay);
+            }
+            usedPerDay.put(i, used);
         }
     }
 
     @Override
     public void retract(ResourceRequirement resourceRequirement, Allocation allocation) {
-        Integer startDate = allocation.getStartDate();
-        Integer endDate = allocation.getEndDate();
-        if (startDate != null && endDate != null) {
-            int requirement = resourceRequirement.getRequirement();
-            for (int i = startDate; i < endDate; i++) {
-                Integer used = usedPerDay.get(i);
-                if (used == null) {
-                    used = 0;
-                }
-                if (used > capacityEveryDay) {
-                    hardScore += (used - capacityEveryDay);
-                }
-                used -= requirement;
-                if (used > capacityEveryDay) {
-                    hardScore -= (used - capacityEveryDay);
-                }
-                usedPerDay.put(i, used);
+        int startDate = allocation.getStartDate();
+        int endDate = allocation.getEndDate();
+        int requirement = resourceRequirement.getRequirement();
+        for (int i = startDate; i < endDate; i++) {
+            Integer used = usedPerDay.get(i);
+            if (used == null) {
+                used = 0;
             }
+            if (used > capacityEveryDay) {
+                hardScore += (used - capacityEveryDay);
+            }
+            used -= requirement;
+            if (used > capacityEveryDay) {
+                hardScore -= (used - capacityEveryDay);
+            }
+            usedPerDay.put(i, used);
         }
     }
 

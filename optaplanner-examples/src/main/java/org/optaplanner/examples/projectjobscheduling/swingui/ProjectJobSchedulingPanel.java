@@ -72,14 +72,12 @@ public class ProjectJobSchedulingPanel extends SolutionPanel {
             seriesIndex++;
         }
         for (Allocation allocation : schedule.getAllocationList()) {
-            Integer startDate = allocation.getStartDate();
-            Integer endDate = allocation.getEndDate();
-            if (startDate != null && endDate != null) {
-                YIntervalSeries projectSeries = projectSeriesMap.get(allocation.getProject());
-                projectSeries.add(allocation.getId(), (startDate + endDate) / 2.0,
-                        startDate, endDate);
-                maximumEndDate = Math.max(maximumEndDate, endDate);
-            }
+            int startDate = allocation.getStartDate();
+            int endDate = allocation.getEndDate();
+            YIntervalSeries projectSeries = projectSeriesMap.get(allocation.getProject());
+            projectSeries.add(allocation.getId(), (startDate + endDate) / 2.0,
+                    startDate, endDate);
+            maximumEndDate = Math.max(maximumEndDate, endDate);
         }
         NumberAxis domainAxis = new NumberAxis("Job");
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
