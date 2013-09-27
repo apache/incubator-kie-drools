@@ -140,7 +140,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
-        assertEquals(4, processes.size());
+        assertEquals(5, processes.size());
         
         processes = runtimeDataService.getProcessesByFilter("custom");
         assertNotNull(processes);
@@ -148,7 +148,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         
         processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
         assertNotNull(processes);
-        assertEquals(4, processes.size());
+        assertEquals(5, processes.size());
         
         ProcessDesc process = runtimeDataService.getProcessById("customtask");
         

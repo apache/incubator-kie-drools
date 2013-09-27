@@ -141,13 +141,14 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         List<String> processes = new ArrayList<String>();
         processes.add("repo/processes/general/customtask.bpmn");
         processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
         pom.getParentFile().mkdir();
         try {
             FileOutputStream fs = new FileOutputStream(pom);
-            fs.write(getPom(releaseId, null).getBytes());
+            fs.write(getPom(releaseId).getBytes());
             fs.close();
         } catch (Exception e) {
             
@@ -188,7 +189,7 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
-        assertEquals(2, processes.size());
+        assertEquals(3, processes.size());
         
         processes = runtimeDataService.getProcessesByFilter("custom");
         assertNotNull(processes);
@@ -196,9 +197,10 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         
         processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
         assertNotNull(processes);
-        assertEquals(2, processes.size());
+        assertEquals(3, processes.size());
         
         ProcessDesc process = runtimeDataService.getProcessById("customtask");
+        assertNotNull(process);
         
         RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
         assertNotNull(manager);
@@ -235,7 +237,7 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
-        assertEquals(2, processes.size());
+        assertEquals(3, processes.size());
         
         processes = runtimeDataService.getProcessesByFilter("custom");
         assertNotNull(processes);
@@ -243,9 +245,10 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         
         processes = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier());
         assertNotNull(processes);
-        assertEquals(2, processes.size());
+        assertEquals(3, processes.size());
         
         ProcessDesc process = runtimeDataService.getProcessById("customtask");
+        assertNotNull(process);
         
         RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
         assertNotNull(manager);
@@ -311,6 +314,33 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         
         engine.getKieSession().abortProcessInstance(processInstance.getId());
     }  
+    
+    @Test
+    public void testDeploymentAndExecutionOfProcessWithImports() {
+            
+        assertNotNull(deploymentService);
+        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("Import", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+    }
     
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
         String pom =

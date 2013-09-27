@@ -28,6 +28,8 @@ import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.io.impl.ByteArrayResource;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.services.task.impl.model.TaskDefImpl;
@@ -77,6 +79,8 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
                 if (conf.getSemanticModules().getSemanticModule("http://www.jboss.org/bpmn2-data-services") == null) {
                     conf.addSemanticModule(module);
                 }
+                conf.addSemanticModule( new BPMNExtensionsSemanticModule() );
+                conf.addSemanticModule( new BPMNDISemanticModule() );
             }
         };
     }
