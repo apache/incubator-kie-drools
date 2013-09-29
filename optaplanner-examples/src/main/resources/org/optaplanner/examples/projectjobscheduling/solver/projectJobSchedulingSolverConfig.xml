@@ -20,28 +20,20 @@
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
-      <!--<moveIteratorFactory>-->
-        <!--<moveIteratorFactoryClass>org.optaplanner.examples.projectjobschedulinging.solver.move.chainshift.ChainShiftMoveIteratorFactory</moveIteratorFactoryClass>-->
-        <!--<fixedProbabilityWeight>2.0</fixedProbabilityWeight>-->
-      <!--</moveIteratorFactory>-->
-      <!-- Moves that assign various valid values to the entities -->
       <changeMoveSelector>
         <valueSelector>
           <variableName>executionMode</variableName>
         </valueSelector>
-        <!--<fixedProbabilityWeight>1.0</fixedProbabilityWeight>-->
       </changeMoveSelector>
       <changeMoveSelector>
         <valueSelector>
           <variableName>delay</variableName>
         </valueSelector>
-        <!--<fixedProbabilityWeight>16.0</fixedProbabilityWeight>-->
       </changeMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <entityTabuRatio>0.2</entityTabuRatio>
-      <fadingEntityTabuRatio>0.7</fadingEntityTabuRatio>
-      <lateAcceptanceSize>1000</lateAcceptanceSize>
+      <lateAcceptanceSize>500</lateAcceptanceSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>4</acceptedCountLimit>

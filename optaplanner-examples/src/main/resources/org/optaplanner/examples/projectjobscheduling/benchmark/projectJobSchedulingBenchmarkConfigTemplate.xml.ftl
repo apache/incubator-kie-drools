@@ -46,9 +46,9 @@
     </solver>
   </inheritedSolverBenchmark>
 
-<#list [1000, 6000, 12000] as lateAcceptanceSize>
+<#list [500, 1000, 2000] as lateAcceptanceSize>
   <solverBenchmark>
-    <name>lateAcceptanceSize ${lateAcceptanceSize}</name>
+    <name>LA ${lateAcceptanceSize}</name>
     <solver>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
@@ -68,7 +68,6 @@
         </unionMoveSelector>
         <acceptor>
           <entityTabuRatio>0.2</entityTabuRatio>
-          <fadingEntityTabuRatio>0.7</fadingEntityTabuRatio>
           <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
         </acceptor>
         <forager>
