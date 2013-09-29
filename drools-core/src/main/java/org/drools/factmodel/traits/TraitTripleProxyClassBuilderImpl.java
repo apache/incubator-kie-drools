@@ -232,10 +232,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "getObject", "()" + Type.getDescriptor( Object.class ), null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "getObject", "()" + Type.getDescriptor( TraitableBean.class ), null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD, internalProxy, "object", descrCore );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
             mv.visitInsn( ARETURN );
 //            mv.visitMaxs( 1, 1 );
             mv.visitMaxs( 0, 0 );
@@ -286,7 +287,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "getObject", "()" + Type.getDescriptor( Object.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "getObject", "()" + Type.getDescriptor( TraitableBean.class ) );
             mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
 
 

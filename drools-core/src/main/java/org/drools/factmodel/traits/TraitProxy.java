@@ -91,7 +91,7 @@ public abstract class TraitProxy implements Externalizable, TraitType {
     }
 
 
-    public abstract Object getObject();
+    public abstract TraitableBean getObject();
 
 
     public boolean equals(Object o) {

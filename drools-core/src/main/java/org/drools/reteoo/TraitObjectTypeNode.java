@@ -62,7 +62,8 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     public void assertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
         if ( factHandle.getObject() instanceof TraitProxy )  {
             BitSet vetoMask = ((TraitProxy) factHandle.getObject()).getTypeFilter();
-            if ( vetoMask == null || typeMask.isEmpty() || ! HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask ) ) {
+            boolean isVetoed = vetoMask != null && ! typeMask.isEmpty() && HierarchyEncoderImpl.supersetOrEqualset( vetoMask, this.typeMask );
+            if ( ! isVetoed || sameAndNotCoveredByDescendants( (TraitProxy) factHandle.getObject(), typeMask ) ) {
 //                System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : Assert PASS " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 super.assertObject( factHandle, context, workingMemory );
             } else {
@@ -72,6 +73,25 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
             super.assertObject( factHandle, context, workingMemory );
         }
 
+    }
+
+    /**
+     *  Edge case: due to the way traits are encoded, consider this hierarchy:
+     *  A    B
+     *    C
+     *    D
+     *  On don/insertion of C, C may be vetoed by its parents, but might have been
+     *  already covered by one of its descendants (D)
+     */
+    private boolean sameAndNotCoveredByDescendants( TraitProxy proxy, BitSet typeMask ) {
+        boolean isSameType = typeMask.equals( proxy.getTypeCode() );
+        if ( isSameType ) {
+            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).children( typeMask );
+            // we have to exclude the "mock" bottom proxy
+            return descs.size() <= 1;
+        } else {
+            return false;
+        }
     }
 
     public void modifyObject( InternalFactHandle factHandle,

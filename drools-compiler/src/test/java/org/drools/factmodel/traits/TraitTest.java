@@ -4989,5 +4989,46 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+    @Test
+    public void testParentBlockers() {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.factmodel.traits.*; \n" +
+                     "\n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare X @Traitable end \n" +
+                     "" +
+                     "declare trait A @propertyReactive end\n" +
+                     "declare trait B @propertyReactive end\n" +
+                     "declare trait C extends A, B @propertyReactive end \n" +
+                     "" +
+                     "rule Init when then X x = new X(); insert( x ); don( x, A.class); don( x, B.class); end \n"+
+                     "rule Go when String( this == \"go\" ) $x : X() then don( $x, C.class); end \n" +
+                     "rule Go2 when String( this == \"go2\" ) $x : C() then System.out.println( 1000 ); end \n" +
+                     "";
+
+
+        StatefulKnowledgeSession ks = getSessionFromString( drl );
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        ks.insert( "go" );
+        ks.fireAllRules();
+
+        ks.insert( "go2" );
+        ks.fireAllRules();
+
+        System.out.println( "---------------------------------------" );
+
+        ks.dispose();
+
+    }
+
+
+
 
 }

@@ -67,7 +67,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         return traitType;
     }
 
-    public Object getObject() {
+    public TraitableBean getObject() {
         return object;
     }
 

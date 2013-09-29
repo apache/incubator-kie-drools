@@ -65,7 +65,7 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
     }
 
     @Override
-    public Object getObject() {
+    public TraitableBean getObject() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
