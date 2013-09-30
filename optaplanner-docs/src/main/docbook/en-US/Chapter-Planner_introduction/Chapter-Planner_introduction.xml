@@ -270,8 +270,8 @@ $ runExamples.bat</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>In IntelliJ and NetBeans, just open the file <filename>examples/sources/pom.xml</filename> as a new
-              project, the maven integration will take care of the rest.</para>
+              <para>In IntelliJ IDEA and NetBeans, just open the file <filename>examples/sources/pom.xml</filename> as a
+              new project, the maven integration will take care of the rest.</para>
             </listitem>
 
             <listitem>
