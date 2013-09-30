@@ -26,11 +26,11 @@ import java.security.SignatureException;
 import java.util.Map.Entry;
 
 import org.drools.core.RuntimeDroolsException;
+import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
 import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteExpireAction;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.beliefsystem.simple.ReteSimpleBeliefSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
@@ -61,7 +61,7 @@ public class PersisterHelper {
                 return new PropagateAction( context );
             }
             case WorkingMemoryAction.LogicalRetractCallback : {
-                return new LogicalCallback( context );
+                return new BeliefSystemLogicalCallback( context );
             }
             case WorkingMemoryAction.WorkingMemoryReteExpireAction : {
                 return new WorkingMemoryReteExpireAction( context );
@@ -91,8 +91,8 @@ public class PersisterHelper {
                                            _action );
             }
             case LOGICAL_RETRACT : {
-                return new LogicalCallback(context,
-                                                  _action );
+                return new BeliefSystemLogicalCallback(context,
+                                                       _action );
             }
             case EXPIRE : {
                 return new WorkingMemoryReteExpireAction(context,
