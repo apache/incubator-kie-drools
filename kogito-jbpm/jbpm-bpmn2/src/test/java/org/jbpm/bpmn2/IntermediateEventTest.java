@@ -1500,6 +1500,32 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
+    @Test
+    public void testIntermediateCatchEventSameSignalOnTwoKsessions() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
+        
+        KieBase kbase2 = createKnowledgeBase("BPMN2-IntermediateCatchEventSignal2.bpmn2");
+        KieSession ksession2 = createKnowledgeSession(kbase2);
+        ksession2.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ProcessInstance processInstance2 = ksession2.startProcess("IntermediateCatchEvent2");        
+        
+        assertProcessInstanceActive(processInstance);
+        assertProcessInstanceActive(processInstance2);
+        ksession = restoreSession(ksession, true);
+        ksession2 = restoreSession(ksession2, true);
+        // now signal process instance
+        ksession.signalEvent("MyMessage", "SomeValue");
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertProcessInstanceActive(processInstance2);
+
+        // now signal the other one
+        ksession2.signalEvent("MyMessage", "SomeValue");
+        assertProcessInstanceFinished(processInstance2, ksession2);
+        ksession2.dispose();
+    }
 
     
 }

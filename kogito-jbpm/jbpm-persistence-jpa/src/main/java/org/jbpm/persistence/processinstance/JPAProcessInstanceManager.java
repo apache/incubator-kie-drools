@@ -104,11 +104,11 @@ public class JPAProcessInstanceManager
         if ( processInstanceInfo == null ) {
             return null;
         }
-        if (!readOnly) {
-        	processInstanceInfo.updateLastReadDate();
-        }
         processInstance = (org.jbpm.process.instance.ProcessInstance)
         	processInstanceInfo.getProcessInstance(kruntime, this.kruntime.getEnvironment(), readOnly);
+        if (!readOnly) {
+            processInstanceInfo.updateLastReadDate();
+        }
         if (((ProcessInstanceImpl) processInstance).getProcessXml() == null) {
 	        Process process = kruntime.getKieBase().getProcess( processInstance.getProcessId() );
 	        if ( process == null ) {
