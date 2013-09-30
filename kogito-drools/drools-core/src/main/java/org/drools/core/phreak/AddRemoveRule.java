@@ -187,6 +187,15 @@ public class AddRemoveRule {
                          }
                          p++;
                      }
+                 } else {
+                     int p = 0;
+                     for ( PathMemory pmem : pathMems) {
+                         SegmentMemory[] smems = previousSmems.get(p++);
+                         for (int i = 0; i < pmem.getSegmentMemories().length; i++) {
+                             smems[i].getPathMemories().remove(removedPmem);
+                             pmem.getSegmentMemories()[i] = smems[i];
+                         }
+                     }
                  }
              }
              if ( removedPmem.getRuleAgendaItem() != null && removedPmem.getRuleAgendaItem().isQueued() ) {
