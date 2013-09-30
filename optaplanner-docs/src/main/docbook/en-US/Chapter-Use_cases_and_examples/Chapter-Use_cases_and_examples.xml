@@ -373,8 +373,8 @@
       </listitem>
     </itemizedlist>
 
-    <para>These realistic competitions provide an objective comparison of OptaPlanner with competitive software and academic
-    research.</para>
+    <para>These realistic competitions provide an objective comparison of OptaPlanner with competitive software and
+    academic research.</para>
   </section>
 
   <section>
@@ -1014,6 +1014,12 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
         <para>Schedule all jobs in time and execution mode to minimize project delays. Each job is part of a project. A
         job can be executed in different ways: each way is an execution mode that implies a different duration but also
         different resource usages. This is a form of flexible <emphasis>job shop scheduling</emphasis>.</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/projectJobSchedulingUseCase.png"/>
+          </imageobject>
+        </mediaobject>
 
         <para>Hard constraints:</para>
 
