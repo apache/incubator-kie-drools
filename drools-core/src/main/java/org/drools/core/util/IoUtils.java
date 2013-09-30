@@ -110,16 +110,17 @@ public class IoUtils {
         }
     }
     
-    public static Map<String, ZipEntry> buildZipFileMapEntries(java.io.File jarFile) {
-        Map<String, ZipEntry> files = new HashMap<String, ZipEntry>();
+    public static Map<String, byte[]> indexZipFile(java.io.File jarFile) {
+        Map<String, byte[]> files = new HashMap<String, byte[]>();
         ZipFile zipFile = null;
         try {
             zipFile = new ZipFile( jarFile );
             Enumeration< ? extends ZipEntry> entries = zipFile.entries();
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
-                files.put( entry.getName(), 
-                           entry );
+                byte[] bytes = readBytesFromInputStream( zipFile.getInputStream( entry ) );
+                files.put( entry.getName(),
+                           bytes );
             }
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to get all ZipFile entries: " + jarFile, e );
