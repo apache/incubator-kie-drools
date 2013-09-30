@@ -1,14 +1,15 @@
-package org.drools.core.beliefsystem.jtms;
+package org.drools.reteoo.beliefsystem.jtms;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
+import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.beliefsystem.simple.ReteSimpleBeliefSystem.LogicalCallback;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
@@ -119,15 +120,15 @@ public class ReteJTMSBeliefSystem
         JTMSBeliefSetImpl jtmsBeliefSet = (JTMSBeliefSetImpl) fh.getEqualityKey().getBeliefSet();
         if ( jtmsBeliefSet.getWorkingMemoryAction() == null ) {
             // doesn't exist, so create it
-            WorkingMemoryAction action = new LogicalCallback( fh,
-                                                                                     context,
-                                                                                     node.getJustifier(),
-                                                                                     update,
-                                                                                     fullyRetract ); // Only negative is fully retracted.
+            WorkingMemoryAction action = new BeliefSystemLogicalCallback( fh,
+                                                                          context,
+                                                                          node.getJustifier(),
+                                                                          update,
+                                                                          fullyRetract ); // Only negative is fully retracted.
             ((NamedEntryPoint) fh.getEntryPoint()).enQueueWorkingMemoryAction( action );
         } else {
             // it exists (update required due to previous change in prime), so just update it's actions
-            LogicalCallback callback = ( LogicalCallback ) jtmsBeliefSet.getWorkingMemoryAction();
+            BeliefSystemLogicalCallback callback = ( BeliefSystemLogicalCallback ) jtmsBeliefSet.getWorkingMemoryAction();
             callback.setFullyRetract( fullyRetract );
             callback.setUpdate( update );
         }
@@ -164,7 +165,7 @@ public class ReteJTMSBeliefSystem
 
             if ( !(context.getType() == PropagationContext.DELETION && context.getFactHandle() == beliefSet.getFactHandle()) ) { // don't start retract, if the FH is already in the process of being retracted
                 // do not if the FH is the root of the context, it means it's already in the process of retraction
-                retractOrUpdateBelief( node, context, (InternalFactHandle) jtmsBeliefSet.getFactHandle(), false, true );
+                retractOrUpdateBelief( node, context, jtmsBeliefSet.getFactHandle(), false, true );
             }
         } else if ( wasConflicting && !jtmsBeliefSet.isUndecided() ) {
             insertBelief( node,
