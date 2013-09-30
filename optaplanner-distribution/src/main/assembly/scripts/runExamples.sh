@@ -10,11 +10,12 @@ mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp
 echo "Usage: ./runExamples.sh"
 echo "For example: ./runExamples.sh"
 echo "Some notes:"
-echo "- Working dir should be the directory of this script."
-echo "- Java is recommended to be JDK and java 6 for optimal performance"
-echo "- The environment variable JAVA_HOME should be set to the JDK installation directory"
+echo "- Java must be installed. Get the JRE (http://www.java.com) or the JDK."
+echo "- For optimal performance, Java is recommended to be OpenJDK 7 or higher."
+echo "- For JDK, the environment variable JAVA_HOME should be set to the JDK installation directory"
 echo "  For example (linux): export JAVA_HOME=/usr/lib/jvm/java-6-sun"
 echo "  For example (mac): export JAVA_HOME=/Library/Java/Home"
+echo "- Working dir should be the directory of this script."
 echo
 echo "Starting examples app..."
 
@@ -27,7 +28,7 @@ fi
 
 if [ $? != 0 ] ; then
     echo
-    echo "Error occurred. Check if \$JAVA_HOME ($JAVA_HOME) is correct."
+    echo "Error occurred. Check if java is installed and \$JAVA_HOME ($JAVA_HOME) is correct."
     # Prevent the terminal window to disappear before the user has seen the error message
     sleep 20
 fi
