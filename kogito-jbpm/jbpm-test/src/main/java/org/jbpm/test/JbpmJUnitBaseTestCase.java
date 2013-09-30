@@ -620,7 +620,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         pds.setAllowLocalTransactions(true);
         pds.getDriverProperties().put("user", "sa");
         pds.getDriverProperties().put("password", "");
-        pds.getDriverProperties().put("url", "jdbc:h2:inmemory:jbpm-db;MVCC=true");
+        pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
         pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
         pds.init();
         return pds;
