@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -64,7 +63,14 @@ public class DurationTimer extends BaseTimer
     }
 
     public Trigger createTrigger(Activation item, InternalWorkingMemory wm) {
-        long timestamp = wm.getTimerService().getCurrentTime();
+        long timestamp;
+        if (eventFactHandle != null) {
+            LeftTuple leftTuple = item.getTuple();
+            EventFactHandle  fh = (EventFactHandle) leftTuple.get(eventFactHandle);
+            timestamp = fh.getStartTimestamp();
+        } else {
+            timestamp = wm.getTimerService().getCurrentTime();
+        }
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = wm.getCalendars();
         return createTrigger(timestamp, calendarNames, calendars);
@@ -78,7 +84,7 @@ public class DurationTimer extends BaseTimer
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
         if ( eventFactHandle != null ) {
-            EventFactHandle  fh = (EventFactHandle) leftTuple.get(declrs[0][0]);
+            EventFactHandle  fh = (EventFactHandle) leftTuple.get(eventFactHandle);
             timestamp = fh.getStartTimestamp();
         }
         return createTrigger(timestamp, calendarNames, calendars);
