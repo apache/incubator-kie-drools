@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import org.drools.core.base.extractors.ConstantValueReader;
 import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.common.InternalFactHandle;
@@ -91,20 +92,20 @@ public class EvaluatorWrapper
                             Object right) {
         if (rightBinding == null) {
             return evaluator.evaluate( workingMemory,
-                                       leftExtractor,
+                                       leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                        leftHandle,
                                        new ObjectFieldImpl(right) );
         }
         return evaluator.evaluate( workingMemory,
-                                   leftExtractor,
+                                   leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                    leftHandle,
-                                   rightExtractor,
+                                   rightBinding != null ? rightExtractor : new ConstantValueReader(right),
                                    rightHandle );
     }
 
     /**
      * @return
-     * @see org.kie.spi.Evaluator#getValueType()
+     * @see org.drools.core.spi.Evaluator#getValueType()
      */
     public ValueType getValueType() {
         return evaluator.getValueType();
@@ -112,7 +113,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.kie.spi.Evaluator#getOperator()
+     * @see org.drools.core.spi.Evaluator#getOperator()
      */
     public org.kie.api.runtime.rule.Operator getOperator() {
         return evaluator.getOperator();
@@ -120,7 +121,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.kie.spi.Evaluator#getCoercedValueType()
+     * @see org.drools.core.spi.Evaluator#getCoercedValueType()
      */
     public ValueType getCoercedValueType() {
         return evaluator.getCoercedValueType();
@@ -132,7 +133,7 @@ public class EvaluatorWrapper
      * @param factHandle
      * @param value
      * @return
-     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, InternalFactHandle, org.kie.spi.FieldValue)
+     * @see org.drools.core.spi.Evaluator#evaluate(org.drools.core.common.InternalWorkingMemory, org.drools.core.spi.InternalReadAccessor, InternalFactHandle, org.drools.core.spi.FieldValue)
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor extractor,
@@ -151,7 +152,7 @@ public class EvaluatorWrapper
      * @param rightExtractor
      * @param right
      * @return
-     * @see org.kie.spi.Evaluator#evaluate(org.kie.common.InternalWorkingMemory, org.kie.spi.InternalReadAccessor, InternalFactHandle, org.kie.spi.InternalReadAccessor, InternalFactHandle)
+     * @see org.drools.core.spi.Evaluator#evaluate(org.drools.core.common.InternalWorkingMemory, org.drools.core.spi.InternalReadAccessor, InternalFactHandle, org.drools.core.spi.InternalReadAccessor, InternalFactHandle)
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor leftExtractor,
@@ -170,7 +171,7 @@ public class EvaluatorWrapper
      * @param context
      * @param right
      * @return
-     * @see org.kie.spi.Evaluator#evaluateCachedLeft(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
+     * @see org.drools.core.spi.Evaluator#evaluateCachedLeft(org.drools.core.common.InternalWorkingMemory, org.drools.core.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
      */
     public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                       VariableContextEntry context,
@@ -185,7 +186,7 @@ public class EvaluatorWrapper
      * @param context
      * @param left
      * @return
-     * @see org.kie.spi.Evaluator#evaluateCachedRight(org.kie.common.InternalWorkingMemory, org.kie.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
+     * @see org.drools.core.spi.Evaluator#evaluateCachedRight(org.drools.core.common.InternalWorkingMemory, org.drools.core.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
      */
     public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                        VariableContextEntry context,
@@ -197,7 +198,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.kie.spi.Evaluator#isTemporal()
+     * @see org.drools.core.spi.Evaluator#isTemporal()
      */
     public boolean isTemporal() {
         return evaluator.isTemporal();
@@ -205,7 +206,7 @@ public class EvaluatorWrapper
 
     /**
      * @return
-     * @see org.kie.spi.Evaluator#getInterval()
+     * @see org.drools.core.spi.Evaluator#getInterval()
      */
     public Interval getInterval() {
         return evaluator.getInterval();
@@ -213,7 +214,10 @@ public class EvaluatorWrapper
 
     public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, Object rightObject) {
         this.workingMemory = workingMemory;
-        leftHandle = selfLeft ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(leftBinding, handles);
+        leftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
+        if (leftHandle == null) {
+            leftHandle = (InternalFactHandle) workingMemory.getFactHandle(rightObject);
+        }
         rightHandle = selfRight ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(rightBinding, handles);
     }
 

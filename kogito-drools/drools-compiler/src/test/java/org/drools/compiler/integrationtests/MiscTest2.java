@@ -75,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -2770,6 +2771,60 @@ public class MiscTest2 extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+    @Test
+    public void testMapAccessorWithCustomOp() {
+        // DROOLS-216
+        String str =
+                "import java.util.Map;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  Map( this[\"x\"] str[startsWith] \"T\" )\n" +
+                "  Map( this[\"x\"] soundslike \"Test\" )\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("x", "Test");
+        ksession.insert(map);
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+    @Test
+    public void testMapAccessorWithBoundVar() {
+        // DROOLS-217
+        String str =
+                "import java.util.Map;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  Map( $val1 : this[\"x\"], $val1 str[startsWith] \"T\" )\n" +
+                "  Map( $val2 : this[\"x\"], $val2 soundslike \"Test\" )\n" +
+                "then\n" +
+                "  list.add( 1 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("x", "Test");
+        ksession.insert(map);
 
         ksession.fireAllRules();
 

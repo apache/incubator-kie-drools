@@ -395,7 +395,7 @@ public class MVELCompilationUnit
 
     public static InternalFactHandle getFactHandle( Declaration declaration,
                                                     InternalFactHandle[] handles ) {
-        return handles.length >= declaration.getPattern().getOffset() ? handles[declaration.getPattern().getOffset()] : null;
+        return handles.length > declaration.getPattern().getOffset() ? handles[declaration.getPattern().getOffset()] : null;
     }
 
     public static Serializable compile( final String text,
