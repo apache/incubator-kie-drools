@@ -249,8 +249,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                 FileInputStream fis = null;
                 try {
                     fis = new FileInputStream( file ) ;
-                    PomModel pomModel = MinimalPomParser.parse( rootPath + "/pom.xml",
-                                                                    fis);
+                    PomModel pomModel = PomModel.Parser.parse( rootPath + "/pom.xml", fis);
                     
                     KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
                     

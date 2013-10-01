@@ -17,7 +17,7 @@ public class PomModelParserTest {
         InputStream is = PomModelParserTest.class.getResourceAsStream( "pom.xml" );
         assertNotNull( is );
         
-        PomModel pomModel = MinimalPomParser.parse( PomModelParserTest.class.getName().replace( '.', '/' ) + ".pom.xml", is );
+        PomModel pomModel = PomModel.Parser.parse( PomModelParserTest.class.getName().replace( '.', '/' ) + ".pom.xml", is );
         assertEquals( "groupId", pomModel.getReleaseId().getGroupId() );
         assertEquals( "artifactId", pomModel.getReleaseId().getArtifactId() );
         assertEquals( "version", pomModel.getReleaseId().getVersion() );
