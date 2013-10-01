@@ -53,60 +53,60 @@ import org.drools.workbench.models.commons.backend.imports.ImportsParser;
 import org.drools.workbench.models.commons.backend.imports.ImportsWriter;
 import org.drools.workbench.models.commons.backend.packages.PackageNameParser;
 import org.drools.workbench.models.commons.backend.packages.PackageNameWriter;
-import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.oracle.OperatorsOracle;
-import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
-import org.drools.workbench.models.commons.shared.rule.ActionCallMethod;
-import org.drools.workbench.models.commons.shared.rule.ActionExecuteWorkItem;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldFunction;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldList;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.ActionGlobalCollectionAdd;
-import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
-import org.drools.workbench.models.commons.shared.rule.ActionInsertLogicalFact;
-import org.drools.workbench.models.commons.shared.rule.ActionRetractFact;
-import org.drools.workbench.models.commons.shared.rule.ActionSetField;
-import org.drools.workbench.models.commons.shared.rule.ActionUpdateField;
-import org.drools.workbench.models.commons.shared.rule.ActionWorkItemFieldValue;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.CEPWindow;
-import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.ConnectiveConstraint;
-import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.commons.shared.rule.ExpressionField;
-import org.drools.workbench.models.commons.shared.rule.ExpressionFormLine;
-import org.drools.workbench.models.commons.shared.rule.ExpressionUnboundFact;
-import org.drools.workbench.models.commons.shared.rule.ExpressionVariable;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FieldNature;
-import org.drools.workbench.models.commons.shared.rule.FieldNatureType;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
-import org.drools.workbench.models.commons.shared.rule.FromAccumulateCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCollectCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromEntryPointFactPattern;
-import org.drools.workbench.models.commons.shared.rule.HasParameterizedOperator;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IFactPattern;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
-import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
-import org.drools.workbench.models.commons.shared.workitems.HasBinding;
-import org.drools.workbench.models.commons.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableFloatParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableIntegerParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableObjectParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableStringParameterDefinition;
-import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.OperatorsOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
+import org.drools.workbench.models.datamodel.rule.ActionFieldFunction;
+import org.drools.workbench.models.datamodel.rule.ActionFieldList;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
+import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
+import org.drools.workbench.models.datamodel.rule.ActionWorkItemFieldValue;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CEPWindow;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
+import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
+import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldNature;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
+import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IFactPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
+import org.drools.workbench.models.datamodel.rule.RuleMetadata;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.workitems.HasBinding;
+import org.drools.workbench.models.datamodel.workitems.PortableBooleanParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableFloatParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableObjectParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
 /**
  * This class persists the rule model to DRL and back
@@ -1369,9 +1369,10 @@ public class BRDRLPersistence
     }
 
     /**
-     * @see BRLPersistence#unmarshal(String,PackageDataModelOracle)
+     * @see BRLPersistence#unmarshal(String, PackageDataModelOracle)
      */
-    public RuleModel unmarshal( String str, final PackageDataModelOracle dmo ) {
+    public RuleModel unmarshal( String str,
+                                final PackageDataModelOracle dmo ) {
         return getRuleModel( preprocessDRL( str ), dmo );
     }
 
@@ -1407,7 +1408,8 @@ public class BRDRLPersistence
         return line.substring( 0, line.indexOf( '=' ) ).trim();
     }
 
-    private RuleModel getRuleModel( ExpandedDRLInfo expandedDRLInfo, PackageDataModelOracle dmo ) {
+    private RuleModel getRuleModel( ExpandedDRLInfo expandedDRLInfo,
+                                    PackageDataModelOracle dmo ) {
         //De-serialize model
         RuleDescr ruleDescr = parseDrl( expandedDRLInfo );
         RuleModel model = new RuleModel();
@@ -1415,8 +1417,8 @@ public class BRDRLPersistence
         model.parentName = ruleDescr.getParentName();
 
         Map<String, AnnotationDescr> annotations = ruleDescr.getAnnotations();
-        if (annotations != null) {
-            for (AnnotationDescr annotation : annotations.values()) {
+        if ( annotations != null ) {
+            for ( AnnotationDescr annotation : annotations.values() ) {
                 model.addMetadata( new RuleMetadata( annotation.getName(), annotation.getValue().toString() ) );
             }
         }
@@ -1672,7 +1674,7 @@ public class BRDRLPersistence
         boolean isJavaDialect = false;
         for ( Map.Entry<String, AttributeDescr> entry : attributes.entrySet() ) {
             String name = entry.getKey();
-            String value = normalizeAtributeValue(entry.getValue().getValue().trim());
+            String value = normalizeAtributeValue( entry.getValue().getValue().trim() );
             RuleAttribute ruleAttribute = new RuleAttribute( name, value );
             m.addAttribute( ruleAttribute );
             isJavaDialect |= name.equals( "dialect" ) && value.equals( "java" );
@@ -1680,25 +1682,25 @@ public class BRDRLPersistence
         return isJavaDialect;
     }
 
-    private String normalizeAtributeValue(String value) {
-        if (value.startsWith("[")) {
-            value = value.substring(1, value.length()-1).trim();
+    private String normalizeAtributeValue( String value ) {
+        if ( value.startsWith( "[" ) ) {
+            value = value.substring( 1, value.length() - 1 ).trim();
         }
-        if (value.startsWith("\"")) {
+        if ( value.startsWith( "\"" ) ) {
             StringBuilder sb = new StringBuilder();
-            String[] split = value.split(",");
-            sb.append(stripQuotes(split[0].trim()));
-            for (int i = 1; i < split.length; i++) {
-                sb.append(", ").append(stripQuotes(split[i].trim()));
+            String[] split = value.split( "," );
+            sb.append( stripQuotes( split[ 0 ].trim() ) );
+            for ( int i = 1; i < split.length; i++ ) {
+                sb.append( ", " ).append( stripQuotes( split[ i ].trim() ) );
             }
             value = sb.toString();
         }
         return value;
     }
 
-    private String stripQuotes(String value) {
-        if (value.startsWith("\"")) {
-            value = value.substring(1, value.length()-1).trim();
+    private String stripQuotes( String value ) {
+        if ( value.startsWith( "\"" ) ) {
+            value = value.substring( 1, value.length() - 1 ).trim();
         }
         return value;
     }
@@ -1712,7 +1714,7 @@ public class BRDRLPersistence
         for ( BaseDescr descr : lhs.getDescrs() ) {
             lineCounter = parseNonDrlInLhs( m, expandedDRLInfo, lineCounter );
             IPattern pattern = parseBaseDescr( descr, boundParams, dmo );
-            if (pattern != null) {
+            if ( pattern != null ) {
                 m.addLhsItem( parseBaseDescr( descr, boundParams, dmo ) );
             }
         }
@@ -1765,7 +1767,7 @@ public class BRDRLPersistence
             return parseBaseDescr( andDescr.getDescrs().get( 0 ), boundParams, dmo );
         } else if ( descr instanceof EvalDescr ) {
             FreeFormLine freeFormLine = new FreeFormLine();
-            freeFormLine.setText("eval( " + ((EvalDescr) descr).getContent() + " )");
+            freeFormLine.setText( "eval( " + ( (EvalDescr) descr ).getContent() + " )" );
             return freeFormLine;
         } else if ( descr instanceof ConditionalElementDescr ) {
             return parseExistentialElementDescr( (ConditionalElementDescr) descr, boundParams, dmo );
@@ -1795,20 +1797,20 @@ public class BRDRLPersistence
 
         parseConstraint( factPattern, pattern.getConstraint(), boundParams, dmo );
 
-        for (BehaviorDescr behavior : pattern.getBehaviors()) {
-            if ( behavior.getText().equals("window") ) {
+        for ( BehaviorDescr behavior : pattern.getBehaviors() ) {
+            if ( behavior.getText().equals( "window" ) ) {
                 CEPWindow window = new CEPWindow();
                 window.setOperator( "over window:" + behavior.getSubType() );
-                window.setParameter("org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
-                                    "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder");
+                window.setParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                     "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
                 List<String> params = behavior.getParameters();
-                if (params != null) {
+                if ( params != null ) {
                     int i = 1;
-                    for (String param : params) {
-                        window.setParameter("" + i++, param);
+                    for ( String param : params ) {
+                        window.setParameter( "" + i++, param );
                     }
                 }
-                factPattern.setWindow(window);
+                factPattern.setWindow( window );
             }
         }
         return factPattern;
@@ -1901,14 +1903,14 @@ public class BRDRLPersistence
                     return "not " + op.getOperatorString();
                 }
             }
-            if ( expr.contains(op.getOperatorString()) ) {
+            if ( expr.contains( op.getOperatorString() ) ) {
                 return op.getOperatorString();
             }
         }
-        if ( expr.contains("not in") ) {
+        if ( expr.contains( "not in" ) ) {
             return "not in";
         }
-        if ( expr.contains(" in") ) {
+        if ( expr.contains( " in" ) ) {
             return "in";
         }
         return null;
@@ -2236,7 +2238,9 @@ public class BRDRLPersistence
         return type;
     }
 
-    private Expr parseExpr( String expr, Map<String, String> boundParams, PackageDataModelOracle dmo ) {
+    private Expr parseExpr( String expr,
+                            Map<String, String> boundParams,
+                            PackageDataModelOracle dmo ) {
         List<String> splittedExpr = splitExpression( expr );
         if ( splittedExpr.size() == 1 ) {
             String singleExpr = splittedExpr.get( 0 );
@@ -2368,7 +2372,9 @@ public class BRDRLPersistence
         private final Map<String, String> boundParams;
         private final PackageDataModelOracle dmo;
 
-        private SimpleExpr( String expr, Map<String, String> boundParams, PackageDataModelOracle dmo ) {
+        private SimpleExpr( String expr,
+                            Map<String, String> boundParams,
+                            PackageDataModelOracle dmo ) {
             this.expr = expr;
             this.boundParams = boundParams;
             this.dmo = dmo;
@@ -2394,41 +2400,42 @@ public class BRDRLPersistence
                 }
             }
 
-            return createFieldConstraint(factPattern, fieldName, value, operator, fieldName.contains( "." ));
+            return createFieldConstraint( factPattern, fieldName, value, operator, fieldName.contains( "." ) );
         }
 
-        private SingleFieldConstraint createNullCheckFieldConstraint(FactPattern factPattern, String fieldName) {
-            return createFieldConstraint(factPattern, fieldName, null, null, true);
+        private SingleFieldConstraint createNullCheckFieldConstraint( FactPattern factPattern,
+                                                                      String fieldName ) {
+            return createFieldConstraint( factPattern, fieldName, null, null, true );
         }
 
-        private SingleFieldConstraint createFieldConstraint(FactPattern factPattern,
-                                                            String fieldName,
-                                                            String value,
-                                                            String operator,
-                                                            boolean isExpression) {
+        private SingleFieldConstraint createFieldConstraint( FactPattern factPattern,
+                                                             String fieldName,
+                                                             String value,
+                                                             String operator,
+                                                             boolean isExpression ) {
             String operatorParams = null;
-            if (value != null && value.startsWith("[")) {
-                int endSquare = value.indexOf(']');
-                operatorParams = value.substring(1, endSquare).trim();
-                value = value.substring(endSquare+1).trim();
+            if ( value != null && value.startsWith( "[" ) ) {
+                int endSquare = value.indexOf( ']' );
+                operatorParams = value.substring( 1, endSquare ).trim();
+                value = value.substring( endSquare + 1 ).trim();
             }
 
             SingleFieldConstraint fieldConstraint = isExpression ?
-                    createExpressionBuilderConstraint(factPattern, fieldName, operator, value) :
-                    createSingleFieldConstraint(fieldName, operator, value);
+                    createExpressionBuilderConstraint( factPattern, fieldName, operator, value ) :
+                    createSingleFieldConstraint( fieldName, operator, value );
 
-            if (operatorParams != null) {
+            if ( operatorParams != null ) {
                 int i = 0;
-                for (String param : operatorParams.split(",")) {
-                    ((BaseSingleFieldConstraint) fieldConstraint).setParameter("" + i++, param.trim());
+                for ( String param : operatorParams.split( "," ) ) {
+                    ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "" + i++, param.trim() );
                 }
-                ((BaseSingleFieldConstraint) fieldConstraint).setParameter("org.kie.guvnor.guided.editor.visibleParameterSet", "" + i);
-                ((BaseSingleFieldConstraint) fieldConstraint).setParameter("org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
-                                                                           "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder");
+                ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "org.kie.guvnor.guided.editor.visibleParameterSet", "" + i );
+                ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                                                                              "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
             }
 
-            if ( fieldName.equals("this") && (operator == null || operator.equals("!= null")) ) {
-                fieldConstraint.setFieldType(DataType.TYPE_THIS);
+            if ( fieldName.equals( "this" ) && ( operator == null || operator.equals( "!= null" ) ) ) {
+                fieldConstraint.setFieldType( DataType.TYPE_THIS );
             }
             fieldConstraint.setFactType( factPattern.getFactType() );
 
@@ -2445,21 +2452,21 @@ public class BRDRLPersistence
 
             SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern, fieldName, operator, value );
 
-            for (FieldConstraint fieldConstraint : factPattern.getFieldConstraints()) {
-                if (fieldConstraint instanceof SingleFieldConstraint) {
+            for ( FieldConstraint fieldConstraint : factPattern.getFieldConstraints() ) {
+                if ( fieldConstraint instanceof SingleFieldConstraint ) {
                     SingleFieldConstraint sfc = (SingleFieldConstraint) fieldConstraint;
-                    if (sfc.getOperator().equals("!= null")) {
-                        int parentPos = fieldName.indexOf(sfc.getFieldName() + ".");
-                        if (parentPos >= 0 && !fieldName.substring(parentPos + sfc.getFieldName().length()+1).contains(".")) {
-                            con.setParent(sfc);
+                    if ( sfc.getOperator().equals( "!= null" ) ) {
+                        int parentPos = fieldName.indexOf( sfc.getFieldName() + "." );
+                        if ( parentPos >= 0 && !fieldName.substring( parentPos + sfc.getFieldName().length() + 1 ).contains( "." ) ) {
+                            con.setParent( sfc );
                             break;
                         }
                     }
                 }
             }
 
-            if ( con.getParent() == null && !(con instanceof SingleFieldConstraintEBLeftSide) ) {
-                con.setParent( createParentFor(factPattern, fieldName) );
+            if ( con.getParent() == null && !( con instanceof SingleFieldConstraintEBLeftSide ) ) {
+                con.setParent( createParentFor( factPattern, fieldName ) );
             }
 
             return con;
@@ -2470,7 +2477,7 @@ public class BRDRLPersistence
                                                                    String value ) {
             SingleFieldConstraint con = new SingleFieldConstraint();
             fieldName = setFieldBindingOnContraint( fieldName, con );
-            con.setFieldName(fieldName);
+            con.setFieldName( fieldName );
             setOperatorAndValueOnConstraint( operator, value, con );
             return con;
         }
@@ -2487,64 +2494,69 @@ public class BRDRLPersistence
 
             String type = setOperatorAndValueOnConstraint( operator, value, con );
 
-            parseExpression(classType, fieldName, type, con.getExpressionLeftSide());
+            parseExpression( classType, fieldName, type, con.getExpressionLeftSide() );
 
             return con;
         }
 
-        private ExpressionFormLine parseExpression(String factType, String fieldName, String fieldType, ExpressionFormLine expression) {
+        private ExpressionFormLine parseExpression( String factType,
+                                                    String fieldName,
+                                                    String fieldType,
+                                                    ExpressionFormLine expression ) {
             Map<String, ModelField[]> modelFields = dmo.getModelFields();
             String[] splits = fieldName.split( "\\." );
 
             boolean isBoundParam = false;
-            if (factType == null) {
-                factType = getFQFactType( boundParams.get(splits[0].trim()) );
+            if ( factType == null ) {
+                factType = getFQFactType( boundParams.get( splits[ 0 ].trim() ) );
                 isBoundParam = true;
             }
 
-            ModelField[] typeFields = modelFields.get(factType);
+            ModelField[] typeFields = modelFields.get( factType );
 
             for ( int i = 0; i < splits.length - 1; i++ ) {
-                String expressionPart = splits[i].trim();
-                if ("this".equals(expressionPart)) {
-                    expression.appendPart(new ExpressionField(expressionPart, factType, DataType.TYPE_THIS));
-                } else if (isBoundParam) {
-                    expression.appendPart(new ExpressionVariable(expressionPart, factType, factType));
+                String expressionPart = splits[ i ].trim();
+                if ( "this".equals( expressionPart ) ) {
+                    expression.appendPart( new ExpressionField( expressionPart, factType, DataType.TYPE_THIS ) );
+                } else if ( isBoundParam ) {
+                    expression.appendPart( new ExpressionVariable( expressionPart, factType, factType ) );
                     isBoundParam = false;
                 } else {
-                    ModelField currentField = findField(typeFields, expressionPart);
-                    expression.appendPart(new ExpressionField(expressionPart, currentField.getType(), currentField.getClassName()));
-                    typeFields = modelFields.get(currentField.getType());
+                    ModelField currentField = findField( typeFields, expressionPart );
+                    expression.appendPart( new ExpressionField( expressionPart, currentField.getType(), currentField.getClassName() ) );
+                    typeFields = modelFields.get( currentField.getType() );
                 }
             }
-            String expressionPart = splits[splits.length - 1].trim();
-            ModelField currentField = findField(typeFields, expressionPart);
-            expression.appendPart(new ExpressionField(expressionPart, currentField.getType(), currentField.getClassName()));
+            String expressionPart = splits[ splits.length - 1 ].trim();
+            ModelField currentField = findField( typeFields, expressionPart );
+            expression.appendPart( new ExpressionField( expressionPart, currentField.getType(), currentField.getClassName() ) );
             return expression;
         }
 
-        private String getFQFactType(String factType) {
-            for (String type : dmo.getAllFactTypes()) {
-                if (type.endsWith("." + factType)) {
+        private String getFQFactType( String factType ) {
+            for ( String type : dmo.getAllFactTypes() ) {
+                if ( type.endsWith( "." + factType ) ) {
                     return type;
                 }
             }
             return factType;
         }
 
-        private ModelField findField(ModelField[] typeFields, String fieldName) {
-            for (ModelField typeField : typeFields) {
-                if (typeField.getName().equals(fieldName)) {
+        private ModelField findField( ModelField[] typeFields,
+                                      String fieldName ) {
+            for ( ModelField typeField : typeFields ) {
+                if ( typeField.getName().equals( fieldName ) ) {
                     return typeField;
                 }
             }
             return null;
         }
 
-        private SingleFieldConstraint createParentFor( FactPattern factPattern, String fieldName ) {
-            int dotPos = fieldName.lastIndexOf('.');
-            if (dotPos > 0) {
-                SingleFieldConstraint constraint = createNullCheckFieldConstraint(factPattern, fieldName.substring(0, dotPos));
+        private SingleFieldConstraint createParentFor( FactPattern factPattern,
+                                                       String fieldName ) {
+            int dotPos = fieldName.lastIndexOf( '.' );
+            if ( dotPos > 0 ) {
+                SingleFieldConstraint constraint = createNullCheckFieldConstraint( factPattern, fieldName.substring( 0, dotPos ) );
                 factPattern.addConstraint( constraint );
                 return constraint;
             }
@@ -2614,8 +2626,8 @@ public class BRDRLPersistence
                     if ( value.equals( "true" ) || value.equals( "false" ) ) {
                         type = DataType.TYPE_BOOLEAN;
                         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
-                    } else if (value.indexOf('.') > 0 && boundParams.containsKey(value.substring(0, value.indexOf('.')).trim())) {
-                        con.setExpressionValue( parseExpression(null, value, null, new ExpressionFormLine()) );
+                    } else if ( value.indexOf( '.' ) > 0 && boundParams.containsKey( value.substring( 0, value.indexOf( '.' ) ).trim() ) ) {
+                        con.setExpressionValue( parseExpression( null, value, null, new ExpressionFormLine() ) );
                         value = "";
                     } else {
                         con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );

@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.backend;
 
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
@@ -26,13 +27,13 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLRuleModel;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.junit.Test;
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 
 import static org.junit.Assert.*;
 

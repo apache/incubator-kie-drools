@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.commons.backend.imports;
 
-import org.drools.workbench.models.commons.shared.imports.Import;
-import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Imports;
 
 /**
  * Utility methods to parse an Imports Config

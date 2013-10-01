@@ -30,7 +30,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
-import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.testscenarios.shared.ActivateRuleFlowGroup;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;

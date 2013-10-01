@@ -1,9 +1,9 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
 import org.drools.workbench.models.commons.backend.BaseConverter;
-import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;

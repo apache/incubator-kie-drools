@@ -16,7 +16,7 @@
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
 import org.drools.workbench.models.commons.backend.IUpgradeHelper;
-import org.drools.workbench.models.commons.shared.rule.InterpolationVariable;
+import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 
 /**

@@ -21,10 +21,10 @@ import java.util.HashMap;
 
 import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.IFactPattern;
-import org.drools.workbench.models.commons.shared.rule.InterpolationVariable;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.IFactPattern;
+import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
