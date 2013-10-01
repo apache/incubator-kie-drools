@@ -16,6 +16,7 @@
 
 package org.drools.base;
 
+import org.drools.base.extractors.ConstantValueReader;
 import org.drools.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.base.field.ObjectFieldImpl;
 import org.drools.common.InternalFactHandle;
@@ -91,12 +92,12 @@ public class EvaluatorWrapper
                             Object right) {
         if (rightBinding == null) {
             return evaluator.evaluate( workingMemory,
-                                       leftExtractor,
+                                       leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                        leftHandle,
                                        new ObjectFieldImpl(right) );
         }
         return evaluator.evaluate( workingMemory,
-                                   leftExtractor,
+                                   leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                    leftHandle,
                                    rightExtractor,
                                    rightHandle );
@@ -132,7 +133,7 @@ public class EvaluatorWrapper
      * @param factHandle
      * @param value
      * @return
-     * @see org.drools.spi.Evaluator#evaluate(org.drools.common.InternalWorkingMemory, org.drools.spi.InternalReadAccessor, java.lang.Object, org.drools.spi.FieldValue)
+     * @see org.drools.spi.Evaluator#evaluate(org.drools.common.InternalWorkingMemory, org.drools.spi.InternalReadAccessor, InternalFactHandle, org.drools.spi.FieldValue)
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor extractor,
@@ -151,7 +152,7 @@ public class EvaluatorWrapper
      * @param rightExtractor
      * @param right
      * @return
-     * @see org.drools.spi.Evaluator#evaluate(org.drools.common.InternalWorkingMemory, org.drools.spi.InternalReadAccessor, java.lang.Object, org.drools.spi.InternalReadAccessor, java.lang.Object)
+     * @see org.drools.spi.Evaluator#evaluate(org.drools.common.InternalWorkingMemory, org.drools.spi.InternalReadAccessor, InternalFactHandle, org.drools.spi.InternalReadAccessor, InternalFactHandle)
      */
     public boolean evaluate(InternalWorkingMemory workingMemory,
                             InternalReadAccessor leftExtractor,
@@ -170,7 +171,7 @@ public class EvaluatorWrapper
      * @param context
      * @param right
      * @return
-     * @see org.drools.spi.Evaluator#evaluateCachedLeft(org.drools.common.InternalWorkingMemory, org.drools.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
+     * @see org.drools.spi.Evaluator#evaluateCachedLeft(org.drools.common.InternalWorkingMemory, org.drools.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
      */
     public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
                                       VariableContextEntry context,
@@ -185,7 +186,7 @@ public class EvaluatorWrapper
      * @param context
      * @param left
      * @return
-     * @see org.drools.spi.Evaluator#evaluateCachedRight(org.drools.common.InternalWorkingMemory, org.drools.rule.VariableRestriction.VariableContextEntry, java.lang.Object)
+     * @see org.drools.spi.Evaluator#evaluateCachedRight(org.drools.common.InternalWorkingMemory, org.drools.rule.VariableRestriction.VariableContextEntry, InternalFactHandle)
      */
     public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
                                        VariableContextEntry context,
@@ -213,7 +214,10 @@ public class EvaluatorWrapper
 
     public void loadHandles(InternalWorkingMemory workingMemory, InternalFactHandle[] handles, Object rightObject) {
         this.workingMemory = workingMemory;
-        leftHandle = selfLeft ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(leftBinding, handles);
+        leftHandle = selfLeft ? null : getFactHandle(leftBinding, handles);
+        if (leftHandle == null) {
+            leftHandle = (InternalFactHandle) workingMemory.getFactHandle(rightObject);
+        }
         rightHandle = selfRight ? (InternalFactHandle) workingMemory.getFactHandle(rightObject) : getFactHandle(rightBinding, handles);
     }
 
