@@ -60,6 +60,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 
 /**
  *
@@ -183,6 +186,31 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         assertNotNull(runtime);
         assertNotNull(ksession);
 
+        ksession.getWorkItemManager().registerWorkItemHandler("EmailService", new WorkItemHandler() {
+
+             @Override
+             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                 manager.completeWorkItem(workItem.getId(), null);
+             }
+
+             @Override
+             public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+             }
+         });
+        ksession.getWorkItemManager().registerWorkItemHandler("TwitterService", new WorkItemHandler() {
+
+             @Override
+             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                 manager.completeWorkItem(workItem.getId(), null);
+             }
+
+             @Override
+             public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+             }
+         });
+        
         ProcessInstance processInstance = ksession.startProcess("hiring");
 
         List<TaskSummary> tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
@@ -194,10 +222,10 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         taskService.start(HRInterview.getId(), "katy");
 
         Map<String, Object> hrOutput = new HashMap<String, Object>();
-        hrOutput.put("out.name", "salaboy");
-        hrOutput.put("out.age", 29);
-        hrOutput.put("out.mail", "salaboy@gmail.com");
-        hrOutput.put("out.score", 8);
+        hrOutput.put("out_name", "salaboy");
+        hrOutput.put("out_age", 29);
+        hrOutput.put("out_mail", "salaboy@gmail.com");
+        hrOutput.put("out_score", 8);
 
         taskService.complete(HRInterview.getId(), "katy", hrOutput);
 
@@ -216,11 +244,11 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
 
         Map<String, Object> taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
 
-        assertEquals(5, taskContent.size());
+        assertEquals(7, taskContent.size());
 
-        assertEquals("salaboy@gmail.com", taskContent.get("in.mail"));
-        assertEquals(29, taskContent.get("in.age"));
-        assertEquals("salaboy", taskContent.get("in.name"));
+        assertEquals("salaboy@gmail.com", taskContent.get("in_mail"));
+        assertEquals(29, taskContent.get("in_age"));
+        assertEquals("salaboy", taskContent.get("in_name"));
 
         taskService.claim(techInterview.getId(), "salaboy");
 
@@ -228,14 +256,14 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
 
 
         Map<String, Object> techOutput = new HashMap<String, Object>();
-        techOutput.put("out.skills", "java, jbpm, drools");
-        techOutput.put("out.twitter", "@salaboy");
-        techOutput.put("out.score", 8);
+        techOutput.put("out_skills", "java, jbpm, drools");
+        techOutput.put("out_twitter", "@salaboy");
+        techOutput.put("out_score", 8);
 
         taskService.complete(techInterview.getId(), "salaboy", techOutput);
 
 
-        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
+        tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("Accounting", "en-UK");
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
         TaskSummary createProposal = tasks.get(0);
@@ -245,21 +273,21 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         assertNotNull(contentById);
         taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
 
-        assertEquals(4, taskContent.size());
+        assertEquals(6, taskContent.size());
 
-        assertEquals(8, taskContent.get("in.tech_score"));
-        assertEquals(8, taskContent.get("in.hr_score"));
+        assertEquals(8, taskContent.get("in_tech_score"));
+        assertEquals(8, taskContent.get("in_hr_score"));
 
 
-        taskService.claim(createProposal.getId(), "katy");
+        taskService.claim(createProposal.getId(), "john");
 
-        taskService.start(createProposal.getId(), "katy");
+        taskService.start(createProposal.getId(), "john");
 
         Map<String, Object> proposalOutput = new HashMap<String, Object>();
-        proposalOutput.put("out.offering", 10000);
+        proposalOutput.put("out_offering", 10000);
 
 
-        taskService.complete(createProposal.getId(), "katy", proposalOutput);
+        taskService.complete(createProposal.getId(), "john", proposalOutput);
 
         tasks = ((InternalTaskService) taskService).getTasksAssignedByGroup("HR", "en-UK");
         assertNotNull(tasks);
@@ -271,17 +299,17 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         assertNotNull(contentById);
         taskContent = (Map<String, Object>) ContentMarshallerHelper.unmarshall(contentById.getContent(), null);
 
-        assertEquals(4, taskContent.size());
+        assertEquals(6, taskContent.size());
 
-        assertEquals(10000, taskContent.get("in.offering"));
-        assertEquals("salaboy", taskContent.get("in.name"));
+        assertEquals(10000, taskContent.get("in_offering"));
+        assertEquals("salaboy", taskContent.get("in_name"));
 
         taskService.claim(signContract.getId(), "katy");
 
         taskService.start(signContract.getId(), "katy");
 
         Map<String, Object> signOutput = new HashMap<String, Object>();
-        signOutput.put("out.signed", true);
+        signOutput.put("out_signed", true);
         taskService.complete(signContract.getId(), "katy", signOutput);
 
         

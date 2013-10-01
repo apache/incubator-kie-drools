@@ -36,6 +36,7 @@ public class ProcessDescRepoHelper {
     private Map<String, String> taskAssignments = new HashMap<String, String>();
     private Collection<String> reusableSubProcesses = new ArrayList<String>();
     private Map<String, String> itemDefinitions = new HashMap<String, String>();
+    private Map<String, String> serviceTasks = new HashMap<String, String>();
     
     public ProcessDescRepoHelper() {
     }
@@ -76,6 +77,16 @@ public class ProcessDescRepoHelper {
     public void setItemDefinitions(Map<String, String> itemDefinitions) {
         this.itemDefinitions = itemDefinitions;
     }
+
+    public Map<String, String> getServiceTasks() {
+        return serviceTasks;
+    }
+
+    public void setServiceTasks(Map<String, String> serviceTasks) {
+        this.serviceTasks = serviceTasks;
+    }
+    
+    
     
     public void clear(){
         process = null;
@@ -86,6 +97,7 @@ public class ProcessDescRepoHelper {
         taskAssignments.clear();
         reusableSubProcesses.clear();
         itemDefinitions.clear();
+        serviceTasks.clear();
     }
 
     public Collection<String> getReusableSubProcesses() {

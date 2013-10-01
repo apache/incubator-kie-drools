@@ -31,6 +31,8 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     private GetReusableSubProcessesHandler reusableSubprocessHandler;
     @Inject
     private DataServiceItemDefinitionHandler itemDefinitionHandler;
+    @Inject
+    private AbstractTaskGetInformationHandler abstractTaskHandler;
     
     public BPMN2DataServiceSemanticModule() {
         super();
@@ -55,7 +57,10 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
     public void setItemDefinitionHandler(DataServiceItemDefinitionHandler itemDefinitionHandler) {
         this.itemDefinitionHandler = itemDefinitionHandler;
     }
-    
+
+    public void setAbstractTaskHandler(AbstractTaskGetInformationHandler abstractTaskHandler) {
+        this.abstractTaskHandler = abstractTaskHandler;
+    }
     
     @PostConstruct
     public void init(){
@@ -65,12 +70,14 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
         processInputHandler.setRepositoryHelper(repoHelper);
         reusableSubprocessHandler.setRepositoryHelper(repoHelper);
         itemDefinitionHandler.setRepositoryHelper(repoHelper);
+        abstractTaskHandler.setRepositoryHelper(repoHelper); 
         
         addHandler("userTask", taskHandler);
         addHandler("process", processHandler);
         addHandler("property", processInputHandler);
         addHandler("itemDefinition", itemDefinitionHandler);
         addHandler("callActivity", reusableSubprocessHandler);
+        addHandler("task", abstractTaskHandler);
     }    
     
 }

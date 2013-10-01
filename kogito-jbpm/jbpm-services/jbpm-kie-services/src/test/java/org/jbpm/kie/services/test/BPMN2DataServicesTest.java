@@ -181,7 +181,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         assertEquals(9, processData.keySet().size());
         Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(processId, "HR Interview" );
         
-        assertEquals(1, taskInputMappings.keySet().size());
+        assertEquals(4, taskInputMappings.keySet().size());
         
         Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(processId, "HR Interview" );
         
@@ -191,7 +191,8 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         
         assertEquals(4, associatedEntities.keySet().size());
         
-        
+        Map<String, String> allServiceTasks = bpmn2Service.getAllServiceTasks(processId);
+        assertEquals(2, allServiceTasks.keySet().size());
         
         
     }

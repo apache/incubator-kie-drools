@@ -61,6 +61,8 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     
     public BPMN2DataServiceImpl() {
     }
+    
+    
 
     public void setSemanticModule(BPMN2DataServiceSemanticModule module) {
         this.module = module;
@@ -211,5 +213,17 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         return new ProcessDesc(process.getId(), process.getName(), process.getVersion()
                 , process.getPackageName(), process.getType(), process.getKnowledgeType().name(),
                 process.getNamespace(), "");
+    }
+
+    @Override
+    public Map<String, String> getAllServiceTasks(String processId) {
+        if (processId == null || "".equals(processId)) {
+            throw new IllegalStateException("The Process id cannot be Empty!");
+        }
+        ProcessDescRepoHelper helper = repo.getProcessDesc(processId);
+        if (helper == null) {
+            throw new IllegalStateException("No process available with given id : " + processId);
+        }
+        return helper.getServiceTasks();
     }
 }
