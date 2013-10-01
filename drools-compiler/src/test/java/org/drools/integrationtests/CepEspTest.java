@@ -3567,7 +3567,6 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testLastEvent() throws InterruptedException {
         String drl = "\n" +
                      "import org.drools.integrationtests.CepEspTest.Event; \n" +
@@ -3584,6 +3583,7 @@ public class CepEspTest extends CommonTestMethodBase {
                      "" +
                      "rule \"inform about E1\"\n" +
                      "when\n" +
+                     "  String() \n" +
                      "  $event1 : Event( type == 1 )\n" +
                      "    //there is an event (T2) with value 0 between 0,2m after doorClosed\n" +
                      "  $event2: Event( type == 2, value == 1, this after [0, 1200ms] $event1, $timestamp : time )\n" +
@@ -3613,7 +3613,8 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
         ksession.addEventListener( new DebugAgendaEventListener(  ) );
 
-        System.out.println( "Insert e1 at " + (new Date().getTime() % 10000 ) );
+        long t0 = new Date().getTime() % 10000;
+        System.out.println( "Insert e1 at " + t0 );
         ksession.insert( new Event( 1, -1, new Date().getTime() ) );
         Thread.sleep( 600 );
         ksession.fireAllRules();
@@ -3626,6 +3627,8 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( new Event( 2, 0, new Date().getTime() ) );
         Thread.sleep( 100 );
         ksession.fireAllRules();
+
+        ksession.insert( "go" );
         ksession.insert( new Event( 2, 1, new Date().getTime() ) );
         Thread.sleep( 100 );
         ksession.fireAllRules();
@@ -3638,12 +3641,158 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertFalse( list.isEmpty() );
         assertEquals( 1, list.size() );
+        Long time = (Long) list.get( 0 ) - t0;
+
+        System.out.print( time );
+        assertTrue( time > 1000 && time < 1500 );
+
+        ksession.dispose();
+
+    }
+
+
+
+    @Test
+    public void testEventTimestamp() {
+        // DROOLS-268
+        String drl = "\n" +
+                     "import org.drools.integrationtests.CepEspTest.Event; \n" +
+                     "global java.util.List list; \n" +
+                     "global org.drools.time.SessionPseudoClock clock; \n" +
+                     "" +
+                     "declare Event \n" +
+                     " @role( event )\n" +
+                     " @timestamp( time ) \n" +
+                     " @expires( 10000000 ) \n" +
+                     "end \n" +
+                     "" +
+                     "" +
+                     "rule \"inform about E1\"\n" +
+                     "when\n" +
+                     " $event1 : Event( type == 1 )\n" +
+                     " //there is an event (T2) with value 0 between 0,2m after doorClosed\n" +
+                     " $event2: Event( type == 2, value == 1, this after [0, 1200ms] $event1, $timestamp : time )\n" +
+                     " //there is no newer event (T2) within the timeframe\n" +
+                     " not Event( type == 2, this after [0, 1200ms] $event1, time > $timestamp ) \n" +
+                     "then\n" +
+                     " list.add( clock.getCurrentTime() ); \n " +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        ArrayList list = new ArrayList( );
+        ksession.setGlobal( "list", list );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        ksession.setGlobal( "clock", clock );
+
+        ksession.insert( new Event( 1, -1, clock.getCurrentTime() ) ); // 0
+        clock.advanceTime(600, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 600
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 700
+        clock.advanceTime(300, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 1000
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 1, clock.getCurrentTime() ) ); // 1100
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        clock.advanceTime(100, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) ); // 1300
+
+        clock.advanceTime(1000, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+
+        assertFalse( list.isEmpty() );
+        assertEquals( 1, list.size() );
         Long time = (Long) list.get( 0 );
 
         assertTrue( time > 1000 && time < 1500 );
 
         ksession.dispose();
+    }
 
+    @Test
+    public void testEventTimestamp2() {
+        // DROOLS-268
+        String drl = "\n" +
+                     "import org.drools.integrationtests.CepEspTest.Event; \n" +
+                     "global java.util.List list; \n" +
+                     "global org.drools.time.SessionPseudoClock clock; \n" +
+                     "" +
+                     "declare Event \n" +
+                     " @role( event )\n" +
+                     " @timestamp( time ) \n" +
+                     " @expires( 10000000 ) \n" +
+                     "end \n" +
+                     "" +
+                     "" +
+                     "rule \"inform about E1\"\n" +
+                     "when\n" +
+                     " $event1 : Event( type == 1 )\n" +
+                     " $event2: Event( type == 2 )\n" +
+                     " not Event( type == 3, this after [0, 1000ms] $event1 ) \n" +
+                     "then\n" +
+                     " list.add( clock.getCurrentTime() ); \n " +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        ArrayList list = new ArrayList( );
+        ksession.setGlobal( "list", list );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        ksession.setGlobal( "clock", clock );
+
+        ksession.insert( new Event( 1, 0, clock.getCurrentTime() ) );
+        clock.advanceTime(600, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+
+        ksession.insert( new Event( 2, 0, clock.getCurrentTime() ) );
+        clock.advanceTime(600, TimeUnit.MILLISECONDS);
+        ksession.insert( new Event( 3, 0, clock.getCurrentTime() ) );
+        ksession.fireAllRules();
+
+        assertFalse( list.isEmpty() );
+        assertEquals( 1, list.size() );
+        long time = (Long) list.get( 0 );
+
+        assertTrue( time >= 1000 );
+
+        ksession.dispose();
     }
 }
 
