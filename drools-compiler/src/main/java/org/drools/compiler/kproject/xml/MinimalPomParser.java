@@ -2,7 +2,6 @@ package org.drools.compiler.kproject.xml;
 
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.builder.ReleaseId;
-import org.w3c.dom.Document;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -19,8 +18,6 @@ public class MinimalPomParser extends DefaultHandler {
 
     private StringBuilder characters;    
     
-    private Document      document;
-
     private String        pomGroupId;
     private String        pomArtifactId;
     private String        pomVersion;
@@ -28,12 +25,13 @@ public class MinimalPomParser extends DefaultHandler {
     private String        currentGroupId;
     private String        currentArtifactId;
     private String        currentVersion;
+    private String        currentScope;
 
-    public MinimalPomParser() {
+    private MinimalPomParser() {
         model = new PomModel();
     }
     
-    public static PomModel parse(String path, InputStream is) {
+    static PomModel parse(String path, InputStream is) {
         MinimalPomParser handler = new MinimalPomParser();        
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -82,12 +80,14 @@ public class MinimalPomParser extends DefaultHandler {
             currentArtifactId = null;
             currentVersion = null;
         } else if ( "dependency".equals( qname ) ) {
-            if ( currentGroupId != null && currentArtifactId != null && currentVersion != null ) {
+            if ( !"provided".equals(currentScope) && !"test".equals(currentScope) &&
+                 currentGroupId != null && currentArtifactId != null && currentVersion != null ) {
                 model.addDependency(new ReleaseIdImpl(currentGroupId, currentArtifactId, currentVersion));
             }
             currentGroupId = null;
             currentArtifactId = null;
             currentVersion = null;
+            currentScope = null;
         } else {
             String text = ( this.characters != null ) ? this.characters.toString() : null;
             if ( text != null) {
@@ -109,6 +109,8 @@ public class MinimalPomParser extends DefaultHandler {
                     } else {
                         currentVersion = text;
                     }
+                } else if ( "scope".equals( qname ) ) {
+                    currentScope = text;
                 }
             }
         }
