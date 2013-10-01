@@ -358,10 +358,13 @@ public abstract class AbstractWorkingMemory
 
     public void initInitialFact( InternalRuleBase ruleBase, MarshallerReaderContext context ) {
         ruleBase.lock();
-        this.initialFactHandle = new DefaultFactHandle(0, InitialFactImpl.getInstance(), 0,  defaultEntryPoint, false );
+        Object initialFact = InitialFactImpl.getInstance();
 
         ObjectTypeConf otc = this.defaultEntryPoint.getObjectTypeConfigurationRegistry()
-                .getObjectTypeConf( this.defaultEntryPoint.entryPoint, this.initialFactHandle.getObject() );
+                .getObjectTypeConf( this.defaultEntryPoint.entryPoint, initialFact );
+
+        this.initialFactHandle = ruleBase.getConfiguration().getComponentFactory().getFactHandleFactoryService().newFactHandle(
+                0, initialFact, 0, otc, this, this.defaultEntryPoint );
 
         final PropagationContext pctx = new PropagationContextImpl( 0,
                                                                     PropagationContext.ASSERTION,
