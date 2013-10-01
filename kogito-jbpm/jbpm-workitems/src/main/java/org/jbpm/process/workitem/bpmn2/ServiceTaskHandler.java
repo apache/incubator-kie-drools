@@ -182,6 +182,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
                         
                         return client;
                     } catch (Exception e) {
+                	    logger.error("Error when creating WS Client", e);
                         continue;
                     }
                 }
