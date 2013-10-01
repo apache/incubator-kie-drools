@@ -458,7 +458,7 @@ public class KieBuilderImpl
         }
 
         try {
-            PomModel tempPomModel = MinimalPomParser.parse( "pom.xml",
+            PomModel tempPomModel = PomModel.Parser.parse( "pom.xml",
                                                             new ByteArrayInputStream( pomXml ) );
             validatePomModel( tempPomModel ); // throws an exception if invalid
             pomModel = tempPomModel;

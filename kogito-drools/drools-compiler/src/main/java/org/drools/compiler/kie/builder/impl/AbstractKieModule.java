@@ -326,8 +326,7 @@ public abstract class AbstractKieModule
             try {
                 byte[] pomXml = getPomXml();
                 if( pomXml != null ) {
-                    PomModel tempPomModel = MinimalPomParser.parse("pom.xml",
-                            new ByteArrayInputStream(pomXml));
+                    PomModel tempPomModel = PomModel.Parser.parse("pom.xml", new ByteArrayInputStream(pomXml));
                     validatePomModel(tempPomModel); // throws an exception if invalid
                     pomModel = tempPomModel;
                 }
