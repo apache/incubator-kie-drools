@@ -176,6 +176,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
                         clients.put(interfaceRef, client);
                         return client;
                     } catch (Exception e) {
+                    	logger.error("Error when creating WS Client", e);
                         continue;
                     }
                 }
