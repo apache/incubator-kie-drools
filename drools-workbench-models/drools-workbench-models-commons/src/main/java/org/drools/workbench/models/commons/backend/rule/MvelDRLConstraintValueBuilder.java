@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.commons.backend.rule;
 
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 
 /**
  * Specific implementation for MVEL

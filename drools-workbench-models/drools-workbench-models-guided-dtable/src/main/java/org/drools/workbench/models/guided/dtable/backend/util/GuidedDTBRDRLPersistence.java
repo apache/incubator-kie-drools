@@ -17,10 +17,10 @@ package org.drools.workbench.models.guided.dtable.backend.util;
 
 import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
 import org.drools.workbench.models.commons.backend.rule.DRLConstraintValueBuilder;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
-import org.drools.workbench.models.commons.shared.rule.IFactPattern;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.IFactPattern;
 
 import java.util.Map;
 import java.util.regex.Matcher;

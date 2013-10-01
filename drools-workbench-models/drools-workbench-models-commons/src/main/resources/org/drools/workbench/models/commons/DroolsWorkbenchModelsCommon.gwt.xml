@@ -20,6 +20,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
+  <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
+
   <source path="shared"/>
 
 </module>

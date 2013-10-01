@@ -1,6 +1,6 @@
 package org.drools.workbench.models.commons.backend.packages;
 
-import org.drools.workbench.models.commons.shared.packages.HasPackageName;
+import org.drools.workbench.models.datamodel.packages.HasPackageName;
 
 /**
  * Writes Package details to a String

@@ -18,7 +18,7 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.commons.shared.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.IPattern;
 
 /**
  * A Condition column defined with a BRL fragment

@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.auditlog;
 
-import org.drools.workbench.models.commons.shared.auditlog.AuditLogEntry;
+import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 
 /**
  * An Audit Event when a row is deleted

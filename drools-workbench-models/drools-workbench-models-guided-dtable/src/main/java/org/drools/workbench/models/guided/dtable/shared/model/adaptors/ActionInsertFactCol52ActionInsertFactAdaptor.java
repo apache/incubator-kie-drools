@@ -1,8 +1,8 @@
 package org.drools.workbench.models.guided.dtable.shared.model.adaptors;
 
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.ActionInsertFact;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.kie.commons.validation.PortablePreconditions;
 

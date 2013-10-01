@@ -16,8 +16,9 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 
 import java.util.List;
 

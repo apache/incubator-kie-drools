@@ -1,21 +1,21 @@
 package org.drools.workbench.models.commons.backend.rule;
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.workbench.models.commons.shared.rule.ActionRetractFact;
-import org.drools.workbench.models.commons.shared.rule.ActionSetField;
-import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.commons.shared.rule.ExpressionField;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FromCompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.IAction;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.RuleAttribute;
-import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.rule.ActionRetractFact;
+import org.drools.workbench.models.datamodel.rule.ActionSetField;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleAttribute;
+import org.drools.workbench.models.datamodel.rule.RuleMetadata;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.Test;
 
 import java.util.List;
