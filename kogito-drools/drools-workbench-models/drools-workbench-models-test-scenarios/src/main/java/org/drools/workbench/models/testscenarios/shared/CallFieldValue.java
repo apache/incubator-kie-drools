@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.testscenarios.shared;
 
-import org.drools.workbench.models.commons.shared.rule.FieldNature;
+import org.drools.workbench.models.datamodel.rule.FieldNature;
 
 /**
  * Holds field and value for "action" parts of the rule.

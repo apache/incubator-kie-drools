@@ -16,7 +16,7 @@
 
 package org.drools.workbench.models.testscenarios.shared;
 
-import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.datamodel.imports.Imports;
 
 import java.util.ArrayList;
 import java.util.Collections;

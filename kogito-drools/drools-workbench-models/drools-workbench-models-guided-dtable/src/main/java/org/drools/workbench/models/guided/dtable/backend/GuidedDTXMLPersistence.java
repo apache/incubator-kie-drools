@@ -92,7 +92,7 @@ public class GuidedDTXMLPersistence {
         xt.aliasPackage( "org.drools.guvnor.client",
                          "org.drools.ide.common.client");
                          
-        //this is for migrating org.drools.ide.common.client.modeldriven.auditlog.AuditLog to org.drools.workbench.models.commons.shared.auditlog.AuditLog
+        //this is for migrating org.drools.ide.common.client.modeldriven.auditlog.AuditLog to org.drools.workbench.models.datamodel.auditlog.AuditLog
 		xt.aliasPackage("org.drools.guvnor.client.modeldriven.dt52.auditlog",
 				"org.drools.workbench.models.guided.dtable.shared.auditlog");
 

@@ -16,10 +16,10 @@
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
 import org.drools.workbench.models.commons.backend.IUpgradeHelper;
-import org.drools.workbench.models.commons.shared.rule.ActionCallMethod;
-import org.drools.workbench.models.commons.shared.rule.ActionFieldValue;
-import org.drools.workbench.models.commons.shared.rule.RuleMetadata;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
+import org.drools.workbench.models.datamodel.rule.RuleMetadata;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 
 /**
  * Utility class to support upgrades of the RuleModel model. Release pre-5.2

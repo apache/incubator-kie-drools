@@ -1,7 +1,7 @@
 package org.drools.workbench.models.commons.backend.imports;
 
-import org.drools.workbench.models.commons.shared.imports.HasImports;
-import org.drools.workbench.models.commons.shared.imports.Imports;
+import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.imports.Imports;
 
 /**
  * Writes import details to a String

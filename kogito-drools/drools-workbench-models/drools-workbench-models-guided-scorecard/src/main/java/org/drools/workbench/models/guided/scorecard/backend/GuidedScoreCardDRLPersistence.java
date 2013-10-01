@@ -36,7 +36,7 @@ import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.PMMLGenerator;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
-import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 
 public class GuidedScoreCardDRLPersistence {

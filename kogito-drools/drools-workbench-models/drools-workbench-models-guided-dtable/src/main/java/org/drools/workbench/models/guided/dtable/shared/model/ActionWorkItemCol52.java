@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
-import org.drools.workbench.models.commons.shared.workitems.PortableWorkDefinition;
+import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
 /**
  * A column representing the execution of a Work Item.

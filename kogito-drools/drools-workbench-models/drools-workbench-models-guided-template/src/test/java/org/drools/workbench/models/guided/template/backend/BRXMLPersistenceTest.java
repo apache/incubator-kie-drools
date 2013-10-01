@@ -15,10 +15,11 @@
  */
 package org.drools.workbench.models.guided.template.backend;
 
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.rule.DSLSentence;
-import org.drools.workbench.models.commons.shared.rule.DSLVariableValue;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.DSLSentence;
+import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -110,12 +111,12 @@ public class BRXMLPersistenceTest {
                 + "<dslSentence>"
                 + "<definition>MyLog {myout}</definition>"
                 + "<values>"
-                + "<org.drools.workbench.models.commons.shared.rule.DSLVariableValue>"
+                + "<org.drools.workbench.models.datamodel.rule.DSLVariableValue>"
                 + "<value>5-4 sample out</value>"
-                + "</org.drools.workbench.models.commons.shared.rule.DSLVariableValue>"
-                + "<org.drools.workbench.models.commons.shared.rule.DSLVariableValue>"
+                + "</org.drools.workbench.models.datamodel.rule.DSLVariableValue>"
+                + "<org.drools.workbench.models.datamodel.rule.DSLVariableValue>"
                 + "<value>myout</value>"
-                + "</org.drools.workbench.models.commons.shared.rule.DSLVariableValue>"
+                + "</org.drools.workbench.models.datamodel.rule.DSLVariableValue>"
                 + "</values>"
                 + "</dslSentence>"
                 + "</rhs>"

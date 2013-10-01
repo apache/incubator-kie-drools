@@ -16,14 +16,14 @@
 package org.drools.workbench.models.guided.template.backend.upgrade;
 
 import org.drools.workbench.models.commons.backend.IUpgradeHelper;
-import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.ConnectiveConstraint;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ConnectiveConstraint;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 
 /**
  * Utility class to support upgrades of the RuleModel model. This implementation

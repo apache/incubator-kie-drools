@@ -15,8 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import org.drools.workbench.models.commons.shared.rule.FieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;

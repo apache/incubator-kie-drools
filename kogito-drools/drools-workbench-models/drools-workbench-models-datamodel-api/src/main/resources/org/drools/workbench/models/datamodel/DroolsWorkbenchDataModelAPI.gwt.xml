@@ -19,12 +19,11 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-  <inherits name='org.jboss.errai.bus.ErraiBus'/>
-
-  <inherits name='org.drools.workbench.models.commons.DroolsWorkbenchModelsCommon'/>
-
-  <source path='model'/>
+  <source path='auditlog'/>
+  <source path='imports'/>
   <source path='oracle'/>
-  <source path='events'/>
+  <source path='packages'/>
+  <source path='rule'/>
+  <source path='workitems'/>
 
 </module>

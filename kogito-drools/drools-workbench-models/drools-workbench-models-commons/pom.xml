@@ -22,9 +22,10 @@
       <artifactId>drools-compiler</artifactId>
     </dependency>
 
+
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-commons-validation</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-workbench-models-datamodel-api</artifactId>
     </dependency>
 
   </dependencies>

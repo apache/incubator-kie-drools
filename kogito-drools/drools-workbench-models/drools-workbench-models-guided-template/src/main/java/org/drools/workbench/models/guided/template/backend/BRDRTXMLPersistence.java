@@ -19,8 +19,9 @@ package org.drools.workbench.models.guided.template.backend;
 import java.util.List;
 
 import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.template.backend.upgrade.TemplateModelUpgradeHelper1;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 

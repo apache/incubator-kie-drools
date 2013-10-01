@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.drools.workbench.models.commons.shared.auditlog.AuditLog;
-import org.drools.workbench.models.commons.shared.imports.HasImports;
-import org.drools.workbench.models.commons.shared.imports.Imports;
-import org.drools.workbench.models.commons.shared.packages.HasPackageName;
+import org.drools.workbench.models.datamodel.auditlog.AuditLog;
+import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.imports.Imports;
+import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.drools.workbench.models.guided.dtable.shared.auditlog.DecisionTableAuditLogFilter;
 
 /**

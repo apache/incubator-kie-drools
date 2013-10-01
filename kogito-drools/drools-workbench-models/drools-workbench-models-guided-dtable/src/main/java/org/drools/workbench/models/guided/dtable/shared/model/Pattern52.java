@@ -18,8 +18,8 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.commons.shared.rule.CEPWindow;
-import org.drools.workbench.models.commons.shared.rule.HasCEPWindow;
+import org.drools.workbench.models.datamodel.rule.CEPWindow;
+import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 
 /**
  * A Fact Pattern to which column definitions can be added

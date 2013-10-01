@@ -1,6 +1,6 @@
 package org.drools.workbench.models.commons.backend.packages;
 
-import org.drools.workbench.models.commons.shared.packages.HasPackageName;
+import org.drools.workbench.models.datamodel.packages.HasPackageName;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

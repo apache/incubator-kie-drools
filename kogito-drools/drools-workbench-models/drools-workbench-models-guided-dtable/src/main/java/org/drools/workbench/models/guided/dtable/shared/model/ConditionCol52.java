@@ -18,9 +18,9 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.HasParameterizedOperator;
-import org.drools.workbench.models.commons.shared.workitems.HasBinding;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.HasParameterizedOperator;
+import org.drools.workbench.models.datamodel.workitems.HasBinding;
 
 /**
  * This is the config for a condition column. Typically many of them have their

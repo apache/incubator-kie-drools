@@ -15,31 +15,31 @@ package org.drools.workbench.models.commons.backend.rule;
  * limitations under the License.
  */
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.workbench.models.commons.shared.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.shared.oracle.model.DataType;
-import org.drools.workbench.models.commons.shared.oracle.model.FieldAccessorsAndMutators;
-import org.drools.workbench.models.commons.shared.oracle.model.ModelField;
-import org.drools.workbench.models.commons.shared.rule.BaseSingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.CEPWindow;
-import org.drools.workbench.models.commons.shared.rule.CompositeFactPattern;
-import org.drools.workbench.models.commons.shared.rule.CompositeFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.ExpressionField;
-import org.drools.workbench.models.commons.shared.rule.ExpressionUnboundFact;
-import org.drools.workbench.models.commons.shared.rule.ExpressionVariable;
-import org.drools.workbench.models.commons.shared.rule.FactPattern;
-import org.drools.workbench.models.commons.shared.rule.FreeFormLine;
-import org.drools.workbench.models.commons.shared.rule.IPattern;
-import org.drools.workbench.models.commons.shared.rule.RuleModel;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraint;
-import org.drools.workbench.models.commons.shared.rule.SingleFieldConstraintEBLeftSide;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.CEPWindow;
+import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
+import org.drools.workbench.models.datamodel.rule.CompositeFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
+import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
+import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
+import org.drools.workbench.models.datamodel.rule.IPattern;
+import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;

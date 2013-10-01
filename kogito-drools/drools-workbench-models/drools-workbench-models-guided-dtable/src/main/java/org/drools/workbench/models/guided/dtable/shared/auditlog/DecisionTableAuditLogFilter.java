@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.auditlog;
 
-import org.drools.workbench.models.commons.shared.auditlog.DefaultAuditLogFilter;
+import org.drools.workbench.models.datamodel.auditlog.DefaultAuditLogFilter;
 
 /**
  * An AuditLogFilter implementation specific to the types of AuditLogEntry's

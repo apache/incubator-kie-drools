@@ -16,7 +16,7 @@
 package org.drools.workbench.models.guided.scorecard.backend;
 
 import org.drools.scorecards.StringUtil;
-import org.drools.workbench.models.commons.shared.imports.Import;
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 import org.junit.Test;
 
