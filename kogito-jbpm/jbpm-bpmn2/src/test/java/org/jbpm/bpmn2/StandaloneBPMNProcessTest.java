@@ -215,7 +215,7 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        assertEquals("mary", workItem.getParameter("ActorId"));
+        assertEquals("mary", workItem.getParameter("SwimlaneActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }

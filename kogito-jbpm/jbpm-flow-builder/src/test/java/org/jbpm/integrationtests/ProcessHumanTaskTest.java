@@ -164,7 +164,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
         workItem = handler.getWorkItem();
         assertNotNull(workItem);
         assertEquals("Do something else", workItem.getParameter("TaskName"));
-        assertEquals("Jane Doe", workItem.getParameter("ActorId"));
+        assertEquals("Jane Doe", workItem.getParameter("SwimlaneActorId"));
         workingMemory.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }

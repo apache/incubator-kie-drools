@@ -1256,7 +1256,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
                 workItemHandler);
         workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);
-        assertEquals("mary", workItem.getParameter("ActorId"));
+        assertEquals("mary", workItem.getParameter("SwimlaneActorId"));
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
     }

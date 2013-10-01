@@ -60,7 +60,8 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         		workItem.setParameter("SwimlaneActorId", actorId);
         	}
         }
-        return actorId;
+        // always return ActorId from workitem as SwimlaneActorId is kept as separate parameter
+        return (String) workItem.getParameter("ActorId");
     }
     
     private SwimlaneContextInstance getSwimlaneContextInstance(String swimlaneName) {

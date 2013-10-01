@@ -363,7 +363,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         handler2.reset();
         session.getWorkItemManager().completeWorkItem(workItemId, null);
         assertTrue(handler2.getWorkItem() != null);
-        assertEquals("John Doe", handler2.getWorkItem().getParameter("ActorId"));
+        assertEquals("John Doe", handler2.getWorkItem().getParameter("SwimlaneActorId"));
         assertEquals("x-value", handler2.getWorkItem().getParameter("Priority"));
         
         session.getWorkItemManager().completeWorkItem(handler1.getWorkItem().getId(), null);

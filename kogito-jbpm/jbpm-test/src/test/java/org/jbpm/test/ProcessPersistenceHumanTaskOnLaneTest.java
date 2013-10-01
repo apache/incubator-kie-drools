@@ -78,6 +78,69 @@ public class ProcessPersistenceHumanTaskOnLaneTest extends JbpmJUnitBaseTestCase
 
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
+    
+    @Test 
+    public void testProcessWIthDifferentGroups() throws Exception {
+        createRuntimeManager("HumanTaskOnLaneDifferentGroups.bpmn2");
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        
+
+        // simulating a system restart
+        logger.debug("Reloading the environemnt to simulate system restart");
+        disposeRuntimeManager();
+        createRuntimeManager("HumanTaskOnLaneDifferentGroups.bpmn2");
+        runtimeEngine = getRuntimeEngine();
+        ksession = runtimeEngine.getKieSession();
+        taskService = runtimeEngine.getTaskService();
+
+        // let manager execute Task 1
+        String taskUser = "manager";
+        String locale = "en-UK";
+        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(taskUser, locale);
+        assertEquals(1, list.size());
+        
+        TaskSummary task = list.get(0);
+        taskService.claim(task.getId(), taskUser);
+        taskService.start(task.getId(), taskUser);
+        taskService.complete(task.getId(), taskUser, null);
+
+        // simulating a system restart
+        logger.debug("Reloading the environemnt to simulate system restart once again");
+        disposeRuntimeManager();
+        createRuntimeManager("HumanTaskOnLane.bpmn2");
+        runtimeEngine = getRuntimeEngine();
+        ksession = runtimeEngine.getKieSession();
+        taskService = runtimeEngine.getTaskService();
+        
+        
+        List<Status> reservedAndRegistered = new ArrayList<Status>();
+        reservedAndRegistered.add(Status.Reserved);
+        reservedAndRegistered.add(Status.Ready);
+        // manager does not have access to the second task
+        list = taskService.getTasksAssignedAsPotentialOwnerByStatus(taskUser, reservedAndRegistered, locale);
+        assertEquals(0, list.size());
+        
+        // now try john 
+        taskUser = "john";
+        list = taskService.getTasksAssignedAsPotentialOwnerByStatus(taskUser, reservedAndRegistered, locale);
+        assertEquals(1, list.size());
+        
+        task = list.get(0);
+        // task is in ready state so claim is required
+        assertEquals(Status.Ready, task.getStatus());
+        taskService.claim(task.getId(), taskUser);
+        taskService.start(task.getId(), taskUser);
+        taskService.complete(task.getId(), taskUser, null);
+
+
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+    }
 
 
 }
