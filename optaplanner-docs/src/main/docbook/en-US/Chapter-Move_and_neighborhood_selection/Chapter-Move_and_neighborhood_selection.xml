@@ -78,17 +78,18 @@
 
       <para>Out of the box, this works and all properties of the <literal>changeMoveSelector</literal> are defaulted
       sensibly (unless that fails fast due to ambiguity). On the other hand, the configuration can be customized
-      significantly for specific use cases. For example: you want want to configure a filter to discard pointless
+      significantly for specific use cases. For example: you might want to configure a filter to discard pointless
       moves.</para>
     </section>
 
     <section>
       <title>Subselecting of entities, values and other moves</title>
 
-      <para>To create a <literal>Move</literal>, we need to select 1 or more planning entities and/or planning values to
-      move. Just like <literal>MoveSelector</literal>s, <literal>EntitySelector</literal>s and
-      <literal>ValueSelector</literal>s need to support a similar feature set (such as scalable just-in-time selection).
-      Therefor, they implement a common interface <literal>Selector</literal> and they are configured similarly.</para>
+      <para>To create a <literal>Move</literal>, a <literal>MoveSelector</literal> needs to select 1 or more planning
+      entities and/or planning values to move. Just like <literal>MoveSelector</literal>s,
+      <literal>EntitySelector</literal>s and <literal>ValueSelector</literal>s need to support a similar feature set
+      (such as scalable just-in-time selection). Therefore, they all implement a common interface
+      <literal>Selector</literal> and they are configured similarly.</para>
 
       <para>A MoveSelector is often composed out of <literal>EntitySelector</literal>s,
       <literal>ValueSelector</literal>s or even other <literal>MoveSelector</literal>s, which can be configured
@@ -104,7 +105,9 @@
         &lt;/valueSelector&gt;
         ...
       &lt;/changeMoveSelector&gt;
-      ...
+      &lt;swapMoveSelector&gt;
+        ...
+      &lt;/swapMoveSelector&gt;
     &lt;/unionMoveSelector&gt;</programlisting>
 
       <para>Together, this structure forms a <literal>Selector</literal> tree:</para>

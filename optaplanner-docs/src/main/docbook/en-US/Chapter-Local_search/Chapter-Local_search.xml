@@ -19,7 +19,7 @@
     good feasible solution. Therefore it's pretty natural to implement.</para>
 
     <para><emphasis role="bold">Local search often needs to start from an initialized solution</emphasis>, therefore
-    it's recommended to configure a construction heuristic solver phase before it.</para>
+    it's often required to configure a construction heuristic solver phase before it.</para>
   </section>
 
   <section xml:id="hillClimbing">
@@ -145,26 +145,6 @@
     <title>About neighborhoods, moves and steps</title>
 
     <section>
-      <title>Move generation tips</title>
-
-      <para>At each solution, local search will try all possible moves and pick the best move to change to the next
-      solution. It's up to you to generate those moves. Let's take a look at all the possible moves on the starting
-      solution of 4 queens:</para>
-
-      <para>It's highly recommended that you verify all solutions are connected by your move set. This means that by
-      combining a finite number of moves you can reach any solution from any solution. Otherwise you're already
-      excluding solutions at the start. Especially if you're using only big moves, you should check it. Just because big
-      moves outperform small moves in a short test run, it doesn't mean that they will outperform them in a long test
-      run.</para>
-
-      <para>You can mix different move types. Usually you're better off preferring small (fine-grained) moves over big
-      (course-grained) moves because the score delta calculation will pay off more. However, as the traveling tournament
-      example proves, if you can remove a hard constraint by using a certain set of big moves, you can win performance
-      and scalability. A big moves version could evaluate a lot less unfeasible solutions, which enables it to
-      outperform and outscale a small moves version.</para>
-    </section>
-
-    <section>
       <title>A step</title>
 
       <para>A step is the winning move. The local search solver tries every move on the current solution and picks the
@@ -271,16 +251,15 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
     <itemizedlist>
       <listitem>
         <para>A <literal>MoveSelector</literal> which selects the possible moves of the current solution. See the
-        chapter about Move and neighborhood selection.</para>
+        chapter <link linkend="moveAndNeighborhoodSelection">move and neighborhood selection</link>.</para>
       </listitem>
 
       <listitem>
-        <para>An <emphasis>acceptor</emphasis> which filters out unacceptable moves. It can also weigh a move it
-        accepts.</para>
+        <para>An <literal>Acceptor</literal> which filters out unacceptable moves.</para>
       </listitem>
 
       <listitem>
-        <para>A <emphasis>forager</emphasis> which gathers all accepted moves and picks the next step from them.</para>
+        <para>A <literal>Forager</literal> which gathers accepted moves and picks the next step from them.</para>
       </listitem>
     </itemizedlist>
 
@@ -294,11 +273,12 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
       </mediaobject>
     </figure>
 
-    <para>In the above example the selector generated the moves shown with the blue lines, the acceptor accepted all of
-    them and the forager picked the move <emphasis>B0 to B3</emphasis>.</para>
+    <para>In the above example the <literal>MoveSelector</literal> generated the moves shown with the blue lines, the
+    <literal>Acceptor</literal> accepted all of them and the <literal>Forager</literal> picked the move <emphasis>B0 to
+    B3</emphasis>.</para>
 
-    <para>If we turn on <literal>trace</literal> logging for the category <literal>org.optaplanner</literal>, then the
-    decision making is shown in the log:</para>
+    <para>If we <link linkend="logging">turn on <literal>trace</literal> logging</link>, then the decision making is
+    shown in the log:</para>
 
     <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
 TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
@@ -314,7 +294,7 @@ TRACE         Move index (12), score (-4), accepted (true) for move (col3@row0 =
 DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 ...</programlisting>
 
-    <para>Because the last solution can degrade (especially in tabu search and simulated annealing), the
+    <para>Because the last solution can degrade (especially in Tabu Search and Simulated Annealing), the
     <literal>Solver</literal> remembers the best solution it has encountered through the entire search path. Each time
     the current solution is better than the last best solution, the current solution is cloned and referenced as the new
     best solution.</para>
@@ -573,8 +553,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
     it in the solver configuration.</para>
 
     <note>
-      <para>It's not possible to directly inject a <literal>Termination</literal>, ... instance, instead of also extend
-      a <literal>Config</literal> class because:</para>
+      <para>It's not possible to inject a <literal>Termination</literal>, ... instance directly (to avoid extending a
+      <literal>Config</literal> class too) because:</para>
 
       <itemizedlist>
         <listitem>
@@ -597,6 +577,6 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
     </note>
 
     <para>If you build a better implementation that's not domain specific, consider contributing it back as a pull
-    request on github and we'll optimize it and take it along in future refactors.</para>
+    request on github: we'll optimize it and take it along in future refactors.</para>
   </section>
 </chapter>

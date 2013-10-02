@@ -3663,3 +3663,18 @@ all distances and times have been multiplied by 1000 so it can continue to use H
 From 6.0.0.CR4 to 6.0.0.CR5
 ---------------------------
 
+[MINOR] If the <acceptor> element has no configuration, it now fail-fast.
+It used to default to entityTabuSize 7. To continue that behaviour, configure it explicitly.
+For good advice on what to configure, see the docs section "Which optimization algorithms should I use?".
+Before in *SolverConfig.java and *BenchmarkConfig.java:
+  <localSearch>
+    <acceptor/>
+    ...
+  </localSearch>
+After in *SolverConfig.java and *BenchmarkConfig.java:
+  <localSearch>
+    <acceptor>
+      <entityTabuSize>7</entityTabuSize>
+    </acceptor>
+    ...
+  </localSearch>

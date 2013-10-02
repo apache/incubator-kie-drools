@@ -399,12 +399,11 @@ public class AcceptorConfig {
             compositeAcceptor.setAcceptorList(acceptorList);
             return compositeAcceptor;
         } else {
-            EntityTabuAcceptor entityTabuAcceptor = new EntityTabuAcceptor();
-            entityTabuAcceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(5)); // TODO number pulled out of thin air
-            if (environmentMode.isNonIntrusiveFullAsserted()) {
-                entityTabuAcceptor.setAssertTabuHashCodeCorrectness(true);
-            }
-            return entityTabuAcceptor;
+            // TODO Create a good all-round acceptor instead of fail-fasting.
+            throw new IllegalArgumentException("The acceptor does not specify any acceptorType (" + acceptorTypeList
+                    + ") or other acceptor property.\n"
+                    + "For a good starting values,"
+                    + " see the docs section \"Which optimization algorithms should I use?\".");
         }
     }
 
