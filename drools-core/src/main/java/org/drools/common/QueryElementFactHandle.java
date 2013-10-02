@@ -99,7 +99,15 @@ public class QueryElementFactHandle
         return false;
     }
 
-    public boolean isTrait() {
+    public boolean isTraitOrTraitable() {
+        return false;
+    }
+
+    public boolean isTraitable() {
+        return false;
+    }
+
+    public boolean isTraiting() {
         return false;
     }
 

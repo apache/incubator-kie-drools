@@ -97,15 +97,26 @@ public class IncludesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator           INCLUDES      = Operator.addOperatorToRegistry( "includes",
-                                                                                           false );
-    public static final Operator           INCLUDES_NOT  = Operator.addOperatorToRegistry( "includes",
-                                                                                           true );
+    public static final String          includesOp = "includes";
 
-    private static final String[]          SUPPORTED_IDS = {INCLUDES.getOperatorString()};
+    public static Operator              INCLUDES;
 
-    private Map<String, IncludesEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
+    public static Operator              INCLUDES_NOT;
+
+    private static String[]             SUPPORTED_IDS;
+
+    private Map<String, IncludesEvaluator> cache       = Collections.emptyMap();
+    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( includesOp, false ) == null ) {
+            INCLUDES = Operator.addOperatorToRegistry( includesOp, false );
+            INCLUDES_NOT = Operator.addOperatorToRegistry( includesOp, true );
+            SUPPORTED_IDS = new String[] { includesOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -221,6 +232,10 @@ public class IncludesEvaluatorDefinition
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;
         private String            paramText;
+
+        {
+            IncludesEvaluatorDefinition.init();
+        }
 
         public IncludesEvaluator() {
         }

@@ -104,7 +104,7 @@ public class FromNodeTest {
         From fromCe = new From(dataProvider);
         fromCe.setResultPattern( pattern ); 
 
-        final FromNode from = new FromNode( 3,
+        final FromNode from = new FromNode( 4,
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
@@ -225,7 +225,7 @@ public class FromNodeTest {
         fromCe.setResultPattern( new Pattern( 0,
                                               new ClassObjectType( Cheese.class ) ) );
 
-        final FromNode from = new FromNode( 3,
+        final FromNode from = new FromNode( 4,
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[0],
@@ -331,7 +331,7 @@ public class FromNodeTest {
         From fromCe = new From(dataProvider);
         fromCe.setResultPattern( pattern );        
 
-        final FromNode from = new FromNode( 3,
+        final FromNode from = new FromNode( 4,
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[]{constraint},
@@ -424,7 +424,7 @@ public class FromNodeTest {
         From fromCe = new From(dataProvider);
         fromCe.setResultPattern( pattern ); 
 
-        final FromNode from = new FromNode( 3,
+        final FromNode from = new FromNode( 4,
                                             dataProvider,
                                             null,
                                             new AlphaNodeFieldConstraint[]{},

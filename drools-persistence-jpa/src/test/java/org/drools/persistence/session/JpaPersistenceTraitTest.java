@@ -275,6 +275,7 @@ public class JpaPersistenceTraitTest {
                 "global java.util.List list; \n" +
                 "" +                "" +
                 "declare TBean \n" +
+                "  @Traitable \n" +
                 "  fld : String \n" +
                 "end \n " +
                 "" +

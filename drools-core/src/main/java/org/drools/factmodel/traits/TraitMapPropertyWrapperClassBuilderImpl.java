@@ -29,7 +29,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -37,8 +36,6 @@ import java.util.Set;
 
 public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWrapperClassBuilder, Serializable {
 
-    private transient Map<String, FieldDefinition> aliases;
-    
     private transient ClassDefinition trait;
 
     private transient TraitRegistry traitRegistry;
@@ -76,16 +73,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         String internalCore     = Type.getInternalName( core.getDefinedClass() );
 
 
-        aliases = new HashMap<String, FieldDefinition>();
-        for ( FieldDefinition tfld : trait.getFieldsDefinitions() ) {
-            if ( tfld.hasAlias() ) {
-                String alias = tfld.getAlias();
-                FieldDefinition coreField = core.getField( alias );
-                if ( coreField != null ) {
-                    aliases.put( tfld.getName(), coreField );
-                }
-            }
-        }
         
         cw.visit( V1_5, ACC_PUBLIC + ACC_SUPER,
                 internalWrapper,
@@ -134,7 +121,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             mv.visitVarInsn( ALOAD, 2 );
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
-            int stackSize = initSoftFields( mv, trait, mask, 2 );
+            initSoftFields( mv, trait, core, internalWrapper, mask, 2 );
 
             mv.visitInsn( RETURN );
 //            mv.visitMaxs( 2 + stackSize, 3 );
@@ -211,11 +198,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             invokeRemove( mv, wrapperName, core, field.getName(), field );
         }
-        for ( String alias : aliases.keySet() ) {
-            // no need to review the stack, the alias is a core field anyway!
-            invokeRemove( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
-
 
 
         int j = 0;
@@ -223,8 +205,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
-                stack = Math.max( stack, BuildUtils.sizeOf( field.getTypeName() ) );
-
                 mv.visitLdcInsn( field.getName() );
                 mv.visitVarInsn( ALOAD, 1 );
                 mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( String.class ), "equals", "(" + Type.getDescriptor( Object.class ) + ")Z" );
@@ -267,15 +247,14 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, long mask, int varNum ) {
+    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, ClassDefinition core, String internalWrapper, long mask, int varNum ) {
         int j = 0;
-        int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
             if ( isSoftField ) {
 
                 mv.visitVarInsn( ALOAD, varNum );
-                mv.visitLdcInsn( field.getName() );
+                mv.visitLdcInsn( field.resolveAlias() );
                 mv.visitMethodInsn( INVOKEINTERFACE,
                         Type.getInternalName( Map.class ), "containsKey",
                         Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] { Type.getType( Object.class ) } ) );
@@ -283,23 +262,37 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 mv.visitJumpInsn( IFNE, l0 );
 
                 mv.visitVarInsn( ALOAD, varNum );
-                mv.visitLdcInsn( field.getName() );
+                mv.visitLdcInsn( field.resolveAlias() );
                 mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
                 if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
                     TraitFactory.valueOf( mv, field.getTypeName() );
-                    int size = BuildUtils.sizeOf( field.getTypeName() );
-                    stackSize = Math.max( stackSize, size );
-                } else {
-                    stackSize = Math.max( stackSize, 2 );
                 }
                 mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "put", 
                                     "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ) );
                 mv.visitInsn( POP );
 
+                if ( core.isFullTraiting() ) {
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitFieldInsn( GETFIELD, internalWrapper, "object", Type.getDescriptor( core.getDefinedClass() ) );
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+                    mv.visitVarInsn( ASTORE, 1 );
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitLdcInsn( field.resolveAlias() );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitFieldTMS.class ), "isManagingField", Type.getMethodDescriptor( Type.BOOLEAN_TYPE, new Type[] { Type.getType( String.class ) } ) );
+                    Label l1 = new Label();
+                    mv.visitJumpInsn( IFNE, l1 );
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( core.getClassName() ) ) );
+                    mv.visitLdcInsn( field.resolveAlias() );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitFieldTMS.class ), "registerField", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[]{ Type.getType( Class.class ), Type.getType( String.class ) } ) );
+                    mv.visitLabel( l1 );
+                }
+
                 mv.visitLabel( l0 );
             }
         }
-        return stackSize;
+        return 0;
     }
 
 
@@ -334,7 +327,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "clear", "()V" );
 
-        int num = initSoftFields( mv, trait, mask, 0 );
+        int num = initSoftFields( mv, trait, core, internalWrapper, mask, 0 );
         stack += num;
 
 
@@ -431,9 +424,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         for ( FieldDefinition field : core.getFieldsDefinitions() ) {
             invokeContainsKey( mv, field.getName() );
         }
-        for ( String alias : aliases.keySet() ) {
-            invokeContainsKey( mv, alias );
-        }
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
@@ -523,9 +513,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 invokeGet( mv, wrapperName, core, field.getName(), field );
             }
         }
-        for ( String alias : aliases.keySet() ) {
-            invokeGet( mv, wrapperName, core, alias, aliases.get( alias ) );
-        }
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, internalWrapper, "map", Type.getDescriptor( Map.class ) );
@@ -549,7 +536,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
         mv.visitVarInsn( ALOAD, 2 );
         if ( BuildUtils.isPrimitive( field.getTypeName() ) ) {
-            TraitFactory.promote( mv, field.getTypeName() );
+            TraitFactory.primitiveValue( mv, field.getTypeName() );
             mv.visitVarInsn( BuildUtils.storeType( field.getTypeName() ), 3 );
             TraitFactory.invokeInjector( mv, wrapperName, trait, core, field, false, 3 );
         } else {
@@ -572,9 +559,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
             for ( FieldDefinition field : core.getFieldsDefinitions() ) {
                 invokePut( mv, wrapperName, core, field.getName(), field );
             }
-        }
-        for ( String alias : aliases.keySet() ) {
-            invokePut( mv, wrapperName, core, alias, aliases.get( alias ) );
         }
 
 

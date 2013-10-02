@@ -112,7 +112,7 @@ public class SlidingLengthWindow
                                                                                           null,
                                                                                           null,
                                                                                           previous );
-                WindowTupleList list = (WindowTupleList) memory.events.get( previous );
+                WindowTupleList list = (WindowTupleList) memory.events.remove( previous );
 
                 for( RightTuple tuple = list.getFirstWindowTuple(); tuple != null; tuple = list.getFirstWindowTuple() ) {
                     tuple.getRightTupleSink().retractRightTuple( tuple,

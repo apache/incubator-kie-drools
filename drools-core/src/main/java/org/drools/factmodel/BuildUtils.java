@@ -488,6 +488,10 @@ public class BuildUtils {
             return "byteValue";
         } else if ( "java.lang.Double".equals( type ) || "Double".equals( type )) {
             return "doubleValue";
+        } else if ( "java.lang.Character".equals( type ) || "Character".equals( type )) {
+            return "charValue";
+        } else if ( "java.lang.Boolean".equals( type ) || "Boolean".equals( type )) {
+            return "booleanValue";
         } else if ( "java.lang.Float".equals( type ) || "Float".equals( type )) {
             return "floatValue";
         } else if ( "java.lang.Integer".equals( type ) || "Integer".equals( type )) {
@@ -572,4 +576,30 @@ public class BuildUtils {
                 return "readObject";
             }
         }
+
+    public static String serializationType( String type ) {
+            if ( isPrimitive( type ) ) {
+                if ( "byte".equals( type ) ) {
+                    return "int";
+                } else if ( "char".equals( type ) ) {
+                    return "int";
+                } else if ( "double".equals( type ) ) {
+                    return "double";
+                } else if ( "float".equals( type ) ) {
+                    return "float";
+                } else if ( "int".equals( type ) ) {
+                    return "int";
+                } else if ( "long".equals( type ) ) {
+                    return "long";
+                } else if ( "short".equals( type ) ) {
+                    return "int";
+                } else if ( "boolean".equals( type ) ) {
+                    return "boolean";
+                } else {
+                    return type;
+                }
+            } else {
+                return type;
+            }
+    }
 }

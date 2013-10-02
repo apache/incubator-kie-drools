@@ -36,12 +36,23 @@ import org.mvel2.util.Soundex;
  */
 public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
-    public static final Operator  SOUNDSLIKE       = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     false );
-    public static final Operator  NOT_SOUNDSLIKE   = Operator.addOperatorToRegistry( "soundslike",
-                                                                                     true );
+    protected static final String   soundsLikeOp = "soundslike";
 
-    private static final String[] SUPPORTED_IDS = { SOUNDSLIKE.getOperatorString() };
+    public static Operator          SOUNDSLIKE;
+    public static Operator          NOT_SOUNDSLIKE;
+
+    private static String[]         SUPPORTED_IDS;
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( soundsLikeOp, false ) == null ) {
+            SOUNDSLIKE = Operator.addOperatorToRegistry( soundsLikeOp, false );
+            NOT_SOUNDSLIKE = Operator.addOperatorToRegistry( soundsLikeOp, true );
+            SUPPORTED_IDS = new String[] { soundsLikeOp };
+        }
+    }
+
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 510l;
         {
@@ -151,6 +162,10 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringSoundsLikeEvaluator();
 
+        {
+            SoundslikeEvaluatorsDefinition.init();
+        }
+
         public StringSoundsLikeEvaluator() {
             super( ValueType.STRING_TYPE,
                    SOUNDSLIKE );
@@ -198,6 +213,10 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
 
         private static final long     serialVersionUID = 510l;
         public final static Evaluator INSTANCE         = new StringNotSoundsLikeEvaluator();
+
+        {
+            SoundslikeEvaluatorsDefinition.init();
+        }
 
         public StringNotSoundsLikeEvaluator() {
             super( ValueType.STRING_TYPE,

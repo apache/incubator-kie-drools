@@ -75,15 +75,25 @@ public class StartsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator         STARTS        = Operator.addOperatorToRegistry( "starts",
-                                                                                         false );
-    public static final Operator         STARTS_NOT    = Operator.addOperatorToRegistry( "starts",
-                                                                                         true );
+    protected static final String   startsOp = "starts";
 
-    private static final String[]        SUPPORTED_IDS = {STARTS.getOperatorString()};
+    public static Operator          STARTS;
+    public static Operator          STARTS_NOT;
 
-    private Map<String, StartsEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+    private static String[]         SUPPORTED_IDS;
+
+    private Map<String, StartsEvaluator> cache        = Collections.emptyMap();
+    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( startsOp, false ) == null ) {
+            STARTS = Operator.addOperatorToRegistry( startsOp, false );
+            STARTS_NOT = Operator.addOperatorToRegistry( startsOp, true );
+            SUPPORTED_IDS = new String[] { startsOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -198,6 +208,10 @@ public class StartsEvaluatorDefinition
 
         private long              startDev;
         private String            paramText;
+
+        {
+            StartsEvaluatorDefinition.init();
+        }
 
         public StartsEvaluator(final ValueType type,
                                final boolean isNegated,

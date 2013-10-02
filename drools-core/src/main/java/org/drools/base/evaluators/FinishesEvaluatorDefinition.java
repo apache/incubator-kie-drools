@@ -75,15 +75,25 @@ public class FinishesEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator           FINISHES      = Operator.addOperatorToRegistry( "finishes",
-                                                                                           false );
-    public static final Operator           FINISHES_NOT  = Operator.addOperatorToRegistry( "finishes",
-                                                                                           true );
+    protected static final String   finishesOp = "finishes";
 
-    private static final String[]          SUPPORTED_IDS = {FINISHES.getOperatorString()};
+    public static Operator          FINISHES;
+    public static Operator          FINISHES_NOT;
 
-    private Map<String, FinishesEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
+    private static String[]         SUPPORTED_IDS;
+
+    private Map<String, FinishesEvaluator>      cache         = Collections.emptyMap();
+    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( finishesOp, false ) == null ) {
+            FINISHES = Operator.addOperatorToRegistry( finishesOp, false );
+            FINISHES_NOT = Operator.addOperatorToRegistry( finishesOp, true );
+            SUPPORTED_IDS = new String[] { finishesOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -198,6 +208,10 @@ public class FinishesEvaluatorDefinition
 
         private long              endDev;
         private String            paramText;
+
+        {
+            FinishesEvaluatorDefinition.init();
+        }
 
         public FinishesEvaluator() {
         }

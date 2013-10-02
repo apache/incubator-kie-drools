@@ -83,15 +83,26 @@ public class OverlapsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator           OVERLAPS      = Operator.addOperatorToRegistry( "overlaps",
-                                                                                           false );
-    public static final Operator           OVERLAPS_NOT  = Operator.addOperatorToRegistry( "overlaps",
-                                                                                           true );
+    public static final String          overlapsOp = "overlaps";
 
-    private static final String[]          SUPPORTED_IDS = {OVERLAPS.getOperatorString()};
+    public static Operator              OVERLAPS;
+
+    public static Operator              OVERLAPS_NOT;
+
+    private static String[]             SUPPORTED_IDS;
 
     private Map<String, OverlapsEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser    parser        = new TimeIntervalParser();
+    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( overlapsOp, false ) == null ) {
+            OVERLAPS = Operator.addOperatorToRegistry( overlapsOp, false );
+            OVERLAPS_NOT = Operator.addOperatorToRegistry( overlapsOp, true );
+            SUPPORTED_IDS = new String[] { overlapsOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -206,6 +217,10 @@ public class OverlapsEvaluatorDefinition
 
         private long              minDev, maxDev;
         private String            paramText;
+
+        {
+            OverlapsEvaluatorDefinition.init();
+        }
 
         public OverlapsEvaluator() {
         }

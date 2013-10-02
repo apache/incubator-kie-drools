@@ -59,6 +59,7 @@ import org.drools.event.process.ProcessEventManager;
 import org.drools.management.DroolsManagementAgent;
 import org.drools.marshalling.ObjectMarshallingStrategy;
 import org.drools.marshalling.ObjectMarshallingStrategyStore;
+import org.drools.marshalling.impl.MarshallerReaderContext;
 import org.drools.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.InitialFactImpl;
@@ -89,6 +90,7 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
+import org.drools.spi.PropagationContext;
 import org.drools.time.AcceptsTimerJobFactoryManager;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
@@ -164,6 +166,8 @@ public abstract class AbstractWorkingMemory
 
     protected InternalFactHandle                                 initialFactHandle;
 
+    protected AtomicBoolean                                      initialFactFlag;
+
     protected SessionConfiguration                               config;
 
     protected PartitionManager                                   partitionManager;
@@ -206,16 +210,20 @@ public abstract class AbstractWorkingMemory
      */
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
+                                 boolean initInitFactHandle,
                                  final FactHandleFactory handleFactory,
                                  final SessionConfiguration config,
                                  final Environment environment) {
         this( id,
               ruleBase,
               handleFactory,
-              null,
-              0,
+              initInitFactHandle,
+              1,
               config,
-              environment );
+              environment,
+              new WorkingMemoryEventSupport(),
+              new AgendaEventSupport(),
+              null );
     }
 
     public AbstractWorkingMemory(final int id,
@@ -228,41 +236,45 @@ public abstract class AbstractWorkingMemory
         this( id,
               ruleBase,
               handleFactory,
-              null,
-              0,
+              false,
+              1,
               config,
               environment,
               workingMemoryEventSupport,
-              agendaEventSupport );
+              agendaEventSupport,
+              null );
     }
 
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
-                                 final InternalFactHandle initialFactHandle,
+                                 final boolean initInitialFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
+                                 final InternalAgenda agenda,
                                  final Environment environment) {
         this( id,
               ruleBase,
               handleFactory,
-              initialFactHandle,
+              initInitialFactHandle,
               propagationContext,
               config,
               environment,
               new WorkingMemoryEventSupport(),
-              new AgendaEventSupport() );
+              new AgendaEventSupport(),
+              agenda );
     }
 
     public AbstractWorkingMemory(final int id,
                                  final InternalRuleBase ruleBase,
                                  final FactHandleFactory handleFactory,
-                                 final InternalFactHandle initialFactHandle,
+                                 final boolean initInitFactHandle,
                                  final long propagationContext,
                                  final SessionConfiguration config,
                                  final Environment environment,
                                  final WorkingMemoryEventSupport workingMemoryEventSupport,
-                                 final AgendaEventSupport agendaEventSupport) {
+                                 final AgendaEventSupport agendaEventSupport,
+                                 final InternalAgenda agenda ) {
         this.id = id;
         this.config = config;
         this.ruleBase = ruleBase;
@@ -296,14 +308,14 @@ public abstract class AbstractWorkingMemory
 
         this.sequential = conf.isSequential();
 
-        if ( initialFactHandle == null ) {
-            this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
-                                                                  null,
-                                                                  this,
-                                                                  this );
-        } else {
-            this.initialFactHandle = initialFactHandle;
-        }
+//        if ( initialFactHandle == null ) {
+//            this.initialFactHandle = handleFactory.newFactHandle( InitialFactImpl.getInstance(),
+//                                                                  null,
+//                                                                  this,
+//                                                                  this );
+//        } else {
+//            this.initialFactHandle = initialFactHandle;
+//        }
 
         this.evaluatingActionQueue = new AtomicBoolean( false );
 
@@ -328,7 +340,46 @@ public abstract class AbstractWorkingMemory
         this.opCounter = new AtomicLong( 0 );
         this.lastIdleTimestamp = new AtomicLong( -1 );
 
+        if ( agenda == null ) {
+            this.agenda = ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(ruleBase);
+            this.agenda.setWorkingMemory( this );
+        } else {
+            this.agenda = agenda;
+            this.agenda.setWorkingMemory( this );
+        }
+
         initManagementBeans();
+
+        initialFactFlag = new AtomicBoolean( false );
+        if ( initInitFactHandle ) {
+            initInitialFact( ruleBase, null );
+        }
+    }
+
+    public void initInitialFact( InternalRuleBase ruleBase, MarshallerReaderContext context ) {
+        ruleBase.lock();
+        Object initialFact = InitialFactImpl.getInstance();
+
+        ObjectTypeConf otc = this.defaultEntryPoint.getObjectTypeConfigurationRegistry()
+                .getObjectTypeConf( this.defaultEntryPoint.entryPoint, initialFact );
+
+        this.initialFactHandle = ruleBase.getConfiguration().getComponentFactory().getFactHandleFactoryService().newFactHandle(
+                0, initialFact, 0, otc, this, this.defaultEntryPoint );
+
+        final PropagationContext pctx = new PropagationContextImpl( 0,
+                                                                    PropagationContext.ASSERTION,
+                                                                    null,
+                                                                    null ,
+                                                                    initialFactHandle,
+                                                                    0,
+                                                                    0,
+                                                                    defaultEntryPoint.getEntryPoint(),
+                                                                    context );
+
+        otc.getConcreteObjectTypeNode().assertObject( this.initialFactHandle, pctx, this );
+        // ADDED, NOT IN THE ORIGINAL 6.x COMMIT
+        pctx.evaluateActionQueue( this );
+        ruleBase.unlock();
     }
 
     private void initManagementBeans() {
@@ -682,6 +733,8 @@ public abstract class AbstractWorkingMemory
                             int fireLimit) throws FactException {
         if ( this.firing.compareAndSet( false,
                                         true ) ) {
+            initInitialFact();
+
             try {
                 startOperation();
                 ruleBase.readLock();
@@ -736,6 +789,7 @@ public abstract class AbstractWorkingMemory
      *             if this method is called when running in sequential mode
      */
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
+        initInitialFact();
         if ( isSequential() ) {
             throw new IllegalStateException( "fireUntilHalt() can not be called in sequential mode." );
         }
@@ -1413,4 +1467,9 @@ public abstract class AbstractWorkingMemory
         return this.marshallingStore;
     }
 
+    public void initInitialFact() {
+        if ( initialFactFlag.compareAndSet( false, true ) && initialFactHandle == null ) {
+            initInitialFact(ruleBase, null);
+        }
+    }
 }

@@ -432,14 +432,16 @@ public class LogicTransformer {
      *       a    b
      * </pre>
      * 
-     * (Exist ( Not (a) Not (b)) )
+     * (Not Exist ( Not (a) And  Not (b)) )
      * 
      * <pre>
-     *          Or   
+     *          Not
+     *           |
+     *          And
      *        /   \
-     *    Exists  Exists
-     *      |       |
-     *      a       b
+     *     Not    Not
+     *      |      |
+     *      a      b
      * </pre>
      */
     class ExistOrTransformation
@@ -456,19 +458,21 @@ public class LogicTransformer {
              * has confirmed the child is an OR
              */
             final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
-            parent.setType( GroupElement.OR );
+            parent.setType( GroupElement.NOT );
             parent.getChildren().clear();
+            final GroupElement and = GroupElementFactory.newAndInstance();
             for (RuleConditionElement ruleConditionElement : or.getChildren()) {
-                final GroupElement newExists = GroupElementFactory.newExistsInstance();
-                newExists.addChild(ruleConditionElement);
-                parent.addChild(newExists);
+                final GroupElement newNot = GroupElementFactory.newNotInstance();
+                newNot.addChild(ruleConditionElement);
+                and.addChild(newNot);
             }
+            parent.addChild( and );
             parent.pack();
         }
     }
 
     /**
-     * (Not (OR (A B)
+     * (Not (OR (A B) )
      * 
      * <pre>
      *         Not
@@ -478,7 +482,7 @@ public class LogicTransformer {
      *       a    b
      * </pre>
      * 
-     * (And ( Not (a) Exist (b)) )
+     * (And ( Not (a) Not (b)) )
      * 
      * <pre>
      *         And   
@@ -514,37 +518,4 @@ public class LogicTransformer {
         }
     }
 
-    //@todo for 3.1
-    //    public class NotAndTransformation
-    //        implements
-    //        Transformation {
-    //
-    //        public GroupElement transform(GroupElement not) throws InvalidPatternException {
-    //            if ( !(not.getChildren().get( 0 ) instanceof And) ) {
-    //                throw new RuntimeException( "NotAndTransformation expected '" + And.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
-    //            }
-    //
-    //            /*
-    //             * we know a Not only ever has one child, and the previous algorithm
-    //             * has confirmed the child is an And
-    //             */
-    //            And and = (And) not.getChildren().get( 0 );
-    //            for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
-    //                Object object1 = it.next();
-    //
-    //                for ( Iterator it2 = and.getChildren().iterator(); it.hasNext(); ) {
-    //                    Object object2 = it.next();
-    //                    if ( object2 != object1 ) {
-    //
-    //                    }
-    //                }
-    //
-    //                Not newNot = new Not();
-    //                newNot.addChild( it.next() );
-    //                and.addChild( newNot );
-    //            }
-    //
-    //            return and;
-    //        }
-    //    }
 }

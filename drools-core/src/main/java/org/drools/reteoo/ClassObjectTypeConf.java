@@ -34,6 +34,7 @@ import org.drools.base.ShadowProxy;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.Traitable;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.reteoo.builder.PatternBuilder;
@@ -63,6 +64,7 @@ public class ClassObjectTypeConf
     private TypeDeclaration            typeDecl;
     
     private boolean                    tmsEnabled;
+    private boolean                    traitTmsEnabled;
     
     private boolean                    supportsPropertyListeners;
 
@@ -108,6 +110,9 @@ public class ClassObjectTypeConf
 
         defineShadowProxyData( clazz );
         this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
+
+        Traitable ttbl = cls.getAnnotation( Traitable.class );
+        this.traitTmsEnabled = ttbl != null && ttbl.logical();
     }
 
     public void readExternal(ObjectInput stream) throws IOException,
@@ -119,6 +124,7 @@ public class ClassObjectTypeConf
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPoint) stream.readObject();
         tmsEnabled = stream.readBoolean();
+        traitTmsEnabled = stream.readBoolean();
         supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
         defineShadowProxyData( cls );
@@ -132,6 +138,7 @@ public class ClassObjectTypeConf
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
+        stream.writeBoolean( traitTmsEnabled );
         stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
     }
@@ -234,7 +241,9 @@ public class ClassObjectTypeConf
             typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
             || typeDecl.getTypeClassDef().isTraitable()
         ) || Thing.class.isAssignableFrom( cls )
-          || TraitableBean.class.isAssignableFrom( cls );
+          || TraitableBean.class.isAssignableFrom( cls )
+          || ( this.getTypeDeclaration() != null
+               && this.getTypeDeclaration().getTypeClass().getAnnotation( Traitable.class ) != null );
     }
 
     public TypeDeclaration getTypeDeclaration() {
@@ -251,6 +260,10 @@ public class ClassObjectTypeConf
 
     public void enableTMS() {
         this.tmsEnabled = true;
+    }
+
+    public boolean isTraitTMSEnabled() {
+        return traitTmsEnabled;
     }
 
     public EntryPoint getEntryPoint() {

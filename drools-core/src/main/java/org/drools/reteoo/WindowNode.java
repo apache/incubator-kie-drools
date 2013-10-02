@@ -38,6 +38,7 @@ import org.drools.rule.Behavior;
 import org.drools.rule.BehaviorManager;
 import org.drools.rule.ContextEntry;
 import org.drools.rule.EntryPoint;
+import org.drools.rule.SlidingTimeWindow;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.PropagationContext;
 
@@ -91,6 +92,11 @@ public class WindowNode extends ObjectSource
         this.constraints = new ArrayList<AlphaNodeFieldConstraint>(constraints);
         this.behavior = new BehaviorManager(behaviors);
         this.entryPoint = context.getCurrentEntryPoint();
+        for ( Behavior b : behaviors ) {
+            if ( b instanceof SlidingTimeWindow ) {
+                ((SlidingTimeWindow)b).setWindowNode( this );
+            }
+        }
 
     }
 
@@ -178,6 +184,8 @@ public class WindowNode extends ObjectSource
             this.sink.propagateAssertObject(factHandle,
                                             context,
                                             workingMemory);
+            // execute queued assertions before nullifying the window tuple list
+            workingMemory.executeQueuedActions();
             context.setActiveWindowTupleList(null);
         } finally {
             memory.gate.unlock();

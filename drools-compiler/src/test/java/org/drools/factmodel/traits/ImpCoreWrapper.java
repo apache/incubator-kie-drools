@@ -69,6 +69,10 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         return _getTraitMap().containsKey( type );
     }
 
+    public boolean hasTraits() {
+        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
+    }
+
     public Collection<Thing<Imp>> removeTrait(String type) {
         return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
     }
@@ -87,6 +91,10 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
 
     public void _setBottomTypeCode(BitSet code) {
         ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( code );
+    }
+
+    public TraitFieldTMS _getFieldTMS() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public BitSet getBottomTypeCode() {

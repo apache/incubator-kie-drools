@@ -386,6 +386,10 @@ public class PropagationContextImpl
         return modificationMask;
     }
 
+    public void setModificationMask( long modificationMask ) {
+        this.modificationMask = modificationMask;
+    }
+
     public PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory) {
         modificationMask = originalMask;
         if (modificationMask == Long.MAX_VALUE || !(type instanceof ClassObjectType)) {

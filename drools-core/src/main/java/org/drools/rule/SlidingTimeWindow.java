@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.PriorityQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.common.EventFactHandle;
 import org.drools.common.InternalFactHandle;
@@ -54,6 +56,9 @@ public class SlidingTimeWindow
     Behavior {
 
     private long              size;
+
+    private int               nodeId;
+
     // stateless job
     public static final BehaviorJob job = new BehaviorJob();
 
@@ -77,6 +82,7 @@ public class SlidingTimeWindow
     public void readExternal(final ObjectInput in) throws IOException,
                                                   ClassNotFoundException {
         this.size = in.readLong();
+        this.nodeId = in.readInt();
     }
 
     /**
@@ -86,10 +92,15 @@ public class SlidingTimeWindow
      */
     public void writeExternal(final ObjectOutput out) throws IOException {
         out.writeLong( this.size );
+        out.writeInt( nodeId );
     }
 
     public BehaviorType getType() {
         return BehaviorType.TIME_WINDOW;
+    }
+
+    public void setWindowNode( WindowNode node ) {
+        this.nodeId = node.getId();
     }
 
     /**
@@ -121,7 +132,11 @@ public class SlidingTimeWindow
                               final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
-        synchronized (queue.queue) {
+        long currentTime = workingMemory.getTimerService().getCurrentTime();
+        if ( isExpired( currentTime, handle ) ) {
+            return false;
+        }
+        queue.lock.lock();
             queue.queue.add( handle );
             if ( queue.queue.peek() == handle ) {
                 // update next expiration time
@@ -129,9 +144,10 @@ public class SlidingTimeWindow
                                       workingMemory,
                                       memory,
                                       this,
-                                      queue );
+                                      queue,
+                                      nodeId );
             }
-        }
+        queue.lock.unlock();
         return true;
     }
 
@@ -147,7 +163,7 @@ public class SlidingTimeWindow
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
         // it may be a call back to expire the tuple that is already being expired
-        synchronized (queue.queue) {
+        queue.lock.lock();
             if ( queue.expiringHandle != handle ) {
                 if ( queue.queue.peek() == handle ) {
                     // it was the head of the queue
@@ -157,12 +173,13 @@ public class SlidingTimeWindow
                                           workingMemory,
                                           memory,
                                           this,
-                                          queue );
+                                          queue,
+                                          nodeId );
                 } else {
                     queue.queue.remove( handle );
                 }
             }
-        }
+        queue.lock.unlock();
     }
 
     public void expireFacts(final WindowMemory memory,
@@ -171,13 +188,13 @@ public class SlidingTimeWindow
         TimerService clock = workingMemory.getTimerService();
         long currentTime = clock.getCurrentTime();
         SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
-        EventFactHandle handle = queue.queue.peek();
-        synchronized (queue.queue) {
+        queue.lock.lock();
+            EventFactHandle handle = queue.queue.peek();
             while ( handle != null && isExpired( currentTime,
                                                  handle ) ) {
                 queue.expiringHandle = handle;
                 queue.queue.remove();
-                if( handle.isValid()) {
+                if( handle.isValid() ) {
                     // if not expired yet, expire it
                     final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
                                                                                               PropagationContext.EXPIRATION,
@@ -192,18 +209,21 @@ public class SlidingTimeWindow
                         propagationContext.evaluateActionQueue( workingMemory );
                         tuple.unlinkFromRightParent();
                     }
+                } else {
+                    memory.events.remove( handle );
                 }
                 queue.expiringHandle = null;
                 handle = queue.queue.peek();
             }
-        }
+            // update next expiration time
+            updateNextExpiration( handle,
+                    workingMemory,
+                    memory,
+                    this,
+                    queue,
+                    nodeId );
+        queue.lock.unlock();
 
-        // update next expiration time 
-        updateNextExpiration( handle,
-                              workingMemory,
-                              memory,
-                              this,
-                              queue );
     }
 
     private boolean isExpired(final long currentTime,
@@ -212,25 +232,33 @@ public class SlidingTimeWindow
     }
 
     /**
-     * @param rightTuple
+     *
+     * @param fact
      * @param workingMemory
+     * @param memory
+     * @param stw
+     * @param context
+     * @param nodeId
      */
     private static void updateNextExpiration(final InternalFactHandle fact,
                                       final InternalWorkingMemory workingMemory,
                                       final WindowMemory memory,
                                       final SlidingTimeWindow stw,
-                                      final Object context) {
+                                      final Object context,
+                                      final int nodeId ) {
         TimerService clock = workingMemory.getTimerService();
         if ( fact != null ) {
             long nextTimestamp = ((EventFactHandle) fact).getStartTimestamp() + stw.getSize();
             if ( nextTimestamp < clock.getCurrentTime() ) {
                 // JBRULES-2258 Past and out-of-order events should not be insert,
                 // but the engine silently accepts them anyway, resulting in possibly undesirable behaviors
-                workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( stw,
+                workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( nodeId,
+                                                                                    stw,
                                                                                     memory,
                                                                                     context ) );
             } else {
-                JobContext jobctx = new BehaviorJobContext( workingMemory,
+                JobContext jobctx = new BehaviorJobContext( nodeId,
+                                                            workingMemory,
                                                             stw,
                                                             memory,
                                                             context );
@@ -256,6 +284,7 @@ public class SlidingTimeWindow
 
         public PriorityQueue<EventFactHandle> queue;
         public EventFactHandle                expiringHandle;
+        public Lock                           lock = new ReentrantLock();
 
         public SlidingTimeWindowContext() {
             this.queue = new PriorityQueue<EventFactHandle>( 16 ); // arbitrary size... can we improve it?
@@ -372,6 +401,7 @@ public class SlidingTimeWindow
         JobContext,
         Externalizable {
         public InternalWorkingMemory workingMemory;
+        public int                   nodeId;
         public Behavior              behavior;
         public Object                behaviorContext;
         public WindowMemory          memory;
@@ -382,11 +412,13 @@ public class SlidingTimeWindow
          * @param behavior
          * @param behaviorContext
          */
-        public BehaviorJobContext(InternalWorkingMemory workingMemory,
+        public BehaviorJobContext(int nodeId,
+                                  InternalWorkingMemory workingMemory,
                                   Behavior behavior,
                                   WindowMemory memory,
                                   Object behaviorContext) {
             super();
+            this.nodeId = nodeId;
             this.workingMemory = workingMemory;
             this.behavior = behavior;
             this.memory = memory;
@@ -419,7 +451,8 @@ public class SlidingTimeWindow
 
         public void execute(JobContext ctx) {
             BehaviorJobContext context = (BehaviorJobContext) ctx;
-            context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.behavior,
+            context.workingMemory.queueWorkingMemoryAction( new BehaviorExpireWMAction( context.nodeId,
+                                                                                        context.behavior,
                                                                                         context.memory,
                                                                                         context.behaviorContext ) );
         }
@@ -431,24 +464,27 @@ public class SlidingTimeWindow
         WorkingMemoryAction {
         private final Behavior behavior;
         private final Object   context;
+        private final int      nodeId;
         private final WindowMemory memory;
 
         /**
          * @param behavior
          * @param context
          */
-        public BehaviorExpireWMAction(Behavior behavior,
+        public BehaviorExpireWMAction(final int nodeId,
+                                      Behavior behavior,
                                       WindowMemory memory,
                                       Object context) {
             super();
+            this.nodeId = nodeId;
             this.behavior = behavior;
             this.memory = memory;
             this.context = context;
         }
 
         public BehaviorExpireWMAction(MarshallerReaderContext inCtx) throws IOException {
-            int sinkId = inCtx.readInt();
-            WindowNode windowNode = (WindowNode) inCtx.sinks.get( sinkId );
+            nodeId = inCtx.readInt();
+            WindowNode windowNode = (WindowNode) inCtx.sinks.get( nodeId );
             
             memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );       
             
@@ -462,8 +498,8 @@ public class SlidingTimeWindow
         
         public BehaviorExpireWMAction(MarshallerReaderContext context,
                                       Action _action) {
-            int sinkId =_action.getBehaviorExpire().getNodeId();
-            WindowNode windowNode = (WindowNode) context.sinks.get( sinkId );
+            nodeId =_action.getBehaviorExpire().getNodeId();
+            WindowNode windowNode = (WindowNode) context.sinks.get( nodeId );
             
             memory = (WindowMemory) context.wm.getNodeMemory( windowNode );       
             
@@ -499,7 +535,7 @@ public class SlidingTimeWindow
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) context;
             
             ProtobufMessages.ActionQueue.BehaviorExpire _be = ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
-                    .setNodeId( slCtx.getQueue().peek().getId() )
+                    .setNodeId( nodeId )
                     .build();
             
             return ProtobufMessages.ActionQueue.Action.newBuilder()

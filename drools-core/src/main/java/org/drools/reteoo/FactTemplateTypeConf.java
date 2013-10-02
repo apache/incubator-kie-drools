@@ -140,6 +140,10 @@ public class FactTemplateTypeConf
         return this.tmsEnabled;
     }
 
+    public boolean isTraitTMSEnabled() {
+        return false;
+    }
+
     public void enableTMS() {
         this.tmsEnabled = true;
     }

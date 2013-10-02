@@ -47,6 +47,10 @@ public class TraitRegistry implements Externalizable {
 
     public TraitRegistry() {
 
+        init();
+    }
+
+    private void init() {
         TypeDeclaration thingType = new TypeDeclaration( Thing.class.getName() );
         thingType.setKind( TypeDeclaration.Kind.TRAIT );
         thingType.setTypeClass( Thing.class );
@@ -198,16 +202,18 @@ public class TraitRegistry implements Externalizable {
         int j = 0;
         long bitmask = 0;
         for ( FactField field : traitDef.getFields() ) {
-            FieldDefinition fdef = (FieldDefinition) field;
-            boolean isAliased = fdef.hasAlias();
-            String alias = ((FieldDefinition) field).resolveAlias( traitableDef );
-            
-            FieldDefinition concreteField = traitableDef.getField( alias );
-            Class concreteType = concreteField != null ? concreteField.getType() : null;
-            Class virtualType = field.getType();
+            String alias = ((FieldDefinition) field).resolveAlias();
 
-            if ( ( concreteType != null && concreteType.isAssignableFrom( virtualType ) )
-                 || ( traits.containsKey( virtualType.getName() ) && ( (FieldDefinition) field ).hasAlias() ) ) {
+            FieldDefinition concreteField = traitableDef.getFieldByAlias( alias );
+
+            if ( concreteField != null ) {
+                if ( ! traitableDef.isFullTraiting() && ! concreteField.getType().isAssignableFrom( field.getType() ) ) {
+                    throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " :" +
+                                                             " trait field " + field.getName() + ":" + ( (FieldDefinition) field ).getTypeName() + " is incompatible with" +
+                                                             " concrete hard field " + concreteField.getName() + ":" + concreteField.getTypeName() + ". Consider enabling logical traiting" +
+                                                             " mode using @Traitable( logical = true )" );
+                }
+
                 bitmask |= 1 << j;
             }
             j++;
@@ -231,6 +237,7 @@ public class TraitRegistry implements Externalizable {
         masks = (Map<String, Long>) objectInput.readObject();
         hierarchy = (HierarchyEncoderImpl) objectInput.readObject();
         codeSize = objectInput.readInt();
+        init();
     }
 
 

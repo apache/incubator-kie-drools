@@ -262,7 +262,7 @@ public class EvalConditionNodeTest extends DroolsTestCase {
                                                                 buildContext );
 
         // Create a test node that always returns false 
-        final EvalConditionNode node = new EvalConditionNode( 2,
+        final EvalConditionNode node = new EvalConditionNode( 3,
                                                               parent,
                                                               eval,
                                                               buildContext );

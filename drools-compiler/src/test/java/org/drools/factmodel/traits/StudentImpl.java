@@ -117,6 +117,11 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         return traitMap.get( type );
     }
 
+    public boolean hasTraits() {
+        return traitMap != null && ! traitMap.isEmpty();
+    }
+
+
     public boolean hasTrait(String type) {
         return traitMap.containsKey( type );
     }
@@ -139,6 +144,10 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
 
     public void _setBottomTypeCode(BitSet code) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public TraitFieldTMS _getFieldTMS() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public BitSet getBottomTypeCode() {

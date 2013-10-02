@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,6 +34,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.RuntimeDroolsException;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.builder.ResultSeverity;
+import org.drools.io.Resource;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.Attribute;
 import org.mvel2.asm.ClassReader;
@@ -57,6 +62,8 @@ public class ClassFieldInspector {
     private final Map<String, Method>     setterMethods        = new HashMap<String, Method>();
     private final Set<String>             nonGetters           = new HashSet<String>();
     private Class< ? >                    classUnderInspection = null;
+    private Map<String, Collection<KnowledgeBuilderResult>>
+                                          results              = null;
 
     /**
      * @param classUnderInspection The class that the fields to be shadowed are extracted for.
@@ -167,6 +174,22 @@ public class ClassFieldInspector {
                 addToMapping( method,
                               fieldIndex );
 
+            }
+        }
+
+        final List<Field> flds = Arrays.asList( clazz.getFields() );
+        Collections.sort( flds,  new Comparator<Field>() {
+            public int compare(Field f1, Field f2) {
+                return f1.getName().compareTo( f2.getName() );
+            }
+        });
+
+        for ( Field fld : flds ) {
+            if ( ! Modifier.isStatic( fld.getModifiers() ) && ! fieldNames.containsKey( fld.getName() ) ) {
+                final int fieldIndex = this.fieldNames.size();
+                this.fieldNames.put( fld.getName(), fieldIndex );
+                this.fieldTypes.put( fld.getName(), fld.getType() );
+                this.fieldTypesField.put( fld.getName(), fld );
             }
         }
     }
@@ -314,6 +337,11 @@ public class ClassFieldInspector {
                                           f );
             }
         } else if( ! void.class.isAssignableFrom( method.getReturnType() ) ) {
+            if ( getterMethods.containsKey( fieldName ) ) {
+                addResult( fieldName, new GetterOverloadWarning( classUnderInspection,
+                        this.getterMethods.get( fieldName ).getName(), this.fieldTypes.get( fieldName ),
+                        method.getName(), method.getReturnType() ) );
+            }
             this.getterMethods.put( fieldName,
                                     method );
             this.fieldTypes.put( fieldName,
@@ -327,6 +355,28 @@ public class ClassFieldInspector {
                                   final int offset ) {
         name = name.substring( offset );
         return Introspector.decapitalize( name );
+    }
+
+    public Collection<KnowledgeBuilderResult> getInspectionResults( String fieldName ) {
+        return results != null && results.containsKey( fieldName ) ? results.get( fieldName ) : Collections.EMPTY_LIST;
+    }
+
+    private void addResult( String fieldName, KnowledgeBuilderResult result ) {
+        Map<String, Collection<KnowledgeBuilderResult>> results = getResults();
+        Collection<KnowledgeBuilderResult> fieldResults = results.get( fieldName );
+        if ( fieldResults == null ) {
+            fieldResults = new ArrayList<KnowledgeBuilderResult>( 3 );
+            results.put( fieldName, fieldResults );
+        }
+        fieldResults.add( result );
+    }
+
+
+    protected Map<String, Collection<KnowledgeBuilderResult>> getResults() {
+        if ( results == null ) {
+            results = new HashMap<String, Collection<KnowledgeBuilderResult>>( );
+        }
+        return results;
     }
 
     /**
@@ -405,6 +455,7 @@ public class ClassFieldInspector {
                                 final String arg2,
                                 final Object arg3,
                                 final Attribute arg4 ) {
+            //TBD
         }
 
         public void visitAttribute( final Attribute arg0 ) {
@@ -481,5 +532,41 @@ public class ClassFieldInspector {
         }
 
     }
+
+    public class GetterOverloadWarning implements KnowledgeBuilderResult {
+
+        private Class klass;
+        private String oldName;
+        private Class oldType;
+        private String newName;
+        private Class newType;
+
+        public GetterOverloadWarning( Class klass, String oldName, Class oldType, String newName, Class newType ) {
+            this.klass = klass;
+            this.oldName = oldName;
+            this.oldType = oldType;
+            this.newName = newName;
+            this.newType = newType;
+        }
+
+        public ResultSeverity getSeverity() {
+            return ResultSeverity.WARNING;
+        }
+
+
+        public String getMessage() {
+            return " Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ";
+        }
+
+
+        public int[] getLines() {
+            return new int[ 0 ];
+        }
+
+        public Resource getResource() {
+            return null;
+        }
+    }
+
 
 }

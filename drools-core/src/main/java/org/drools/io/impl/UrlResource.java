@@ -278,6 +278,13 @@ public class UrlResource extends BaseResource
             URLConnection conn = getURL().openConnection();
             if ( conn instanceof HttpURLConnection) {
                 ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
+                if ("enabled".equalsIgnoreCase(basicAuthentication)) {
+                    String userpassword = username + ":" + password;
+                    byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+
+                    ((HttpURLConnection) conn).setRequestProperty("Authorization",
+                            "Basic " +  new String(authEncBytes));
+                }
             }
             long date =  conn.getLastModified();
             if (date == 0) {
@@ -358,6 +365,14 @@ public class UrlResource extends BaseResource
             return null;
         } else {
             return new File(root);
+        }
+    }
+
+    public boolean exists() {
+        try {
+            return this.url.openStream() != null;
+        } catch ( IOException e ) {
+            return false;
         }
     }
 }

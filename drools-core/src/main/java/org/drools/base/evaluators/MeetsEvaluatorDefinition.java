@@ -73,15 +73,26 @@ public class MeetsEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator        MEETS         = Operator.addOperatorToRegistry( "meets",
-                                                                                        false );
-    public static final Operator        MEETS_NOT     = Operator.addOperatorToRegistry( "meets",
-                                                                                        true );
+    protected static final String       meetsOp = "meets";
 
-    private static final String[]       SUPPORTED_IDS = {MEETS.getOperatorString()};
+    public static Operator              MEETS;
+
+    public static Operator              MEETS_NOT;
+
+    private static String[]             SUPPORTED_IDS;
 
     private Map<String, MeetsEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( meetsOp, false ) == null ) {
+            MEETS = Operator.addOperatorToRegistry( meetsOp, false );
+            MEETS_NOT = Operator.addOperatorToRegistry( meetsOp, true );
+            SUPPORTED_IDS = new String[] { meetsOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -196,6 +207,10 @@ public class MeetsEvaluatorDefinition
 
         private long              finalRange;
         private String            paramText;
+
+        {
+            MeetsEvaluatorDefinition.init();
+        }
 
         public MeetsEvaluator() {
         }

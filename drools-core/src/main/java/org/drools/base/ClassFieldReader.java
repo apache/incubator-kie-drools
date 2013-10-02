@@ -70,6 +70,10 @@ public class ClassFieldReader
         this.reader = reader;
     }
 
+    public boolean hasReadAccessor() {
+        return this.reader != null;
+    }
+
     public int getIndex() {
         return this.reader.getIndex();
     }

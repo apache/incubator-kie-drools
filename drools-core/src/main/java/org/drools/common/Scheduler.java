@@ -90,9 +90,8 @@ public final class Scheduler {
                     postpone(item, agenda);
                 }
 
-                if ( item.isEnqueued() ) {
+                if ( item.getEnqueued().compareAndSet( true, false ) ) {
                     agenda.getScheduledActivationsLinkedList().remove( item );
-                    item.setEnqueued( false );
                 }
             } else {
                 // the activation has been rescheduled, the Agenda would have set it's activated to false

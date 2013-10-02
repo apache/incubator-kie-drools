@@ -302,4 +302,20 @@ public class ClassPathResource extends BaseResource
         return "[ClassPathResource path='" + this.path + "']";
     }
 
+    public boolean exists() {
+        URL url = null;
+        if ( this.clazz != null ) {
+            url = this.clazz.getResource( this.path );
+        }
+
+        if ( url == null ) {
+            url = this.classLoader.getResource( this.path );
+        }
+
+        if ( url == null ) {
+            return false;
+        }
+        return true;
+    }
+
 }

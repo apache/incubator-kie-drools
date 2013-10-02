@@ -132,6 +132,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -776,43 +777,32 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    void addPackageFromChangeSet(Resource resource) throws SAXException, IOException {
-        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
-        if (resource instanceof ClassPathResource) {
-            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
-                                   ( (ClassPathResource) resource ).getClazz() );
-        } else {
-            reader.setClassLoader( this.configuration.getClassLoader(),
-                                   null );
-        }
-        Reader resourceReader = null;
-        try {
-            resourceReader = resource.getReader();
-            ChangeSet changeSet = reader.read( resourceReader );
-            if (changeSet == null) {
-                // @TODO should log an error
-            }
-            for (Resource nestedResource : changeSet.getResourcesAdded()) {
-                InternalResource iNestedResourceResource = (InternalResource) nestedResource;
-                if (iNestedResourceResource.isDirectory()) {
-                    for (Resource childResource : iNestedResourceResource.listResources()) {
-                        if (( (InternalResource) childResource ).isDirectory()) {
-                            continue; // ignore sub directories
-                        }
-                        ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
-                        addKnowledgeResource( childResource,
-                                              iNestedResourceResource.getResourceType(),
-                                              iNestedResourceResource.getConfiguration() );
-                    }
-                } else {
-                    addKnowledgeResource( iNestedResourceResource,
-                                          iNestedResourceResource.getResourceType(),
-                                          iNestedResourceResource.getConfiguration() );
+    void addPackageFromChangeSet( final Resource resource) throws SAXException, IOException {
+        ChangeSet changeSet = parseChangeSet( resource );
+        if (changeSet == null) {
+            results.add( new DroolsError() {
+                public String getMessage() {
+                    return "Unable to parse changeset " + resource;
                 }
-            }
-        } finally {
-            if (resourceReader != null) {
-                resourceReader.close();
+                public int[] getLines() { return new int[ 0 ]; }
+            } );
+        }
+        for (Resource nestedResource : changeSet.getResourcesAdded()) {
+            InternalResource iNestedResourceResource = (InternalResource) nestedResource;
+            if (iNestedResourceResource.isDirectory()) {
+                for (Resource childResource : iNestedResourceResource.listResources()) {
+                    if (( (InternalResource) childResource ).isDirectory()) {
+                        continue; // ignore sub directories
+                    }
+                    ( (InternalResource) childResource ).setResourceType( iNestedResourceResource.getResourceType() );
+                    addKnowledgeResource( childResource,
+                            iNestedResourceResource.getResourceType(),
+                            iNestedResourceResource.getConfiguration() );
+                }
+            } else {
+                addKnowledgeResource( iNestedResourceResource,
+                        iNestedResourceResource.getResourceType(),
+                        iNestedResourceResource.getConfiguration() );
             }
         }
     }
@@ -886,6 +876,28 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 //                w.setResource( res );
 //            }
 //        }
+    }
+
+    private ChangeSet parseChangeSet( Resource resource ) throws IOException, SAXException {
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+        if (resource instanceof ClassPathResource) {
+            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
+                    ( (ClassPathResource) resource ).getClazz() );
+        } else {
+            reader.setClassLoader( this.configuration.getClassLoader(),
+                    null );
+        }
+        Reader resourceReader = null;
+
+        try {
+            resourceReader = resource.getReader();
+            ChangeSet changeSet = reader.read( resourceReader );
+            return changeSet;
+        } finally {
+            if (resourceReader != null) {
+                resourceReader.close();
+            }
+        }
     }
 
     private boolean isSwappable( Resource original, Resource source ) {
@@ -1425,12 +1437,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
             try {
                 Class<?> clazz = pkgRegistry.getTypeResolver().resolveType(className);
+                if ( clazz.isPrimitive() ) {
+                    this.results.add( new GlobalError( global, " Primitive types are not allowed in globals : " + className ) );
+                    return;
+                }
                 pkgRegistry.getPackage().addGlobal( identifier,
                                                     clazz );
                 this.globals.put( identifier,
                                   clazz );
             } catch (final ClassNotFoundException e) {
-                this.results.add( new GlobalError( global ) );
+                this.results.add( new GlobalError( global, e.getMessage() ) );
                 e.printStackTrace();
             }
         }
@@ -1869,15 +1885,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             return false;
         boolean merge = false;
 
-        for ( QualifiedName qname : typeDescr.getSuperTypes() ) {
+        for ( int j = typeDescr.getSuperTypes().size() - 1; j >= 0; j-- ) {
+            QualifiedName qname = typeDescr.getSuperTypes().get( j );
             String simpleSuperTypeName = qname.getName();
             String superTypePackageName = qname.getNamespace();
             String fullSuper = qname.getFullName();
 
-            merge = merge || mergeInheritedFields( simpleSuperTypeName,
-                                                   superTypePackageName,
-                                                   fullSuper,
-                                                   typeDescr );
+            merge = mergeInheritedFields( simpleSuperTypeName,
+                                          superTypePackageName,
+                                          fullSuper,
+                                          typeDescr ) || merge;
         }
 
         return merge;
@@ -1944,7 +1961,6 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                                                                                   new PatternDescr(
                                                                                                     inspector.getFieldTypes().get( name ).getName() ) );
                             inheritedFlDescr.setInherited( !Modifier.isAbstract( inspector.getGetterMethods().get( name ).getModifiers() ) );
-                            inheritedFlDescr.setIndex( inspector.getFieldNames().size() + inspector.getFieldNames().get( name ) );
 
                             if (!fieldMap.containsKey( inheritedFlDescr.getFieldName() ))
                                 fieldMap.put( inheritedFlDescr.getFieldName(),
@@ -2022,7 +2038,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             inheritedFldDescr.getAnnotations().put( TypeDeclaration.ATTR_KEY,
                                                     new AnnotationDescr( TypeDeclaration.ATTR_KEY ) );
         }
-            inheritedFldDescr.setIndex( fld.getIndex() );
+            inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
             inheritedFldDescr.setInherited( true );
             inheritedFldDescr.setInitExpr( ( (FieldDefinition) fld ).getInitExpr() );
         return inheritedFldDescr;
@@ -2519,8 +2535,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
 
         try {
-            return resolver.resolveType( annotation.substring( 0,
-                                                               1 ).toUpperCase() + annotation.substring( 1 ) );
+            if ( annotation.indexOf( '.' ) < 0 ) {
+                annotation = annotation.substring( 0, 1 ).toUpperCase() + annotation.substring( 1 );
+            }
+            return resolver.resolveType( annotation );
         } catch (ClassNotFoundException e) {
             // internal annotation, or annotation which can't be resolved.
             return null;
@@ -2583,7 +2601,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             }
         }
 
-        boolean traitable = typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null;
+        AnnotationDescr traitableAnn = typeDescr.getAnnotation( Traitable.class.getSimpleName() );
+        boolean traitable = traitableAnn != null;
 
         String[] fullSuperTypes = new String[typeDescr.getSuperTypes().size() + 1];
         int j = 0;
@@ -2617,7 +2636,9 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 def = new ClassDefinition( fullName,
                         fullSuperTypes[0],
                         interfaces );
-                def.setTraitable( traitable );
+                def.setTraitable( traitable, traitableAnn != null &&
+                                             traitableAnn.getValue( "logical" ) != null &&
+                                             Boolean.valueOf( traitableAnn.getValue( "logical" ) ) );
         }
 
         for (String annotationName : typeDescr.getAnnotationNames()) {
@@ -2655,7 +2676,8 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         if (!typeDescr.getFields().isEmpty()) {
             PriorityQueue<FieldDefinition> fieldDefs = sortFields( typeDescr.getFields(),
                                                                    pkgRegistry );
-            while (fieldDefs.size() > 0) {
+            int n = fieldDefs.size();
+            for ( int k = 0; k < n; k++ ) {
                 FieldDefinition fld = fieldDefs.poll();
                 if (unresolvedTypeDefinitions != null) {
                     for (TypeDefinition typeDef : unresolvedTypeDefinitions) {
@@ -2665,6 +2687,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                         }
                     }
                 }
+                fld.setIndex( k );
                 def.addField( fld );
             }
         }
@@ -2973,18 +2996,20 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
      */
     private PriorityQueue<FieldDefinition> sortFields( Map<String, TypeFieldDescr> flds,
                                                        PackageRegistry pkgRegistry ) {
-        PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>();
-        int last = 0;
+        PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>( flds.size() );
+        int maxDeclaredPos = 0;
+        int curr = 0;
 
-        for (TypeFieldDescr field : flds.values()) {
-            last = Math.max( last,
-                             field.getIndex() );
+        BitSet occupiedPositions = new BitSet( flds.size() );
+        for( TypeFieldDescr field : flds.values() ) {
+            int pos = field.getIndex();
+            if ( pos >= 0 ) {
+                occupiedPositions.set( pos );
+            }
+            maxDeclaredPos = Math.max( maxDeclaredPos, pos );
         }
 
-        for (TypeFieldDescr field : flds.values()) {
-            if (field.getIndex() < 0) {
-                field.setIndex( ++last );
-            }
+        for ( TypeFieldDescr field : flds.values() ) {
 
             try {
                 String typeName = field.getPattern().getObjectType();
@@ -2996,7 +3021,18 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 boolean isKey = field.getAnnotation( TypeDeclaration.ATTR_KEY ) != null;
                 fieldDef.setKey( isKey );
 
-                fieldDef.setIndex( field.getIndex() );
+                fieldDef.setDeclIndex( field.getIndex() );
+                if ( field.getIndex() < 0 ) {
+                    int freePos = occupiedPositions.nextClearBit( 0 );
+                    if ( freePos < maxDeclaredPos ) {
+                        occupiedPositions.set( freePos );
+                    } else {
+                        freePos = maxDeclaredPos + 1;
+                    }
+                    fieldDef.setPriority( freePos * 256 + curr++ );
+                } else {
+                    fieldDef.setPriority( field.getIndex() * 256 + curr++ );
+                }
                 fieldDef.setInherited( field.isInherited() );
                 fieldDef.setInitExpr( field.getInitExpr() );
 
@@ -3095,6 +3131,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
+        this.results.addAll( context.getWarnings() );
 
         context.getRule().setResource( ruleDescr.getResource() );
 
@@ -3746,8 +3783,39 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
     }
 
-    public void registerBuildResource(final Resource resource) {
-        buildResources.push( new ArrayList<Resource>() {{ add(resource); }} );
+    public void registerBuildResource( final Resource resource, ResourceType type ) {
+        InternalResource ires = (InternalResource) resource;
+        if ( ires.getResourceType() == null ) {
+            ires.setResourceType( type );
+        } else if ( ires.getResourceType() != type ) {
+            this.results.add( new ResourceTypeDeclarationWarning( resource, ires.getResourceType(), type ) );
+        }
+        if ( ResourceType.CHANGE_SET == type ) {
+            try {
+                ChangeSet changeSet = parseChangeSet( resource );
+                List<Resource> resources = new ArrayList<Resource>(  );
+                resources.add( resource );
+                for ( Resource addedRes : changeSet.getResourcesAdded() ) {
+                    resources.add( addedRes );
+                }
+                for ( Resource modifiedRes : changeSet.getResourcesModified() ) {
+                    resources.add( modifiedRes );
+                }
+                for ( Resource removedRes : changeSet.getResourcesRemoved() ) {
+                    resources.add( removedRes );
+                }
+                buildResources.push( resources );
+            } catch ( Exception e ) {
+                results.add( new DroolsError() {
+                    public String getMessage() {
+                        return "Unable to register changeset resource " + resource;
+                    }
+                    public int[] getLines() { return new int[ 0 ]; }
+                } );
+            }
+        } else {
+            buildResources.push( Arrays.asList( resource ) );
+        }
     }
 
     public void registerBuildResources(List<Resource> resources) {

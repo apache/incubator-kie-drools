@@ -59,11 +59,31 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                            final long recency,
                            final long timestamp,
                            final long duration,
-                           final WorkingMemoryEntryPoint wmEntryPoint) {
+                           final WorkingMemoryEntryPoint wmEntryPoint ) {
+        this( id, object, recency, timestamp, duration, wmEntryPoint, false );
+    }
+
+    /**
+     * Creates a new event fact handle.
+     *
+     * @param id this event fact handle ID
+     * @param object the event object encapsulated in this event fact handle
+     * @param recency the recency of this event fact handle
+     * @param timestamp the timestamp of the occurrence of this event
+     * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
+     */
+    public EventFactHandle(final int id,
+                           final Object object,
+                           final long recency,
+                           final long timestamp,
+                           final long duration,
+                           final WorkingMemoryEntryPoint wmEntryPoint,
+                           final boolean isTraitOrTraitable ) {
         super( id,
                object,
                recency,
-               wmEntryPoint );
+               wmEntryPoint,
+               isTraitOrTraitable );
         this.startTimestamp = timestamp;
         this.duration = duration;
     }
@@ -207,7 +227,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                                                       getRecency(),
                                                       startTimestamp,
                                                       duration,
-                                                      getEntryPoint() );
+                                                      getEntryPoint(),
+                                                      isTraitOrTraitable());
         clone.activationsCount = activationsCount;
         clone.expired = expired;
         clone.setEntryPoint( getEntryPoint() );

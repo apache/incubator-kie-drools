@@ -20,9 +20,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -158,6 +160,9 @@ public class NamedEntryPoint
 
         try {
             this.wm.startOperation();
+
+            // ADDED, NOT IN THE ORIGINAL 6.x COMMIT
+            wm.initInitialFact();
 
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
@@ -436,7 +441,7 @@ public class NamedEntryPoint
             }
 
 
-            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
+            if ( ! handle.isValid() || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
                 return;
             }
@@ -548,7 +553,7 @@ public class NamedEntryPoint
             this.ruleBase.executeQueuedActions();
 
             InternalFactHandle handle = (InternalFactHandle) factHandle;
-            if ( handle.getId() == -1 ) {
+            if ( ! handle.isValid() ) {
                 // can't retract an already retracted handle
                 return;
             }
@@ -557,7 +562,18 @@ public class NamedEntryPoint
             if ( handle.isDisconnected() ) {
                 handle = this.objectStore.reconnect( handle );
             }
-            
+
+            if ( handle.getObject() instanceof TraitableBean && ( (TraitableBean) handle.getObject() ).hasTraits() ) {
+                PriorityQueue removedTypes = new PriorityQueue( ( (TraitableBean) handle.getObject() )._getTraitMap().values() );
+                while ( ! removedTypes.isEmpty() ) {
+                    retract( getFactHandle( removedTypes.poll() ),
+                            removeLogical,
+                            updateEqualsMap,
+                            rule,
+                            activation );
+                }
+            }
+
             if ( handle.getEntryPoint() != this ) {
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }            
@@ -612,7 +628,7 @@ public class NamedEntryPoint
                 }
             }
 
-            if ( handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
+            if ( handle.isTraitOrTraitable() && handle.getObject() instanceof TraitProxy ) {
                 ((TraitableBean) ( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
             }
 

@@ -25,7 +25,9 @@ import org.drools.Person;
 import org.drools.RuleBaseConfiguration;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.builder.ResourceType;
+import org.drools.builder.ResultSeverity;
 import org.drools.common.DefaultFactHandle;
 import org.drools.conflict.SalienceConflictResolver;
 import org.drools.core.util.FileManager;
@@ -35,39 +37,55 @@ import org.drools.definition.type.Position;
 import org.drools.definition.type.PropertyReactive;
 import org.drools.event.knowledgebase.DefaultKnowledgeBaseEventListener;
 import org.drools.event.knowledgebase.KnowledgeBaseEventListener;
+import org.drools.event.rule.ActivationCancelledEvent;
+import org.drools.event.rule.ActivationCreatedEvent;
+import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.event.rule.AgendaGroupPushedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.RuleFlowGroupActivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
+import org.drools.marshalling.Marshaller;
+import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.impl.AgendaImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Run all the tests with the ReteOO engine implementation
  */
-public class MiscTest2 extends CommonTestMethodBase {
+public class Misc2Test extends CommonTestMethodBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(MiscTest2.class);
+    private static final Logger logger = LoggerFactory.getLogger(Misc2Test.class);
 
     @Test
     public void testUpdateWithNonEffectiveActivations() throws Exception {
@@ -637,7 +655,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     @Test
     public void testMvelAssignmentToPublicField() {
         String str =
-                "import org.drools.integrationtests.MiscTest2.Foo\n" +
+                "import org.drools.integrationtests.Misc2Test.Foo\n" +
                 "rule R\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -710,7 +728,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testDynamicAddRule() {
         // DROOLS-17
         String str =
-                "import org.drools.integrationtests.MiscTest2.A\n" +
+                "import org.drools.integrationtests.Misc2Test.A\n" +
                 "rule r1 when\n" +
                 "    $a : A( f1 == 1 )\n" +
                 "then\n" +
@@ -727,7 +745,7 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "end";
 
         String str2 =
-                "import org.drools.integrationtests.MiscTest2.A\n" +
+                "import org.drools.integrationtests.Misc2Test.A\n" +
                 "rule r4 when\n" +
                 "    $a : A( f2 == 1, f4 == 1 )" +
                 "then\n" +
@@ -833,8 +851,8 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "\n" +
                 "import java.util.Map;\n" +
                 "import java.util.EnumMap;\n" +
-                "import org.drools.integrationtests.MiscTest2.Parameter\n" +
-                "import org.drools.integrationtests.MiscTest2.DataSample\n" +
+                "import org.drools.integrationtests.Misc2Test.Parameter\n" +
+                "import org.drools.integrationtests.Misc2Test.DataSample\n" +
                 "\n" +
                 "declare TestObject\n" +
                 "    data    :   java.util.Map\n" +
@@ -874,8 +892,8 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "\n" +
                 "import java.util.Map;\n" +
                 "import java.util.EnumMap;\n" +
-                "import org.drools.integrationtests.MiscTest2.Parameter\n" +
-                "import org.drools.integrationtests.MiscTest2.DataSample\n" +
+                "import org.drools.integrationtests.Misc2Test.Parameter\n" +
+                "import org.drools.integrationtests.Misc2Test.DataSample\n" +
                 "\n" +
                 "declare Recommendation\n" +
                 "    parameter : Parameter\n" +
@@ -942,8 +960,8 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testMvelResolvingGenericVariableDeclaredInParentClass() {
         // JBRULES-3684
         String str =
-                "import org.drools.integrationtests.MiscTest2.AbstractBase\n" +
-                "import org.drools.integrationtests.MiscTest2.StringConcrete\n" +
+                "import org.drools.integrationtests.Misc2Test.AbstractBase\n" +
+                "import org.drools.integrationtests.Misc2Test.StringConcrete\n" +
                 "rule \"test\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -987,8 +1005,8 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testCompilationMustFailComparingAClassLiteral() {
         // DROOLS-20
         String str =
-                "import org.drools.integrationtests.MiscTest2.Answer\n" +
-                "import org.drools.integrationtests.MiscTest2.AnswerGiver\n" +
+                "import org.drools.integrationtests.Misc2Test.Answer\n" +
+                "import org.drools.integrationtests.Misc2Test.AnswerGiver\n" +
                 "rule \"Test Rule\"\n" +
                 "when\n" +
                 "   AnswerGiver(Answer == Answer.YES)\n" +
@@ -1004,7 +1022,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testDeclaredTypeExtendingInnerClass() {
         // DROOLS-27
         String str =
-                "import org.drools.integrationtests.MiscTest2.StaticPerson\n" +
+                "import org.drools.integrationtests.Misc2Test.StaticPerson\n" +
                 "declare StaticPerson end\n"+
                 "declare Student extends StaticPerson end\n"+
                 "rule Init when\n" +
@@ -1062,14 +1080,14 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals( 2, ksession.fireAllRules() );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     @Test
     public void testJitConstraintWithOperationOnBigDecimal() {
         // DROOLS-32
         String str =
-                "import org.drools.integrationtests.MiscTest2.Model;\n" +
+                "import org.drools.integrationtests.Misc2Test.Model;\n" +
                 "import java.math.BigDecimal;\n" +
                 "\n" +
                 "rule \"minCost\" dialect \"mvel\" \n" +
@@ -1115,7 +1133,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testJitComparable() {
         // DROOLS-37
         String str =
-                "import org.drools.integrationtests.MiscTest2.IntegerWrapperImpl;\n" +
+                "import org.drools.integrationtests.Misc2Test.IntegerWrapperImpl;\n" +
                 "\n" +
                 "rule \"minCost\"\n" +
                 "when\n" +
@@ -1401,7 +1419,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         String str =
                 "package org.drools.integrationtests;\n" +
                 "" +
-                "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
+                "import org.drools.integrationtests.Misc2Test.Foo2; \n" +
                 "" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1434,7 +1452,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         String str2 =
                 "package org.drools.integrationtests;\n" +
                 "" +
-                "import org.drools.integrationtests.MiscTest2.Foo2; \n" +
+                "import org.drools.integrationtests.Misc2Test.Foo2; \n" +
                 "global java.util.List list;\n " +
                 "rule \"React\"\n" +
                 "when\n" +
@@ -1517,7 +1535,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // DROOLS-94
         String str =
                 "package org.drools.integrationtests;\n" +
-                "import org.drools.integrationtests.MiscTest2.SimpleEvent\n" +
+                "import org.drools.integrationtests.Misc2Test.SimpleEvent\n" +
                 "declare SimpleEvent\n" +
                 " @role(event)\n" +
                 " @duration(duration)\n" +
@@ -1532,7 +1550,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // DROOLS-94
         String str =
                 "package org.drools.integrationtests;\n" +
-                "import org.drools.integrationtests.MiscTest2.SimpleEvent\n" +
+                "import org.drools.integrationtests.Misc2Test.SimpleEvent\n" +
                 "declare SimpleEvent\n" +
                 " @role(event)\n" +
                 " @duration(duratio)\n" +
@@ -1731,8 +1749,8 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testLockOnActive() {
         String drl = "" +
                      "package org.drools.test; \n" +
-                     "import org.drools.integrationtests.MiscTest2.TradeBooking;\n" +
-                     "import org.drools.integrationtests.MiscTest2.TradeHeader;\n" +
+                     "import org.drools.integrationtests.Misc2Test.TradeBooking;\n" +
+                     "import org.drools.integrationtests.Misc2Test.TradeHeader;\n" +
                      "rule \"Rule1\" \n" +
                      "salience 1 \n" +
                      "when\n" +
@@ -1757,12 +1775,42 @@ public class MiscTest2 extends CommonTestMethodBase {
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
 
+        ks.addEventListener( new AgendaEventListener() {
+            int step = 0;
+
+            public void activationCreated( ActivationCreatedEvent event ) {}
+
+            public void activationCancelled( ActivationCancelledEvent event ) {
+                switch ( step ) {
+                    case 0 : assertEquals( "Rule2", event.getActivation().getRule().getName() );
+                        step++;
+                        break;
+                    case 1 : assertEquals( "Rule1", event.getActivation().getRule().getName() );
+                        step++;
+                        break;
+                    default: fail( "More cancelled activations than expected" );
+                }
+            }
+
+            public void beforeActivationFired( BeforeActivationFiredEvent event ) {}
+
+            public void afterActivationFired( AfterActivationFiredEvent event ) {
+                assertEquals( "Rule1", event.getActivation().getRule().getName() );
+            }
+
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {}
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {}
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+        } );
         ks.fireAllRules();
 
         TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
 
         ks.insert( tb );
-        ks.fireAllRules();
+        assertEquals( 1, ks.fireAllRules() );
     }
 
 
@@ -1868,7 +1916,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     @Test
     public void testNotNodeUpdateBlocker() {
         String str =
-                "import org.drools.integrationtests.MiscTest2.Conversation;\n" +
+                "import org.drools.integrationtests.Misc2Test.Conversation;\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "rule \"familyEnd\" when\n" +
@@ -1922,4 +1970,612 @@ public class MiscTest2 extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(1, conversations.size());
     }
+
+    @Test
+    public void testSortWithNot() {
+        String str =
+                "import java.util.*; \n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "declare Bean \n" +
+                "   value   : Integer @key \n" +
+                "   mark    : boolean = false \n" +
+                "end \n" +
+                "" +
+                "declare Holder\n" +
+                "   map : Map \n" +
+                "end \n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "then\n" +
+                " insert( new Holder( new HashMap() ) ); \n" +
+                " insert( new Bean( 10 ) );\n" +
+                " insert( new Bean( 30 ) );\n" +
+                " insert( new Bean( 20 ) );\n" +
+                " insert( new Bean( 50 ) );\n" +
+                " insert( new Bean( 40 ) );\n" +
+                "end\n" +
+                "" +
+                "rule Sort when \n" +
+                "   $h : Holder( $map : map ) \n" +
+                "   $b : Bean( ! $map.containsKey( value ), $v : value ) \n" +
+                "   not Bean( ! $map.containsKey( value ), value > $v ) \n" +
+                "then \n" +
+                "   list.add( $v ); \n" +
+                "   System.out.println( \"Marking \" + $v ); \n" +
+                "   modify ( $h ) { getMap().put( $v, $b ); } \n" +
+                "end \n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 50, 40, 30, 20, 10 ), list );
+    }
+
+
+    @Test
+    public void testListnersOnStatlessSession() {
+        // DROOLS-141
+        // BZ-999491
+        String str =
+                "rule R when\n" +
+                "  String()\n"  +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatelessKnowledgeSession ksession = kbase.newStatelessKnowledgeSession();
+
+        final List<String> firings = new ArrayList<String>();
+
+        AgendaEventListener agendaEventListener = new AgendaEventListener() {
+
+            public void activationCreated( ActivationCreatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void activationCancelled( ActivationCancelledEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void beforeActivationFired( BeforeActivationFiredEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void afterActivationFired( AfterActivationFiredEvent event ) {
+                firings.add( "Fired!" );
+            }
+
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
+
+        ksession.addEventListener(agendaEventListener);
+
+        ksession.execute("1");
+        ksession.execute("2");
+
+        assertEquals(2, firings.size());
+
+        ksession.removeEventListener(agendaEventListener);
+
+        ksession.execute("3");
+
+        assertEquals(2, firings.size());
+    }
+
+
+    @Test
+    public void testKsessionSerializationWithInsertLogical() {
+        List<String> firedRules = new ArrayList<String>();
+        String str =
+                "import java.util.Date;\n" +
+                "import org.drools.integrationtests.Misc2Test.Promotion;\n" +
+                "\n" +
+                "declare Person\n" +
+                " name : String\n" +
+                " dateOfBirth : Date\n" +
+                "end\n" +
+                "\n" +
+                "declare Employee extends Person\n" +
+                " job : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Insert Alice\"\n" +
+                " when\n" +
+                " then\n" +
+                " Employee alice = new Employee(\"Alice\", new Date(1973, 7, 2), \"Vet\");\n" +
+                " insert(alice);\n" +
+                " System.out.println(\"Insert Alice\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Insert Bob\"\n" +
+                " when\n" +
+                " Person(name == \"Alice\")\n" +
+                " then\n" +
+                " Person bob = new Person(\"Bob\", new Date(1973, 7, 2));\n" +
+                " insertLogical(bob);\n" +
+                " System.out.println(\"InsertLogical Bob\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Insert Claire\"\n" +
+                " when\n" +
+                " Person(name == \"Bob\")\n" +
+                " then\n" +
+                " Employee claire = new Employee(\"Claire\", new Date(1973, 7, 2), \"Student\");\n" +
+                " insert(claire);\n" +
+                " System.out.println(\"Insert Claire\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Promote\"\n" +
+                " when\n" +
+                " p : Promotion(n : name, j : job)\n" +
+                " e : Employee(name == n)\n" +
+                " then\n" +
+                " modify(e) {\n" +
+                " setJob(j)\n" +
+                " }\n" +
+                " retract(p);\n" +
+                " System.out.printf(\"Promoted %s to %s%n\", n, j);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules(); // insertLogical Person(Bob)
+
+        // Serialize and Deserialize
+        try {
+            Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall(baos, ksession);
+            marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            baos.close();
+            ksession = (StatefulKnowledgeSession)marshaller.unmarshall(bais);
+            bais.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("unexpected exception :" + e.getMessage());
+        }
+
+        ksession.insert(new Promotion("Claire", "Scientist"));
+        int result = ksession.fireAllRules();
+
+        assertEquals(1, result);
+    }
+
+    public static class Promotion {
+        private String name;
+        private String job;
+        public Promotion(String name, String job) {
+            this.setName(name);
+            this.setJob(job);
+        }
+        public String getName() {
+            return this.name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+        public String getJob() {
+            return this.job;
+        }
+        public void setJob(String job) {
+            this.job = job;
+        }
+    }
+
+    @Test
+    public void testImportExceptional() throws java.lang.Exception {
+        // DROOLS-253 imported Exception would have qualified as the default Exception thrown by the RHS
+        String str =
+                "import org.acme.healthcare.Exception;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "then\n" +
+                "   list.add( 1 ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+    public static class SQLTimestamped {
+        private Timestamp start;
+
+        public Timestamp getStart() {
+            return start;
+        }
+
+        public void setStart( Timestamp start ) {
+            this.start = start;
+        }
+
+        public SQLTimestamped() {
+            start = new Timestamp( new Date().getTime() );
+        }
+    }
+
+    @Test
+    public void testEventWithSQLTimestamp() throws InterruptedException {
+        // DROOLS-10
+        String str =
+                "import org.drools.integrationtests.Misc2Test.SQLTimestamped;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare SQLTimestamped @role(event) @timestamp(start) end \n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $s1 : SQLTimestamped() \n" +
+                "   $s2 : SQLTimestamped( this != $s1, this after $s1 ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new SQLTimestamped() );
+        Thread.sleep( 100 );
+        ksession.insert( new SQLTimestamped() );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( "ok" ), list );
+    }
+
+    public static class Foo3 {
+        public boolean getX() { return true; }
+        public String isX() { return "x"; }
+        public boolean isY() { return true; }
+        public String getZ() { return "ok"; }
+        public boolean isZ() { return true; }
+    }
+
+    @Test
+    public void testIsGetClash() {
+        // DROOLS-18
+        String str =
+                "import org.drools.integrationtests.Misc2Test.Foo3;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $x : Foo3( x == true, y == true, z == \"ok\", isZ() == true ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        assertEquals( 2, kbuilder.getResults( ResultSeverity.WARNING ).size() );
+        for ( KnowledgeBuilderResult res : kbuilder.getResults( ResultSeverity.WARNING ) ) {
+            System.out.println( res.getMessage() );
+        }
+    }
+
+
+    @Test
+    public void testCollectAccumulate() {
+        // DROOLS-173
+        String drl = "import java.util.ArrayList\n" +
+                     "\n" +
+                     "global java.util.Map map; \n" +
+                     "" +
+                     " declare Item\n" +
+                     "     code: int\n" +
+                     "     price: int\n" +
+                     "     present: boolean\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"Init\"\n" +
+                     " when\n" +
+                     " then\n" +
+                     "     insert(new Item(1,40,false));\n" +
+                     "     insert(new Item(2,40,false));\n" +
+                     "     insert(new Item(3,40,false));\n" +
+                     "     insert(new Item(4,40,false));\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"CollectAndAccumulateRule\"\n" +
+                     " when\n" +
+                     "     //At least two items that aren't presents\n" +
+                     "     objList: ArrayList(size>=2) from collect( Item(present==false))\n" +
+                     "     //Total price bigger than 100\n" +
+                     "     price: Number(intValue>=100) from accumulate( Item($w:price, present==false), sum($w))\n" +
+                     " then\n" +
+                     "\n" +
+                     "     System.out.println(\"Sum: \"+price);\n" +
+                     "     System.out.println(\"Items size: \"+objList.size());\n" +
+                     " " +
+                     "      map.put( objList.size(), price ); \n" +
+                     "     \n" +
+                     "     //Look for the minor price item\n" +
+                     "     Item min = null;\n" +
+                     "     for(Object obj: objList){\n" +
+                     "         if (min!=null){\n" +
+                     "             min = (min.getPrice()>((Item)obj).getPrice())?(Item)obj:min;\n" +
+                     "         }\n" +
+                     "         else {\n" +
+                     "             min = (Item)obj;\n" +
+                     "         }\n" +
+                     "     }\n" +
+                     "     \n" +
+                     "     //And make it a present\n" +
+                     "     if (min!=null){\n" +
+                     "         modify(min){setPresent(true)};\n" +
+                     "     }\n" +
+                     " end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Map map = new HashMap(  );
+        ksession.setGlobal( "map", map );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, map.size() );
+        assertEquals( 160.0, map.get( 4 ) );
+        assertEquals( 120.0, map.get( 3 ) );
+
+    }
+
+
+    @Test
+    public void testExistsOr() {
+        // DROOLS-254
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo val : String end \n" +
+                     "" +
+                     "rule Init when $s : String() then retract( $s ); insert( new Foo( $s ) ); end \n" +
+                     "" +
+                     "rule \"Check Pos\"\n" +
+                     "when\n" +
+                     "  exists ( Foo( val == \"1\" ) or Foo( val == \"2\" ) )\n" +
+                     "then\n" +
+                     "  list.add( \"+\" );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Check Neg\"\n" +
+                     "when\n" +
+                     "  not ( not Foo( val == \"1\" ) and not Foo( val == \"2\" ) )\n" +
+                     "then\n" +
+                     "  list.add( \"-\" );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "2" );
+        ksession.insert( "3" );
+        ksession.insert( "1" );
+        ksession.insert( "4" );
+        ksession.insert( "5" );
+        ksession.insert( "7" );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "1" );
+        ksession.insert( "5" );
+        ksession.insert( "7" );
+
+        ksession.fireAllRules();
+
+        ksession.insert( "6" );
+        ksession.insert( "2" );
+        ksession.insert( "2" );
+
+        ksession.fireAllRules();
+
+        System.out.println( list );
+
+        assertEquals( 11, ksession.getObjects().size() );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "+" ) );
+        assertTrue( list.contains( "-" ) );
+    }
+
+
+    @Test
+    public void testBindingComplexExpression() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo \n" +
+                     "  a : int \n" +
+                     "  b : int \n" +
+                     "end \n" +
+                     "" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "" +
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  $c := Integer() from new Integer( 4 ) \n" +
+                     "  Foo(  $a : a + b == 7 && a == 3 && $b : b > 0, $c := b - a == 1 ) \n" +
+                     "then\n" +
+                     "  list.add( $a );\n" +
+                     "  list.add( $b );\n" +
+                     "  list.add( $c );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertTrue( ! list.isEmpty() );
+        assertEquals( 3, list.size() );
+        assertEquals( 3, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 4, list.get( 2 ) );
+
+    }
+
+    @Test
+    public void testBindingComplexExpressionErrors() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "declare Foo a : int  b : int end \n" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "\n";
+
+        String err1 =
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  Foo(  $a : a + $b : b > 5  ) \n" +
+                     "then\n" +
+                     "end\n" +
+                     "\n";
+
+        String err2 =
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  Foo(  b - a ) \n" +
+                     "then\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilder knowledgeBuilder1 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder1.add( new ByteArrayResource( ( drl + err1 ).getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder1.getErrors() );
+        assertTrue( knowledgeBuilder1.hasErrors() );
+
+        KnowledgeBuilder knowledgeBuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder2.add( new ByteArrayResource( ( drl + err2 ).getBytes() ), ResourceType.DRL );
+        System.err.println( knowledgeBuilder2.getErrors() );
+        assertTrue( knowledgeBuilder2.hasErrors() );
+    }
+
+
+
+    @Test
+    public void testPrimitiveGlobals() {
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "\n" +
+                     "global int foo;\n" +
+                     "\n" +
+                     "";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.out.println( kb.getErrors() );
+        assertTrue( kb.hasErrors() );
+    }
+
+
+    @Test
+    public void testMapAccessorWithCustomOp() {
+        // DROOLS-216
+        String str =
+                "import java.util.Map;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                " Map( this[\"x\"] str[startsWith] \"T\" )\n" +
+                " Map( this[\"x\"] soundslike \"Test\" )\n" +
+                "then\n" +
+                " list.add( 1 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("x", "Test");
+        ksession.insert(map);
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+    @Test
+    public void testMapAccessorWithBoundVar() {
+        // DROOLS-217
+        String str =
+                "import java.util.Map;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                " Map( $val1 : this[\"x\"], $val1 str[startsWith] \"T\" )\n" +
+                " Map( $val2 : this[\"x\"], $val2 soundslike \"Test\" )\n" +
+                "then\n" +
+                " list.add( 1 );\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("x", "Test");
+        ksession.insert(map);
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+
 }

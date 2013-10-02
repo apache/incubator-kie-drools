@@ -16,8 +16,10 @@
 
 package org.drools.factmodel.traits;
 
+import org.drools.definition.type.FactField;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
+import org.drools.factmodel.FieldDefinition;
 import org.mvel2.asm.*;
 
 import java.beans.IntrospectionException;
@@ -69,6 +71,11 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 new String[] { Type.getInternalName( CoreWrapper.class ), Type.getInternalName( Externalizable.class ) } );
 
         {
+            AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Traitable.class ), true );
+            av0.visit( "logical", core.isFullTraiting() );
+        }
+
+        {
             fv = cw.visitField( ACC_PRIVATE, "core", BuildUtils.getTypeDescriptor( coreName ), null, null);
             fv.visitEnd();
         }
@@ -78,6 +85,10 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         }
         {
             fv = cw.visitField( ACC_PRIVATE, TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ), "Ljava/util/Map<Ljava/lang/String;Lorg/drools/factmodel/traits/Thing;>;", null );
+            fv.visitEnd();
+        }
+        {
+            fv = cw.visitField( ACC_PRIVATE, TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ), null, null );
             fv.visitEnd();
         }
 
@@ -255,6 +266,33 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                 mv.visitEnd();
             }
         }
+        if ( coreKlazz == null || needsMethod( coreKlazz, "hasTraits" ) ) {
+            {
+                mv = cw.visitMethod( ACC_PUBLIC,
+                                     "hasTraits",
+                                     Type.getMethodDescriptor( Type.getType( boolean.class ), new Type[] {} ),
+                                     null,
+                                     null );
+                mv.visitCode();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType(wrapperName), "_getTraitMap", "()" + Type.getDescriptor(Map.class));
+                Label l5 = new Label();
+                mv.visitJumpInsn( IFNULL, l5 );
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn(INVOKEVIRTUAL, BuildUtils.getInternalType(wrapperName), "_getTraitMap", "()" + Type.getDescriptor(Map.class));
+                mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Map.class ), "isEmpty", Type.getMethodDescriptor( Type.BOOLEAN_TYPE, new Type[] {} ) );
+                mv.visitJumpInsn( IFNE, l5 );
+                mv.visitInsn( ICONST_1 );
+                Label l4 = new Label();
+                mv.visitJumpInsn( GOTO, l4 );
+                mv.visitLabel( l5 );
+                mv.visitInsn( ICONST_0 );
+                mv.visitLabel( l4 );
+                mv.visitInsn( IRETURN );
+                mv.visitMaxs( 0, 0 );
+                mv.visitEnd();
+            }
+        }
         if ( coreKlazz == null || needsMethod( coreKlazz, "hasTrait", String.class ) ) {
             {
                 mv = cw.visitMethod( ACC_PUBLIC, "hasTrait", "(" + Type.getDescriptor( String.class )+ ")Z", null, null );
@@ -389,6 +427,42 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         }
 
 
+        if ( coreKlazz == null || needsMethod( coreKlazz, "_getFieldTMS", TraitFieldTMS.class ) ) {
+            {
+                mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
+                                     "_getFieldTMS",
+                                     Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ),
+                                     null,
+                                     null);
+                mv.visitCode();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+                mv.visitInsn( ARETURN );
+                mv.visitMaxs( 0, 0 );
+                mv.visitEnd();
+
+            }
+        }
+
+        if ( coreKlazz == null || needsMethod( coreKlazz, "_setFieldTMS", TraitFieldTMS.class ) ) {
+            {
+                mv = cw.visitMethod( ACC_PUBLIC,
+                                     "_setFieldTMS",
+                                     Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.getType( TraitFieldTMS.class ) } ),
+                                     null,
+                                     null);
+                mv.visitCode();
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitFieldInsn ( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+                mv.visitInsn( RETURN) ;
+                mv.visitMaxs( 0, 0 );
+                mv.visitEnd();
+            }
+        }
+
+
+
         {
             mv = cw.visitMethod( ACC_PUBLIC, "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class ) + ")V", null, new String[] { Type.getInternalName( IOException.class ) } );
             mv.visitCode();
@@ -407,6 +481,11 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
+            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
+
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( Map.class ) );
             mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
 
             mv.visitInsn( RETURN );
@@ -436,6 +515,12 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Map.class ) );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
 
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectInput.class ), "readObject", "()" + Type.getDescriptor( Object.class ) );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFieldTMS.class ) );
+            mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
@@ -450,6 +535,9 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
                     BuildUtils.getInternalType( wrapperName ),
                     "core",
                     BuildUtils.getTypeDescriptor( coreName ) );
+
+            initializeDynamicTypeStructures( mv, wrapperName, core );
+
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
@@ -521,6 +609,53 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
         cw.visitEnd();
 
         return cw.toByteArray();
+    }
+
+
+    protected void initializeDynamicTypeStructures( MethodVisitor mv, String wrapperName, ClassDefinition coreDef ) {
+        if ( coreDef.isFullTraiting() ) {
+
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitTypeInsn( NEW, Type.getInternalName( TraitFieldTMSImpl.class ) );
+            mv.visitInsn( DUP );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitFieldTMSImpl.class ), "<init>", "()V" );
+            mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+
+            for ( FactField hardField : coreDef.getFields() ) {
+                FieldDefinition fld = (FieldDefinition) hardField;
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+
+                mv.visitLdcInsn( Type.getType( Type.getDescriptor( coreDef.getDefinedClass() ) ) );
+
+                mv.visitLdcInsn( fld.resolveAlias() );
+
+                if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+//                    mv.visitFieldInsn( GETSTATIC, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ), "TYPE", Type.getDescriptor( Class.class ) );
+                    mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( fld.getTypeName() ) ) ) );
+                } else {
+                    mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( fld.getTypeName() ) ) );
+                }
+
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), "core", Type.getDescriptor( coreDef.getDefinedClass() ) );
+                mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( coreDef.getDefinedClass() ), BuildUtils.getterName( fld.getName(), fld.getTypeName() ), "()" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) );
+                if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+                    mv.visitMethodInsn( INVOKESTATIC, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ), "valueOf", "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + BuildUtils.getTypeDescriptor( BuildUtils.box( fld.getTypeName() ) ) );
+                }
+
+                if ( fld.getInitExpr() != null ) {
+                    mv.visitLdcInsn( fld.getInitExpr() );
+                } else {
+                    mv.visitInsn( ACONST_NULL );
+                }
+
+                mv.visitMethodInsn( INVOKEINTERFACE,
+                                    Type.getInternalName( TraitFieldTMS.class ),
+                                    "registerField",
+                                    Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.getType( Class.class ), Type.getType( String.class ), Type.getType( Class.class ), Type.getType( Object.class ), Type.getType( String.class ) } ) );
+            }
+        }
     }
 
     protected boolean needsMethod( Class coreKlazz, String methodName, Class... args ) {

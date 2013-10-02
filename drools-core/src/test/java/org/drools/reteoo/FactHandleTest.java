@@ -92,8 +92,9 @@ public class FactHandleTest {
                       f0.getId() );
 
         f0.invalidate();
-        assertEquals( -1,
+        assertEquals( 134,
                       f0.getId() );
+        assertFalse( f0.isValid() );
     }
 
 }

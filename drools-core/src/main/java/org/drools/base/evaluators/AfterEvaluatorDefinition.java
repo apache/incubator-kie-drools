@@ -80,20 +80,30 @@ public class AfterEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator        AFTER         = Operator.addOperatorToRegistry( "after",
-                                                                                        false );
-    public static final Operator        NOT_AFTER     = Operator.addOperatorToRegistry( "after",
-                                                                                        true );
+    protected static final String   afterOp = "after";
 
-    private static final String[]       SUPPORTED_IDS = {AFTER.getOperatorString()};
+    public static Operator          AFTER;
+    public static Operator          NOT_AFTER;
 
-    private Map<String, Evaluator>      cache         = Collections.emptyMap();
+    private static String[]         SUPPORTED_IDS;
+
+    private Map<String, AfterEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( afterOp, false ) == null ) {
+            AFTER = Operator.addOperatorToRegistry( afterOp, false );
+            NOT_AFTER = Operator.addOperatorToRegistry( afterOp, true );
+            SUPPORTED_IDS = new String[] { afterOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        cache = (Map<String, Evaluator>) in.readObject();
+        cache = (Map<String, AfterEvaluator>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -153,10 +163,10 @@ public class AfterEvaluatorDefinition
                                   final Target left,
                                   final Target right) {
         if ( this.cache == Collections.EMPTY_MAP ) {
-            this.cache = new HashMap<String, Evaluator>();
+            this.cache = new HashMap<String, AfterEvaluator>();
         }
         String key = left+":"+right+":"+isNegated + ":" + parameterText;
-        Evaluator eval = this.cache.get( key );
+        AfterEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             Long[] params = parser.parse( parameterText );
             eval = new AfterEvaluator( type,
@@ -212,6 +222,10 @@ public class AfterEvaluatorDefinition
         private String            paramText;
         private boolean           unwrapLeft;
         private boolean           unwrapRight;
+
+        {
+            AfterEvaluatorDefinition.init();
+        }
 
         public AfterEvaluator() {
         }

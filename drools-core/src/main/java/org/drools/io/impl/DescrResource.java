@@ -79,4 +79,8 @@ public class DescrResource extends BaseResource implements InternalResource {
         return "[DescrResource resource=" + this.descr + "']";
     }
 
+    public boolean exists() {
+        return descr != null;
+    }
+
 }

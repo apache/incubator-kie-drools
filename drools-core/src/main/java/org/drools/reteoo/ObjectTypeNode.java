@@ -255,6 +255,10 @@ public class ObjectTypeNode extends ObjectSource
         return 0;
     }
 
+    public boolean needsMaskUpdate() {
+        return false;
+    }
+
     public boolean isAssignableFrom(final ObjectType objectType) {
         return this.objectType.isAssignableFrom( objectType );
     }
@@ -307,7 +311,7 @@ public class ObjectTypeNode extends ObjectSource
                                                                                       this );
             TimerService clock = workingMemory.getTimerService();
 
-            long nextTimestamp = Math.max( clock.getCurrentTime() + this.expirationOffset,
+            long nextTimestamp = Math.max( clock.getCurrentTime(),
                                            ((EventFactHandle) factHandle).getEndTimestamp() + this.expirationOffset );
             JobContext jobctx = new ExpireJobContext( expire,
                                                       workingMemory );

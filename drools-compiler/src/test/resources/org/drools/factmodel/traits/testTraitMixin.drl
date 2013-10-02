@@ -7,10 +7,9 @@ import org.drools.factmodel.traits.ISomethingWithBehaviour;
 
 global java.util.List list;
 
+declare Entity @propertyReactive end
 
-declare trait ISomethingWithBehaviour
-
-end
+declare trait ISomethingWithBehaviour end
  
  
 

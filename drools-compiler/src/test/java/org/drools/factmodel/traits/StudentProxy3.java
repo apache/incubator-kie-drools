@@ -80,7 +80,7 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
         return traitType;
     }
 
-    public Object getObject() {
+    public TraitableBean getObject() {
         return object;
     }
 

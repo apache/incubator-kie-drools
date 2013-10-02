@@ -2673,7 +2673,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     @Test
     public void testQueryFindAll() throws Exception {
         Object[] objects = new Object[]{Integer.valueOf( 42 ), "a String", Integer.valueOf( 100 )};
-        int oCount = objects.length + 1; // +1 for InitialFact
+        int oCount = objects.length;
 
         List<Object> queryList = new ArrayList<Object>();
         List<Object> ruleList = new ArrayList<Object>();
@@ -2839,7 +2839,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession.insert( "go1" );
         ksession.fireAllRules();
 
-        assertEquals( 13,
+        assertEquals( 12,
                       list.size() );
         assertContains( new Object[]{"go1", "init",
                                 new Q( 6 ), new R( 6 ), new S( 3 ), new R( 2 ), new R( 1 ), new R( 4 ), new S( 2 ), new S( 6 ), new Q( 1 ), new Q( 5 )},
@@ -2858,7 +2858,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession.insert( "init" );
         ksession.fireAllRules();
 
-        assertEquals( 13,
+        assertEquals( 12,
                       list.size() );
         assertContains( new Object[]{"go1", "init",
                                 new Q( 6 ), new R( 6 ), new S( 3 ), new R( 2 ), new R( 1 ), new R( 4 ), new S( 2 ), new S( 6 ), new Q( 1 ), new Q( 5 )},
@@ -3330,5 +3330,72 @@ public class BackwardChainingTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testQueryWithEvalAndTypeBoxingUnboxing() {
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list \n;" +
+                     "\n" +
+                     "query primitiveInt( int $a )\n" +
+                     "  Integer( intValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query boxedInteger( Integer $a )\n" +
+                     "  Integer( this == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query boxInteger( int $a )\n" +
+                     "  Integer( this == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query unboxInteger( Integer $a )\n" +
+                     "  Integer( intValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query cast( int $a )\n" +
+                     "  Integer( longValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "" +
+                     "query cast2( long $a )\n" +
+                     "  Integer( intValue == $a )\n" +
+                     "  eval( $a == 178 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when then insert( 178 ); end\n" +
+                     "\n" +
+                     "rule Check\n" +
+                     "when\n" +
+                     "  String()\n" +
+                     "  ?primitiveInt( 178 ; )\n" +
+                     "  ?boxedInteger( $x ; )\n" +
+                     "  ?boxInteger( $x ; )\n" +
+                     "  ?unboxInteger( $y ; )\n" +
+                     "  ?cast( $z ; )\n" +
+                     "  ?cast2( $z ; )\n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "  list.add( $y ); \n" +
+                     "  list.add( $z ); \n" +
+                     "end";
+
+        KnowledgeBase knowledgeBase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+        assertTrue( list.isEmpty() );
+
+        knowledgeSession.insert( "go" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( Arrays.asList( 178, 178, 178 ), list );
+
+    }
 
 }

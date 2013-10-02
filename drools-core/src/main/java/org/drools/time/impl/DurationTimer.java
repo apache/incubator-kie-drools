@@ -22,8 +22,11 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 import org.drools.WorkingMemory;
+import org.drools.common.EventFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.NumberUtils;
+import org.drools.reteoo.LeftTuple;
+import org.drools.rule.Declaration;
 import org.drools.runtime.Calendars;
 import org.drools.spi.Activation;
 import org.drools.time.Trigger;
@@ -32,8 +35,10 @@ public class DurationTimer
     implements
     Timer,
     Externalizable {
+
     private long duration;
-    
+    private Declaration eventFactHandleDecl;
+
     public DurationTimer() {
         
     }
@@ -56,7 +61,14 @@ public class DurationTimer
     }
 
     public Trigger createTrigger( Activation item, WorkingMemory wm ) {
-        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        long timestamp;
+        if (eventFactHandleDecl != null) {
+            LeftTuple leftTuple = item.getTuple();
+            EventFactHandle  fh = (EventFactHandle) leftTuple.get(eventFactHandleDecl);
+            timestamp = fh.getStartTimestamp();
+        } else {
+            timestamp = ((InternalWorkingMemory)wm).getTimerService().getCurrentTime();
+        }
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
         return createTrigger( timestamp, calendarNames, calendars );
@@ -96,4 +108,11 @@ public class DurationTimer
         return true;
     }
 
+    public Declaration getEventFactHandleDecl() {
+        return eventFactHandleDecl;
+    }
+
+    public void setEventFactHandleDecl( Declaration eventFactHandleDecl ) {
+        this.eventFactHandleDecl = eventFactHandleDecl;
+    }
 }

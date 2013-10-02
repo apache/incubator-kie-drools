@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.SessionConfiguration;
+import org.drools.common.AbstractWorkingMemory;
 import org.drools.common.ActivationsFilter;
 import org.drools.common.DefaultAgenda;
 import org.drools.common.DefaultFactHandle;
@@ -46,6 +47,7 @@ import org.drools.common.RuleFlowGroupImpl;
 import org.drools.common.TruthMaintenanceSystem;
 import org.drools.common.WorkingMemoryAction;
 import org.drools.concurrent.ExecutorService;
+import org.drools.factmodel.traits.TraitProxy;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.impl.StatefulKnowledgeSessionImpl;
 import org.drools.marshalling.ObjectMarshallingStrategy;
@@ -170,7 +172,7 @@ public class ProtobufInputMarshaller {
                                               ProtobufMessages.KnowledgeSession _session) {
         session.reset( _session.getRuleData().getLastId(),
                        _session.getRuleData().getLastRecency(),
-                       0 );
+                       1 );
         DefaultAgenda agenda = (DefaultAgenda) session.getAgenda();
 
         readAgenda( context,
@@ -188,13 +190,6 @@ public class ProtobufInputMarshaller {
         FactHandleFactory handleFactory = context.ruleBase.newFactHandleFactory( _session.getRuleData().getLastId(),
                                                                                  _session.getRuleData().getLastRecency() );
 
-        InternalFactHandle initialFactHandle = new DefaultFactHandle( _session.getRuleData().getInitialFact().getId(),
-                                                                      InitialFactImpl.getInstance(),
-                                                                      _session.getRuleData().getInitialFact().getRecency(),
-                                                                      null );
-        context.handles.put( initialFactHandle.getId(),
-                             initialFactHandle );
-
         DefaultAgenda agenda = context.ruleBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.ruleBase, false );
         readAgenda( context,
                     _session.getRuleData(),
@@ -204,14 +199,13 @@ public class ProtobufInputMarshaller {
                                                                    context.ruleBase,
                                                                    executor,
                                                                    handleFactory,
-                                                                   initialFactHandle,
-                                                                   0,
+                                                                   false,
+                                                                   1,
                                                                    config,
                                                                    agenda,
                                                                    environment );
         new StatefulKnowledgeSessionImpl( session );
 
-        initialFactHandle.setEntryPoint( session.getEntryPoints().get( EntryPoint.DEFAULT.getEntryPointId() ) );
         return session;
     }
 
@@ -251,14 +245,16 @@ public class ProtobufInputMarshaller {
         readNodeMemories( context,
                           _session.getRuleData() );
 
-        readInitialFactHandle( context, 
-                               _session.getRuleData() );
-        
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
             WorkingMemoryEntryPoint wmep = context.wm.getEntryPoints().get( _ep.getEntryPointId() );
             readFactHandles( context,
                              _ep,
                              ((NamedEntryPoint) wmep).getObjectStore() );
+        }
+
+        if ( _session.getRuleData().hasInitialFact() ) {
+            ((AbstractWorkingMemory)context.wm).initInitialFact(context.ruleBase, context);
+            context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
         }
 
         readActionQueue( context,
@@ -503,12 +499,18 @@ public class ProtobufInputMarshaller {
         }
 
         InternalFactHandle handle = null;
+
+        ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf(
+                ((InternalWorkingMemoryEntryPoint) context.wm.getEntryPoints().get( _handle.getEntryPoint() ) ).getEntryPoint(),
+                object );
+
         switch ( _handle.getType() ) {
             case FACT : {
                 handle = new DefaultFactHandle( _handle.getId(),
                                                 object,
                                                 _handle.getRecency(),
-                                                entryPoint );
+                                                entryPoint,
+                                                typeConf != null && typeConf.isTrait() );
                 break;
             }
             case QUERY : {
@@ -523,7 +525,8 @@ public class ProtobufInputMarshaller {
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
                                               _handle.getDuration(),
-                                              entryPoint );
+                                              entryPoint,
+                                              typeConf != null && typeConf.isTrait() );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
                 // the event is re-propagated through the network, so the activations counter will be recalculated
                 //((EventFactHandle) handle).setActivationsCount( _handle.getActivationsCount() );

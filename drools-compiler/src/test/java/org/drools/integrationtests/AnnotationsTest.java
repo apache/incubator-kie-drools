@@ -25,6 +25,7 @@ import org.drools.builder.ResourceType;
 import org.drools.conf.EventProcessingOption;
 import org.drools.conf.MBeansOption;
 import org.drools.definition.rule.Rule;
+import org.drools.definition.type.FactType;
 import org.drools.definition.type.Position;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
@@ -33,11 +34,7 @@ import org.junit.Test;
 
 import java.io.StringReader;
 import java.lang.annotation.*;
-import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
-
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -296,6 +293,42 @@ public class AnnotationsTest {
 
         Assert.assertEquals( " \"<- these are supposed to be the only quotes ->\" ",
                              rule.getMetaData().get( "alt" ) );
+
+    }
+
+    @Test
+    public void testAnnotationNameClash() {
+        String drl = "package org.drools.test\n" +
+                     "" +
+                     "declare Annot\n" +
+                     "  id : int " +
+                     "      @org.drools.integrationtests.AnnotationsTest.Annot( intProp = 3, typeProp = String.class, typeArrProp = {} ) \n" +
+                     " " +
+                     "end\n" +
+                     "" +
+                     "rule X\n" +
+                     "when\n"+
+                     "    \n" +
+                     "then\n" +
+                     "  insert( new Annot( 22 ) ); " +
+                     "end";
+
+        KnowledgeBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+
+        KnowledgeBase kbase = loadKnowledgeBase( "kb1",
+                drl,
+                conf );
+        FactType ft = kbase.getFactType( "org.drools.test", "Annot" );
+        try {
+            Object o = ft.newInstance();
+            Annot a = o.getClass().getDeclaredField( "id" ).getAnnotation( Annot.class );
+            assertEquals( 3, a.intProp() );
+            assertEquals( String.class, a.typeProp() );
+            assertEquals( 0, a.typeArrProp().length );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
 
     }
 

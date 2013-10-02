@@ -315,7 +315,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
 
-        final AccumulateNode accumulateNode = new AccumulateNode( 2,
+        final AccumulateNode accumulateNode = new AccumulateNode( 3,
                                                                   tupleSource,
                                                                   objectSource,
                                                                   new AlphaNodeFieldConstraint[0],

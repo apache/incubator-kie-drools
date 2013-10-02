@@ -16,6 +16,7 @@
 
 package org.drools.factmodel.traits;
 
+import org.drools.factmodel.AnnotationDefinition;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
@@ -25,6 +26,8 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
@@ -64,6 +67,21 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
             {
                 if ( classDef.getDefinedClass() == null || classDef.getDefinedClass().getAnnotation( Trait.class ) == null ) {
                     AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Trait.class ), true);
+                    List<AnnotationDefinition> annotations = classDef.getAnnotations();
+                    if ( annotations != null && ! annotations.isEmpty() ) {
+                        for ( Iterator<AnnotationDefinition> iter = annotations.iterator(); iter.hasNext(); ) {
+                            AnnotationDefinition adef = iter.next();
+                            if ( Trait.class.getName().equals( adef.getName() ) ) {
+                                if ( adef.getPropertyValue( "logical" ) != null ) {
+                                    av0.visit( "logical", (Boolean) adef.getPropertyValue( "logical" ) );
+                                }
+                                if ( adef.getPropertyValue( "impl" ) != null ) {
+                                    av0.visit( "impl", Type.getType( (Class) adef.getPropertyValue( "impl" ) ) );
+                                }
+                                break;
+                            }
+                        }
+                    }
                     av0.visitEnd();
                 }
             }

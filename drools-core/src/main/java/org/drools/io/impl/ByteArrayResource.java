@@ -71,7 +71,11 @@ public class ByteArrayResource extends BaseResource
     public long getLastRead() {
         throw new IllegalStateException( "reader does have a modified date" );
     }
-    
+
+    public boolean exists() {
+        return bytes != null;
+    }
+
     public boolean isDirectory() {
         return false;
     }

@@ -148,6 +148,12 @@ public class LeftTupleImpl extends BaseLeftTuple {
         return this.next;
     }
 
+    public void clearBlocker() {
+        this.blockedPrevious = null;
+        this.blockedNext = null;
+        this.blocker = null;
+    }
+
     /* (non-Javadoc)
      * @see org.drools.reteoo.LeftTuple#setBlocker(org.drools.reteoo.RightTuple)
      */

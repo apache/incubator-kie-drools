@@ -30,6 +30,7 @@ import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.reteoo.QueryRiaFixerNode;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.RuleTerminalNode;
+import org.drools.reteoo.WindowNode;
 
 public class RuleBaseNodes {
     public static Map<Integer, BaseNode> getNodeMap(InternalRuleBase ruleBase) {
@@ -63,6 +64,12 @@ public class RuleBaseNodes {
                 addLeftTupleSink( ruleBase,
                                   leftTupleSink,
                                   nodes );
+            }
+        } else if ( sink instanceof WindowNode ) {
+            WindowNode node = (WindowNode) sink;
+            nodes.put( sink.getId(), ((BaseNode)sink) );
+            for ( ObjectSink objectSink : node.getSinkPropagator().getSinks() ) {
+                addObjectSink(ruleBase, objectSink, nodes);
             }
         } else {
             ObjectSource node = ( ObjectSource ) sink;

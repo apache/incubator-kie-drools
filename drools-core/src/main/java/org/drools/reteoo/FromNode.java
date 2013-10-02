@@ -22,8 +22,10 @@ import org.drools.base.DroolsQuery;
 import org.drools.common.BetaConstraints;
 import org.drools.common.EmptyBetaConstraints;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
+import org.drools.common.NamedEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
@@ -38,6 +40,7 @@ import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
+import org.drools.rule.EntryPoint;
 import org.drools.rule.From;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
@@ -71,6 +74,8 @@ public class FromNode extends LeftTupleSource
 
     protected boolean                    tupleMemoryEnabled;
 
+    protected transient ObjectTypeConf   objectTypeConf;
+
     public FromNode() {
     }
 
@@ -92,8 +97,7 @@ public class FromNode extends LeftTupleSource
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;
         resultClass = ((ClassObjectType)this.from.getResultPattern().getObjectType()).getClassType();
-
-        initMasks(context, tupleSource);
+        initMasks( context, tupleSource );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -182,6 +186,10 @@ public class FromNode extends LeftTupleSource
                                            final Object object ) {
         InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
+        if ( objectTypeConf == null ) {
+            // use default entry point and object class. Notice that at this point object is assignable to resultClass
+            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, (InternalRuleBase) workingMemory.getRuleBase() );
+        }
         if( context.getReaderContext() != null ) {
             Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>> map = (Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
             if( map != null ) {
@@ -200,12 +208,12 @@ public class FromNode extends LeftTupleSource
             handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
                                                                          object,
                                                                          _handle.getRecency(),
-                                                                         null, // set this to null, otherwise it uses the driver fact's entrypoint
+                                                                         objectTypeConf,
                                                                          workingMemory,
                                                                          null ); 
         } else {
             handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                         null, // set this to null, otherwise it uses the driver fact's entrypoint
+                                                                         objectTypeConf,
                                                                          workingMemory,
                                                                          null ); 
         }

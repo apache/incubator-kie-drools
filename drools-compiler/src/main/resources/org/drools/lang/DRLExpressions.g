@@ -178,7 +178,9 @@ finally { ternOp--; }
 
 
 fullAnnotation [AnnotatedDescrBuilder inDescrBuilder] returns [AnnotationDescr result]
-  : AT name=ID { if( buildDescr ) { $result = inDescrBuilder != null ? (AnnotationDescr) inDescrBuilder.newAnnotation( $name.text ).getDescr() : new AnnotationDescr( $name.text ); } }
+@init{ String n = ""; }
+  : AT name=ID { n = $name.text; } ( DOT x=ID { n += "." + $x.text; } )*
+        { if( buildDescr ) { $result = inDescrBuilder != null ? (AnnotationDescr) inDescrBuilder.newAnnotation( n ).getDescr() : new AnnotationDescr( n ); } }
     annotationArgs[result]
   ;
 
@@ -204,7 +206,7 @@ annotationValue
   ;
 
 annotationArray
-  :  LEFT_CURLY annotationValue ( COMMA annotationValue )* RIGHT_CURLY
+  :  LEFT_CURLY ( annotationValue ( COMMA annotationValue )* )? RIGHT_CURLY
   ;
 
 
@@ -354,11 +356,26 @@ scope { BaseDescr lsd; }
 @init { $relationalExpression::lsd = null; }
   : left=shiftExpression
     { if( buildDescr  ) {
-          $result = ( $left.result != null &&
-                      ( (!($left.result instanceof AtomicExprDescr)) ||
-                        ($left.text.equals(((AtomicExprDescr)$left.result).getExpression())) )) ?
-                    $left.result :
-                    new AtomicExprDescr( $left.text ) ;
+          if ( $left.result == null ) {
+            $result = new AtomicExprDescr( $left.text );
+          } else if ( $left.result instanceof AtomicExprDescr ) {
+            if ( $left.text.equals(((AtomicExprDescr)$left.result).getExpression()) ) {
+              $result = $left.result;
+            } else {
+              $result = new AtomicExprDescr( $left.text ) ;
+            }
+          } else if ( $left.result instanceof BindingDescr ) {
+              if ( $left.text.equals(((BindingDescr)$left.result).getExpression()) ) {
+                $result = $left.result;
+              } else {
+                BindingDescr bind = (BindingDescr) $left.result;
+                int offset = bind.isUnification() ? 2 : 1;
+                String fullExpression = $left.text.substring( $left.text.indexOf( ":" ) + offset ).trim();
+                $result = new BindingDescr( bind.getVariable(), bind.getExpression(), fullExpression, bind.isUnification() );
+              }
+          } else {
+              $result = $left.result;
+          }
           $relationalExpression::lsd = $result;
       } 
     }
@@ -491,7 +508,7 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
                     } else {
                         expr = expr.substring( expr.indexOf( ":" ) + 1 ).trim();
                     }
-                    bind.setExpression( expr );
+                    bind.setExpressionAndBindingField( expr );
                     helper.setEnd( bind );
                     $result = bind;
                 }

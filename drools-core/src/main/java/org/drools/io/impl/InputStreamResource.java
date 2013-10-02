@@ -85,4 +85,7 @@ public class InputStreamResource  extends BaseResource implements InternalResour
         throw new RuntimeException( "This Resource cannot be listed, or is not a directory" );
     }
 
+    public boolean exists() {
+        return this.stream != null;
+    }
 }

@@ -160,7 +160,7 @@ public abstract class ObjectSource extends BaseNode
     
     public long updateMask(long mask) {
         long returnMask;
-        if (!(source instanceof ObjectTypeNode)) {
+        if ( source.needsMaskUpdate() ) {
             returnMask = source.updateMask( declaredMask | mask );
         } else { // else ObjectTypeNode
             returnMask = declaredMask | mask;
@@ -282,5 +282,9 @@ public abstract class ObjectSource extends BaseNode
 
     public long getDeclaredMask() {
         return 0L;
+    }
+
+    public boolean needsMaskUpdate() {
+        return true;
     }
 }

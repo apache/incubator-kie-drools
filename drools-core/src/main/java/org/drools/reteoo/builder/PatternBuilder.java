@@ -230,6 +230,7 @@ public class PatternBuilder
                 if( uplimit < Long.MAX_VALUE ) {
                     Timer timer = context.getRule().getTimer();
                     DurationTimer durationTimer = new DurationTimer( uplimit );
+                    durationTimer.setEventFactHandleDecl( target );
 
                     if ( timer instanceof CompositeMaxDurationTimer ) {
                         // already a composite so just add

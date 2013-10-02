@@ -2,6 +2,7 @@ package org.test;
 
 import org.drools.factmodel.traits.Entity;
 import org.drools.factmodel.traits.Thing;
+import org.drools.factmodel.traits.Traitable;
 
 global java.util.List list;
 
@@ -15,7 +16,7 @@ declare trait Worker
 end
  
 declare Imp
-    @traitable
+    @Traitable
     name    : String
     school  : String
 end

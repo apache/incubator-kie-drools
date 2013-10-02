@@ -305,7 +305,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireBeforeResourceProcessed( changeSet,
                                                                resource,
                                                                ((InternalResource) resource).getResourceType(),
-                                                               ResourceStatus.RESOURCE_MODIFIED );
+                                                               ResourceStatus.RESOURCE_REMOVED );
                 if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
                     this.notifier.unsubscribeResourceChangeListener( this,
                                                                      resource );
@@ -335,7 +335,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireAfterResourceProcessed( changeSet,
                                                               resource,
                                                               ((InternalResource) resource).getResourceType(),
-                                                              ResourceStatus.RESOURCE_MODIFIED );
+                                                              ResourceStatus.RESOURCE_REMOVED );
             }
 
             /*
@@ -348,7 +348,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireBeforeResourceProcessed( changeSet,
                                                                resource,
                                                                ((InternalResource) resource).getResourceType(),
-                                                               ResourceStatus.RESOURCE_REMOVED );
+                                                               ResourceStatus.RESOURCE_MODIFIED );
                 if ( ((InternalResource) resource).getResourceType() == ResourceType.DSL ) {
                     try {
                         this.retrieveDSLResource( resource );
@@ -410,7 +410,7 @@ public class KnowledgeAgentImpl
                 this.eventSupport.fireAfterResourceProcessed( changeSet,
                                                               resource,
                                                               ((InternalResource) resource).getResourceType(),
-                                                              ResourceStatus.RESOURCE_REMOVED );
+                                                              ResourceStatus.RESOURCE_MODIFIED );
             }
 
             this.eventSupport.fireAfterChangeSetProcessed( changeSet,
@@ -930,15 +930,6 @@ public class KnowledgeAgentImpl
                     JavaDialectRuntimeData.TypeDeclarationClassLoader tdClassLoader = (JavaDialectRuntimeData.TypeDeclarationClassLoader)
                             ((AbstractRuleBase) ((KnowledgeBaseImpl) this.kbase).ruleBase).getTypeDeclarationClassLoader();
 
-                    JavaDialectRuntimeData jdata = (JavaDialectRuntimeData) newPackage.pkg.getDialectRuntimeRegistry().getDialectData( "java" );
-                    Map<String,byte[]> definedClasses = jdata.getClassDefinitions();
-                    for ( String className : definedClasses.keySet() ) {
-                        if ( tdClassLoader.getStore().getClassDefinition( className ) != null ) {
-                            jdata.removeClassDefinition( className );
-                            jdata.getStore().remove( className );
-                        }
-                    }
-
                     newPackage.pkg.getDialectRuntimeRegistry().onAdd( rootClassLoader );
                     newPackage.pkg.getDialectRuntimeRegistry().onBeforeExecute();
                     newPackage.pkg.getClassFieldAccessorStore().setClassFieldAccessorCache( abstractRuleBase.getClassFieldAccessorCache() );
@@ -1114,7 +1105,16 @@ public class KnowledgeAgentImpl
         for ( Resource resource : changeSetState.createdPackages.keySet() ) {
             createdDistinctPackages.addAll( changeSetState.createdPackages.get( resource ) );
         }
-        this.kbase.addKnowledgePackages( createdDistinctPackages );
+        try {
+            this.kbase.addKnowledgePackages( createdDistinctPackages );
+        } catch ( RuntimeException re ) {
+            this.listener.exception( re );
+            this.listener.warning( "Runtime error while updating Knowledge Base, packages may be in an inconsistent state and will be removed " );
+            for ( KnowledgePackage kp : createdDistinctPackages ) {
+                this.listener.warning( "- Removing package " + kp.getName() );
+                this.kbase.removeKnowledgePackage( kp.getName() );
+            }
+        }
 
         autoBuildResourceMapping();
 
@@ -1184,7 +1184,7 @@ public class KnowledgeAgentImpl
                                       boolean notify) {
         boolean newMapping = this.registeredResources.createNewResourceEntry( resource );
 
-        if ( notify && newMapping ) {
+        if ( notify && newMapping && ((InternalResource)resource).exists() ) {
             this.listener.debug( "KnowledgeAgent notifier subscribing to resource="
                                  + resource );
             this.notifier.subscribeResourceChangeListener( this,
@@ -1234,7 +1234,7 @@ public class KnowledgeAgentImpl
                                                                       definition );
         }
 
-        if ( notify && isNewResource ) {
+        if ( notify && isNewResource && ((InternalResource) resource).exists() ) {
             this.listener.debug( "KnowledgeAgent notifier subscribing to resource="
                                  + resource );
 

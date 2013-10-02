@@ -116,4 +116,7 @@ public class EncodedResource  extends BaseResource implements InternalResource {
         return "[EncodedResource resource=" + this.resource + " encoding='" + this.encoding + "']";
     }
 
+    public boolean exists() {
+        return this.resource.exists();
+    }
 }

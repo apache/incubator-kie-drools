@@ -122,7 +122,7 @@ public class ResourceChangeScannerImpl
     }
 
     public void scan() {
-        this.listener.debug( "ResourceChangeScanner attempt to scan " + this.resources.size() + " resources" );
+        this.listener.debug( "ResourceChangeScanner attempt to scan " + this.resources.size() + " resources :  >> " + this.resources );
 
         synchronized ( this.resources ) {
             Map<ResourceChangeNotifier, ChangeSet> notifications = new HashMap<ResourceChangeNotifier, ChangeSet>();
@@ -203,10 +203,12 @@ public class ResourceChangeScannerImpl
                                 notifications.put( notifier,
                                                    changeSet );
                             }
-                            if ( changeSet.getResourcesModified().isEmpty() ) {
-                                changeSet.setResourcesModified( new ArrayList<Resource>() );
+                            if ( changeSet.getResourcesAdded().isEmpty() || ! changeSet.getResourcesAdded().contains( resource ) ) {
+                                if ( changeSet.getResourcesModified().isEmpty() ) {
+                                    changeSet.setResourcesModified( new ArrayList<Resource>() );
+                                }
+                                changeSet.getResourcesModified().add( resource );
                             }
-                            changeSet.getResourcesModified().add( resource );
                         }
                     }
                 }
