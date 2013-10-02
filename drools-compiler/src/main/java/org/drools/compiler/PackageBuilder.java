@@ -1932,7 +1932,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 ClassDefinition classDef = superTypeDeclaration.getTypeClassDef();
                 // inherit fields
                 for (FactField fld : classDef.getFields()) {
-                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld );
+                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld, typeDescr );
                     fieldMap.put( inheritedFlDescr.getFieldName(),
                                   inheritedFlDescr );
                 }
@@ -2028,7 +2028,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         return true;
     }
 
-    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition(FactField fld) {
+    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition( FactField fld, TypeDeclarationDescr typeDescr ) {
         PatternDescr fldType = new PatternDescr();
         TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
             inheritedFldDescr.setFieldName( fld.getName() );
@@ -2040,7 +2040,22 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
         }
             inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
             inheritedFldDescr.setInherited( true );
-            inheritedFldDescr.setInitExpr( ( (FieldDefinition) fld ).getInitExpr() );
+
+            String initExprOverride = ( (FieldDefinition) fld ).getInitExpr();
+            int overrideCount = 0;
+            // only @aliasing local fields may override defaults.
+            for ( TypeFieldDescr localField : typeDescr.getFields().values() ) {
+                AnnotationDescr ann = localField.getAnnotation( "Alias" );
+                if ( ann != null && fld.getName().equals( ann.getSingleValue().replaceAll( "\"", "" ) ) && localField.getInitExpr() != null ) {
+                    overrideCount++;
+                    initExprOverride = localField.getInitExpr();
+                }
+            }
+            if ( overrideCount > 1 ) {
+                // however, only one is allowed
+                initExprOverride = null;
+            }
+            inheritedFldDescr.setInitExpr( initExprOverride );
         return inheritedFldDescr;
     }
 
