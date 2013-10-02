@@ -1,9 +1,11 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.internal.DefaultServiceLocator;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
+import org.apache.maven.repository.internal.MavenServiceLocator;
 import org.apache.maven.wagon.Wagon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.connector.file.FileRepositoryConnectorFactory;
@@ -23,6 +25,8 @@ import java.util.List;
 import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
 public class Aether {
+
+    private static final Logger log = LoggerFactory.getLogger(Aether.class);
 
     private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
     private String localRepoDir = M2_REPO;
@@ -64,7 +68,7 @@ public class Aether {
     }
 
     private RepositorySystem newRepositorySystem() {
-        DefaultServiceLocator locator = new DefaultServiceLocator();
+        MavenServiceLocator locator = new MavenServiceLocator();
         locator.addService( RepositoryConnectorFactory.class, FileRepositoryConnectorFactory.class );
         locator.addService( RepositoryConnectorFactory.class, WagonRepositoryConnectorFactory.class );
         locator.setServices( WagonProvider.class, new ManualWagonProvider() );
@@ -116,6 +120,13 @@ public class Aether {
         public Wagon lookup( String roleHint ) throws Exception {
             if ( "http".equals( roleHint ) ) {
                 return new AhcWagon();
+            }
+            if ( "sramp".equals( roleHint ) ) {
+                try {
+                    return (Wagon) Class.forName("org.overlord.dtgov.jbpm.util.SrampWagonProxy").newInstance();
+                } catch (ClassNotFoundException cnfe) {
+                    log.warn("Cannot find sramp wagon implementation class", cnfe);
+                }
             }
             return null;
         }
