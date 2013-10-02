@@ -277,8 +277,8 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
     <literal>Acceptor</literal> accepted all of them and the <literal>Forager</literal> picked the move <emphasis>B0 to
     B3</emphasis>.</para>
 
-    <para>If we <link linkend="logging">turn on <literal>trace</literal> logging</link>, then the decision making is
-    shown in the log:</para>
+    <para><link linkend="logging">Turn on <literal>trace</literal> logging</link> to show the decision making in the
+    log:</para>
 
     <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
 TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
@@ -294,10 +294,9 @@ TRACE         Move index (12), score (-4), accepted (true) for move (col3@row0 =
 DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 ...</programlisting>
 
-    <para>Because the last solution can degrade (especially in Tabu Search and Simulated Annealing), the
-    <literal>Solver</literal> remembers the best solution it has encountered through the entire search path. Each time
-    the current solution is better than the last best solution, the current solution is cloned and referenced as the new
-    best solution.</para>
+    <para>Because the last solution can degrade (for example in Tabu Search), the <literal>Solver</literal> remembers
+    the best solution it has encountered through the entire search path. Each time the current solution is better than
+    the last best solution, the current solution is cloned and referenced as the new best solution.</para>
 
     <section>
       <title>Acceptor</title>

@@ -124,502 +124,6 @@
   </section>
 
   <section>
-    <title>General <literal>Selector</literal> features</title>
-
-    <section>
-      <title><literal>CacheType</literal>: Create moves ahead of time or Just In Time</title>
-
-      <para>A <literal>Selector</literal>'s <literal>cacheType</literal> determines when a selection (such as a
-      <literal>Move</literal>, an entity, a value, ...) is created and how long it lives.</para>
-
-      <para>Almost every <literal>Selector</literal> supports setting a <literal>cacheType</literal>:</para>
-
-      <programlisting language="xml">    &lt;changeMoveSelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      ...
-    &lt;/changeMoveSelector&gt;</programlisting>
-
-      <para>The following <literal>cacheType</literal>s are supported:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para><literal>JUST_IN_TIME</literal> (default): Not cached. Construct each selection
-          (<literal>Move</literal>, ...) just before it's used. This scales up well in memory footprint.</para>
-        </listitem>
-
-        <listitem>
-          <para><literal>STEP</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
-          of a step and cache them in a list for the remainder of the step. This scales up badly in memory
-          footprint.</para>
-        </listitem>
-
-        <listitem>
-          <para><literal>PHASE</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
-          of a <literal>SolverPhase</literal> and cache them in a list for the remainder of the
-          <literal>SolverPhase</literal>. Some selections cannot be phase cached because the list changes every step.
-          This scales up badly in memory footprint, but has a slight performance gain.</para>
-        </listitem>
-
-        <listitem>
-          <para><literal>SOLVER</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
-          of a <literal>Solver</literal> and cache them in a list for the remainder of the <literal>Solver</literal>.
-          Some selections cannot be solver cached because the list changes every step. This scales up badly in memory
-          footprint, but has a slight performance gain.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>A <literal>cacheType</literal> can be set on composite selectors too:</para>
-
-      <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;changeMoveSelector/&gt;
-      &lt;swapMoveSelector/&gt;
-      ...
-    &lt;/unionMoveSelector&gt;</programlisting>
-
-      <para>Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher
-      <literal>cacheType</literal>. For example: a <literal>STEP</literal> cached <literal>unionMoveSelector</literal>
-      can hold a <literal>PHASE</literal> cached <literal>changeMoveSelector</literal>, but not a
-      <literal>STEP</literal> cached <literal>changeMoveSelector</literal>.</para>
-    </section>
-
-    <section>
-      <title>SelectionOrder: original, sorted, random, shuffled or probabilistic</title>
-
-      <para>A <literal>Selector</literal>'s <literal>selectionOrder</literal> determines the order in which the
-      selections (such as <literal>Move</literal>s, entities, values, ...) are iterated. An optimization algorithm will
-      usually only iterate through a subset of its <literal>MoveSelector</literal>'s selections, starting from the
-      start, so the <literal>selectionOrder</literal> is critical to decide which <literal>Move</literal>s are actually
-      evaluated.</para>
-
-      <para>Almost every <literal>Selector</literal> supports setting a <literal>selectionOrder</literal>:</para>
-
-      <programlisting language="xml">    &lt;changeMoveSelector&gt;
-      ...
-      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
-      ...
-    &lt;/changeMoveSelector&gt;</programlisting>
-
-      <para>The following <literal>selectionOrder</literal>s are supported:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para><literal>ORIGINAL</literal>: Select the selections (<literal>Move</literal>s, entities, values, ...) in
-          default order. Each selection will be selected only once.</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>For example: A0, A1, A2, A3, ..., B0, B1, B2, B3, ..., C0, C1, C2, C3, ...</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-
-        <listitem>
-          <para>SORTED: Select the selections (<literal>Move</literal>s, entities, values, ...) in sorted order. Each
-          selection will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. Mostly used on an
-          <literal>entitySelector</literal> or <literal>valueSelector</literal> for construction heuristics. See <link
-          linkend="sortedSelection">sorted selection</link>.</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>For example: A0, B0, C0, ..., A2, B2, C2, ..., A1, B1, C1, ...</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-
-        <listitem>
-          <para>RANDOM (default): Select the selections (<literal>Move</literal>s, entities, values, ...) in
-          non-shuffled random order. A selection might be selected multiple times. This scales up well in performance
-          because it does not require caching.</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>For example: C2, A3, B1, C2, A0, C0, ...</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-
-        <listitem>
-          <para>SHUFFLED: Select the selections (<literal>Move</literal>s, entities, values, ...) in shuffled random
-          order. Each selection will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. This
-          scales up badly in performance, not just because it requires caching, but also because a random number is
-          generated for each element, even if it's not selected (which is the grand majority when scaling up).</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>For example: C2, A3, B1, A0, C0, ...</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-
-        <listitem>
-          <para>PROBABILISTIC: Select the selections (<literal>Move</literal>s, entities, values, ...) in random order,
-          based on the selection probability of each element. A selection with a higher probability has a higher chance
-          to be selected than elements with a lower probability. A selection might be selected multiple times. Requires
-          <literal>cacheType &gt;= STEP</literal>. Mostly used on an <literal>entitySelector</literal> or
-          <literal>valueSelector</literal>. See <link linkend="probabilisticSelection">probabilistic
-          selection</link>.</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>For example: B1, B1, A1, B2, B1, C2, B1, B1, ...</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-      </itemizedlist>
-
-      <para>A <literal>selectionOrder</literal> can be set on composite selectors too.</para>
-
-      <note>
-        <para>When a <literal>Selector</literal> is cached, all of its nested <literal>Selector</literal>s will
-        naturally default to <literal>selectionOrder</literal> <literal>ORIGINAL</literal>. Avoid overwriting the
-        <literal>selectionOrder</literal> of those nested <literal>Selector</literal>s.</para>
-      </note>
-    </section>
-
-    <section>
-      <title>Recommended combinations of <literal>CacheType</literal> and <literal>SelectionOrder</literal></title>
-
-      <section>
-        <title>Just in time random selection (default)</title>
-
-        <para>This combination is great for big use cases (10 000 entities or more), as it scales up well in memory
-        footprint and performance. Other combinations are often not even viable on such sizes. It works for smaller use
-        cases too, so it's a good way to start out. It's the default, so this explicit configuration of
-        <literal>cacheType</literal> and <literal>selectionOrder</literal> is actually obsolete:</para>
-
-        <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      &lt;cacheType&gt;JUST_IN_TIME&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
-
-      &lt;changeMoveSelector/&gt;
-      &lt;swapMoveSelector/&gt;
-    &lt;/unionMoveSelector&gt;</programlisting>
-
-        <para>Here's how it works. When <literal>Iterator&lt;Move&gt;.next()</literal> is called, a child
-        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> is
-        created (2, 3, 4) and is then returned (5):</para>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"/>
-          </imageobject>
-        </mediaobject>
-
-        <para>Notice that <emphasis role="bold">it never creates a list of <literal>Move</literal>s</emphasis> and it
-        generates random numbers only for <literal>Move</literal>s that are actually selected.</para>
-      </section>
-
-      <section>
-        <title>Cached shuffled selection</title>
-
-        <para>This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it
-        scales up badly in memory footprint and performance.</para>
-
-        <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;SHUFFLED&lt;/selectionOrder&gt;
-
-      &lt;changeMoveSelector/&gt;
-      &lt;swapMoveSelector/&gt;
-    &lt;/unionMoveSelector&gt;</programlisting>
-
-        <para>Here's how it works: At the start of the phase (or step depending on the <literal>cacheType</literal>),
-        all moves are created (1) and cached (2). When <literal>MoveSelector.iterator()</literal> is called, the moves
-        are shuffled (3). When <literal>Iterator&lt;Move&gt;.next()</literal> is called, the next element in the
-        shuffled list is returned (4):</para>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png"/>
-          </imageobject>
-        </mediaobject>
-
-        <para>Notice that <emphasis role="bold">each <literal>Move</literal> will only be selected once</emphasis>, even
-        though they are selected in random order.</para>
-
-        <para>Use cacheType PHASE if none of the (possibly nested) Selectors require <literal>STEP</literal>. Otherwise,
-        do something like this:</para>
-
-        <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      &lt;cacheType&gt;STEP&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;SHUFFLED&lt;/selectionOrder&gt;
-
-      &lt;changeMoveSelector&gt;
-        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;/changeMoveSelector&gt;
-      &lt;swapMoveSelector/&gt;
-        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;/swapMoveSelector&gt;
-      &lt;pillarSwapMoveSelector/&gt;&lt;!-- Does not support cacheType PHASE --&gt;
-    &lt;/unionMoveSelector&gt;</programlisting>
-      </section>
-
-      <section>
-        <title>Cached random selection</title>
-
-        <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
-        optimization algorithms (such as simulated annealing). Unlike cached shuffled selection, it doesn't waste time
-        shuffling the move list at the beginning of every step.</para>
-
-        <programlisting language="xml">    &lt;unionMoveSelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
-
-      &lt;changeMoveSelector/&gt;
-      &lt;swapMoveSelector/&gt;
-    &lt;/unionMoveSelector&gt;</programlisting>
-      </section>
-    </section>
-
-    <section xml:id="filteredSelection">
-      <title>Filtered selection</title>
-
-      <para>There are certain moves that you don't want to select, because:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>The move is pointless and would only waste CPU time. For example, swapping 2 lectures of the same course
-          will result in the same score and the same schedule because all lectures of 1 course are interchangeable (same
-          teacher, same students, same topic).</para>
-        </listitem>
-
-        <listitem>
-          <para>Doing the move would break <link linkend="buildInHardConstraint">a build-in hard constraint</link>, so
-          the solution would be infeasible but the score function doesn't check build-in hard constraints (for
-          performance gain). For example, don't change a gym lecture to a room which is not a gym room.</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>Note that any build-in hard constraint must usually be filtered on every move type. For example,
-              don't swap the room of a gym lecture with another lecture if the other lecture's original room isn't a gym
-              room.</para>
-            </listitem>
-          </itemizedlist>
-        </listitem>
-      </itemizedlist>
-
-      <para>Filtered selection can happen on any Selector in the selector tree, including any
-      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It works
-      with any kind of <literal>cacheType</literal> and <literal>selectionOrder</literal>.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/filteredSelection.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <para>Filtering uses the interface <literal>SelectionFilter</literal>:</para>
-
-      <programlisting language="java">public interface SelectionFilter&lt;T&gt; {
-
-    boolean accept(ScoreDirector scoreDirector, T selection);
-
-}</programlisting>
-
-      <para>Implement the method <literal>accept</literal> to return <literal>false</literal> on a discarded
-      <literal>selection</literal>. Unaccepted moves will not be selected and will therefore never have their method
-      <literal>doMove</literal> called.</para>
-
-      <programlisting language="java">public class DifferentCourseSwapMoveFilter implements SelectionFilter&lt;SwapMove&gt; {
-
-    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
-        Lecture leftLecture = (Lecture) move.getLeftEntity();
-        Lecture rightLecture = (Lecture) move.getRightEntity();
-        return !leftLecture.getCourse().equals(rightLecture.getCourse());
-    }
-
-}</programlisting>
-
-      <para>Apply the filter on the lowest level possible. In most cases, you 'll need to know both the entity and the
-      value involved and you'll have to apply a <literal>filterClass</literal> on the
-      <literal>moveSelector</literal>:</para>
-
-      <programlisting language="xml">    &lt;swapMoveSelector&gt;
-      &lt;filterClass&gt;org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/filterClass&gt;
-    &lt;/swapMoveSelector&gt;</programlisting>
-
-      <para>But if possible, apply it on a lower levels, such as a <literal>filterClass</literal> on the
-      <literal>entitySelector</literal> or <literal>valueSelector</literal>:</para>
-
-      <programlisting language="xml">    &lt;changeMoveSelector&gt;
-      &lt;entitySelector&gt;
-        &lt;filterClass&gt;...EntityFilter&lt;/filterClass&gt;
-      &lt;/entitySelector&gt;
-    &lt;/changeMoveSelector&gt;</programlisting>
-
-      <para>You can configure multiple <literal>filterClass</literal> elements on a single selector.</para>
-    </section>
-
-    <section xml:id="sortedSelection">
-      <title>Sorted selection</title>
-
-      <para>Sorted selection can happen on any Selector in the selector tree, including any
-      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
-      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
-      selectionOrder</literal> <literal>SORTED</literal>.</para>
-
-      <para>It's mostly used in construction heuristics.</para>
-
-      <section xml:id="sortedSelectionByComparator">
-        <title>Sorted selection by <literal>Comparator</literal></title>
-
-        <para>The easiest way to sort a <literal>Selector</literal> is with a plain old
-        <literal>Comparator</literal>:</para>
-
-        <programlisting language="java">public class CloudProcessDifficultyComparator implements Comparator&lt;CloudProcess&gt; {
-
-    public int compare(CloudProcess a, CloudProcess b) {
-        return new CompareToBuilder()
-                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
-                .append(a.getId(), b.getId())
-                .toComparison();
-    }
-
-}</programlisting>
-
-        <para>You 'll also need to configure it (unless it's annotated applied for this optimization algorithm):</para>
-
-        <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
-      &lt;sorterComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/sorterComparatorClass&gt;
-      &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
-    &lt;/entitySelector&gt;</programlisting>
-      </section>
-
-      <section xml:id="sortedSelectionBySelectionSorterWeightFactory">
-        <title>Sorted selection by <literal>SelectionSorterWeightFactory</literal></title>
-
-        <para>If you need the entire <literal>Solution</literal> to sort a <literal>Selector</literal>, use a
-        <literal>SelectionSorterWeightFactory</literal> instead:</para>
-
-        <programlisting language="java">public interface SelectionSorterWeightFactory&lt;Sol extends Solution, T&gt; {
-
-    Comparable createSorterWeight(Sol solution, T selection);
-
-}</programlisting>
-
-        <programlisting language="java">public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory&lt;NQueens, Queen&gt; {
-
-    public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
-        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
-        return new QueenDifficultyWeight(queen, distanceFromMiddle);
-    }
-
-    // ...
-
-    public static class QueenDifficultyWeight implements Comparable&lt;QueenDifficultyWeight&gt; {
-
-        private final Queen queen;
-        private final int distanceFromMiddle;
-
-        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
-            this.queen = queen;
-            this.distanceFromMiddle = distanceFromMiddle;
-        }
-
-        public int compareTo(QueenDifficultyWeight other) {
-            return new CompareToBuilder()
-                    // The more difficult queens have a lower distance to the middle
-                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
-                    // Tie breaker
-                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
-                    .toComparison();
-        }
-
-    }
-
-}</programlisting>
-
-        <para>You 'll also need to configure it (unless it's annotated and automatically applied for this optimization
-        algorithm):</para>
-
-        <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
-      &lt;sorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/sorterWeightFactoryClass&gt;
-      &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
-    &lt;/entitySelector&gt;</programlisting>
-      </section>
-
-      <section xml:id="sortedSelectionBySelectionFilter">
-        <title>Sorted selection by <literal>SelectionSorter</literal></title>
-
-        <para>Alternatively, you can also use the interface <literal>SelectionSorter</literal> directly:</para>
-
-        <programlisting language="java">public interface SelectionSorter&lt;T&gt; {
-
-    void sort(ScoreDirector scoreDirector, List&lt;T&gt; selectionList);
-
-}</programlisting>
-
-        <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
-      &lt;sorterClass&gt;...MyEntitySorter&lt;/sorterClass&gt;
-    &lt;/entitySelector&gt;</programlisting>
-      </section>
-    </section>
-
-    <section xml:id="probabilisticSelection">
-      <title>Probabilistic selection</title>
-
-      <para>Probabilistic selection can happen on any Selector in the selector tree, including any
-      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
-      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
-      selectionOrder</literal> <literal>PROBABILISTIC</literal>.</para>
-
-      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that's that selection
-      will be selected:</para>
-
-      <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;T&gt; {
-
-    double createProbabilityWeight(ScoreDirector scoreDirector, T selection);
-
-}</programlisting>
-
-      <programlisting language="xml">    &lt;entitySelector&gt;
-      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
-      &lt;selectionOrder&gt;PROBABILISTIC&lt;/selectionOrder&gt;
-      &lt;probabilityWeightFactoryClass&gt;...MyEntityProbabilityWeightFactoryClass&lt;/probabilityWeightFactoryClass&gt;
-    &lt;/entitySelector&gt;</programlisting>
-
-      <para>For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5)
-      and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.</para>
-    </section>
-
-    <section xml:id="mimicSelection">
-      <title>Mimic selection (record/replay)</title>
-
-      <para>During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors
-      replay that selection. The recording selector acts as a normal selector and supports all other configuration
-      properties. A replaying selector mimics the recording selection and support no other configuration
-      properties.</para>
-
-      <para>The recording selector needs an <literal>id</literal>. A replaying selector must reference a recorder's id
-      with a <literal>mimicSelectorRef</literal>:</para>
-
-      <programlisting language="xml">      &lt;cartesianProductMoveSelector&gt;
-        &lt;changeMoveSelector&gt;
-          &lt;entitySelector id="entitySelector"/&gt;
-          &lt;valueSelector&gt;
-            &lt;variableName&gt;period&lt;/variableName&gt;
-          &lt;/valueSelector&gt;
-        &lt;/changeMoveSelector&gt;
-        &lt;changeMoveSelector&gt;
-          &lt;entitySelector mimicSelectorRef="entitySelector"/&gt;
-          &lt;valueSelector&gt;
-            &lt;variableName&gt;room&lt;/variableName&gt;
-          &lt;/valueSelector&gt;
-        &lt;/changeMoveSelector&gt;
-      &lt;/cartesianProductMoveSelector&gt;</programlisting>
-
-      <para>Mimic selection is usefull to create a composite move from 2 moves that affect the same entity.</para>
-    </section>
-  </section>
-
-  <section>
     <title>Generic MoveSelectors</title>
 
     <section xml:id="changeMoveSelector">
@@ -974,6 +478,502 @@
   </section>
 
   <section>
+    <title>General <literal>Selector</literal> features</title>
+
+    <section>
+      <title><literal>CacheType</literal>: Create moves ahead of time or Just In Time</title>
+
+      <para>A <literal>Selector</literal>'s <literal>cacheType</literal> determines when a selection (such as a
+      <literal>Move</literal>, an entity, a value, ...) is created and how long it lives.</para>
+
+      <para>Almost every <literal>Selector</literal> supports setting a <literal>cacheType</literal>:</para>
+
+      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      ...
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>The following <literal>cacheType</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>JUST_IN_TIME</literal> (default): Not cached. Construct each selection
+          (<literal>Move</literal>, ...) just before it's used. This scales up well in memory footprint.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>STEP</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
+          of a step and cache them in a list for the remainder of the step. This scales up badly in memory
+          footprint.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>PHASE</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
+          of a <literal>SolverPhase</literal> and cache them in a list for the remainder of the
+          <literal>SolverPhase</literal>. Some selections cannot be phase cached because the list changes every step.
+          This scales up badly in memory footprint, but has a slight performance gain.</para>
+        </listitem>
+
+        <listitem>
+          <para><literal>SOLVER</literal>: Cached. Create each selection (<literal>Move</literal>, ...) at the beginning
+          of a <literal>Solver</literal> and cache them in a list for the remainder of the <literal>Solver</literal>.
+          Some selections cannot be solver cached because the list changes every step. This scales up badly in memory
+          footprint, but has a slight performance gain.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>A <literal>cacheType</literal> can be set on composite selectors too:</para>
+
+      <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+      ...
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+      <para>Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher
+      <literal>cacheType</literal>. For example: a <literal>STEP</literal> cached <literal>unionMoveSelector</literal>
+      can hold a <literal>PHASE</literal> cached <literal>changeMoveSelector</literal>, but not a
+      <literal>STEP</literal> cached <literal>changeMoveSelector</literal>.</para>
+    </section>
+
+    <section>
+      <title>SelectionOrder: original, sorted, random, shuffled or probabilistic</title>
+
+      <para>A <literal>Selector</literal>'s <literal>selectionOrder</literal> determines the order in which the
+      selections (such as <literal>Move</literal>s, entities, values, ...) are iterated. An optimization algorithm will
+      usually only iterate through a subset of its <literal>MoveSelector</literal>'s selections, starting from the
+      start, so the <literal>selectionOrder</literal> is critical to decide which <literal>Move</literal>s are actually
+      evaluated.</para>
+
+      <para>Almost every <literal>Selector</literal> supports setting a <literal>selectionOrder</literal>:</para>
+
+      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      ...
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
+      ...
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>The following <literal>selectionOrder</literal>s are supported:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><literal>ORIGINAL</literal>: Select the selections (<literal>Move</literal>s, entities, values, ...) in
+          default order. Each selection will be selected only once.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: A0, A1, A2, A3, ..., B0, B1, B2, B3, ..., C0, C1, C2, C3, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>SORTED: Select the selections (<literal>Move</literal>s, entities, values, ...) in sorted order. Each
+          selection will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. Mostly used on an
+          <literal>entitySelector</literal> or <literal>valueSelector</literal> for construction heuristics. See <link
+          linkend="sortedSelection">sorted selection</link>.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: A0, B0, C0, ..., A2, B2, C2, ..., A1, B1, C1, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>RANDOM (default): Select the selections (<literal>Move</literal>s, entities, values, ...) in
+          non-shuffled random order. A selection might be selected multiple times. This scales up well in performance
+          because it does not require caching.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: C2, A3, B1, C2, A0, C0, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>SHUFFLED: Select the selections (<literal>Move</literal>s, entities, values, ...) in shuffled random
+          order. Each selection will be selected only once. Requires <literal>cacheType &gt;= STEP</literal>. This
+          scales up badly in performance, not just because it requires caching, but also because a random number is
+          generated for each element, even if it's not selected (which is the grand majority when scaling up).</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: C2, A3, B1, A0, C0, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>PROBABILISTIC: Select the selections (<literal>Move</literal>s, entities, values, ...) in random order,
+          based on the selection probability of each element. A selection with a higher probability has a higher chance
+          to be selected than elements with a lower probability. A selection might be selected multiple times. Requires
+          <literal>cacheType &gt;= STEP</literal>. Mostly used on an <literal>entitySelector</literal> or
+          <literal>valueSelector</literal>. See <link linkend="probabilisticSelection">probabilistic
+          selection</link>.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>For example: B1, B1, A1, B2, B1, C2, B1, B1, ...</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>A <literal>selectionOrder</literal> can be set on composite selectors too.</para>
+
+      <note>
+        <para>When a <literal>Selector</literal> is cached, all of its nested <literal>Selector</literal>s will
+        naturally default to <literal>selectionOrder</literal> <literal>ORIGINAL</literal>. Avoid overwriting the
+        <literal>selectionOrder</literal> of those nested <literal>Selector</literal>s.</para>
+      </note>
+    </section>
+
+    <section>
+      <title>Recommended combinations of <literal>CacheType</literal> and <literal>SelectionOrder</literal></title>
+
+      <section>
+        <title>Just in time random selection (default)</title>
+
+        <para>This combination is great for big use cases (10 000 entities or more), as it scales up well in memory
+        footprint and performance. Other combinations are often not even viable on such sizes. It works for smaller use
+        cases too, so it's a good way to start out. It's the default, so this explicit configuration of
+        <literal>cacheType</literal> and <literal>selectionOrder</literal> is actually obsolete:</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;JUST_IN_TIME&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+        <para>Here's how it works. When <literal>Iterator&lt;Move&gt;.next()</literal> is called, a child
+        <literal>MoveSelector</literal> is randomly selected (1), which creates a random <literal>Move</literal> is
+        created (2, 3, 4) and is then returned (5):</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/jitRandomSelection.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Notice that <emphasis role="bold">it never creates a list of <literal>Move</literal>s</emphasis> and it
+        generates random numbers only for <literal>Move</literal>s that are actually selected.</para>
+      </section>
+
+      <section>
+        <title>Cached shuffled selection</title>
+
+        <para>This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it
+        scales up badly in memory footprint and performance.</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SHUFFLED&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+
+        <para>Here's how it works: At the start of the phase (or step depending on the <literal>cacheType</literal>),
+        all moves are created (1) and cached (2). When <literal>MoveSelector.iterator()</literal> is called, the moves
+        are shuffled (3). When <literal>Iterator&lt;Move&gt;.next()</literal> is called, the next element in the
+        shuffled list is returned (4):</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <para>Notice that <emphasis role="bold">each <literal>Move</literal> will only be selected once</emphasis>, even
+        though they are selected in random order.</para>
+
+        <para>Use cacheType PHASE if none of the (possibly nested) Selectors require <literal>STEP</literal>. Otherwise,
+        do something like this:</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;STEP&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SHUFFLED&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector&gt;
+        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;/changeMoveSelector&gt;
+      &lt;swapMoveSelector/&gt;
+        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;/swapMoveSelector&gt;
+      &lt;pillarSwapMoveSelector/&gt;&lt;!-- Does not support cacheType PHASE --&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+      </section>
+
+      <section>
+        <title>Cached random selection</title>
+
+        <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
+        optimization algorithms (such as simulated annealing). Unlike cached shuffled selection, it doesn't waste time
+        shuffling the move list at the beginning of every step.</para>
+
+        <programlisting language="xml">    &lt;unionMoveSelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;RANDOM&lt;/selectionOrder&gt;
+
+      &lt;changeMoveSelector/&gt;
+      &lt;swapMoveSelector/&gt;
+    &lt;/unionMoveSelector&gt;</programlisting>
+      </section>
+    </section>
+
+    <section xml:id="filteredSelection">
+      <title>Filtered selection</title>
+
+      <para>There can be certain moves that you don't want to select, because:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>The move is pointless and would only waste CPU time. For example, swapping 2 lectures of the same course
+          will result in the same score and the same schedule because all lectures of 1 course are interchangeable (same
+          teacher, same students, same topic).</para>
+        </listitem>
+
+        <listitem>
+          <para>Doing the move would break <link linkend="buildInHardConstraint">a build-in hard constraint</link>, so
+          the solution would be infeasible but the score function doesn't check build-in hard constraints (for
+          performance gain). For example, don't change a gym lecture to a room which is not a gym room.</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Note that any build-in hard constraint must usually be filtered on every move type. For example,
+              also don't swap the room of a gym lecture with another lecture if the other lecture's original room isn't
+              a gym room.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+
+      <para>Filtered selection can happen on any Selector in the selector tree, including any
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It works
+      with any <literal>cacheType</literal> and <literal>selectionOrder</literal>.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/filteredSelection.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Filtering uses the interface <literal>SelectionFilter</literal>:</para>
+
+      <programlisting language="java">public interface SelectionFilter&lt;T&gt; {
+
+    boolean accept(ScoreDirector scoreDirector, T selection);
+
+}</programlisting>
+
+      <para>Implement the method <literal>accept</literal> to return <literal>false</literal> on a discarded
+      <literal>selection</literal>. Unaccepted moves will not be selected and will therefore never have their method
+      <literal>doMove</literal> called.</para>
+
+      <programlisting language="java">public class DifferentCourseSwapMoveFilter implements SelectionFilter&lt;SwapMove&gt; {
+
+    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
+        Lecture leftLecture = (Lecture) move.getLeftEntity();
+        Lecture rightLecture = (Lecture) move.getRightEntity();
+        return !leftLecture.getCourse().equals(rightLecture.getCourse());
+    }
+
+}</programlisting>
+
+      <para>Apply the filter on the lowest level possible. In most cases, you 'll need to know both the entity and the
+      value involved and you'll have to apply a <literal>filterClass</literal> on the
+      <literal>moveSelector</literal>:</para>
+
+      <programlisting language="xml">    &lt;swapMoveSelector&gt;
+      &lt;filterClass&gt;org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/filterClass&gt;
+    &lt;/swapMoveSelector&gt;</programlisting>
+
+      <para>But if possible, apply it on a lower levels, such as a <literal>filterClass</literal> on the
+      <literal>entitySelector</literal> or <literal>valueSelector</literal>:</para>
+
+      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      &lt;entitySelector&gt;
+        &lt;filterClass&gt;...EntityFilter&lt;/filterClass&gt;
+      &lt;/entitySelector&gt;
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+      <para>You can configure multiple <literal>filterClass</literal> elements on a single selector.</para>
+    </section>
+
+    <section xml:id="sortedSelection">
+      <title>Sorted selection</title>
+
+      <para>Sorted selection can happen on any Selector in the selector tree, including any
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
+      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
+      selectionOrder</literal> <literal>SORTED</literal>.</para>
+
+      <para>It's mostly used in construction heuristics.</para>
+
+      <section xml:id="sortedSelectionByComparator">
+        <title>Sorted selection by <literal>Comparator</literal></title>
+
+        <para>The easiest way to sort a <literal>Selector</literal> is with a plain old
+        <literal>Comparator</literal>:</para>
+
+        <programlisting language="java">public class CloudProcessDifficultyComparator implements Comparator&lt;CloudProcess&gt; {
+
+    public int compare(CloudProcess a, CloudProcess b) {
+        return new CompareToBuilder()
+                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
+                .append(a.getId(), b.getId())
+                .toComparison();
+    }
+
+}</programlisting>
+
+        <para>You 'll also need to configure it (unless it's annotated applied for this optimization algorithm):</para>
+
+        <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+      &lt;sorterComparatorClass&gt;...CloudProcessDifficultyComparator&lt;/sorterComparatorClass&gt;
+      &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
+    &lt;/entitySelector&gt;</programlisting>
+      </section>
+
+      <section xml:id="sortedSelectionBySelectionSorterWeightFactory">
+        <title>Sorted selection by <literal>SelectionSorterWeightFactory</literal></title>
+
+        <para>If you need the entire <literal>Solution</literal> to sort a <literal>Selector</literal>, use a
+        <literal>SelectionSorterWeightFactory</literal> instead:</para>
+
+        <programlisting language="java">public interface SelectionSorterWeightFactory&lt;Sol extends Solution, T&gt; {
+
+    Comparable createSorterWeight(Sol solution, T selection);
+
+}</programlisting>
+
+        <programlisting language="java">public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory&lt;NQueens, Queen&gt; {
+
+    public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
+        return new QueenDifficultyWeight(queen, distanceFromMiddle);
+    }
+
+    // ...
+
+    public static class QueenDifficultyWeight implements Comparable&lt;QueenDifficultyWeight&gt; {
+
+        private final Queen queen;
+        private final int distanceFromMiddle;
+
+        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
+            this.queen = queen;
+            this.distanceFromMiddle = distanceFromMiddle;
+        }
+
+        public int compareTo(QueenDifficultyWeight other) {
+            return new CompareToBuilder()
+                    // The more difficult queens have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
+                    // Tie breaker
+                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
+                    .toComparison();
+        }
+
+    }
+
+}</programlisting>
+
+        <para>You 'll also need to configure it (unless it's annotated and automatically applied for this optimization
+        algorithm):</para>
+
+        <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+      &lt;sorterWeightFactoryClass&gt;...QueenDifficultyWeightFactory&lt;/sorterWeightFactoryClass&gt;
+      &lt;sorterOrder&gt;DESCENDING&lt;/sorterOrder&gt;
+    &lt;/entitySelector&gt;</programlisting>
+      </section>
+
+      <section xml:id="sortedSelectionBySelectionFilter">
+        <title>Sorted selection by <literal>SelectionSorter</literal></title>
+
+        <para>Alternatively, you can also use the interface <literal>SelectionSorter</literal> directly:</para>
+
+        <programlisting language="java">public interface SelectionSorter&lt;T&gt; {
+
+    void sort(ScoreDirector scoreDirector, List&lt;T&gt; selectionList);
+
+}</programlisting>
+
+        <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+      &lt;sorterClass&gt;...MyEntitySorter&lt;/sorterClass&gt;
+    &lt;/entitySelector&gt;</programlisting>
+      </section>
+    </section>
+
+    <section xml:id="probabilisticSelection">
+      <title>Probabilistic selection</title>
+
+      <para>Probabilistic selection can happen on any Selector in the selector tree, including any
+      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It does
+      not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
+      selectionOrder</literal> <literal>PROBABILISTIC</literal>.</para>
+
+      <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that's that selection
+      will be selected:</para>
+
+      <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;T&gt; {
+
+    double createProbabilityWeight(ScoreDirector scoreDirector, T selection);
+
+}</programlisting>
+
+      <programlisting language="xml">    &lt;entitySelector&gt;
+      &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+      &lt;selectionOrder&gt;PROBABILISTIC&lt;/selectionOrder&gt;
+      &lt;probabilityWeightFactoryClass&gt;...MyEntityProbabilityWeightFactoryClass&lt;/probabilityWeightFactoryClass&gt;
+    &lt;/entitySelector&gt;</programlisting>
+
+      <para>For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5)
+      and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.</para>
+    </section>
+
+    <section xml:id="mimicSelection">
+      <title>Mimic selection (record/replay)</title>
+
+      <para>During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors
+      replay that selection. The recording selector acts as a normal selector and supports all other configuration
+      properties. A replaying selector mimics the recording selection and support no other configuration
+      properties.</para>
+
+      <para>The recording selector needs an <literal>id</literal>. A replaying selector must reference a recorder's id
+      with a <literal>mimicSelectorRef</literal>:</para>
+
+      <programlisting language="xml">      &lt;cartesianProductMoveSelector&gt;
+        &lt;changeMoveSelector&gt;
+          &lt;entitySelector id="entitySelector"/&gt;
+          &lt;valueSelector&gt;
+            &lt;variableName&gt;period&lt;/variableName&gt;
+          &lt;/valueSelector&gt;
+        &lt;/changeMoveSelector&gt;
+        &lt;changeMoveSelector&gt;
+          &lt;entitySelector mimicSelectorRef="entitySelector"/&gt;
+          &lt;valueSelector&gt;
+            &lt;variableName&gt;room&lt;/variableName&gt;
+          &lt;/valueSelector&gt;
+        &lt;/changeMoveSelector&gt;
+      &lt;/cartesianProductMoveSelector&gt;</programlisting>
+
+      <para>Mimic selection is usefull to create a composite move from 2 moves that affect the same entity.</para>
+    </section>
+  </section>
+
+  <section>
     <title>Custom moves</title>
 
     <section>
@@ -993,7 +993,7 @@
 
       <para>Instead of reusing the generic <literal>Move</literal>s (such as <literal>ChangeMove</literal>) you can also
       implement your own <literal>Move</literal>s. Generic and custom <literal>MoveSelector</literal>s can be combined
-      as wanted.</para>
+      as desired.</para>
 
       <para>A custom <literal>Move</literal> can be tailored to work to the advantage of your constraints. For example,
       in examination scheduling, changing the period of an exam A also changes te period of all the exams that need to
@@ -1262,12 +1262,6 @@
       ... &lt;!-- Normal moveSelector properties --&gt;
       &lt;moveIteratorFactoryClass&gt;...&lt;/moveIteratorFactoryClass&gt;
     &lt;/moveIteratorFactory&gt;</programlisting>
-    </section>
-
-    <section>
-      <title>Move generation through DRL</title>
-
-      <para>Not yet supported.</para>
     </section>
   </section>
 </chapter>
