@@ -90,7 +90,7 @@ public class FireUntilHaltAccumulateTest {
      * The engine runs in fireUntilHalt mode started in a separate thread.
      * Events may expire during the evaluation of accumulate.
      */
-    @Test
+    @Test(timeout = 20000)
     public void testFireUntilHaltWithAccumulateAndExpires() throws Exception {
         // thread for firing until halt
         final ExecutorService executor = Executors.newSingleThreadExecutor();
