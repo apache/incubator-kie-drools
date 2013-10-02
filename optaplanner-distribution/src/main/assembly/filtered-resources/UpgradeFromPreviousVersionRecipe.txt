@@ -3658,3 +3658,8 @@ From 6.0.0.CR3 to 6.0.0.CR4
 To avoid floating-point arithmetic with HardSoftDoubleScore (which causes rounding errors and score corruption)
 and to avoid a performance loss with HardSoftBigDecimalScore,
 all distances and times have been multiplied by 1000 so it can continue to use HardSoftScore (which uses ints).
+
+
+From 6.0.0.CR4 to 6.0.0.CR5
+---------------------------
+

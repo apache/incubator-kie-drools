@@ -28,6 +28,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.greatdeluge.GreatDelugeAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing.HillClimbingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.latesimulatedannealing.LateSimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
@@ -253,6 +254,10 @@ public class AcceptorConfig {
                 acceptorList.add(acceptor);
             }
         }
+        if (acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.HILL_CLIMBING)) {
+            HillClimbingAcceptor acceptor = new HillClimbingAcceptor();
+            acceptorList.add(acceptor);
+        }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.PLANNING_ENTITY_TABU))
                 || entityTabuSize != null || entityTabuRatio != null
                 || fadingEntityTabuSize != null || fadingEntityTabuRatio != null) {
@@ -376,13 +381,13 @@ public class AcceptorConfig {
             acceptorList.add(new GreatDelugeAcceptor(waterLevelUpperBoundRate, waterRisingRate));
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_ACCEPTANCE))
-                || lateAcceptanceSize != null ) {
+                || lateAcceptanceSize != null) {
             LateAcceptanceAcceptor acceptor = new LateAcceptanceAcceptor();
             acceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
             acceptorList.add(acceptor);
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_SIMULATED_ANNEALING))
-                || lateSimulatedAnnealingSize != null ) {
+                || lateSimulatedAnnealingSize != null) {
             LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
             acceptor.setLateSimulatedAnnealingSize((lateSimulatedAnnealingSize == null) ? 1000 : lateSimulatedAnnealingSize);
             acceptorList.add(acceptor);
@@ -454,6 +459,7 @@ public class AcceptorConfig {
     }
 
     public static enum AcceptorType {
+        HILL_CLIMBING,
         PLANNING_ENTITY_TABU,
         PLANNING_VALUE_TABU,
         MOVE_TABU,
