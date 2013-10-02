@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Set;
 
 
@@ -150,13 +151,29 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public void writeExternal( ObjectOutput objectOutput ) throws IOException {
         super.writeExternal( objectOutput );
-        objectOutput.writeObject( innerMap );
+
+        objectOutput.writeInt( innerMap.size() );
+        List<String> keys = new ArrayList<String>( innerMap.keySet() );
+        Collections.sort( keys );
+        for ( String k : keys ) {
+            objectOutput.writeObject( k );
+            objectOutput.writeObject( innerMap.get( k ) );
+        }
+
         objectOutput.writeObject( currentTypeCode );
     }
 
     public void readExternal( ObjectInput objectInput ) throws IOException, ClassNotFoundException {
         super.readExternal( objectInput );
-        innerMap = (Map<String, Thing<C>>) objectInput.readObject();
+
+        innerMap = new HashMap<String, Thing<C>>();
+        int n = objectInput.readInt();
+        for ( int j = 0; j < n; j++ ) {
+            String k = (String) objectInput.readObject();
+            Thing<C> tf = (Thing<C>) objectInput.readObject();
+            innerMap.put( k, tf );
+        }
+
         currentTypeCode = (BitSet) objectInput.readObject();
     }
 

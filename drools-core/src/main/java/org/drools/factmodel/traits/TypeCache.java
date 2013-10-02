@@ -7,8 +7,11 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TypeCache implements Externalizable {
@@ -24,11 +27,24 @@ public class TypeCache implements Externalizable {
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
-        out.writeObject( typeCache );
+        out.writeInt( typeCache.size() );
+        List<String> keys = new ArrayList<String>( typeCache.keySet() );
+        Collections.sort( keys );
+        for ( String k : keys ) {
+            out.writeObject( k );
+            out.writeObject( typeCache.get( k ) );
+        }
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        typeCache = (Map<String, TypeWrapper>) in.readObject();
+        typeCache = new HashMap<String, TypeWrapper>();
+        int n = in.readInt();
+        for ( int j = 0; j < n; j++ ) {
+            String k = (String) in.readObject();
+            TypeWrapper tf = (TypeWrapper) in.readObject();
+            typeCache.put( k, tf );
+        }
+
         needsInit = true;
     }
 

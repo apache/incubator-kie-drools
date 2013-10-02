@@ -23,6 +23,7 @@ import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
 import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
+import org.drools.util.ExternalizableLinkedHashMap;
 import org.mvel2.MVEL;
 import org.mvel2.asm.*;
 
@@ -40,7 +41,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -204,9 +204,9 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn( ALOAD, 2 );
             Label l0 = new Label();
             mv.visitJumpInsn( IFNONNULL, l0 );
-            mv.visitTypeInsn( NEW, Type.getInternalName( LinkedHashMap.class ) );
+            mv.visitTypeInsn( NEW, Type.getInternalName( ExternalizableLinkedHashMap.class ) );
             mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( LinkedHashMap.class ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( ExternalizableLinkedHashMap.class ), "<init>", "()V" );
             mv.visitVarInsn( ASTORE, 2  );
             mv.visitLabel( l0 );
 
@@ -277,9 +277,9 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitTypeInsn( NEW, Type.getInternalName( TraitTypeMap.class ) );
             mv.visitInsn( DUP );
-            mv.visitTypeInsn( NEW, Type.getInternalName( LinkedHashMap.class ) );
+            mv.visitTypeInsn( NEW, Type.getInternalName( ExternalizableLinkedHashMap.class ) );
             mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( LinkedHashMap.class ), "<init>", "()V" );
+            mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( ExternalizableLinkedHashMap.class ), "<init>", "()V" );
             mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
             mv.visitLabel( l2 );

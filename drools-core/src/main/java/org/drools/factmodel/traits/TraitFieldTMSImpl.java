@@ -4,14 +4,15 @@ import org.drools.WorkingMemory;
 import org.drools.core.util.ClassUtils;
 import org.mvel2.MVEL;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
@@ -91,13 +92,28 @@ public class TraitFieldTMSImpl implements TraitFieldTMS, Externalizable {
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {
-        out.writeObject( fieldTMS );
+        out.writeInt( fieldTMS.size() );
+        List<String> keys = new ArrayList<String>( fieldTMS.keySet() );
+        Collections.sort( keys );
+        for ( String k : keys ) {
+            out.writeObject( k );
+            out.writeObject( fieldTMS.get( k ) );
+        }
+
         out.writeObject( typeCache );
+
         out.writeLong( modificationMask );
     }
 
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        fieldTMS = (Map<String, TraitField>) in.readObject();
+        fieldTMS = new HashMap<String, TraitField>();
+        int n = in.readInt();
+        for ( int j = 0; j < n; j++ ) {
+            String k = (String) in.readObject();
+            TraitField tf = (TraitField) in.readObject();
+            fieldTMS.put( k, tf );
+        }
+
         typeCache = (TypeCache) in.readObject();
         modificationMask = in.readLong();
     }
