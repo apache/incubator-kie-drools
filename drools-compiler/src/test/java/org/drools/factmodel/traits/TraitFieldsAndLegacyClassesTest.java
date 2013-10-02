@@ -24,7 +24,7 @@ import static junit.framework.Assert.*;
 
 
 @RunWith(Parameterized.class)
-public class TraitTestFieldsAndLegacyClasses {
+public class TraitFieldsAndLegacyClassesTest {
 
     public TraitFactory.VirtualPropertyMode mode;
 
@@ -37,7 +37,7 @@ public class TraitTestFieldsAndLegacyClasses {
                                       } );
     }
 
-    public TraitTestFieldsAndLegacyClasses( TraitFactory.VirtualPropertyMode m ) {
+    public TraitFieldsAndLegacyClassesTest( TraitFactory.VirtualPropertyMode m ) {
         this.mode = m;
     }
 
@@ -51,8 +51,8 @@ public class TraitTestFieldsAndLegacyClasses {
                      "import org.drools.factmodel.traits.Traitable;\n"+
                      "import org.drools.factmodel.traits.Thing;\n"+
                      "import java.util.*\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Parent;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Child;\n"+
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Parent;\n"+
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Child;\n"+
                      "global java.util.List list;\n"+
                      "\n"+
                      "declare trait ParentTrait\n" +
@@ -596,7 +596,7 @@ public class TraitTestFieldsAndLegacyClasses {
                      "import org.drools.factmodel.traits.Traitable;\n"+
                      "import org.drools.factmodel.traits.Trait;\n"+
                      "import org.drools.factmodel.traits.Thing;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Child;\n"+       //<<<<<<
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Child;\n"+       //<<<<<<
                      "global java.util.List list;\n"+
                      "\n"+
                      "declare trait ParentTrait\n" +
@@ -713,8 +713,8 @@ public class TraitTestFieldsAndLegacyClasses {
                      "import org.drools.factmodel.traits.Traitable;\n"+
                      "import org.drools.factmodel.traits.Trait;\n"+
                      "import org.drools.factmodel.traits.Thing;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Child;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Parent;\n"+  //<<<<<
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Child;\n"+
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Parent;\n"+  //<<<<<
                      "global java.util.List list;\n"+
                      "\n"+
                      "declare trait ParentTrait\n" +
@@ -816,8 +816,8 @@ public class TraitTestFieldsAndLegacyClasses {
                      "\n"+
                      "import org.drools.factmodel.traits.Traitable;\n"+
                      "import org.drools.factmodel.traits.Thing;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Child;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Parent;\n"+  //<<<<<
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Child;\n"+
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Parent;\n"+  //<<<<<
                      "global java.util.List list;\n"+
                      "\n"+
                      "declare trait ParentTrait\n" +
@@ -901,8 +901,8 @@ public class TraitTestFieldsAndLegacyClasses {
                      "\n"+
                      "import org.drools.factmodel.traits.Traitable;\n"+
                      "import org.drools.factmodel.traits.Thing;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Child;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Parent;\n"+  //<<<<<
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Child;\n"+
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Parent;\n"+  //<<<<<
                      "global java.util.List list;\n"+
                      "\n"+
                      "declare trait ParentTrait\n" +
@@ -996,8 +996,8 @@ public class TraitTestFieldsAndLegacyClasses {
                      "\n"+
                      "import org.drools.factmodel.traits.Traitable;\n"+
                      "import org.drools.factmodel.traits.Thing;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Child;\n"+
-                     "import org.drools.factmodel.traits.TraitTestFieldsAndLegacyClasses.Parent;\n"+  //<<<<<
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Child;\n"+
+                     "import org.drools.factmodel.traits.TraitFieldsAndLegacyClassesTest.Parent;\n"+  //<<<<<
                      "global java.util.List list;\n"+
                      "\n"+
                      "declare trait ParentTrait\n" +
