@@ -57,6 +57,10 @@ public class BindingDescr extends BaseDescr {
 
     public void setExpression(final String expression) {
         this.expression = expression;
+    }
+
+   public void setExpressionAndBindingField(final String expression) {
+        this.expression = expression;
         this.bindingField = expression;
     }
 
@@ -81,7 +85,7 @@ public class BindingDescr extends BaseDescr {
     }
 
     public String getBindingField() {
-        return bindingField;
+        return bindingField != null ? bindingField : expression;
     }
 
     public void setBindingField( String bindingField ) {

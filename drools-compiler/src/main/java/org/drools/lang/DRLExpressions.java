@@ -3697,7 +3697,7 @@ public class DRLExpressions extends Parser {
                                           } else {
                                               expr = expr.substring( expr.indexOf( ":" ) + 1 ).trim();
                                           }
-                                          bind.setExpression( expr );
+                                          bind.setExpressionAndBindingField( expr );
                                           helper.setEnd( bind );
                                           retval.result = bind;
                                       }

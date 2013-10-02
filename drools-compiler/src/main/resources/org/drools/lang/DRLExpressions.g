@@ -508,7 +508,7 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
                     } else {
                         expr = expr.substring( expr.indexOf( ":" ) + 1 ).trim();
                     }
-                    bind.setExpression( expr );
+                    bind.setExpressionAndBindingField( expr );
                     helper.setEnd( bind );
                     $result = bind;
                 }
