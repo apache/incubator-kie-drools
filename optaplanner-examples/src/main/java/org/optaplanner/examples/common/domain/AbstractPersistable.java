@@ -43,7 +43,7 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
 //            return false;
 //        } else {
 //            AbstractPersistable other = (AbstractPersistable) o;
-//            return id.equals(other.id);
+//            return getClass().equals(other.getClass()) && id.equals(other.id);
 //        }
 //    }
 //

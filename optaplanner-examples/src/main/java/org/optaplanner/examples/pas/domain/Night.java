@@ -37,4 +37,7 @@ public class Night extends AbstractPersistable {
         return Integer.toString(index);
     }
 
+    public String getLabel() {
+        return (index + 1) + "-JAN";
+    }
 }

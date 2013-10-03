@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.pas.domain;
 
+import javax.swing.JComponent;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -44,6 +46,10 @@ public class Bed extends AbstractPersistable {
     @Override
     public String toString() {
         return room + "_" + indexInRoom;
+    }
+
+    public String getLabel() {
+        return toString();
     }
 
 }
