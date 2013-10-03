@@ -161,7 +161,7 @@ public class ExpressionIntervalTimer  extends BaseTimer
 
         if ( jh != null ) {
             IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
-            if (preTrig.hasNextFireTime() != null) {
+            if (preTrig.getLastFireTime() != null) {
                 timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
             }
         }

@@ -35,6 +35,7 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultJobHandle;
+import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
@@ -115,7 +116,17 @@ public class PhreakTimerNode {
             LeftTuple next = leftTuple.getStagedNext();
 
             DefaultJobHandle jobHandle = (DefaultJobHandle) leftTuple.getObject();
-            timerService.removeJob( jobHandle );
+            LeftTupleList leftTuples = tm.getInsertOrUpdateLeftTuples();
+            synchronized ( leftTuples ) {
+                // the job removal and memory check is done within a sync block, incase it is executing a trigger at the
+                // same time we are procesing an update
+                timerService.removeJob( jobHandle );
+
+                if ( leftTuple.getMemory() != null ) {
+                    // a previous timer has requested an eval, so remove, we don't want it processed twice
+                    leftTuples.remove( leftTuple );
+                }
+            }
             scheduleLeftTuple( timerNode, tm, pmem, sink, wm, timer, timerService, timestamp, calendarNames, calendars, leftTuple, trgLeftTuples, stagedLeftTuples );
 
             leftTuple.clearStaged();
@@ -368,6 +379,11 @@ public class PhreakTimerNode {
             }
 
             synchronized ( leftTuples ) {
+                if ( timerJobCtx.getJobHandle().isCancel() ) {
+                    // this is to force a sync point, as during update propagate it can cancel the FH
+                    // we cannot have an update processed at the same timer is firing
+                    return;
+                }
                 if ( lt.getMemory() == null ) {
                     // don't add it, if it's already added, which could happen with interval or cron timers
                     leftTuples.add( lt );
@@ -423,8 +439,9 @@ public class PhreakTimerNode {
             }
 
             LeftTupleSets trgLeftTuples = new LeftTupleSetsImpl();
+            LeftTupleSets stagedLeftTuples = RuleNetworkEvaluator.getStagedLeftTuples( sink, wm, sm );
             doPropagateChildLeftTuples(null, tm, sink, wm,
-                                       null, trgLeftTuples, sm.getStagedLeftTuples());
+                                       null, trgLeftTuples, stagedLeftTuples );
 
             RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
             LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
