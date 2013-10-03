@@ -339,6 +339,47 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     }
 
     @Test(timeout=10000)
+    public void testExprIntervalTimerRaceCondition() throws Exception {
+        String str = "";
+        str += "package org.simple \n";
+        str += "global java.util.List list \n";
+        str += "rule xxx \n";
+        str += "  timer (expr: $i, $i) \n";
+        str += "when \n";
+        str += "   $i : Long() \n";
+        str += "then \n";
+        str += "  list.add(\"fired\"); \n";
+        str += "end  \n";
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
+        List list = new ArrayList();
+
+        PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
+        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+
+        ksession.setGlobal( "list", list );
+        FactHandle fh = (FactHandle) ksession.insert( 10000l );
+
+        ksession.fireAllRules();
+        assertEquals( 0, list.size() );
+
+        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+
+        timeService.advanceTime( 17, TimeUnit.SECONDS );
+        ksession.update( fh, 5000l );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+    }
+
+    @Test(timeout=10000)
     public void testUnknownProtocol() throws Exception {
         wrongTimerExpression("xyz:30");
     }
@@ -1048,10 +1089,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithLongExpressions() throws Exception {
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.PHREAK ) {
-            return; // phreak does not yet support dynamic salience
-        }
-
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
@@ -1116,10 +1153,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithStringExpressions() throws Exception {
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.PHREAK ) {
-            return; // phreak does not yet support dynamic salience
-        }
-
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
