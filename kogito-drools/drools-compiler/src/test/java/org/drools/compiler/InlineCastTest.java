@@ -1,5 +1,6 @@
 package org.drools.compiler;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -317,6 +318,38 @@ public class InlineCastTest extends CommonTestMethodBase {
                      + "rule R1\n"
                      + " when\n"
                      + " Person( address#LongAddress.(country == \"United States\" || country == \"United Kingdom\") )\n"
+                     + " then\n"
+                     + "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try {
+            Person mark1 = new Person("mark");
+            mark1.setAddress(new LongAddress("United States"));
+            ksession.insert(mark1);
+
+            Person mark2 = new Person("mark");
+            mark2.setAddress(new LongAddress("United Kingdom"));
+            ksession.insert(mark2);
+
+            Person mark3 = new Person("mark");
+            mark3.setAddress(new LongAddress("Czech Republic"));
+            ksession.insert(mark3);
+
+            assertEquals("wrong number of rules fired", 2, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test @Ignore("fixed with mvel 2.1.7.Final")
+    public void testMatchesOperator() {
+        // BZ-971008
+        String drl = "package org.drools.compiler.integrationtests\n"
+                     + "import org.drools.compiler.*;\n"
+                     + "rule R1\n"
+                     + " when\n"
+                     + " Person( address#LongAddress.country matches \"[Uu]nited.*\" )\n"
                      + " then\n"
                      + "end\n";
 
