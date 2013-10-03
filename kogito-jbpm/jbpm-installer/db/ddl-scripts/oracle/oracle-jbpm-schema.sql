@@ -63,6 +63,8 @@
 
     drop table TaskDef cascade constraints;
 
+    drop table TaskEvent cascade constraints;
+
     drop table VariableInstanceLog cascade constraints;
 
     drop table WorkItemInfo cascade constraints;
@@ -112,6 +114,8 @@
     drop sequence SESSIONINFO_ID_SEQ;
 
     drop sequence TASK_DEF_ID_SEQ;
+
+    drop sequence TASK_EVENT_ID_SEQ;
 
     drop sequence TASK_ID_SEQ;
 
@@ -415,6 +419,15 @@
         name varchar2(255 char),
         priority number(10,0) not null,
         primary key (TaskDefId)
+    );
+
+    create table TaskEvent (
+        id number(19,0) not null,
+        logTime timestamp,
+        taskId number(19,0),
+        type varchar2(255 char),
+        userId varchar2(255 char),
+        primary key (id)
     );
 
     create table VariableInstanceLog (
@@ -729,6 +742,8 @@
     create sequence SESSIONINFO_ID_SEQ;
 
     create sequence TASK_DEF_ID_SEQ;
+
+    create sequence TASK_EVENT_ID_SEQ;
 
     create sequence TASK_ID_SEQ;
 

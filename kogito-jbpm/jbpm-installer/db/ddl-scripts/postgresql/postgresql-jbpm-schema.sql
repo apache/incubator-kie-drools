@@ -198,6 +198,8 @@
 
     drop table if exists TaskDef cascade;
 
+    drop table if exists TaskEvent cascade;
+
     drop table if exists VariableInstanceLog cascade;
 
     drop table if exists WorkItemInfo cascade;
@@ -247,6 +249,8 @@
     drop sequence SESSIONINFO_ID_SEQ;
 
     drop sequence TASK_DEF_ID_SEQ;
+
+    drop sequence TASK_EVENT_ID_SEQ;
 
     drop sequence TASK_ID_SEQ;
 
@@ -550,6 +554,15 @@
         name varchar(255),
         priority int4 not null,
         primary key (TaskDefId)
+    );
+
+    create table TaskEvent (
+        id int8 not null,
+        logTime timestamp,
+        taskId int8,
+        type varchar(255),
+        userId varchar(255),
+        primary key (id)
     );
 
     create table VariableInstanceLog (
@@ -864,6 +877,8 @@
     create sequence SESSIONINFO_ID_SEQ;
 
     create sequence TASK_DEF_ID_SEQ;
+
+    create sequence TASK_EVENT_ID_SEQ;
 
     create sequence TASK_ID_SEQ;
 

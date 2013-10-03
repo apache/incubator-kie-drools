@@ -198,6 +198,8 @@
 
     drop table TaskDef;
 
+    drop table TaskEvent;
+
     drop table VariableInstanceLog;
 
     drop table WorkItemInfo;
@@ -502,6 +504,15 @@
         name varchar(255),
         priority int not null,
         primary key (TaskDefId)
+    );
+
+    create table TaskEvent (
+        id numeric(19,0) identity not null,
+        logTime datetime,
+        taskId numeric(19,0),
+        type varchar(255),
+        userId varchar(255),
+        primary key (id)
     );
 
     create table VariableInstanceLog (

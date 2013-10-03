@@ -243,6 +243,8 @@
 
     drop table if exists TaskDef;
 
+    drop table if exists TaskEvent;
+
     drop table if exists VariableInstanceLog;
 
     drop table if exists WorkItemInfo;
@@ -262,7 +264,7 @@
         attachedBy_id varchar(255),
         TaskData_Attachments_Id bigint,
         primary key (AttachmentId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table BAMTaskSummary (
         BAMTaskId bigint not null auto_increment,
@@ -276,7 +278,7 @@
         taskName varchar(255),
         userId varchar(255),
         primary key (BAMTaskId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table BooleanExpression (
         id bigint not null auto_increment,
@@ -284,13 +286,13 @@
         type varchar(255),
         Escalation_Constraints_Id bigint,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Content (
         id bigint not null auto_increment,
         content longblob,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table ContextMappingInfo (
         mappingId bigint not null auto_increment,
@@ -298,7 +300,7 @@
         KSESSION_ID integer not null,
         OPTLOCK integer,
         primary key (mappingId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table CorrelationKeyInfo (
         keyId bigint not null auto_increment,
@@ -306,7 +308,7 @@
         processInstanceId bigint not null,
         OPTLOCK integer,
         primary key (keyId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table CorrelationPropertyInfo (
         propertyId bigint not null auto_increment,
@@ -315,7 +317,7 @@
         OPTLOCK integer,
         correlationKey_keyId bigint,
         primary key (propertyId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Deadline (
         id bigint not null auto_increment,
@@ -324,33 +326,33 @@
         Deadlines_StartDeadLine_Id bigint,
         Deadlines_EndDeadLine_Id bigint,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Delegation_delegates (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table ErrorInfo (
         id bigint not null auto_increment,
         message varchar(255),
-        stacktrace longtext,
+        stacktrace varchar(5000),
         timestamp datetime,
         REQUEST_ID bigint not null,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Escalation (
         id bigint not null auto_increment,
         name varchar(255),
         Deadline_Escalation_Id bigint,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table EventTypes (
         InstanceId bigint not null,
         eventTypes varchar(255)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table I18NText (
         I18NTextId bigint not null auto_increment,
@@ -367,7 +369,7 @@
         Notification_Descriptions_Id bigint,
         Deadline_Documentation_Id bigint,
         primary key (I18NTextId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table NodeInstanceLog (
         id bigint not null auto_increment,
@@ -383,7 +385,7 @@
         type integer not null,
         workItemId bigint,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Notification (
         DTYPE varchar(31) not null,
@@ -391,55 +393,55 @@
         priority integer not null,
         Escalation_Notifications_Id bigint,
         primary key (NotificationId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Notification_BAs (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Notification_Recipients (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Notification_email_header (
         Notification_NotificationId bigint not null,
         emailHeaders_id bigint not null,
         mapkey varchar(255) not null,
         primary key (Notification_NotificationId, mapkey)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table OrganizationalEntity (
         DTYPE varchar(31) not null,
         id varchar(255) not null,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table PeopleAssignments_BAs (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table PeopleAssignments_ExclOwners (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table PeopleAssignments_PotOwners (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table PeopleAssignments_Recipients (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table PeopleAssignments_Stakeholders (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table ProcessInstanceInfo (
         InstanceId bigint not null auto_increment,
@@ -451,7 +453,7 @@
         state integer not null,
         OPTLOCK integer,
         primary key (InstanceId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table ProcessInstanceLog (
         id bigint not null auto_increment,
@@ -468,18 +470,18 @@
         start_date datetime,
         status integer,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Reassignment (
         id bigint not null auto_increment,
         Escalation_Reassignments_Id bigint,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Reassignment_potentialOwners (
         task_id bigint not null,
         entity_id varchar(255) not null
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table RequestInfo (
         id bigint not null auto_increment,
@@ -494,7 +496,7 @@
         status varchar(255),
         timestamp datetime,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table SessionInfo (
         id integer not null auto_increment,
@@ -503,7 +505,7 @@
         startDate datetime,
         OPTLOCK integer,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table Task (
         TaskId bigint not null auto_increment,
@@ -540,14 +542,23 @@
         actualOwner_id varchar(255),
         createdBy_id varchar(255),
         primary key (TaskId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table TaskDef (
         TaskDefId bigint not null auto_increment,
         name varchar(255),
         priority integer not null,
         primary key (TaskDefId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
+
+    create table TaskEvent (
+        id bigint not null auto_increment,
+        logTime datetime,
+        taskId bigint,
+        type varchar(255),
+        userId varchar(255),
+        primary key (id)
+    ) ENGINE=InnoDB;
 
     create table VariableInstanceLog (
         id bigint not null auto_increment,
@@ -560,7 +571,7 @@
         variableId varchar(255),
         variableInstanceId varchar(255),
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table WorkItemInfo (
         workItemId bigint not null auto_increment,
@@ -571,7 +582,7 @@
         OPTLOCK integer,
         workItemByteArray longblob,
         primary key (workItemId)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table email_header (
         id bigint not null auto_increment,
@@ -581,7 +592,7 @@
         replyToAddress varchar(255),
         subject varchar(255),
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     create table task_comment (
         id bigint not null auto_increment,
@@ -590,7 +601,7 @@
         addedBy_id varchar(255),
         TaskData_Comments_Id bigint,
         primary key (id)
-    ) type=InnoDB;
+    ) ENGINE=InnoDB;
 
     alter table Attachment 
         add index FK1C93543D937BFB5 (attachedBy_id), 

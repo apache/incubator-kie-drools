@@ -243,6 +243,8 @@
 
     drop table if exists TaskDef;
 
+    drop table if exists TaskEvent;
+
     drop table if exists VariableInstanceLog;
 
     drop table if exists WorkItemInfo;
@@ -547,6 +549,15 @@
         name varchar(255),
         priority integer not null,
         primary key (TaskDefId)
+    );
+
+    create table TaskEvent (
+        id bigint not null auto_increment,
+        logTime datetime,
+        taskId bigint,
+        type varchar(255),
+        userId varchar(255),
+        primary key (id)
     );
 
     create table VariableInstanceLog (
