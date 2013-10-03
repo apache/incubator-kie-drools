@@ -2877,4 +2877,37 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(ruleList.get(1), "second");
         assertEquals(ruleList.get(2), "third");
     }
+
+    @Test
+    public void test3IdenticalForall() {
+        // BZ-999851
+        String str =
+                "rule \"Rule with forall_1\"\n" +
+                "when\n" +
+                "    forall ($obj : Object()\n" +
+                "            Object(this == $obj)\n" +
+                "    )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule with forall_2\"\n" +
+                "when\n" +
+                "    forall ($obj : Object()\n" +
+                "            Object(this == $obj)\n" +
+                "    )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule with forall_3\"\n" +
+                "when\n" +
+                "    forall ($obj : Object()\n" +
+                "            Object(this == $obj)\n" +
+                "    )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.fireAllRules();
+    }
 }
