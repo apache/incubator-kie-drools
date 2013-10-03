@@ -1200,7 +1200,8 @@ end</programlisting>
       <title>stepLimit benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
-      calculation performance outright. Use the benchmarker to do a 1 minute run and check what happens to the average
+      calculation performance outright. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link>
+      to do a 1 minute run and check what happens to the average
       calculation count per second if you comment out all but 1 of the score constraints.</para>
     </section>
   </section>

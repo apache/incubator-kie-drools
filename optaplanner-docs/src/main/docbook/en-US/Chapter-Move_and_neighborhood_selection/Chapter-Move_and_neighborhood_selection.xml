@@ -979,7 +979,8 @@
     <section>
       <title>Which move types might be missing in my implementation?</title>
 
-      <para>To determine which move types might be missing in your implementation, run a benchmarker <emphasis>for a
+      <para>To determine which move types might be missing in your implementation, run a
+      <link linkend="benchmarkingAndTweaking">Benchmarker</link> <emphasis>for a
       short amount of time</emphasis> and <link linkend="writingTheOutputSolutionOfTheBenchmarkRuns">configure it to
       write the best solutions to disk</link>. Take a look at such a best solution: it will likely be a local optima.
       Try to figure out if there's a move that could get out of that local optima faster.</para>

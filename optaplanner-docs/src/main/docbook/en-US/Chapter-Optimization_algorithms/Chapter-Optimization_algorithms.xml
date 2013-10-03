@@ -45,8 +45,9 @@
     <para>An algorithm that checks every possible solution (even with pruning) can easily run for billions of years on a
     single real-life planning problem. What we really want is to <emphasis role="bold">find the best solution in the
     limited time at our disposal</emphasis>. Planning competitions (such as the International Timetabling Competition)
-    show that local search variations (tabu search, simulated annealing, late acceptance, ...) usually perform best for
-    real-world problems given real-world time limitations.</para>
+    show that Local Search variations (<link linkend="tabuSearch">Tabu Search</link>, <link
+    linkend="simulatedAnnealing">Simulated Annealing</link>, <link linkend="lateAcceptance">Late Acceptance</link>, ...)
+    usually perform best for real-world problems given real-world time limitations.</para>
   </section>
 
   <section>
@@ -165,7 +166,7 @@
           </row>
 
           <row>
-            <entry>  Brute force</entry>
+            <entry>  <link linkend="bruteForce">Brute force</link></entry>
 
             <entry>0/5</entry>
 
@@ -179,7 +180,7 @@
           </row>
 
           <row>
-            <entry>  Branch and bound</entry>
+            <entry>  <link linkend="depthFirstSearch">Depth-first search</link></entry>
 
             <entry>0/5</entry>
 
@@ -207,7 +208,7 @@
           </row>
 
           <row>
-            <entry>  First Fit</entry>
+            <entry>  <link linkend="firstFit">First Fit</link></entry>
 
             <entry>5/5</entry>
 
@@ -221,7 +222,7 @@
           </row>
 
           <row>
-            <entry>  First Fit Decreasing</entry>
+            <entry>  <link linkend="firstFitDecreasing">First Fit Decreasing</link></entry>
 
             <entry>5/5</entry>
 
@@ -235,7 +236,7 @@
           </row>
 
           <row>
-            <entry>  Best Fit</entry>
+            <entry>  <link linkend="bestFit">Best Fit</link></entry>
 
             <entry>5/5</entry>
 
@@ -249,7 +250,7 @@
           </row>
 
           <row>
-            <entry>  Best Fit Decreasing</entry>
+            <entry>  <link linkend="bestFitDecreasing">Best Fit Decreasing</link></entry>
 
             <entry>5/5</entry>
 
@@ -263,7 +264,21 @@
           </row>
 
           <row>
-            <entry>  Cheapest Insertion</entry>
+            <entry>  <link linkend="cheapestInsertion">Cheapest Insertion</link></entry>
+
+            <entry>3/5</entry>
+
+            <entry>2/5</entry>
+
+            <entry>5/5</entry>
+
+            <entry>2/5</entry>
+
+            <entry>No</entry>
+          </row>
+
+          <row>
+            <entry>  <link linkend="regretInsertion">Regret Insertion</link></entry>
 
             <entry>3/5</entry>
 
@@ -305,7 +320,7 @@
           </row>
 
           <row>
-            <entry>    Hill-Climbing</entry>
+            <entry>    <link linkend="hillClimbing">Hill-Climbing</link></entry>
 
             <entry>5/5</entry>
 
@@ -319,7 +334,7 @@
           </row>
 
           <row>
-            <entry>    Tabu Search</entry>
+            <entry>    <link linkend="tabuSearch">Tabu Search</link></entry>
 
             <entry>5/5</entry>
 
@@ -333,7 +348,7 @@
           </row>
 
           <row>
-            <entry>    Simulated Annealing</entry>
+            <entry>    <link linkend="simulatedAnnealing">Simulated Annealing</link></entry>
 
             <entry>5/5</entry>
 
@@ -347,7 +362,7 @@
           </row>
 
           <row>
-            <entry>    Late Acceptance</entry>
+            <entry>    <link linkend="lateAcceptance">Late Acceptance</link></entry>
 
             <entry>5/5</entry>
 
@@ -361,7 +376,7 @@
           </row>
 
           <row>
-            <entry>    Late Simulated Annealing</entry>
+            <entry>    <link linkend="lateSimulatedAnnealing">Late Simulated Annealing</link></entry>
 
             <entry>5/5</entry>
 
@@ -389,7 +404,7 @@
           </row>
 
           <row>
-            <entry>    Evolutionary Strategies</entry>
+            <entry>    <link linkend="evolutionaryStrategies">Evolutionary Strategies</link></entry>
 
             <entry>4/5</entry>
 
@@ -403,7 +418,7 @@
           </row>
 
           <row>
-            <entry>    Genetic Algorithms</entry>
+            <entry>    <link linkend="geneticAlgorithms">Genetic Algorithms</link></entry>
 
             <entry>4/5</entry>
 
@@ -435,15 +450,16 @@
 
     <orderedlist>
       <listitem>
-        <para>First Fit</para>
+        <para><link linkend="firstFit">First Fit</link></para>
       </listitem>
     </orderedlist>
 
-    <para>Next, implement planning entity difficulty comparison and turn it into:</para>
+    <para>Next, implement <link linkend="planningEntityDifficulty">planning entity difficulty</link> comparison and turn
+    it into:</para>
 
     <orderedlist>
       <listitem>
-        <para>First Fit Decreasing</para>
+        <para><link linkend="firstFitDecreasing">First Fit Decreasing</link></para>
       </listitem>
     </orderedlist>
 
@@ -455,14 +471,16 @@
       </listitem>
 
       <listitem>
-        <para>Late Acceptance. A late acceptance size of 400 usually works well.</para>
+        <para><link linkend="lateAcceptance">Late Acceptance</link>. A late acceptance size of 400 usually works
+        well.</para>
       </listitem>
     </orderedlist>
 
     <para>At this point <emphasis>the free lunch is over</emphasis>. The return on invested time lowers. The result is
     probably already more than good enough.</para>
 
-    <para>But you can do even better, at a lower return on invested time. Use the Benchmarker and try a couple of
+    <para>But you can do even better, at a lower return on invested time. Use the
+    <link linkend="benchmarkingAndTweaking">Benchmarker</link> and try a couple of
     different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:</para>
 
     <orderedlist>
@@ -471,11 +489,12 @@
       </listitem>
 
       <listitem>
-        <para>Tabu Search. An entity tabu size of 7 usually works well.</para>
+        <para><link linkend="tabuSearch">Tabu Search</link>. An entity tabu size of 7 usually works well.</para>
       </listitem>
     </orderedlist>
 
-    <para>Use the Benchmarker to improve the values for those size parameters.</para>
+    <para>Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to improve the values for those size
+    parameters.</para>
 
     <para>If it's worth your time, continue experimenting further. For example, you can even combine multiple algorithms
     together:</para>
@@ -757,7 +776,7 @@
 
     <note>
       <para>Most of the time, a custom construction heuristic is not worth the hassle. The supported constructions
-      heuristics are configurable (so you can tweak them with the <literal>Benchmarker</literal>),
+      heuristics are configurable (use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak them),
       <literal>Termination</literal> aware and support partially initialized solutions too.</para>
     </note>
 

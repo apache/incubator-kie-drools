@@ -70,7 +70,7 @@
         </itemizedlist>
 
         <para>If that is not the case, then it might still be good to apply it in some cases. Use
-        the <literal>Benchmarker</literal> to decide.</para>
+        the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to decide.</para>
       </note>
     </section>
   </section>

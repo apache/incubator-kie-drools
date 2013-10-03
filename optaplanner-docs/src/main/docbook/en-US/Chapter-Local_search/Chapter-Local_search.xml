@@ -119,19 +119,29 @@ INFO  Solving ended: time spend (41), best score (0), average calculate count pe
         </listitem>
       </itemizedlist>
 
-      <figure>
-        <title>Decide the next step at step 0 (4 queens example)</title>
+      <para>The solver phase configuration looks like this:</para>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
-          </imageobject>
-        </mediaobject>
-      </figure>
+      <programlisting language="xml">  &lt;localSearch&gt;
+    &lt;unionMoveSelector&gt;
+      ...
+    &lt;/unionMoveSelector&gt;
+    &lt;acceptor&gt;
+      ...
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      ...
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
 
-      <para>In the above example the <literal>MoveSelector</literal> generated the moves shown with the blue lines, the
+      <para>In the example below, the <literal>MoveSelector</literal> generated the moves shown with the blue lines, the
       <literal>Acceptor</literal> accepted all of them and the <literal>Forager</literal> picked the move <emphasis>B0
       to B3</emphasis>.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
 
       <para><link linkend="logging">Turn on <literal>trace</literal> logging</link> to show the decision making in the
       log:</para>
@@ -197,8 +207,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <para>Unlike the n queens problem, real world problems require the use of <literal>acceptedCountLimit</literal>.
         Start from an <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. <link
-        linkend="logging">Turn on INFO logging</link> to see the step times. Use the <literal>Benchmarker</literal> to
-        tweak the value.</para>
+        linkend="logging">Turn on INFO logging</link> to see the step times. Use the
+        <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak the value.</para>
 
         <important>
           <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
@@ -417,7 +427,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
       <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
       with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
-      the walls. Use the Benchmarker to fine tweak your configuration.</para>
+      the walls. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to fine tweak your configuration.</para>
     </section>
   </section>
 
@@ -449,7 +459,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       Climbing, only accepting improving moves.</para>
 
       <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
-      single move can cause. Use the <literal>Benchmarker</literal> to tweak the value.</para>
+      single move can cause. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak the value.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
