@@ -35,6 +35,7 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
@@ -2828,5 +2829,52 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( Arrays.asList( 1 ), list );
+    }
+
+    @Test(timeout = 10000)
+    public void testAgendaGroupSalience() {
+        // BZ-999360
+        String str =
+                "global java.util.List ruleList\n" +
+                "\n" +
+                "rule first\n" +
+                "salience 2\n" +
+                "when\n" +
+                "then\n" +
+                "    ruleList.add(\"first\");\n" +
+                "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup(\"agenda\").setFocus();\n" +
+                "end\n" +
+                "\n" +
+                "rule second\n" +
+                "agenda-group \"agenda\"\n" +
+                "when\n" +
+                "    $s : String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    ruleList.add(\"second\");\n" +
+                "end\n" +
+                "\n" +
+                "rule third\n" +
+                "salience 1\n" +
+                "when\n" +
+                "    $s : String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    ruleList.add(\"third\");\n" +
+                "end\n";
+
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( DeclarativeAgendaOption.ENABLED );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ArrayList<String> ruleList = new ArrayList<String>();
+        ksession.setGlobal("ruleList", ruleList);
+
+        ksession.insert("fireRules");
+        ksession.fireAllRules();
+
+        assertEquals(ruleList.get(0), "first");
+        assertEquals(ruleList.get(1), "second");
+        assertEquals(ruleList.get(2), "third");
     }
 }

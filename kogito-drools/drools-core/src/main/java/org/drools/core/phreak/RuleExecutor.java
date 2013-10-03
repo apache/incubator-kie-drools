@@ -3,7 +3,6 @@ package org.drools.core.phreak;
 import java.util.Comparator;
 
 import org.drools.core.common.AgendaItem;
-import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
@@ -26,14 +25,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleExecutor {
-    protected static transient Logger               log              = LoggerFactory.getLogger(RuleExecutor.class);
-    private static             RuleNetworkEvaluator networkEvaluator = new RuleNetworkEvaluator();
+    protected static transient Logger               log               = LoggerFactory.getLogger(RuleExecutor.class);
+    private static final       RuleNetworkEvaluator NETWORK_EVALUATOR = new RuleNetworkEvaluator();
     private final    PathMemory      pmem;
     private          RuleAgendaItem  ruleAgendaItem;
     private          LeftTupleList   tupleList;
     private          BinaryHeapQueue queue;
     private volatile boolean         dirty;
     private          boolean         declarativeAgendaEnabled;
+    private          boolean         fireExitedEarly;
 
     public RuleExecutor(final PathMemory pmem,
                         RuleAgendaItem ruleAgendaItem,
@@ -48,7 +48,7 @@ public class RuleExecutor {
     }
 
     public void evaluateNetwork(InternalWorkingMemory wm) {
-        this.networkEvaluator.evaluateNetwork(pmem, null, this, wm);
+        NETWORK_EVALUATOR.evaluateNetwork(pmem, null, this, wm);
         setDirty(false);
         wm.executeQueuedActions();
     }
@@ -85,13 +85,11 @@ public class RuleExecutor {
         if (!tupleList.isEmpty()) {
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
 
-
-            int salience = ruleAgendaItem.getSalience();
-
-            if (isDeclarativeAgendaEnabled()) {
+            if (!fireExitedEarly && isDeclarativeAgendaEnabled()) {
                 // Network Evaluation can notify meta rules, which should be given a chance to fire first
                 RuleAgendaItem nextRule = agenda.peekNextRule();
-                if (!isHighestSalience(nextRule, salience)) {
+                if (!isHighestSalience(nextRule, ruleAgendaItem.getSalience())) {
+                    fireExitedEarly = true;
                     return localFireCount;
                 }
             }
@@ -132,7 +130,7 @@ public class RuleExecutor {
                     break; // The activation firing removed this rule from the rule base
                 }
 
-                salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
+                int salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
                     ruleAgendaItem.dequeue();
                     ruleAgendaItem.setSalience(queue.peek().getSalience());
@@ -151,13 +149,14 @@ public class RuleExecutor {
                     // the outer stack is nodes needing evaluation, once all rule firing is done
                     // such as window expiration, which must be done serially
                     StackEntry entry = outerStack.removeFirst();
-                    this.networkEvaluator.evalStackEntry(entry, outerStack, outerStack, this, wm);
+                    NETWORK_EVALUATOR.evalStackEntry(entry, outerStack, outerStack, this, wm);
                 }
             }
         }
 
         removeRuleAgendaItemWhenEmpty( wm );
 
+        fireExitedEarly = false;
         return localFireCount;
     }
 
@@ -191,18 +190,18 @@ public class RuleExecutor {
                 if ( !fireUntilHalt) {
                     while ( !pmem.getQueue().isEmpty() ) {
                         removeQueuedTupleEntry();
-                        this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                        NETWORK_EVALUATOR.evaluateNetwork(pmem, outerStack, this, wm);
                         evaled = true;
                     }
                 } else {
                     removeQueuedTupleEntry();
-                    this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                    NETWORK_EVALUATOR.evaluateNetwork(pmem, outerStack, this, wm);
                     evaled = true;
                 }
             }
 
             if ( !evaled) {
-                this.networkEvaluator.evaluateNetwork(pmem, outerStack, this, wm);
+                NETWORK_EVALUATOR.evaluateNetwork(pmem, outerStack, this, wm);
             }
         }
     }
