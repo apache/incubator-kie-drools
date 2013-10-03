@@ -142,8 +142,9 @@ public class Operator
     }
 
     private Object readResolve() throws java.io.ObjectStreamException {
-        return determineOperator( this.operator,
-                                  this.isNegated );
+        Operator op = determineOperator( this.operator,
+                                         this.isNegated );
+        return op != null ? op : this;
     }
 
     public String toString() {

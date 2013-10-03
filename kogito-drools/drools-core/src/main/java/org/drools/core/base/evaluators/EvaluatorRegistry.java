@@ -68,21 +68,9 @@ public class EvaluatorRegistry
         }
 
         // loading default built in evaluators
-        this.addEvaluatorDefinition( new BeforeEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new AfterEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new MeetsEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new MetByEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new OverlapsEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new OverlappedByEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new IncludesEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new DuringEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new FinishesEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new FinishedByEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new StartsEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new StartedByEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new CoincidesEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new StrEvaluatorDefinition() );
-        this.addEvaluatorDefinition( new IsAEvaluatorDefinition() );
+        for (EvaluatorDefinition evaluatorDefinition : BuiltInEvaluatorDefinitions.getEvaluatorDefinitions()) {
+            this.addEvaluatorDefinition( evaluatorDefinition );
+        }
     }
 
     /**
