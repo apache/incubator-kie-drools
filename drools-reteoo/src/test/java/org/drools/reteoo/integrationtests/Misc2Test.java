@@ -78,9 +78,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * Run all the tests with the ReteOO engine implementation
  */
-public class MiscTest2 extends CommonTestMethodBase {
+public class Misc2Test extends CommonTestMethodBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(MiscTest2.class);
+    private static final Logger logger = LoggerFactory.getLogger(Misc2Test.class);
 
     @Test
     public void testUpdateWithNonEffectiveActivations() throws Exception {
@@ -709,7 +709,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     @Test
     public void testMvelAssignmentToPublicField() {
         String str =
-                "import " + MiscTest2.Foo.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.Foo.class.getCanonicalName() + "\n" +
                 "rule R\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -772,7 +772,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testDynamicAddRule() {
         // DROOLS-17
         String str =
-                "import " + MiscTest2.A.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.A.class.getCanonicalName() + "\n" +
                 "rule r1 when\n" +
                 "    $a : A( f1 == 1 )\n" +
                 "then\n" +
@@ -789,7 +789,7 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "end";
 
         String str2 =
-                "import " + MiscTest2.A.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.A.class.getCanonicalName() + "\n" +
                 "rule r4 when\n" +
                 "    $a : A( f2 == 1, f4 == 1 )" +
                 "then\n" +
@@ -883,8 +883,8 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "\n" +
                 "import java.util.Map;\n" +
                 "import java.util.EnumMap;\n" +
-                "import " + MiscTest2.Parameter.class.getCanonicalName() + "\n" +
-                "import " + MiscTest2.DataSample.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.Parameter.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.DataSample.class.getCanonicalName() + "\n" +
                 "import " + DataSample.class.getCanonicalName() + "\n" +
                 "\n" +
                 "declare TestObject\n" +
@@ -925,8 +925,8 @@ public class MiscTest2 extends CommonTestMethodBase {
                 "\n" +
                 "import java.util.Map;\n" +
                 "import java.util.EnumMap;\n" +
-                "import " + MiscTest2.Parameter.class.getCanonicalName() + "\n" +
-                "import " + MiscTest2.DataSample.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.Parameter.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.DataSample.class.getCanonicalName() + "\n" +
                 "\n" +
                 "declare Recommendation\n" +
                 "    parameter : Parameter\n" +
@@ -993,8 +993,8 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testMvelResolvingGenericVariableDeclaredInParentClass() {
         // JBRULES-3684
         String str =
-                "import " + MiscTest2.AbstractBase.class.getCanonicalName() + "\n" +
-                "import " + MiscTest2.StringConcrete.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.AbstractBase.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.StringConcrete.class.getCanonicalName() + "\n" +
                 "rule \"test\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -1038,8 +1038,8 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testCompilationMustFailComparingAClassLiteral() {
         // DROOLS-20
         String str =
-                "import MiscTest2.Answer\n" +
-                "import MiscTest2.AnswerGiver\n" +
+                "import Misc2Test.Answer\n" +
+                "import Misc2Test.AnswerGiver\n" +
                 "rule \"Test Rule\"\n" +
                 "when\n" +
                 "   AnswerGiver(Answer == Answer.YES)\n" +
@@ -1055,7 +1055,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testDeclaredTypeExtendingInnerClass() {
         // DROOLS-27
         String str =
-                "import " + MiscTest2.StaticPerson.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.StaticPerson.class.getCanonicalName() + "\n" +
                 "declare StaticPerson end\n"+
                 "declare Student extends StaticPerson end\n"+
                 "rule Init when\n" +
@@ -1120,7 +1120,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testJitConstraintWithOperationOnBigDecimal() {
         // DROOLS-32
         String str =
-                "import " + MiscTest2.Model.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.Model.class.getCanonicalName() + "\n" +
                 "import java.math.BigDecimal;\n" +
                 "\n" +
                 "rule \"minCost\" dialect \"mvel\" \n" +
@@ -1166,7 +1166,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testJitComparable() {
         // DROOLS-37
         String str =
-                "import " + MiscTest2.IntegerWrapperImpl.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.IntegerWrapperImpl.class.getCanonicalName() + "\n" +
                 "\n" +
                 "rule \"minCost\"\n" +
                 "when\n" +
@@ -1593,7 +1593,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         String str =
                 "package org.drools.compiler.integrationtests;\n" +
                 "" +
-                "import org.drools.compiler.integrationtests.MiscTest2.Foo2; \n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.Foo2; \n" +
                 "" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1626,7 +1626,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         String str2 =
                 "package org.drools.compiler.integrationtests;\n" +
                 "" +
-                "import org.drools.compiler.integrationtests.MiscTest2.Foo2; \n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.Foo2; \n" +
                 "global java.util.List list;\n " +
                 "rule \"React\"\n" +
                 "when\n" +
@@ -1709,7 +1709,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // DROOLS-94
         String str =
                 "package org.drools.compiler.integrationtests;\n" +
-                "import org.drools.compiler.integrationtests.MiscTest2.SimpleEvent\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.SimpleEvent\n" +
                 "declare SimpleEvent\n" +
                 "    @role(event)\n" +
                 "    @duration(duration)\n" +
@@ -1724,7 +1724,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // DROOLS-94
         String str =
                 "package org.drools.compiler.integrationtests;\n" +
-                "import org.drools.compiler.integrationtests.MiscTest2.SimpleEvent\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.SimpleEvent\n" +
                 "declare SimpleEvent\n" +
                 "    @role(event)\n" +
                 "    @duration(duration)\n" +
@@ -1743,7 +1743,7 @@ public class MiscTest2 extends CommonTestMethodBase {
         // DROOLS-94
         String str =
                 "package org.drools.compiler.integrationtests;\n" +
-                "import org.drools.compiler.integrationtests.MiscTest2.SimpleEvent\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.SimpleEvent\n" +
                 "declare SimpleEvent\n" +
                 "    @role(event)\n" +
                 "    @duration(duratio)\n" +
@@ -1980,7 +1980,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testPhreakInnerJoinNot() {
         // DROOLS-7
         String str =
-                "import org.drools.compiler.integrationtests.MiscTest2.Lecture\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.Lecture\n" +
                 "global java.util.List list;\n" +
                 "rule \"curriculumCompactness\"\n" +
                 "    when\n" +
@@ -2033,7 +2033,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     public void testPhreakAccumulate() {
         // DROOLS-7
         String str =
-                "import org.drools.compiler.integrationtests.MiscTest2.Lecture\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.Lecture\n" +
                 "global java.util.List list;\n" +
                 "rule \"R1\"\n" +
                 "    when\n" +
@@ -2328,7 +2328,7 @@ public class MiscTest2 extends CommonTestMethodBase {
     @Ignore("AUG")
     public void testNotNodeUpdateBlocker() {
         String str =
-                "import org.drools.compiler.integrationtests.MiscTest2.Conversation;\n" +
+                "import org.drools.compiler.integrationtests.Misc2Test.Conversation;\n" +
                 "global java.util.List list;" +
                 "\n" +
                 "rule \"familyEnd\" when\n" +
