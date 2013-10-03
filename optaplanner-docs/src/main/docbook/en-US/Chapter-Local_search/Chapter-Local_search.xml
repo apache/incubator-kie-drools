@@ -10,145 +10,26 @@
   <section>
     <title>Overview</title>
 
-    <para>Local search starts from an initial solution and evolves that single solution into a mostly better and better
+    <para>Local Search starts from an initial solution and evolves that single solution into a mostly better and better
     solution. It uses a single search path of solutions, not a search tree. At each solution in this path it evaluates a
     number of moves on the solution and applies the most suitable move to take the step to the next solution. It does
     that for a high number of iterations until it's terminated (usually because its time has run out).</para>
 
-    <para>Local search acts a lot like a human planner: it uses a single search path and moves facts around to find a
+    <para>Local Search acts a lot like a human planner: it uses a single search path and moves facts around to find a
     good feasible solution. Therefore it's pretty natural to implement.</para>
 
-    <para><emphasis role="bold">Local search often needs to start from an initialized solution</emphasis>, therefore
+    <para><emphasis role="bold">Local Search often needs to start from an initialized solution</emphasis>, therefore
     it's often required to configure a construction heuristic solver phase before it.</para>
   </section>
 
-  <section xml:id="hillClimbing">
-    <title>Hill Climbing (Simple Local Search)</title>
-
-    <section>
-      <title>Algorithm description</title>
-
-      <para>Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the
-      solution with the highest score. That best move is called the step move. From that new solution, it again tries
-      all selected moves and takes the best move and continues like that iteratively. If multiple selected moves tie for
-      the best move, one of them is randomly chosen as the best move.</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/hillClimbingNQueens04.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <para>Notice that one a queen has moved, it can be moved again later. This is a good thing, because in an
-      NP-complete problem it's impossible to predict what will be the optimal final value for a planning
-      variable.</para>
-
-      <para>Hill Climbing can easily get stuck in a local optima:</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <para>Improvements upon hill climbing (such as tabu search and simulated annealing) address the problem of being
-      stuck in local optima.</para>
-    </section>
-  </section>
-
-  <section xml:id="tabuSearch">
-    <title>Tabu Search</title>
-
-    <section>
-      <title>Algorithm description</title>
-
-      <para>Tabu Search works like hill climbing, but it maintains a tabu list to avoid getting stuck in local optima.
-      The tabu list holds recently used objects that are <emphasis>taboo</emphasis> to use for now. Moves that involve
-      an object in the tabu list, are not accepted. The tabu list objects can be anything related to the move, such as
-      the planning entity, planning value, move, solution, ... Here's an example with entity tabu for 4 queens, so the
-      queens are put in the tabu list:</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/entityTabuSearch.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <para>Scientific paper: <emphasis>Tabu Search - Part 1 and Part 2</emphasis> by Fred Glover (1989 - 1990)</para>
-
-      <para>See Tabu Search acceptor below.</para>
-    </section>
-  </section>
-
-  <section xml:id="simulatedAnnealing">
-    <title>Simulated Annealing</title>
-
-    <section>
-      <title>Algorithm description</title>
-
-      <para>Simulated Annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
-      the first accepted move is the winning step. A move is accepted if it doesn't decrease the score or - in case it
-      does decrease the score - if passes a random check. The chance that a decreasing move passes the random check
-      decreases relative to the size of the score decrement and the time the phase has been running (which is
-      represented as the temperature).</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/simulatedAnnealing.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <para>See Simulated Annealing acceptor below.</para>
-    </section>
-  </section>
-
-  <section xml:id="lateAcceptance">
-    <title>Late Acceptance</title>
-
-    <section>
-      <title>Algorithm description</title>
-
-      <para>Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step. A
-      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score (which
-      is the winning score of a fixed number of steps ago).</para>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/lateAcceptance.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <para>Scientific paper: <link
-      xlink:href="www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf"><emphasis>The Late Acceptance
-      Hill-Climbing Heuristic</emphasis> by Edmund K. Burke, Yuri Bykov (2012)</link></para>
-
-      <para>See Late Acceptance acceptor below.</para>
-    </section>
-  </section>
-
-  <section xml:id="lateSimulatedAnnealing">
-    <title>Late Simulated Annealing (experimental)</title>
-
-    <section>
-      <title>Algorithm description</title>
-
-      <para>Late Simulated Annealing combines the best characteristics of Simulated Annealing and Late Acceptance. A
-      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score, or -
-      failing those criteria - if it passes a random check. The chance that a decreasing move passes the random check
-      decreases relative to the size of the score decrement and the late score.</para>
-
-      <para>See Late Simulated Annealing acceptor below.</para>
-    </section>
-  </section>
-
   <section>
-    <title>About neighborhoods, moves and steps</title>
+    <title>Local Search concepts</title>
 
     <section>
-      <title>A step</title>
+      <title>Taking steps</title>
 
-      <para>A step is the winning move. The local search solver tries every move on the current solution and picks the
-      best accepted move as the step:</para>
+      <para>A step is the winning <literal>Move</literal>. The local search solver tries every move on the current
+      solution and picks the best accepted move as the step:</para>
 
       <figure>
         <title>Decide the next step at step 0 (4 queens example)</title>
@@ -161,12 +42,12 @@
       </figure>
 
       <para>Because the move <emphasis>B0 to B3</emphasis> has the highest score (<literal>-3</literal>), it is picked
-      as the next step. Notice that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it
-      also has the score <literal>-3</literal>. If multiple moves have the same highest score, one is picked randomly,
-      in this case <emphasis>B0 to B3</emphasis>.</para>
+      as the next step. If multiple moves have the same highest score, one is picked randomly, in this case <emphasis>B0
+      to B3</emphasis>. Note that <emphasis>C0 to C3</emphasis> (not shown) could also have been picked because it also
+      has the score <literal>-3</literal>.</para>
 
-      <para>The step is made and from that new solution, the local search solver tries all the possible moves again, to
-      decide the next step after that. It continually does this in a loop, and we get something like this:</para>
+      <para>The step is applied on the solution. From that new solution, the local search solver tries every move again,
+      to decide the next step after that. It continually does this in a loop, and we get something like this:</para>
 
       <figure>
         <title>All steps (4 queens example)</title>
@@ -182,8 +63,8 @@
       highlighted by the green arrows. At each step it tries all possible moves, but unless it's the step, it doesn't
       investigate that solution further. This is one of the reasons why local search is very scalable.</para>
 
-      <para>As you can see, the local search solver solves the 4 queens problem by starting with the starting solution
-      and make the following steps sequentially:</para>
+      <para>As you can see, Local Search solves the 4 queens problem by starting with the starting solution and make the
+      following steps sequentially:</para>
 
       <orderedlist>
         <listitem>
@@ -209,78 +90,53 @@ DEBUG     Step index (2), time spend (40), score (0), new best score (0), accept
 INFO  Phase (0) localSearch ended: step total (3), time spend (41), best score (0).
 INFO  Solving ended: time spend (41), best score (0), average calculate count per second (1780).</programlisting>
 
-      <para>Notice that the logging uses the <literal>toString()</literal> method of our <literal>Move</literal>
+      <para>Notice that the logging uses the <literal>toString()</literal> method of the <literal>Move</literal>
       implementation: <literal>col1@row0 =&gt; row3</literal>.</para>
 
-      <para>The local search solver solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3
-      steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions. It solves
-      16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions. Note: with
-      construction heuristics it's even a lot more efficient.</para>
+      <para>A naive Local Search configuration solves the 4 queens problem in 3 steps, by evaluating only 37 possible
+      solutions (3 steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible
+      solutions. It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible
+      solutions. Note: with construction heuristics it's even a lot more efficient.</para>
     </section>
 
     <section>
-      <title>Getting stuck in local optima</title>
+      <title>Deciding the next step</title>
 
-      <para>A <emphasis>hill climber</emphasis> always takes improving moves. This may seem like a good thing, but it's
-      not. It suffers from a number of problems:</para>
+      <para>The local search solver decides the next step with the aid of 3 configurable components:</para>
 
       <itemizedlist>
         <listitem>
-          <para>It can get stuck in a local optimum. For example if it reaches a solution X with a score -1 and there is
-          no improving move, it is forced to take a next step that leads to a solution Y with score -2, after that
-          however, it's very real that it will pick the step back to solution X with score -1. It will then start
-          looping between solution X and Y.</para>
+          <para>A <literal>MoveSelector</literal> which selects the possible moves of the current solution. See the
+          chapter <link linkend="moveAndNeighborhoodSelection">move and neighborhood selection</link>.</para>
         </listitem>
 
         <listitem>
-          <para>It can start walking in its own footsteps, picking the same next step at every step.</para>
+          <para>An <literal>Acceptor</literal> which filters out unacceptable moves.</para>
+        </listitem>
+
+        <listitem>
+          <para>A <literal>Forager</literal> which gathers accepted moves and picks the next step from them.</para>
         </listitem>
       </itemizedlist>
 
-      <para>Of course OptaPlanner implements better local searches, such as <emphasis>tabu search</emphasis> and
-      <emphasis>simulated annealing</emphasis> which can avoid these problems. We recommend to never use hill climbing,
-      unless you're absolutely sure there are no local optima in your planning problem.</para>
-    </section>
-  </section>
+      <figure>
+        <title>Decide the next step at step 0 (4 queens example)</title>
 
-  <section>
-    <title>Deciding the next step</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
 
-    <para>The local search solver decides the next step with the aid of 3 configurable components:</para>
+      <para>In the above example the <literal>MoveSelector</literal> generated the moves shown with the blue lines, the
+      <literal>Acceptor</literal> accepted all of them and the <literal>Forager</literal> picked the move <emphasis>B0
+      to B3</emphasis>.</para>
 
-    <itemizedlist>
-      <listitem>
-        <para>A <literal>MoveSelector</literal> which selects the possible moves of the current solution. See the
-        chapter <link linkend="moveAndNeighborhoodSelection">move and neighborhood selection</link>.</para>
-      </listitem>
+      <para><link linkend="logging">Turn on <literal>trace</literal> logging</link> to show the decision making in the
+      log:</para>
 
-      <listitem>
-        <para>An <literal>Acceptor</literal> which filters out unacceptable moves.</para>
-      </listitem>
-
-      <listitem>
-        <para>A <literal>Forager</literal> which gathers accepted moves and picks the next step from them.</para>
-      </listitem>
-    </itemizedlist>
-
-    <figure>
-      <title>Decide the next step at step 0 (4 queens example)</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/Chapter-Local_search/decideNextStepNQueens04.png" format="PNG"/>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>In the above example the <literal>MoveSelector</literal> generated the moves shown with the blue lines, the
-    <literal>Acceptor</literal> accepted all of them and the <literal>Forager</literal> picked the move <emphasis>B0 to
-    B3</emphasis>.</para>
-
-    <para><link linkend="logging">Turn on <literal>trace</literal> logging</link> to show the decision making in the
-    log:</para>
-
-    <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
+      <programlisting>INFO  Solver started: time spend (0), score (-6), new best score (-6), random seed (0).
 TRACE         Move index (0) not doable, ignoring move (col0@row0 =&gt; row0).
 TRACE         Move index (1), score (-4), accepted (true) for move (col0@row0 =&gt; row1).
 TRACE         Move index (2), score (-4), accepted (true) for move (col0@row0 =&gt; row2).
@@ -294,183 +150,32 @@ TRACE         Move index (12), score (-4), accepted (true) for move (col3@row0 =
 DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accepted/selected move count (12/12) for picked step (col1@row0 =&gt; row3).
 ...</programlisting>
 
-    <para>Because the last solution can degrade (for example in Tabu Search), the <literal>Solver</literal> remembers
-    the best solution it has encountered through the entire search path. Each time the current solution is better than
-    the last best solution, the current solution is cloned and referenced as the new best solution.</para>
+      <para>Because the last solution can degrade (for example in Tabu Search), the <literal>Solver</literal> remembers
+      the best solution it has encountered through the entire search path. Each time the current solution is better than
+      the last best solution, the current solution is cloned and referenced as the new best solution.</para>
+    </section>
 
     <section>
       <title>Acceptor</title>
 
-      <para>An acceptor is used (together with a forager) to active tabu search, simulated annealing, great deluge, ...
-      For each move it checks whether it is accepted or not.</para>
+      <para>An <literal>Acceptor</literal> is used (together with a <literal>Forager</literal>) to active Tabu Search,
+      Simulated Annealing, Late Acceptance, ... For each move it checks whether it is accepted or not.</para>
 
-      <para>You can implement your own <literal>Acceptor</literal>, although the build-in acceptors should suffice for
-      most needs. You can also combine multiple acceptors.</para>
+      <para>By changing a few lines of configuration, you can easily switch from Tabu Search to Simulated Annealing or
+      Late Acceptance and back.</para>
 
-      <section>
-        <title>Tabu Search acceptor</title>
-
-        <para>When tabu search takes steps it creates tabu's. It does not accept a move as the next step if that move
-        breaks tabu. OptaPlanner implements several tabu types:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para><emphasis>Solution tabu</emphasis> makes recently visited solutions tabu. It does not accept a move
-            that leads to one of those solutions. If you can spare the memory, don't be cheap on the tabu size.</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-          </listitem>
-
-          <listitem>
-            <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of
-            those steps.</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-          </listitem>
-
-          <listitem>
-            <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;undoMoveTabuSize&gt;7&lt;/undoMoveTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-          </listitem>
-
-          <listitem>
-            <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu. For
-            example, for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu
-            type.</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-
-            <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of entities, for
-            example 2%:</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;entityTabuRatio&gt;0.02&lt;/entityTabuRatio&gt;
-    &lt;/acceptor&gt;</programlisting>
-          </listitem>
-
-          <listitem>
-            <para><emphasis>Planning value tabu</emphasis> makes the planning values of recent steps tabu. For example,
-            for N queens it makes the recently moved to rows tabu.</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;valueTabuSize&gt;7&lt;/valueTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-
-            <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of values, for
-            example 2%:</para>
-
-            <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;valueTabuRatio&gt;0.02&lt;/valueTabuRatio&gt;
-    &lt;/acceptor&gt;</programlisting>
-          </listitem>
-        </itemizedlist>
-
-        <para>You can even combine tabu types:</para>
-
-        <programlisting language="xml">    &lt;acceptor&gt;
-        &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
-        &lt;valueTabuSize&gt;3&lt;/valueTabuSize&gt;
-    &lt;/acceptor&gt;</programlisting>
-
-        <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
-        with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
-        the walls. Use the benchmarker to fine tweak your configuration.</para>
-
-        <para>A tabu search acceptor should be combined with a high <literal>acceptedCountLimit</literal>, such as
-        <literal>1000</literal>.</para>
-
-        <programlisting language="xml">    &lt;forager&gt;
-        &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;</programlisting>
-      </section>
-
-      <section>
-        <title>Simulated Annealing acceptor</title>
-
-        <para>Simulated Annealing does not always pick the move with the highest score, neither does it evaluate many
-        moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending
-        on its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into a
-        hill climber, only accepting improving moves.</para>
-
-        <para>In many use cases, simulated annealing surpasses tabu search. By changing a few lines of configuration,
-        you can easily switch from tabu search to simulated annealing and back.</para>
-
-        <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
-        single move can cause. Use the <literal>Benchmarker</literal> to tweak the value.</para>
-
-        <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;simulatedAnnealingStartingTemperature&gt;2hard/100soft&lt;/simulatedAnnealingStartingTemperature&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-        &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;</programlisting>
-
-        <para>A simulated annealing acceptor should be combined with a low <literal>acceptedCountLimit</literal>. The
-        classic algorithm uses an <literal>acceptedCountLimit</literal> of <literal>1</literal>, but often
-        <literal>4</literal> performs better.</para>
-
-        <para>You can even combine it with a tabu acceptor at the same time. Use a lower tabu size than in a pure tabu
-        search configuration.</para>
-
-        <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;simulatedAnnealingStartingTemperature&gt;10.0&lt;/simulatedAnnealingStartingTemperature&gt;
-      &lt;entityTabuSize&gt;5&lt;/entityTabuSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-        &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;</programlisting>
-
-        <para>This differs from phasing, another powerful technique, where first simulated annealing is used, followed
-        by tabu search.</para>
-      </section>
-
-      <section>
-        <title>Late Acceptance acceptor</title>
-
-        <para>Late Acceptance accepts any move that has a score which is higher than the best score of a number of steps
-        ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
-
-        <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;lateAcceptanceSize&gt;500&lt;/lateAcceptanceSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-        &lt;acceptedCountLimit&gt;4&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;</programlisting>
-      </section>
-
-      <section>
-        <title>Late Simulated Annealing acceptor (experimental)</title>
-
-        <para>Late Simulated Annealing accepts any move that has a score which is higher than the best score of a number
-        of steps ago and has a chance to accept any move below that score too. That number of steps is the
-        <literal>lateSimulatedAnnealingSize</literal>.</para>
-
-        <programlisting language="xml">    &lt;acceptor&gt;
-      &lt;lateSimulatedAnnealingSize&gt;100&lt;/lateSimulatedAnnealingSize&gt;
-    &lt;/acceptor&gt;
-    &lt;forager&gt;
-        &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
-    &lt;/forager&gt;</programlisting>
-      </section>
+      <para>You can implement your own <literal>Acceptor</literal>, but the build-in acceptors should suffice for most
+      needs. You can also combine multiple acceptors.</para>
     </section>
 
     <section>
       <title>Forager</title>
 
-      <para>A forager gathers all accepted moves and picks the move which is the next step. Normally it picks the
-      accepted move with the highest score. If several accepted moves have the highest score, one is picked
+      <para>A <literal>Forager</literal> gathers all accepted moves and picks the move which is the next step. Normally
+      it picks the accepted move with the highest score. If several accepted moves have the highest score, one is picked
       randomly.</para>
 
-      <para>You can implement your own <literal>Forager</literal>, although the build-in forager should suffice for most
+      <para>You can implement your own <literal>Forager</literal>, but the build-in forager should suffice for most
       needs.</para>
 
       <section>
@@ -491,13 +196,14 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         </itemizedlist>
 
         <para>Unlike the n queens problem, real world problems require the use of <literal>acceptedCountLimit</literal>.
-        Start from an <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. Turn on INFO
-        logging to see the step times. Use the <literal>Benchmarker</literal> to tweak the value.</para>
+        Start from an <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. <link
+        linkend="logging">Turn on INFO logging</link> to see the step times. Use the <literal>Benchmarker</literal> to
+        tweak the value.</para>
 
         <important>
           <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
           <literal>selectionOrder</literal> SHUFFLED because the shuffling generates a random number for every element
-          in the selector, taking up a lot of time, but only a few are actually selected.</para>
+          in the selector, taking up a lot of time, but only a few elements are actually selected.</para>
         </important>
       </section>
 
@@ -513,7 +219,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             selection allows. This is the default.</para>
 
             <programlisting language="xml">    &lt;forager&gt;
-        &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
+      &lt;pickEarlyType&gt;NEVER&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
           </listitem>
 
@@ -522,7 +228,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             score. If none improve the best score, it behaves exactly like the pickEarlyType NEVER.</para>
 
             <programlisting language="xml">    &lt;forager&gt;
-        &lt;pickEarlyType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/pickEarlyType&gt;
+      &lt;pickEarlyType&gt;FIRST_BEST_SCORE_IMPROVING&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
           </listitem>
 
@@ -532,11 +238,336 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
             NEVER.</para>
 
             <programlisting language="xml">    &lt;forager&gt;
-        &lt;pickEarlyType&gt;FIRST_LAST_STEP_SCORE_IMPROVING&lt;/pickEarlyType&gt;
+      &lt;pickEarlyType&gt;FIRST_LAST_STEP_SCORE_IMPROVING&lt;/pickEarlyType&gt;
     &lt;/forager&gt;</programlisting>
           </listitem>
         </itemizedlist>
       </section>
+    </section>
+  </section>
+
+  <section xml:id="hillClimbing">
+    <title>Hill Climbing (Simple Local Search)</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the
+      solution with the highest score. That best move is called the step move. From that new solution, it again tries
+      all selected moves and takes the best move and continues like that iteratively. If multiple selected moves tie for
+      the best move, one of them is randomly chosen as the best move.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/hillClimbingNQueens04.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Notice that one a queen has moved, it can be moved again later. This is a good thing, because in an
+      NP-complete problem it's impossible to predict what will be the optimal final value for a planning
+      variable.</para>
+    </section>
+
+    <section>
+      <title>Getting stuck in local optima</title>
+
+      <para>Hill Climbing always takes improving moves. This may seem like a good thing, but it's not: <emphasis
+      role="bold">Hill Climbing can easily get stuck in a local optimum.</emphasis> This happens when it reaches a
+      solution for which all the moves deteriorate the score. Even if it picks one of those moves, the next step might
+      go back to the original solution and which case chasing it's own tail:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Improvements upon Hill Climbing (such as Tabu Search, Simulated Annealing and Late Acceptance) address the
+      problem of being stuck in local optima. Therefore, it's recommend to never use Hill Climbing, unless you're
+      absolutely sure there are no local optima in your planning problem.</para>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Configure this <literal>SolverPhase</literal>:</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;acceptorType&gt;HILL_CLIMBING&lt;/acceptorType&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+    </section>
+  </section>
+
+  <section xml:id="tabuSearch">
+    <title>Tabu Search</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Tabu Search works like Hill Climbing, but it maintains a tabu list to avoid getting stuck in local optima.
+      The tabu list holds recently used objects that are <emphasis>taboo</emphasis> to use for now. Moves that involve
+      an object in the tabu list, are not accepted. The tabu list objects can be anything related to the move, such as
+      the planning entity, planning value, move, solution, ... Here's an example with entity tabu for 4 queens, so the
+      queens are put in the tabu list:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/entityTabuSearch.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Scientific paper: <emphasis>Tabu Search - Part 1 and Part 2</emphasis> by Fred Glover (1989 - 1990)</para>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>When Tabu Search takes steps it creates one or more tabu's. For a number of steps, it does not accept a move
+      if that move breaks tabu. That number of steps is the tabu size.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <important>
+        <para>A Tabu Search acceptor should be combined with a high <literal>acceptedCountLimit</literal>, such as
+        <literal>1000</literal>.</para>
+      </important>
+
+      <para>OptaPlanner implements several tabu types:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para><emphasis>Solution tabu</emphasis> makes recently visited solutions tabu. It does not accept a move that
+          leads to one of those solutions. If you can spare the memory, don't be cheap on the tabu size.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;solutionTabuSize&gt;1000&lt;/solutionTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Move tabu</emphasis> makes recent steps tabu. It does not accept a move equal to one of those
+          steps.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;moveTabuSize&gt;7&lt;/moveTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Undo move tabu </emphasis>makes the undo move of recent steps tabu.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;undoMoveTabuSize&gt;7&lt;/undoMoveTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Planning entity tabu</emphasis> makes the planning entities of recent steps tabu. For example,
+          for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu type.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+
+          <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of entities, for
+          example 2%:</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;entityTabuRatio&gt;0.02&lt;/entityTabuRatio&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+
+        <listitem>
+          <para><emphasis>Planning value tabu</emphasis> makes the planning values of recent steps tabu. For example,
+          for N queens it makes the recently moved to rows tabu.</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;valueTabuSize&gt;7&lt;/valueTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+
+          <para>To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of values, for
+          example 2%:</para>
+
+          <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;valueTabuRatio&gt;0.02&lt;/valueTabuRatio&gt;
+    &lt;/acceptor&gt;</programlisting>
+        </listitem>
+      </itemizedlist>
+
+      <para>You can even combine tabu types:</para>
+
+      <programlisting language="xml">    &lt;acceptor&gt;
+      &lt;entityTabuSize&gt;7&lt;/entityTabuSize&gt;
+      &lt;valueTabuSize&gt;3&lt;/valueTabuSize&gt;
+    &lt;/acceptor&gt;</programlisting>
+
+      <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
+      with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
+      the walls. Use the Benchmarker to fine tweak your configuration.</para>
+    </section>
+  </section>
+
+  <section xml:id="simulatedAnnealing">
+    <title>Simulated Annealing</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Simulated Annealing evaluates only a few moves per step, so it steps quickly. In the classic implementation,
+      the first accepted move is the winning step. A move is accepted if it doesn't decrease the score or - in case it
+      does decrease the score - if passes a random check. The chance that a decreasing move passes the random check
+      decreases relative to the size of the score decrement and the time the phase has been running (which is
+      represented as the temperature).</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/simulatedAnnealing.png"/>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Simulated Annealing does not always pick the move with the highest score, neither does it evaluate many
+      moves per step. At least at first. Instead, it gives non improving moves also a chance to be picked, depending on
+      its score and the time gradient of the <literal>Termination</literal>. In the end, it gradually turns into Hill
+      Climbing, only accepting improving moves.</para>
+
+      <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
+      single move can cause. Use the <literal>Benchmarker</literal> to tweak the value.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;simulatedAnnealingStartingTemperature&gt;2hard/100soft&lt;/simulatedAnnealingStartingTemperature&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>Simulated Annealing should use a low <literal>acceptedCountLimit</literal>. The classic algorithm uses an
+      <literal>acceptedCountLimit</literal> of <literal>1</literal>, but often <literal>4</literal> performs
+      better.</para>
+
+      <para>You can even combine it with a tabu acceptor at the same time. That gives Simulated Annealing salted with a
+      bit of Tabu. Use a lower tabu size than in a pure Tabu Search configuration.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;simulatedAnnealingStartingTemperature&gt;2hard/100soft&lt;/simulatedAnnealingStartingTemperature&gt;
+      &lt;entityTabuSize&gt;5&lt;/entityTabuSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+    </section>
+  </section>
+
+  <section xml:id="lateAcceptance">
+    <title>Late Acceptance</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step. A
+      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score (which
+      is the winning score of a fixed number of steps ago).</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Local_search/lateAcceptance.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Scientific paper: <link
+      xlink:href="www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf"><emphasis>The Late Acceptance
+      Hill-Climbing Heuristic</emphasis> by Edmund K. Burke, Yuri Bykov (2012)</link></para>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Late Acceptance accepts any move that has a score which is higher than the best score of a number of steps
+      ago. That number of steps is the <literal>lateAcceptanceSize</literal>.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;lateAcceptanceSize&gt;400&lt;/lateAcceptanceSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>You can even combine it with a tabu acceptor at the same time. That gives Late Acceptance salted with a bit
+      of Tabu. Use a lower tabu size than in a pure Tabu Search configuration.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;lateAcceptanceSize&gt;400&lt;/lateAcceptanceSize&gt;
+      &lt;entityTabuSize&gt;5&lt;/entityTabuSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>Late Acceptance should use a low <literal>acceptedCountLimit</literal>.</para>
+    </section>
+  </section>
+
+  <section xml:id="lateSimulatedAnnealing">
+    <title>Late Simulated Annealing (experimental)</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Late Simulated Annealing combines the best characteristics of Simulated Annealing and Late Acceptance. A
+      move is accepted if does not decrease the score, or if it leads to a score that is at least the late score, or -
+      failing those criteria - if it passes a random check. The chance that a decreasing move passes the random check
+      decreases relative to the size of the score decrement and the late score.</para>
+
+      <warning>
+        <para>Currently, the Late Simulated Annealing prototype is consistently inferior to Late Acceptance.</para>
+      </warning>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Late Simulated Annealing accepts any move that has a score which is higher than the best score of a number
+      of steps ago and has a chance to accept any move below that score too. That number of steps is the
+      <literal>lateSimulatedAnnealingSize</literal>.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;lateSimulatedAnnealingSize&gt;100&lt;/lateSimulatedAnnealingSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1000&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
     </section>
   </section>
 

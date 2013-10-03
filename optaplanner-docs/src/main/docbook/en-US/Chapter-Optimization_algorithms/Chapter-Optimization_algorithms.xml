@@ -495,7 +495,7 @@
     </orderedlist>
   </section>
 
-  <section>
+  <section xml:id="solverPhase">
     <title><literal>SolverPhase</literal></title>
 
     <para>A <literal>Solver</literal> can use multiple optimization algorithms in sequence. <emphasis role="bold">Each
@@ -516,7 +516,7 @@
     ... &lt;!-- First phase: First Fit Decreasing --&gt;
   &lt;/constructionHeuristic&gt;
   &lt;localSearch&gt;
-    ... &lt;!-- Second phase: Simulated Annealing --&gt;
+    ... &lt;!-- Second phase: Late acceptance --&gt;
   &lt;/localSearch&gt;
   &lt;localSearch&gt;
     ... &lt;!-- Third phase: Tabu Search --&gt;
