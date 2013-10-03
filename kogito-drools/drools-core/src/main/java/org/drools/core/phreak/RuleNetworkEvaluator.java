@@ -375,8 +375,8 @@ public class RuleNetworkEvaluator {
                 bit = bit << 1;
             } else {
                 // Reached end of segment, start on new segment.
-                synchronized ( smem.getStagedLeftTuples() ) {
-                    smem.getStagedLeftTuples().addAll( stagedLeftTuples ); // must put back all the LTs
+                synchronized ( smem.getFirst().getStagedLeftTuples() ) {
+                    smem.getFirst().getStagedLeftTuples().addAll( stagedLeftTuples ); // must put back all the LTs
                     // end of SegmentMemory, so we know that stagedLeftTuples is not null
                     SegmentPropagator.propagate(smem,
                                                 trgTuples,
@@ -398,13 +398,13 @@ public class RuleNetworkEvaluator {
 
         if ( stagedLeftTuples != null && !stagedLeftTuples.isEmpty() ) {
             // must restore the StagedLeftTulpes to the segment they were removed from
-            synchronized ( smem.getStagedLeftTuples() ) {
-                smem.getStagedLeftTuples().addAll( stagedLeftTuples ); // must put back all the LTs
+            synchronized ( smem.getFirst().getStagedLeftTuples() ) {
+                smem.getFirst().getStagedLeftTuples().addAll( stagedLeftTuples ); // must put back all the LTs
             }
         }
     }
 
-    private LeftTupleSets getStagedLeftTuples(NetworkNode node, InternalWorkingMemory wm, SegmentMemory smem) {
+    public static LeftTupleSets getStagedLeftTuples(NetworkNode node, InternalWorkingMemory wm, SegmentMemory smem) {
         if (node == smem.getTipNode() ) {
             // we are about to process the segment tip, allow it to merge insert/update/delete clashes
             if ( smem.isEmpty() ) {

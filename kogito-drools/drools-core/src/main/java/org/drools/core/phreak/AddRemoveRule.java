@@ -262,7 +262,7 @@ public class AddRemoveRule {
          // The graph must be fully updated before SegmentMemory and PathMemories are mutated
          if ( !sm.getStagedLeftTuples().isEmpty() && pmem.isRuleLinked() ) {
              rne.outerEval( lian, pmem, sink, bit, mem,
-                            smems, smemIndex, sm.getStagedLeftTuples(),
+                            smems, smemIndex, sm.getStagedLeftTuples().takeAll(),
                             wm, stack, outerStack, visitedRules, true,
                             pmem.getRuleAgendaItem().getRuleExecutor() );
          }

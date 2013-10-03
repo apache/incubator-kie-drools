@@ -46,7 +46,7 @@ public class PhreakNotNode {
 
         if (srcRightTuples.getInsertFirst() != null) {
             // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
-            doRightInserts(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+            doRightInserts(notNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
 
 
@@ -120,17 +120,13 @@ public class PhreakNotNode {
                                BetaMemory bm,
                                InternalWorkingMemory wm,
                                RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples) {
+                               LeftTupleSets trgLeftTuples,
+                               LeftTupleSets stagedLeftTuples ) {
 
         LeftTupleMemory ltm = bm.getLeftTupleMemory();
         RightTupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
-
-        LeftTupleSets stagedLeftTuples = null;
-        if (!bm.getSegmentMemory().isEmpty()) {
-            stagedLeftTuples = bm.getSegmentMemory().getFirst().getStagedLeftTuples();
-        }
 
         // this must be processed here, rather than initial insert, as we need to link the blocker
         unlinkNotNodeOnRightInsert(notNode,
