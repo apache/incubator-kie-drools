@@ -156,7 +156,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        return null;
+        throw new LogicalTypeInconsistencyException( "Could not apply trait " + trait + " to object " + core, trait, core.getClass() );
     }
 
 
@@ -279,7 +279,8 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
                 Field staticField;
                 try {
-                    if ( cdef.isFullTraiting() || field.getType().isAssignableFrom( traitField.getType() ) ) {
+                    if ( ( cdef.isFullTraiting() && ( ! traitField.getType().isPrimitive() || field.getType().equals( traitField.getType() ) ) )
+                         || field.getType().isAssignableFrom( traitField.getType() ) ) {
                         staticField = proxyClass.getField( traitField.getName() + "_reader" );
                         staticField.set( null, field.getFieldAccessor().getReadAccessor() );
 

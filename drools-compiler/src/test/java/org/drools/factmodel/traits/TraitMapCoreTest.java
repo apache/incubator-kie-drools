@@ -5,11 +5,16 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestTraitMapCore extends CommonTestMethodBase {
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+
+public class TraitMapCoreTest extends CommonTestMethodBase {
 
 
 
@@ -24,8 +29,6 @@ public class TestTraitMapCore extends CommonTestMethodBase {
                         "\n" +
                         "declare HashMap @Traitable end \n" +
                         "" +
-                        "declare org.drools.factmodel.MapCore \n" +
-                        "end\n" +
                         "\n" +
                         "global List list; \n" +
                         "\n" +
@@ -81,17 +84,11 @@ public class TestTraitMapCore extends CommonTestMethodBase {
 
 
 
-
-
-
-
     @Test
     public void donMapTest() {
         String source = "package org.drools.traits.test; \n" +
                         "import java.util.*\n;" +
                         "import org.drools.factmodel.traits.Traitable;\n" +
-                        "" +
-                        "declare org.drools.factmodel.MapCore end \n" +
                         "" +
                         "global List list; \n" +
                         "" +
@@ -154,8 +151,6 @@ public class TestTraitMapCore extends CommonTestMethodBase {
                         "" +
                         "declare HashMap @Traitable end \n" +
                         "\n" +
-                        "declare org.drools.factmodel.MapCore \n" +
-                        "end\n" +
                         "\n" +
                         "global List list; \n" +
                         "\n" +
@@ -284,10 +279,7 @@ public class TestTraitMapCore extends CommonTestMethodBase {
                         "" +
                         "global List list;\n " +
                         "" +
-                        "declare HashMap @Traitable(logical=true) end \n" +
-                        "\n" +
-                        "declare org.drools.factmodel.MapCore \n" +
-                        "end\n" +
+                        "declare HashMap @Traitable() end \n" +
                         "\n" +
                         "global List list; \n" +
                         "\n" +
@@ -345,29 +337,73 @@ public class TestTraitMapCore extends CommonTestMethodBase {
     }
 
 
+
+    @Test
+    public void testMapCoreAliasingLogicalTrueWithTypeClash(  ) {
+        String source = "package org.drools.factmodel.traits.test;\n" +
+                        "\n" +
+                        "import java.util.*;\n" +
+                        "import org.drools.factmodel.traits.*;\n" +
+                        "" +
+                        "global List list;\n " +
+                        "" +
+                        "declare HashMap @Traitable( logical = true ) end \n" +
+                        "\n" +
+                        "global List list; \n" +
+                        "\n" +
+                        "declare trait PersonMap\n" +
+                        "@propertyReactive  \n" +
+                        "   name : String  \n" +
+                        "   age  : Integer  @Alias( \"years\" ) \n" +
+                        "   eta  : Integer  @Alias( \"years\" ) \n" +
+                        "   height : Double  @Alias( \"tall\" ) \n" +
+                        "   sen : String @Alias(\"years\") \n " +
+                        "end\n" +
+                        "\n" +
+                        "rule Don  \n" +
+                        "when  \n" +
+                        "  $m : Map()\n" +
+                        "then  \n" +
+                            // will fail due to the alias "sen", typed String and incompatible with Int
+                        "  PersonMap pm = don( $m, PersonMap.class ); \n" +
+                        "  list.add ( pm ); \n" +
+                        "\n" +
+                        "end\n" +
+                        "\n" +
+                        "" +
+                        "\n";
+
+        StatefulKnowledgeSession ks = loadKnowledgeBaseFromString( source ).newStatefulKnowledgeSession();
+        TraitFactory.setMode( TraitFactory.VirtualPropertyMode.MAP, ks.getKnowledgeBase() );
+
+        List list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        Map<String,Object> map = new HashMap<String, Object>(  );
+        map.put( "name", "john" );
+        map.put( "years", new Integer( 18 ) );
+        ks.insert( map );
+
+        ks.fireAllRules();
+
+        assertTrue( list.size() == 1 && list.get( 0 ) == null );
+    }
+
+
     @Test
     public void testDrools216(){
 
         String drl = "" +
                 "\n" +
-                "/*\n" +
-                "  Map accessors and custom evaluators do not work together\n" +
-                "  Map( this[ \"x\" ] custOp value ) fails.\n" +
-                "  The custom evaluator is passed the map itself, rather than the value\n" +
-                "  corresponding to the key.\n" +
-                "*/\n" +
                 "\n" +
-                "package openehr.test;\n" +
+                "package org.drools.factmodel.traits.test;\n" +
                 "\n" +
                 "import java.util.*;\n" +
                 "import org.drools.factmodel.traits.Alias\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
-                "\n" +
-                "declare org.drools.factmodel.MapCore  //what is this for\n" +
-                "end\n" +
-                "\n" +
+                "declare HashMap @Traitable(logical=true) end \n" +
                 "\n" +
                 "declare trait Citizen\n" +
                 "@traitable\n" +
@@ -449,23 +485,14 @@ public class TestTraitMapCore extends CommonTestMethodBase {
 
         String drl = "" +
                 "\n" +
-                "/*\n" +
-                "MVEL throws an exception when using bound variables and map accessors\n" +
-                "Map( $c : this[ \"x\" ], $c op value )\n" +
-                "throws an exception as MVEL tries to compile the constraint\n" +
-                "*/\n" +
-                "\n" +
-                "package openehr.test;\n" +
+                "package org.drools.factmodel.traits.test;\n" +
                 "\n" +
                 "import java.util.*;\n" +
                 "import org.drools.factmodel.traits.Alias\n" +
                 "\n" +
                 "global java.util.List list;\n" +
-                "\n" +
-                "\n" +
-                "declare org.drools.factmodel.MapCore  //what is this for\n" +
-                "end\n" +
-                "\n" +
+                "" +
+                "declare HashMap @Traitable(logical=true) end \n" +
                 "\n" +
                 "declare trait Citizen\n" +
                 "@traitable\n" +
@@ -546,25 +573,21 @@ public class TestTraitMapCore extends CommonTestMethodBase {
 
         String drl = "" +
                 "\n" +
-                "/*\n" +
-                "trait field @aliasing does not work when Maps are traited\n" +
-                "*/\n" +
-                "package openehr.test;\n" +
+                "package org.drools.factmodel.traits.test;\n" +
                 "\n" +
                 "import java.util.*;\n" +
                 "import org.drools.factmodel.traits.Alias\n" +
                 "\n" +
                 "global java.util.List list;\n" +
                 "\n" +
-                "declare org.drools.factmodel.MapCore  //what is this for\n" +
-                "end\n" +
-                "\n" +
-                "\n" +
                 "declare trait Citizen\n" +
                 "@traitable\n" +
                 "    citizenship : String = \"Unknown\"\n" +
                 "end\n" +
                 "\n" +
+                "declare HashMap @Traitable(logical=true) end \n" +
+                "" +
+                "" +
                 "declare trait Student extends Citizen\n" +
                 "@propertyReactive\n" +
                 "   ID : String = \"412314\" @Alias(\"personID\")\n" +
@@ -671,20 +694,13 @@ public class TestTraitMapCore extends CommonTestMethodBase {
 
         String drl = "" +
                 "\n" +
-                "/*\n" +
-                "@aliasing soft fields may fail silently or throw exceptions\n" +
-                "the behavior of @alias is undefined for soft fields and may be erratic at best.\n" +
-                "*/\n" +
                 "\n" +
-                "package openehr.test;\n" +
+                "package org.drools.factmodel.traits.test;\n" +
                 "\n" +
                 "import java.util.*;\n" +
                 "import org.drools.factmodel.traits.Alias\n" +
                 "\n" +
                 "global java.util.List list;\n" +
-                "\n" +
-                "declare org.drools.factmodel.MapCore  //what is this for\n" +
-                "end\n" +
                 "\n" +
                 "\n" +
                 "declare trait Citizen\n" +
@@ -694,7 +710,7 @@ public class TestTraitMapCore extends CommonTestMethodBase {
                 "\n" +
                 "declare trait Student extends Citizen\n" +
                 "@propertyReactive\n" +
-                "   ID : String = \"412314\" @Alias(\"personID\") //notice: by removing this Alias rule \"4\" would be ok\n" +
+                "   ID : String = \"412314\" @Alias(\"personID\") \n" +
                 "   GPA : Double = 3.99\n" +
                 "   SSN : String = \"888111155555\" @Alias(\"socialSecurity\")\n" +
                 "end\n" +
@@ -710,7 +726,7 @@ public class TestTraitMapCore extends CommonTestMethodBase {
                 "no-loop\n" +
                 "when\n" +
                 "then\n" +
-                "    Person p = new Person(\"1020\",true);\n" +
+                "    Person p = new Person( null, true );\n" +
                 "    insert(p);\n" +
                 "    list.add(\"initialized\");\n" +
                 "end\n" +
@@ -740,7 +756,6 @@ public class TestTraitMapCore extends CommonTestMethodBase {
                 "no-loop\n" +
                 "when\n" +
                 "    Student(fields[\"personID\"] == \"412314\", fields[\"socialSecurity\"] == \"888111155555\")\n" +
-                "    //$stu : Student(personID == \"412314\", socialSecurity == \"888111155555\")//notice: compile error\n" +
                 "then\n" +
                 "    list.add(\"student has personID and socialSecurity\");\n" +
                 "end\n" +
@@ -779,5 +794,174 @@ public class TestTraitMapCore extends CommonTestMethodBase {
     }
 
 
+
+    @Test
+    public void testMapTraitsMismatchTypes()
+    {
+        String drl = "" +
+                     "package org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare org.drools.factmodel.MapCore\n" +
+                     "@Traitable( logical = true )\n" +
+                     "end\n" +
+                     "" +
+                     "declare HashMap @Traitable( logical = true ) end \n" +
+                     "\n" +
+                     "\n" +
+                     "declare trait ParentTrait\n" +
+                     "@propertyReactive\n" +
+                     "    name : String\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "@propertyReactive\n" +
+                     "    naam : String\n" +
+                     "    id : float \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don1\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "    $map : Map()\n" +
+                     "then\n" +
+                          // fails since current value for id is float, incompatible with int
+                     "    ParentTrait pt = don( $map , ParentTrait.class );\n" +
+                          // success
+                     "    ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                     "" +
+                     "  System.out.println( $map ); \n" +
+                     "    list.add( pt );\n" +
+                     "    list.add( ct );\n" +
+                     "end";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put( "name","hulu" );
+        map.put( "id", 3.4f );
+        ksession.insert( map );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertNull( list.get( 0 ) );
+        assertNotNull( list.get( 1 ) );
+    }
+
+
+    @Test
+    public void testMapTraitNoType()
+    {
+        String drl = "" +
+                     "package openehr.test;//org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare HashMap @Traitable end \n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "@propertyReactive\n" +
+                     "    naam : String = \"kudak\"\n" +
+                     "    id : int = 1020\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "    $map : Map()" +    //map is empty
+                     "then\n" +
+                     "    don( $map , ChildTrait.class );\n" +
+                     "    list.add(\"correct1\");\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"check\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "    $c : ChildTrait($n : naam == \"kudak\", id == 1020 )\n" +
+                     "    $p : Map( this[\"naam\"] == $n )\n" +
+                     "then\n" +
+                     "    System.out.println($p);\n" +
+                     "    System.out.println($c);\n" +
+                     "    list.add(\"correct2\");\n" +
+                     "end";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        Map<String,Object> map = new HashMap<String, Object>();
+//        map.put("name", "hulu");
+        ksession.insert(map);
+        ksession.fireAllRules();
+
+        assertTrue(list.contains("correct1"));
+        assertTrue(list.contains("correct2"));
+    }
+
+
+    @Test
+    public void testMapTraitMismatchTypes()
+    {
+        String drl = "" +
+                     "package openehr.test;//org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +                "" +
+                     "declare HashMap @Traitable( logical = true ) end \n" +
+                     "\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "@Trait( logical = true )" +
+                     "@propertyReactive\n" +
+                     "    naam : String = \"kudak\"\n" +
+                     "    id : int = 1020\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "    $map : Map()" +
+                     "then\n" +
+                          // fails because current name is Int, while ChildTrait tries to enforce String
+                     "    ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                     "    list.add( ct );\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("naam", new Integer(12) );
+        ksession.insert(map);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( null, list.get( 0 ) );
+    }
 
 }

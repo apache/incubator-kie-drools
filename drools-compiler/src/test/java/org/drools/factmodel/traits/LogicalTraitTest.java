@@ -29,7 +29,6 @@ import org.drools.integrationtests.SerializationHelper;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,6 +36,7 @@ import org.junit.runners.Parameterized;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @RunWith(Parameterized.class)
@@ -1118,4 +1118,165 @@ public class LogicalTraitTest extends CommonTestMethodBase {
 
     }
 
+
+    @Test
+    public void testTraitMismatchTypes()
+    {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Thing;\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "\n" +
+                     "" +
+                     "declare Parent\n" +
+                     "@Traitable( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     "    id : int\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ParentTrait\n" +
+                     "@Trait( logical = true )" + //does not have effect
+                     "@propertyReactive\n" +
+                     "    id : float\n" +   //different exception for Float
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    Parent p = new Parent(1010);\n" +
+                     "    insert( p );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "when\n" +
+                     "    $p : Parent(id > 1000)\n" +
+                     "then\n" +
+                     "    Thing t = don( $p , ParentTrait.class );\n" +
+                     "    list.add( t );\n" +
+                     "end";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertTrue( list.size() == 1 && list.contains( null ) );
+    }
+
+    @Test
+    public void testTraitMismatchTypes2()
+    {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Thing;\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "\n" +
+                     "declare Foo end \n" +
+                     "declare Bar end \n" +
+                     "" +
+                     "declare Parent\n" +
+                     "@Traitable( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     "    id : Foo\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ParentTrait\n" +
+                     "@Trait( logical = true )" + //does not have effect
+                     "@propertyReactive\n" +
+                     "    id : Bar\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    Parent p = new Parent(new Foo());\n" +
+                     "    insert( p );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "when\n" +
+                     "    $p : Parent(id != null)\n" +
+                     "then\n" +
+                     "    Thing t = don( $p , ParentTrait.class );\n" +
+                     "    list.add( t );\n" +
+                     "end";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertTrue( list.size() == 1 && list.contains( null ) );
+    }
+
+    @Test
+    public void testTraitMismatchTypes3()
+    {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "\n" +
+                     "declare Foo end \n" +
+                     "declare Bar extends Foo end \n" +
+                     "" +
+                     "declare Parent\n" +
+                     "@Traitable( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     "    id : Foo\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ParentTrait\n" +
+                     "@Trait( logical = true )" + //does not have effect
+                     "@propertyReactive\n" +
+                     "    id : Bar\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    Parent p = new Parent(null);\n" +
+                     "    insert( p );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "when\n" +
+                     "    $p : Parent()\n" +
+                     "then\n" +
+                     "    ParentTrait pt = don( $p , ParentTrait.class );\n" +
+                     "    pt.setId( new Bar() ); \n" +
+                     "   list.add( $p.getId() ); \n" +
+                     "end";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "org.drools.factmodel.traits.test.Bar", list.get( 0 ).getClass().getName() );
+    }
 }

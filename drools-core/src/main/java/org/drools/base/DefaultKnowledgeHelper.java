@@ -25,6 +25,7 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.FactException;
@@ -38,6 +39,7 @@ import org.drools.common.InternalWorkingMemoryActions;
 import org.drools.common.InternalWorkingMemoryEntryPoint;
 import org.drools.common.LogicalDependency;
 import org.drools.common.NamedEntryPoint;
+import org.drools.common.ObjectStore;
 import org.drools.common.SimpleLogicalDependency;
 import org.drools.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.util.LinkedList;
@@ -46,6 +48,7 @@ import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.MapCore;
 import org.drools.factmodel.traits.CoreWrapper;
 import org.drools.factmodel.traits.Key;
+import org.drools.factmodel.traits.LogicalMapCore;
 import org.drools.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.factmodel.traits.Thing;
 import org.drools.factmodel.traits.TraitFieldTMS;
@@ -629,10 +632,15 @@ public class DefaultKnowledgeHelper
     }
 
     protected <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, TraitFactory builder ) {
-        if ( core instanceof Map ) {
-            return new MapCore( (Map) core );
-        }
         ClassDefinition coreDef = lookupClassDefinition( core );
+
+        if ( core instanceof Map ) {
+            if ( ! coreDef.isTraitable() ) {
+                throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
+            }
+            return coreDef.isFullTraiting() ? new LogicalMapCore( (Map) core ) : new MapCore( (Map) core );
+        }
+
         CoreWrapper<K> wrapper = builder.getCoreWrapper( core.getClass(), coreDef );
         if ( wrapper == null ) {
             throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? ");
@@ -649,7 +657,7 @@ public class DefaultKnowledgeHelper
                 return decl.getTypeClassDef();
             }
         }
-        throw new UnsupportedOperationException( "Error: cannot apply a trait to non-traitable class " + core.getClass() + ". Was it declared as @Traitable? " );
+        return null;
     }
 
     protected <T, K> T applyTrait( K core, Class<T> trait, Object value, boolean logical ) throws LogicalTypeInconsistencyException {
@@ -743,7 +751,13 @@ public class DefaultKnowledgeHelper
         }
 
         if ( needsUpdate ) {
-            InternalFactHandle h = (InternalFactHandle) getFactHandle( core );
+            InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
+            if ( h == null ) {
+                h = lookupHandleForWrapper( core );
+            }
+            if ( h == null ) {
+                throw new FactException( "Update error: handle not found for object: " + core + ". Is it in the working memory?" );
+            }
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
                                                  "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );
@@ -756,6 +770,20 @@ public class DefaultKnowledgeHelper
         }
 
         return thing;
+    }
+
+    private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
+        for ( WorkingMemoryEntryPoint ep : workingMemory.getEntryPoints().values() ) {
+            ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
+            Iterator iter = store.iterateFactHandles();
+            while ( iter.hasNext() ) {
+                InternalFactHandle handle = (InternalFactHandle) iter.next();
+                if ( handle.isTraitable() && handle.getObject() instanceof CoreWrapper && ( (CoreWrapper) handle.getObject() ).getCore() == core ) {
+                    return handle;
+                }
+            }
+        }
+        return null;
     }
 
     private <K> TraitableBean makeTraitable( K core, TraitFactory builder, boolean logical ) {

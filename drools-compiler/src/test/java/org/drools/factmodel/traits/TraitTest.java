@@ -4315,4 +4315,61 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
+
+
+    @Test
+    public void testTraitNoType() {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Thing;\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "\n" +
+                     "declare Parent\n" +
+                     "@Traitable( logical = true )" +
+                     "@propertyReactive\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "@propertyReactive\n" +
+                     "    naam : String = \"kudak\"\n" +
+                     "    id : int = 1020\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    Parent p = new Parent();" +
+                     "    insert(p);\n" +
+                     "    ChildTrait ct = don( p , ChildTrait.class );\n" +
+                     "    list.add(\"correct1\");\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"check\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "    $c : ChildTrait($n : naam == \"kudak\", id == 1020 )\n" +
+                     "    $p : Thing( core == $c.core, fields[\"naam\"] == $n )\n" +
+                     "then\n" +
+                     "    list.add(\"correct2\");\n" +
+                     "end";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertTrue(list.contains("correct1"));
+        assertTrue(list.contains("correct2"));
+    }
+
 }

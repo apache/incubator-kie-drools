@@ -69,9 +69,16 @@ public class TraitRegistry implements Externalizable {
         ClassDefinition mapcoreDef = new ClassDefinition();
         mapcoreDef.setClassName( MapCore.class.getName() );
         mapcoreDef.setDefinedClass( MapCore.class );
-        mapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
+        mapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName(), CoreWrapper.class.getName() } );
         mapcoreDef.setTraitable( true );
         addTraitable( mapcoreDef );
+
+        ClassDefinition logicalMapcoreDef = new ClassDefinition();
+        logicalMapcoreDef.setClassName( LogicalMapCore.class.getName() );
+        logicalMapcoreDef.setDefinedClass( LogicalMapCore.class );
+        logicalMapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName(), CoreWrapper.class.getName() } );
+        logicalMapcoreDef.setTraitable( true, true );
+        addTraitable( logicalMapcoreDef );
     }
 
     public void merge( TraitRegistry other ) {

@@ -321,7 +321,7 @@ public class ClassDefinition
     }
 
     public boolean isTraitable() {
-        return traitable != TRAITING_MODE.NONE;
+        return traitable != null && traitable != TRAITING_MODE.NONE;
     }
 
     public void setTraitable( boolean traitable ) {
