@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
-import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.StackEntry;
@@ -51,8 +50,6 @@ import org.drools.core.spi.ConsequenceExceptionHandler;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
-import org.drools.core.time.impl.ExpressionIntervalTimer;
-import org.drools.core.time.impl.Timer;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.LeftTupleList;
@@ -312,7 +309,7 @@ public class DefaultAgenda
         }
         String group = item.getRule().getActivationGroup();
         if ( group != null && group.length() > 0 ) {
-            ActivationGroup actgroup = (ActivationGroup) getActivationGroup( group );
+            ActivationGroup actgroup = getActivationGroup( group );
 
             // Don't allow lazy activations to activate, from before it's last trigger point
             if ( actgroup.getTriggeredForRecency() != 0 &&
@@ -595,7 +592,7 @@ public class DefaultAgenda
      * @see org.kie.common.AgendaI#getAgendaGroups()
      */
     public AgendaGroup[] getAgendaGroups() {
-        return (AgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
+        return this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
     }
 
     public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
@@ -672,7 +669,7 @@ public class DefaultAgenda
             group.addNodeInstance( processInstanceId, nodeInstanceId );
             group.setActive( true );
         }
-        setFocus( (InternalAgendaGroup)  group);
+        setFocus( group );
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
                                                                                                      this.workingMemory );
     }
@@ -761,7 +758,7 @@ public class DefaultAgenda
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
             // preserve lazy items.
-            ((InternalAgendaGroup) group).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+            group.setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
             for ( Match a : group.getActivations() ) {
                 if ( ((Activation) a).isRuleAgendaItem() ) {
                     ((RuleAgendaItem) a).getRuleExecutor().reEvaluateNetwork( this.workingMemory, new org.drools.core.util.LinkedList<StackEntry>(), false );
@@ -785,8 +782,6 @@ public class DefaultAgenda
             clearAndCancelAgendaGroup( internalAgendaGroup );
         }
 
-        final EventSupport eventsupport = (EventSupport) this.workingMemory;
-
         // cancel all staged activations
         clearAndCancelStagedActivations();
 
@@ -794,7 +789,6 @@ public class DefaultAgenda
         for ( ActivationGroup group : this.activationGroups.values() ) {
             clearAndCancelActivationGroup( group);
         }
-
     }
 
     /*
@@ -895,7 +889,7 @@ public class DefaultAgenda
     }
 
     public void clearAndCancelRuleFlowGroup(final String name) {
-        clearAndCancelAgendaGroup( (InternalAgendaGroup) agendaGroups.get(name) );
+        clearAndCancelAgendaGroup( agendaGroups.get(name) );
     }
 
     public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup) {
@@ -922,7 +916,7 @@ public class DefaultAgenda
                 evaluateEagerList();
                 this.workingMemory.prepareToFireActivation();
                 tryagain = false;
-                final InternalAgendaGroup group = (InternalAgendaGroup) getNextFocus();
+                final InternalAgendaGroup group = getNextFocus();
                 // if there is a group with focus
                 if ( group != null ) {
                     RuleAgendaItem item;
@@ -942,7 +936,7 @@ public class DefaultAgenda
                         }
                     }
 
-                    if ( (AgendaItem) group.peek() == null || !((AgendaItem) group.peek()).getTerminalNode().isFireDirect() ) {
+                    if ( group.peek() == null || !((AgendaItem) group.peek()).getTerminalNode().isFireDirect() ) {
                         // make sure the "fireDirect" meta rules have all impacted first, before unstaging.
                         unstageActivations();
                     }
@@ -962,7 +956,7 @@ public class DefaultAgenda
     }
 
     public int sizeOfRuleFlowGroup(String name) {
-        InternalAgendaGroup group = (InternalAgendaGroup) agendaGroups.get(name);
+        InternalAgendaGroup group = agendaGroups.get(name);
         if (group == null) {
             return 0;
         }
