@@ -3520,11 +3520,57 @@ public class CepEspTest extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal("list", list);
 
-        SimpleFact fact = new SimpleFact("1");
+        SimpleFact fact = new SimpleFact("id1");
         ksession.insert(fact);
         ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("OK", fact.getStatus());
+    }
+
+    @Test
+    public void testCollectAfterRetract() {
+        // BZ-1015109
+        String drl =
+                "import org.drools.compiler.integrationtests.CepEspTest.SimpleFact;\n" +
+                "import java.util.List;\n" +
+                "global List list;\n" +
+                "\n" +
+                "declare SimpleFact\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Retract facts if 2 or more\" salience 1000\n" +
+                "when\n" +
+                "    $facts : List( size >= 2 ) from collect( SimpleFact() )\n" +
+                "then\n" +
+                "    for (Object f: new java.util.LinkedList($facts)) {\n" +
+                "        System.out.println(\"Retracting \"+f);\n" +
+                "        retract(f);\n" +
+                "    }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Still facts in WM\"\n" +
+                "when\n" +
+                "    $facts : List( size != 0 ) from collect( SimpleFact() )\n" +
+                "then\n" +
+                "    list.add( $facts.size() );\n" +
+                "end\n";
+
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new SimpleFact("id1"));
+        ksession.insert(new SimpleFact("id2"));
+        ksession.insert(new SimpleFact("id3"));
+
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
     }
 
     public static class SimpleFact {
