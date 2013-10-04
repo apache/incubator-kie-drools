@@ -301,7 +301,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
         boolean stagedDeleteWasEmpty = false;
         if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
             stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
-            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
+            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple,
+                                                      context.compareTypeAndClone(PropagationContext.MODIFICATION, PropagationContext.DELETION),
+                                                      sm.getNodeMemories().getFirst() ));
             if ( log.isTraceEnabled() ) {
                 log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PhreakPropagationContext.intEnumToString(context), leftTuple );
             }
