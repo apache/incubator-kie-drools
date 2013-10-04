@@ -3708,5 +3708,221 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+
+
+    public static class MyEvent {
+        private long timestamp;
+        public MyEvent( long timestamp ) { this.timestamp = timestamp; }
+        public long getTimestamp() { return timestamp; }
+        public void setTimestamp( long timestamp ) { this.timestamp = timestamp; }
+        public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
+    }
+
+    @Test
+    public void testEventStreamWithEPsAndDefaultPseudo() throws InterruptedException {
+        //DROOLS-286
+        String drl = "\n" +
+                     "import java.util.*;\n" +
+                     "import org.drools.integrationtests.CepEspTest.MyEvent; \n" +
+                     "" +
+                     "declare MyEvent\n" +
+                     "    @role(event)\n" +
+                     "    @timestamp(timestamp)\n" +
+                     "end\n" +
+                     "\n" +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "rule \"over 0.3s\"\n" +
+                     "salience 1 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(300ms))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 0.3s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 1s\"\n" +
+                     "salience 2 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(1s))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 1s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 3s\"\n" +
+                     "salience 3 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(3s))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 3s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 0.3s ep\"\n" +
+                     "salience 4 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(300ms) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 0.3s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 1s ep\"\n" +
+                     "salience 5 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(1s) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 1s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 3s ep\"\n" +
+                     "salience 6 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(3s) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 3s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ArrayList list = new ArrayList( );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        list.clear();
+
+        for ( int j = 0; j < 5; j++ ) {
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            ksession.insert( new MyEvent( clock.getCurrentTime() ) );
+            ksession.getWorkingMemoryEntryPoint( "stream" ).insert( new MyEvent( clock.getCurrentTime() ) );
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+
+            System.out.println( list );
+            switch ( j ) {
+                case 0 : assertEquals( Arrays.asList( 1, 1, 0, 1, 1, 0 ), list );
+                    break;
+                case 1 : assertEquals( Arrays.asList( 2, 1, 0, 2, 1, 0 ), list );
+                    break;
+                case 2 :
+                case 3 :
+                case 4 : assertEquals( Arrays.asList( 3, 1, 0, 3, 1, 0 ), list );
+                    break;
+                default: fail();
+            }
+            list.clear();
+
+            System.out.println( "-------------- SLEEP ------------" );
+        }
+
+        ksession.dispose();
+    }
+
+
+
+    @Test
+    public void testCollectAfterRetract() {
+        // BZ-1015109
+        String drl =
+                "import org.drools.integrationtests.CepEspTest.SimpleFact;\n" +
+                "import java.util.List;\n" +
+                "global List list;\n" +
+                "\n" +
+                "declare SimpleFact\n" +
+                " @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Retract facts if 2 or more\" salience 1000\n" +
+                "when\n" +
+                " $facts : List( size > 0 ) from collect( SimpleFact() )\n" +
+                "then\n" +
+                " for (Object f: new java.util.LinkedList($facts)) {\n" +
+                " System.out.println(\"Retracting \"+f);\n" +
+                " retract(f);\n" +
+                " }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Still facts in WM\"\n" +
+                "when\n" +
+                " $facts : List( size != 0 ) from collect( SimpleFact() )\n" +
+                "then\n" +
+                "System.out.println( \"bubu\" );\n" +
+                " list.add( $facts.size() );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new SimpleFact("id1"));
+        ksession.insert(new SimpleFact("id2"));
+        ksession.insert(new SimpleFact("id3"));
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, ksession.getFactCount());
+        assertEquals(0, list.size());
+    }
+
+
+
+    public static class SimpleFact {
+
+        private String status = "NOK";
+        private final String id;
+
+        public SimpleFact(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(final String s) {
+            status = s;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName()+" (id="+id+", status=" + status+")";
+        }
+    }
+
 }
 

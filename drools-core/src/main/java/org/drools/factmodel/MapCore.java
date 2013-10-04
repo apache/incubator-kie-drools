@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Traitable
-public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object> {
+public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object>, CoreWrapper<Map> {
 
     private String id;
 
@@ -47,7 +47,7 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
 
     }
 
-    public MapCore(Map map) {
+    public MapCore( Map map ) {
         id = UUID.randomUUID().toString();
         __$$dynamic_properties_map$$ = map;
     }
@@ -214,7 +214,8 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         ((TraitTypeMap) _getTraitMap()).setBottomCode( bottomTypeCode );
     }
 
-    public void init( MapCore core ) {
+    public void init( Map core ) {
+//        __$$dynamic_properties_map$$ = core;
     }
 
     public Map getCore() {
