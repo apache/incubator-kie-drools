@@ -1,0 +1,20 @@
+/target
+/local
+
+# Eclipse, Netbeans and IntelliJ files
+/.*
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
+/*.iml
+
+# Test data
+/activemq-data
+/data
+settings-db.xml
+lib-jdbc/
+
+# modules that don't exist here anymore
+jbpm-human-task-services/
+/*.db
