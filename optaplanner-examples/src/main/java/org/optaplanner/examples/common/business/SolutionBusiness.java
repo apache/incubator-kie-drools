@@ -190,14 +190,15 @@ public class SolutionBusiness {
             // Not called on the event thread
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
                 // Avoid ConcurrentModificationException when there is an unprocessed ProblemFactChange
-                // because the paint method uses the problem facts instances as the solver
-                // unlike the planning entities which are cloned
+                // because the paint method uses the same problem facts instances as the Solver's workingSolution
+                // unlike the planning entities of the bestSolution which are cloned from the Solver's workingSolution
                 if (solver.isEveryProblemFactChangeProcessed()) {
                     // final is also needed for thread visibility
                     final Solution latestBestSolution = event.getNewBestSolution();
                     // Migrate it to the event thread
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
+                            // TODO by the time we process this event, a newer bestSolution might already be queued
                             guiScoreDirector.setWorkingSolution(latestBestSolution);
                             solverAndPersistenceFrame.bestSolutionChanged();
                         }
