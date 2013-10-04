@@ -189,7 +189,7 @@ public class PhreakTimerNode {
                     LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
                     if ( childLeftTuple != null ) {
                         switch ( childLeftTuple.getStagedType() ) {
-                        // handle clash with already staged entries
+                            // handle clash with already staged entries
                             case LeftTuple.INSERT :
                                 stagedLeftTuples.removeInsert( childLeftTuple );
                                 break;
@@ -259,7 +259,7 @@ public class PhreakTimerNode {
         final Trigger trigger = timer.createTrigger( timestamp, leftTuple, jobHandle, calendarNames, calendars, timerNode.getDeclarations(), wm );
         return trigger;
     }
-    
+
     public static interface Scheduler {
         public void schedule( Trigger t );
         public Trigger getTrigger();
@@ -439,9 +439,8 @@ public class PhreakTimerNode {
             }
 
             LeftTupleSets trgLeftTuples = new LeftTupleSetsImpl();
-            LeftTupleSets stagedLeftTuples = RuleNetworkEvaluator.getStagedLeftTuples( sink, wm, sm );
             doPropagateChildLeftTuples(null, tm, sink, wm,
-                                       null, trgLeftTuples, stagedLeftTuples );
+                                       null, trgLeftTuples, sm.getStagedLeftTuples());
 
             RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
             LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
@@ -517,7 +516,7 @@ public class PhreakTimerNode {
         public Trigger getTrigger() {
             return trigger;
         }
-        
+
         public int getTimerNodeId() {
             return timerNodeId;
         }
@@ -538,14 +537,14 @@ public class PhreakTimerNode {
             TimerNodeJobContext tnJobCtx = (TimerNodeJobContext) jobCtx;
 
             return ProtobufMessages.Timers.Timer.newBuilder()
-                    .setType( ProtobufMessages.Timers.TimerType.TIMER_NODE )
-                    .setTimerNode( ProtobufMessages.Timers.TimerNodeTimer.newBuilder()
-                            .setNodeId( tnJobCtx.getTimerNodeId() )
-                            .setTuple( PersisterHelper.createTuple( tnJobCtx.getLeftTuple() ) )
-                            .setTrigger( ProtobufOutputMarshaller.writeTrigger( tnJobCtx.getTrigger(), 
-                                                                                outputCtx ) )
-                            .build() )
-                    .build();
+                                          .setType( ProtobufMessages.Timers.TimerType.TIMER_NODE )
+                                          .setTimerNode( ProtobufMessages.Timers.TimerNodeTimer.newBuilder()
+                                                                                .setNodeId( tnJobCtx.getTimerNodeId() )
+                                                                                .setTuple( PersisterHelper.createTuple( tnJobCtx.getLeftTuple() ) )
+                                                                                .setTrigger( ProtobufOutputMarshaller.writeTrigger( tnJobCtx.getTrigger(),
+                                                                                                                                    outputCtx ) )
+                                                                                .build() )
+                                          .build();
         }
     }
 
@@ -553,19 +552,19 @@ public class PhreakTimerNode {
             implements
             TimersInputMarshaller {
         public void read(MarshallerReaderContext inCtx) throws IOException,
-                                                       ClassNotFoundException {
+                                                               ClassNotFoundException {
             throw new UnsupportedOperationException( "This method should no longer be used and is due to removal." );
         }
 
         public void deserialize(MarshallerReaderContext inCtx,
                                 ProtobufMessages.Timers.Timer _timer) throws ClassNotFoundException {
             TimerNodeTimer _tn = _timer.getTimerNode();
-            
+
             int timerNodeId = _tn.getNodeId();
             TupleKey tuple = PersisterHelper.createTupleKey( _tn.getTuple() );
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
                                                                    _tn.getTrigger() );
-            
+
             Scheduler scheduler = inCtx.removeTimerNodeScheduler( timerNodeId, tuple );
             if( scheduler != null ) {
                 scheduler.schedule( trigger );

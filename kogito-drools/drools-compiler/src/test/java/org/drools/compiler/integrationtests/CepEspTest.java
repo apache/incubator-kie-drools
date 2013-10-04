@@ -3491,4 +3491,66 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testModifyInStreamMode() {
+        // BZ-1012933
+        String drl =
+                "import org.drools.compiler.integrationtests.CepEspTest.SimpleFact;\n" +
+                "global java.util.List list;\n" +
+                "declare SimpleFact\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"MyRule\"\n" +
+                "when\n" +
+                "    $f : SimpleFact( status == \"NOK\" )\n" +
+                "then\n" +
+                "    list.add(\"Firing\");" +
+                "    $f.setStatus(\"OK\");\n" +
+                "    update ($f);\n" +
+                "end\n";
+
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        SimpleFact fact = new SimpleFact("1");
+        ksession.insert(fact);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("OK", fact.getStatus());
+    }
+
+    public static class SimpleFact {
+
+        private String status = "NOK";
+        private final String id;
+
+        public SimpleFact(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(final String s) {
+            status = s;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName()+" (id="+id+", status=" + status+")";
+        }
+    }
 }

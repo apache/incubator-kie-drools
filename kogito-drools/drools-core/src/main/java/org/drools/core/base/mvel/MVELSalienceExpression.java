@@ -30,6 +30,7 @@ import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
+import org.drools.core.time.TimeUtils;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
@@ -88,8 +89,11 @@ public class MVELSalienceExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return ((Number) MVEL.executeExpression( this.expr,
-                                                 factory )).intValue();
+        Object value = MVEL.executeExpression( this.expr, factory );
+        if (value instanceof String) {
+            value = TimeUtils.parseTimeString( (String)value );
+        }
+        return ((Number)value).intValue();
     }
 
     public int getValue() {
