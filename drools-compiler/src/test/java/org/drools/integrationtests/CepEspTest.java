@@ -3839,5 +3839,90 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
 
+
+    @Test
+    public void testCollectAfterRetract() {
+        // BZ-1015109
+        String drl =
+                "import org.drools.integrationtests.CepEspTest.SimpleFact;\n" +
+                "import java.util.List;\n" +
+                "global List list;\n" +
+                "\n" +
+                "declare SimpleFact\n" +
+                " @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Retract facts if 2 or more\" salience 1000\n" +
+                "when\n" +
+                " $facts : List( size > 0 ) from collect( SimpleFact() )\n" +
+                "then\n" +
+                " for (Object f: new java.util.LinkedList($facts)) {\n" +
+                " System.out.println(\"Retracting \"+f);\n" +
+                " retract(f);\n" +
+                " }\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Still facts in WM\"\n" +
+                "when\n" +
+                " $facts : List( size != 0 ) from collect( SimpleFact() )\n" +
+                "then\n" +
+                "System.out.println( \"bubu\" );\n" +
+                " list.add( $facts.size() );\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new SimpleFact("id1"));
+        ksession.insert(new SimpleFact("id2"));
+        ksession.insert(new SimpleFact("id3"));
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, ksession.getFactCount());
+        assertEquals(0, list.size());
+    }
+
+
+
+    public static class SimpleFact {
+
+        private String status = "NOK";
+        private final String id;
+
+        public SimpleFact(String id) {
+            this.id = id;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(final String s) {
+            status = s;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName()+" (id="+id+", status=" + status+")";
+        }
+    }
+
 }
 
