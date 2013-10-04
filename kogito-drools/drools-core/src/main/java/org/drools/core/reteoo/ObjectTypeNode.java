@@ -344,10 +344,12 @@ public class ObjectTypeNode extends ObjectSource
     public static void doRetractObject(final InternalFactHandle factHandle,
                                        final PropagationContext context,
                                        final InternalWorkingMemory workingMemory ) {
-        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
+        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
+            RightTuple nextRightTuple = rightTuple.getHandleNext();
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
                                                               workingMemory );
+            rightTuple = nextRightTuple;
         }
         factHandle.clearRightTuples();
 
