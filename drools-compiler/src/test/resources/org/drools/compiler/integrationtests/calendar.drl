@@ -1,0 +1,19 @@
+package org.drools.compiler.integrationtests;
+
+global java.util.List list 
+ 
+rule "weekend" 
+    calendars "weekend"
+    
+    when 
+    then 
+        list.add("weekend"); 
+end 
+ 
+rule "weekday"
+    calendars "weekday"
+
+    when 
+    then 
+       list.add("weekday"); 
+end
