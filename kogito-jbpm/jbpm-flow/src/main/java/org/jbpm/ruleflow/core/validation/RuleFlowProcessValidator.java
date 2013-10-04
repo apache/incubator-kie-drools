@@ -696,4 +696,9 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             }
         }
     }
+
+	@Override
+	public boolean compilationSupported() {
+		return true;
+	}
 }

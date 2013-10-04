@@ -29,5 +29,7 @@ public interface ProcessValidator {
     ProcessValidationError[] validateProcess(Process process);
     
     boolean accept(Process process, Resource resource);
+    
+    boolean compilationSupported();
 
 }

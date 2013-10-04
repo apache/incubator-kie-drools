@@ -126,8 +126,12 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             }
         }
         if ( !hasErrors ) {
+        	
             // generate and add rule for process
-            String rules = generateRules( process );
+            String rules = "package " + process.getPackageName() + "\n";
+            if (validator.compilationSupported()) {
+            	rules = generateRules( process );
+            }
             try {
                 packageBuilder.addPackageFromDrl( new StringReader( rules ), resource );
             } catch ( IOException e ) {
@@ -143,31 +147,33 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 				org.drools.core.rule.Package p = pkgRegistry.getPackage();
             
 	            if (p != null) {
-	            
-		            ProcessDescr processDescr = new ProcessDescr();
-		            processDescr.setName(process.getPackageName() + "." + process.getName());
-		            processDescr.setResource( resource );
-		            processDescr.setProcessId( process.getId() );
-		            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();
-		            Dialect dialect = dialectRegistry.getDialect( "java" );
-		            dialect.init(processDescr);
-		
-		            ProcessBuildContext buildContext = new ProcessBuildContext(
-		        		this.packageBuilder,
-		                p,
-		                process,
-		                processDescr,
-		                dialectRegistry,
-		                dialect);
-		
-		            buildContexts( ( ContextContainer ) process, buildContext );
-		            if (process instanceof WorkflowProcess) {
-		            	buildNodes( (WorkflowProcess) process, buildContext );
-		            }
+	            	if (validator.compilationSupported()) {
+			            ProcessDescr processDescr = new ProcessDescr();
+			            processDescr.setName(process.getPackageName() + "." + process.getName());
+			            processDescr.setResource( resource );
+			            processDescr.setProcessId( process.getId() );
+			            DialectCompiletimeRegistry dialectRegistry = pkgRegistry.getDialectCompiletimeRegistry();
+			            Dialect dialect = dialectRegistry.getDialect( "java" );
+			            dialect.init(processDescr);
+			
+			            ProcessBuildContext buildContext = new ProcessBuildContext(
+			        		this.packageBuilder,
+			                p,
+			                process,
+			                processDescr,
+			                dialectRegistry,
+			                dialect);
+			
+			            buildContexts( ( ContextContainer ) process, buildContext );
+			            if (process instanceof WorkflowProcess) {
+			            	buildNodes( (WorkflowProcess) process, buildContext );
+			            }
+	            	}
 		            p.addProcess( process );
-		
-		            pkgRegistry.compileAll();                
-		            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
+		            if (validator.compilationSupported()) {
+			            pkgRegistry.compileAll();                
+			            pkgRegistry.getDialectRuntimeRegistry().onBeforeExecute();
+		            }
 	            }
 	        } else {
 				// invalid package registry..there is an issue with the package
