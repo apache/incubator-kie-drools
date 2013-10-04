@@ -30,6 +30,8 @@ import java.util.Set;
 
 public class TimeTableLayout implements LayoutManager2, Serializable {
 
+    public static final int FILL_COLLISIONS_FLAG = -1;
+
     private List<Column> columns;
     private List<Row> rows;
     private List<List<Cell>> cells;
@@ -101,6 +103,13 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         Integer collisionIndex = 0;
         while (occupiedCollisionIndexes.contains(collisionIndex)) {
             collisionIndex++;
+        }
+        if (c.isFillCollisions()) {
+            if (collisionIndex != 0 || occupiedCollisionIndexes.contains(FILL_COLLISIONS_FLAG)) {
+                throw new IllegalArgumentException("There is a collision with fillCollisions ("
+                        + c.isFillCollisions() + ").");
+            }
+            collisionIndex = FILL_COLLISIONS_FLAG;
         }
         span.collisionIndex = collisionIndex;
         for (Cell cell : span.cells) {
@@ -182,11 +191,13 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         synchronized (parent.getTreeLock()) {
             for (ComponentSpan span : spanMap.values()) {
                 int x1 = span.topLeftCell.column.boundX;
-                int y1 = span.topLeftCell.row.boundY
-                        + (span.collisionIndex * span.topLeftCell.row.baseHeight);
+                int collisionIndexStart = (span.collisionIndex == FILL_COLLISIONS_FLAG)
+                        ? 0 : span.collisionIndex;
+                int y1 = span.topLeftCell.row.boundY + (collisionIndexStart * span.topLeftCell.row.baseHeight);
                 int x2 = span.bottomRightCell.column.boundX + span.bottomRightCell.column.baseWidth;
-                int y2 = span.bottomRightCell.row.boundY
-                        + ((span.collisionIndex + 1) * span.bottomRightCell.row.baseHeight);
+                int collisionIndexEnd = (span.collisionIndex == FILL_COLLISIONS_FLAG)
+                        ? span.bottomRightCell.row.collisionCount : span.collisionIndex + 1;
+                int y2 = span.bottomRightCell.row.boundY + (collisionIndexEnd * span.bottomRightCell.row.baseHeight);
                 span.component.setBounds(x1, y1, x2 - x1, y2 - y1);
             }
         }

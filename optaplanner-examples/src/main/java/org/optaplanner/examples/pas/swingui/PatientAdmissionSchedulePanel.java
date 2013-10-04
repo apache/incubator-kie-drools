@@ -92,13 +92,13 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Night night : patientAdmissionSchedule.getNightList()) {
             JPanel nightLabel = createHeaderPanel(new JLabel(night.getLabel(), SwingConstants.CENTER));
-            add(nightLabel, new TimeTableLayoutConstraints(nightXMap.get(night), 0));
+            add(nightLabel, new TimeTableLayoutConstraints(nightXMap.get(night), 0, true));
         }
         JPanel unassignedLabel = createHeaderPanel(new JLabel("Unassigned"));
-        add(unassignedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(null)));
+        add(unassignedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(null), true));
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
             JPanel bedLabel = createHeaderPanel(new JLabel(bed.getLabel()));
-            add(bedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(bed)));
+            add(bedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(bed), true));
         }
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             JButton button = new JButton(new BedDesignationAction(bedDesignation));
@@ -113,10 +113,10 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     private JPanel createHeaderPanel(JLabel label) {
         JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.add(label, BorderLayout.CENTER);
+        headerPanel.add(label, BorderLayout.NORTH);
         headerPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(TangoColorFactory.ALUMINIUM_5),
-                BorderFactory.createEmptyBorder(0, 2, 0, 2)));
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         return headerPanel;
     }
 
