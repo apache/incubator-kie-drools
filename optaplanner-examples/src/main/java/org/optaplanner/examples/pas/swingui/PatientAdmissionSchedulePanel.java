@@ -16,12 +16,14 @@
 
 package org.optaplanner.examples.pas.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -41,9 +43,6 @@ import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     private TimeTableLayout timeTableLayout;
@@ -70,18 +69,21 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     private void defineGrid(PatientAdmissionSchedule patientAdmissionSchedule) {
         timeTableLayout.reset();
+        JButton footprint = new JButton("Patient9999");
+        int footprintWidth = footprint.getPreferredSize().width;
+        int footprintHeight = footprint.getPreferredSize().height;
         timeTableLayout.addColumn(150); // Header
         nightXMap = new HashMap<Night, Integer>(patientAdmissionSchedule.getNightList().size());
         for (Night night : patientAdmissionSchedule.getNightList()) {
-            int x = timeTableLayout.addColumn(100);
+            int x = timeTableLayout.addColumn(footprintWidth);
             nightXMap.put(night, x);
         }
-        timeTableLayout.addRow(30); // Header
+        timeTableLayout.addRow(footprintHeight); // Header
         bedYMap = new HashMap<Bed, Integer>(patientAdmissionSchedule.getBedList().size());
-        timeTableLayout.addRow(25); // Unassigned
+        timeTableLayout.addRow(footprintHeight); // Unassigned
         bedYMap.put(null, 1);
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            int y = timeTableLayout.addRow(25);
+            int y = timeTableLayout.addRow(footprintHeight);
             bedYMap.put(bed, y);
         }
     }
@@ -89,13 +91,13 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     private void fillCells(PatientAdmissionSchedule patientAdmissionSchedule) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Night night : patientAdmissionSchedule.getNightList()) {
-            JLabel nightLabel = new JLabel(night.getLabel(), SwingConstants.CENTER);
+            JPanel nightLabel = createHeaderPanel(new JLabel(night.getLabel(), SwingConstants.CENTER));
             add(nightLabel, new TimeTableLayoutConstraints(nightXMap.get(night), 0));
         }
-        JLabel unassignedLabel = new JLabel("Unassigned");
+        JPanel unassignedLabel = createHeaderPanel(new JLabel("Unassigned"));
         add(unassignedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(null)));
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            JLabel bedLabel = new JLabel(bed.getLabel());
+            JPanel bedLabel = createHeaderPanel(new JLabel(bed.getLabel()));
             add(bedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(bed)));
         }
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
@@ -107,6 +109,15 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             int y = bedYMap.get(bedDesignation.getBed());
             add(button, new TimeTableLayoutConstraints(x1, y, x2 - x1 + 1, 1));
         }
+    }
+
+    private JPanel createHeaderPanel(JLabel label) {
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(label, BorderLayout.CENTER);
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(TangoColorFactory.ALUMINIUM_5),
+                BorderFactory.createEmptyBorder(0, 2, 0, 2)));
+        return headerPanel;
     }
 
     private class BedDesignationAction extends AbstractAction {

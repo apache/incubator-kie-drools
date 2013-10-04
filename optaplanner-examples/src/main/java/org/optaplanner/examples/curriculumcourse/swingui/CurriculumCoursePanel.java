@@ -40,9 +40,6 @@ import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.curriculumcourse.solver.move.PeriodChangeMove;
 import org.optaplanner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class CurriculumCoursePanel extends SolutionPanel {
 
     private static final Color HEADER_COLOR = TangoColorFactory.ALUMINIUM_2;
