@@ -1,5 +1,9 @@
 package org.drools.common;
 
+import org.drools.factmodel.traits.TraitProxy;
+import org.drools.factmodel.traits.TraitType;
+import org.drools.factmodel.traits.TraitTypeEnum;
+import org.drools.factmodel.traits.TraitableBean;
 import org.drools.reteoo.LeftTuple;
 import org.drools.reteoo.RightTuple;
 import org.drools.runtime.rule.FactHandle;
@@ -26,6 +30,7 @@ public class DisconnectedFactHandle
     private Object object;
     private String entryPointId;
     private boolean valid;
+    private TraitTypeEnum traitType;
 
     public DisconnectedFactHandle() {
     }
@@ -36,7 +41,8 @@ public class DisconnectedFactHandle
                                   long recency,
                                   String entryPointId,
                                   Object object,
-                                  boolean valid ) {
+                                  boolean valid,
+                                  boolean isTraitOrTraitable ) {
         this.id = id;
         this.identityHashCode = identityHashCode;
         this.objectHashCode = objectHashCode;
@@ -44,33 +50,38 @@ public class DisconnectedFactHandle
         this.entryPointId = entryPointId;
         this.object = object;
         this.valid = valid;
+        this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
                                   int objectHashCode,
                                   long recency,
-                                  Object object) {
+                                  Object object,
+                                  boolean isTraitOrTraitable ) {
         this( id, 
               identityHashCode, 
               objectHashCode, 
               recency, 
               null, 
               object,
-              true );
+              true,
+              isTraitOrTraitable );
     }
 
     public DisconnectedFactHandle(int id,
                                   int identityHashCode,
                                   int objectHashCode,
-                                  long recency) {
+                                  long recency,
+                                  boolean isTraitOrTraitable ) {
         this( id, 
               identityHashCode, 
               objectHashCode, 
               recency, 
               null, 
               null,
-              true );
+              true,
+              isTraitOrTraitable );
     }
 
     public DisconnectedFactHandle(String externalFormat) {
@@ -79,7 +90,7 @@ public class DisconnectedFactHandle
 
     private void parseExternalForm(String externalFormat) {
         String[] elements = externalFormat.split( ":" );
-        if ( elements.length < 7 ) {
+        if ( elements.length < 8 ) {
             throw new IllegalArgumentException( "externalFormat did not have enough elements" );
         }
 
@@ -89,6 +100,7 @@ public class DisconnectedFactHandle
         this.recency = Long.parseLong( elements[4] );
         this.entryPointId = elements[5];
         this.valid = Boolean.parseBoolean( elements[6] );
+        this.traitType = TraitTypeEnum.valueOf( elements[7] );
     }
 
     public int getId() {
@@ -183,7 +195,7 @@ public class DisconnectedFactHandle
     }
 
     public String toExternalForm() {
-        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId + ":" + this.valid;
+        return "0:" + this.id + ":" + this.identityHashCode + ":" + this.objectHashCode + ":" + this.recency + ":" + this.entryPointId + ":" + this.valid + ":" + this.traitType;
     }
 
     @XmlAttribute(name = "external-form")
@@ -266,7 +278,8 @@ public class DisconnectedFactHandle
                                               ifh.getRecency(),
                                               ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null,
                                                   null,
-                                              ifh.isValid() );
+                                              ifh.isValid(),
+                                              ifh.isTraitOrTraitable() );
         }
     }
 
@@ -278,6 +291,20 @@ public class DisconnectedFactHandle
                                             ClassNotFoundException {
         String externalForm = (String) in.readObject();
         parseExternalForm( externalForm );
+    }
+
+    private TraitTypeEnum determineTraitType() {
+        if ( isTraitOrTraitable() ) {
+            if ( object instanceof TraitProxy ) {
+                return TraitTypeEnum.TRAIT;
+            } else if ( object instanceof TraitableBean ) {
+                return TraitTypeEnum.TRAITABLE;
+            } else {
+                return TraitTypeEnum.LEGACY_TRAITABLE;
+            }
+        } else {
+            return TraitTypeEnum.NON_TRAIT;
+        }
     }
 
 }
