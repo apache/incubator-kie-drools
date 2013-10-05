@@ -47,12 +47,17 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     private TimeTableLayout timeTableLayout;
 
-    private Map<Night,Integer> nightXMap;
-    private Map<Bed,Integer> bedYMap;
+    private Map<Night, Integer> nightXMap;
+    private Map<Bed, Integer> bedYMap;
 
     public PatientAdmissionSchedulePanel() {
         timeTableLayout = new TimeTableLayout();
         setLayout(timeTableLayout);
+    }
+
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
     }
 
     private PatientAdmissionSchedule getPatientAdmissionSchedule() {
@@ -89,7 +94,6 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     }
 
     private void fillCells(PatientAdmissionSchedule patientAdmissionSchedule) {
-        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Night night : patientAdmissionSchedule.getNightList()) {
             JPanel nightLabel = createHeaderPanel(new JLabel(night.getLabel(), SwingConstants.CENTER));
             add(nightLabel, new TimeTableLayoutConstraints(nightXMap.get(night), 0, true));
@@ -100,6 +104,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             JPanel bedLabel = createHeaderPanel(new JLabel(bed.getLabel()));
             add(bedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(bed), true));
         }
+        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             JButton button = new JButton(new BedDesignationAction(bedDesignation));
             button.setBackground(tangoColorFactory.pickColor(bedDesignation));

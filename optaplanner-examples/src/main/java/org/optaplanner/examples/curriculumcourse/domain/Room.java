@@ -41,6 +41,10 @@ public class Room extends AbstractPersistable {
         this.capacity = capacity;
     }
 
+    public String getLabel() {
+        return code;
+    }
+
     @Override
     public String toString() {
         return code + " {C" + capacity + "}";

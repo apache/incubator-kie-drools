@@ -41,6 +41,10 @@ public class Period extends AbstractPersistable {
         this.timeslot = timeslot;
     }
 
+    public String getLabel() {
+        return toString();
+    }
+
     @Override
     public String toString() {
         return day + "-" + timeslot;

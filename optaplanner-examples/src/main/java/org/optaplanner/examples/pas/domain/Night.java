@@ -32,12 +32,13 @@ public class Night extends AbstractPersistable {
         this.index = index;
     }
 
+    public String getLabel() {
+        return (index + 1) + "-JAN";
+    }
+
     @Override
     public String toString() {
         return Integer.toString(index);
     }
 
-    public String getLabel() {
-        return (index + 1) + "-JAN";
-    }
 }

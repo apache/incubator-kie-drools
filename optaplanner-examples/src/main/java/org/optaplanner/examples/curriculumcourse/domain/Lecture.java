@@ -79,6 +79,10 @@ public class Lecture extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public Teacher getTeacher() {
+        return course.getTeacher();
+    }
+
     public int getStudentSize() {
         return course.getStudentSize();
     }
@@ -102,7 +106,7 @@ public class Lecture extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return course + "-" + lectureIndexInCourse;
+        return course.getCode() + "-" + lectureIndexInCourse;
     }
 
     /**

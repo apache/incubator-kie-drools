@@ -43,13 +43,13 @@ public class Bed extends AbstractPersistable {
         this.indexInRoom = indexInRoom;
     }
 
+    public String getLabel() {
+        return toString();
+    }
+
     @Override
     public String toString() {
         return room + "_" + indexInRoom;
-    }
-
-    public String getLabel() {
-        return toString();
     }
 
 }
