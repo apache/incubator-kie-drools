@@ -2578,4 +2578,19 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testClashingRules() {
+        //DROOLS-287
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "rule \"Rule_>_all\"" +
+                     "when then end \n" +
+                     "" +
+                     "rule \"Rule_<_all\"" +
+                     "when then end \n" +
+                     "";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+
+    }
+
 }

@@ -77,9 +77,9 @@ public final class DialectUtil {
                                             final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        final String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
+        String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
         if (ext.equals("java")) {
-            return newName + Math.abs( seed );
+            newName = newName + Math.abs( seed );
         }
 
         final String fileName = packageName.replace('.', '/') + "/" + newName;
