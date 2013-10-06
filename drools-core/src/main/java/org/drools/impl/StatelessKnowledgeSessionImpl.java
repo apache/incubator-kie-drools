@@ -256,6 +256,7 @@ public class StatelessKnowledgeSessionImpl
             this.cachedProcessEventListener = new HashSet<ProcessEventListener>();
         }
         this.cachedProcessEventListener.add(listener);
+        this.processEventSupport.addEventListener( listener );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
