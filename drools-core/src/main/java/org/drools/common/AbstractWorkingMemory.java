@@ -1142,11 +1142,13 @@ public abstract class AbstractWorkingMemory
     }
 
     public ProcessInstance startProcess(final String processId) {
+        initInitialFact();
         return processRuntime.startProcess( processId );
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
+        initInitialFact();
         return processRuntime.startProcess( processId,
                                             parameters );
     }
