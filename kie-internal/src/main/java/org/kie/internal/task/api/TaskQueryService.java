@@ -19,8 +19,8 @@ package org.kie.internal.task.api;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.kie.api.task.model.OrganizationalEntity;
 
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
@@ -99,4 +99,17 @@ public interface TaskQueryService {
     
     Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
     
+    List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
+            List<Status> status, boolean union);
+    
+    List<TaskSummary> getTasksByVariousFields( Map<String, List<?>> parameters, boolean union);
+    
+    static String WORK_ITEM_ID_LIST = "Work item id list";
+    static String TASK_ID_LIST = "task id list";
+    static String PROCESS_INST_ID_LIST = "process instance id list";
+    static String BUSINESS_ADMIN_ID_LIST = "business admin id list";
+    static String POTENTIAL_OWNER_ID_LIST = "potential owner id list";
+    static String ACTUAL_OWNER_ID_LIST = "task owner id list";
+    static String STATUS_LIST = "status list";
 }
