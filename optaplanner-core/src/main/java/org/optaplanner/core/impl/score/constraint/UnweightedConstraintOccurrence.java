@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.score.constraint;
 
+import org.optaplanner.core.api.score.constraint.primint.IntConstraintMatch;
+
+/**
+ * Will be removed in version 6.1.0.Beta1.
+ * @Deprecated in favor of {@link IntConstraintMatch}
+ */
 @Deprecated
 public class UnweightedConstraintOccurrence extends ConstraintOccurrence {
 
