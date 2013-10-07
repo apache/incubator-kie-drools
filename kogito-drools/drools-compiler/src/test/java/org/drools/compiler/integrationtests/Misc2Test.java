@@ -2910,4 +2910,74 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testSegmentInitialization() {
+        // BZ-1011993
+        String str =
+                "import " + Misc2Test.Resource.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.ResourceRequirement.class.getCanonicalName() + "\n" +
+                "import " + Misc2Test.Allocation.class.getCanonicalName() + "\n" +
+                "rule R" +
+                "    when\n" +
+                "        $resource : Resource($capacity : capacity)\n" +
+                "        $used : Number(intValue > $capacity) from accumulate(\n" +
+                "            ResourceRequirement(resource == $resource,\n" +
+                "                    $executionMode : executionMode)\n" +
+                "            and Allocation(executionMode == $executionMode),\n" +
+                "            sum($executionMode)\n" +
+                "        )\n" +
+                "    then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new ResourceRequirement(new Resource(2), 3));
+        ksession.insert(new Allocation(3));
+
+        ksession.fireAllRules();
+    }
+
+    public static class Resource {
+        private final int capacity;
+
+        public Resource(int capacity) {
+            this.capacity = capacity;
+        }
+
+        public int getCapacity() {
+            return capacity;
+        }
+    }
+
+    public static class ResourceRequirement {
+        private final Resource resource;
+        private final int executionMode;
+
+        public ResourceRequirement(Resource resource, int executionMode) {
+            this.resource = resource;
+            this.executionMode = executionMode;
+        }
+
+        public Resource getResource() {
+            return resource;
+        }
+
+        public int getExecutionMode() {
+            return executionMode;
+        }
+    }
+
+    public static class Allocation {
+        private final int executionMode;
+
+        public Allocation(int executionMode) {
+            this.executionMode = executionMode;
+        }
+
+        public int getExecutionMode() {
+            return executionMode;
+        }
+    }
 }
