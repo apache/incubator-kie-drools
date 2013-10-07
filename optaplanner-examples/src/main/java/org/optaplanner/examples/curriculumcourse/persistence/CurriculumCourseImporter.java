@@ -278,6 +278,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
                     id++;
                     lecture.setCourse(course);
                     lecture.setLectureIndexInCourse(i);
+                    lecture.setLocked(false);
                     // Notice that we leave the PlanningVariable properties on null
                     lectureList.add(lecture);
                 }

@@ -21,12 +21,16 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,7 +39,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTableLayout;
@@ -51,6 +58,8 @@ import org.optaplanner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
 public class CurriculumCoursePanel extends SolutionPanel {
 
+    private final ImageIcon lockedIcon;
+
     private final JPanel roomsPanel;
     private TimeTableLayout roomsTimeTableLayout;
     private final JPanel teachersPanel;
@@ -61,6 +70,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
     private Map<Teacher, Integer> teacherXMap;
 
     public CurriculumCoursePanel() {
+        lockedIcon = new ImageIcon(getClass().getResource("locked.png"));
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsTimeTableLayout = new TimeTableLayout();
@@ -210,6 +220,9 @@ public class CurriculumCoursePanel extends SolutionPanel {
         JButton button = new JButton(new LectureAction(lecture));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setBackground(color);
+        if (lecture.isLocked()) {
+            button.setIcon(lockedIcon);
+        }
         return button;
     }
 
@@ -223,22 +236,40 @@ public class CurriculumCoursePanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
+            JPanel listFieldsPanel = new JPanel(new GridLayout(3, 2));
+            listFieldsPanel.add(new JLabel("Period:"));
             List<Period> periodList = getCourseSchedule().getPeriodList();
             JComboBox periodListField = new JComboBox(periodList.toArray());
             periodListField.setSelectedItem(lecture.getPeriod());
             listFieldsPanel.add(periodListField);
+            listFieldsPanel.add(new JLabel("Room:"));
             List<Room> roomList = getCourseSchedule().getRoomList();
             JComboBox roomListField = new JComboBox(roomList.toArray());
             roomListField.setSelectedItem(lecture.getRoom());
             listFieldsPanel.add(roomListField);
+            listFieldsPanel.add(new JLabel("Locked:"));
+            JCheckBox lockedField = new JCheckBox("immovable during planning");
+            lockedField.setSelected(lecture.isLocked());
+            listFieldsPanel.add(lockedField);
             int result = JOptionPane.showConfirmDialog(CurriculumCoursePanel.this.getRootPane(), listFieldsPanel,
                     "Select period and room", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
-                solutionBusiness.doMove(new PeriodChangeMove(lecture, toPeriod));
+                if (lecture.getPeriod() != toPeriod) {
+                    solutionBusiness.doMove(new PeriodChangeMove(lecture, toPeriod));
+                }
                 Room toRoom = (Room) roomListField.getSelectedItem();
-                solutionBusiness.doMove(new RoomChangeMove(lecture, toRoom));
+                if (lecture.getRoom() != toRoom) {
+                    solutionBusiness.doMove(new RoomChangeMove(lecture, toRoom));
+                }
+                boolean toLocked = lockedField.isSelected();
+                if (lecture.isLocked() != toLocked) {
+                    if (solutionBusiness.isSolving()) {
+                        logger.error("Not doing user change because the solver is solving.");
+                        return;
+                    }
+                    lecture.setLocked(toLocked);
+                }
                 solverAndPersistenceFrame.resetScreen();
             }
         }
