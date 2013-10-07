@@ -19,6 +19,7 @@ package org.optaplanner.examples.curriculumcourse.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
@@ -48,8 +49,6 @@ import org.optaplanner.examples.curriculumcourse.solver.move.PeriodChangeMove;
 import org.optaplanner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
 public class CurriculumCoursePanel extends SolutionPanel {
-
-    private static final Color HEADER_COLOR = TangoColorFactory.ALUMINIUM_2;
 
     private final JPanel roomsPanel;
     private TimeTableLayout roomsTimeTableLayout;
@@ -99,17 +98,18 @@ public class CurriculumCoursePanel extends SolutionPanel {
     private void defineGrid(CourseSchedule courseSchedule) {
         roomsTimeTableLayout.reset();
         teachersTimeTableLayout.reset();
-        JButton footprint = new JButton("1234567");
+        JButton footprint = new JButton("LinLetGre1-0");
+        footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
         int footprintHeight = footprint.getPreferredSize().height;
         roomsTimeTableLayout.addColumn(150); // Header
         roomXMap = new HashMap<Room, Integer>(courseSchedule.getRoomList().size());
-        int unassignedRoomX = roomsTimeTableLayout.addColumn(footprintWidth); // Unassigned
-        roomXMap.put(null, unassignedRoomX);
         for (Room room : courseSchedule.getRoomList()) {
             int x = roomsTimeTableLayout.addColumn(footprintWidth);
             roomXMap.put(room, x);
         }
+        int unassignedRoomX = roomsTimeTableLayout.addColumn(footprintWidth); // Unassigned
+        roomXMap.put(null, unassignedRoomX);
         teachersTimeTableLayout.addColumn(150); // Header
         teacherXMap = new HashMap<Teacher, Integer>(courseSchedule.getTeacherList().size());
         for (Teacher teacher : courseSchedule.getTeacherList()) {
@@ -119,12 +119,6 @@ public class CurriculumCoursePanel extends SolutionPanel {
         roomsTimeTableLayout.addRow(footprintHeight); // Header
         teachersTimeTableLayout.addRow(footprintHeight); // Header
         periodYMap = new HashMap<Period, Integer>(courseSchedule.getPeriodList().size());
-        int unassignedPeriodY = roomsTimeTableLayout.addRow(footprintHeight); // Unassigned period
-        int otherUnassignedPeriodY = teachersTimeTableLayout.addRow(footprintHeight); // Unassigned period
-        if (unassignedPeriodY != otherUnassignedPeriodY) {
-            throw new IllegalStateException("Impossible");
-        }
-        periodYMap.put(null, unassignedPeriodY);
         for (Period period : courseSchedule.getPeriodList()) {
             int y = roomsTimeTableLayout.addRow(footprintHeight);
             int otherY = teachersTimeTableLayout.addRow(footprintHeight);
@@ -133,41 +127,45 @@ public class CurriculumCoursePanel extends SolutionPanel {
             }
             periodYMap.put(period, y);
         }
+        int unassignedPeriodY = roomsTimeTableLayout.addRow(footprintHeight); // Unassigned period
+        int otherUnassignedPeriodY = teachersTimeTableLayout.addRow(footprintHeight); // Unassigned period
+        if (unassignedPeriodY != otherUnassignedPeriodY) {
+            throw new IllegalStateException("Impossible");
+        }
+        periodYMap.put(null, unassignedPeriodY);
     }
 
     private void fillCells(CourseSchedule courseSchedule) {
-        JPanel unassignedRoomLabel = createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER));
-        roomsPanel.add(unassignedRoomLabel, new TimeTableLayoutConstraints(roomXMap.get(null), 0, true));
         for (Room room : courseSchedule.getRoomList()) {
             JPanel roomLabel = createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER));
             roomsPanel.add(roomLabel, new TimeTableLayoutConstraints(roomXMap.get(room), 0, true));
         }
+        JPanel unassignedRoomLabel = createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER));
+        roomsPanel.add(unassignedRoomLabel, new TimeTableLayoutConstraints(roomXMap.get(null), 0, true));
 
         for (Teacher teacher : courseSchedule.getTeacherList()) {
             JPanel teacherLabel = createHeaderPanel(new JLabel(teacher.getLabel(), SwingConstants.CENTER));
             teachersPanel.add(teacherLabel, new TimeTableLayoutConstraints(teacherXMap.get(teacher), 0, true));
         }
 
-        JPanel unassignedPeriodRoomLabel = createHeaderPanel(new JLabel("Unassigned"));
-        roomsPanel.add(unassignedPeriodRoomLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), true));
-        JPanel unassignedPeriodTeacherLabel = createHeaderPanel(new JLabel("Unassigned"));
-        teachersPanel.add(unassignedPeriodTeacherLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), true));
         for (Period period : courseSchedule.getPeriodList()) {
             JPanel periodRoomLabel = createHeaderPanel(new JLabel(period.getLabel()));
             roomsPanel.add(periodRoomLabel, new TimeTableLayoutConstraints(0, periodYMap.get(period), true));
             JPanel periodTeacherLabel = createHeaderPanel(new JLabel(period.getLabel()));
             teachersPanel.add(periodTeacherLabel, new TimeTableLayoutConstraints(0, periodYMap.get(period), true));
         }
+        JPanel unassignedPeriodRoomLabel = createHeaderPanel(new JLabel("Unassigned"));
+        roomsPanel.add(unassignedPeriodRoomLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), true));
+        JPanel unassignedPeriodTeacherLabel = createHeaderPanel(new JLabel("Unassigned"));
+        teachersPanel.add(unassignedPeriodTeacherLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), true));
 
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Lecture lecture : courseSchedule.getLectureList()) {
             Color lectureColor = tangoColorFactory.pickColor(lecture);
             int y = periodYMap.get(lecture.getPeriod());
-            JButton roomButton = new JButton(new LectureAction(lecture));
-            roomButton.setBackground(lectureColor);
+            JButton roomButton = createButton(lecture, lectureColor);
             roomsPanel.add(roomButton, new TimeTableLayoutConstraints(roomXMap.get(lecture.getRoom()), y));
-            JButton teacherButton = new JButton(new LectureAction(lecture));
-            teacherButton.setBackground(lectureColor);
+            JButton teacherButton = createButton(lecture, lectureColor);
             teachersPanel.add(teacherButton, new TimeTableLayoutConstraints(teacherXMap.get(lecture.getTeacher()), y));
         }
     }
@@ -179,6 +177,13 @@ public class CurriculumCoursePanel extends SolutionPanel {
                 BorderFactory.createLineBorder(TangoColorFactory.ALUMINIUM_5),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         return headerPanel;
+    }
+
+    private JButton createButton(Lecture lecture, Color color) {
+        JButton button = new JButton(new LectureAction(lecture));
+        button.setMargin(new Insets(0, 0, 0, 0));
+        button.setBackground(color);
+        return button;
     }
 
     private class LectureAction extends AbstractAction {

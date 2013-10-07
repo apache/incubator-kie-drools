@@ -18,6 +18,7 @@ package org.optaplanner.examples.pas.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +76,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     private void defineGrid(PatientAdmissionSchedule patientAdmissionSchedule) {
         timeTableLayout.reset();
         JButton footprint = new JButton("Patient9999");
+        footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
         int footprintHeight = footprint.getPreferredSize().height;
         timeTableLayout.addColumn(150); // Header
@@ -107,6 +109,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             JButton button = new JButton(new BedDesignationAction(bedDesignation));
+            button.setMargin(new Insets(0, 0, 0, 0));
             button.setBackground(tangoColorFactory.pickColor(bedDesignation));
             AdmissionPart admissionPart = bedDesignation.getAdmissionPart();
             int x1 = nightXMap.get(admissionPart.getFirstNight());
