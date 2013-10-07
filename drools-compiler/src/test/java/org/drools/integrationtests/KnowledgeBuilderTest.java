@@ -4,6 +4,7 @@ import org.drools.KnowledgeBase;
 import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.builder.ResourceType;
 import org.drools.compiler.PMMLCompiler;
 import org.drools.compiler.PMMLCompilerFactory;
@@ -27,6 +28,7 @@ import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -442,10 +444,10 @@ public class KnowledgeBuilderTest {
     @Test
     public void testResourceMapping() throws Exception {
         String rule = "package org.drools.test\n" +
-                "rule R1 when\n" +
-                " \n" +
-                "then\n" +
-                "end\n";
+                      "rule R1 when\n" +
+                      " \n" +
+                      "then\n" +
+                      "end\n";
 
         Resource res1 = ResourceFactory.newByteArrayResource( rule.getBytes() );
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -466,6 +468,10 @@ public class KnowledgeBuilderTest {
             public String compile(InputStream stream, Map<String, PackageRegistry> registries) {
                 return "rule R2 when then end";
             }
+
+            public List<KnowledgeBuilderResult> getResults() {
+                return Collections.emptyList();
+            }
         });
 
         kbuilder2.add( res2, ResourceType.PMML );
@@ -483,18 +489,18 @@ public class KnowledgeBuilderTest {
     public void testRepeatedDeclarationInMultiplePackages() {
         String str =
                 "package org.drools.test1;\n" +
-                        "import org.drools.Cheese;\n" +
-                        "" +
-                        "rule R\n" +
-                        "when Cheese() then end \n" +
-                        "";
+                "import org.drools.Cheese;\n" +
+                "" +
+                "rule R\n" +
+                "when Cheese() then end \n" +
+                "";
         String str2 =
                 "package org.drools.test2;\n" +
-                        "import org.drools.Cheese;\n" +
-                        "" +
-                        "rule S\n" +
-                        "when Cheese() then end \n" +
-                        "";
+                "import org.drools.Cheese;\n" +
+                "" +
+                "rule S\n" +
+                "when Cheese() then end \n" +
+                "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
