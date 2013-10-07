@@ -26,6 +26,7 @@ import org.drools.core.reteoo.LeftTupleSinkPropagator;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
+import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
@@ -44,7 +45,6 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 public class SegmentUtilities {
 
@@ -88,13 +88,8 @@ public class SegmentUtilities {
 
         LeftTupleSource segmentRoot = tupleSource;
 
-        smem = ((ReteooRuleBase)wm.getRuleBase()).getSegmentFromPrototype(wm, segmentRoot);
+        smem = restoreSegmentFromPrototype(wm, segmentRoot);
         if ( smem != null ) {
-            // there is a prototype for this segment memory
-            for (NetworkNode node : smem.getNodesInSegment()) {
-                wm.getNodeMemory((MemoryFactory) node).setSegmentMemory(smem);
-            }
-            updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, wm);
             return smem;
         }
 
@@ -157,6 +152,13 @@ public class SegmentUtilities {
                     Memory memory = wm.getNodeMemory((MemoryFactory) sink);
                     if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
                         smem.getNodeMemories().add(((RiaNodeMemory)memory).getRiaPathMemory());
+                        RightInputAdapterNode rian = ( RightInputAdapterNode ) sink;
+                        ObjectSink[] nodes = rian.getSinkPropagator().getSinks();
+                        for ( ObjectSink node : nodes ) {
+                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
+                                createSegmentMemory( (LeftTupleSource) node, wm );
+                            }
+                        }
                     } else if (NodeTypeEnums.isTerminalNode(sink)) {
                         smem.getNodeMemories().add((PathMemory)memory);
                     }
@@ -193,10 +195,22 @@ public class SegmentUtilities {
                 smem.setStagedTuples( new SynchronizedLeftTupleSets() );
         }
 
-        updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm);
+        updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false);
 
         ((ReteooRuleBase)wm.getRuleBase()).registerSegmentPrototype(segmentRoot, smem);
 
+        return smem;
+    }
+
+    private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot) {
+        SegmentMemory smem = ((ReteooRuleBase)wm.getRuleBase()).getSegmentFromPrototype(wm, segmentRoot);
+        if ( smem != null ) {
+            // there is a prototype for this segment memory
+            for (NetworkNode node : smem.getNodesInSegment()) {
+                wm.getNodeMemory((MemoryFactory) node).setSegmentMemory(smem);
+            }
+            updateRiaAndTerminalMemory(segmentRoot, segmentRoot, smem, wm, true);
+        }
         return smem;
     }
 
@@ -386,10 +400,11 @@ public class SegmentUtilities {
      * @param smem
      * @param wm
      */
-    public static void updateRiaAndTerminalMemory(LeftTupleSource lt,
-                                                  LeftTupleSource originalLt,
-                                                  SegmentMemory smem,
-                                                  InternalWorkingMemory wm) {
+    private static void updateRiaAndTerminalMemory( LeftTupleSource lt,
+                                                    LeftTupleSource originalLt,
+                                                    SegmentMemory smem,
+                                                    InternalWorkingMemory wm,
+                                                    boolean fromPrototype ) {
         for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
                 if (NodeTypeEnums.NotNode == sink.getType() && ((NotNode) sink).isEmptyBetaConstraints()) {
@@ -399,7 +414,7 @@ public class SegmentUtilities {
                         createSegmentMemory((NotNode) sink, wm);
                     }
                 }
-                updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, wm);
+                updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, wm, fromPrototype);
             } else if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
                 // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
@@ -407,6 +422,14 @@ public class SegmentUtilities {
                     PathMemory pmem = (PathMemory) riaMem.getRiaPathMemory();
                     smem.getPathMemories().add(pmem);
                     pmem.getSegmentMemories()[smem.getPos()] = smem;
+                    if (fromPrototype) {
+                        ObjectSink[] nodes = ((RightInputAdapterNode) sink).getSinkPropagator().getSinks();
+                        for ( ObjectSink node : nodes ) {
+                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
+                                restoreSegmentFromPrototype(wm, (LeftTupleSource) node);
+                            }
+                        }
+                    }
                 }
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
