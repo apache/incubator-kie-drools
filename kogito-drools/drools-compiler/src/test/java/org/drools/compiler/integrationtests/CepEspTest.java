@@ -29,6 +29,7 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -39,6 +40,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -3598,5 +3600,54 @@ public class CepEspTest extends CommonTestMethodBase {
         public String toString() {
             return getClass().getSimpleName()+" (id="+id+", status=" + status+")";
         }
+    }
+
+    @Test
+    public void testTemporalQuery() {
+        // BZ-967441
+        String drl =
+                 "package org.drools.compiler.integrationtests;\n" +
+                 "\n" +
+                 "import org.drools.compiler.integrationtests.CepEspTest.TestEvent;\n" +
+                 "\n" +
+                 "declare TestEvent\n" +
+                 "    @role( event )\n" +
+                 "end\n" +
+                 "\n" +
+                 "query EventsBeforeNineSeconds\n" +
+                 "   $event : TestEvent() from entry-point EStream\n" +
+                 "   $result : TestEvent ( this after [0s, 9s] $event) from entry-point EventStream\n" +
+                 "end\n";
+
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
+        kfs.write("src/main/resources/querytest.drl", drl);
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
+        kbuilder.buildAll();
+
+        KieBase kbase = KieServices.Factory.get()
+                                   .newKieContainer(kbuilder.getKieModule().getReleaseId())
+                                   .getKieBase();
+
+        KieSessionConfiguration ksconfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconfig.setOption(ClockTypeOption.get("pseudo"));
+
+        KieSession ksession = kbase.newKieSession(ksconfig, null);
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        EntryPoint ePoint = ksession.getEntryPoint("EStream");
+        EntryPoint entryPoint = ksession.getEntryPoint("EventStream");
+
+        ePoint.insert(new TestEvent("zero"));
+        entryPoint.insert(new TestEvent("one"));
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        entryPoint.insert(new TestEvent("two"));
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+        entryPoint.insert(new TestEvent("three"));
+        QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
+        assertEquals(1, results.size());
+
+        ksession.dispose();
     }
 }
