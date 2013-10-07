@@ -16,8 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.shared;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,16 +24,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.workbench.models.datamodel.imports.HasImports;
+import org.drools.workbench.models.datamodel.imports.Imports;
+
 /**
  * This represents a test scenario. It also encapsulates the result of a
  * scenario run.
  */
-public class Scenario {
+public class Scenario implements HasImports {
 
     /**
-     * An arbitrary name to identify this test, used in reports 
+     * An arbitrary name to identify this test, used in reports
      */
-    private String            name             = "Unnamed";
+    private String name = "Unnamed";
 
     /**
      * The maximum number of rules to fire so we don't recurse for ever.
@@ -68,16 +69,17 @@ public class Scenario {
      * true if only the rules in the list should be allowed to fire. Otherwise
      * it is exclusive (ie all rules can fire BUT the ones in the list).
      */
-    private boolean           inclusive        = false;
-
+    private boolean inclusive = false;
 
     private String packageName;
 
     private Imports imports = new Imports();
 
-    public Scenario() { }
-    
-    public Scenario( String packageName, String name ) {
+    public Scenario() {
+    }
+
+    public Scenario( String packageName,
+                     String name ) {
         this.packageName = packageName;
         this.name = name;
     }
@@ -347,30 +349,29 @@ public class Scenario {
     }
 
     /**
-    * @return the list of failure messages
-    */
+     * @return the list of failure messages
+     */
     public List<String> getFailureMessages() {
-       List<String> messages = new ArrayList<String>();
-       for ( Fixture fixture : fixtures ) {
-           if ( fixture instanceof VerifyRuleFired ) {
-               VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
-               if ( ruleFailedToFire( verifyRuleFired ) ) {
-                   messages.add( verifyRuleFired.getExplanation() );
-               }
-           } else if ( fixture instanceof VerifyFact ) {
-               VerifyFact verifyFact = (VerifyFact) fixture;
-               for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
-                   if ( fieldExpectationFailed( verifyField ) ) {
-                       messages.add( verifyField.getExplanation() );
-                   }
-               }
-           }
-       }
-       return messages;
-   }
+        List<String> messages = new ArrayList<String>();
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof VerifyRuleFired ) {
+                VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
+                if ( ruleFailedToFire( verifyRuleFired ) ) {
+                    messages.add( verifyRuleFired.getExplanation() );
+                }
+            } else if ( fixture instanceof VerifyFact ) {
+                VerifyFact verifyFact = (VerifyFact) fixture;
+                for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
+                    if ( fieldExpectationFailed( verifyField ) ) {
+                        messages.add( verifyField.getExplanation() );
+                    }
+                }
+            }
+        }
+        return messages;
+    }
 
     /**
-     *
      * @return int[0] = failures, int[1] = total;
      */
     public int[] countFailuresTotal() {
@@ -436,7 +437,7 @@ public class Scenario {
         return inclusive;
     }
 
-    public void setName(String name) {
+    public void setName( String name ) {
         this.name = name;
     }
 
@@ -444,6 +445,12 @@ public class Scenario {
         return this.name;
     }
 
+    @Override
+    public void setImports( final Imports imports ) {
+        this.imports = imports;
+    }
+
+    @Override
     public Imports getImports() {
         return imports;
     }
@@ -452,7 +459,7 @@ public class Scenario {
         return packageName;
     }
 
-    public void setPackageName(String packageName) {
+    public void setPackageName( String packageName ) {
         this.packageName = packageName;
     }
 }

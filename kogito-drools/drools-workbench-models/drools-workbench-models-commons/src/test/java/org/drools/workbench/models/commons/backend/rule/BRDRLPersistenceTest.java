@@ -21,10 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -74,8 +70,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class BRDRLPersistenceTest {
 
@@ -1152,7 +1147,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Person", new ModelField[] {
@@ -1176,11 +1171,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Person", "Cheese" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -1214,7 +1204,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Person", new ModelField[] {
@@ -1238,11 +1228,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Person", "Cheese" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -1276,7 +1261,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Person", new ModelField[] {
@@ -1300,11 +1285,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Person", "Cheese" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -1338,7 +1318,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Person", new ModelField[] {
@@ -1362,11 +1342,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Person", "Cheese" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -1400,7 +1375,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Person", new ModelField[] {
@@ -1424,11 +1399,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Person", "Cheese" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -2556,7 +2526,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Person", new ModelField[] {
@@ -2580,11 +2550,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Person", "Field1", "Field2" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -2825,7 +2790,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Goober", new ModelField[] {
@@ -2857,11 +2822,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Goober", "Goo", "Foo", "Bar" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -2928,7 +2888,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-            dmo.getModelFields()
+            dmo.getProjectModelFields()
         ).thenReturn(
             new HashMap<String, ModelField[]>() {{
                 put("Goober", new ModelField[] {
@@ -2969,11 +2929,6 @@ public class BRDRLPersistenceTest {
                 });
             }}
         );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Goober", "Goo", "Foo", "Zoo", "Bar" }
-            );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -3030,7 +2985,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Goober", new ModelField[] {
@@ -3062,11 +3017,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Goober", "Goo", "Foo", "Zoo", "Bar" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
@@ -3133,7 +3083,7 @@ public class BRDRLPersistenceTest {
 
         PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
                     put("Goober", new ModelField[] {
@@ -3173,11 +3123,6 @@ public class BRDRLPersistenceTest {
                             )
                     });
                 }}
-            );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[] { "Goober", "Goo", "Foo", "Zoo", "Bar" }
             );
 
         checkMarshallUnmarshall( expected, m, dmo );
