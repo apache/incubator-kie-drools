@@ -16,9 +16,7 @@
 
 package org.jbpm.services.task;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -28,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -782,5 +781,132 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
             // the expiration date should be before the specified date
             assertTrue("Expiration date needs to be before the specified date!", taskSummary.getExpirationTime().compareTo(dateSpecified) < 0);
         }
+    }
+    
+    @Test
+    public void testGetTasksByVariousFields() {
+        TaskImpl [] tasks = new TaskImpl[12];
+        List<Long> workItemIds = new ArrayList<Long>();
+        List<Long> taskIds = new ArrayList<Long>();
+        List<String> busAdmins = new ArrayList<String>();
+        List<String> potOwners = new ArrayList<String>();
+        List<Status> statuses = new ArrayList<Status>();      
+        statuses.add(Status.Reserved);
+        
+        long workItemId = 23;
+        String busAdmin = "Wintermute";
+        String potOwner = "Maelcum";
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new User('" + busAdmin + "')],"
+                + "potentialOwners = [new User('" + potOwner + "')]"
+                + " }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        ((TaskDataImpl) task.getTaskData()).setWorkItemId(workItemId);
+        ((TaskDataImpl) task.getTaskData()).setProcessInstanceId(workItemId);
+        taskService.addTask(task, new HashMap<String, Object>());
+        taskIds.add(task.getId());
+        assertEquals( potOwner, task.getTaskData().getActualOwner().getId() );
+        tasks[0] = task;
+        
+        workItemIds.add(workItemId);
+        busAdmins.add(busAdmin);
+        potOwners.add(potOwner);
+        
+        List<TaskSummary> results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, false);
+        assertEquals("List of tasks", 1, results.size());
+        
+        workItemId = 25;
+        busAdmin = "Neuromancer";
+        potOwner = "Hideo";
+        str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new User('" + busAdmin + "')],"
+                + "potentialOwners = [new User('" + potOwner + "')]"
+                + " }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        task = TaskFactory.evalTask(new StringReader(str));
+        ((TaskDataImpl) task.getTaskData()).setWorkItemId(workItemId);
+        ((TaskDataImpl) task.getTaskData()).setProcessInstanceId(workItemId);
+        taskService.addTask(task, new HashMap<String, Object>());
+        taskIds.add(task.getId());
+        assertEquals( potOwner, task.getTaskData().getActualOwner().getId() );
+        
+        // start task
+        taskService.start(task.getId(), potOwner);
+        tasks[1] = (TaskImpl) taskService.getTaskById(task.getId());
+        statuses.add(tasks[1].getTaskData().getStatus());
+        
+        workItemIds.add(workItemId);
+        busAdmins.add(busAdmin);
+        potOwners.add(potOwner);
+        
+        results = taskService.getTasksByVariousFields(workItemIds, null, null, null, null, null, null, false);
+        assertEquals("List of tasks", 2, results.size());
+        results = taskService.getTasksByVariousFields(null, taskIds, null, null, null, null, null, false);
+        assertEquals("List of tasks", 2, results.size());
+        results = taskService.getTasksByVariousFields(null, null, workItemIds, null, null, null, null, false);
+        assertEquals("List of tasks", 2, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, busAdmins, null, null, null, false);
+        assertEquals("List of tasks", 2, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, null, potOwners, null, null, false);
+        assertEquals("List of tasks", 2, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, potOwners, null, false);
+        assertEquals("List of tasks", 2, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, null, statuses, false);
+        assertEquals("List of tasks", 2, results.size());
+        
+        // work item id and/or task id 
+        List<Long> testLongList = new ArrayList<Long>();
+        testLongList.add(workItemIds.get(0));
+        List<Long> testLongListTwo = new ArrayList<Long>();
+        testLongListTwo.add(taskIds.get(1));
+        results = taskService.getTasksByVariousFields(testLongList, testLongListTwo, null, null, null, null, null, false);
+        assertEquals("List of tasks", 0, results.size());
+        results = taskService.getTasksByVariousFields(testLongList, testLongListTwo, null, null, null, null, null, true);
+        assertEquals("List of tasks", 2, results.size());
+        
+        // task id and/or process instance id 
+        testLongList.clear();
+        testLongList.add(workItemIds.get(1));
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, testLongList, null, null, null, null, true);
+        assertEquals("List of tasks", 1, results.size());
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, testLongList, null, null, null, null, false);
+        assertEquals("List of tasks", 1, results.size());
+        
+        // process instance id and/or bus admin 
+        List<String> testStringList = new ArrayList<String>();
+        testStringList.add(busAdmins.get(0));
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, null, testStringList, null, null, null, false);
+        assertEquals("List of tasks", 0, results.size());
+        results = taskService.getTasksByVariousFields(null, testLongListTwo, null, testStringList, null, null, null, true);
+        assertEquals("List of tasks", 2, results.size());
+
+        // bus admin and/or pot owner 
+        testStringList.clear();
+        testStringList.add(busAdmins.get(1));
+        List<String> testStringListTwo = new ArrayList<String>();
+        testStringListTwo.add(potOwners.get(0));
+        results = taskService.getTasksByVariousFields(null, null, null, testStringList, testStringListTwo, null, null, false);
+        assertEquals("List of tasks", 0, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, testStringList, testStringListTwo, null, null, true);
+        assertEquals("List of tasks", 2, results.size());
+        
+        // pot owner and/or task owner
+        testStringList.clear();
+        testStringList.add(tasks[1].getTaskData().getActualOwner().getId());
+        results = taskService.getTasksByVariousFields(null, null, null, null, testStringListTwo, testStringList, null, false);
+        assertEquals("List of tasks", 0, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, null, testStringListTwo, testStringList, null, true);
+        assertEquals("List of tasks", 2, results.size());
+        
+        // task owner and/or status
+        List<Status> testStatusList = new ArrayList<Status>();
+        testStatusList.add(statuses.get(0));
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, false);
+        assertEquals("List of tasks", 0, results.size());
+        results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, true);
+        assertEquals("List of tasks", 2, results.size());
     }
 }

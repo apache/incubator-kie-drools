@@ -3,31 +3,7 @@ package org.jbpm.services.task.impl.command;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.services.task.commands.ActivateTaskCommand;
-import org.jbpm.services.task.commands.AddTaskCommand;
-import org.jbpm.services.task.commands.ClaimNextAvailableTaskCommand;
-import org.jbpm.services.task.commands.ClaimTaskCommand;
-import org.jbpm.services.task.commands.CompleteTaskCommand;
-import org.jbpm.services.task.commands.DelegateTaskCommand;
-import org.jbpm.services.task.commands.ExitTaskCommand;
-import org.jbpm.services.task.commands.FailTaskCommand;
-import org.jbpm.services.task.commands.ForwardTaskCommand;
-import org.jbpm.services.task.commands.GetAttachmentCommand;
-import org.jbpm.services.task.commands.GetContentCommand;
-import org.jbpm.services.task.commands.GetTaskAssignedAsBusinessAdminCommand;
-import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
-import org.jbpm.services.task.commands.GetTaskByWorkItemIdCommand;
-import org.jbpm.services.task.commands.GetTaskCommand;
-import org.jbpm.services.task.commands.GetTasksByProcessInstanceIdCommand;
-import org.jbpm.services.task.commands.GetTasksByStatusByProcessInstanceIdCommand;
-import org.jbpm.services.task.commands.GetTasksOwnedCommand;
-import org.jbpm.services.task.commands.NominateTaskCommand;
-import org.jbpm.services.task.commands.ReleaseTaskCommand;
-import org.jbpm.services.task.commands.ResumeTaskCommand;
-import org.jbpm.services.task.commands.SkipTaskCommand;
-import org.jbpm.services.task.commands.StartTaskCommand;
-import org.jbpm.services.task.commands.StopTaskCommand;
-import org.jbpm.services.task.commands.SuspendTaskCommand;
+import org.jbpm.services.task.commands.*;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Attachment;
@@ -116,6 +92,17 @@ public class CommandBasedTaskService implements TaskService {
 	public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
 		return executor.execute(new GetTasksByProcessInstanceIdCommand(processInstanceId));
 	}
+	
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, boolean union) {
+		return executor.execute(new GetTasksByVariousFields(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, statuses, union));
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(Map<String, List<?>> parameters, boolean union) {
+		return executor.execute(new GetTasksByVariousFields(parameters, union));
+    }
 
 	public long addTask(Task task, Map<String, Object> params) {
 		return executor.execute(new AddTaskCommand(task, params));
@@ -157,5 +144,7 @@ public class CommandBasedTaskService implements TaskService {
 	public Attachment getAttachmentById(long attachId) {
 		return executor.execute(new GetAttachmentCommand(attachId));
 	}
+
+
 
 }

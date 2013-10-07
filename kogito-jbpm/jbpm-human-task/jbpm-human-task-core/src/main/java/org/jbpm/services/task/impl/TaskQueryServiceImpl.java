@@ -83,13 +83,13 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
 
     public List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate) {
-        List tasksByGroups = (List<TaskSummary>)pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional", 
+        List<TaskSummary> tasksByGroups = (List<TaskSummary>)pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional", 
                 pm.addParametersToMap("groupIds", groupIds, "expirationDate", expirationDate));
                 
         return collectTasksByPotentialOwners(tasksByGroups, language);
     }  
     
-    protected List<TaskSummary> collectTasksByPotentialOwners(List tasksByGroups, String language) {
+    protected List<TaskSummary> collectTasksByPotentialOwners(List<TaskSummary> tasksByGroups, String language) {
         Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
         Map<Long, List<String>> potentialOwners = Collections.synchronizedMap(new HashMap<Long, List<String>>());
         for (Object o : tasksByGroups) {
@@ -115,14 +115,14 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     
     public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate) {
 
-        List tasksByGroups = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate", 
+        List<TaskSummary> tasksByGroups = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate", 
                 pm.addParametersToMap("groupIds", groupIds, "expirationDate", expirationDate));
         return collectTasksByPotentialOwners(tasksByGroups, language);
     }        
             
     public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {
 
-        List tasksByGroups = (List) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroups", 
+        List<TaskSummary> tasksByGroups = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroups", 
                 pm.addParametersToMap("groupIds", groupIds));
                 
         Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
@@ -211,7 +211,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 tasksIds.add(ts.getId());
             }
 
-            List tasksPotentialOwners = (List)pm.queryWithParametersInTransaction("TasksOwnedPotentialOwnersByTaskIds",
+            List<TaskSummary> tasksPotentialOwners = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedPotentialOwnersByTaskIds",
                         pm.addParametersToMap("taskIds", tasksIds));
 
             Map<Long, List<String>> potentialOwners = new HashMap<Long, List<String>>();
@@ -351,4 +351,170 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerStatusByExpirationDateOptional",
                     pm.addParametersToMap("userId", userId, "groupIds", "", "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
     }
+    
+    public List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
+            List<Status> statuses, boolean union) { 
+        
+        Map<String, List<?>> params = new HashMap<String, List<?>>();
+        params.put(WORK_ITEM_ID_LIST, workItemIds);
+        params.put(TASK_ID_LIST, taskIds);
+        params.put(PROCESS_INST_ID_LIST, procInstIds);
+        params.put(BUSINESS_ADMIN_ID_LIST, busAdmins);
+        params.put(POTENTIAL_OWNER_ID_LIST, potOwners);
+        params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
+        params.put(STATUS_LIST, statuses);
+        return getTasksByVariousFields(params, union);
+    }
+    
+    public List<TaskSummary> getTasksByVariousFields( Map<String, List<?>> parameters, boolean union ) { 
+        StringBuilder queryBuilder = new StringBuilder(VARIOUS_FIELDS_TASKSUM_QUERY);
+        Map<String, Object> params = new HashMap<String, Object>();
+        WhereClauseWithListParamAppender<Long> longQueryAdder = new WhereClauseWithListParamAppender<Long>(Long.class, queryBuilder, params, union);
+        WhereClauseWithListParamAppender<String> stringQueryAdder = new WhereClauseWithListParamAppender<String>(String.class, queryBuilder, params, union);
+        WhereClauseWithListParamAppender<Status> statusQueryAdder = new WhereClauseWithListParamAppender<Status>(Status.class, queryBuilder, params, union);
+        
+        List<Long> workItemIds = longQueryAdder.checkNullAndInstanceOf(parameters, WORK_ITEM_ID_LIST);
+        List<Long> taskIds = longQueryAdder.checkNullAndInstanceOf(parameters, TASK_ID_LIST);
+        List<Long> procInstIds = longQueryAdder.checkNullAndInstanceOf(parameters, PROCESS_INST_ID_LIST);
+        List<String> busAdmins = stringQueryAdder.checkNullAndInstanceOf(parameters, BUSINESS_ADMIN_ID_LIST);
+        List<String> potOwners = stringQueryAdder.checkNullAndInstanceOf(parameters, POTENTIAL_OWNER_ID_LIST);
+        List<String> taskOwners = stringQueryAdder.checkNullAndInstanceOf(parameters, ACTUAL_OWNER_ID_LIST);
+        List<Status> status = statusQueryAdder.checkNullAndInstanceOf(parameters, STATUS_LIST);
+        
+        if( workItemIds != null && workItemIds.size() > 0 ) { 
+            String paramName = "workItemIds";
+            longQueryAdder.addToQueryBuilder(
+                    "( t.taskData.workItemId in ( :" + paramName + " ) ) ",
+                    paramName, 
+                    workItemIds);
+        }
+        if( taskIds != null && taskIds.size() > 0 ) { 
+            String paramName = "taskIds";
+            longQueryAdder.addToQueryBuilder(
+                    "( t.id in ( :" + paramName + " ) ) ",
+                    paramName, 
+                    taskIds);
+        }
+        if( procInstIds != null && procInstIds.size() > 0 ) { 
+            String paramName = "procInstIds";
+            longQueryAdder.addToQueryBuilder(
+                    "( t.taskData.processInstanceId in ( :" + paramName + " ) ) ",
+                    paramName, 
+                    procInstIds);
+        }
+        
+        stringQueryAdder.setAlreadyUsed(longQueryAdder.isAlreadyUsed());
+        if( busAdmins != null && busAdmins.size() > 0 ) { 
+            String paramName = "busAdminIds";
+            String query = "( businessAdministrator.id in ( :" + paramName + " ) and "
+                    + "businessAdministrator in elements ( t.peopleAssignments.businessAdministrators ) ) ";
+            stringQueryAdder.addToQueryBuilder(query, paramName, busAdmins);
+        }
+        if( potOwners != null && potOwners.size() > 0 ) { 
+            String paramName = "potOwnerIds";
+            String query =  "( potentialOwners.id in ( :" + paramName + " ) and "
+                    + "potentialOwners in elements ( t.peopleAssignments.potentialOwners ) ) ";
+            stringQueryAdder.addToQueryBuilder(query, paramName, potOwners);
+        }
+        if( taskOwners != null && taskOwners.size() > 0 ) { 
+            String paramName = "taskOwnerIds";
+            String query =  "( t.taskData.actualOwner.id in ( :" + paramName + " ) ) ";
+            stringQueryAdder.addToQueryBuilder(query, paramName, taskOwners);
+        }
+        
+        statusQueryAdder.setAlreadyUsed(stringQueryAdder.isAlreadyUsed());
+        if( status != null && status.size() > 0 ) { 
+            String paramName = "statuses";
+            String query = "( t.taskData.status in (:"+ paramName + ") ) ";
+            statusQueryAdder.addToQueryBuilder(query, paramName, status);
+        }
+        
+        return (List<TaskSummary>) pm.queryStringWithParametersInTransaction(queryBuilder.toString(), params);
+    }
+    
+    private static String VARIOUS_FIELDS_TASKSUM_QUERY = 
+            "select distinct"
+            + "  new org.jbpm.services.task.query.TaskSummaryImpl(t.id,"
+            + "  t.taskData.processInstanceId,"
+            + "  name.shortText," + "subject.shortText," + "description.shortText,"
+            + "  t.taskData.status,"
+            + "  t.priority,"
+            + "  t.taskData.skipable,"
+            + "  actualOwner," + "createdBy,"
+            + "  t.taskData.createdOn," + "t.taskData.activationTime," + "t.taskData.expirationTime,"
+            + "  t.taskData.processId," + "t.taskData.processSessionId,"
+            + "  t.subTaskStrategy,"
+            + "  t.taskData.parentId ) "
+            + "from"
+            + "  TaskImpl t "
+            + "  left join t.taskData.actualOwner as actualOwner            "
+            + "  left join t.taskData.createdBy as createdBy"
+            + "  left join t.subjects as subject"
+            + "  left join t.descriptions as description"
+            + "  left join t.names as name, "
+            + "  OrganizationalEntityImpl businessAdministrator, "
+            + "  OrganizationalEntityImpl potentialOwners "
+            + "where "
+            + "t.archived = 0 AND ";
+    
+    private class WhereClauseWithListParamAppender<T> { 
+
+        private final String andOr;
+        private boolean alreadyUsed = false;
+        
+        private final StringBuilder queryBuilder;
+        private final Map<String, Object> queryParams;
+        private final Class clazz;
+        
+        public WhereClauseWithListParamAppender(Class clazz, StringBuilder queryBuilder, Map<String, Object> params, boolean union) { 
+            this.andOr = union ? " OR " : " AND ";
+            this.queryBuilder = queryBuilder;
+            this.queryParams = params;
+            this.clazz = clazz;
+        }
+        
+        public void addToQueryBuilder(String query, String paramName, List<T> paramValList) { 
+            if( isAlreadyUsed() ) { 
+                queryBuilder.append( andOr );
+            }
+            queryBuilder.append( query );
+            Set<T> paramVals = new HashSet<T>();
+            for( T val : paramValList ) { 
+                if( val != null ) { 
+                    paramVals.add(val);
+                }
+            }
+            queryParams.put(paramName, paramVals);
+            setAlreadyUsed(true);
+        }
+
+        public boolean isAlreadyUsed() {
+            return alreadyUsed;
+        }
+
+        public void setAlreadyUsed(boolean alreadyUsed) {
+            this.alreadyUsed = alreadyUsed;
+        }
+        
+        @SuppressWarnings("unchecked")
+        public List<T> checkNullAndInstanceOf(Map<String, List<?>> params, String field) { 
+            List<T> result = null;
+            List<?> inputList = params.get(field);
+            if( inputList != null ) { 
+                if( inputList.size() > 0 ) { 
+                    Object inputObject = inputList.get(0);
+                    if( this.clazz.equals(inputObject.getClass()) ) { 
+                        return (List<T>) inputList; 
+                    } else { 
+                        throw new IllegalArgumentException( field + " parameter is an instance of "
+                                + "List<" + inputObject.getClass().getSimpleName() + "> instead of "
+                                + "List<"+ this.clazz.getSimpleName() + ">");
+                    }
+                } 
+            }
+            return result;
+        }
+    }
+    
 }

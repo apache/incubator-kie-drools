@@ -717,5 +717,18 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
         
         return new ContentMarshallerContext();
     }
+
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> status, boolean union) {
+        return this.taskQueryService.getTasksByVariousFields(workItemIds, taskIds, procInstIds, 
+                busAdmins, potOwners, taskOwners, 
+                status, union);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(Map<String, List<?>> parameters, boolean union) {
+        return this.taskQueryService.getTasksByVariousFields(parameters, union);
+    }
     
 }

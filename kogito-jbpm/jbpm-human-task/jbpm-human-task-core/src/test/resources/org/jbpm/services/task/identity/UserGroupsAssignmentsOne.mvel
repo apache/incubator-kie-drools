@@ -19,6 +19,10 @@ usersgroups = [ new User('Darth Vader') : [new Group( "Knights Templer" ),  new 
                 new User('krisv') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],          
                 new User('john') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
                 new User('mary') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],           
-                new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )]
+                new User('sales-rep') : [new Group( "Knights Templer" ),  new Group( "Crusaders" )],
+                new User('Wintermute') : [new Group( "AI" )],
+                new User('Neuromancer') : [new Group( "AI" )],
+                new User('Hideo') : [new Group( "Pilot" )],
+                new User('Maelcum') : [new Group( "Ninja" )]
               ];       
 return usersgroups;

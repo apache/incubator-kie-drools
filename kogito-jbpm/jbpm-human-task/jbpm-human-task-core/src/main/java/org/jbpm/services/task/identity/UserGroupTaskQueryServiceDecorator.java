@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
 import javax.inject.Inject;
-import org.kie.api.task.model.OrganizationalEntity;
 
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
@@ -237,6 +237,17 @@ public class UserGroupTaskQueryServiceDecorator extends
     @Override
     public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
         return delegate.getPotentialOwnersForTaskIds(taskIds);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> status, boolean union) {
+        return delegate.getTasksByVariousFields(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, status, union);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(Map<String, List<?>> parameters, boolean union) {
+        return delegate.getTasksByVariousFields(parameters, union);
     }
 
 }
