@@ -2214,6 +2214,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         List<TypeDefinition> unresolvedTypeDefinitions = null;
 
+        if ( ! results.isEmpty() ) {
+            return unresolvedTypeDefinitions;
+        }
+
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
             if (!typeDescr.getNamespace().equals( packageDescr.getNamespace() )) {
@@ -2254,9 +2258,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 PackageRegistry sup = pkgRegistryMap.get( typeDescr.getSuperTypeNamespace() );
                 if ( sup != null ) {
                     parent = sup.getPackage().getTypeDeclaration( typeDescr.getSuperTypeName() );
-                    if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
-                        // trying to find a definition
-                        parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    if ( parent == null ) {
+                        this.results.add( new TypeDeclarationError( typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared" ) );
+                    } else {
+                        if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
+                            // trying to find a definition
+                            parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                        }
                     }
                 }
             }
@@ -2307,13 +2315,15 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 // the type declaration is generated in any case (to be used by subclasses, if any)
                 // the actual class will be generated only if needed
 
-                generateDeclaredBean( typeDescr,
-                                      type,
-                                      pkgRegistry,
-                                      unresolvedTypeDefinitions );
+                if ( results.isEmpty() ) {
+                    generateDeclaredBean( typeDescr,
+                                          type,
+                                          pkgRegistry,
+                                          unresolvedTypeDefinitions );
 
-                Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
-                type.setTypeClass( clazz );
+                    Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
+                    type.setTypeClass( clazz );
+                }
 
             } catch (final ClassNotFoundException e) {
                 this.results.add( new TypeDeclarationError( typeDescr,
