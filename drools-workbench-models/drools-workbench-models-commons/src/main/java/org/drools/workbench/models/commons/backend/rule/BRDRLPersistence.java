@@ -2503,7 +2503,7 @@ public class BRDRLPersistence
                                                     String fieldName,
                                                     String fieldType,
                                                     ExpressionFormLine expression ) {
-            Map<String, ModelField[]> modelFields = dmo.getModelFields();
+            Map<String, ModelField[]> modelFields = dmo.getProjectModelFields();
             String[] splits = fieldName.split( "\\." );
 
             boolean isBoundParam = false;
@@ -2534,7 +2534,7 @@ public class BRDRLPersistence
         }
 
         private String getFQFactType( String factType ) {
-            for ( String type : dmo.getAllFactTypes() ) {
+            for ( String type : dmo.getProjectModelFields().keySet() ) {
                 if ( type.endsWith( "." + factType ) ) {
                     return type;
                 }

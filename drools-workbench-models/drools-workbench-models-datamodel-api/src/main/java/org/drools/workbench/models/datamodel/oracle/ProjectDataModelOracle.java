@@ -23,81 +23,59 @@ import java.util.Set;
 
 public interface ProjectDataModelOracle {
 
-    //Fact and Field related methods
-    String[] getFactTypes();
+    void setProjectName( final String projectName );
 
-    Map<String,Collection<String>> getRuleNamesMap();
+    void addProjectModelFields( final Map<String, ModelField[]> modelFields );
 
-    List<String> getRuleNames();
+    void addProjectFieldParametersType( final Map<String, String> fieldParametersType );
 
-    Collection<String> getRuleNamesForPackage(String packageName);
+    void addProjectEventTypes( final Map<String, Boolean> eventTypes );
 
-    String getFactNameFromType( final String classType );
+    void addProjectTypeSources( final Map<String, TypeSource> typeSources );
 
-    boolean isFactTypeRecognized( final String factType );
+    void addProjectSuperTypes( final Map<String, String> superTypes );
 
-    boolean isFactTypeAnEvent( final String factType );
+    void addProjectTypeAnnotations( final Map<String, Set<Annotation>> annotations );
 
-    TypeSource getTypeSource( final String factType );
+    void addProjectTypeFieldsAnnotations( final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations );
 
-    String getSuperType( final String factType );
+    void addProjectJavaEnumDefinitions( final Map<String, String[]> enumDefinitions );
 
-    Set<Annotation> getTypeAnnotations( final String factType );
+    void addProjectMethodInformation( final Map<String, List<MethodInfo>> methodInformation );
 
-    Map<String, Set<Annotation>> getTypeFieldsAnnotations( final String factType );
+    void addProjectCollectionTypes( final Map<String, Boolean> collectionTypes );
 
-    Map<String, ModelField[]> getModelFields();
+    void addProjectRuleNames( final String packageName,
+                              final Collection<String> ruleNames );
 
-    String[] getFieldCompletions( final String factType );
+    void addProjectPackageNames( final List<String> packageNames );
 
-    String[] getFieldCompletions( final FieldAccessorsAndMutators accessor,
-                                  final String factType );
+    String getProjectName();
 
-    String getFieldType( final String variableClass,
-                         final String fieldName );
+    Map<String, ModelField[]> getProjectModelFields();
 
-    String getFieldClassName( final String factName,
-                              final String fieldName );
+    Map<String, String> getProjectFieldParametersType();
 
-    String getParametricFieldType( final String factType,
-                                   final String fieldName );
+    Map<String, Boolean> getProjectEventTypes();
 
-    String[] getOperatorCompletions( final String factType,
-                                     final String fieldName );
+    Map<String, TypeSource> getProjectTypeSources();
 
-    String[] getConnectiveOperatorCompletions( final String factType,
-                                               final String fieldName );
+    Map<String, String> getProjectSuperTypes();
 
-    List<String> getMethodNames( final String factType );
+    Map<String, Set<Annotation>> getProjectTypeAnnotations();
 
-    List<String> getMethodNames( final String factName,
-                                 final int i );
+    Map<String, Map<String, Set<Annotation>>> getProjectTypeFieldsAnnotations();
 
-    List<String> getMethodParams( final String factType,
-                                  final String methodNameWithParams );
+    Map<String, String[]> getProjectJavaEnumDefinitions();
 
-    MethodInfo getMethodInfo( final String factName,
-                              final String methodName );
+    Map<String, List<MethodInfo>> getProjectMethodInformation();
 
-    // Enumeration related methods
-    String[] getEnumValues( final String factType,
-                            final String factField );
+    Map<String, Boolean> getProjectCollectionTypes();
 
-    boolean hasEnums( final String qualifiedFactField );
+    Map<String, Collection<String>> getProjectRuleNamesMap();
 
-    boolean hasEnums( final String factType,
-                      final String factField );
+    Collection<String> getRuleNamesForPackage( final String packageName );
 
-    boolean isDependentEnum( final String factType,
-                             final String factField,
-                             final String field );
+    List<String> getProjectPackageNames();
 
-    DropDownData getEnums( final String type,
-                           final String field );
-
-    DropDownData getEnums( final String factType,
-                           final String factField,
-                           final Map<String, String> currentValueMap );
-
-    List<String> getPackageNames();
 }

@@ -18,9 +18,6 @@ package org.drools.workbench.models.commons.backend.rule;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
@@ -57,7 +54,7 @@ public class BRDRLPersistenceUnmarshallingTest {
     public void setUp() throws Exception {
         dmo = mock( PackageDataModelOracle.class );
         when(
-                dmo.getModelFields()
+                dmo.getProjectModelFields()
             ).thenReturn(
                 packageModelFields
                         );
@@ -899,11 +896,6 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField( "org.test.Person", "address", "Address", "org.test.Address" );
         addModelField( "org.test.Address", "postalCode", "Integer", "java.lang.Integer" );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[]{ "org.test.Person", "org.test.Address" }
-                        );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
@@ -959,11 +951,6 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField( "org.test.Person", "address", "Address", "org.test.Address" );
         addModelField( "org.test.Address", "postalCode", "Integer", "java.lang.Integer" );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[]{ "org.test.Person", "org.test.Address" }
-                        );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
@@ -1019,11 +1006,6 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField( "org.test.Person", "address", "Address", "org.test.Address" );
         addModelField( "org.test.Address", "postalCode", "Integer", "java.lang.Integer" );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[]{ "org.test.Person", "org.test.Address" }
-                        );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
@@ -1418,11 +1400,6 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField( "org.test.ParentType", "parentChildField", "ChildType", "org.test.ChildType" );
         addModelField( "org.test.ChildType", "childField", "String", "java.lang.String" );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[]{ "org.test.ParentType", "org.test.ChildType" }
-                        );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 
@@ -1550,11 +1527,6 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         addModelField( "org.test.ParentType", "parentChildField", "ChildType", "org.test.ChildType" );
         addModelField( "org.test.ChildType", "childField", "String", "java.lang.String" );
-        when(
-                dmo.getAllFactTypes()
-            ).thenReturn(
-                new String[]{ "org.test.ParentType", "org.test.ChildType" }
-                        );
 
         RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
 

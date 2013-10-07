@@ -1,0 +1,198 @@
+package org.drools.workbench.models.commons.backend.oracle;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.workbench.models.datamodel.oracle.Annotation;
+import org.drools.workbench.models.datamodel.oracle.MethodInfo;
+import org.drools.workbench.models.datamodel.oracle.ModelField;
+import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
+import org.drools.workbench.models.datamodel.oracle.TypeSource;
+
+/**
+ * Default implementation of DataModelOracle
+ */
+public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
+
+    //Project name
+    protected String projectName;
+
+    //Fact Types and their corresponding fields
+    protected Map<String, ModelField[]> projectModelFields = new HashMap<String, ModelField[]>();
+
+    //Map of the field that contains the parametrized type of a collection
+    //for example given "List<String> name", key = "name" value = "String"
+    protected Map<String, String> projectFieldParametersType = new HashMap<String, String>();
+
+    //Map {factType, isEvent} to determine which Fact Type can be treated as events.
+    protected Map<String, Boolean> projectEventTypes = new HashMap<String, Boolean>();
+
+    //Map {factType, TypeSource} to determine where a Fact Type as defined.
+    protected Map<String, TypeSource> projectTypeSources = new HashMap<String, TypeSource>();
+
+    //Map {factType, superType} to determine the Super Type of a FactType.
+    protected Map<String, String> projectSuperTypes = new HashMap<String, String>();
+
+    //Map {factType, Set<Annotation>} containing the FactType's annotations.
+    protected Map<String, Set<Annotation>> projectTypeAnnotations = new HashMap<String, Set<Annotation>>();
+
+    //Map {factType, Map<fieldName, Set<Annotation>>} containing the FactType's Field annotations.
+    protected Map<String, Map<String, Set<Annotation>>> projectTypeFieldsAnnotations = new HashMap<String, Map<String, Set<Annotation>>>();
+
+    // Scoped (current package and imports) map of { TypeName.field : String[] } - where a list is valid values to display in a drop down for a given Type.field combination.
+    protected Map<String, String[]> projectJavaEnumDefinitions = new HashMap<String, String[]>();
+
+    //Method information used (exclusively) by ExpressionWidget and ActionCallMethodWidget
+    protected Map<String, List<MethodInfo>> projectMethodInformation = new HashMap<String, List<MethodInfo>>();
+
+    // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
+    protected Map<String, Boolean> projectCollectionTypes = new HashMap<String, Boolean>();
+
+    // List of available rule names
+    private Map<String, Collection<String>> projectRuleNames = new HashMap<String, Collection<String>>();
+
+    // List of available package names
+    private List<String> projectPackageNames = new ArrayList<String>();
+
+    @Override
+    public void setProjectName( final String projectName ) {
+        this.projectName = projectName;
+    }
+
+    @Override
+    public void addProjectModelFields( final Map<String, ModelField[]> modelFields ) {
+        this.projectModelFields.putAll( modelFields );
+    }
+
+    @Override
+    public void addProjectFieldParametersType( final Map<String, String> fieldParametersType ) {
+        this.projectFieldParametersType.putAll( fieldParametersType );
+    }
+
+    @Override
+    public void addProjectEventTypes( final Map<String, Boolean> eventTypes ) {
+        this.projectEventTypes.putAll( eventTypes );
+    }
+
+    @Override
+    public void addProjectTypeSources( final Map<String, TypeSource> typeSources ) {
+        this.projectTypeSources.putAll( typeSources );
+    }
+
+    @Override
+    public void addProjectSuperTypes( final Map<String, String> superTypes ) {
+        this.projectSuperTypes.putAll( superTypes );
+    }
+
+    @Override
+    public void addProjectTypeAnnotations( final Map<String, Set<Annotation>> annotations ) {
+        this.projectTypeAnnotations.putAll( annotations );
+    }
+
+    @Override
+    public void addProjectTypeFieldsAnnotations( final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations ) {
+        this.projectTypeFieldsAnnotations.putAll( typeFieldsAnnotations );
+    }
+
+    @Override
+    public void addProjectJavaEnumDefinitions( final Map<String, String[]> dataEnumLists ) {
+        this.projectJavaEnumDefinitions.putAll( dataEnumLists );
+    }
+
+    @Override
+    public void addProjectMethodInformation( final Map<String, List<MethodInfo>> methodInformation ) {
+        this.projectMethodInformation.putAll( methodInformation );
+    }
+
+    @Override
+    public void addProjectCollectionTypes( final Map<String, Boolean> collectionTypes ) {
+        this.projectCollectionTypes.putAll( collectionTypes );
+    }
+
+    @Override
+    public void addProjectRuleNames( final String packageName,
+                                     final Collection<String> ruleNames ) {
+        this.projectRuleNames.put( packageName, ruleNames );
+    }
+
+    @Override
+    public void addProjectPackageNames( final List<String> packageNames ) {
+        this.projectPackageNames.addAll( packageNames );
+    }
+
+    @Override
+    public String getProjectName() {
+        return this.projectName;
+    }
+
+    @Override
+    public Map<String, ModelField[]> getProjectModelFields() {
+        return this.projectModelFields;
+    }
+
+    @Override
+    public Map<String, String> getProjectFieldParametersType() {
+        return this.projectFieldParametersType;
+    }
+
+    @Override
+    public Map<String, Boolean> getProjectEventTypes() {
+        return this.projectEventTypes;
+    }
+
+    @Override
+    public Map<String, TypeSource> getProjectTypeSources() {
+        return this.projectTypeSources;
+    }
+
+    @Override
+    public Map<String, String> getProjectSuperTypes() {
+        return this.projectSuperTypes;
+    }
+
+    @Override
+    public Map<String, Set<Annotation>> getProjectTypeAnnotations() {
+        return this.projectTypeAnnotations;
+    }
+
+    @Override
+    public Map<String, Map<String, Set<Annotation>>> getProjectTypeFieldsAnnotations() {
+        return this.projectTypeFieldsAnnotations;
+    }
+
+    @Override
+    public Map<String, String[]> getProjectJavaEnumDefinitions() {
+        return this.projectJavaEnumDefinitions;
+    }
+
+    @Override
+    public Map<String, List<MethodInfo>> getProjectMethodInformation() {
+        return this.projectMethodInformation;
+    }
+
+    @Override
+    public Map<String, Boolean> getProjectCollectionTypes() {
+        return this.projectCollectionTypes;
+    }
+
+    @Override
+    public Map<String, Collection<String>> getProjectRuleNamesMap() {
+        return this.projectRuleNames;
+    }
+
+    @Override
+    public Collection<String> getRuleNamesForPackage( final String packageName ) {
+        return this.projectRuleNames.get( packageName );
+    }
+
+    @Override
+    public List<String> getProjectPackageNames() {
+        return this.projectPackageNames;
+    }
+
+}
+
