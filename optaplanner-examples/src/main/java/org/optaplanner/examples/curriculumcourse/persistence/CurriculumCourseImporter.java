@@ -177,6 +177,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
                 Day day = new Day();
                 day.setId((long) i);
                 day.setDayIndex(i);
+                day.setPeriodList(new ArrayList<Period>(timeslotListSize));
                 dayList.add(day);
             }
             schedule.setDayList(dayList);
@@ -190,13 +191,15 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
             schedule.setTimeslotList(timeslotList);
             List<Period> periodList = new ArrayList<Period>(periodListSize);
             for (int i = 0; i < dayListSize; i++) {
+                Day day = dayList.get(i);
                 for (int j = 0; j < timeslotListSize; j++) {
                     Period period = new Period();
                     period.setId((long) (i * timeslotListSize + j));
-                    period.setDay(dayList.get(i));
+                    period.setDay(day);
                     period.setTimeslot(timeslotList.get(j));
                     periodList.add(period);
                     periodMap.put(Arrays.asList(i, j), period);
+                    day.getPeriodList().add(period);
                 }
             }
             schedule.setPeriodList(periodList);

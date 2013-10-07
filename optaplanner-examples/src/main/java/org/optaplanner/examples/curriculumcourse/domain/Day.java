@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.curriculumcourse.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -24,12 +26,26 @@ public class Day extends AbstractPersistable {
 
     private int dayIndex;
 
+    private List<Period> periodList;
+
     public int getDayIndex() {
         return dayIndex;
     }
 
     public void setDayIndex(int dayIndex) {
         this.dayIndex = dayIndex;
+    }
+
+    public List<Period> getPeriodList() {
+        return periodList;
+    }
+
+    public void setPeriodList(List<Period> periodList) {
+        this.periodList = periodList;
+    }
+
+    public String getLabel() {
+        return toString();
     }
 
     @Override

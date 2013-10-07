@@ -32,6 +32,10 @@ public class Timeslot extends AbstractPersistable {
         this.timeslotIndex = timeslotIndex;
     }
 
+    public String getLabel() {
+        return toString();
+    }
+
     @Override
     public String toString() {
         return Integer.toString(timeslotIndex);

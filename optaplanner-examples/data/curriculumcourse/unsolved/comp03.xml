@@ -1483,3419 +1483,3454 @@
     <Day id="279">
       <id>0</id>
       <dayIndex>0</dayIndex>
+      <periodList id="280">
+        <Period id="281">
+          <id>0</id>
+          <day reference="279"/>
+          <timeslot id="282">
+            <id>0</id>
+            <timeslotIndex>0</timeslotIndex>
+          </timeslot>
+        </Period>
+        <Period id="283">
+          <id>1</id>
+          <day reference="279"/>
+          <timeslot id="284">
+            <id>1</id>
+            <timeslotIndex>1</timeslotIndex>
+          </timeslot>
+        </Period>
+        <Period id="285">
+          <id>2</id>
+          <day reference="279"/>
+          <timeslot id="286">
+            <id>2</id>
+            <timeslotIndex>2</timeslotIndex>
+          </timeslot>
+        </Period>
+        <Period id="287">
+          <id>3</id>
+          <day reference="279"/>
+          <timeslot id="288">
+            <id>3</id>
+            <timeslotIndex>3</timeslotIndex>
+          </timeslot>
+        </Period>
+        <Period id="289">
+          <id>4</id>
+          <day reference="279"/>
+          <timeslot id="290">
+            <id>4</id>
+            <timeslotIndex>4</timeslotIndex>
+          </timeslot>
+        </Period>
+      </periodList>
     </Day>
-    <Day id="280">
+    <Day id="291">
       <id>1</id>
       <dayIndex>1</dayIndex>
+      <periodList id="292">
+        <Period id="293">
+          <id>5</id>
+          <day reference="291"/>
+          <timeslot reference="282"/>
+        </Period>
+        <Period id="294">
+          <id>6</id>
+          <day reference="291"/>
+          <timeslot reference="284"/>
+        </Period>
+        <Period id="295">
+          <id>7</id>
+          <day reference="291"/>
+          <timeslot reference="286"/>
+        </Period>
+        <Period id="296">
+          <id>8</id>
+          <day reference="291"/>
+          <timeslot reference="288"/>
+        </Period>
+        <Period id="297">
+          <id>9</id>
+          <day reference="291"/>
+          <timeslot reference="290"/>
+        </Period>
+      </periodList>
     </Day>
-    <Day id="281">
+    <Day id="298">
       <id>2</id>
       <dayIndex>2</dayIndex>
+      <periodList id="299">
+        <Period id="300">
+          <id>10</id>
+          <day reference="298"/>
+          <timeslot reference="282"/>
+        </Period>
+        <Period id="301">
+          <id>11</id>
+          <day reference="298"/>
+          <timeslot reference="284"/>
+        </Period>
+        <Period id="302">
+          <id>12</id>
+          <day reference="298"/>
+          <timeslot reference="286"/>
+        </Period>
+        <Period id="303">
+          <id>13</id>
+          <day reference="298"/>
+          <timeslot reference="288"/>
+        </Period>
+        <Period id="304">
+          <id>14</id>
+          <day reference="298"/>
+          <timeslot reference="290"/>
+        </Period>
+      </periodList>
     </Day>
-    <Day id="282">
+    <Day id="305">
       <id>3</id>
       <dayIndex>3</dayIndex>
+      <periodList id="306">
+        <Period id="307">
+          <id>15</id>
+          <day reference="305"/>
+          <timeslot reference="282"/>
+        </Period>
+        <Period id="308">
+          <id>16</id>
+          <day reference="305"/>
+          <timeslot reference="284"/>
+        </Period>
+        <Period id="309">
+          <id>17</id>
+          <day reference="305"/>
+          <timeslot reference="286"/>
+        </Period>
+        <Period id="310">
+          <id>18</id>
+          <day reference="305"/>
+          <timeslot reference="288"/>
+        </Period>
+        <Period id="311">
+          <id>19</id>
+          <day reference="305"/>
+          <timeslot reference="290"/>
+        </Period>
+      </periodList>
     </Day>
-    <Day id="283">
+    <Day id="312">
       <id>4</id>
       <dayIndex>4</dayIndex>
+      <periodList id="313">
+        <Period id="314">
+          <id>20</id>
+          <day reference="312"/>
+          <timeslot reference="282"/>
+        </Period>
+        <Period id="315">
+          <id>21</id>
+          <day reference="312"/>
+          <timeslot reference="284"/>
+        </Period>
+        <Period id="316">
+          <id>22</id>
+          <day reference="312"/>
+          <timeslot reference="286"/>
+        </Period>
+        <Period id="317">
+          <id>23</id>
+          <day reference="312"/>
+          <timeslot reference="288"/>
+        </Period>
+        <Period id="318">
+          <id>24</id>
+          <day reference="312"/>
+          <timeslot reference="290"/>
+        </Period>
+      </periodList>
     </Day>
   </dayList>
-  <timeslotList id="284">
-    <Timeslot id="285">
-      <id>0</id>
-      <timeslotIndex>0</timeslotIndex>
-    </Timeslot>
-    <Timeslot id="286">
-      <id>1</id>
-      <timeslotIndex>1</timeslotIndex>
-    </Timeslot>
-    <Timeslot id="287">
-      <id>2</id>
-      <timeslotIndex>2</timeslotIndex>
-    </Timeslot>
-    <Timeslot id="288">
-      <id>3</id>
-      <timeslotIndex>3</timeslotIndex>
-    </Timeslot>
-    <Timeslot id="289">
-      <id>4</id>
-      <timeslotIndex>4</timeslotIndex>
-    </Timeslot>
+  <timeslotList id="319">
+    <Timeslot reference="282"/>
+    <Timeslot reference="284"/>
+    <Timeslot reference="286"/>
+    <Timeslot reference="288"/>
+    <Timeslot reference="290"/>
   </timeslotList>
-  <periodList id="290">
-    <Period id="291">
-      <id>0</id>
-      <day reference="279"/>
-      <timeslot reference="285"/>
-    </Period>
-    <Period id="292">
-      <id>1</id>
-      <day reference="279"/>
-      <timeslot reference="286"/>
-    </Period>
-    <Period id="293">
-      <id>2</id>
-      <day reference="279"/>
-      <timeslot reference="287"/>
-    </Period>
-    <Period id="294">
-      <id>3</id>
-      <day reference="279"/>
-      <timeslot reference="288"/>
-    </Period>
-    <Period id="295">
-      <id>4</id>
-      <day reference="279"/>
-      <timeslot reference="289"/>
-    </Period>
-    <Period id="296">
-      <id>5</id>
-      <day reference="280"/>
-      <timeslot reference="285"/>
-    </Period>
-    <Period id="297">
-      <id>6</id>
-      <day reference="280"/>
-      <timeslot reference="286"/>
-    </Period>
-    <Period id="298">
-      <id>7</id>
-      <day reference="280"/>
-      <timeslot reference="287"/>
-    </Period>
-    <Period id="299">
-      <id>8</id>
-      <day reference="280"/>
-      <timeslot reference="288"/>
-    </Period>
-    <Period id="300">
-      <id>9</id>
-      <day reference="280"/>
-      <timeslot reference="289"/>
-    </Period>
-    <Period id="301">
-      <id>10</id>
-      <day reference="281"/>
-      <timeslot reference="285"/>
-    </Period>
-    <Period id="302">
-      <id>11</id>
-      <day reference="281"/>
-      <timeslot reference="286"/>
-    </Period>
-    <Period id="303">
-      <id>12</id>
-      <day reference="281"/>
-      <timeslot reference="287"/>
-    </Period>
-    <Period id="304">
-      <id>13</id>
-      <day reference="281"/>
-      <timeslot reference="288"/>
-    </Period>
-    <Period id="305">
-      <id>14</id>
-      <day reference="281"/>
-      <timeslot reference="289"/>
-    </Period>
-    <Period id="306">
-      <id>15</id>
-      <day reference="282"/>
-      <timeslot reference="285"/>
-    </Period>
-    <Period id="307">
-      <id>16</id>
-      <day reference="282"/>
-      <timeslot reference="286"/>
-    </Period>
-    <Period id="308">
-      <id>17</id>
-      <day reference="282"/>
-      <timeslot reference="287"/>
-    </Period>
-    <Period id="309">
-      <id>18</id>
-      <day reference="282"/>
-      <timeslot reference="288"/>
-    </Period>
-    <Period id="310">
-      <id>19</id>
-      <day reference="282"/>
-      <timeslot reference="289"/>
-    </Period>
-    <Period id="311">
-      <id>20</id>
-      <day reference="283"/>
-      <timeslot reference="285"/>
-    </Period>
-    <Period id="312">
-      <id>21</id>
-      <day reference="283"/>
-      <timeslot reference="286"/>
-    </Period>
-    <Period id="313">
-      <id>22</id>
-      <day reference="283"/>
-      <timeslot reference="287"/>
-    </Period>
-    <Period id="314">
-      <id>23</id>
-      <day reference="283"/>
-      <timeslot reference="288"/>
-    </Period>
-    <Period id="315">
-      <id>24</id>
-      <day reference="283"/>
-      <timeslot reference="289"/>
-    </Period>
+  <periodList id="320">
+    <Period reference="281"/>
+    <Period reference="283"/>
+    <Period reference="285"/>
+    <Period reference="287"/>
+    <Period reference="289"/>
+    <Period reference="293"/>
+    <Period reference="294"/>
+    <Period reference="295"/>
+    <Period reference="296"/>
+    <Period reference="297"/>
+    <Period reference="300"/>
+    <Period reference="301"/>
+    <Period reference="302"/>
+    <Period reference="303"/>
+    <Period reference="304"/>
+    <Period reference="307"/>
+    <Period reference="308"/>
+    <Period reference="309"/>
+    <Period reference="310"/>
+    <Period reference="311"/>
+    <Period reference="314"/>
+    <Period reference="315"/>
+    <Period reference="316"/>
+    <Period reference="317"/>
+    <Period reference="318"/>
   </periodList>
-  <roomList id="316">
-    <Room id="317">
+  <roomList id="321">
+    <Room id="322">
       <id>0</id>
       <code>36</code>
       <capacity>42</capacity>
     </Room>
-    <Room id="318">
+    <Room id="323">
       <id>1</id>
       <code>37</code>
       <capacity>42</capacity>
     </Room>
-    <Room id="319">
+    <Room id="324">
       <id>2</id>
       <code>38</code>
       <capacity>48</capacity>
     </Room>
-    <Room id="320">
+    <Room id="325">
       <id>3</id>
       <code>31</code>
       <capacity>50</capacity>
     </Room>
-    <Room id="321">
+    <Room id="326">
       <id>4</id>
       <code>27</code>
       <capacity>100</capacity>
     </Room>
-    <Room id="322">
+    <Room id="327">
       <id>5</id>
       <code>B</code>
       <capacity>216</capacity>
     </Room>
-    <Room id="323">
+    <Room id="328">
       <id>6</id>
       <code>D</code>
       <capacity>216</capacity>
     </Room>
-    <Room id="324">
+    <Room id="329">
       <id>7</id>
       <code>E</code>
       <capacity>216</capacity>
     </Room>
-    <Room id="325">
+    <Room id="330">
       <id>8</id>
       <code>F</code>
       <capacity>216</capacity>
     </Room>
-    <Room id="326">
+    <Room id="331">
       <id>9</id>
       <code>G</code>
       <capacity>216</capacity>
     </Room>
-    <Room id="327">
+    <Room id="332">
       <id>10</id>
       <code>A</code>
       <capacity>312</capacity>
     </Room>
-    <Room id="328">
+    <Room id="333">
       <id>11</id>
       <code>L</code>
       <capacity>336</capacity>
     </Room>
-    <Room id="329">
+    <Room id="334">
       <id>12</id>
       <code>50</code>
       <capacity>80</capacity>
     </Room>
-    <Room id="330">
+    <Room id="335">
       <id>13</id>
       <code>52</code>
       <capacity>90</capacity>
     </Room>
-    <Room id="331">
+    <Room id="336">
       <id>14</id>
       <code>DS1</code>
       <capacity>90</capacity>
     </Room>
-    <Room id="332">
+    <Room id="337">
       <id>15</id>
       <code>DS2</code>
       <capacity>90</capacity>
     </Room>
   </roomList>
-  <unavailablePeriodPenaltyList id="333">
-    <UnavailablePeriodPenalty id="334">
+  <unavailablePeriodPenaltyList id="338">
+    <UnavailablePeriodPenalty id="339">
       <id>0</id>
       <course reference="134"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="335">
-      <id>1</id>
-      <course reference="134"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="336">
-      <id>2</id>
-      <course reference="134"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="337">
-      <id>3</id>
-      <course reference="138"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="338">
-      <id>4</id>
-      <course reference="138"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="339">
-      <id>5</id>
-      <course reference="138"/>
-      <period reference="293"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="340">
-      <id>6</id>
-      <course reference="138"/>
-      <period reference="294"/>
+      <id>1</id>
+      <course reference="134"/>
+      <period reference="289"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="341">
-      <id>7</id>
-      <course reference="138"/>
-      <period reference="312"/>
+      <id>2</id>
+      <course reference="134"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="342">
-      <id>8</id>
+      <id>3</id>
       <course reference="138"/>
-      <period reference="313"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="343">
-      <id>9</id>
+      <id>4</id>
       <course reference="138"/>
-      <period reference="314"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="344">
-      <id>10</id>
+      <id>5</id>
+      <course reference="138"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="345">
+      <id>6</id>
+      <course reference="138"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="346">
+      <id>7</id>
       <course reference="138"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="345">
-      <id>11</id>
-      <course reference="140"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="346">
-      <id>12</id>
-      <course reference="140"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="347">
-      <id>13</id>
-      <course reference="140"/>
-      <period reference="314"/>
+      <id>8</id>
+      <course reference="138"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="348">
-      <id>14</id>
-      <course reference="140"/>
-      <period reference="315"/>
+      <id>9</id>
+      <course reference="138"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="349">
-      <id>15</id>
-      <course reference="144"/>
-      <period reference="293"/>
+      <id>10</id>
+      <course reference="138"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="350">
-      <id>16</id>
-      <course reference="144"/>
-      <period reference="298"/>
+      <id>11</id>
+      <course reference="140"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="351">
-      <id>17</id>
-      <course reference="144"/>
-      <period reference="303"/>
+      <id>12</id>
+      <course reference="140"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="352">
-      <id>18</id>
-      <course reference="144"/>
-      <period reference="308"/>
+      <id>13</id>
+      <course reference="140"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="353">
-      <id>19</id>
-      <course reference="144"/>
-      <period reference="313"/>
+      <id>14</id>
+      <course reference="140"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="354">
+      <id>15</id>
+      <course reference="144"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="355">
+      <id>16</id>
+      <course reference="144"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="356">
+      <id>17</id>
+      <course reference="144"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="357">
+      <id>18</id>
+      <course reference="144"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="358">
+      <id>19</id>
+      <course reference="144"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="359">
       <id>20</id>
+      <course reference="146"/>
+      <period reference="293"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="360">
+      <id>21</id>
+      <course reference="146"/>
+      <period reference="294"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="361">
+      <id>22</id>
+      <course reference="146"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="362">
+      <id>23</id>
       <course reference="146"/>
       <period reference="296"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="355">
-      <id>21</id>
+    <UnavailablePeriodPenalty id="363">
+      <id>24</id>
       <course reference="146"/>
       <period reference="297"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="356">
-      <id>22</id>
-      <course reference="146"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="357">
-      <id>23</id>
-      <course reference="146"/>
-      <period reference="299"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="358">
-      <id>24</id>
-      <course reference="146"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="359">
+    <UnavailablePeriodPenalty id="364">
       <id>25</id>
       <course reference="146"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="360">
-      <id>26</id>
-      <course reference="146"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="361">
-      <id>27</id>
-      <course reference="146"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="362">
-      <id>28</id>
-      <course reference="148"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="363">
-      <id>29</id>
-      <course reference="148"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="364">
-      <id>30</id>
-      <course reference="148"/>
-      <period reference="295"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="365">
-      <id>31</id>
-      <course reference="148"/>
-      <period reference="298"/>
+      <id>26</id>
+      <course reference="146"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="366">
-      <id>32</id>
-      <course reference="148"/>
-      <period reference="299"/>
+      <id>27</id>
+      <course reference="146"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="367">
-      <id>33</id>
+      <id>28</id>
       <course reference="148"/>
-      <period reference="300"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="368">
-      <id>34</id>
+      <id>29</id>
       <course reference="148"/>
-      <period reference="303"/>
+      <period reference="287"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="369">
-      <id>35</id>
+      <id>30</id>
       <course reference="148"/>
-      <period reference="304"/>
+      <period reference="289"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="370">
-      <id>36</id>
+      <id>31</id>
       <course reference="148"/>
-      <period reference="305"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="371">
-      <id>37</id>
+      <id>32</id>
       <course reference="148"/>
-      <period reference="308"/>
+      <period reference="296"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="372">
-      <id>38</id>
+      <id>33</id>
+      <course reference="148"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="373">
+      <id>34</id>
+      <course reference="148"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="374">
+      <id>35</id>
+      <course reference="148"/>
+      <period reference="303"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="375">
+      <id>36</id>
+      <course reference="148"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="376">
+      <id>37</id>
       <course reference="148"/>
       <period reference="309"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="373">
-      <id>39</id>
+    <UnavailablePeriodPenalty id="377">
+      <id>38</id>
       <course reference="148"/>
       <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="374">
-      <id>40</id>
-      <course reference="148"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="375">
-      <id>41</id>
-      <course reference="148"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="376">
-      <id>42</id>
-      <course reference="148"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="377">
-      <id>43</id>
-      <course reference="150"/>
-      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="378">
-      <id>44</id>
-      <course reference="150"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="379">
-      <id>45</id>
-      <course reference="150"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="380">
-      <id>46</id>
-      <course reference="150"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="381">
-      <id>47</id>
-      <course reference="150"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="382">
-      <id>48</id>
-      <course reference="154"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="383">
-      <id>49</id>
-      <course reference="154"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="384">
-      <id>50</id>
-      <course reference="154"/>
-      <period reference="296"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="385">
-      <id>51</id>
-      <course reference="154"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="386">
-      <id>52</id>
-      <course reference="154"/>
-      <period reference="301"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="387">
-      <id>53</id>
-      <course reference="154"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="388">
-      <id>54</id>
-      <course reference="154"/>
-      <period reference="306"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="389">
-      <id>55</id>
-      <course reference="154"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="390">
-      <id>56</id>
-      <course reference="156"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="391">
-      <id>57</id>
-      <course reference="156"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="392">
-      <id>58</id>
-      <course reference="156"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="393">
-      <id>59</id>
-      <course reference="156"/>
+      <id>39</id>
+      <course reference="148"/>
       <period reference="311"/>
     </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="379">
+      <id>40</id>
+      <course reference="148"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="380">
+      <id>41</id>
+      <course reference="148"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="381">
+      <id>42</id>
+      <course reference="148"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="382">
+      <id>43</id>
+      <course reference="150"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="383">
+      <id>44</id>
+      <course reference="150"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="384">
+      <id>45</id>
+      <course reference="150"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="385">
+      <id>46</id>
+      <course reference="150"/>
+      <period reference="311"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="386">
+      <id>47</id>
+      <course reference="150"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="387">
+      <id>48</id>
+      <course reference="154"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="388">
+      <id>49</id>
+      <course reference="154"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="389">
+      <id>50</id>
+      <course reference="154"/>
+      <period reference="293"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="390">
+      <id>51</id>
+      <course reference="154"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="391">
+      <id>52</id>
+      <course reference="154"/>
+      <period reference="300"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="392">
+      <id>53</id>
+      <course reference="154"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="393">
+      <id>54</id>
+      <course reference="154"/>
+      <period reference="307"/>
+    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="394">
-      <id>60</id>
-      <course reference="156"/>
-      <period reference="312"/>
+      <id>55</id>
+      <course reference="154"/>
+      <period reference="311"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="395">
-      <id>61</id>
+      <id>56</id>
       <course reference="156"/>
-      <period reference="313"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="396">
-      <id>62</id>
+      <id>57</id>
+      <course reference="156"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="397">
+      <id>58</id>
+      <course reference="156"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="398">
+      <id>59</id>
       <course reference="156"/>
       <period reference="314"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="397">
-      <id>63</id>
+    <UnavailablePeriodPenalty id="399">
+      <id>60</id>
       <course reference="156"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="398">
-      <id>64</id>
-      <course reference="160"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="399">
-      <id>65</id>
-      <course reference="160"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="400">
-      <id>66</id>
-      <course reference="160"/>
-      <period reference="303"/>
+      <id>61</id>
+      <course reference="156"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="401">
-      <id>67</id>
-      <course reference="160"/>
-      <period reference="308"/>
+      <id>62</id>
+      <course reference="156"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="402">
-      <id>68</id>
-      <course reference="160"/>
-      <period reference="313"/>
+      <id>63</id>
+      <course reference="156"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="403">
-      <id>69</id>
-      <course reference="162"/>
-      <period reference="293"/>
+      <id>64</id>
+      <course reference="160"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="404">
-      <id>70</id>
-      <course reference="162"/>
-      <period reference="294"/>
+      <id>65</id>
+      <course reference="160"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="405">
+      <id>66</id>
+      <course reference="160"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="406">
+      <id>67</id>
+      <course reference="160"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="407">
+      <id>68</id>
+      <course reference="160"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="408">
+      <id>69</id>
+      <course reference="162"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="409">
+      <id>70</id>
+      <course reference="162"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="410">
       <id>71</id>
+      <course reference="162"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="411">
+      <id>72</id>
       <course reference="162"/>
       <period reference="295"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="406">
-      <id>72</id>
-      <course reference="162"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="407">
+    <UnavailablePeriodPenalty id="412">
       <id>73</id>
       <course reference="162"/>
-      <period reference="299"/>
+      <period reference="296"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="408">
+    <UnavailablePeriodPenalty id="413">
       <id>74</id>
       <course reference="162"/>
-      <period reference="300"/>
+      <period reference="297"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="409">
+    <UnavailablePeriodPenalty id="414">
       <id>75</id>
+      <course reference="162"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="415">
+      <id>76</id>
       <course reference="162"/>
       <period reference="303"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="410">
-      <id>76</id>
+    <UnavailablePeriodPenalty id="416">
+      <id>77</id>
       <course reference="162"/>
       <period reference="304"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="411">
-      <id>77</id>
-      <course reference="162"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="412">
+    <UnavailablePeriodPenalty id="417">
       <id>78</id>
-      <course reference="162"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="413">
-      <id>79</id>
       <course reference="162"/>
       <period reference="309"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="414">
-      <id>80</id>
+    <UnavailablePeriodPenalty id="418">
+      <id>79</id>
       <course reference="162"/>
       <period reference="310"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="415">
-      <id>81</id>
-      <course reference="162"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="416">
-      <id>82</id>
-      <course reference="162"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="417">
-      <id>83</id>
-      <course reference="162"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="418">
-      <id>84</id>
-      <course reference="168"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="419">
-      <id>85</id>
-      <course reference="168"/>
-      <period reference="299"/>
+      <id>80</id>
+      <course reference="162"/>
+      <period reference="311"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="420">
+      <id>81</id>
+      <course reference="162"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="421">
+      <id>82</id>
+      <course reference="162"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="422">
+      <id>83</id>
+      <course reference="162"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="423">
+      <id>84</id>
+      <course reference="168"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="424">
+      <id>85</id>
+      <course reference="168"/>
+      <period reference="296"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="425">
       <id>86</id>
+      <course reference="168"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="426">
+      <id>87</id>
       <course reference="168"/>
       <period reference="300"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="421">
-      <id>87</id>
+    <UnavailablePeriodPenalty id="427">
+      <id>88</id>
       <course reference="168"/>
       <period reference="301"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="422">
-      <id>88</id>
+    <UnavailablePeriodPenalty id="428">
+      <id>89</id>
       <course reference="168"/>
       <period reference="302"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="423">
-      <id>89</id>
-      <course reference="168"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="424">
+    <UnavailablePeriodPenalty id="429">
       <id>90</id>
       <course reference="168"/>
-      <period reference="304"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="425">
-      <id>91</id>
-      <course reference="168"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="426">
-      <id>92</id>
-      <course reference="168"/>
-      <period reference="306"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="427">
-      <id>93</id>
-      <course reference="168"/>
-      <period reference="307"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="428">
-      <id>94</id>
-      <course reference="168"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="429">
-      <id>95</id>
-      <course reference="168"/>
-      <period reference="309"/>
+      <period reference="303"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="430">
-      <id>96</id>
+      <id>91</id>
       <course reference="168"/>
-      <period reference="310"/>
+      <period reference="304"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="431">
-      <id>97</id>
+      <id>92</id>
       <course reference="168"/>
-      <period reference="311"/>
+      <period reference="307"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="432">
-      <id>98</id>
+      <id>93</id>
       <course reference="168"/>
-      <period reference="312"/>
+      <period reference="308"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="433">
-      <id>99</id>
+      <id>94</id>
       <course reference="168"/>
-      <period reference="313"/>
+      <period reference="309"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="434">
-      <id>100</id>
+      <id>95</id>
       <course reference="168"/>
-      <period reference="314"/>
+      <period reference="310"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="435">
-      <id>101</id>
+      <id>96</id>
+      <course reference="168"/>
+      <period reference="311"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="436">
+      <id>97</id>
+      <course reference="168"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="437">
+      <id>98</id>
       <course reference="168"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="436">
-      <id>102</id>
-      <course reference="172"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="437">
-      <id>103</id>
-      <course reference="172"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="438">
-      <id>104</id>
-      <course reference="172"/>
-      <period reference="293"/>
+      <id>99</id>
+      <course reference="168"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="439">
-      <id>105</id>
-      <course reference="172"/>
-      <period reference="298"/>
+      <id>100</id>
+      <course reference="168"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="440">
-      <id>106</id>
-      <course reference="172"/>
-      <period reference="308"/>
+      <id>101</id>
+      <course reference="168"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="441">
-      <id>107</id>
+      <id>102</id>
       <course reference="172"/>
-      <period reference="313"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="442">
-      <id>108</id>
+      <id>103</id>
       <course reference="172"/>
-      <period reference="314"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="443">
-      <id>109</id>
+      <id>104</id>
       <course reference="172"/>
-      <period reference="315"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="444">
-      <id>110</id>
-      <course reference="174"/>
-      <period reference="296"/>
+      <id>105</id>
+      <course reference="172"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="445">
-      <id>111</id>
-      <course reference="174"/>
-      <period reference="297"/>
+      <id>106</id>
+      <course reference="172"/>
+      <period reference="309"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="446">
-      <id>112</id>
-      <course reference="174"/>
-      <period reference="298"/>
+      <id>107</id>
+      <course reference="172"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="447">
-      <id>113</id>
-      <course reference="174"/>
-      <period reference="299"/>
+      <id>108</id>
+      <course reference="172"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="448">
-      <id>114</id>
-      <course reference="174"/>
-      <period reference="300"/>
+      <id>109</id>
+      <course reference="172"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="449">
-      <id>115</id>
+      <id>110</id>
       <course reference="174"/>
-      <period reference="306"/>
+      <period reference="293"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="450">
-      <id>116</id>
+      <id>111</id>
       <course reference="174"/>
-      <period reference="307"/>
+      <period reference="294"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="451">
-      <id>117</id>
+      <id>112</id>
+      <course reference="174"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="452">
+      <id>113</id>
+      <course reference="174"/>
+      <period reference="296"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="453">
+      <id>114</id>
+      <course reference="174"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="454">
+      <id>115</id>
+      <course reference="174"/>
+      <period reference="307"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="455">
+      <id>116</id>
       <course reference="174"/>
       <period reference="308"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="452">
-      <id>118</id>
-      <course reference="176"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="453">
-      <id>119</id>
-      <course reference="176"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="454">
-      <id>120</id>
-      <course reference="176"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="455">
-      <id>121</id>
-      <course reference="176"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="456">
-      <id>122</id>
-      <course reference="176"/>
-      <period reference="315"/>
+      <id>117</id>
+      <course reference="174"/>
+      <period reference="309"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="457">
-      <id>123</id>
-      <course reference="178"/>
-      <period reference="306"/>
+      <id>118</id>
+      <course reference="176"/>
+      <period reference="289"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="458">
-      <id>124</id>
-      <course reference="178"/>
-      <period reference="307"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="459">
-      <id>125</id>
-      <course reference="178"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="460">
-      <id>126</id>
-      <course reference="178"/>
-      <period reference="309"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="461">
-      <id>127</id>
-      <course reference="178"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="462">
-      <id>128</id>
-      <course reference="178"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="463">
-      <id>129</id>
-      <course reference="178"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="464">
-      <id>130</id>
-      <course reference="178"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="465">
-      <id>131</id>
-      <course reference="180"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="466">
-      <id>132</id>
-      <course reference="180"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="467">
-      <id>133</id>
-      <course reference="180"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="468">
-      <id>134</id>
-      <course reference="180"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="469">
-      <id>135</id>
-      <course reference="180"/>
-      <period reference="299"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="470">
-      <id>136</id>
-      <course reference="180"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="471">
-      <id>137</id>
-      <course reference="180"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="472">
-      <id>138</id>
-      <course reference="180"/>
-      <period reference="304"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="473">
-      <id>139</id>
-      <course reference="180"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="474">
-      <id>140</id>
-      <course reference="180"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="475">
-      <id>141</id>
-      <course reference="180"/>
-      <period reference="309"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="476">
-      <id>142</id>
-      <course reference="180"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="477">
-      <id>143</id>
-      <course reference="180"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="478">
-      <id>144</id>
-      <course reference="180"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="479">
-      <id>145</id>
-      <course reference="180"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="480">
-      <id>146</id>
-      <course reference="182"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="481">
-      <id>147</id>
-      <course reference="182"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="482">
-      <id>148</id>
-      <course reference="182"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="483">
-      <id>149</id>
-      <course reference="188"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="484">
-      <id>150</id>
-      <course reference="188"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="485">
-      <id>151</id>
-      <course reference="188"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="486">
-      <id>152</id>
-      <course reference="188"/>
-      <period reference="311"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="487">
-      <id>153</id>
-      <course reference="188"/>
-      <period reference="312"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="488">
-      <id>154</id>
-      <course reference="188"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="489">
-      <id>155</id>
-      <course reference="188"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="490">
-      <id>156</id>
-      <course reference="188"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="491">
-      <id>157</id>
-      <course reference="190"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="492">
-      <id>158</id>
-      <course reference="190"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="493">
-      <id>159</id>
-      <course reference="190"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="494">
-      <id>160</id>
-      <course reference="190"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="495">
-      <id>161</id>
-      <course reference="190"/>
-      <period reference="311"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="496">
-      <id>162</id>
-      <course reference="190"/>
-      <period reference="312"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="497">
-      <id>163</id>
-      <course reference="190"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="498">
-      <id>164</id>
-      <course reference="190"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="499">
-      <id>165</id>
-      <course reference="190"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="500">
-      <id>166</id>
-      <course reference="192"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="501">
-      <id>167</id>
-      <course reference="192"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="502">
-      <id>168</id>
-      <course reference="192"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="503">
-      <id>169</id>
-      <course reference="192"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="504">
-      <id>170</id>
-      <course reference="192"/>
-      <period reference="299"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="505">
-      <id>171</id>
-      <course reference="192"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="506">
-      <id>172</id>
-      <course reference="192"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="507">
-      <id>173</id>
-      <course reference="192"/>
-      <period reference="304"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="508">
-      <id>174</id>
-      <course reference="192"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="509">
-      <id>175</id>
-      <course reference="192"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="510">
-      <id>176</id>
-      <course reference="192"/>
-      <period reference="309"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="511">
-      <id>177</id>
-      <course reference="192"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="512">
-      <id>178</id>
-      <course reference="192"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="513">
-      <id>179</id>
-      <course reference="192"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="514">
-      <id>180</id>
-      <course reference="192"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="515">
-      <id>181</id>
-      <course reference="194"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="516">
-      <id>182</id>
-      <course reference="194"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="517">
-      <id>183</id>
-      <course reference="194"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="518">
-      <id>184</id>
-      <course reference="194"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="519">
-      <id>185</id>
-      <course reference="194"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="520">
-      <id>186</id>
-      <course reference="194"/>
-      <period reference="296"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="521">
-      <id>187</id>
-      <course reference="194"/>
+      <id>119</id>
+      <course reference="176"/>
       <period reference="297"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="522">
-      <id>188</id>
-      <course reference="194"/>
-      <period reference="314"/>
+    <UnavailablePeriodPenalty id="459">
+      <id>120</id>
+      <course reference="176"/>
+      <period reference="304"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="523">
-      <id>189</id>
-      <course reference="194"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="524">
-      <id>190</id>
-      <course reference="200"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="525">
-      <id>191</id>
-      <course reference="200"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="526">
-      <id>192</id>
-      <course reference="200"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="527">
-      <id>193</id>
-      <course reference="200"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="528">
-      <id>194</id>
-      <course reference="200"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="529">
-      <id>195</id>
-      <course reference="200"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="530">
-      <id>196</id>
-      <course reference="200"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="531">
-      <id>197</id>
-      <course reference="200"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="532">
-      <id>198</id>
-      <course reference="202"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="533">
-      <id>199</id>
-      <course reference="202"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="534">
-      <id>200</id>
-      <course reference="202"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="535">
-      <id>201</id>
-      <course reference="202"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="536">
-      <id>202</id>
-      <course reference="202"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="537">
-      <id>203</id>
-      <course reference="202"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="538">
-      <id>204</id>
-      <course reference="202"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="539">
-      <id>205</id>
-      <course reference="202"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="540">
-      <id>206</id>
-      <course reference="204"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="541">
-      <id>207</id>
-      <course reference="204"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="542">
-      <id>208</id>
-      <course reference="204"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="543">
-      <id>209</id>
-      <course reference="204"/>
+    <UnavailablePeriodPenalty id="460">
+      <id>121</id>
+      <course reference="176"/>
       <period reference="311"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="544">
-      <id>210</id>
-      <course reference="204"/>
-      <period reference="312"/>
+    <UnavailablePeriodPenalty id="461">
+      <id>122</id>
+      <course reference="176"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="545">
-      <id>211</id>
-      <course reference="204"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="546">
-      <id>212</id>
-      <course reference="204"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="547">
-      <id>213</id>
-      <course reference="204"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="548">
-      <id>214</id>
-      <course reference="218"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="549">
-      <id>215</id>
-      <course reference="218"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="550">
-      <id>216</id>
-      <course reference="218"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="551">
-      <id>217</id>
-      <course reference="218"/>
+    <UnavailablePeriodPenalty id="462">
+      <id>123</id>
+      <course reference="178"/>
       <period reference="307"/>
     </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="463">
+      <id>124</id>
+      <course reference="178"/>
+      <period reference="308"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="464">
+      <id>125</id>
+      <course reference="178"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="465">
+      <id>126</id>
+      <course reference="178"/>
+      <period reference="310"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="466">
+      <id>127</id>
+      <course reference="178"/>
+      <period reference="311"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="467">
+      <id>128</id>
+      <course reference="178"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="468">
+      <id>129</id>
+      <course reference="178"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="469">
+      <id>130</id>
+      <course reference="178"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="470">
+      <id>131</id>
+      <course reference="180"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="471">
+      <id>132</id>
+      <course reference="180"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="472">
+      <id>133</id>
+      <course reference="180"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="473">
+      <id>134</id>
+      <course reference="180"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="474">
+      <id>135</id>
+      <course reference="180"/>
+      <period reference="296"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="475">
+      <id>136</id>
+      <course reference="180"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="476">
+      <id>137</id>
+      <course reference="180"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="477">
+      <id>138</id>
+      <course reference="180"/>
+      <period reference="303"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="478">
+      <id>139</id>
+      <course reference="180"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="479">
+      <id>140</id>
+      <course reference="180"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="480">
+      <id>141</id>
+      <course reference="180"/>
+      <period reference="310"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="481">
+      <id>142</id>
+      <course reference="180"/>
+      <period reference="311"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="482">
+      <id>143</id>
+      <course reference="180"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="483">
+      <id>144</id>
+      <course reference="180"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="484">
+      <id>145</id>
+      <course reference="180"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="485">
+      <id>146</id>
+      <course reference="182"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="486">
+      <id>147</id>
+      <course reference="182"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="487">
+      <id>148</id>
+      <course reference="182"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="488">
+      <id>149</id>
+      <course reference="188"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="489">
+      <id>150</id>
+      <course reference="188"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="490">
+      <id>151</id>
+      <course reference="188"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="491">
+      <id>152</id>
+      <course reference="188"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="492">
+      <id>153</id>
+      <course reference="188"/>
+      <period reference="315"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="493">
+      <id>154</id>
+      <course reference="188"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="494">
+      <id>155</id>
+      <course reference="188"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="495">
+      <id>156</id>
+      <course reference="188"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="496">
+      <id>157</id>
+      <course reference="190"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="497">
+      <id>158</id>
+      <course reference="190"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="498">
+      <id>159</id>
+      <course reference="190"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="499">
+      <id>160</id>
+      <course reference="190"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="500">
+      <id>161</id>
+      <course reference="190"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="501">
+      <id>162</id>
+      <course reference="190"/>
+      <period reference="315"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="502">
+      <id>163</id>
+      <course reference="190"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="503">
+      <id>164</id>
+      <course reference="190"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="504">
+      <id>165</id>
+      <course reference="190"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="505">
+      <id>166</id>
+      <course reference="192"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="506">
+      <id>167</id>
+      <course reference="192"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="507">
+      <id>168</id>
+      <course reference="192"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="508">
+      <id>169</id>
+      <course reference="192"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="509">
+      <id>170</id>
+      <course reference="192"/>
+      <period reference="296"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="510">
+      <id>171</id>
+      <course reference="192"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="511">
+      <id>172</id>
+      <course reference="192"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="512">
+      <id>173</id>
+      <course reference="192"/>
+      <period reference="303"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="513">
+      <id>174</id>
+      <course reference="192"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="514">
+      <id>175</id>
+      <course reference="192"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="515">
+      <id>176</id>
+      <course reference="192"/>
+      <period reference="310"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="516">
+      <id>177</id>
+      <course reference="192"/>
+      <period reference="311"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="517">
+      <id>178</id>
+      <course reference="192"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="518">
+      <id>179</id>
+      <course reference="192"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="519">
+      <id>180</id>
+      <course reference="192"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="520">
+      <id>181</id>
+      <course reference="194"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="521">
+      <id>182</id>
+      <course reference="194"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="522">
+      <id>183</id>
+      <course reference="194"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="523">
+      <id>184</id>
+      <course reference="194"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="524">
+      <id>185</id>
+      <course reference="194"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="525">
+      <id>186</id>
+      <course reference="194"/>
+      <period reference="293"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="526">
+      <id>187</id>
+      <course reference="194"/>
+      <period reference="294"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="527">
+      <id>188</id>
+      <course reference="194"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="528">
+      <id>189</id>
+      <course reference="194"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="529">
+      <id>190</id>
+      <course reference="200"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="530">
+      <id>191</id>
+      <course reference="200"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="531">
+      <id>192</id>
+      <course reference="200"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="532">
+      <id>193</id>
+      <course reference="200"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="533">
+      <id>194</id>
+      <course reference="200"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="534">
+      <id>195</id>
+      <course reference="200"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="535">
+      <id>196</id>
+      <course reference="200"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="536">
+      <id>197</id>
+      <course reference="200"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="537">
+      <id>198</id>
+      <course reference="202"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="538">
+      <id>199</id>
+      <course reference="202"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="539">
+      <id>200</id>
+      <course reference="202"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="540">
+      <id>201</id>
+      <course reference="202"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="541">
+      <id>202</id>
+      <course reference="202"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="542">
+      <id>203</id>
+      <course reference="202"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="543">
+      <id>204</id>
+      <course reference="202"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="544">
+      <id>205</id>
+      <course reference="202"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="545">
+      <id>206</id>
+      <course reference="204"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="546">
+      <id>207</id>
+      <course reference="204"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="547">
+      <id>208</id>
+      <course reference="204"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="548">
+      <id>209</id>
+      <course reference="204"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="549">
+      <id>210</id>
+      <course reference="204"/>
+      <period reference="315"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="550">
+      <id>211</id>
+      <course reference="204"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="551">
+      <id>212</id>
+      <course reference="204"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="552">
-      <id>218</id>
+      <id>213</id>
+      <course reference="204"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="553">
+      <id>214</id>
+      <course reference="218"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="554">
+      <id>215</id>
+      <course reference="218"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="555">
+      <id>216</id>
+      <course reference="218"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="556">
+      <id>217</id>
       <course reference="218"/>
       <period reference="308"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="553">
-      <id>219</id>
-      <course reference="218"/>
-      <period reference="311"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="554">
-      <id>220</id>
-      <course reference="218"/>
-      <period reference="312"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="555">
-      <id>221</id>
-      <course reference="218"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="556">
-      <id>222</id>
-      <course reference="222"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="557">
-      <id>223</id>
-      <course reference="222"/>
-      <period reference="293"/>
+      <id>218</id>
+      <course reference="218"/>
+      <period reference="309"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="558">
-      <id>224</id>
-      <course reference="222"/>
-      <period reference="296"/>
+      <id>219</id>
+      <course reference="218"/>
+      <period reference="314"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="559">
-      <id>225</id>
-      <course reference="222"/>
-      <period reference="298"/>
+      <id>220</id>
+      <course reference="218"/>
+      <period reference="315"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="560">
-      <id>226</id>
-      <course reference="222"/>
-      <period reference="301"/>
+      <id>221</id>
+      <course reference="218"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="561">
-      <id>227</id>
+      <id>222</id>
       <course reference="222"/>
-      <period reference="306"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="562">
-      <id>228</id>
+      <id>223</id>
       <course reference="222"/>
-      <period reference="311"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="563">
-      <id>229</id>
-      <course reference="226"/>
+      <id>224</id>
+      <course reference="222"/>
       <period reference="293"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="564">
-      <id>230</id>
-      <course reference="226"/>
-      <period reference="298"/>
+      <id>225</id>
+      <course reference="222"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="565">
-      <id>231</id>
-      <course reference="226"/>
-      <period reference="303"/>
+      <id>226</id>
+      <course reference="222"/>
+      <period reference="300"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="566">
-      <id>232</id>
-      <course reference="226"/>
-      <period reference="308"/>
+      <id>227</id>
+      <course reference="222"/>
+      <period reference="307"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="567">
-      <id>233</id>
-      <course reference="226"/>
-      <period reference="311"/>
+      <id>228</id>
+      <course reference="222"/>
+      <period reference="314"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="568">
-      <id>234</id>
+      <id>229</id>
       <course reference="226"/>
-      <period reference="312"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="569">
-      <id>235</id>
+      <id>230</id>
       <course reference="226"/>
-      <period reference="313"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="570">
-      <id>236</id>
+      <id>231</id>
       <course reference="226"/>
-      <period reference="314"/>
+      <period reference="302"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="571">
-      <id>237</id>
+      <id>232</id>
+      <course reference="226"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="572">
+      <id>233</id>
+      <course reference="226"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="573">
+      <id>234</id>
       <course reference="226"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="572">
-      <id>238</id>
-      <course reference="228"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="573">
-      <id>239</id>
-      <course reference="228"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="574">
-      <id>240</id>
-      <course reference="228"/>
-      <period reference="293"/>
+      <id>235</id>
+      <course reference="226"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="575">
-      <id>241</id>
-      <course reference="228"/>
-      <period reference="311"/>
+      <id>236</id>
+      <course reference="226"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="576">
-      <id>242</id>
-      <course reference="228"/>
-      <period reference="312"/>
+      <id>237</id>
+      <course reference="226"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="577">
-      <id>243</id>
+      <id>238</id>
       <course reference="228"/>
-      <period reference="313"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="578">
-      <id>244</id>
+      <id>239</id>
       <course reference="228"/>
-      <period reference="314"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="579">
-      <id>245</id>
+      <id>240</id>
+      <course reference="228"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="580">
+      <id>241</id>
+      <course reference="228"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="581">
+      <id>242</id>
       <course reference="228"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="580">
-      <id>246</id>
-      <course reference="230"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="581">
-      <id>247</id>
-      <course reference="230"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="582">
-      <id>248</id>
-      <course reference="230"/>
-      <period reference="293"/>
+      <id>243</id>
+      <course reference="228"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="583">
-      <id>249</id>
-      <course reference="230"/>
-      <period reference="294"/>
+      <id>244</id>
+      <course reference="228"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="584">
-      <id>250</id>
-      <course reference="230"/>
-      <period reference="295"/>
+      <id>245</id>
+      <course reference="228"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="585">
-      <id>251</id>
+      <id>246</id>
       <course reference="230"/>
-      <period reference="313"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="586">
-      <id>252</id>
+      <id>247</id>
       <course reference="230"/>
-      <period reference="314"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="587">
-      <id>253</id>
+      <id>248</id>
       <course reference="230"/>
-      <period reference="315"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="588">
-      <id>254</id>
-      <course reference="234"/>
-      <period reference="291"/>
+      <id>249</id>
+      <course reference="230"/>
+      <period reference="287"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="589">
-      <id>255</id>
-      <course reference="234"/>
-      <period reference="292"/>
+      <id>250</id>
+      <course reference="230"/>
+      <period reference="289"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="590">
+      <id>251</id>
+      <course reference="230"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="591">
+      <id>252</id>
+      <course reference="230"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="592">
+      <id>253</id>
+      <course reference="230"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="593">
+      <id>254</id>
+      <course reference="234"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="594">
+      <id>255</id>
+      <course reference="234"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="595">
       <id>256</id>
+      <course reference="234"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="596">
+      <id>257</id>
+      <course reference="234"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="597">
+      <id>258</id>
+      <course reference="234"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="598">
+      <id>259</id>
       <course reference="234"/>
       <period reference="293"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="591">
-      <id>257</id>
-      <course reference="234"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="592">
-      <id>258</id>
+    <UnavailablePeriodPenalty id="599">
+      <id>260</id>
       <course reference="234"/>
       <period reference="295"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="593">
-      <id>259</id>
-      <course reference="234"/>
-      <period reference="296"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="594">
-      <id>260</id>
-      <course reference="234"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="595">
+    <UnavailablePeriodPenalty id="600">
       <id>261</id>
+      <course reference="234"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="601">
+      <id>262</id>
       <course reference="234"/>
       <period reference="303"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="596">
-      <id>262</id>
+    <UnavailablePeriodPenalty id="602">
+      <id>263</id>
       <course reference="234"/>
       <period reference="304"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="597">
-      <id>263</id>
-      <course reference="234"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="598">
+    <UnavailablePeriodPenalty id="603">
       <id>264</id>
       <course reference="234"/>
-      <period reference="308"/>
+      <period reference="309"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="599">
+    <UnavailablePeriodPenalty id="604">
       <id>265</id>
-      <course reference="234"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="600">
-      <id>266</id>
       <course reference="234"/>
       <period reference="311"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="601">
-      <id>267</id>
-      <course reference="234"/>
-      <period reference="312"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="602">
-      <id>268</id>
-      <course reference="234"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="603">
-      <id>269</id>
+    <UnavailablePeriodPenalty id="605">
+      <id>266</id>
       <course reference="234"/>
       <period reference="314"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="604">
-      <id>270</id>
+    <UnavailablePeriodPenalty id="606">
+      <id>267</id>
       <course reference="234"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="605">
-      <id>271</id>
-      <course reference="236"/>
-      <period reference="306"/>
+    <UnavailablePeriodPenalty id="607">
+      <id>268</id>
+      <course reference="234"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="606">
-      <id>272</id>
+    <UnavailablePeriodPenalty id="608">
+      <id>269</id>
+      <course reference="234"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="609">
+      <id>270</id>
+      <course reference="234"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="610">
+      <id>271</id>
       <course reference="236"/>
       <period reference="307"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="607">
-      <id>273</id>
+    <UnavailablePeriodPenalty id="611">
+      <id>272</id>
       <course reference="236"/>
       <period reference="308"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="608">
-      <id>274</id>
+    <UnavailablePeriodPenalty id="612">
+      <id>273</id>
       <course reference="236"/>
       <period reference="309"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="609">
-      <id>275</id>
+    <UnavailablePeriodPenalty id="613">
+      <id>274</id>
       <course reference="236"/>
       <period reference="310"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="610">
-      <id>276</id>
-      <course reference="236"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="611">
-      <id>277</id>
-      <course reference="236"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="612">
-      <id>278</id>
-      <course reference="236"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="613">
-      <id>279</id>
-      <course reference="238"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="614">
-      <id>280</id>
-      <course reference="238"/>
-      <period reference="298"/>
+      <id>275</id>
+      <course reference="236"/>
+      <period reference="311"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="615">
-      <id>281</id>
-      <course reference="238"/>
-      <period reference="303"/>
+      <id>276</id>
+      <course reference="236"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="616">
-      <id>282</id>
-      <course reference="238"/>
-      <period reference="308"/>
+      <id>277</id>
+      <course reference="236"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="617">
-      <id>283</id>
-      <course reference="238"/>
-      <period reference="313"/>
+      <id>278</id>
+      <course reference="236"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="618">
-      <id>284</id>
-      <course reference="240"/>
-      <period reference="291"/>
+      <id>279</id>
+      <course reference="238"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="619">
-      <id>285</id>
-      <course reference="240"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="620">
-      <id>286</id>
-      <course reference="240"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="621">
-      <id>287</id>
-      <course reference="240"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="622">
-      <id>288</id>
-      <course reference="240"/>
+      <id>280</id>
+      <course reference="238"/>
       <period reference="295"/>
     </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="620">
+      <id>281</id>
+      <course reference="238"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="621">
+      <id>282</id>
+      <course reference="238"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="622">
+      <id>283</id>
+      <course reference="238"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="623">
-      <id>289</id>
-      <course reference="242"/>
-      <period reference="291"/>
+      <id>284</id>
+      <course reference="240"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="624">
-      <id>290</id>
-      <course reference="242"/>
-      <period reference="292"/>
+      <id>285</id>
+      <course reference="240"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="625">
-      <id>291</id>
-      <course reference="242"/>
-      <period reference="293"/>
+      <id>286</id>
+      <course reference="240"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="626">
-      <id>292</id>
-      <course reference="242"/>
-      <period reference="296"/>
+      <id>287</id>
+      <course reference="240"/>
+      <period reference="287"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="627">
-      <id>293</id>
-      <course reference="242"/>
-      <period reference="297"/>
+      <id>288</id>
+      <course reference="240"/>
+      <period reference="289"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="628">
-      <id>294</id>
+      <id>289</id>
       <course reference="242"/>
-      <period reference="298"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="629">
-      <id>295</id>
+      <id>290</id>
       <course reference="242"/>
-      <period reference="304"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="630">
-      <id>296</id>
+      <id>291</id>
       <course reference="242"/>
-      <period reference="305"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="631">
-      <id>297</id>
-      <course reference="246"/>
+      <id>292</id>
+      <course reference="242"/>
       <period reference="293"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="632">
-      <id>298</id>
-      <course reference="246"/>
-      <period reference="298"/>
+      <id>293</id>
+      <course reference="242"/>
+      <period reference="294"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="633">
-      <id>299</id>
-      <course reference="246"/>
-      <period reference="302"/>
+      <id>294</id>
+      <course reference="242"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="634">
-      <id>300</id>
-      <course reference="246"/>
+      <id>295</id>
+      <course reference="242"/>
       <period reference="303"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="635">
-      <id>301</id>
-      <course reference="246"/>
+      <id>296</id>
+      <course reference="242"/>
       <period reference="304"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="636">
-      <id>302</id>
+      <id>297</id>
       <course reference="246"/>
-      <period reference="308"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="637">
-      <id>303</id>
-      <course reference="248"/>
-      <period reference="291"/>
+      <id>298</id>
+      <course reference="246"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="638">
-      <id>304</id>
-      <course reference="248"/>
-      <period reference="292"/>
+      <id>299</id>
+      <course reference="246"/>
+      <period reference="301"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="639">
-      <id>305</id>
-      <course reference="248"/>
-      <period reference="293"/>
+      <id>300</id>
+      <course reference="246"/>
+      <period reference="302"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="640">
-      <id>306</id>
-      <course reference="248"/>
-      <period reference="294"/>
+      <id>301</id>
+      <course reference="246"/>
+      <period reference="303"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="641">
-      <id>307</id>
-      <course reference="248"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="642">
-      <id>308</id>
-      <course reference="248"/>
-      <period reference="296"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="643">
-      <id>309</id>
-      <course reference="248"/>
-      <period reference="297"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="644">
-      <id>310</id>
-      <course reference="248"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="645">
-      <id>311</id>
-      <course reference="250"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="646">
-      <id>312</id>
-      <course reference="250"/>
-      <period reference="298"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="647">
-      <id>313</id>
-      <course reference="250"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="648">
-      <id>314</id>
-      <course reference="250"/>
-      <period reference="308"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="649">
-      <id>315</id>
-      <course reference="250"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="650">
-      <id>316</id>
-      <course reference="250"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="651">
-      <id>317</id>
-      <course reference="252"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="652">
-      <id>318</id>
-      <course reference="254"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="653">
-      <id>319</id>
-      <course reference="254"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="654">
-      <id>320</id>
-      <course reference="254"/>
-      <period reference="303"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="655">
-      <id>321</id>
-      <course reference="254"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="656">
-      <id>322</id>
-      <course reference="254"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="657">
-      <id>323</id>
-      <course reference="258"/>
-      <period reference="295"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="658">
-      <id>324</id>
-      <course reference="258"/>
-      <period reference="300"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="659">
-      <id>325</id>
-      <course reference="258"/>
-      <period reference="305"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="660">
-      <id>326</id>
-      <course reference="258"/>
-      <period reference="310"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="661">
-      <id>327</id>
-      <course reference="258"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="662">
-      <id>328</id>
-      <course reference="260"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="663">
-      <id>329</id>
-      <course reference="260"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="664">
-      <id>330</id>
-      <course reference="260"/>
-      <period reference="293"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="665">
-      <id>331</id>
-      <course reference="260"/>
-      <period reference="294"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="666">
-      <id>332</id>
-      <course reference="260"/>
-      <period reference="312"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="667">
-      <id>333</id>
-      <course reference="260"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="668">
-      <id>334</id>
-      <course reference="260"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="669">
-      <id>335</id>
-      <course reference="260"/>
-      <period reference="315"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="670">
-      <id>336</id>
-      <course reference="262"/>
+      <id>302</id>
+      <course reference="246"/>
       <period reference="309"/>
     </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="642">
+      <id>303</id>
+      <course reference="248"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="643">
+      <id>304</id>
+      <course reference="248"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="644">
+      <id>305</id>
+      <course reference="248"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="645">
+      <id>306</id>
+      <course reference="248"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="646">
+      <id>307</id>
+      <course reference="248"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="647">
+      <id>308</id>
+      <course reference="248"/>
+      <period reference="293"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="648">
+      <id>309</id>
+      <course reference="248"/>
+      <period reference="294"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="649">
+      <id>310</id>
+      <course reference="248"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="650">
+      <id>311</id>
+      <course reference="250"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="651">
+      <id>312</id>
+      <course reference="250"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="652">
+      <id>313</id>
+      <course reference="250"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="653">
+      <id>314</id>
+      <course reference="250"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="654">
+      <id>315</id>
+      <course reference="250"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="655">
+      <id>316</id>
+      <course reference="250"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="656">
+      <id>317</id>
+      <course reference="252"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="657">
+      <id>318</id>
+      <course reference="254"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="658">
+      <id>319</id>
+      <course reference="254"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="659">
+      <id>320</id>
+      <course reference="254"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="660">
+      <id>321</id>
+      <course reference="254"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="661">
+      <id>322</id>
+      <course reference="254"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="662">
+      <id>323</id>
+      <course reference="258"/>
+      <period reference="289"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="663">
+      <id>324</id>
+      <course reference="258"/>
+      <period reference="297"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="664">
+      <id>325</id>
+      <course reference="258"/>
+      <period reference="304"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="665">
+      <id>326</id>
+      <course reference="258"/>
+      <period reference="311"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="666">
+      <id>327</id>
+      <course reference="258"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="667">
+      <id>328</id>
+      <course reference="260"/>
+      <period reference="281"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="668">
+      <id>329</id>
+      <course reference="260"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="669">
+      <id>330</id>
+      <course reference="260"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="670">
+      <id>331</id>
+      <course reference="260"/>
+      <period reference="287"/>
+    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="671">
-      <id>337</id>
+      <id>332</id>
+      <course reference="260"/>
+      <period reference="315"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="672">
+      <id>333</id>
+      <course reference="260"/>
+      <period reference="316"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="673">
+      <id>334</id>
+      <course reference="260"/>
+      <period reference="317"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="674">
+      <id>335</id>
+      <course reference="260"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="675">
+      <id>336</id>
       <course reference="262"/>
       <period reference="310"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="672">
-      <id>338</id>
+    <UnavailablePeriodPenalty id="676">
+      <id>337</id>
       <course reference="262"/>
       <period reference="311"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="673">
-      <id>339</id>
-      <course reference="262"/>
-      <period reference="312"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="674">
-      <id>340</id>
-      <course reference="262"/>
-      <period reference="313"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="675">
-      <id>341</id>
-      <course reference="262"/>
-      <period reference="314"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="676">
-      <id>342</id>
-      <course reference="262"/>
-      <period reference="315"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="677">
-      <id>343</id>
-      <course reference="264"/>
-      <period reference="311"/>
+      <id>338</id>
+      <course reference="262"/>
+      <period reference="314"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="678">
-      <id>344</id>
-      <course reference="264"/>
-      <period reference="312"/>
+      <id>339</id>
+      <course reference="262"/>
+      <period reference="315"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="679">
-      <id>345</id>
-      <course reference="264"/>
-      <period reference="313"/>
+      <id>340</id>
+      <course reference="262"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="680">
-      <id>346</id>
-      <course reference="264"/>
-      <period reference="314"/>
+      <id>341</id>
+      <course reference="262"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="681">
-      <id>347</id>
+      <id>342</id>
+      <course reference="262"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="682">
+      <id>343</id>
+      <course reference="264"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="683">
+      <id>344</id>
       <course reference="264"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="682">
-      <id>348</id>
-      <course reference="266"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="683">
-      <id>349</id>
-      <course reference="266"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="684">
-      <id>350</id>
-      <course reference="266"/>
-      <period reference="311"/>
+      <id>345</id>
+      <course reference="264"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="685">
-      <id>351</id>
-      <course reference="266"/>
-      <period reference="312"/>
+      <id>346</id>
+      <course reference="264"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="686">
-      <id>352</id>
-      <course reference="266"/>
-      <period reference="313"/>
+      <id>347</id>
+      <course reference="264"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="687">
-      <id>353</id>
+      <id>348</id>
       <course reference="266"/>
-      <period reference="314"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="688">
-      <id>354</id>
+      <id>349</id>
+      <course reference="266"/>
+      <period reference="283"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="689">
+      <id>350</id>
+      <course reference="266"/>
+      <period reference="314"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="690">
+      <id>351</id>
       <course reference="266"/>
       <period reference="315"/>
     </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="689">
-      <id>355</id>
-      <course reference="268"/>
-      <period reference="291"/>
-    </UnavailablePeriodPenalty>
-    <UnavailablePeriodPenalty id="690">
-      <id>356</id>
-      <course reference="268"/>
-      <period reference="292"/>
-    </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="691">
-      <id>357</id>
-      <course reference="268"/>
-      <period reference="293"/>
+      <id>352</id>
+      <course reference="266"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="692">
-      <id>358</id>
-      <course reference="268"/>
-      <period reference="294"/>
+      <id>353</id>
+      <course reference="266"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="693">
-      <id>359</id>
-      <course reference="268"/>
-      <period reference="295"/>
+      <id>354</id>
+      <course reference="266"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="694">
-      <id>360</id>
+      <id>355</id>
       <course reference="268"/>
-      <period reference="313"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="695">
-      <id>361</id>
+      <id>356</id>
       <course reference="268"/>
-      <period reference="314"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="696">
-      <id>362</id>
+      <id>357</id>
       <course reference="268"/>
-      <period reference="315"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="697">
-      <id>363</id>
-      <course reference="270"/>
-      <period reference="293"/>
+      <id>358</id>
+      <course reference="268"/>
+      <period reference="287"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="698">
-      <id>364</id>
-      <course reference="270"/>
-      <period reference="298"/>
+      <id>359</id>
+      <course reference="268"/>
+      <period reference="289"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="699">
-      <id>365</id>
-      <course reference="270"/>
-      <period reference="303"/>
+      <id>360</id>
+      <course reference="268"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="700">
-      <id>366</id>
-      <course reference="270"/>
-      <period reference="308"/>
+      <id>361</id>
+      <course reference="268"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="701">
-      <id>367</id>
-      <course reference="270"/>
-      <period reference="313"/>
+      <id>362</id>
+      <course reference="268"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="702">
-      <id>368</id>
-      <course reference="272"/>
-      <period reference="291"/>
+      <id>363</id>
+      <course reference="270"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="703">
-      <id>369</id>
-      <course reference="272"/>
-      <period reference="292"/>
+      <id>364</id>
+      <course reference="270"/>
+      <period reference="295"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="704">
-      <id>370</id>
-      <course reference="272"/>
-      <period reference="293"/>
+      <id>365</id>
+      <course reference="270"/>
+      <period reference="302"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="705">
-      <id>371</id>
-      <course reference="272"/>
-      <period reference="315"/>
+      <id>366</id>
+      <course reference="270"/>
+      <period reference="309"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="706">
-      <id>372</id>
-      <course reference="274"/>
-      <period reference="291"/>
+      <id>367</id>
+      <course reference="270"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="707">
-      <id>373</id>
-      <course reference="274"/>
-      <period reference="292"/>
+      <id>368</id>
+      <course reference="272"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="708">
-      <id>374</id>
-      <course reference="274"/>
-      <period reference="293"/>
+      <id>369</id>
+      <course reference="272"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="709">
-      <id>375</id>
-      <course reference="274"/>
-      <period reference="314"/>
+      <id>370</id>
+      <course reference="272"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="710">
-      <id>376</id>
-      <course reference="274"/>
-      <period reference="315"/>
+      <id>371</id>
+      <course reference="272"/>
+      <period reference="318"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="711">
-      <id>377</id>
-      <course reference="276"/>
-      <period reference="293"/>
+      <id>372</id>
+      <course reference="274"/>
+      <period reference="281"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="712">
-      <id>378</id>
-      <course reference="276"/>
-      <period reference="298"/>
+      <id>373</id>
+      <course reference="274"/>
+      <period reference="283"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="713">
-      <id>379</id>
-      <course reference="276"/>
-      <period reference="303"/>
+      <id>374</id>
+      <course reference="274"/>
+      <period reference="285"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="714">
-      <id>380</id>
-      <course reference="276"/>
-      <period reference="308"/>
+      <id>375</id>
+      <course reference="274"/>
+      <period reference="317"/>
     </UnavailablePeriodPenalty>
     <UnavailablePeriodPenalty id="715">
+      <id>376</id>
+      <course reference="274"/>
+      <period reference="318"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="716">
+      <id>377</id>
+      <course reference="276"/>
+      <period reference="285"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="717">
+      <id>378</id>
+      <course reference="276"/>
+      <period reference="295"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="718">
+      <id>379</id>
+      <course reference="276"/>
+      <period reference="302"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="719">
+      <id>380</id>
+      <course reference="276"/>
+      <period reference="309"/>
+    </UnavailablePeriodPenalty>
+    <UnavailablePeriodPenalty id="720">
       <id>381</id>
       <course reference="276"/>
-      <period reference="313"/>
+      <period reference="316"/>
     </UnavailablePeriodPenalty>
   </unavailablePeriodPenaltyList>
-  <lectureList id="716">
-    <Lecture id="717">
+  <lectureList id="721">
+    <Lecture id="722">
       <id>0</id>
       <course reference="134"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="718">
+    <Lecture id="723">
       <id>1</id>
       <course reference="134"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="719">
+    <Lecture id="724">
       <id>2</id>
       <course reference="134"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="720">
+    <Lecture id="725">
       <id>3</id>
       <course reference="136"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="721">
+    <Lecture id="726">
       <id>4</id>
       <course reference="136"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="722">
+    <Lecture id="727">
       <id>5</id>
       <course reference="136"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="723">
+    <Lecture id="728">
       <id>6</id>
       <course reference="138"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="724">
+    <Lecture id="729">
       <id>7</id>
       <course reference="138"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="725">
+    <Lecture id="730">
       <id>8</id>
       <course reference="138"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="726">
+    <Lecture id="731">
       <id>9</id>
       <course reference="140"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="727">
+    <Lecture id="732">
       <id>10</id>
       <course reference="140"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="728">
+    <Lecture id="733">
       <id>11</id>
       <course reference="140"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="729">
+    <Lecture id="734">
       <id>12</id>
       <course reference="142"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="730">
+    <Lecture id="735">
       <id>13</id>
       <course reference="142"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="731">
+    <Lecture id="736">
       <id>14</id>
       <course reference="142"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="732">
+    <Lecture id="737">
       <id>15</id>
       <course reference="144"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="733">
+    <Lecture id="738">
       <id>16</id>
       <course reference="144"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="734">
+    <Lecture id="739">
       <id>17</id>
       <course reference="144"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="735">
+    <Lecture id="740">
       <id>18</id>
       <course reference="146"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="736">
+    <Lecture id="741">
       <id>19</id>
       <course reference="146"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="737">
+    <Lecture id="742">
       <id>20</id>
       <course reference="146"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="738">
+    <Lecture id="743">
       <id>21</id>
       <course reference="148"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="739">
+    <Lecture id="744">
       <id>22</id>
       <course reference="148"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="740">
+    <Lecture id="745">
       <id>23</id>
       <course reference="148"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="741">
+    <Lecture id="746">
       <id>24</id>
       <course reference="148"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="742">
+    <Lecture id="747">
       <id>25</id>
       <course reference="148"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="743">
+    <Lecture id="748">
       <id>26</id>
       <course reference="150"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="744">
+    <Lecture id="749">
       <id>27</id>
       <course reference="150"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="745">
+    <Lecture id="750">
       <id>28</id>
       <course reference="150"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="746">
+    <Lecture id="751">
       <id>29</id>
       <course reference="152"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="747">
+    <Lecture id="752">
       <id>30</id>
       <course reference="152"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="748">
+    <Lecture id="753">
       <id>31</id>
       <course reference="152"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="749">
+    <Lecture id="754">
       <id>32</id>
       <course reference="154"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="750">
+    <Lecture id="755">
       <id>33</id>
       <course reference="154"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="751">
+    <Lecture id="756">
       <id>34</id>
       <course reference="154"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="752">
+    <Lecture id="757">
       <id>35</id>
       <course reference="156"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="753">
+    <Lecture id="758">
       <id>36</id>
       <course reference="156"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="754">
+    <Lecture id="759">
       <id>37</id>
       <course reference="156"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="755">
+    <Lecture id="760">
       <id>38</id>
       <course reference="158"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="756">
+    <Lecture id="761">
       <id>39</id>
       <course reference="158"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="757">
+    <Lecture id="762">
       <id>40</id>
       <course reference="158"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="758">
+    <Lecture id="763">
       <id>41</id>
       <course reference="160"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="759">
+    <Lecture id="764">
       <id>42</id>
       <course reference="160"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="760">
+    <Lecture id="765">
       <id>43</id>
       <course reference="160"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="761">
+    <Lecture id="766">
       <id>44</id>
       <course reference="162"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="762">
+    <Lecture id="767">
       <id>45</id>
       <course reference="162"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="763">
+    <Lecture id="768">
       <id>46</id>
       <course reference="162"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="764">
+    <Lecture id="769">
       <id>47</id>
       <course reference="162"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="765">
+    <Lecture id="770">
       <id>48</id>
       <course reference="162"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="766">
+    <Lecture id="771">
       <id>49</id>
       <course reference="164"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="767">
+    <Lecture id="772">
       <id>50</id>
       <course reference="164"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="768">
+    <Lecture id="773">
       <id>51</id>
       <course reference="164"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="769">
+    <Lecture id="774">
       <id>52</id>
       <course reference="166"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="770">
+    <Lecture id="775">
       <id>53</id>
       <course reference="166"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="771">
+    <Lecture id="776">
       <id>54</id>
       <course reference="166"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="772">
+    <Lecture id="777">
       <id>55</id>
       <course reference="168"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="773">
+    <Lecture id="778">
       <id>56</id>
       <course reference="168"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="774">
+    <Lecture id="779">
       <id>57</id>
       <course reference="168"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="775">
+    <Lecture id="780">
       <id>58</id>
       <course reference="170"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="776">
+    <Lecture id="781">
       <id>59</id>
       <course reference="170"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="777">
+    <Lecture id="782">
       <id>60</id>
       <course reference="170"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="778">
+    <Lecture id="783">
       <id>61</id>
       <course reference="172"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="779">
+    <Lecture id="784">
       <id>62</id>
       <course reference="172"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="780">
+    <Lecture id="785">
       <id>63</id>
       <course reference="172"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="781">
+    <Lecture id="786">
       <id>64</id>
       <course reference="174"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="782">
+    <Lecture id="787">
       <id>65</id>
       <course reference="174"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="783">
+    <Lecture id="788">
       <id>66</id>
       <course reference="174"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="784">
+    <Lecture id="789">
       <id>67</id>
       <course reference="176"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="785">
+    <Lecture id="790">
       <id>68</id>
       <course reference="176"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="786">
+    <Lecture id="791">
       <id>69</id>
       <course reference="176"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="787">
+    <Lecture id="792">
       <id>70</id>
       <course reference="178"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="788">
+    <Lecture id="793">
       <id>71</id>
       <course reference="178"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="789">
+    <Lecture id="794">
       <id>72</id>
       <course reference="178"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="790">
+    <Lecture id="795">
       <id>73</id>
       <course reference="180"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="791">
+    <Lecture id="796">
       <id>74</id>
       <course reference="180"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="792">
+    <Lecture id="797">
       <id>75</id>
       <course reference="180"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="793">
+    <Lecture id="798">
       <id>76</id>
       <course reference="180"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="794">
+    <Lecture id="799">
       <id>77</id>
       <course reference="180"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="795">
+    <Lecture id="800">
       <id>78</id>
       <course reference="182"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="796">
+    <Lecture id="801">
       <id>79</id>
       <course reference="182"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="797">
+    <Lecture id="802">
       <id>80</id>
       <course reference="182"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="798">
+    <Lecture id="803">
       <id>81</id>
       <course reference="184"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="799">
+    <Lecture id="804">
       <id>82</id>
       <course reference="186"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="800">
+    <Lecture id="805">
       <id>83</id>
       <course reference="186"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="801">
+    <Lecture id="806">
       <id>84</id>
       <course reference="186"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="802">
+    <Lecture id="807">
       <id>85</id>
       <course reference="188"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="803">
+    <Lecture id="808">
       <id>86</id>
       <course reference="188"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="804">
+    <Lecture id="809">
       <id>87</id>
       <course reference="188"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="805">
+    <Lecture id="810">
       <id>88</id>
       <course reference="190"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="806">
+    <Lecture id="811">
       <id>89</id>
       <course reference="190"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="807">
+    <Lecture id="812">
       <id>90</id>
       <course reference="190"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="808">
+    <Lecture id="813">
       <id>91</id>
       <course reference="192"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="809">
+    <Lecture id="814">
       <id>92</id>
       <course reference="192"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="810">
+    <Lecture id="815">
       <id>93</id>
       <course reference="192"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="811">
+    <Lecture id="816">
       <id>94</id>
       <course reference="192"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="812">
+    <Lecture id="817">
       <id>95</id>
       <course reference="192"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="813">
+    <Lecture id="818">
       <id>96</id>
       <course reference="194"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="814">
+    <Lecture id="819">
       <id>97</id>
       <course reference="194"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="815">
+    <Lecture id="820">
       <id>98</id>
       <course reference="196"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="816">
+    <Lecture id="821">
       <id>99</id>
       <course reference="198"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="817">
+    <Lecture id="822">
       <id>100</id>
       <course reference="198"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="818">
+    <Lecture id="823">
       <id>101</id>
       <course reference="198"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="819">
+    <Lecture id="824">
       <id>102</id>
       <course reference="200"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="820">
+    <Lecture id="825">
       <id>103</id>
       <course reference="200"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="821">
+    <Lecture id="826">
       <id>104</id>
       <course reference="200"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="822">
+    <Lecture id="827">
       <id>105</id>
       <course reference="202"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="823">
+    <Lecture id="828">
       <id>106</id>
       <course reference="202"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="824">
+    <Lecture id="829">
       <id>107</id>
       <course reference="202"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="825">
+    <Lecture id="830">
       <id>108</id>
       <course reference="204"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="826">
+    <Lecture id="831">
       <id>109</id>
       <course reference="204"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="827">
+    <Lecture id="832">
       <id>110</id>
       <course reference="204"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="828">
+    <Lecture id="833">
       <id>111</id>
       <course reference="206"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="829">
+    <Lecture id="834">
       <id>112</id>
       <course reference="206"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="830">
+    <Lecture id="835">
       <id>113</id>
       <course reference="206"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="831">
+    <Lecture id="836">
       <id>114</id>
       <course reference="208"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="832">
+    <Lecture id="837">
       <id>115</id>
       <course reference="208"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="833">
+    <Lecture id="838">
       <id>116</id>
       <course reference="208"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="834">
+    <Lecture id="839">
       <id>117</id>
       <course reference="210"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="835">
+    <Lecture id="840">
       <id>118</id>
       <course reference="210"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="836">
+    <Lecture id="841">
       <id>119</id>
       <course reference="210"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="837">
+    <Lecture id="842">
       <id>120</id>
       <course reference="210"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="838">
+    <Lecture id="843">
       <id>121</id>
       <course reference="210"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="839">
+    <Lecture id="844">
       <id>122</id>
       <course reference="210"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="840">
+    <Lecture id="845">
       <id>123</id>
       <course reference="210"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="841">
+    <Lecture id="846">
       <id>124</id>
       <course reference="212"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="842">
+    <Lecture id="847">
       <id>125</id>
       <course reference="212"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="843">
+    <Lecture id="848">
       <id>126</id>
       <course reference="212"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="844">
+    <Lecture id="849">
       <id>127</id>
       <course reference="212"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="845">
+    <Lecture id="850">
       <id>128</id>
       <course reference="212"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="846">
+    <Lecture id="851">
       <id>129</id>
       <course reference="212"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="847">
+    <Lecture id="852">
       <id>130</id>
       <course reference="212"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="848">
+    <Lecture id="853">
       <id>131</id>
       <course reference="214"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="849">
+    <Lecture id="854">
       <id>132</id>
       <course reference="214"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="850">
+    <Lecture id="855">
       <id>133</id>
       <course reference="214"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="851">
+    <Lecture id="856">
       <id>134</id>
       <course reference="214"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="852">
+    <Lecture id="857">
       <id>135</id>
       <course reference="214"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="853">
+    <Lecture id="858">
       <id>136</id>
       <course reference="214"/>
       <lectureIndexInCourse>5</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="854">
+    <Lecture id="859">
       <id>137</id>
       <course reference="214"/>
       <lectureIndexInCourse>6</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="855">
+    <Lecture id="860">
       <id>138</id>
       <course reference="216"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="856">
+    <Lecture id="861">
       <id>139</id>
       <course reference="216"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="857">
+    <Lecture id="862">
       <id>140</id>
       <course reference="216"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="858">
+    <Lecture id="863">
       <id>141</id>
       <course reference="218"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="859">
+    <Lecture id="864">
       <id>142</id>
       <course reference="218"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="860">
+    <Lecture id="865">
       <id>143</id>
       <course reference="218"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="861">
+    <Lecture id="866">
       <id>144</id>
       <course reference="220"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="862">
+    <Lecture id="867">
       <id>145</id>
       <course reference="220"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="863">
+    <Lecture id="868">
       <id>146</id>
       <course reference="220"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="864">
+    <Lecture id="869">
       <id>147</id>
       <course reference="222"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="865">
+    <Lecture id="870">
       <id>148</id>
       <course reference="222"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="866">
+    <Lecture id="871">
       <id>149</id>
       <course reference="222"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="867">
+    <Lecture id="872">
       <id>150</id>
       <course reference="224"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="868">
+    <Lecture id="873">
       <id>151</id>
       <course reference="224"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="869">
+    <Lecture id="874">
       <id>152</id>
       <course reference="224"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="870">
+    <Lecture id="875">
       <id>153</id>
       <course reference="226"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="871">
+    <Lecture id="876">
       <id>154</id>
       <course reference="226"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="872">
+    <Lecture id="877">
       <id>155</id>
       <course reference="226"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="873">
+    <Lecture id="878">
       <id>156</id>
       <course reference="228"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="874">
+    <Lecture id="879">
       <id>157</id>
       <course reference="228"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="875">
+    <Lecture id="880">
       <id>158</id>
       <course reference="228"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="876">
+    <Lecture id="881">
       <id>159</id>
       <course reference="230"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="877">
+    <Lecture id="882">
       <id>160</id>
       <course reference="230"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="878">
+    <Lecture id="883">
       <id>161</id>
       <course reference="230"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="879">
+    <Lecture id="884">
       <id>162</id>
       <course reference="232"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="880">
+    <Lecture id="885">
       <id>163</id>
       <course reference="232"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="881">
+    <Lecture id="886">
       <id>164</id>
       <course reference="232"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="882">
+    <Lecture id="887">
       <id>165</id>
       <course reference="234"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="883">
+    <Lecture id="888">
       <id>166</id>
       <course reference="234"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="884">
+    <Lecture id="889">
       <id>167</id>
       <course reference="234"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="885">
+    <Lecture id="890">
       <id>168</id>
       <course reference="236"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="886">
+    <Lecture id="891">
       <id>169</id>
       <course reference="236"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="887">
+    <Lecture id="892">
       <id>170</id>
       <course reference="236"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="888">
+    <Lecture id="893">
       <id>171</id>
       <course reference="238"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="889">
+    <Lecture id="894">
       <id>172</id>
       <course reference="238"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="890">
+    <Lecture id="895">
       <id>173</id>
       <course reference="238"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="891">
+    <Lecture id="896">
       <id>174</id>
       <course reference="240"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="892">
+    <Lecture id="897">
       <id>175</id>
       <course reference="240"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="893">
+    <Lecture id="898">
       <id>176</id>
       <course reference="240"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="894">
+    <Lecture id="899">
       <id>177</id>
       <course reference="240"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="895">
+    <Lecture id="900">
       <id>178</id>
       <course reference="240"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="896">
+    <Lecture id="901">
       <id>179</id>
       <course reference="242"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="897">
+    <Lecture id="902">
       <id>180</id>
       <course reference="242"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="898">
+    <Lecture id="903">
       <id>181</id>
       <course reference="242"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="899">
+    <Lecture id="904">
       <id>182</id>
       <course reference="244"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="900">
+    <Lecture id="905">
       <id>183</id>
       <course reference="244"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="901">
+    <Lecture id="906">
       <id>184</id>
       <course reference="244"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="902">
+    <Lecture id="907">
       <id>185</id>
       <course reference="246"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="903">
+    <Lecture id="908">
       <id>186</id>
       <course reference="246"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="904">
+    <Lecture id="909">
       <id>187</id>
       <course reference="246"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="905">
+    <Lecture id="910">
       <id>188</id>
       <course reference="248"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="906">
+    <Lecture id="911">
       <id>189</id>
       <course reference="248"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="907">
+    <Lecture id="912">
       <id>190</id>
       <course reference="248"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="908">
+    <Lecture id="913">
       <id>191</id>
       <course reference="250"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="909">
+    <Lecture id="914">
       <id>192</id>
       <course reference="250"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="910">
+    <Lecture id="915">
       <id>193</id>
       <course reference="250"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="911">
+    <Lecture id="916">
       <id>194</id>
       <course reference="252"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="912">
+    <Lecture id="917">
       <id>195</id>
       <course reference="252"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="913">
+    <Lecture id="918">
       <id>196</id>
       <course reference="252"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="914">
+    <Lecture id="919">
       <id>197</id>
       <course reference="254"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="915">
+    <Lecture id="920">
       <id>198</id>
       <course reference="254"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="916">
+    <Lecture id="921">
       <id>199</id>
       <course reference="254"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="917">
+    <Lecture id="922">
       <id>200</id>
       <course reference="254"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="918">
+    <Lecture id="923">
       <id>201</id>
       <course reference="254"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="919">
+    <Lecture id="924">
       <id>202</id>
       <course reference="256"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="920">
+    <Lecture id="925">
       <id>203</id>
       <course reference="256"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="921">
+    <Lecture id="926">
       <id>204</id>
       <course reference="256"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="922">
+    <Lecture id="927">
       <id>205</id>
       <course reference="256"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="923">
+    <Lecture id="928">
       <id>206</id>
       <course reference="256"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="924">
+    <Lecture id="929">
       <id>207</id>
       <course reference="258"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="925">
+    <Lecture id="930">
       <id>208</id>
       <course reference="258"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="926">
+    <Lecture id="931">
       <id>209</id>
       <course reference="258"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="927">
+    <Lecture id="932">
       <id>210</id>
       <course reference="260"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="928">
+    <Lecture id="933">
       <id>211</id>
       <course reference="260"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="929">
+    <Lecture id="934">
       <id>212</id>
       <course reference="260"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="930">
+    <Lecture id="935">
       <id>213</id>
       <course reference="262"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="931">
+    <Lecture id="936">
       <id>214</id>
       <course reference="262"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="932">
+    <Lecture id="937">
       <id>215</id>
       <course reference="262"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="933">
+    <Lecture id="938">
       <id>216</id>
       <course reference="262"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="934">
+    <Lecture id="939">
       <id>217</id>
       <course reference="262"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="935">
+    <Lecture id="940">
       <id>218</id>
       <course reference="264"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="936">
+    <Lecture id="941">
       <id>219</id>
       <course reference="264"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="937">
+    <Lecture id="942">
       <id>220</id>
       <course reference="264"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="938">
+    <Lecture id="943">
       <id>221</id>
       <course reference="264"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="939">
+    <Lecture id="944">
       <id>222</id>
       <course reference="264"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="940">
+    <Lecture id="945">
       <id>223</id>
       <course reference="266"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="941">
+    <Lecture id="946">
       <id>224</id>
       <course reference="266"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="942">
+    <Lecture id="947">
       <id>225</id>
       <course reference="266"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="943">
+    <Lecture id="948">
       <id>226</id>
       <course reference="266"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="944">
+    <Lecture id="949">
       <id>227</id>
       <course reference="266"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="945">
+    <Lecture id="950">
       <id>228</id>
       <course reference="268"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="946">
+    <Lecture id="951">
       <id>229</id>
       <course reference="268"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="947">
+    <Lecture id="952">
       <id>230</id>
       <course reference="268"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="948">
+    <Lecture id="953">
       <id>231</id>
       <course reference="270"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="949">
+    <Lecture id="954">
       <id>232</id>
       <course reference="270"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="950">
+    <Lecture id="955">
       <id>233</id>
       <course reference="270"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="951">
+    <Lecture id="956">
       <id>234</id>
       <course reference="270"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="952">
+    <Lecture id="957">
       <id>235</id>
       <course reference="270"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="953">
+    <Lecture id="958">
       <id>236</id>
       <course reference="272"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="954">
+    <Lecture id="959">
       <id>237</id>
       <course reference="272"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="955">
+    <Lecture id="960">
       <id>238</id>
       <course reference="272"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="956">
+    <Lecture id="961">
       <id>239</id>
       <course reference="272"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="957">
+    <Lecture id="962">
       <id>240</id>
       <course reference="272"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="958">
+    <Lecture id="963">
       <id>241</id>
       <course reference="274"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="959">
+    <Lecture id="964">
       <id>242</id>
       <course reference="274"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="960">
+    <Lecture id="965">
       <id>243</id>
       <course reference="274"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="961">
+    <Lecture id="966">
       <id>244</id>
       <course reference="274"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="962">
+    <Lecture id="967">
       <id>245</id>
       <course reference="274"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="963">
+    <Lecture id="968">
       <id>246</id>
       <course reference="276"/>
       <lectureIndexInCourse>0</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="964">
+    <Lecture id="969">
       <id>247</id>
       <course reference="276"/>
       <lectureIndexInCourse>1</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="965">
+    <Lecture id="970">
       <id>248</id>
       <course reference="276"/>
       <lectureIndexInCourse>2</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="966">
+    <Lecture id="971">
       <id>249</id>
       <course reference="276"/>
       <lectureIndexInCourse>3</lectureIndexInCourse>
     </Lecture>
-    <Lecture id="967">
+    <Lecture id="972">
       <id>250</id>
       <course reference="276"/>
       <lectureIndexInCourse>4</lectureIndexInCourse>

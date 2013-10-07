@@ -42,7 +42,7 @@ public class Period extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return toString();
+        return day.getLabel() + "-" + timeslot.getLabel();
     }
 
     @Override

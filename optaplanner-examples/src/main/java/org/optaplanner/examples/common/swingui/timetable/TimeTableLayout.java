@@ -53,19 +53,35 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         totalRowHeight = 0;
     }
 
+    public int addColumn() {
+        return addColumn(true, 0);
+    }
+
     public int addColumn(int baseWidth) {
+        if (baseWidth < 0) {
+            throw new IllegalArgumentException("Invalid baseWidth (" + baseWidth + ").");
+        }
+        return addColumn(false, baseWidth);
+    }
+
+    private int addColumn(boolean autoWidth, int baseWidth) {
         if (rows.size() > 0) {
             throw new IllegalStateException("Add all columns before adding rows");
         }
         int index = columns.size();
-        Column column = new Column(index, baseWidth);
+        Column column = new Column(index, autoWidth, baseWidth);
         columns.add(column);
-        totalColumnWidth += baseWidth;
+        if (!autoWidth) {
+            totalColumnWidth += baseWidth;
+        }
         cells.add(new ArrayList<Cell>());
         return index;
     }
 
     public int addRow(int baseHeight) {
+        if (baseHeight < 0) {
+            throw new IllegalArgumentException("Invalid baseHeight (" + baseHeight + ").");
+        }
         int index = rows.size();
         Row row = new Row(index, baseHeight);
         rows.add(row);
@@ -112,9 +128,16 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             collisionIndex = FILL_COLLISIONS_FLAG;
         }
         span.collisionIndex = collisionIndex;
+        int componentWidth =  span.getPreferredWidthPerCell();
         for (Cell cell : span.cells) {
             cell.occupiedCollisionIndexes.add(collisionIndex);
             Column column = cell.column;
+            if (column.autoWidth) {
+                if (column.baseWidth < componentWidth) {
+                    totalColumnWidth += componentWidth - column.baseWidth;
+                    column.baseWidth = componentWidth;
+                }
+            }
             int collisionCount = cell.occupiedCollisionIndexes.size();
             Row row = cell.row;
             if (row.collisionCount < collisionCount) {
@@ -130,21 +153,44 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     public void removeLayoutComponent(Component component) {
         ComponentSpan span = spanMap.remove(component);
+        Set<Column> refreshColumns = new HashSet<Column>(columns.size());
         Set<Row> refreshRows = new HashSet<Row>(rows.size());
         for (Cell cell : span.cells) {
             cell.spans.remove(span);
             int collisionCount = cell.occupiedCollisionIndexes.size();
             Column column = cell.column;
+            if (column.autoWidth) {
+                refreshColumns.add(column);
+            }
             Row row = cell.row;
             if (row.collisionCount == collisionCount) {
                 refreshRows.add(row);
             }
             cell.occupiedCollisionIndexes.remove(span.collisionIndex);
         }
-        refreshRowCollisionCount(refreshRows);
+        refreshColumns(refreshColumns);
+        refreshRows(refreshRows);
     }
 
-    private void refreshRowCollisionCount(Set<Row> refreshRows) {
+    private void refreshColumns(Set<Column> refreshColumns) {
+        for (Column column : refreshColumns) {
+            if (column.autoWidth) {
+                int maxBaseWidth = 0;
+                for (int i = 0; i < rows.size(); i++) {
+                    Cell cell = cells.get(column.index).get(i);
+                    for (ComponentSpan span : cell.spans) {
+                        int componentWidth = span.getPreferredWidthPerCell();
+                        if (componentWidth > maxBaseWidth) {
+                            maxBaseWidth = componentWidth;
+                        }
+                    }
+                }
+                column.baseWidth = maxBaseWidth;
+            }
+        }
+    }
+
+    private void refreshRows(Set<Row> refreshRows) {
         for (Row row : refreshRows) {
             int maxCollisionCount = 1;
             for (int i = 0; i < columns.size(); i++) {
@@ -229,20 +275,22 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
     private static class Column {
 
-        private int index;
+        private final int index;
+        private final boolean autoWidth;
         private int baseWidth;
 
         private int boundX = -1;
 
-        private Column(int index, int baseWidth) {
+        private Column(int index, boolean autoWidth, int baseWidth) {
             this.index = index;
+            this.autoWidth = autoWidth;
             this.baseWidth = baseWidth;
         }
     }
 
     private static class Row {
 
-        private int index;
+        private final int index;
         private int baseHeight;
 
         private int collisionCount = 1;
@@ -280,6 +328,11 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
         private ComponentSpan(Component component) {
             this.component = component;
+        }
+
+        public int getPreferredWidthPerCell() {
+            int width = component.getPreferredSize().width;
+            return (width + (cells.size() - 1)) / cells.size(); // Ceil rounding
         }
 
     }

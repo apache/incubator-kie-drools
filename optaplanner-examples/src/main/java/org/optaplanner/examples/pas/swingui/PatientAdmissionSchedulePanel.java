@@ -79,7 +79,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
         int footprintHeight = footprint.getPreferredSize().height;
-        timeTableLayout.addColumn(150); // Header
+        timeTableLayout.addColumn(); // Header
         nightXMap = new HashMap<Night, Integer>(patientAdmissionSchedule.getNightList().size());
         for (Night night : patientAdmissionSchedule.getNightList()) {
             int x = timeTableLayout.addColumn(footprintWidth);
