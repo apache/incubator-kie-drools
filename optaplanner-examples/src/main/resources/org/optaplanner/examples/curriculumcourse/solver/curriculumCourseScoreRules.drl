@@ -38,7 +38,7 @@ global HardSoftScoreHolder scoreHolder;
 // ############################################################################
 
 // Lectures: A missing or extra lecture of a course.
-// This hard constraint is implemented a requirement by the initializer
+// This hard constraint is build-in: the correct number of Lecture's is created
 
 // Conflicts: Two conflicting lectures in the same period.
 // Three conflicting lectures count as 3 violations: one for each pair.

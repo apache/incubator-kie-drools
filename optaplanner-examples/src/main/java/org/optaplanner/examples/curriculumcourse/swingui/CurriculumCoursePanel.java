@@ -64,12 +64,19 @@ public class CurriculumCoursePanel extends SolutionPanel {
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsTimeTableLayout = new TimeTableLayout();
         roomsPanel = new JPanel(roomsTimeTableLayout);
-        tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
+        tabbedPane.add("Rooms", createScrollPane(roomsPanel));
         teachersTimeTableLayout = new TimeTableLayout();
         teachersPanel = new JPanel(teachersTimeTableLayout);
-        tabbedPane.add("Teachers", new JScrollPane(teachersPanel));
+        tabbedPane.add("Teachers", createScrollPane(teachersPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
+    }
+
+    private JScrollPane createScrollPane(JPanel panel) {
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        return scrollPane;
     }
 
     @Override
@@ -161,7 +168,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Lecture lecture : courseSchedule.getLectureList()) {
-            Color lectureColor = tangoColorFactory.pickColor(lecture);
+            Color lectureColor = tangoColorFactory.pickColor(lecture.getCourse());
             int y = periodYMap.get(lecture.getPeriod());
             JButton roomButton = createButton(lecture, lectureColor);
             roomsPanel.add(roomButton, new TimeTableLayoutConstraints(roomXMap.get(lecture.getRoom()), y));
