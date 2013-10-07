@@ -17,37 +17,30 @@
 package org.drools.workbench.models.datamodel.oracle;
 
 import java.util.List;
+import java.util.Map;
 
-import org.drools.workbench.models.datamodel.imports.Imports;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 
 public interface PackageDataModelOracle extends ProjectDataModelOracle {
 
-    // Global Variable related methods
-    String[] getGlobalVariables();
+    void setPackageName( String packageName );
 
-    boolean isGlobalVariable( final String variable );
+    void addPackageWorkbenchEnumDefinitions( Map<String, String[]> dataEnumLists );
 
-    String[] getFieldCompletionsForGlobalVariable( final String variable );
+    void addPackageDslConditionSentences( List<DSLSentence> dslConditionSentences );
 
-    String getGlobalVariable( final String variable );
+    void addPackageDslActionSentences( List<DSLSentence> dslActionSentences );
 
-    List<MethodInfo> getMethodInfosForGlobalVariable( final String variable );
+    void addPackageGlobals( Map<String, String> packageGlobalTypes );
 
-    String[] getGlobalCollections();
+    String getPackageName();
 
-    // DSL related methods
-    List<DSLSentence> getDSLActions();
+    Map<String, String[]> getPackageWorkbenchEnums();
 
-    List<DSLSentence> getDSLConditions();
+    List<DSLSentence> getPackageDslConditionSentences();
 
-    //Import related methods
-    String[] getAllFactTypes();
+    List<DSLSentence> getPackageDslActionSentences();
 
-    String[] getExternalFactTypes();
-
-    void filter( final Imports imports );
-
-    void filter();
+    Map<String, String> getPackageGlobals();
 
 }
