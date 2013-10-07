@@ -964,4 +964,293 @@ public class TraitMapCoreTest extends CommonTestMethodBase {
         assertEquals( null, list.get( 0 ) );
     }
 
+
+
+    @Test
+    public void testMapTraitPossibilities1()
+    {
+        String drl = "" +
+                     "package openehr.test;//org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" + "" +
+                     "declare HashMap @Traitable( logical = true ) end \n" +
+                     "\n" +
+                     "declare ESM @Traitable( logical = true )\n" +
+                     " val : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TName\n" +
+                     "//@Trait( logical = true )\n" +
+                     " length : Integer\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "//@Trait( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     " name : ESM\n" +
+                     " id : int = 1002\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "then\n" +
+                     " Map map = new HashMap();\n" +
+                     " ESM esm = new ESM(\"ali\");\n" +
+                     " TName tname = don( esm , TName.class );\n" +
+                     " map.put(\"name\",tname);\n" +
+                     " insert(map);\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     " $map : Map()" +
+                     "then\n" +
+                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                     " list.add( ct );\n" +
+                     " System.out.println(ct);\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertNotNull(list.get(0));
+    }
+
+
+    @Test
+    public void testMapTraitPossibilities2()
+    {
+        String drl = "" +
+                     "package openehr.test;//org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" + "" +
+                     "declare HashMap @Traitable( logical = true ) end \n" +
+                     "\n" +
+                     "declare ESM @Traitable( logical = true )\n" +
+                     " val : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TName\n" +
+                     "//@Trait( logical = true )\n" +
+                     " length : Integer\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TEsm extends TName\n" +
+                     "//@Trait( logical = true )\n" +
+                     " isValid : boolean\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "//@Trait( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     " name : ESM\n" +
+                     " id : int = 1002\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "then\n" +
+                     " Map map = new HashMap();\n" +
+                     " ESM esm = new ESM(\"ali\");\n" +
+                     " TName tname = don( esm , TName.class );\n" +
+                     " TEsm tesm = don( esm , TEsm.class );\n" +
+                     " map.put(\"name\",tesm);\n" +
+                     " insert(map);\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     " $map : Map()" +
+                     "then\n" +
+                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                     " list.add( ct );\n" +
+                     " System.out.println(ct);\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertNotNull(list.get(0));
+    }
+
+
+    @Test
+    public void testMapTraitPossibilities3()
+    {
+        String drl = "" +
+                     "package openehr.test;//org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" + "" +
+                     "declare HashMap @Traitable( logical = true ) end \n" +
+                     "\n" +
+                     "declare ESM @Traitable( logical = true )\n" +
+                     " val : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TName\n" +
+                     "//@Trait( logical = true )\n" +
+                     " length : Integer\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TEsm extends TName\n" +
+                     "//@Trait( logical = true )\n" +
+                     " isValid : boolean\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "//@Trait( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     " name : TName\n" + //<<<<<
+                     " id : int = 1002\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "then\n" +
+                     " Map map = new HashMap();\n" +
+                     " ESM esm = new ESM(\"ali\");\n" +
+                     " TName tname = don( esm , TName.class );\n" +
+                     " TEsm tesm = don( esm , TEsm.class );\n" +
+                     " map.put(\"name\",tesm);\n" +
+                     " insert(map);\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     " $map : Map()" +
+                     "then\n" +
+                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                     " list.add( ct );\n" +
+                     " System.out.println(ct);\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertNotNull(list.get(0));
+    }
+
+
+    @Test
+    public void testMapTraitPossibilities4()
+    {
+        String drl = "" +
+                     "package openehr.test;//org.drools.factmodel.traits;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.Traitable;\n" +
+                     "import org.drools.factmodel.traits.Trait;\n" +
+                     "import org.drools.factmodel.traits.Alias;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" + "" +
+                     "declare HashMap @Traitable( logical = true ) end \n" +
+                     "\n" +
+                     "declare ESM @Traitable( logical = true )\n" +
+                     " val : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare NAAM @Traitable( logical = true )\n" + //<<<<<
+                     " val : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TName\n" +
+                     "@Trait( logical = true )\n" + //<<<<<
+                     " length : Integer\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait TEsm //extends TName\n" +
+                     "//@Trait( logical = true )\n" +
+                     " isValid : boolean\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait ChildTrait\n" +
+                     "//@Trait( logical = true )\n" +
+                     "@propertyReactive\n" +
+                     " name : TName\n" +
+                     " id : int = 1002\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"init\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     "then\n" +
+                     " Map map = new HashMap();\n" +
+                     " ESM esm = new ESM(\"ali\");\n" +
+                     " TEsm tesm = don( esm , TEsm.class );\n" +
+                     " map.put(\"name\",tesm);\n" +
+                     " insert(map);\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "no-loop\n" +
+                     "when\n" +
+                     " $map : Map()" +
+                     "then\n" +
+                     " ChildTrait ct = don( $map , ChildTrait.class );\n" +
+                     " list.add( ct );\n" +
+                     " System.out.println(ct);\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode(TraitFactory.VirtualPropertyMode.MAP, ksession.getKnowledgeBase());
+
+        List list = new ArrayList();
+        ksession.setGlobal("list",list);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertNotNull(list.get(0));
+    }
 }
