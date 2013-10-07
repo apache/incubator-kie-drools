@@ -140,7 +140,7 @@ public class AuditLoggerFactory {
             // look up connection factory and queue if given as property
             if (properties.containsKey("jbpm.audit.jms.connection.factory.jndi")) {
                 ConnectionFactory connFactory = (ConnectionFactory) InitialContext.doLookup(
-                        (String)properties.get(properties.get("jbpm.audit.jms.connection.factory.jndi"))); 
+                        (String)properties.get("jbpm.audit.jms.connection.factory.jndi")); 
                 logger.setConnectionFactory(connFactory);
             }                
             if (properties.containsKey("jbpm.audit.jms.queue.jndi")) {

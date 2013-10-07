@@ -4,7 +4,6 @@ package org.jbpm.kie.services.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.IdentityProvider;
@@ -13,7 +12,6 @@ import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
-import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.shared.services.api.FileException;
@@ -36,9 +34,7 @@ public class VFSDeploymentService extends AbstractDeploymentService {
     @Inject
     private JbpmServicesPersistenceManager pm;
     @Inject
-    private FileService fs;
-    @Inject
-    private EntityManagerFactory emf;
+    private FileService fs;    
     @Inject
     private IdentityProvider identityProvider; 
     @Inject
@@ -56,9 +52,9 @@ public class VFSDeploymentService extends AbstractDeploymentService {
         VFSDeploymentUnit vfsUnit = (VFSDeploymentUnit) unit;
         // Create Runtime Manager Based on the Reference
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
-                .entityManagerFactory(emf);
+                .entityManagerFactory(getEmf());
         
-        AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
+        AbstractAuditLogger auditLogger = getAuditLogger();
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(identityProvider);
         auditEventBuilder.setDeploymentUnitId(vfsUnit.getIdentifier());
@@ -137,14 +133,6 @@ public class VFSDeploymentService extends AbstractDeploymentService {
 
     public void setFs(FileService fs) {
         this.fs = fs;
-    }
-
-    public EntityManagerFactory getEmf() {
-        return emf;
-    }
-
-    public void setEmf(EntityManagerFactory emf) {
-        this.emf = emf;
     }
 
     public IdentityProvider getIdentityProvider() {

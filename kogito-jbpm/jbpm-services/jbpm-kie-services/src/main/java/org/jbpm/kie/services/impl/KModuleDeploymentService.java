@@ -1,5 +1,18 @@
 package org.jbpm.kie.services.impl;
 
+import static org.kie.scanner.MavenRepository.getMavenRepository;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
@@ -11,7 +24,6 @@ import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
-import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.kie.api.KieBase;
@@ -23,19 +35,6 @@ import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
-import javax.persistence.EntityManagerFactory;
-import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
 @ApplicationScoped
 @Kjar
 public class KModuleDeploymentService extends AbstractDeploymentService {
@@ -45,9 +44,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
 
     @Inject
-    private BeanManager beanManager;
-    @Inject
-    private EntityManagerFactory emf;
+    private BeanManager beanManager;    
     @Inject
     private IdentityProvider identityProvider;
     @Inject
@@ -128,14 +125,14 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         KieBase kbase = kieContainer.getKieBase(kbaseName);        
 
-        AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
+        AbstractAuditLogger auditLogger = getAuditLogger();
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
         auditEventBuilder.setIdentityProvider(identityProvider);
         auditEventBuilder.setDeploymentUnitId(unit.getIdentifier());
         auditLogger.setBuilder(auditEventBuilder);
 
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
-                .entityManagerFactory(emf)
+                .entityManagerFactory(getEmf())
                 .knowledgeBase(kbase)
                 .classLoader(kieContainer.getClassLoader());
         if (beanManager != null) {

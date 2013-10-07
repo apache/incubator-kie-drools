@@ -104,6 +104,11 @@
       <groupId>javax.transaction</groupId>
       <artifactId>jta</artifactId>
     </dependency>
+    <dependency>
+      <groupId>javax.jms</groupId>
+      <artifactId>jms</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.mvel</groupId>
