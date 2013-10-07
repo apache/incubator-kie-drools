@@ -56,9 +56,9 @@ public class CurriculumCoursePanel extends SolutionPanel {
     private final JPanel teachersPanel;
     private TimeTableLayout teachersTimeTableLayout;
 
-    private Map<Period, Integer> periodXMap;
-    private Map<Room, Integer> roomYMap;
-    private Map<Teacher, Integer> teacherYMap;
+    private Map<Period, Integer> periodYMap;
+    private Map<Room, Integer> roomXMap;
+    private Map<Teacher, Integer> teacherXMap;
 
     public CurriculumCoursePanel() {
         setLayout(new BorderLayout());
@@ -103,69 +103,72 @@ public class CurriculumCoursePanel extends SolutionPanel {
         int footprintWidth = footprint.getPreferredSize().width;
         int footprintHeight = footprint.getPreferredSize().height;
         roomsTimeTableLayout.addColumn(150); // Header
-        teachersTimeTableLayout.addColumn(150); // Header
-        periodXMap = new HashMap<Period, Integer>(courseSchedule.getPeriodList().size());
-        int unassignedX = roomsTimeTableLayout.addColumn(footprintWidth); // Unassigned period
-        teachersTimeTableLayout.addColumn(footprintWidth); // Unassigned period
-        periodXMap.put(null, unassignedX);
-        for (Period period : courseSchedule.getPeriodList()) {
+        roomXMap = new HashMap<Room, Integer>(courseSchedule.getRoomList().size());
+        int unassignedRoomX = roomsTimeTableLayout.addColumn(footprintWidth); // Unassigned
+        roomXMap.put(null, unassignedRoomX);
+        for (Room room : courseSchedule.getRoomList()) {
             int x = roomsTimeTableLayout.addColumn(footprintWidth);
-            int otherX = teachersTimeTableLayout.addColumn(footprintWidth);
-            if (x != otherX) {
-                throw new IllegalStateException("Impossible");
-            }
-            periodXMap.put(period, x);
+            roomXMap.put(room, x);
+        }
+        teachersTimeTableLayout.addColumn(150); // Header
+        teacherXMap = new HashMap<Teacher, Integer>(courseSchedule.getTeacherList().size());
+        for (Teacher teacher : courseSchedule.getTeacherList()) {
+            int x = teachersTimeTableLayout.addColumn(footprintWidth);
+            teacherXMap.put(teacher, x);
         }
         roomsTimeTableLayout.addRow(footprintHeight); // Header
-        roomYMap = new HashMap<Room, Integer>(courseSchedule.getRoomList().size());
-        roomsTimeTableLayout.addRow(footprintHeight); // Unassigned
-        roomYMap.put(null, 1);
-        for (Room room : courseSchedule.getRoomList()) {
-            int y = roomsTimeTableLayout.addRow(footprintHeight);
-            roomYMap.put(room, y);
-        }
         teachersTimeTableLayout.addRow(footprintHeight); // Header
-        teacherYMap = new HashMap<Teacher, Integer>(courseSchedule.getTeacherList().size());
-        for (Teacher teacher : courseSchedule.getTeacherList()) {
-            int y = teachersTimeTableLayout.addRow(footprintHeight);
-            teacherYMap.put(teacher, y);
+        periodYMap = new HashMap<Period, Integer>(courseSchedule.getPeriodList().size());
+        int unassignedPeriodY = roomsTimeTableLayout.addRow(footprintHeight); // Unassigned period
+        int otherUnassignedPeriodY = teachersTimeTableLayout.addRow(footprintHeight); // Unassigned period
+        if (unassignedPeriodY != otherUnassignedPeriodY) {
+            throw new IllegalStateException("Impossible");
+        }
+        periodYMap.put(null, unassignedPeriodY);
+        for (Period period : courseSchedule.getPeriodList()) {
+            int y = roomsTimeTableLayout.addRow(footprintHeight);
+            int otherY = teachersTimeTableLayout.addRow(footprintHeight);
+            if (y != otherY) {
+                throw new IllegalStateException("Impossible");
+            }
+            periodYMap.put(period, y);
         }
     }
 
     private void fillCells(CourseSchedule courseSchedule) {
-        JPanel unassignedPeriodRoomLabel = createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER));
-        roomsPanel.add(unassignedPeriodRoomLabel, new TimeTableLayoutConstraints(periodXMap.get(null), 0, true));
-        JPanel unassignedPeriodTeacherLabel = createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER));
-        teachersPanel.add(unassignedPeriodTeacherLabel, new TimeTableLayoutConstraints(periodXMap.get(null), 0, true));
-        for (Period period : courseSchedule.getPeriodList()) {
-            JPanel periodRoomLabel = createHeaderPanel(new JLabel(period.getLabel(), SwingConstants.CENTER));
-            roomsPanel.add(periodRoomLabel, new TimeTableLayoutConstraints(periodXMap.get(period), 0, true));
-            JPanel periodTeacherLabel = createHeaderPanel(new JLabel(period.getLabel(), SwingConstants.CENTER));
-            teachersPanel.add(periodTeacherLabel, new TimeTableLayoutConstraints(periodXMap.get(period), 0, true));
-        }
-
-        JPanel unassignedRoomLabel = createHeaderPanel(new JLabel("Unassigned"));
-        roomsPanel.add(unassignedRoomLabel, new TimeTableLayoutConstraints(0, roomYMap.get(null), true));
+        JPanel unassignedRoomLabel = createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER));
+        roomsPanel.add(unassignedRoomLabel, new TimeTableLayoutConstraints(roomXMap.get(null), 0, true));
         for (Room room : courseSchedule.getRoomList()) {
-            JPanel roomLabel = createHeaderPanel(new JLabel(room.getLabel()));
-            roomsPanel.add(roomLabel, new TimeTableLayoutConstraints(0, roomYMap.get(room), true));
+            JPanel roomLabel = createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER));
+            roomsPanel.add(roomLabel, new TimeTableLayoutConstraints(roomXMap.get(room), 0, true));
         }
 
         for (Teacher teacher : courseSchedule.getTeacherList()) {
-            JPanel teacherLabel = createHeaderPanel(new JLabel(teacher.getLabel()));
-            teachersPanel.add(teacherLabel, new TimeTableLayoutConstraints(0, teacherYMap.get(teacher), true));
+            JPanel teacherLabel = createHeaderPanel(new JLabel(teacher.getLabel(), SwingConstants.CENTER));
+            teachersPanel.add(teacherLabel, new TimeTableLayoutConstraints(teacherXMap.get(teacher), 0, true));
+        }
+
+        JPanel unassignedPeriodRoomLabel = createHeaderPanel(new JLabel("Unassigned"));
+        roomsPanel.add(unassignedPeriodRoomLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), true));
+        JPanel unassignedPeriodTeacherLabel = createHeaderPanel(new JLabel("Unassigned"));
+        teachersPanel.add(unassignedPeriodTeacherLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), true));
+        for (Period period : courseSchedule.getPeriodList()) {
+            JPanel periodRoomLabel = createHeaderPanel(new JLabel(period.getLabel()));
+            roomsPanel.add(periodRoomLabel, new TimeTableLayoutConstraints(0, periodYMap.get(period), true));
+            JPanel periodTeacherLabel = createHeaderPanel(new JLabel(period.getLabel()));
+            teachersPanel.add(periodTeacherLabel, new TimeTableLayoutConstraints(0, periodYMap.get(period), true));
         }
 
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Lecture lecture : courseSchedule.getLectureList()) {
             Color lectureColor = tangoColorFactory.pickColor(lecture);
-            int x = periodXMap.get(lecture.getPeriod());
+            int y = periodYMap.get(lecture.getPeriod());
             JButton roomButton = new JButton(new LectureAction(lecture));
             roomButton.setBackground(lectureColor);
-            roomsPanel.add(roomButton, new TimeTableLayoutConstraints(x, roomYMap.get(lecture.getRoom())));
+            roomsPanel.add(roomButton, new TimeTableLayoutConstraints(roomXMap.get(lecture.getRoom()), y));
             JButton teacherButton = new JButton(new LectureAction(lecture));
             teacherButton.setBackground(lectureColor);
-            teachersPanel.add(teacherButton, new TimeTableLayoutConstraints(x, teacherYMap.get(lecture.getTeacher())));
+            teachersPanel.add(teacherButton, new TimeTableLayoutConstraints(teacherXMap.get(lecture.getTeacher()), y));
         }
     }
 
