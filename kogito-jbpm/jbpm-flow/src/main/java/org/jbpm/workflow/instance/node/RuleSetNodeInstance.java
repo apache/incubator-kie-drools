@@ -24,10 +24,12 @@ import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.core.datatype.DataType;
+import org.drools.core.process.instance.WorkItem;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
@@ -168,6 +170,29 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 	
 	protected Map<String, Object> evaluateParameters(RuleSetNode ruleSetNode) {
 	    Map<String, Object> replacements = new HashMap<String, Object>();
+	    
+        for (Iterator<DataAssociation> iterator = ruleSetNode.getInAssociations().iterator(); iterator.hasNext(); ) {
+            DataAssociation association = iterator.next();
+            if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
+                Object parameterValue = null;
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getSources().get(0));
+                if (variableScopeInstance != null) {
+                    parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
+                } else {
+                    try {
+                        parameterValue = MVEL.eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
+                    } catch (Throwable t) {
+                        logger.error("Could not find variable scope for variable {}", association.getSources().get(0));
+                        logger.error("when trying to execute RuleSetNode {}", ruleSetNode.getName());
+                        logger.error("Continuing without setting parameter.");
+                    }
+                }
+                if (parameterValue != null) {
+                	replacements.put(association.getTarget(), parameterValue);
+                }
+            }
+        }
         
         for (Map.Entry<String, Object> entry: ruleSetNode.getParameters().entrySet()) {
             if (entry.getValue() instanceof String) {

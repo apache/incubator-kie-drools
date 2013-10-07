@@ -1059,6 +1059,24 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals(1, fired);
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testBusinessRuleTaskWithDataInputs2WithPersistence()
+            throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "BPMN2-BusinessRuleTaskWithDataInput.bpmn2",
+                "BPMN2-BusinessRuleTaskWithDataInput.drl");
+        ksession = createKnowledgeSession(kbase);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", new Person());
+        ProcessInstance processInstance = ksession.startProcess(
+                "BPMN2-BusinessRuleTask", params);
+
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 
     @Test
     public void testNullVariableInScriptTaskProcess() throws Exception {
