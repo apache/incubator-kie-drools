@@ -77,9 +77,9 @@ public final class DialectUtil {
                                             final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
+        final String newName = prefix + "_" + normalizeRuleName(name);
         if (ext.equals("java")) {
-            newName = newName + Math.abs( seed );
+            return newName + Math.abs( seed );
         }
 
         final String fileName = packageName.replace('.', '/') + "/" + newName;
@@ -98,6 +98,24 @@ public final class DialectUtil {
         }
         // we have duplicate file names so append counter
         return newName + "_" + counter;
+    }
+
+    static String normalizeRuleName(String name) {
+        String normalized = name.replace(' ', '_');
+        if (!NON_ALPHA_REGEX.matcher(normalized).find()) {
+            return normalized;
+        }
+        StringBuilder sb = new StringBuilder(normalized.length());
+        for (char ch : normalized.toCharArray()) {
+            if (ch == '$') {
+                sb.append("_dollar_");
+            } else if (Character.isJavaIdentifierPart(ch)) {
+                sb.append(ch);
+            } else {
+                sb.append("$u").append((int)ch).append("$");
+            }
+        }
+        return sb.toString();
     }
 
     public static String fixBlockDescr(final RuleBuildContext context,
@@ -297,7 +315,7 @@ public final class DialectUtil {
         String mvelCode = macroProcessor.parse(consequence.toString());
 
 
-        Map<String, Class<?>> inputs = (Map<String, Class<?>>) getInputs(context, mvelCode, bindings, parentVars);
+        Map<String, Class<?>> inputs = getInputs(context, mvelCode, bindings, parentVars);
         inputs.putAll(parentVars);
         parentBlock.setInputs(inputs);
 
@@ -666,7 +684,7 @@ public final class DialectUtil {
         TypeDeclaration typeDeclaration = typeClass == null ? null : context.getPackageBuilder().getTypeDeclaration(typeClass);
 
         if (typeDeclaration != null) {
-            boolean isPropertyReactive = typeDeclaration != null && typeDeclaration.isPropertyReactive();
+            boolean isPropertyReactive = typeDeclaration.isPropertyReactive();
             List<String> settableProperties = null;
             if (isPropertyReactive) {
                 modificationMask = 0;
