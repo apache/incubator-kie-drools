@@ -1,0 +1,24 @@
+package org.drools.compiler.integrationtests;
+
+import org.drools.compiler.integrationtests.QueryCepTest.TestEvent;
+
+declare TestEvent
+    @role( event )
+end
+
+query EventsBeforeNineSeconds
+   $event : TestEvent() from entry-point EStream
+   $result : TestEvent ( this after [0s, 9s] $event) from entry-point EventStream
+end
+
+/*
+query EventsBeforeNineteenSeconds
+   $event : TestEvent() from entry-point EStream
+   $result : TestEvent ( this after [0s, 19s] $event) from entry-point EventStream
+end
+
+query EventsBeforeHundredSeconds
+   $event : TestEvent() from entry-point EStream
+   $result : TestEvent ( this after [0s, 100s] $event) from entry-point EventStream
+end
+*/
