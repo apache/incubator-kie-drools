@@ -160,6 +160,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 Department department = new Department();
                 department.setId(Long.parseLong(departmentTokens[0]));
                 department.setName(departmentTokens[1]);
+                department.setRoomList(new ArrayList<Room>());
                 int minimumAge = Integer.parseInt(departmentTokens[2]);
                 if (minimumAge != 0) {
                     department.setMinimumAge(Integer.valueOf(minimumAge));
@@ -233,11 +234,14 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 room.setId(Long.parseLong(roomTokens[0]));
                 room.setName(roomTokens[1]);
                 room.setCapacity(Integer.parseInt(lineTokens[1]));
-                room.setDepartment(idToDepartmentMap.get(
-                        Long.parseLong(lineTokens[2])));
+                Department department = idToDepartmentMap.get(
+                        Long.parseLong(lineTokens[2]));
+                room.setDepartment(department);
                 room.setGenderLimitation(GenderLimitation.valueOfCode(lineTokens[3]));
+                room.setBedList(new ArrayList<Bed>());
                 roomList.add(room);
                 idToRoomMap.put(room.getId(), room);
+                department.getRoomList().add(room);
 
                 String[] roomSpecialismTokens = splitBySpace(lineTokens[4]);
                 if (roomSpecialismTokens.length % 2 != 0) {
@@ -324,6 +328,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 bed.setIndexInRoom(indexInRoom);
                 roomToLastIndexInRoomMap.put(room, indexInRoom);
                 bedList.add(bed);
+                room.getBedList().add(bed);
             }
             Collections.sort(bedList, new Comparator<Bed>() {
                 public int compare(Bed a, Bed b) {

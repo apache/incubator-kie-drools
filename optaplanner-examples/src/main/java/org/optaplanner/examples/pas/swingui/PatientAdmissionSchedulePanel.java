@@ -35,14 +35,14 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.common.swingui.timetable.TimeTableLayout;
-import org.optaplanner.examples.common.swingui.timetable.TimeTableLayoutConstraints;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
+import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
@@ -112,8 +112,23 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     private void fillBedCells(PatientAdmissionSchedule patientAdmissionSchedule) {
         timeTablePanel.addRowHeader(HEADER_COLUMN_GROUP2, null, HEADER_COLUMN, null,
                 createHeaderPanel(new JLabel("Unassigned")));
-        for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            timeTablePanel.addRowHeader(HEADER_COLUMN, bed, createHeaderPanel(new JLabel(bed.getLabel())));
+        for (Department department : patientAdmissionSchedule.getDepartmentList()) {
+            List<Room> roomList = department.getRoomList();
+            List<Bed> firstRoomBedList = roomList.get(0).getBedList();
+            List<Bed> lastRoomBedList = roomList.get(roomList.size() - 1).getBedList();
+            timeTablePanel.addRowHeader(HEADER_COLUMN_GROUP2, firstRoomBedList.get(0),
+                    HEADER_COLUMN_GROUP2, lastRoomBedList.get(lastRoomBedList.size() - 1),
+                    createHeaderPanel(new JLabel(department.getLabel())));
+            for (Room room : roomList) {
+                List<Bed> bedList = room.getBedList();
+                timeTablePanel.addRowHeader(HEADER_COLUMN_GROUP1, bedList.get(0),
+                        HEADER_COLUMN_GROUP1, bedList.get(bedList.size() - 1),
+                        createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.RIGHT)));
+                for (Bed bed : bedList) {
+                    timeTablePanel.addRowHeader(HEADER_COLUMN, bed,
+                            createHeaderPanel(new JLabel(bed.getLabel(), SwingConstants.RIGHT)));
+                }
+            }
         }
     }
 

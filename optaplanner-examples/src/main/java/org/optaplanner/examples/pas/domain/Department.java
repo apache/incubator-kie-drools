@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.pas.domain;
 
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -25,6 +27,8 @@ public class Department extends AbstractPersistable {
     private String name;
     private Integer minimumAge = null;
     private Integer maximumAge = null;
+
+    private List<Room> roomList;
 
     public String getName() {
         return name;
@@ -48,6 +52,18 @@ public class Department extends AbstractPersistable {
 
     public void setMaximumAge(Integer maximumAge) {
         this.maximumAge = maximumAge;
+    }
+
+    public List<Room> getRoomList() {
+        return roomList;
+    }
+
+    public void setRoomList(List<Room> roomList) {
+        this.roomList = roomList;
+    }
+
+    public String getLabel() {
+        return name;
     }
 
     @Override

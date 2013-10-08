@@ -32,6 +32,7 @@ public class Room extends AbstractPersistable {
 
     private List<RoomSpecialism> roomSpecialismList;
     private List<RoomEquipment> roomEquipmentList;
+    private List<Bed> bedList;
 
     public String getName() {
         return name;
@@ -79,6 +80,18 @@ public class Room extends AbstractPersistable {
 
     public void setRoomEquipmentList(List<RoomEquipment> roomEquipmentList) {
         this.roomEquipmentList = roomEquipmentList;
+    }
+
+    public List<Bed> getBedList() {
+        return bedList;
+    }
+
+    public void setBedList(List<Bed> bedList) {
+        this.bedList = bedList;
+    }
+
+    public String getLabel() {
+        return name;
     }
 
     @Override

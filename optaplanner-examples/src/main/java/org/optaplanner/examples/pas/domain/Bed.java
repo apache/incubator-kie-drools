@@ -44,7 +44,10 @@ public class Bed extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return toString();
+        if (indexInRoom > 'Z') {
+            return Integer.toString(indexInRoom);
+        }
+        return Character.toString((char) ('A' + indexInRoom));
     }
 
     @Override
