@@ -534,7 +534,7 @@ public class DefaultAgenda
     }
 
     public RuleAgendaItem peekNextRule() {
-        return (RuleAgendaItem) ((InternalAgendaGroup) this.focusStack.peek()).peek();
+        return (RuleAgendaItem) ((InternalAgendaGroup) this.focusStack.peekLast()).peek();
     }
 
     /*
