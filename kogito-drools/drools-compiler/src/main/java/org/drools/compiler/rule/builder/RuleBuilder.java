@@ -170,15 +170,29 @@ public class RuleBuilder {
             }  else if ( name.equals( "calendars" ) ) {
                 buildCalendars( rule, attributeDescr.getValue(), context );
             } else if ( name.equals( "date-effective" ) ) {
-                final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateUtils.parseDate( attributeDescr.getValue(),
-                                                  context.getPackageBuilder().getDateFormats()  ) );
-                rule.setDateEffective( cal );
+                try {
+                    Date date = DateUtils.parseDate( attributeDescr.getValue(),
+                                                     context.getPackageBuilder().getDateFormats()  );
+                    final Calendar cal = Calendar.getInstance();
+                    cal.setTime( date );
+                    rule.setDateEffective( cal );
+                } catch (Exception e) {
+                    DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                          "Wrong date-effective value: " + e.getMessage() );
+                    context.addError( err  );
+                }
             } else if ( name.equals( "date-expires" ) ) {
-                final Calendar cal = Calendar.getInstance();
-                cal.setTime( DateUtils.parseDate( attributeDescr.getValue(),
-                                                  context.getPackageBuilder().getDateFormats()  ) );
-                rule.setDateExpires( cal );
+                try {
+                    Date date = DateUtils.parseDate( attributeDescr.getValue(),
+                                                     context.getPackageBuilder().getDateFormats()  );
+                    final Calendar cal = Calendar.getInstance();
+                    cal.setTime( date );
+                    rule.setDateExpires( cal );
+                } catch (Exception e) {
+                    DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
+                                                          "Wrong date-expires value: " + e.getMessage() );
+                    context.addError( err  );
+                }
             }
         }
 

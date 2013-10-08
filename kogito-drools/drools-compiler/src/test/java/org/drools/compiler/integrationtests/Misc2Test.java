@@ -2221,7 +2221,6 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        System.err.println( kb.getErrors().toString() );
         assertTrue( kb.hasErrors() );
     }
 
@@ -3025,5 +3024,19 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ks.insert( 0 );
         ks.fireAllRules();
+    }
+
+    @Test
+    public void testReportErrorOnWrongDateEffective() {
+        // BZ-1013545
+        String drl =
+                 "rule X date-effective \"9-Luglio-1974\" when\n" +
+                 "    $s : String() " +
+                 "then\n" +
+                 "end\n";
+
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        assertTrue( kb.hasErrors() );
     }
 }
