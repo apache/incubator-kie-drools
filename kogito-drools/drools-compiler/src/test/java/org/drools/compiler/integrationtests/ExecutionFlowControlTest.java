@@ -56,7 +56,7 @@ import static org.mockito.Mockito.*;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testSalienceIntegerAndDepthCrs() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -1016,5 +1016,71 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         ksession.update( fh, p ); // normally NPE thrown here, for BUG
         
         assertEquals( 36, p.getAge() );
+    }
+
+
+    @Test
+    public void testAgendaGroupGivewaySequence() {
+        // BZ-999360
+        String str =
+                "global java.util.List ruleList\n" +
+                "\n" +
+
+                "rule r1 agenda-group \"g1\" salience 20\n when" +
+                "    String( this == 'r1' )\n" +
+                "then\n" +
+                "    ruleList.add(1);\n" +
+                "end\n" +
+
+                "rule r2 agenda-group \"g1\" salience 15\n when" +
+                "    String( this == 'r2' )\n" +
+                "then\n" +
+                "    ruleList.add(2);\n" +
+                "    kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup(\"g2\").setFocus();\n" +
+                "end\n" +
+
+                "rule r3 agenda-group \"g1\" salience 10\n when" +
+                "    String( this == 'r3' )\n" +
+                "then\n" +
+                "    ruleList.add(3);\n" +
+                "end\n" +
+
+                "rule r4 agenda-group \"g2\" salience 5\n when" +
+                "    String( this == 'r4' )\n" +
+                "then\n" +
+                "    ruleList.add(4);\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ArrayList<String> ruleList = new ArrayList<String>();
+        ksession.setGlobal("ruleList", ruleList);
+
+        ksession.insert(new String("r1"));
+        ksession.insert(new String("r1"));
+        ksession.insert(new String("r2"));
+        ksession.insert(new String("r2"));
+        ksession.insert(new String("r3"));
+        ksession.insert(new String("r3"));
+        ksession.insert(new String("r4"));
+        ksession.insert(new String("r4"));
+        ksession.getAgenda().getAgendaGroup("g1").setFocus();
+
+        assertEquals( 8, ksession.fireAllRules() );
+
+
+        assertEquals( 8, ruleList.size() );
+        assertEquals( 1, ruleList.get(0));
+        assertEquals( 1, ruleList.get(1));
+        assertEquals( 2, ruleList.get(2));
+
+        assertEquals( 4, ruleList.get(3));
+        assertEquals( 4, ruleList.get(4));
+
+        assertEquals( 2, ruleList.get(5));
+
+        assertEquals( 3, ruleList.get(6));
+        assertEquals( 3, ruleList.get(7));
     }
 }
