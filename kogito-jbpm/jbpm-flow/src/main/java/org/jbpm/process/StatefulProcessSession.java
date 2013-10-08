@@ -59,7 +59,7 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 		this.kbase = kbase;
 		this.sessionConfiguration = sessionConfiguration;
 		this.environment = environment;
-		timerService = TimerServiceFactory.getTimerService((SessionConfiguration) sessionConfiguration);
+		timerService = TimerServiceFactory.getTimerService(null, (SessionConfiguration) sessionConfiguration);
 		processRuntime = new ProcessRuntimeImpl(this);
 		actionQueue = new LinkedList<WorkingMemoryAction>();
 	}
