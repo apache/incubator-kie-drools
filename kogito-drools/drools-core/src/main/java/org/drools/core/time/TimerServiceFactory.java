@@ -26,8 +26,10 @@ public class TimerServiceFactory {
         switch( config.getClockType() ) {
             case REALTIME_CLOCK:
                 service = config.newTimerService();
+                break;
             case PSEUDO_CLOCK:
                 service = (TimerService) config.getClockType().createInstance();
+                break;
         }
         if( service != null ) {
             service.setSession(wm);
