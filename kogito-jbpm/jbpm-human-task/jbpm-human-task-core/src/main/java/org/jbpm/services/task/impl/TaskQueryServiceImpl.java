@@ -211,7 +211,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 tasksIds.add(ts.getId());
             }
 
-            List<TaskSummary> tasksPotentialOwners = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksOwnedPotentialOwnersByTaskIds",
+            List tasksPotentialOwners = (List) pm.queryWithParametersInTransaction("TasksOwnedPotentialOwnersByTaskIds",
                         pm.addParametersToMap("taskIds", tasksIds));
 
             Map<Long, List<String>> potentialOwners = new HashMap<Long, List<String>>();
