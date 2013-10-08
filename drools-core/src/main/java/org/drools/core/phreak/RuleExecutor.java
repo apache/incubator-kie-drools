@@ -400,17 +400,21 @@ public class RuleExecutor {
     }
 
     private boolean haltRuleFiring(RuleAgendaItem nextRule,
-            int fireCount,
-            int fireLimit,
-            int localFireCount,
-            InternalAgenda agenda,
-            int salience) {
-        return !agenda.continueFiring(0) || !isHighestSalience(nextRule, salience) || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit));
+                                   int fireCount,
+                                   int fireLimit,
+                                   int localFireCount,
+                                   InternalAgenda agenda,
+                                   int salience) {
+
+
+        return !agenda.continueFiring(0) ||
+               ( (nextRule != null) && (!ruleAgendaItem.getRule().getAgendaGroup().equals( nextRule.getAgendaGroup() ) || !isHighestSalience(nextRule, salience)) )
+               || (fireLimit >= 0 && (localFireCount + fireCount >= fireLimit));
     }
 
     public boolean isHighestSalience(RuleAgendaItem nextRule,
-            int currentSalience) {
-        return (nextRule == null) || nextRule.getSalience() <= currentSalience;
+                                     int currentSalience) {
+        return nextRule.getSalience() <= currentSalience;
     }
 
     public LeftTupleList getLeftTupleList() {
