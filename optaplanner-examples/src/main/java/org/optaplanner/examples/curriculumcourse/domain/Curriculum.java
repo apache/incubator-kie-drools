@@ -32,6 +32,10 @@ public class Curriculum extends AbstractPersistable {
         this.code = code;
     }
 
+    public String getLabel() {
+        return code;
+    }
+
     @Override
     public String toString() {
         return code;

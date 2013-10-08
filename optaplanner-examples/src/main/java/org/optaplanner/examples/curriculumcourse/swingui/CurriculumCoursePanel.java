@@ -41,6 +41,7 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTableLayoutConstraints;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
+import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
 import org.optaplanner.examples.curriculumcourse.domain.Day;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
@@ -58,6 +59,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
 
     private final TimeTablePanel<Room, Period> roomsPanel;
     private final TimeTablePanel<Teacher, Period> teachersPanel;
+    private final TimeTablePanel<Curriculum, Period> curriculaPanel;
 
     public CurriculumCoursePanel() {
         lockedIcon = new ImageIcon(getClass().getResource("locked.png"));
@@ -67,6 +69,8 @@ public class CurriculumCoursePanel extends SolutionPanel {
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
         teachersPanel = new TimeTablePanel<Teacher, Period>();
         tabbedPane.add("Teachers", new JScrollPane(teachersPanel));
+        curriculaPanel = new TimeTablePanel<Curriculum, Period>();
+        tabbedPane.add("Curricula", new JScrollPane(curriculaPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
     }
@@ -88,6 +92,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
     public void resetPanel(Solution solution) {
         roomsPanel.reset();
         teachersPanel.reset();
+        curriculaPanel.reset();
         CourseSchedule courseSchedule = (CourseSchedule) solution;
         defineGrid(courseSchedule);
         fillCells(courseSchedule);
@@ -98,25 +103,37 @@ public class CurriculumCoursePanel extends SolutionPanel {
         JButton footprint = new JButton("LinLetGre1-0");
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
+
         roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
         roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
         for (Room room : courseSchedule.getRoomList()) {
             roomsPanel.defineColumnHeader(room, footprintWidth);
         }
         roomsPanel.defineColumnHeader(null, footprintWidth); // Unassigned
+
         teachersPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
         teachersPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
         for (Teacher teacher : courseSchedule.getTeacherList()) {
             teachersPanel.defineColumnHeader(teacher, footprintWidth);
         }
+
+        curriculaPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
+        curriculaPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
+        for (Curriculum curriculum : courseSchedule.getCurriculumList()) {
+            curriculaPanel.defineColumnHeader(curriculum, footprintWidth);
+        }
+
         roomsPanel.defineRowHeaderByKey(HEADER_ROW); // Room header
         teachersPanel.defineRowHeaderByKey(HEADER_ROW); // Teacher header
+        curriculaPanel.defineRowHeaderByKey(HEADER_ROW); // Curriculum header
         for (Period period : courseSchedule.getPeriodList()) {
             roomsPanel.defineRowHeader(period);
             teachersPanel.defineRowHeader(period);
+            curriculaPanel.defineRowHeader(period);
         }
         roomsPanel.defineRowHeader(null); // Unassigned period
         teachersPanel.defineRowHeader(null); // Unassigned period
+        curriculaPanel.defineRowHeader(null); // Unassigned period
     }
 
     private void fillCells(CourseSchedule courseSchedule) {
@@ -126,6 +143,9 @@ public class CurriculumCoursePanel extends SolutionPanel {
         teachersPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
         teachersPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
         fillTeacherCells(courseSchedule);
+        curriculaPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
+        curriculaPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        fillCurriculumCells(courseSchedule);
         fillDayCells(courseSchedule);
         fillLectureCells(courseSchedule);
     }
@@ -146,37 +166,52 @@ public class CurriculumCoursePanel extends SolutionPanel {
         }
     }
 
+    private void fillCurriculumCells(CourseSchedule courseSchedule) {
+        for (Curriculum curriculum : courseSchedule.getCurriculumList()) {
+            curriculaPanel.addColumnHeader(curriculum, HEADER_ROW,
+                    createHeaderPanel(new JLabel(curriculum.getLabel(), SwingConstants.CENTER)));
+        }
+    }
+
     private void fillDayCells(CourseSchedule courseSchedule) {
         for (Day day : courseSchedule.getDayList()) {
             Period dayStartPeriod = day.getPeriodList().get(0);
             Period dayEndPeriod = day.getPeriodList().get(day.getPeriodList().size() - 1);
-            JPanel dayRoomLabel = createHeaderPanel(new JLabel(day.getLabel()));
             roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
-                    dayRoomLabel);
-            JPanel dayTeacherLabel = createHeaderPanel(new JLabel(day.getLabel()));
+                    createHeaderPanel(new JLabel(day.getLabel())));
             teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
-                    dayTeacherLabel);
+                    createHeaderPanel(new JLabel(day.getLabel())));
+            curriculaPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
+                    createHeaderPanel(new JLabel(day.getLabel())));
             for (Period period : day.getPeriodList()) {
-                JPanel periodRoomLabel = createHeaderPanel(new JLabel(period.getTimeslot().getLabel()));
-                roomsPanel.addRowHeader(HEADER_COLUMN, period, periodRoomLabel);
-                JPanel periodTeacherLabel = createHeaderPanel(new JLabel(period.getTimeslot().getLabel()));
-                teachersPanel.addRowHeader(HEADER_COLUMN, period, periodTeacherLabel);
+                roomsPanel.addRowHeader(HEADER_COLUMN, period,
+                        createHeaderPanel(new JLabel(period.getTimeslot().getLabel())));
+                teachersPanel.addRowHeader(HEADER_COLUMN, period,
+                        createHeaderPanel(new JLabel(period.getTimeslot().getLabel())));
+                curriculaPanel.addRowHeader(HEADER_COLUMN, period,
+                        createHeaderPanel(new JLabel(period.getTimeslot().getLabel())));
             }
         }
-        JPanel unassignedPeriodRoomLabel = createHeaderPanel(new JLabel("Unassigned"));
-        roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null, unassignedPeriodRoomLabel);
-        JPanel unassignedPeriodTeacherLabel = createHeaderPanel(new JLabel("Unassigned"));
-        teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null, unassignedPeriodTeacherLabel);
+        roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
+                createHeaderPanel(new JLabel("Unassigned")));
+        teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
+                createHeaderPanel(new JLabel("Unassigned")));
+        curriculaPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
+                createHeaderPanel(new JLabel("Unassigned")));
     }
 
     private void fillLectureCells(CourseSchedule courseSchedule) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Lecture lecture : courseSchedule.getLectureList()) {
             Color lectureColor = tangoColorFactory.pickColor(lecture.getCourse());
-            JButton roomButton = createButton(lecture, lectureColor);
-            roomsPanel.addCell(lecture.getRoom(), lecture.getPeriod(), roomButton);
-            JButton teacherButton = createButton(lecture, lectureColor);
-            teachersPanel.addCell(lecture.getTeacher(), lecture.getPeriod(), teacherButton);
+            roomsPanel.addCell(lecture.getRoom(), lecture.getPeriod(),
+                    createButton(lecture, lectureColor));
+            teachersPanel.addCell(lecture.getTeacher(), lecture.getPeriod(),
+                    createButton(lecture, lectureColor));
+            for (Curriculum curriculum : lecture.getCurriculumList()) {
+                curriculaPanel.addCell(curriculum, lecture.getPeriod(),
+                        createButton(lecture, lectureColor));
+            }
         }
     }
 
