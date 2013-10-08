@@ -167,7 +167,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-     @Test
+    @Test
     public void testIllegalExtendsLegacy() throws Exception {
         //Test Base Fact Type
         genSession("test_ExtLegacyIllegal.drl",2);
@@ -197,7 +197,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-
+     @Test
      public void testExtendsAcrossFiles() throws Exception {
         StatefulKnowledgeSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
 
@@ -225,7 +225,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-
+    @Test
      public void testFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler", "MyBean3");
@@ -254,7 +254,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     }
 
 
-
+    @Test
     public void testBoxedFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxBean");
@@ -278,7 +278,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     }
 
 
-
+    @Test
     public void testExpressionFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKnowledgeBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
@@ -323,7 +323,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     }
 
-
+    @Test
     public void testHierarchy() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtHierarchy.drl");
         ksession.setGlobal("list",new LinkedList());
@@ -331,8 +331,6 @@ public class ExtendsTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals(1, ((List) ksession.getGlobal("list")).size());
-
-
     }
 
 
@@ -1046,6 +1044,38 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertEquals( "field3", sw.getFields().get(4).getName() );
         assertEquals( "mfield1", sw.getFields().get(5).getName() );
 
+    }
+
+    @Test
+    public void testDeclareExtendsMissingDeclareForParent() {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.Person; \n" +
+                     "declare Student extends Person end \n" +
+                     "";
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertTrue( kBuilder.hasErrors() );
+        assertEquals( 1, kBuilder.getErrors().size() );
+    }
+
+
+
+    @Test
+    public void testDeclareExtendsMissingDeclareForParentOuterPackaga() {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.integrationtests.ExtendsTest.X; \n" +
+                     "declare Student extends X end \n" +
+                     "";
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertTrue( kBuilder.hasErrors() );
+        assertEquals( 1, kBuilder.getErrors().size() );
     }
 }
 

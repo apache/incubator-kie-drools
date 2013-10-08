@@ -319,7 +319,7 @@ public class FieldDefinition
     }
 
     public String getDefaultValueAsString() {
-        return (String) MVEL.eval( initExpr );
+        return MVEL.eval( initExpr, String.class );
     }
 
 
@@ -332,7 +332,7 @@ public class FieldDefinition
             } else if ( "false".equalsIgnoreCase( initExpr ) ) {
                 return false;
             } else {
-                return (Boolean) MVEL.eval( initExpr );
+                return MVEL.eval( initExpr, Boolean.class );
             }
         }
     }
@@ -340,7 +340,7 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0 : Byte.parseByte(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : (Byte) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Byte.class );
         }
     }
     public Character getDefaultValueAsChar() {
@@ -350,7 +350,7 @@ public class FieldDefinition
             if ( initExpr.length() == 1 ) {
                 return initExpr.charAt(0);
             } else {
-                return (Character) MVEL.eval( initExpr );
+                return MVEL.eval( initExpr, Character.class );
             }
         }
     }
@@ -358,35 +358,35 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0 : (Double) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0.0 : MVEL.eval( initExpr, Double.class );
         }
     }
     public Float getDefaultValueAsFloat( ) {
         try {
             return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0f : (Float) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0.0f : MVEL.eval( initExpr, Float.class );
         }
     }
     public Integer getDefaultValueAsInt( ) {
         try {
             return initExpr == null ? 0 : Integer.parseInt(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : (Integer) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Integer.class );
         }
     }
     public Long getDefaultValueAsLong( ) {
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : (Long) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Long.class );
         }
     }
     public Short getDefaultValueAsShort( ) {
         try {
             return initExpr == null ? 0 : Short.parseShort(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : (Short) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Short.class );
         }
     }
 
@@ -400,7 +400,7 @@ public class FieldDefinition
             } else if ( "false".equalsIgnoreCase( initExpr ) ) {
                 return false;
             } else {
-                return (Boolean) MVEL.eval( initExpr );
+                return MVEL.eval( initExpr, Boolean.class ).booleanValue();
             }
         }
     }
@@ -408,7 +408,7 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0 : Byte.parseByte(initExpr);
         } catch (NumberFormatException nfe) {
-             return StringUtils.isEmpty( initExpr ) ? 0 : (Byte) MVEL.eval( initExpr );
+             return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Byte.class ).byteValue();
         }
     }
     public char getDefaultValueAs_char() {
@@ -418,7 +418,7 @@ public class FieldDefinition
             if ( initExpr.length() == 1 ) {
                 return initExpr.charAt(0);
             } else {
-                return (Character) MVEL.eval( initExpr );
+                return MVEL.eval( initExpr, Character.class ).charValue();
             }
         }
     }
@@ -426,35 +426,35 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0.0 : Double.parseDouble(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0 : (Double) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0.0 : MVEL.eval( initExpr, Double.class ).doubleValue();
         }
     }
     public float getDefaultValueAs_float() {
         try {
             return initExpr == null ? 0.0f : Float.parseFloat(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0.0f : (Float) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0.0f : MVEL.eval( initExpr, Float.class ).floatValue();
         }
     }
     public int getDefaultValueAs_int() {
         try {
             return initExpr == null ? 0 : Integer.parseInt(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : (Integer) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Integer.class ).intValue();
         }
     }
     public long getDefaultValueAs_long() {
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0L : (Long) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0L : MVEL.eval( initExpr, Long.class ).longValue();
         }
     }
     public short getDefaultValueAs_short() {
         try {
             return initExpr == null ? 0 : Short.parseShort(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : (Short) MVEL.eval( initExpr );
+            return StringUtils.isEmpty( initExpr ) ? 0 : MVEL.eval( initExpr, Short.class ).shortValue();
         }
     }
 

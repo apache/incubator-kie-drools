@@ -744,9 +744,16 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     public void addPackageFromPMML(Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         PMMLCompiler compiler = getPMMLCompiler();
         if ( compiler != null ) {
-            this.resource = resource;
-            addPackage(pmmlModelToPackageDescr(compiler, resource));
-            this.resource = null;
+            if ( compiler.getResults().isEmpty() ) {
+                this.resource = resource;
+                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
+                if ( descr != null ) {
+                    addPackage( descr );
+                }
+                this.resource = null;
+            } else {
+                this.results.addAll( compiler.getResults() );
+            }
         } else {
             addPackageForExternalType( resource, type, configuration );
         }
@@ -755,6 +762,11 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
     PackageDescr pmmlModelToPackageDescr( PMMLCompiler compiler, Resource resource ) throws DroolsParserException, IOException {
         String theory = compiler.compile(resource.getInputStream(),
                 getPackageRegistry());
+
+        if ( ! compiler.getResults().isEmpty() ) {
+            this.results.addAll( compiler.getResults() );
+            return null;
+        }
 
         DrlParser parser = new DrlParser();
         PackageDescr pkg = parser.parse( new StringReader( theory ) );
@@ -2202,6 +2214,10 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         List<TypeDefinition> unresolvedTypeDefinitions = null;
 
+        if ( ! results.isEmpty() ) {
+            return unresolvedTypeDefinitions;
+        }
+
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
             if (!typeDescr.getNamespace().equals( packageDescr.getNamespace() )) {
@@ -2242,9 +2258,13 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 PackageRegistry sup = pkgRegistryMap.get( typeDescr.getSuperTypeNamespace() );
                 if ( sup != null ) {
                     parent = sup.getPackage().getTypeDeclaration( typeDescr.getSuperTypeName() );
-                    if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
-                        // trying to find a definition
-                        parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    if ( parent == null ) {
+                        this.results.add( new TypeDeclarationError( typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared" ) );
+                    } else {
+                        if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
+                            // trying to find a definition
+                            parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                        }
                     }
                 }
             }
@@ -2295,13 +2315,15 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 // the type declaration is generated in any case (to be used by subclasses, if any)
                 // the actual class will be generated only if needed
 
-                generateDeclaredBean( typeDescr,
-                                      type,
-                                      pkgRegistry,
-                                      unresolvedTypeDefinitions );
+                if ( results.isEmpty() ) {
+                    generateDeclaredBean( typeDescr,
+                                          type,
+                                          pkgRegistry,
+                                          unresolvedTypeDefinitions );
 
-                Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
-                type.setTypeClass( clazz );
+                    Class clazz = pkgRegistry.getTypeResolver().resolveType(typeDescr.getType().getFullName());
+                    type.setTypeClass( clazz );
+                }
 
             } catch (final ClassNotFoundException e) {
                 this.results.add( new TypeDeclarationError( typeDescr,

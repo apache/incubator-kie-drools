@@ -17,12 +17,15 @@
 package org.drools.compiler;
 
 import org.drools.Service;
+import org.drools.builder.KnowledgeBuilderResult;
 
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 public interface PMMLCompiler extends Service {
 
     public String compile(InputStream stream, Map<String,PackageRegistry> registries);
 
+    public List<KnowledgeBuilderResult> getResults();
 }
