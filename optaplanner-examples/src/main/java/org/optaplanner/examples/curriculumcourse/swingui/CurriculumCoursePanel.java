@@ -136,19 +136,19 @@ public class CurriculumCoursePanel extends SolutionPanel {
             int x = teachersTimeTableLayout.addColumn(footprintWidth);
             teacherXMap.put(teacher, x);
         }
-        roomsTimeTableLayout.addRow(footprintHeight); // Header
-        teachersTimeTableLayout.addRow(footprintHeight); // Header
+        roomsTimeTableLayout.addRow(); // Header
+        teachersTimeTableLayout.addRow(); // Header
         periodYMap = new HashMap<Period, Integer>(courseSchedule.getPeriodList().size());
         for (Period period : courseSchedule.getPeriodList()) {
-            int y = roomsTimeTableLayout.addRow(footprintHeight);
-            int otherY = teachersTimeTableLayout.addRow(footprintHeight);
+            int y = roomsTimeTableLayout.addRow();
+            int otherY = teachersTimeTableLayout.addRow();
             if (y != otherY) {
                 throw new IllegalStateException("Impossible");
             }
             periodYMap.put(period, y);
         }
-        int unassignedPeriodY = roomsTimeTableLayout.addRow(footprintHeight); // Unassigned period
-        int otherUnassignedPeriodY = teachersTimeTableLayout.addRow(footprintHeight); // Unassigned period
+        int unassignedPeriodY = roomsTimeTableLayout.addRow(); // Unassigned period
+        int otherUnassignedPeriodY = teachersTimeTableLayout.addRow(); // Unassigned period
         if (unassignedPeriodY != otherUnassignedPeriodY) {
             throw new IllegalStateException("Impossible");
         }

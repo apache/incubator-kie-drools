@@ -85,12 +85,12 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             int x = timeTableLayout.addColumn(footprintWidth);
             nightXMap.put(night, x);
         }
-        timeTableLayout.addRow(footprintHeight); // Header
+        timeTableLayout.addRow(); // Header
         bedYMap = new HashMap<Bed, Integer>(patientAdmissionSchedule.getBedList().size());
-        timeTableLayout.addRow(footprintHeight); // Unassigned
+        timeTableLayout.addRow(); // Unassigned
         bedYMap.put(null, 1);
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            int y = timeTableLayout.addRow(footprintHeight);
+            int y = timeTableLayout.addRow();
             bedYMap.put(bed, y);
         }
     }

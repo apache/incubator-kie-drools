@@ -37,6 +37,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
     private List<List<Cell>> cells;
     private Map<Component, ComponentSpan> spanMap;
 
+    private boolean stale;
     private int totalColumnWidth;
     private int totalRowHeight;
 
@@ -49,6 +50,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         rows = new ArrayList<Row>();
         cells = new ArrayList<List<Cell>>();
         spanMap = new HashMap<Component, ComponentSpan>();
+        stale = false;
         totalColumnWidth = 0;
         totalRowHeight = 0;
     }
@@ -68,24 +70,30 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         if (rows.size() > 0) {
             throw new IllegalStateException("Add all columns before adding rows");
         }
+        stale = true;
         int index = columns.size();
         Column column = new Column(index, autoWidth, baseWidth);
         columns.add(column);
-        if (!autoWidth) {
-            totalColumnWidth += baseWidth;
-        }
         cells.add(new ArrayList<Cell>());
         return index;
+    }
+
+    public int addRow() {
+        return addRow(true, 0);
     }
 
     public int addRow(int baseHeight) {
         if (baseHeight < 0) {
             throw new IllegalArgumentException("Invalid baseHeight (" + baseHeight + ").");
         }
+        return addRow(false, baseHeight);
+    }
+
+    public int addRow(boolean autoHeight, int baseHeight) {
+        stale = true;
         int index = rows.size();
-        Row row = new Row(index, baseHeight);
+        Row row = new Row(index, autoHeight, baseHeight);
         rows.add(row);
-        totalRowHeight += baseHeight;
         for (int i = 0; i < columns.size(); i++) {
             Column column = columns.get(i);
             cells.get(i).add(new Cell(column, row));
@@ -103,6 +111,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             throw new IllegalArgumentException("The yEnd (" + c.getYEnd()
                     + ") is > rowsSize (" +  rows.size() +").");
         }
+        stale = true;
         ComponentSpan span = new ComponentSpan(component);
         spanMap.put(component, span);
         span.topLeftCell = cells.get(c.getX()).get(c.getY());
@@ -111,6 +120,8 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         for (int i = c.getX(); i < c.getXEnd(); i++) {
             for (int j = c.getY(); j < c.getYEnd(); j++) {
                 Cell cell = cells.get(i).get(j);
+                cell.column.stale = true;
+                cell.row.stale = true;
                 cell.spans.add(span);
                 span.cells.add(cell);
                 occupiedCollisionIndexes.addAll(cell.occupiedCollisionIndexes);
@@ -128,22 +139,8 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             collisionIndex = FILL_COLLISIONS_FLAG;
         }
         span.collisionIndex = collisionIndex;
-        int componentWidth =  span.getPreferredWidthPerCell();
         for (Cell cell : span.cells) {
             cell.occupiedCollisionIndexes.add(collisionIndex);
-            Column column = cell.column;
-            if (column.autoWidth) {
-                if (column.baseWidth < componentWidth) {
-                    totalColumnWidth += componentWidth - column.baseWidth;
-                    column.baseWidth = componentWidth;
-                }
-            }
-            int collisionCount = cell.occupiedCollisionIndexes.size();
-            Row row = cell.row;
-            if (row.collisionCount < collisionCount) {
-                row.collisionCount = collisionCount;
-                totalRowHeight += row.baseHeight;
-            }
         }
     }
 
@@ -152,69 +149,28 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
     }
 
     public void removeLayoutComponent(Component component) {
+        stale = true;
         ComponentSpan span = spanMap.remove(component);
-        Set<Column> refreshColumns = new HashSet<Column>(columns.size());
-        Set<Row> refreshRows = new HashSet<Row>(rows.size());
         for (Cell cell : span.cells) {
             cell.spans.remove(span);
-            int collisionCount = cell.occupiedCollisionIndexes.size();
-            Column column = cell.column;
-            if (column.autoWidth) {
-                refreshColumns.add(column);
-            }
-            Row row = cell.row;
-            if (row.collisionCount == collisionCount) {
-                refreshRows.add(row);
-            }
+            cell.column.stale = true;
+            cell.row.stale = true;
             cell.occupiedCollisionIndexes.remove(span.collisionIndex);
-        }
-        refreshColumns(refreshColumns);
-        refreshRows(refreshRows);
-    }
-
-    private void refreshColumns(Set<Column> refreshColumns) {
-        for (Column column : refreshColumns) {
-            if (column.autoWidth) {
-                int maxBaseWidth = 0;
-                for (int i = 0; i < rows.size(); i++) {
-                    Cell cell = cells.get(column.index).get(i);
-                    for (ComponentSpan span : cell.spans) {
-                        int componentWidth = span.getPreferredWidthPerCell();
-                        if (componentWidth > maxBaseWidth) {
-                            maxBaseWidth = componentWidth;
-                        }
-                    }
-                }
-                column.baseWidth = maxBaseWidth;
-            }
-        }
-    }
-
-    private void refreshRows(Set<Row> refreshRows) {
-        for (Row row : refreshRows) {
-            int maxCollisionCount = 1;
-            for (int i = 0; i < columns.size(); i++) {
-                Cell cell = cells.get(i).get(row.index);
-                if (cell.occupiedCollisionIndexes.size() > maxCollisionCount) {
-                    maxCollisionCount = cell.occupiedCollisionIndexes.size();
-                }
-            }
-            if (row.collisionCount > maxCollisionCount) {
-                row.collisionCount = maxCollisionCount;
-                totalRowHeight -= row.baseHeight;
-            }
         }
     }
 
     public Dimension minimumLayoutSize(Container parent) {
+        update();
         return new Dimension(totalColumnWidth, totalRowHeight);
     }
 
     public Dimension preferredLayoutSize(Container parent) {
+        update();
         return new Dimension(totalColumnWidth, totalRowHeight);
     }
 
     public Dimension maximumLayoutSize(Container target) {
+        update();
         return new Dimension(totalColumnWidth, totalRowHeight);
     }
 
@@ -232,8 +188,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
     }
 
     public void layoutContainer(Container parent) {
-        freshColumnsBoundX();
-        freshRowsBoundY();
+        update();
         synchronized (parent.getTreeLock()) {
             for (ComponentSpan span : spanMap.values()) {
                 int x1 = span.topLeftCell.column.boundX;
@@ -249,16 +204,86 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         }
     }
 
-    private void freshColumnsBoundX() {
+    public void update() {
+        if (!stale) {
+            return;
+        }
+        refreshColumns();
+        refreshRows();
+        stale = false;
+    }
+
+    private void refreshColumns() {
+        for (Column column : columns) {
+            if (column.stale) {
+                if (column.autoWidth) {
+                    column.baseWidth = getMaxCellWidth(column);
+                }
+                column.stale = false;
+            }
+        }
+        refreshColumnsBoundX();
+    }
+
+    private int getMaxCellWidth(Column column) {
+        int maxCellWidth = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            Cell cell = cells.get(column.index).get(i);
+            for (ComponentSpan span : cell.spans) {
+                int width = span.getPreferredWidthPerCell();
+                if (width > maxCellWidth) {
+                    maxCellWidth = width;
+                }
+            }
+        }
+        return maxCellWidth;
+    }
+
+    private void refreshColumnsBoundX() {
         int nextColumnBoundX = 0;
         for (Column column : columns) {
             column.boundX = nextColumnBoundX;
             nextColumnBoundX += column.baseWidth;
         }
-        if (nextColumnBoundX != totalColumnWidth) {
-            throw new IllegalArgumentException("The nextColumnBoundX (" + nextColumnBoundX
-                    + ") is not totalColumnWidth (" + totalColumnWidth + ").");
+        totalColumnWidth = nextColumnBoundX;
+    }
+
+    private void refreshRows() {
+        for (Row row : rows) {
+            if (row.stale) {
+                if (row.autoHeight) {
+                    row.baseHeight = getMaxCellHeight(row);
+                }
+                row.collisionCount = getMaxCollisionCount(row);
+            }
+            row.stale = false;
         }
+        freshRowsBoundY();
+    }
+
+    private int getMaxCellHeight(Row row) {
+        int maxCellHeight = 0;
+        for (int i = 0; i < columns.size(); i++) {
+            Cell cell = cells.get(i).get(row.index);
+            for (ComponentSpan span : cell.spans) {
+                int height = span.getPreferredHeightPerCell();
+                if (height > maxCellHeight) {
+                    maxCellHeight = height;
+                }
+            }
+        }
+        return maxCellHeight;
+    }
+
+    private int getMaxCollisionCount(Row row) {
+        int maxCollisionCount = 1;
+        for (int i = 0; i < columns.size(); i++) {
+            Cell cell = cells.get(i).get(row.index);
+            if (cell.occupiedCollisionIndexes.size() > maxCollisionCount) {
+                maxCollisionCount = cell.occupiedCollisionIndexes.size();
+            }
+        }
+        return maxCollisionCount;
     }
 
     private void freshRowsBoundY() {
@@ -267,40 +292,44 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             row.boundY = nextRowBoundY;
             nextRowBoundY += row.baseHeight * row.collisionCount;
         }
-        if (nextRowBoundY != totalRowHeight) {
-            throw new IllegalArgumentException("The nextRowBoundY (" + nextRowBoundY
-                    + ") is not totalRowHeight (" + totalRowHeight + ").");
-        }
+        totalRowHeight = nextRowBoundY;
     }
 
     private static class Column {
 
         private final int index;
         private final boolean autoWidth;
-        private int baseWidth;
 
+        private boolean stale;
+        private int baseWidth;
         private int boundX = -1;
 
         private Column(int index, boolean autoWidth, int baseWidth) {
             this.index = index;
             this.autoWidth = autoWidth;
+            stale = true;
             this.baseWidth = baseWidth;
         }
+
     }
 
     private static class Row {
 
         private final int index;
+        private final boolean autoHeight;
+
+        private boolean stale;
         private int baseHeight;
-
         private int collisionCount = 1;
-
         private int boundY = -1;
 
-        private Row(int index, int baseHeight) {
+        private Row(int index, boolean autoHeight, int baseHeight) {
             this.index = index;
+            this.autoHeight = autoHeight;
+            stale = true;
             this.baseHeight = baseHeight;
         }
+
     }
 
     private static class Cell {
@@ -315,6 +344,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
             this.column = column;
             this.row = row;
         }
+
     }
 
     private static class ComponentSpan {
@@ -333,6 +363,11 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         public int getPreferredWidthPerCell() {
             int width = component.getPreferredSize().width;
             return (width + (cells.size() - 1)) / cells.size(); // Ceil rounding
+        }
+
+        public int getPreferredHeightPerCell() {
+            int height = component.getPreferredSize().height;
+            return (height + (cells.size() - 1)) / cells.size(); // Ceil rounding
         }
 
     }
