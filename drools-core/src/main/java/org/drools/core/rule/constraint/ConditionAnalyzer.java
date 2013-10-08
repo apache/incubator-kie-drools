@@ -899,16 +899,23 @@ public class ConditionAnalyzer {
                     return getMethodFromSuperclass(declaringSuperclass.getMethod(method.getName(), method.getParameterTypes()), conditionClass);
                 } catch (Exception e) { }
             }
-            Method iMethod = null;
-            for (Class<?> interfaze : declaringClass.getInterfaces()) {
-                try {
-                    iMethod = interfaze.getMethod(method.getName(), method.getParameterTypes());
-                    if (conditionClass == null || iMethod.getDeclaringClass().getName().equals(conditionClass)) {
+            Method iMethod = getMethodFromInterface(declaringClass, method, conditionClass);
+            return iMethod == null ? method : iMethod;
+        }
+
+        private Method getMethodFromInterface(Class<?> clazz, Method method, String conditionClass) {
+            if (conditionClass == null || !clazz.getName().equals(conditionClass)) {
+                for (Class<?> interfaze : clazz.getInterfaces()) {
+                    Method iMethod = getMethodFromInterface(interfaze, method, conditionClass);
+                    if (iMethod != null) {
                         return iMethod;
                     }
-                } catch (Exception e) { }
+                }
             }
-            return iMethod == null ? method : iMethod;
+            try {
+                return clazz.getMethod(method.getName(), method.getParameterTypes());
+            } catch (Exception e) { }
+            return null;
         }
 
         public Method getMethod() {

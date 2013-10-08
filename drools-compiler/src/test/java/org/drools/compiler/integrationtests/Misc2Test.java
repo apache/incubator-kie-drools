@@ -2980,4 +2980,50 @@ public class Misc2Test extends CommonTestMethodBase {
             return executionMode;
         }
     }
+
+    public static interface FooIntf {
+        public boolean isSafe();
+        public void setSafe( boolean safe );
+    }
+
+    public static class BarKlass implements FooIntf {
+        public boolean isSafe() { return true; }
+        public void setSafe( boolean safe ) { }
+    }
+
+    @Test
+    public void testMvelJittingWithTraitProxies() throws Exception {
+        // DROOLS-291
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.FooIntf; \n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.BarKlass; \n" +
+                     "" +
+                     "declare BarKlass end \n" +
+                     "declare FooIntf end \n" +
+                     "" +
+                     "declare trait ExtFoo extends FooIntf end \n" +
+                     "" +
+                     "declare Kore @Traitable safe : boolean end \n" +
+                     "" +
+                     "rule \"Test2\" when FooIntf( safe == true ) then end \n" +
+                     "" +
+                     "rule \"In1\" when $s : String() then don( new Kore( true ), ExtFoo.class ); end \n" +
+                     "rule \"In2\" when $s : Integer() then insert( new BarKlass() ); end \n" +
+                     "" +
+                     "";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        for ( int j = 0; j < 21; j++ ) {
+            ks.insert( "x" + j );
+            ks.fireAllRules();
+        }
+
+        // wait for jitting
+        Thread.sleep(100);
+
+        ks.insert( 0 );
+        ks.fireAllRules();
+    }
 }
