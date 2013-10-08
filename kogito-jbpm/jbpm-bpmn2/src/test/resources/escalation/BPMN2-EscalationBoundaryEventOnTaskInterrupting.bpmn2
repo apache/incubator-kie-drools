@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1">
-  <bpmn2:escalation id="MyEscalation" escalationCode="MyEscalation"/>
+  <bpmn2:escalation id="escId" escalationCode="escCode"/>
   <bpmn2:process id="BPMN2-EscalationBoundaryEventOnTask" tns:version="1" tns:packageName="defaultPackage" name="Default Process">
     <bpmn2:endEvent id="EndEvent_2" name="end event 2">
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
@@ -67,7 +67,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_2" tns:priority="1" name="" sourceRef="UserTask_1" targetRef="EndEvent_1"/>
     <bpmn2:boundaryEvent id="BoundaryEvent_1" name="Boundary event" attachedToRef="UserTask_1">
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
-      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_1" escalationRef="MyEscalation"/>
+      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_1" escalationRef="escId"/>
     </bpmn2:boundaryEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_4" tns:priority="1" name="" sourceRef="BoundaryEvent_1" targetRef="ScriptTask_1"/>
     <bpmn2:parallelGateway id="ParallelGateway_1" name="split" gatewayDirection="Diverging">
@@ -140,7 +140,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_8" tns:priority="1" name="" sourceRef="UserTask_2" targetRef="EndEvent_3"/>
     <bpmn2:endEvent id="EndEvent_3" name="end event 3">
       <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
-      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_2" escalationRef="MyEscalation"/>
+      <bpmn2:escalationEventDefinition id="EscalationEventDefinition_2" escalationRef="escId"/>
     </bpmn2:endEvent>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1" name="Default Process Diagram">

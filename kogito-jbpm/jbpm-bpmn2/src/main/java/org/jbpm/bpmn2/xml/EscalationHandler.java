@@ -69,8 +69,7 @@ public class EscalationHandler extends BaseAbstractHandler implements Handler {
             buildData.setMetaData(ProcessHandler.ESCALATIONS, escalations);
         }
         Escalation e = new Escalation(id, escalationCode); 
-        // BPMN2 spec, p. 83: escalations are referenced by their "escalationCode" attr values
-        escalations.put(escalationCode, e);
+        escalations.put(id, e);
 		return e;
 	}
 

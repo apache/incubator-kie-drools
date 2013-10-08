@@ -138,7 +138,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("EscalationEvent", type); 
                 } else { 
-                    // general escalation
+                    throw new UnsupportedOperationException("General escalation is not yet supported.");
                 }
             }
             xmlNode = xmlNode.getNextSibling();

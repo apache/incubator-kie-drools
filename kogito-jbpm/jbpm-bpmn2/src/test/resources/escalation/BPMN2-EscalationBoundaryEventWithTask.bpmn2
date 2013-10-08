@@ -12,7 +12,7 @@
              xmlns:tns="http://www.jboss.org/drools">
 
   <itemDefinition id="_xItem" structureRef="String" />
-  <escalation id="esc" escalationCode="Code3" />
+  <escalation id="escId" escalationCode="Code3" />
   
   <process processType="Private" isExecutable="true" id="non-interrupting-escalation" name="Escalation Boundary Event Process" >
 
@@ -44,7 +44,7 @@
     </endEvent>
     
     <boundaryEvent id="_4" name="CatchEscalation" attachedToRef="_2" cancelActivity="false" >
-      <escalationEventDefinition escalationRef="Code3" />
+      <escalationEventDefinition escalationRef="escId" />
     </boundaryEvent>
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
     

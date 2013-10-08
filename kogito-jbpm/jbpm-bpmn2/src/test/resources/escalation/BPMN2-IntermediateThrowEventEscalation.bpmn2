@@ -11,13 +11,13 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <escalation id="MyEscalation" escalationCode="MyEscalation" />
+  <escalation id="escId" escalationCode="escCode" />
   <process processType="Private" isExecutable="true" id="EscalationIntermediateThrowEvent" name="Escalation Intermediate Throw Event Process" >
 
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <intermediateThrowEvent id="_2" name="EscalationEvent" >
-      <escalationEventDefinition escalationRef="MyEscalation"/>
+      <escalationEventDefinition escalationRef="escId"/>
     </intermediateThrowEvent>
     <endEvent id="_3" name="EndEvent" />
 

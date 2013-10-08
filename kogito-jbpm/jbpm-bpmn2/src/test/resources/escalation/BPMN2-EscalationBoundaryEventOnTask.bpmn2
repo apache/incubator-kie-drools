@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="Definitions_1">
 
-  <escalation id="MyEscalation" escalationCode="MyEscalation"/>
+  <escalation id="escId" escalationCode="escCode"/>
 
   <process id="non-interrupting-escalation" tns:version="1" tns:packageName="defaultPackage" name="Default Process">
 
@@ -60,7 +60,7 @@
 
     <!-- boundary event-->
     <boundaryEvent id="_5" name="Boundary event" attachedToRef="_3" cancelActivity="false">
-      <escalationEventDefinition id="EscalationEventDefinition_1" escalationRef="MyEscalation"/>
+      <escalationEventDefinition id="EscalationEventDefinition_1" escalationRef="escId"/>
     </boundaryEvent>
     <sequenceFlow id="_5-_6" tns:priority="1" name="" sourceRef="_5" targetRef="_6"/>
 
@@ -116,7 +116,7 @@
     <sequenceFlow id="_8-_9" tns:priority="1" name="" sourceRef="_8" targetRef="_9"/>
 
     <endEvent id="_9" name="end event 3">
-      <escalationEventDefinition id="EscalationEventDefinition_2" escalationRef="MyEscalation"/>
+      <escalationEventDefinition id="EscalationEventDefinition_2" escalationRef="escId"/>
     </endEvent>
 
   </process>

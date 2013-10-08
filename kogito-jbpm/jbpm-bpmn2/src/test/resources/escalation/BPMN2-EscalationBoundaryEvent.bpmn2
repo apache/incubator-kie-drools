@@ -11,7 +11,7 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <escalation id="MyEscalation" escalationCode="MyEscalation" />
+  <escalation id="escId" escalationCode="escCode" />
   <process processType="Private" isExecutable="true" id="EscalationBoundaryEvent" name="Escalation Boundary Event Process" >
 
     <startEvent id="_1" name="StartProcess" />
@@ -22,7 +22,7 @@
       <sequenceFlow id="_2-1-_2-2" sourceRef="_2-1" targetRef="_2-2" />
       
       <endEvent id="_2-2" name="EscalationEvent" >
-        <escalationEventDefinition escalationRef="MyEscalation" />
+        <escalationEventDefinition escalationRef="escId" />
       </endEvent>
     </subProcess>
     
@@ -32,7 +32,7 @@
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
     
     <boundaryEvent id="_4" name="EscalationEvent" attachedToRef="_2" cancelActivity="false" >
-      <escalationEventDefinition escalationRef="MyEscalation" />
+      <escalationEventDefinition escalationRef="escId" />
     </boundaryEvent>
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" />
     
