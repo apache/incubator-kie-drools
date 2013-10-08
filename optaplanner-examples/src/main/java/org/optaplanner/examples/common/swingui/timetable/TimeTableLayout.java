@@ -362,12 +362,14 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
         public int getPreferredWidthPerCell() {
             int width = component.getPreferredSize().width;
-            return (width + (cells.size() - 1)) / cells.size(); // Ceil rounding
+            int horizontalCellSize = bottomRightCell.column.index - topLeftCell.column.index + 1;
+            return (width + (horizontalCellSize - 1)) / horizontalCellSize; // Ceil rounding
         }
 
         public int getPreferredHeightPerCell() {
             int height = component.getPreferredSize().height;
-            return (height + (cells.size() - 1)) / cells.size(); // Ceil rounding
+            int verticalCellSize = bottomRightCell.row.index - topLeftCell.row.index + 1;
+            return (height + (verticalCellSize - 1)) / verticalCellSize; // Ceil rounding
         }
 
     }

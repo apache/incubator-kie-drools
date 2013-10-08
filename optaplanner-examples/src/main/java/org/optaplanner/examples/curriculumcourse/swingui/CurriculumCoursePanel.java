@@ -21,11 +21,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -39,14 +35,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.core.impl.move.Move;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.common.swingui.timetable.TimeTableLayout;
 import org.optaplanner.examples.common.swingui.timetable.TimeTableLayoutConstraints;
+import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Day;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
@@ -56,38 +49,26 @@ import org.optaplanner.examples.curriculumcourse.domain.Teacher;
 import org.optaplanner.examples.curriculumcourse.solver.move.PeriodChangeMove;
 import org.optaplanner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
+
 public class CurriculumCoursePanel extends SolutionPanel {
 
     private final ImageIcon lockedIcon;
 
-    private final JPanel roomsPanel;
-    private TimeTableLayout roomsTimeTableLayout;
-    private final JPanel teachersPanel;
-    private TimeTableLayout teachersTimeTableLayout;
-
-    private Map<Period, Integer> periodYMap;
-    private Map<Room, Integer> roomXMap;
-    private Map<Teacher, Integer> teacherXMap;
+    private final TimeTablePanel<Room, Period> roomsPanel;
+    private final TimeTablePanel<Teacher, Period> teachersPanel;
 
     public CurriculumCoursePanel() {
         lockedIcon = new ImageIcon(getClass().getResource("locked.png"));
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        roomsTimeTableLayout = new TimeTableLayout();
-        roomsPanel = new JPanel(roomsTimeTableLayout);
-        tabbedPane.add("Rooms", createScrollPane(roomsPanel));
-        teachersTimeTableLayout = new TimeTableLayout();
-        teachersPanel = new JPanel(teachersTimeTableLayout);
-        tabbedPane.add("Teachers", createScrollPane(teachersPanel));
+        roomsPanel = new TimeTablePanel<Room, Period>();
+        tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
+        teachersPanel = new TimeTablePanel<Teacher, Period>();
+        tabbedPane.add("Teachers", new JScrollPane(teachersPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
-    }
-
-    private JScrollPane createScrollPane(JPanel panel) {
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        return scrollPane;
     }
 
     @Override
@@ -105,8 +86,8 @@ public class CurriculumCoursePanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        roomsPanel.removeAll();
-        teachersPanel.removeAll();
+        roomsPanel.reset();
+        teachersPanel.reset();
         CourseSchedule courseSchedule = (CourseSchedule) solution;
         defineGrid(courseSchedule);
         fillCells(courseSchedule);
@@ -114,96 +95,88 @@ public class CurriculumCoursePanel extends SolutionPanel {
     }
 
     private void defineGrid(CourseSchedule courseSchedule) {
-        roomsTimeTableLayout.reset();
-        teachersTimeTableLayout.reset();
         JButton footprint = new JButton("LinLetGre1-0");
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
-        int footprintHeight = footprint.getPreferredSize().height;
-        roomsTimeTableLayout.addColumn(); // Day header
-        roomsTimeTableLayout.addColumn(); // Period header
-        roomXMap = new HashMap<Room, Integer>(courseSchedule.getRoomList().size());
+        roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
+        roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
         for (Room room : courseSchedule.getRoomList()) {
-            int x = roomsTimeTableLayout.addColumn(footprintWidth);
-            roomXMap.put(room, x);
+            roomsPanel.defineColumnHeader(room, footprintWidth);
         }
-        int unassignedRoomX = roomsTimeTableLayout.addColumn(footprintWidth); // Unassigned
-        roomXMap.put(null, unassignedRoomX);
-        teachersTimeTableLayout.addColumn(); // Day header
-        teachersTimeTableLayout.addColumn(); // Period header
-        teacherXMap = new HashMap<Teacher, Integer>(courseSchedule.getTeacherList().size());
+        roomsPanel.defineColumnHeader(null, footprintWidth); // Unassigned
+        teachersPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
+        teachersPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
         for (Teacher teacher : courseSchedule.getTeacherList()) {
-            int x = teachersTimeTableLayout.addColumn(footprintWidth);
-            teacherXMap.put(teacher, x);
+            teachersPanel.defineColumnHeader(teacher, footprintWidth);
         }
-        roomsTimeTableLayout.addRow(); // Header
-        teachersTimeTableLayout.addRow(); // Header
-        periodYMap = new HashMap<Period, Integer>(courseSchedule.getPeriodList().size());
+        roomsPanel.defineRowHeaderByKey(HEADER_ROW); // Room header
+        teachersPanel.defineRowHeaderByKey(HEADER_ROW); // Teacher header
         for (Period period : courseSchedule.getPeriodList()) {
-            int y = roomsTimeTableLayout.addRow();
-            int otherY = teachersTimeTableLayout.addRow();
-            if (y != otherY) {
-                throw new IllegalStateException("Impossible");
-            }
-            periodYMap.put(period, y);
+            roomsPanel.defineRowHeader(period);
+            teachersPanel.defineRowHeader(period);
         }
-        int unassignedPeriodY = roomsTimeTableLayout.addRow(); // Unassigned period
-        int otherUnassignedPeriodY = teachersTimeTableLayout.addRow(); // Unassigned period
-        if (unassignedPeriodY != otherUnassignedPeriodY) {
-            throw new IllegalStateException("Impossible");
-        }
-        periodYMap.put(null, unassignedPeriodY);
+        roomsPanel.defineRowHeader(null); // Unassigned period
+        teachersPanel.defineRowHeader(null); // Unassigned period
     }
 
     private void fillCells(CourseSchedule courseSchedule) {
-        roomsPanel.add(createHeaderPanel(new JLabel("Day")),
-                new TimeTableLayoutConstraints(0, 0, true));
-        roomsPanel.add(createHeaderPanel(new JLabel("Time")),
-                new TimeTableLayoutConstraints(1, 0, true));
+        roomsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
+        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        fillRoomCells(courseSchedule);
+        teachersPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
+        teachersPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        fillTeacherCells(courseSchedule);
+        fillDayCells(courseSchedule);
+        fillLectureCells(courseSchedule);
+    }
+
+    private void fillRoomCells(CourseSchedule courseSchedule) {
         for (Room room : courseSchedule.getRoomList()) {
-            JPanel roomLabel = createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER));
-            roomsPanel.add(roomLabel, new TimeTableLayoutConstraints(roomXMap.get(room), 0, true));
+            roomsPanel.addColumnHeader(room, HEADER_ROW,
+                    createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER)));
         }
-        JPanel unassignedRoomLabel = createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER));
-        roomsPanel.add(unassignedRoomLabel, new TimeTableLayoutConstraints(roomXMap.get(null), 0, true));
+        roomsPanel.addColumnHeader(null, HEADER_ROW,
+                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
+    }
 
-        teachersPanel.add(createHeaderPanel(new JLabel("Day")),
-                new TimeTableLayoutConstraints(0, 0, true));
-        teachersPanel.add(createHeaderPanel(new JLabel("Time")),
-                new TimeTableLayoutConstraints(1, 0, true));
+    private void fillTeacherCells(CourseSchedule courseSchedule) {
         for (Teacher teacher : courseSchedule.getTeacherList()) {
-            JPanel teacherLabel = createHeaderPanel(new JLabel(teacher.getLabel(), SwingConstants.CENTER));
-            teachersPanel.add(teacherLabel, new TimeTableLayoutConstraints(teacherXMap.get(teacher), 0, true));
+            teachersPanel.addColumnHeader(teacher, HEADER_ROW,
+                    createHeaderPanel(new JLabel(teacher.getLabel(), SwingConstants.CENTER)));
         }
+    }
 
+    private void fillDayCells(CourseSchedule courseSchedule) {
         for (Day day : courseSchedule.getDayList()) {
-            int dayY = periodYMap.get(day.getPeriodList().get(0));
-            int dayPeriodListSize = day.getPeriodList().size();
+            Period dayStartPeriod = day.getPeriodList().get(0);
+            Period dayEndPeriod = day.getPeriodList().get(day.getPeriodList().size() - 1);
             JPanel dayRoomLabel = createHeaderPanel(new JLabel(day.getLabel()));
-            roomsPanel.add(dayRoomLabel, new TimeTableLayoutConstraints(0, dayY, 1, dayPeriodListSize, true));
+            roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
+                    dayRoomLabel);
             JPanel dayTeacherLabel = createHeaderPanel(new JLabel(day.getLabel()));
-            teachersPanel.add(dayTeacherLabel, new TimeTableLayoutConstraints(0, dayY, 1, dayPeriodListSize, true));
+            teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, dayStartPeriod, HEADER_COLUMN_GROUP1, dayEndPeriod,
+                    dayTeacherLabel);
             for (Period period : day.getPeriodList()) {
-                int periodY = periodYMap.get(period);
                 JPanel periodRoomLabel = createHeaderPanel(new JLabel(period.getTimeslot().getLabel()));
-                roomsPanel.add(periodRoomLabel, new TimeTableLayoutConstraints(1, periodY, true));
+                roomsPanel.addRowHeader(HEADER_COLUMN, period, periodRoomLabel);
                 JPanel periodTeacherLabel = createHeaderPanel(new JLabel(period.getTimeslot().getLabel()));
-                teachersPanel.add(periodTeacherLabel, new TimeTableLayoutConstraints(1, periodY, true));
+                teachersPanel.addRowHeader(HEADER_COLUMN, period, periodTeacherLabel);
             }
         }
         JPanel unassignedPeriodRoomLabel = createHeaderPanel(new JLabel("Unassigned"));
-        roomsPanel.add(unassignedPeriodRoomLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), 2, 1, true));
+        roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null, unassignedPeriodRoomLabel);
         JPanel unassignedPeriodTeacherLabel = createHeaderPanel(new JLabel("Unassigned"));
-        teachersPanel.add(unassignedPeriodTeacherLabel, new TimeTableLayoutConstraints(0, periodYMap.get(null), 2, 1, true));
+        teachersPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null, unassignedPeriodTeacherLabel);
+    }
 
+    private void fillLectureCells(CourseSchedule courseSchedule) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Lecture lecture : courseSchedule.getLectureList()) {
             Color lectureColor = tangoColorFactory.pickColor(lecture.getCourse());
-            int y = periodYMap.get(lecture.getPeriod());
             JButton roomButton = createButton(lecture, lectureColor);
-            roomsPanel.add(roomButton, new TimeTableLayoutConstraints(roomXMap.get(lecture.getRoom()), y));
+            roomsPanel.addCell(lecture.getRoom(), lecture.getPeriod(), roomButton);
             JButton teacherButton = createButton(lecture, lectureColor);
-            teachersPanel.add(teacherButton, new TimeTableLayoutConstraints(teacherXMap.get(lecture.getTeacher()), y));
+            teachersPanel.addCell(lecture.getTeacher(), lecture.getPeriod(), teacherButton);
         }
     }
 

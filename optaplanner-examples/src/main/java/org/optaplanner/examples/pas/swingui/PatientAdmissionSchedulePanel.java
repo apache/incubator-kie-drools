@@ -37,6 +37,7 @@ import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTableLayout;
 import org.optaplanner.examples.common.swingui.timetable.TimeTableLayoutConstraints;
+import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
@@ -44,16 +45,18 @@ import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
+
 public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
-    private TimeTableLayout timeTableLayout;
+    private TimeTablePanel<Night, Bed> timeTablePanel;
 
-    private Map<Night, Integer> nightXMap;
-    private Map<Bed, Integer> bedYMap;
 
     public PatientAdmissionSchedulePanel() {
-        timeTableLayout = new TimeTableLayout();
-        setLayout(timeTableLayout);
+        setLayout(new BorderLayout());
+        timeTablePanel = new TimeTablePanel<Night, Bed>();
+        add(timeTablePanel, BorderLayout.CENTER);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        removeAll();
+        timeTablePanel.reset();
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
         defineGrid(patientAdmissionSchedule);
         fillCells(patientAdmissionSchedule);
@@ -74,48 +77,55 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     }
 
     private void defineGrid(PatientAdmissionSchedule patientAdmissionSchedule) {
-        timeTableLayout.reset();
         JButton footprint = new JButton("Patient9999");
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
-        int footprintHeight = footprint.getPreferredSize().height;
-        timeTableLayout.addColumn(); // Header
-        nightXMap = new HashMap<Night, Integer>(patientAdmissionSchedule.getNightList().size());
+        timeTablePanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP2); // Department Header
+        timeTablePanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Room Header
+        timeTablePanel.defineColumnHeaderByKey(HEADER_COLUMN); // Bed Header
         for (Night night : patientAdmissionSchedule.getNightList()) {
-            int x = timeTableLayout.addColumn(footprintWidth);
-            nightXMap.put(night, x);
+            timeTablePanel.defineColumnHeader(night, footprintWidth);
         }
-        timeTableLayout.addRow(); // Header
-        bedYMap = new HashMap<Bed, Integer>(patientAdmissionSchedule.getBedList().size());
-        timeTableLayout.addRow(); // Unassigned
-        bedYMap.put(null, 1);
+        timeTablePanel.defineRowHeaderByKey(HEADER_ROW); // Night header
+        timeTablePanel.defineRowHeader(null); // Unassigned bed
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            int y = timeTableLayout.addRow();
-            bedYMap.put(bed, y);
+            timeTablePanel.defineRowHeader(bed);
         }
     }
 
     private void fillCells(PatientAdmissionSchedule patientAdmissionSchedule) {
+        timeTablePanel.addCornerHeader(HEADER_COLUMN_GROUP2, HEADER_ROW, createHeaderPanel(new JLabel("Department")));
+        timeTablePanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createHeaderPanel(new JLabel("Room")));
+        timeTablePanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Bed")));
+        fillNightCells(patientAdmissionSchedule);
+        fillBedCells(patientAdmissionSchedule);
+        fillBedDesignationCells(patientAdmissionSchedule);
+    }
+
+    private void fillNightCells(PatientAdmissionSchedule patientAdmissionSchedule) {
         for (Night night : patientAdmissionSchedule.getNightList()) {
-            JPanel nightLabel = createHeaderPanel(new JLabel(night.getLabel(), SwingConstants.CENTER));
-            add(nightLabel, new TimeTableLayoutConstraints(nightXMap.get(night), 0, true));
+            timeTablePanel.addColumnHeader(night, HEADER_ROW,
+                    createHeaderPanel(new JLabel(night.getLabel(), SwingConstants.CENTER)));
         }
-        JPanel unassignedLabel = createHeaderPanel(new JLabel("Unassigned"));
-        add(unassignedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(null), true));
+    }
+
+    private void fillBedCells(PatientAdmissionSchedule patientAdmissionSchedule) {
+        timeTablePanel.addRowHeader(HEADER_COLUMN_GROUP2, null, HEADER_COLUMN, null,
+                createHeaderPanel(new JLabel("Unassigned")));
         for (Bed bed : patientAdmissionSchedule.getBedList()) {
-            JPanel bedLabel = createHeaderPanel(new JLabel(bed.getLabel()));
-            add(bedLabel, new TimeTableLayoutConstraints(0, bedYMap.get(bed), true));
+            timeTablePanel.addRowHeader(HEADER_COLUMN, bed, createHeaderPanel(new JLabel(bed.getLabel())));
         }
+    }
+
+    private void fillBedDesignationCells(PatientAdmissionSchedule patientAdmissionSchedule) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             JButton button = new JButton(new BedDesignationAction(bedDesignation));
             button.setMargin(new Insets(0, 0, 0, 0));
             button.setBackground(tangoColorFactory.pickColor(bedDesignation));
             AdmissionPart admissionPart = bedDesignation.getAdmissionPart();
-            int x1 = nightXMap.get(admissionPart.getFirstNight());
-            int x2 = nightXMap.get(admissionPart.getLastNight());
-            int y = bedYMap.get(bedDesignation.getBed());
-            add(button, new TimeTableLayoutConstraints(x1, y, x2 - x1 + 1, 1));
+            timeTablePanel.addCell(admissionPart.getFirstNight(), bedDesignation.getBed(),
+                    admissionPart.getLastNight(), bedDesignation.getBed(), button);
         }
     }
 

@@ -31,7 +31,7 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     protected static final String USAGE_EXPLANATION_PATH = "/org/optaplanner/examples/common/swingui/exampleUsageExplanation.png";
     // Size fits into screen resolution 1024*768
-    protected static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 600);
+    public static final Dimension PREFERRED_SCROLLABLE_VIEWPORT_SIZE = new Dimension(800, 600);
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
