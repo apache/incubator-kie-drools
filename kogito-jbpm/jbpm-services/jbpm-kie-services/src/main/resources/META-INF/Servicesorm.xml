@@ -313,7 +313,11 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.externalId=:externalId AND nid.type = 1) 
+        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.externalId=:externalId
+        						GROUP BY nid.nodeInstanceId
+                    			HAVING count(nid.nodeInstanceId) = 2) 
+       	and log.type = 1 
+       	and log.processInstanceId=:processId  
       ORDER BY 
         log.nodeInstanceId, log.id ASC
     </query>
