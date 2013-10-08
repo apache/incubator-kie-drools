@@ -129,7 +129,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     private static H2Server server = new H2Server();
     
     private WorkingMemoryInMemoryLogger logger;
-    private AuditLogService logService;
+    protected AuditLogService logService;
 
     protected static EntityManagerFactory emf;
     private static PoolingDataSource ds;

@@ -20,9 +20,7 @@ import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NA
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +32,13 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
+import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.cdi.KSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -226,16 +226,15 @@ public class AuditLogServiceTest extends AbstractBaseTest {
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
         AuditLogService auditLogService = new JPAAuditLogService(env);
+        
+        final List<Long> workItemIds = new ArrayList<Long>();
         session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
             public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-                Map<String, Object> results = new HashMap<String, Object>();
-                results.put("Result", "ResultValue");
-                manager.completeWorkItem(workItem.getId(), results);
+                workItemIds.add(workItem.getId());
             }
             public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
             }
         });
-        
         // record the initial count to compare to later
         List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
         int initialProcessInstanceSize = processInstances.size();
@@ -248,6 +247,17 @@ public class AuditLogServiceTest extends AbstractBaseTest {
         list.add("Three");
         params.put("list", list);
         long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
+
+        // Test findVariableInstancesByName* methods: check for variables (only) in active processes
+        List<VariableInstanceLog> varLogs = auditLogService.findVariableInstancesByName("s", true) ;
+        assertFalse( varLogs.isEmpty() );
+        assertEquals( 1, varLogs.size() );
+                
+        for( Long workItemId : workItemIds ) { 
+            Map<String, Object> results = new HashMap<String, Object>();
+            results.put("Result", "ResultValue");
+            session.getWorkItemManager().completeWorkItem(workItemId, results);
+        }
         
         logger.debug("Checking process instances for process 'com.sample.ruleflow3'");
         processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
@@ -259,13 +269,33 @@ public class AuditLogServiceTest extends AbstractBaseTest {
         assertEquals(processInstanceId, processInstance.getProcessInstanceId());
         assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
         List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
-        assertEquals(6, variableInstances.size());
+        assertEquals(9, variableInstances.size());
         for (VariableInstanceLog variableInstance: variableInstances) {
             logger.debug(variableInstance.toString());
             assertEquals(processInstanceId, processInstance.getProcessInstanceId());
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
+        
+        // Test findVariableInstancesByName* methods
+        List<VariableInstanceLog> emptyVarLogs = auditLogService.findVariableInstancesByName("s", true) ;
+        assertTrue( emptyVarLogs.isEmpty());
+        for( VariableInstanceLog origVarLog : variableInstances ) { 
+           varLogs = auditLogService.findVariableInstancesByName(origVarLog.getVariableId(), false) ;
+           for( VariableInstanceLog varLog : varLogs ) { 
+               assertEquals( origVarLog.getVariableId(), varLog.getVariableId());
+           }
+        }
+        emptyVarLogs = auditLogService.findVariableInstancesByNameAndValue("s", "InitialValue", true);
+        assertTrue( emptyVarLogs.isEmpty() );
+        String varId = "s";
+        String varValue = "ResultValue";
+        variableInstances = auditLogService.findVariableInstancesByNameAndValue(varId, varValue, false);
+        assertEquals( 1, variableInstances.size() );
+        VariableInstanceLog varLog = variableInstances.get(0);
+        assertEquals( varId, varLog.getVariableId() );
+        assertEquals( varValue, varLog.getValue() );
+        
         auditLogService.clear();
         processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
         assertTrue(processInstances.isEmpty());

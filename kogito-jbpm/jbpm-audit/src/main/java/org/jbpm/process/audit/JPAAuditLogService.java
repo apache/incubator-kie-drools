@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
@@ -234,6 +235,55 @@ public class JPAAuditLogService implements AuditLogService {
         return result;
     }
 
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses) {
+        EntityManager em = getEntityManager();
+        boolean newTx = joinTransaction(em);
+        Query query;
+        if( ! onlyActiveProcesses ) { 
+             query = em.createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId ORDER BY date");
+        } else { 
+            query = em.createQuery(
+                    "SELECT v "
+                    + "FROM VariableInstanceLog v, ProcessInstanceLog p "
+                    + "WHERE v.processInstanceId = p.processInstanceId "
+                    + "AND v.variableId = :variableId "
+                    + "AND p.end is null "
+                    + "ORDER BY v.date");
+        }
+        List<VariableInstanceLog> result = query.setParameter("variableId", variableId).getResultList();
+        closeEntityManager(em, newTx);
+        return result;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses) {
+        EntityManager em = getEntityManager();
+        boolean newTx = joinTransaction(em);
+        Query query;
+        if( ! onlyActiveProcesses ) { 
+             query = em.createQuery("FROM VariableInstanceLog v WHERE v.variableId = :variableId AND v.value = :value ORDER BY date");
+        } else { 
+            query = em.createQuery(
+                    "SELECT v "
+                    + "FROM VariableInstanceLog v, ProcessInstanceLog p "
+                    + "WHERE v.processInstanceId = p.processInstanceId "
+                    + "AND v.variableId = :variableId "
+                    + "AND v.value = :value "
+                    + "AND p.end is null "
+                    + "ORDER BY v.date");
+        }
+        List<VariableInstanceLog> result = query
+                .setParameter("variableId", variableId)
+                .setParameter("value", value)
+                .getResultList();
+        closeEntityManager(em, newTx);
+        return result;
+    }
+    
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#clear()
      */
@@ -403,5 +453,6 @@ public class JPAAuditLogService implements AuditLogService {
         }
         return em;
     }
+
 
 }

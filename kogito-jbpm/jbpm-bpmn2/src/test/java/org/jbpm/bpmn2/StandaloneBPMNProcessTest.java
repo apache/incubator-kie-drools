@@ -33,6 +33,8 @@ import org.jbpm.bpmn2.handler.SignallingTaskHandlerDecorator;
 import org.jbpm.bpmn2.objects.ExceptionService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
+import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
@@ -185,8 +187,29 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         KieSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
-        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        String varId = "s";
+        String varValue = "initialValue";
+        params.put(varId, varValue);
+        ProcessInstance processInstance = ksession.startProcess("UserTask", params);
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
+        
+        // Test jbpm-audit findVariableInstancesByName* methods
+        if( isPersistence() ) { 
+            List<VariableInstanceLog> varLogs = logService.findVariableInstancesByName(varId, true);
+            assertTrue( ! varLogs.isEmpty() );
+            for( VariableInstanceLog varLog : varLogs ) { 
+                assertEquals( varId, varLog.getVariableId());
+            }
+            varLogs = logService.findVariableInstancesByNameAndValue( varId, varValue, true);
+            assertTrue( ! varLogs.isEmpty() );
+            for( VariableInstanceLog varLog : varLogs ) { 
+                assertEquals( varId, varLog.getVariableId());
+                assertEquals( varValue, varLog.getValue() );
+            }
+        }
+        
         ksession = restoreSession(ksession, true);
         WorkItem workItem = workItemHandler.getWorkItem();
         assertNotNull(workItem);

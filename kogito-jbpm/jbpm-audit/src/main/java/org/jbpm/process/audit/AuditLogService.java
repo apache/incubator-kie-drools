@@ -58,6 +58,10 @@ public interface AuditLogService {
 
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId);
 
+    public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean activeProcesses);
+    
+    public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean activeProcesses);
+    
     public void clear();
 
     public void dispose();
