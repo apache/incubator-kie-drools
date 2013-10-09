@@ -90,6 +90,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
+            // TODO this allows the user to put the TTP in an inconsistent state, from which the solver cannot start
             List<Day> dayList = getTravelingTournament().getDayList();
             JComboBox dayListField = new JComboBox(dayList.toArray());
             dayListField.setSelectedItem(match.getDay());
@@ -97,10 +98,8 @@ public class TravelingTournamentPanel extends SolutionPanel {
                     "Select day", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Day toDay = (Day) dayListField.getSelectedItem();
-                // TODO FIXME
-                throw new UnsupportedOperationException();
-//                solutionBusiness.doMove(new ChangeMove(match, toDay));
-//                solverAndPersistenceFrame.resetScreen();
+                solutionBusiness.doChangeMove(match, "day", toDay);
+                solverAndPersistenceFrame.resetScreen();
             }
         }
 

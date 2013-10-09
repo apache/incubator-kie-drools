@@ -47,7 +47,6 @@ import org.optaplanner.examples.nurserostering.domain.NurseRosterInfo;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
-import org.optaplanner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
 public class NurseRosteringPanel extends SolutionPanel {
 
@@ -292,7 +291,7 @@ public class NurseRosteringPanel extends SolutionPanel {
     }
 
     public void moveShiftAssignmentToEmployee(ShiftAssignment shiftAssignment, Employee toEmployee) {
-        solutionBusiness.doMove(new EmployeeChangeMove(shiftAssignment, toEmployee));
+        solutionBusiness.doChangeMove(shiftAssignment, "employee", toEmployee);
         solverAndPersistenceFrame.resetScreen();
     }
 

@@ -39,7 +39,6 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
-import org.optaplanner.examples.nqueens.solver.move.RowChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -122,8 +121,7 @@ public class NQueensPanel extends SolutionPanel {
                     JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Row toRow = (Row) rowListField.getSelectedItem();
-                Move move = new RowChangeMove(queen, toRow);
-                solutionBusiness.doMove(move);
+                solutionBusiness.doChangeMove(queen, "row", toRow);
                 solverAndPersistenceFrame.resetScreen();
             }
         }

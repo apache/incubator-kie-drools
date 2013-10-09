@@ -37,8 +37,6 @@ import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;
-import org.optaplanner.examples.examination.solver.move.PeriodChangeMove;
-import org.optaplanner.examples.examination.solver.move.RoomChangeMove;
 
 /**
  * TODO this code is highly unoptimized
@@ -131,11 +129,13 @@ public class ExaminationPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
+            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
+            listFieldsPanel.add(new JLabel("Period:"));
             List<Period> periodList = getExamination().getPeriodList();
             JComboBox periodListField = new JComboBox(periodList.toArray());
             periodListField.setSelectedItem(exam.getPeriod());
             listFieldsPanel.add(periodListField);
+            listFieldsPanel.add(new JLabel("Room:"));
             List<Room> roomList = getExamination().getRoomList();
             JComboBox roomListField = new JComboBox(roomList.toArray());
             roomListField.setSelectedItem(exam.getRoom());
@@ -144,9 +144,9 @@ public class ExaminationPanel extends SolutionPanel {
                     "Select period and room", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
-                solutionBusiness.doMove(new PeriodChangeMove(exam, toPeriod));
+                solutionBusiness.doChangeMove(exam, "period", toPeriod);
                 Room toRoom = (Room) roomListField.getSelectedItem();
-                solutionBusiness.doMove(new RoomChangeMove(exam, toRoom));
+                solutionBusiness.doChangeMove(exam, "room", toRoom);
                 solverAndPersistenceFrame.resetScreen();
             }
         }

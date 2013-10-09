@@ -39,7 +39,6 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-import org.optaplanner.examples.cloudbalancing.solver.move.CloudComputerChangeMove;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 
 public class CloudBalancingPanel extends SolutionPanel {
@@ -251,7 +250,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                     "Select computer", JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 CloudComputer toComputer = (CloudComputer) computerListField.getSelectedItem();
-                solutionBusiness.doMove(new CloudComputerChangeMove(process, toComputer));
+                solutionBusiness.doChangeMove(process, "computer", toComputer);
                 solverAndPersistenceFrame.resetScreen();
             }
         }
