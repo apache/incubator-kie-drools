@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.RuleModelVisitor;
@@ -193,6 +192,10 @@ public class TemplateModel
     }
 
     public void putInSync() {
+        //Nothing to synchronize
+        if ( table == null ) {
+            return;
+        }
 
         //vars.KeySet is a set of InterpolationVariable, whereas table.keySet is a set of String
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
