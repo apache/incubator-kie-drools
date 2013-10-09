@@ -111,13 +111,13 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 /**
  * This class persists the rule model to DRL and back
  */
-public class BRDRLPersistence
+public class RuleModelDRLPersistenceImpl
         implements
-        BRLPersistence {
+        RuleModelPersistence {
 
     private static final String WORKITEM_PREFIX = "wi";
 
-    private static final BRLPersistence INSTANCE = new BRDRLPersistence();
+    private static final RuleModelPersistence INSTANCE = new RuleModelDRLPersistenceImpl();
 
     public static final String DEFAULT_DIALECT = "mvel";
 
@@ -128,19 +128,19 @@ public class BRDRLPersistence
     protected Map<String, IFactPattern> bindingsPatterns;
     protected Map<String, FieldConstraint> bindingsFields;
 
-    protected BRDRLPersistence() {
+    protected RuleModelDRLPersistenceImpl() {
         // register custom evaluators
         new EvaluatorRegistry( getClass().getClassLoader() );
     }
 
-    public static BRLPersistence getInstance() {
+    public static RuleModelPersistence getInstance() {
         return INSTANCE;
     }
 
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.server.util.BRLPersistence#marshal(org.drools.guvnor
+     * org.drools.ide.common.server.util.RuleModelPersistence#marshal(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
      */
     public String marshal( final RuleModel model ) {
@@ -1369,10 +1369,13 @@ public class BRDRLPersistence
     }
 
     /**
-     * @see BRLPersistence#unmarshal(String, PackageDataModelOracle)
+     * @see RuleModelPersistence#unmarshal(String, PackageDataModelOracle)
      */
-    public RuleModel unmarshal( String str,
+    public RuleModel unmarshal( final String str,
                                 final PackageDataModelOracle dmo ) {
+        if ( str == null || str.isEmpty() ) {
+            return new RuleModel();
+        }
         return getRuleModel( preprocessDRL( str ), dmo );
     }
 
@@ -1380,6 +1383,9 @@ public class BRDRLPersistence
                                         final List<String> globals,
                                         final PackageDataModelOracle dmo,
                                         final String... dsls ) {
+        if ( str == null || str.isEmpty() ) {
+            return new RuleModel();
+        }
         return getRuleModel( parseDSLs( preprocessDRL( str ), dsls ).registerGlobals( globals ), dmo );
     }
 
@@ -1801,7 +1807,7 @@ public class BRDRLPersistence
             if ( behavior.getText().equals( "window" ) ) {
                 CEPWindow window = new CEPWindow();
                 window.setOperator( "over window:" + behavior.getSubType() );
-                window.setParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                window.setParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                      "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
                 List<String> params = behavior.getParameters();
                 if ( params != null ) {
@@ -2429,8 +2435,8 @@ public class BRDRLPersistence
                 for ( String param : operatorParams.split( "," ) ) {
                     ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "" + i++, param.trim() );
                 }
-                ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "org.kie.guvnor.guided.editor.visibleParameterSet", "" + i );
-                ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+                ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet", "" + i );
+                ( (BaseSingleFieldConstraint) fieldConstraint ).setParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                                                               "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
             }
 

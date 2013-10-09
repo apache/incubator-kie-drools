@@ -15,7 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
-import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.DRLConstraintValueBuilder;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
  * A specialised implementation of BRDELPersistence that can expand Template
  * Keys to values
  */
-public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
+public class GuidedDTBRDRLPersistence extends RuleModelDRLPersistenceImpl {
 
     private TemplateDataProvider rowDataProvider;
 
@@ -72,7 +73,7 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
     }
 
     //Substitutes Template Keys for values
-    public static class LHSPatternVisitor extends BRDRLPersistence.LHSPatternVisitor {
+    public static class LHSPatternVisitor extends RuleModelDRLPersistenceImpl.LHSPatternVisitor {
 
         private TemplateDataProvider rowDataProvider;
 
@@ -127,7 +128,7 @@ public class GuidedDTBRDRLPersistence extends BRDRLPersistence {
     }
 
     //Substitutes Template Keys for values
-    public static class RHSActionVisitor extends BRDRLPersistence.RHSActionVisitor {
+    public static class RHSActionVisitor extends RuleModelDRLPersistenceImpl.RHSActionVisitor {
 
         private TemplateDataProvider rowDataProvider;
 

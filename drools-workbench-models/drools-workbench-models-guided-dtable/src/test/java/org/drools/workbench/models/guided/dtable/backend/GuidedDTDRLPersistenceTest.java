@@ -19,9 +19,9 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.imports.Import;
-import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -702,7 +702,7 @@ public class GuidedDTDRLPersistenceTest {
                         DataUtilities.makeDataLists( data ),
                         rm );
 
-        String drl = BRDRLPersistence.getInstance().marshal( rm );
+        String drl = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -834,7 +834,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel0,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl0 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -859,7 +859,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel1,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl1 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -942,7 +942,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel0,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl0 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -967,7 +967,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel1,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl1 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -992,7 +992,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel2,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl2 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1075,7 +1075,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel0,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl0 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1100,7 +1100,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel1,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl1 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1125,7 +1125,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel2,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl2 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1208,7 +1208,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel0,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl0 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1233,7 +1233,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel1,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl1 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1258,7 +1258,7 @@ public class GuidedDTDRLPersistenceTest {
                         rowDTModel2,
                         DataUtilities.makeDataLists( data ),
                         rm );
-        String drl2 = BRDRLPersistence.getInstance().marshal( rm );
+        String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
         assertEquals( 2,
                       rm.lhs.length );
@@ -1429,7 +1429,7 @@ public class GuidedDTDRLPersistenceTest {
                         DataUtilities.makeDataLists( data ),
                         rm );
 
-        String drl = BRDRLPersistence.getInstance().marshal( rm );
+        String drl = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
         assertTrue( drl.indexOf( "age > \"42\"" ) > 0 );
 
     }
