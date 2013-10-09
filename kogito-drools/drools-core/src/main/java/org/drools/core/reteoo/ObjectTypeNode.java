@@ -133,7 +133,7 @@ public class ObjectTypeNode extends ObjectSource
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
-        idGenerator = new IdGenerator(objectType);
+        idGenerator = new IdGenerator(id);
 
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
 
@@ -145,15 +145,15 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     private static class IdGenerator {
-        private final Class<?> otnClass;
+        private final int otnId;
         private int otnIdCounter;
 
-        private IdGenerator(ObjectType objectType) {
-            otnClass = objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : Object.class;
+        private IdGenerator(int otnId) {
+            this.otnId = otnId;
         }
 
         private Id nextId() {
-            return new Id(otnClass, otnIdCounter++);
+            return new Id(otnId, otnIdCounter++);
         }
 
         private void reset() {
@@ -161,21 +161,21 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public static Id DEFAULT_ID = new Id(Object.class, 0);
+    public static Id DEFAULT_ID = new Id(-1, 0);
 
     public static class Id {
 
-        private final Class<?> clazz;
+        private final int otnId;
         private final int id;
 
-        public Id(Class<?> clazz, int id) {
-            this.clazz = clazz;
+        public Id(int otnId, int id) {
+            this.otnId = otnId;
             this.id = id;
         }
 
         @Override
         public String toString() {
-            return "ObjectTypeNode.Id[" + clazz.getName() + "#" + id + "]";
+            return "ObjectTypeNode.Id[" + otnId + "#" + id + "]";
         }
 
         @Override
@@ -184,22 +184,16 @@ public class ObjectTypeNode extends ObjectSource
             if (o == null || !(o instanceof Id)) return false;
 
             Id otherId = (Id) o;
-            return id == otherId.id && clazz == otherId.clazz;
+            return id == otherId.id && otnId == otherId.otnId;
         }
 
         @Override
         public int hashCode() {
-            int result = clazz.hashCode();
-            result = 31 * result + id;
-            return result;
+            return 31 * otnId + 37 * id;
         }
 
         public boolean before(Id otherId) {
-            return otherId != null && clazz == otherId.clazz && this.id < otherId.id;
-        }
-
-        public Class<?> getTypeNodeClass() {
-            return clazz;
+            return otherId != null && ( otnId < otherId.otnId || ( otnId == otherId.otnId && id < otherId.id ) );
         }
 
         public int getId() {
@@ -217,12 +211,12 @@ public class ObjectTypeNode extends ObjectSource
         if ( objectType instanceof ClassObjectType ) {
             objectType = ((ReteooRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
-        idGenerator = new IdGenerator(objectType);
 
         objectMemoryEnabled = in.readBoolean();
         expirationOffset = in.readLong();
         queryNode = in.readBoolean();
         dirty = true;
+        idGenerator = new IdGenerator(id);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
