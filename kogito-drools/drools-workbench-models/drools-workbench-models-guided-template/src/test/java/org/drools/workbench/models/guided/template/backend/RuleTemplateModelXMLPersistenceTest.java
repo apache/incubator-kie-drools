@@ -20,11 +20,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
@@ -42,17 +38,17 @@ import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
-public class BRLPersistenceTest {
+public class RuleTemplateModelXMLPersistenceTest {
 
     @Test
     public void testGenerateEmptyXML() {
-        final BRLPersistence p = BRXMLPersistence.getInstance();
-        final String xml = p.marshal( new RuleModel() );
+        final RuleTemplateModelPersistence p = RuleTemplateModelXMLPersistenceImpl.getInstance();
+        final String xml = p.marshal( new TemplateModel() );
         assertNotNull( xml );
         assertFalse( xml.equals( "" ) );
 
@@ -62,8 +58,8 @@ public class BRLPersistenceTest {
 
     @Test
     public void testBasics() {
-        final BRLPersistence p = BRXMLPersistence.getInstance();
-        final RuleModel m = new RuleModel();
+        final RuleTemplateModelPersistence p = RuleTemplateModelXMLPersistenceImpl.getInstance();
+        final TemplateModel m = new TemplateModel();
         m.addLhsItem( new FactPattern( "Person" ) );
         m.addLhsItem( new FactPattern( "Accident" ) );
         m.addAttribute( new RuleAttribute( "no-loop",
@@ -83,8 +79,7 @@ public class BRLPersistenceTest {
         assertTrue( xml.indexOf( "org.kie" ) == -1 );
         assertTrue( xml.indexOf( "addToGlobal" ) > -1 );
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
+        RuleModel rm_ = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
         assertEquals( 2,
                       rm_.rhs.length );
 
@@ -92,8 +87,8 @@ public class BRLPersistenceTest {
 
     @Test
     public void testMoreComplexRendering() {
-        final BRLPersistence p = BRXMLPersistence.getInstance();
-        final RuleModel m = getComplexModel();
+        final RuleTemplateModelPersistence p = RuleTemplateModelXMLPersistenceImpl.getInstance();
+        final TemplateModel m = getComplexModel();
 
         final String xml = p.marshal( m );
         System.out.println( xml );
@@ -104,12 +99,11 @@ public class BRLPersistenceTest {
 
     @Test
     public void testRoundTrip() {
-        final RuleModel m = getComplexModel();
+        final TemplateModel m = getComplexModel();
 
-        final String xml = BRXMLPersistence.getInstance().marshal( m );
+        final String xml = RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( m );
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        final RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
+        final TemplateModel m2 = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
         assertNotNull( m2 );
         assertEquals( m.name,
                       m2.name );
@@ -126,7 +120,7 @@ public class BRLPersistenceTest {
         assertEquals( "true",
                       at.getValue() );
 
-        final String newXML = BRXMLPersistence.getInstance().marshal( m2 );
+        final String newXML = RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( m2 );
         assertEquals( xml,
                       newXML );
 
@@ -134,7 +128,7 @@ public class BRLPersistenceTest {
 
     @Test
     public void testCompositeConstraintsRoundTrip() throws Exception {
-        RuleModel m = new RuleModel();
+        TemplateModel m = new TemplateModel();
         m.name = "with composite";
 
         FactPattern p1 = new FactPattern( "Person" );
@@ -198,11 +192,10 @@ public class BRLPersistenceTest {
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
-        String xml = BRXMLPersistence.getInstance().marshal( m );
+        String xml = RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( m );
         //System.err.println(xml);
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
+        RuleModel m2 = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
         assertNotNull( m2 );
         assertEquals( "with composite",
                       m2.name );
@@ -216,7 +209,7 @@ public class BRLPersistenceTest {
 
     @Test
     public void testFreeFormLine() {
-        RuleModel m = new RuleModel();
+        TemplateModel m = new TemplateModel();
         m.name = "with composite";
         m.lhs = new IPattern[ 1 ];
         m.rhs = new IAction[ 1 ];
@@ -229,11 +222,10 @@ public class BRLPersistenceTest {
         fr.setText( "fun()" );
         m.rhs[ 0 ] = fr;
 
-        String xml = BRXMLPersistence.getInstance().marshal( m );
+        String xml = RuleTemplateModelXMLPersistenceImpl.getInstance().marshal( m );
         assertNotNull( xml );
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel m_ = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
+        RuleModel m_ = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
         assertEquals( 1,
                       m_.lhs.length );
         assertEquals( 1,
@@ -251,10 +243,8 @@ public class BRLPersistenceTest {
      * backwards compatibility is broken.
      */
     @Test
-    public void testBackwardsCompat() throws Exception {
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ), dmo );
-
+    public void testBackwardsCompatibility() throws Exception {
+        RuleModel m2 = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
         assertNotNull( m2 );
         assertEquals( 3,
                       m2.rhs.length );
@@ -263,7 +253,7 @@ public class BRLPersistenceTest {
     public static String loadResource( final String name ) throws Exception {
 
         //        System.err.println( getClass().getResource( name ) );
-        final InputStream in = BRLPersistenceTest.class.getResourceAsStream( name );
+        final InputStream in = RuleTemplateModelXMLPersistenceTest.class.getResourceAsStream( name );
 
         final Reader reader = new InputStreamReader( in );
 
@@ -281,8 +271,8 @@ public class BRLPersistenceTest {
         return text.toString();
     }
 
-    private RuleModel getComplexModel() {
-        final RuleModel m = new RuleModel();
+    private TemplateModel getComplexModel() {
+        final TemplateModel m = new TemplateModel();
 
         m.addAttribute( new RuleAttribute( "no-loop",
                                            "true" ) );
@@ -322,11 +312,10 @@ public class BRLPersistenceTest {
 
     @Test
     public void testLoadEmpty() {
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel m = BRXMLPersistence.getInstance().unmarshal( null, dmo );
+        RuleModel m = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( null );
         assertNotNull( m );
 
-        m = BRXMLPersistence.getInstance().unmarshal( "", dmo );
+        m = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( "" );
         assertNotNull( m );
     }
 

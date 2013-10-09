@@ -16,12 +16,8 @@
 
 package org.drools.workbench.models.guided.template.backend;
 
-import java.util.List;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
 import org.drools.workbench.models.commons.backend.rule.DSLVariableValuesConverter;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
@@ -49,32 +45,35 @@ import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPatter
 import org.drools.workbench.models.datamodel.rule.FromCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.RuleAttribute;
 import org.drools.workbench.models.datamodel.rule.RuleMetadata;
-import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.template.backend.upgrade.RuleModelUpgradeHelper1;
 import org.drools.workbench.models.guided.template.backend.upgrade.RuleModelUpgradeHelper2;
 import org.drools.workbench.models.guided.template.backend.upgrade.RuleModelUpgradeHelper3;
+import org.drools.workbench.models.guided.template.backend.upgrade.TemplateModelUpgradeHelper1;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 
 /**
  * This class persists the rule model to XML and back. This is the 'brl' xml
  * format (Business Rule Language).
  */
-public class BRXMLPersistence
-        implements BRLPersistence {
+public class RuleTemplateModelXMLPersistenceImpl
+        implements RuleTemplateModelPersistence {
 
     protected XStream xt;
 
-    private static final RuleModelUpgradeHelper1 upgrader1 = new RuleModelUpgradeHelper1();
-    private static final RuleModelUpgradeHelper2 upgrader2 = new RuleModelUpgradeHelper2();
-    private static final RuleModelUpgradeHelper3 upgrader3 = new RuleModelUpgradeHelper3();
+    private static final RuleModelUpgradeHelper1 ruleModelUpgrader1 = new RuleModelUpgradeHelper1();
+    private static final RuleModelUpgradeHelper2 ruleModelUpgrader2 = new RuleModelUpgradeHelper2();
+    private static final RuleModelUpgradeHelper3 ruleModelUpgrader3 = new RuleModelUpgradeHelper3();
 
-    private static final BRLPersistence INSTANCE = new BRXMLPersistence();
+    private static final TemplateModelUpgradeHelper1 ruleTemplateModelUpgrader1 = new TemplateModelUpgradeHelper1();
 
-    protected BRXMLPersistence() {
+    private static final RuleTemplateModelPersistence INSTANCE = new RuleTemplateModelXMLPersistenceImpl();
+
+    protected RuleTemplateModelXMLPersistenceImpl() {
         this.xt = new XStream( new DomDriver() );
 
         this.xt.alias( "rule",
-                       RuleModel.class );
+                       TemplateModel.class );
         this.xt.alias( "fact",
                        FactPattern.class );
         this.xt.alias( "retract",
@@ -158,48 +157,49 @@ public class BRXMLPersistence
 
     }
 
-    public static BRLPersistence getInstance() {
+    public static RuleTemplateModelPersistence getInstance() {
         return INSTANCE;
     }
 
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.server.util.BRLPersistence#toXML(org.drools.guvnor
+     * org.drools.ide.common.server.util.RuleModelPersistence#toXML(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
      */
-    public String marshal( final RuleModel model ) {
+    @Override
+    public String marshal( final TemplateModel model ) {
+        model.putInSync();
         return this.xt.toXML( model );
     }
 
     /*
      * (non-Javadoc)
      * @see
-     * org.drools.ide.common.server.util.BRLPersistence#toModel(java.lang.String
+     * org.drools.ide.common.server.util.RuleModelPersistence#toModel(java.lang.String
      * )
      */
-    public RuleModel unmarshal( final String xml, final PackageDataModelOracle dmo) {
+    @Override
+    public TemplateModel unmarshal( final String xml ) {
         if ( xml == null || xml.trim().length() == 0 ) {
             return createEmptyModel();
         }
-        RuleModel rm = (RuleModel) this.xt.fromXML( xml );
+        TemplateModel model = (TemplateModel) this.xt.fromXML( xml );
 
         //Upgrade model changes to legacy artifacts
-        upgrader1.upgrade( rm );
-        upgrader2.upgrade( rm );
-        upgrader3.upgrade( rm );
-        return rm;
+        ruleModelUpgrader1.upgrade( model );
+        ruleModelUpgrader2.upgrade( model );
+        ruleModelUpgrader3.upgrade( model );
+
+        ruleTemplateModelUpgrader1.upgrade( model );
+
+        model.putInSync();
+
+        return model;
     }
 
-    public RuleModel unmarshalUsingDSL( final String str,
-                                        final List<String> globals,
-                                        final PackageDataModelOracle dmo,
-                                        final String... dsls ) {
-        throw new UnsupportedOperationException();
-    }
-
-    protected RuleModel createEmptyModel() {
-        return new RuleModel();
+    protected TemplateModel createEmptyModel() {
+        return new TemplateModel();
     }
 
 }

@@ -72,13 +72,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class BRDRLPersistenceTest {
+public class RuleModelDRLPersistenceTest {
 
-    private BRLPersistence brlPersistence;
+    private RuleModelPersistence ruleModelPersistence;
 
     @Before
     public void setUp() throws Exception {
-        brlPersistence = BRDRLPersistence.getInstance();
+        ruleModelPersistence = RuleModelDRLPersistenceImpl.getInstance();
     }
 
     @Test
@@ -88,22 +88,25 @@ public class BRDRLPersistenceTest {
         checkMarshallUnmarshall( expected, new RuleModel() );
     }
 
-    private void checkMarshallUnmarshall( String expected, RuleModel m ) {
-        checkMarshallUnmarshall( expected, m, mock(PackageDataModelOracle.class) );
+    private void checkMarshallUnmarshall( String expected,
+                                          RuleModel m ) {
+        checkMarshallUnmarshall( expected, m, mock( PackageDataModelOracle.class ) );
     }
 
-    private void checkMarshallUnmarshall( String expected, RuleModel m, PackageDataModelOracle dmo ) {
-        String drl = brlPersistence.marshal( m );
+    private void checkMarshallUnmarshall( String expected,
+                                          RuleModel m,
+                                          PackageDataModelOracle dmo ) {
+        String drl = ruleModelPersistence.marshal( m );
         assertNotNull( drl );
         if ( expected != null ) {
             assertEqualsIgnoreWhitespace( expected, drl );
         }
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshal( drl, dmo );
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshal( drl, dmo );
         if ( expected != null ) {
-            assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
+            assertEqualsIgnoreWhitespace( expected, ruleModelPersistence.marshal( unmarshalledModel ) );
         } else {
-            assertEquals( drl, brlPersistence.marshal( unmarshalledModel ) );
+            assertEquals( drl, ruleModelPersistence.marshal( unmarshalledModel ) );
         }
     }
 
@@ -122,7 +125,7 @@ public class BRDRLPersistenceTest {
         fr.setText( "fun()" );
         m.rhs[ 0 ] = fr;
 
-        String drl = brlPersistence.marshal( m );
+        String drl = ruleModelPersistence.marshal( m );
         assertNotNull( drl );
         assertTrue( drl.indexOf( "Person()" ) > 0 );
         assertTrue( drl.indexOf( "fun()" ) > drl.indexOf( "Person()" ) );
@@ -167,7 +170,7 @@ public class BRDRLPersistenceTest {
         m.attributes = new RuleAttribute[ 1 ];
         m.attributes[ 0 ] = new RuleAttribute( "enabled",
                                                "true" );
-        final String drl = brlPersistence.marshal( m );
+        final String drl = ruleModelPersistence.marshal( m );
 
         assertTrue( drl.indexOf( "enabled true" ) > 0 );
 
@@ -447,18 +450,18 @@ public class BRDRLPersistenceTest {
 
         checkMarshallUnmarshall( expected, m );
 
-        String drl = brlPersistence.marshal( m );
+        String drl = ruleModelPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected, drl );
 
         String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl, null, null, dslFile );
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl, null, null, dslFile );
 
         IAction[] actions = unmarshalledModel.rhs;
         DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
         assertEquals( "Send an email to {administrator}", dslSentence.getDefinition() );
 
-        assertEqualsIgnoreWhitespace( expected, brlPersistence.marshal( unmarshalledModel ) );
+        assertEqualsIgnoreWhitespace( expected, ruleModelPersistence.marshal( unmarshalledModel ) );
     }
 
     @Test
@@ -500,14 +503,14 @@ public class BRDRLPersistenceTest {
         m.name = "Rule With DSL";
         m.addLhsItem( dsl );
 
-        String drl = brlPersistence.marshal( m );
+        String drl = ruleModelPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected, drl );
 
         String dslFile = "[when]" + dslDefinition + "=Credit( rating == {rating} )";
 
-        RuleModel unmarshalledModel = brlPersistence.unmarshalUsingDSL( drl,
-                                                                        null, null,
-                                                                        dslFile );
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl,
+                                                                              null, null,
+                                                                              dslFile );
 
         DSLSentence dslSentence = (DSLSentence) unmarshalledModel.lhs[ 0 ];
         assertEquals( dslDefinition,
@@ -522,7 +525,7 @@ public class BRDRLPersistenceTest {
                       dslComplexVariableValue.getId() );
 
         assertEqualsIgnoreWhitespace( expected,
-                                      brlPersistence.marshal( unmarshalledModel ) );
+                                      ruleModelPersistence.marshal( unmarshalledModel ) );
     }
 
     @Test
@@ -564,15 +567,15 @@ public class BRDRLPersistenceTest {
         m.name = "RegexDslRule";
         m.addLhsItem( dsl );
 
-        String drl = brlPersistence.marshal( m );
+        String drl = ruleModelPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( expected,
                                       drl );
 
         String dslFile = "[when]" + dslDefinition + "=applicant:Applicant(age<{num})";
 
-        RuleModel model = brlPersistence.unmarshalUsingDSL( drl,
-                                                            null, null,
-                                                            dslFile );
+        RuleModel model = ruleModelPersistence.unmarshalUsingDSL( drl,
+                                                                  null, null,
+                                                                  dslFile );
 
         DSLSentence dslSentence = (DSLSentence) model.lhs[ 0 ];
         assertEquals( dslDefinition,
@@ -587,7 +590,7 @@ public class BRDRLPersistenceTest {
                       dslComplexVariableValue.getId() );
 
         assertEqualsIgnoreWhitespace( drl,
-                                      brlPersistence.marshal( model ) );
+                                      ruleModelPersistence.marshal( model ) );
     }
 
     @Test
@@ -611,7 +614,7 @@ public class BRDRLPersistenceTest {
         m.name = "r1";
         m.addLhsItem( dsl );
 
-        final String drlActual = brlPersistence.marshal( m );
+        final String drlActual = ruleModelPersistence.marshal( m );
         assertEqualsIgnoreWhitespace( drlExpected,
                                       drlActual );
     }
@@ -665,7 +668,7 @@ public class BRDRLPersistenceTest {
     public void testFieldBindingWithNoConstraints() {
         // to satisfy JBRULES-850
         RuleModel m = getModelWithNoConstraints();
-        String s = BRDRLPersistence.getInstance().marshal( m );
+        String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         // System.out.println(s);
         assertTrue( s.contains( "Person( f1 : age)" ) );
 
@@ -684,7 +687,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
 
-        String s = BRDRLPersistence.getInstance().marshal( m );
+        String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age == null )" ) != -1 );
         checkMarshallUnmarshall( s, m );
     }
@@ -701,7 +704,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( pat );
 
-        String s = BRDRLPersistence.getInstance().marshal( m );
+        String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age != null )" ) != -1 );
         checkMarshallUnmarshall( s, m );
     }
@@ -747,7 +750,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( cp );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( "( Person( age == 42 ) or Person( age == 43 ) )" ) > 0 );
 
         checkMarshallUnmarshall( result, m );
@@ -756,7 +759,7 @@ public class BRDRLPersistenceTest {
     @Test
     public void testExistsMultiPatterns() throws Exception {
         RuleModel m = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( "exists (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
         checkMarshallUnmarshall( result, m );
     }
@@ -764,7 +767,7 @@ public class BRDRLPersistenceTest {
     @Test
     public void testNotMultiPatterns() throws Exception {
         RuleModel m = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_NOT );
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( "not (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
         checkMarshallUnmarshall( result, m );
     }
@@ -784,7 +787,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( cp );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "exists (Person( age == 42 )) " ) > 0 );
         checkMarshallUnmarshall( result, m );
@@ -887,7 +890,7 @@ public class BRDRLPersistenceTest {
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         String expected = "rule \"with composite\"\n" +
                 "\tdialect \"mvel\"\n" +
                 "\twhen\n" +
@@ -914,7 +917,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( p );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         String expected = "rule \"boo\" \tdialect \"mvel\"\n when Person() then end";
 
@@ -1004,7 +1007,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         String expected = "rule \"test expressionsString2\""
                 + "\tdialect \"mvel\"\n when "
@@ -1145,12 +1148,12 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.name == \"Cheedar\" )"
                 + " then " + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Person", new ModelField[] {
+                    put( "Person", new ModelField[]{
                             new ModelField(
                                     "favouriteCheese",
                                     "Cheese",
@@ -1159,8 +1162,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Cheese"
                             )
-                    });
-                    put("Cheese", new ModelField[] {
+                    } );
+                    put( "Cheese", new ModelField[]{
                             new ModelField(
                                     "name",
                                     "String",
@@ -1169,9 +1172,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "String"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -1202,12 +1205,12 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.age == 55 )"
                 + " then " + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Person", new ModelField[] {
+                    put( "Person", new ModelField[]{
                             new ModelField(
                                     "favouriteCheese",
                                     "Cheese",
@@ -1216,8 +1219,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Cheese"
                             )
-                    });
-                    put("Cheese", new ModelField[] {
+                    } );
+                    put( "Cheese", new ModelField[]{
                             new ModelField(
                                     "age",
                                     "Integer",
@@ -1226,9 +1229,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Integer"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -1259,12 +1262,12 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.dateBrought == \"27-Jun-2011\" )"
                 + " then " + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Person", new ModelField[] {
+                    put( "Person", new ModelField[]{
                             new ModelField(
                                     "favouriteCheese",
                                     "Cheese",
@@ -1273,8 +1276,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Cheese"
                             )
-                    });
-                    put("Cheese", new ModelField[] {
+                    } );
+                    put( "Cheese", new ModelField[]{
                             new ModelField(
                                     "dateBrought",
                                     "Date",
@@ -1283,9 +1286,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Date"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -1316,12 +1319,12 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.genericName == CHEESE.Cheddar )"
                 + " then " + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Person", new ModelField[] {
+                    put( "Person", new ModelField[]{
                             new ModelField(
                                     "favouriteCheese",
                                     "Cheese",
@@ -1330,8 +1333,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Cheese"
                             )
-                    });
-                    put("Cheese", new ModelField[] {
+                    } );
+                    put( "Cheese", new ModelField[]{
                             new ModelField(
                                     "genericName",
                                     "Type",
@@ -1340,9 +1343,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Type"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -1373,12 +1376,12 @@ public class BRDRLPersistenceTest {
                 + "     Person( favouriteCheese.smelly == true )"
                 + " then " + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Person", new ModelField[] {
+                    put( "Person", new ModelField[]{
                             new ModelField(
                                     "favouriteCheese",
                                     "Cheese",
@@ -1387,8 +1390,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Cheese"
                             )
-                    });
-                    put("Cheese", new ModelField[] {
+                    } );
+                    put( "Cheese", new ModelField[]{
                             new ModelField(
                                     "smelly",
                                     "Boolean",
@@ -1397,9 +1400,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Boolean"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -1500,7 +1503,7 @@ public class BRDRLPersistenceTest {
                                                 DataType.TYPE_NUMERIC_BIGINTEGER ) );
         m.addRhsItem( ai );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         String expected = "rule \"test literal biginteger\" \n"
                 + "\tdialect \"mvel\"\n when \n"
@@ -1822,7 +1825,7 @@ public class BRDRLPersistenceTest {
                                                     DataType.TYPE_DATE ) );
             m.addRhsItem( ai );
 
-            String result = BRDRLPersistence.getInstance().marshal( m );
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "fact0.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
@@ -1868,7 +1871,7 @@ public class BRDRLPersistenceTest {
                                                     DataType.TYPE_DATE ) );
             m.addRhsItem( am );
 
-            String result = BRDRLPersistence.getInstance().marshal( m );
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
@@ -1916,7 +1919,7 @@ public class BRDRLPersistenceTest {
                                                     DataType.TYPE_DATE ) );
             m.addRhsItem( au );
 
-            String result = BRDRLPersistence.getInstance().marshal( m );
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
@@ -1978,7 +1981,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( awi );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2042,7 +2045,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( awi );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2151,7 +2154,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( awi );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2260,7 +2263,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( awi );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2330,7 +2333,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( awi );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2408,7 +2411,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( asf );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2483,7 +2486,7 @@ public class BRDRLPersistenceTest {
 
         m.addRhsItem( aif );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( result.indexOf( "org.drools.core.process.instance.WorkItemManager wim = (org.drools.core.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.core.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.core.process.instance.impl.WorkItemImpl();" ) != -1 );
@@ -2524,12 +2527,12 @@ public class BRDRLPersistenceTest {
                 + "     Person(field1.field2 == variableHere)" + " then "
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Person", new ModelField[] {
+                    put( "Person", new ModelField[]{
                             new ModelField(
                                     "field1",
                                     "Field1",
@@ -2538,8 +2541,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Field1"
                             )
-                    });
-                    put("Field1", new ModelField[] {
+                    } );
+                    put( "Field1", new ModelField[]{
                             new ModelField(
                                     "field2",
                                     "Field2",
@@ -2548,9 +2551,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Field2"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -2646,12 +2649,12 @@ public class BRDRLPersistenceTest {
         CompositeFactPattern com = new CompositeFactPattern( "not" );
         m.addLhsItem( com );
 
-        String s = BRDRLPersistence.getInstance().marshal( m );
+        String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertNotNull( s );
 
         m.addLhsItem( new CompositeFactPattern( "or" ) );
         m.addLhsItem( new CompositeFactPattern( "exists" ) );
-        s = BRDRLPersistence.getInstance().marshal( m );
+        s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertNotNull( s );
     }
 
@@ -2677,7 +2680,7 @@ public class BRDRLPersistenceTest {
         insL.getFieldValues()[ 0 ] = valL;
         m.addRhsItem( insL );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( result.indexOf( ">insert" ) > -1 );
 
         assertTrue( result.indexOf( ">insertLogical" ) > -1 );
@@ -2687,12 +2690,12 @@ public class BRDRLPersistenceTest {
     public void testDefaultMVEL() {
         RuleModel m = new RuleModel();
 
-        String s = BRDRLPersistence.getInstance().marshal( m );
+        String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertTrue( s.indexOf( "mvel" ) > -1 );
 
         m.addAttribute( new RuleAttribute( "dialect",
                                            "goober" ) );
-        s = BRDRLPersistence.getInstance().marshal( m );
+        s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertFalse( s.indexOf( "mvel" ) > -1 );
         assertTrue( s.indexOf( "goober" ) > -1 );
 
@@ -2709,7 +2712,7 @@ public class BRDRLPersistenceTest {
         m.addAttribute( new RuleAttribute( "duration",
                                            "42" ) );
 
-        String s = BRDRLPersistence.getInstance().marshal( m );
+        String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
         assertTrue( s.indexOf( "lock-on-active true" ) > -1 );
         assertTrue( s.indexOf( "auto-focus true" ) > -1 );
@@ -2779,7 +2782,7 @@ public class BRDRLPersistenceTest {
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         String expected = "rule \"or composite\""
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -2788,12 +2791,12 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Goober", new ModelField[] {
+                    put( "Goober", new ModelField[]{
                             new ModelField(
                                     "gooField",
                                     "Goo",
@@ -2810,8 +2813,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Foo"
                             )
-                    });
-                    put("Foo", new ModelField[] {
+                    } );
+                    put( "Foo", new ModelField[]{
                             new ModelField(
                                     "barField",
                                     "Bar",
@@ -2820,9 +2823,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Bar"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -2877,7 +2880,7 @@ public class BRDRLPersistenceTest {
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         String expected = "rule \"or composite complex\""
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -2886,49 +2889,49 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
-            dmo.getProjectModelFields()
-        ).thenReturn(
-            new HashMap<String, ModelField[]>() {{
-                put("Goober", new ModelField[] {
-                    new ModelField(
-                            "gooField",
-                            "Goo",
-                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                            ModelField.FIELD_ORIGIN.DECLARED,
-                            FieldAccessorsAndMutators.BOTH,
-                            "Goo"
-                    ),
-                    new ModelField(
-                            "fooField",
-                            "Foo",
-                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                            ModelField.FIELD_ORIGIN.DECLARED,
-                            FieldAccessorsAndMutators.BOTH,
-                            "Foo"
-                    ),
-                    new ModelField(
-                            "zooField",
-                            "Zoo",
-                            ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                            ModelField.FIELD_ORIGIN.DECLARED,
-                            FieldAccessorsAndMutators.BOTH,
-                            "Zoo"
-                    )
-                });
-                put("Foo", new ModelField[] {
-                        new ModelField(
-                                "barField",
-                                "Bar",
-                                ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
-                                ModelField.FIELD_ORIGIN.DECLARED,
-                                FieldAccessorsAndMutators.BOTH,
-                                "Bar"
-                        )
-                });
-            }}
-        );
+                dmo.getProjectModelFields()
+            ).thenReturn(
+                new HashMap<String, ModelField[]>() {{
+                    put( "Goober", new ModelField[]{
+                            new ModelField(
+                                    "gooField",
+                                    "Goo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Goo"
+                            ),
+                            new ModelField(
+                                    "fooField",
+                                    "Foo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Foo"
+                            ),
+                            new ModelField(
+                                    "zooField",
+                                    "Zoo",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Zoo"
+                            )
+                    } );
+                    put( "Foo", new ModelField[]{
+                            new ModelField(
+                                    "barField",
+                                    "Bar",
+                                    ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                    ModelField.FIELD_ORIGIN.DECLARED,
+                                    FieldAccessorsAndMutators.BOTH,
+                                    "Bar"
+                            )
+                    } );
+                }}
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -2974,7 +2977,7 @@ public class BRDRLPersistenceTest {
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         String expected = "rule \"and composite\""
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -2983,12 +2986,12 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Goober", new ModelField[] {
+                    put( "Goober", new ModelField[]{
                             new ModelField(
                                     "gooField",
                                     "Goo",
@@ -3005,8 +3008,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Foo"
                             )
-                    });
-                    put("Foo", new ModelField[] {
+                    } );
+                    put( "Foo", new ModelField[]{
                             new ModelField(
                                     "barField",
                                     "Bar",
@@ -3015,9 +3018,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Bar"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -3072,7 +3075,7 @@ public class BRDRLPersistenceTest {
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
-        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         String expected = "rule \"and composite complex\""
                 + "dialect \"mvel\"\n"
                 + "when\n"
@@ -3081,12 +3084,12 @@ public class BRDRLPersistenceTest {
                 + "insert( new Whee() );\n"
                 + "end";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
         when(
                 dmo.getProjectModelFields()
             ).thenReturn(
                 new HashMap<String, ModelField[]>() {{
-                    put("Goober", new ModelField[] {
+                    put( "Goober", new ModelField[]{
                             new ModelField(
                                     "gooField",
                                     "Goo",
@@ -3111,8 +3114,8 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Zoo"
                             )
-                    });
-                    put("Foo", new ModelField[] {
+                    } );
+                    put( "Foo", new ModelField[]{
                             new ModelField(
                                     "barField",
                                     "Bar",
@@ -3121,9 +3124,9 @@ public class BRDRLPersistenceTest {
                                     FieldAccessorsAndMutators.BOTH,
                                     "Bar"
                             )
-                    });
+                    } );
                 }}
-            );
+                        );
 
         checkMarshallUnmarshall( expected, m, dmo );
     }
@@ -3167,7 +3170,7 @@ public class BRDRLPersistenceTest {
 
             m.addRhsItem( acm );
 
-            String result = BRDRLPersistence.getInstance().marshal( m );
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, 100B );" ) != -1 );
@@ -3224,7 +3227,7 @@ public class BRDRLPersistenceTest {
 
             m.addRhsItem( acm );
 
-            String result = BRDRLPersistence.getInstance().marshal( m );
+            String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
 
             assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
             assertTrue( result.indexOf( "$p.method( \"String\", true, sdf.parse(\"31-Jan-2012\"), 100, new java.math.BigDecimal(\"100\") );" ) != -1 );
@@ -3332,7 +3335,7 @@ public class BRDRLPersistenceTest {
         cp.addFactPattern( ffp1 );
         m.addLhsItem( cp );
 
-        final String actual = BRDRLPersistence.getInstance().marshal( m );
+        final String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         final String expected = "rule \"model\"\n" +
                 "dialect \"mvel\"\n" +
                 "when\n" +
@@ -3356,8 +3359,8 @@ public class BRDRLPersistenceTest {
                 "then\n" +
                 "end\n";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertNotNull( m );
 
         assertEquals( 1,
@@ -3376,8 +3379,8 @@ public class BRDRLPersistenceTest {
                 "$a.setName( \"Michael\" );\n" +
                 "end\n";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertNotNull( m );
 
         //LHS
@@ -3419,8 +3422,8 @@ public class BRDRLPersistenceTest {
                 "$a.addName( \"Michael\" );\n" +
                 "end\n";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertNotNull( m );
 
         //LHS
@@ -3464,10 +3467,10 @@ public class BRDRLPersistenceTest {
                         "list.add( $a );\n" +
                         "end\n";
 
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ), null );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ), null );
 
         assertNotNull( m );
-        assertEqualsIgnoreWhitespace( drl, BRDRLPersistence.getInstance().marshal( m ) );
+        assertEqualsIgnoreWhitespace( drl, RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
 
         //LHS
         assertEquals( 1,
@@ -3503,8 +3506,8 @@ public class BRDRLPersistenceTest {
                 "then\n" +
                 "end\n";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertNotNull( m );
 
         //LHS
@@ -3546,8 +3549,8 @@ public class BRDRLPersistenceTest {
                 "$a.setAge( 40 );\n" +
                 "end\n";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        final RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertNotNull( m );
 
         //LHS
@@ -3588,6 +3591,252 @@ public class BRDRLPersistenceTest {
                       fv1a2.getField() );
         assertEquals( "40",
                       fv1a2.getValue() );
+    }
+
+    @Test
+    public void testGenerateEmptyXML() {
+        final RuleModelPersistence p = RuleModelDRLPersistenceImpl.getInstance();
+        final String drl = p.marshal( new RuleModel() );
+        assertNotNull( drl );
+        assertFalse( drl.equals( "" ) );
+    }
+
+    @Test
+    public void testBasics2() {
+        final RuleModelPersistence p = RuleModelDRLPersistenceImpl.getInstance();
+        final RuleModel m = new RuleModel();
+        m.addLhsItem( new FactPattern( "Person" ) );
+        m.addLhsItem( new FactPattern( "Accident" ) );
+        m.addAttribute( new RuleAttribute( "no-loop",
+                                           "true" ) );
+
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
+        ActionGlobalCollectionAdd ag = new ActionGlobalCollectionAdd();
+        ag.setFactName( "x" );
+        ag.setGlobalName( "g" );
+        m.addRhsItem( ag );
+        m.name = "my rule";
+
+        final String drl = p.marshal( m );
+        assertTrue( drl.indexOf( "Person( )" ) > -1 );
+        assertTrue( drl.indexOf( "Accident( )" ) > -1 );
+        assertTrue( drl.indexOf( "no-loop true" ) > -1 );
+        assertTrue( drl.indexOf( "org.kie" ) == -1 );
+        assertTrue( drl.indexOf( "g.add( x );" ) > -1 );
+
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        RuleModel rm_ = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                             dmo );
+        assertEquals( 2,
+                      rm_.rhs.length );
+
+    }
+
+    @Test
+    public void testMoreComplexRendering2() {
+        final RuleModelPersistence p = RuleModelDRLPersistenceImpl.getInstance();
+        final RuleModel m = getComplexModel();
+        final String drl = p.marshal( m );
+
+        assertTrue( drl.indexOf( "org.kie" ) == -1 );
+
+    }
+
+    @Test
+    public void testRoundTrip() {
+        final RuleModel m = getComplexModel();
+        final String drl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        final RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                  dmo );
+        assertNotNull( m2 );
+        assertEquals( m.name,
+                      m2.name );
+        assertEquals( m.lhs.length,
+                      m2.lhs.length );
+        assertEquals( m.rhs.length,
+                      m2.rhs.length );
+        assertEquals( 1,
+                      m.attributes.length );
+
+        final RuleAttribute at = m.attributes[ 0 ];
+        assertEquals( "no-loop",
+                      at.getAttributeName() );
+        assertEquals( "true",
+                      at.getValue() );
+
+        final String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( m2 );
+        assertEquals( drl,
+                      drl2 );
+
+    }
+
+    @Test
+    public void testCompositeConstraintsRoundTrip() throws Exception {
+        RuleModel m = new RuleModel();
+        m.name = "with composite";
+
+        FactPattern p1 = new FactPattern( "Person" );
+        p1.setBoundName( "p1" );
+        m.addLhsItem( p1 );
+
+        FactPattern p = new FactPattern( "Goober" );
+        m.addLhsItem( p );
+        CompositeFieldConstraint comp = new CompositeFieldConstraint();
+        comp.setCompositeJunctionType( CompositeFieldConstraint.COMPOSITE_TYPE_OR );
+        p.addConstraint( comp );
+
+        final SingleFieldConstraint X = new SingleFieldConstraint();
+        X.setFieldName( "goo" );
+        X.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        X.setValue( "foo" );
+        X.setOperator( "==" );
+        X.setConnectives( new ConnectiveConstraint[ 1 ] );
+        X.getConnectives()[ 0 ] = new ConnectiveConstraint();
+        X.getConnectives()[ 0 ].setConstraintValueType( ConnectiveConstraint.TYPE_LITERAL );
+        X.getConnectives()[ 0 ].setOperator( "|| ==" );
+        X.getConnectives()[ 0 ].setValue( "bar" );
+        comp.addConstraint( X );
+
+        final SingleFieldConstraint Y = new SingleFieldConstraint();
+        Y.setFieldName( "goo2" );
+        Y.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        Y.setValue( "foo" );
+        Y.setOperator( "==" );
+        comp.addConstraint( Y );
+
+        CompositeFieldConstraint comp2 = new CompositeFieldConstraint();
+        comp2.setCompositeJunctionType( CompositeFieldConstraint.COMPOSITE_TYPE_AND );
+        final SingleFieldConstraint Q1 = new SingleFieldConstraint();
+        Q1.setFieldName( "goo" );
+        Q1.setOperator( "==" );
+        Q1.setValue( "whee" );
+        Q1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+
+        comp2.addConstraint( Q1 );
+
+        final SingleFieldConstraint Q2 = new SingleFieldConstraint();
+        Q2.setFieldName( "gabba" );
+        Q2.setOperator( "==" );
+        Q2.setValue( "whee" );
+        Q2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+
+        comp2.addConstraint( Q2 );
+
+        //now nest it
+        comp.addConstraint( comp2 );
+
+        final SingleFieldConstraint Z = new SingleFieldConstraint();
+        Z.setFieldName( "goo3" );
+        Z.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        Z.setValue( "foo" );
+        Z.setOperator( "==" );
+
+        p.addConstraint( Z );
+
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
+        m.addRhsItem( ass );
+
+        String drl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        RuleModel m2 = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                            dmo );
+        assertNotNull( m2 );
+        assertEquals( "with composite",
+                      m2.name );
+
+        assertEquals( m2.lhs.length,
+                      m.lhs.length );
+        assertEquals( m2.rhs.length,
+                      m.rhs.length );
+
+    }
+
+    @Test
+    public void testFreeFormLine() {
+        RuleModel m = new RuleModel();
+        m.name = "with composite";
+        m.lhs = new IPattern[ 1 ];
+        m.rhs = new IAction[ 1 ];
+
+        FreeFormLine fl = new FreeFormLine();
+        fl.setText( "Person()" );
+        m.lhs[ 0 ] = fl;
+
+        FreeFormLine fr = new FreeFormLine();
+        fr.setText( "fun()" );
+        m.rhs[ 0 ] = fr;
+
+        String drl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        assertNotNull( drl );
+
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        RuleModel m_ = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                            dmo );
+        assertEquals( 1,
+                      m_.lhs.length );
+        assertEquals( 1,
+                      m_.rhs.length );
+
+        assertEquals( "Person",
+                      ( (FactPattern) m_.lhs[ 0 ] ).getFactType() );
+        assertEquals( "fun()",
+                      ( (FreeFormLine) m_.rhs[ 0 ] ).getText() );
+
+    }
+
+    private RuleModel getComplexModel() {
+        final RuleModel m = new RuleModel();
+        m.name = "complex";
+
+        m.addAttribute( new RuleAttribute( "no-loop",
+                                           "true" ) );
+
+        final FactPattern pat = new FactPattern( "Person" );
+        pat.setBoundName( "p1" );
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFactType( "Person" );
+        con.setFieldBinding( "f1" );
+        con.setFieldName( "age" );
+        con.setOperator( "<" );
+        con.setValue( "42" );
+        pat.addConstraint( con );
+
+        m.addLhsItem( pat );
+
+        final CompositeFactPattern comp = new CompositeFactPattern( "not" );
+        comp.addFactPattern( new FactPattern( "Cancel" ) );
+        m.addLhsItem( comp );
+
+        final ActionUpdateField set = new ActionUpdateField();
+        set.setVariable( "p1" );
+        set.addFieldValue( new ActionFieldValue( "status",
+                                                 "rejected",
+                                                 DataType.TYPE_STRING ) );
+        m.addRhsItem( set );
+
+        final ActionRetractFact ret = new ActionRetractFact( "p1" );
+        m.addRhsItem( ret );
+
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "Send an email to {administrator}" );
+
+        m.addRhsItem( sen );
+        return m;
+    }
+
+    @Test
+    public void testLoadEmpty() {
+        PackageDataModelOracle dmo = mock( PackageDataModelOracle.class );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( "",
+                                                                           dmo );
+        assertNotNull( m );
+
+        m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( "",
+                                                                 dmo );
+        assertNotNull( m );
     }
 
 }

@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.models.commons.backend.rule;
+package org.drools.workbench.models.guided.template.backend;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.models.guided.template.shared.TemplateModel;
 
-import java.util.List;
+public interface RuleTemplateModelPersistence {
 
-public interface BRLPersistence {
+    String marshal( final TemplateModel model );
 
-    String marshal( final RuleModel model );
+    TemplateModel unmarshal( final String xml );
 
-    RuleModel unmarshal( final String str, final PackageDataModelOracle dmo );
-
-    RuleModel unmarshalUsingDSL( final String str, final List<String> globals, final PackageDataModelOracle dmo, final String... dsls );
 }

@@ -15,17 +15,18 @@
  */
 package org.drools.workbench.models.guided.template.backend;
 
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.DSLVariableValue;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
-public class BRXMLPersistenceTest {
+public class RuleTemplateModelXMLLegacyPersistenceTest {
 
     @Test
     public void testUnmarshalDSLVariableValuesLegacy() {
@@ -54,9 +55,7 @@ public class BRXMLPersistenceTest {
                 + "<isNegated>false</isNegated>"
                 + "</rule>";
 
-
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel rm = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
+        RuleModel rm = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
 
         assertNotNull( rm );
 
@@ -123,8 +122,7 @@ public class BRXMLPersistenceTest {
                 + "<isNegated>false</isNegated>"
                 + "</rule>";
 
-        PackageDataModelOracle dmo = mock(PackageDataModelOracle.class);
-        RuleModel rm = BRXMLPersistence.getInstance().unmarshal( xml, dmo );
+        RuleModel rm = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
 
         assertNotNull( rm );
 
@@ -158,6 +156,35 @@ public class BRXMLPersistenceTest {
         assertEquals( "myout",
                       dslAction.getValues().get( 1 ).getValue() );
 
+    }
+
+    /**
+     * This will verify that we can load an old BRL change. If this fails, then
+     * backwards compatibility is broken.
+     */
+    @Test
+    public void testBackwardsCompat() throws Exception {
+        RuleModel m2 = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
+
+        assertNotNull( m2 );
+        assertEquals( 3,
+                      m2.rhs.length );
+    }
+
+    public static String loadResource( final String name ) throws Exception {
+        final InputStream in = RuleTemplateModelXMLLegacyPersistenceTest.class.getResourceAsStream( name );
+        final Reader reader = new InputStreamReader( in );
+        final StringBuilder text = new StringBuilder();
+
+        final char[] buf = new char[ 1024 ];
+        int len = 0;
+        while ( ( len = reader.read( buf ) ) >= 0 ) {
+            text.append( buf,
+                         0,
+                         len );
+        }
+
+        return text.toString();
     }
 
 }

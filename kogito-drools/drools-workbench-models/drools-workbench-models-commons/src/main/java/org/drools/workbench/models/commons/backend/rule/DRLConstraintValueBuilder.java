@@ -22,8 +22,8 @@ package org.drools.workbench.models.commons.backend.rule;
  */
 public abstract class DRLConstraintValueBuilder {
 
-    public static DRLConstraintValueBuilder getBuilder(String dialect) {
-        if ( BRDRLPersistence.DEFAULT_DIALECT.equalsIgnoreCase( dialect ) ) {
+    public static DRLConstraintValueBuilder getBuilder( String dialect ) {
+        if ( RuleModelDRLPersistenceImpl.DEFAULT_DIALECT.equalsIgnoreCase( dialect ) ) {
             return new MvelDRLConstraintValueBuilder();
         }
         return new JavaDRLConstraintValueBuilder();
@@ -35,16 +35,15 @@ public abstract class DRLConstraintValueBuilder {
      * Numerics, Booleans, (Java 1.5+) enums and all other fieldTypes are not
      * escaped at all. Guvnor-type enums are really a pick list of Strings and
      * in these cases the underlying fieldType is a String.
-     * 
      * @param buf
      * @param constraintType
      * @param fieldType
      * @param fieldValue
      */
-    public abstract void buildLHSFieldValue(StringBuilder buf,
-                                            int constraintType,
-                                            String fieldType,
-                                            String fieldValue);
+    public abstract void buildLHSFieldValue( StringBuilder buf,
+                                             int constraintType,
+                                             String fieldType,
+                                             String fieldValue );
 
     /**
      * Concatenate a String to the provided buffer suitable for the fieldType
@@ -53,12 +52,11 @@ public abstract class DRLConstraintValueBuilder {
      * Booleans, (Java 1.5+) enums and all other fieldTypes are not escaped at
      * all. Guvnor-type enums are really a pick list of Strings and in these
      * cases the underlying fieldType is a String.
-     * 
      * @param buf
      * @param fieldType
      * @param fieldValue
      */
-    public abstract void buildRHSFieldValue(StringBuilder buf,
-                                            String fieldType,
-                                            String fieldValue);
+    public abstract void buildRHSFieldValue( StringBuilder buf,
+                                             String fieldType,
+                                             String fieldValue );
 }

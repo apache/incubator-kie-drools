@@ -45,7 +45,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class BRDRLPersistenceUnmarshallingTest {
+public class RuleModelDRLPersistenceUnmarshallingTest {
 
     private PackageDataModelOracle dmo;
     private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
@@ -89,7 +89,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -116,7 +116,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -145,7 +145,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -185,7 +185,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -227,7 +227,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -287,7 +287,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -326,7 +326,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -365,7 +365,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -424,7 +424,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -465,7 +465,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -508,9 +508,9 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertEquals( "1d",
                       sfp.getParameter( "0" ) );
         assertEquals( "1",
-                      sfp.getParameter( "org.kie.guvnor.guided.editor.visibleParameterSet" ) );
+                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet" ) );
         assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
-                      sfp.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
     }
 
     @Test
@@ -542,16 +542,16 @@ public class BRDRLPersistenceUnmarshallingTest {
         sfp.setConstraintValueType( BaseSingleFieldConstraint.TYPE_VARIABLE );
         sfp.getParameters().put( "0",
                                  "1d" );
-        sfp.getParameters().put( "org.kie.guvnor.guided.editor.visibleParameterSet",
+        sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet",
                                  "1" );
-        sfp.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+        sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                  "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
 
         fp2.addConstraint( sfp );
         m.addLhsItem( fp1 );
         m.addLhsItem( fp2 );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -565,7 +565,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -610,9 +610,9 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertEquals( "2d",
                       sfp.getParameter( "1" ) );
         assertEquals( "2",
-                      sfp.getParameter( "org.kie.guvnor.guided.editor.visibleParameterSet" ) );
+                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet" ) );
         assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder",
-                      sfp.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+                      sfp.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
     }
 
     @Test
@@ -646,16 +646,16 @@ public class BRDRLPersistenceUnmarshallingTest {
                                  "1d" );
         sfp.getParameters().put( "1",
                                  "2d" );
-        sfp.getParameters().put( "org.kie.guvnor.guided.editor.visibleParameterSet",
+        sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.visibleParameterSet",
                                  "2" );
-        sfp.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+        sfp.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                  "org.drools.workbench.models.commons.backend.rule.CEPOperatorParameterDRLBuilder" );
 
         fp2.addConstraint( sfp );
         m.addLhsItem( fp1 );
         m.addLhsItem( fp2 );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -668,7 +668,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -695,7 +695,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertEquals( "1d",
                       window.getParameter( "1" ) );
         assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
-                      window.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+                      window.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
     }
 
     @Test
@@ -718,13 +718,13 @@ public class BRDRLPersistenceUnmarshallingTest {
         window.setOperator( "over window:time" );
         window.getParameters().put( "1",
                                     "1d" );
-        window.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+        window.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                     "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
         fp1.setWindow( window );
 
         m.addLhsItem( fp1 );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -737,7 +737,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -764,7 +764,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         assertEquals( "10",
                       window.getParameter( "1" ) );
         assertEquals( "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder",
-                      window.getParameter( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator" ) );
+                      window.getParameter( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator" ) );
     }
 
     @Test
@@ -787,13 +787,13 @@ public class BRDRLPersistenceUnmarshallingTest {
         window.setOperator( "over window:length" );
         window.getParameters().put( "1",
                                     "10" );
-        window.getParameters().put( "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator",
+        window.getParameters().put( "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator",
                                     "org.drools.workbench.models.commons.backend.rule.CEPWindowOperatorParameterDRLBuilder" );
         fp1.setWindow( window );
 
         m.addLhsItem( fp1 );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -805,7 +805,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -821,7 +821,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -837,7 +837,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1,
@@ -857,7 +857,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1,
@@ -877,7 +877,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -897,7 +897,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         addModelField( "org.test.Person", "address", "Address", "org.test.Address" );
         addModelField( "org.test.Address", "postalCode", "Integer", "java.lang.Integer" );
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -952,7 +952,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         addModelField( "org.test.Person", "address", "Address", "org.test.Address" );
         addModelField( "org.test.Address", "postalCode", "Integer", "java.lang.Integer" );
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1007,7 +1007,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         addModelField( "org.test.Person", "address", "Address", "org.test.Address" );
         addModelField( "org.test.Address", "postalCode", "Integer", "java.lang.Integer" );
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1079,7 +1079,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1131,7 +1131,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1234,7 +1234,7 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         m.addLhsItem( cfp );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -1247,7 +1247,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1385,7 +1385,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         cfp.addFactPattern( fp2 );
         m.addLhsItem( cfp );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -1401,7 +1401,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         addModelField( "org.test.ParentType", "parentChildField", "ChildType", "org.test.ChildType" );
         addModelField( "org.test.ChildType", "childField", "String", "java.lang.String" );
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( "rule1",
@@ -1512,7 +1512,7 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         m.addLhsItem( fp1 );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -1528,7 +1528,7 @@ public class BRDRLPersistenceUnmarshallingTest {
         addModelField( "org.test.ParentType", "parentChildField", "ChildType", "org.test.ChildType" );
         addModelField( "org.test.ChildType", "childField", "String", "java.lang.String" );
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertNotNull( m );
         assertEquals( 1, m.lhs.length );
@@ -1615,7 +1615,7 @@ public class BRDRLPersistenceUnmarshallingTest {
 
         m.addLhsItem( fp1 );
 
-        String actualDrl = BRDRLPersistence.getInstance().marshal( m );
+        String actualDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
         assertEqualsIgnoreWhitespace( drl,
                                       actualDrl );
     }
@@ -1628,7 +1628,7 @@ public class BRDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
         assertEquals( 1,
                       m.attributes.length );
         assertEquals( "calendars",

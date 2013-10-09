@@ -19,33 +19,33 @@ package org.drools.workbench.models.guided.template.backend;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 
-import org.drools.workbench.models.commons.backend.rule.BRDRLPersistence;
-import org.drools.workbench.models.commons.backend.rule.BRLPersistence;
+import org.drools.template.DataProvider;
+import org.drools.template.DataProviderCompiler;
+import org.drools.template.objects.ArrayDataProvider;
+import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.IFactPattern;
 import org.drools.workbench.models.datamodel.rule.InterpolationVariable;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
-import org.drools.template.DataProvider;
-import org.drools.template.DataProviderCompiler;
-import org.drools.template.objects.ArrayDataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This class persists a {@link TemplateModel} to DRL template
  */
-public class BRDRTPersistence
-        extends BRDRLPersistence {
+public class RuleTemplateModelDRLPersistenceImpl
+        extends RuleModelDRLPersistenceImpl {
 
-    private static final Logger log = LoggerFactory.getLogger( BRDRTPersistence.class );
-    private static final BRLPersistence INSTANCE = new BRDRTPersistence();
+    private static final Logger log = LoggerFactory.getLogger( RuleTemplateModelDRLPersistenceImpl.class );
+    private static final RuleModelPersistence INSTANCE = new RuleTemplateModelDRLPersistenceImpl();
 
-    private BRDRTPersistence() {
+    private RuleTemplateModelDRLPersistenceImpl() {
         super();
     }
 
-    public static BRLPersistence getInstance() {
+    public static RuleModelPersistence getInstance() {
         return INSTANCE;
     }
 
@@ -59,12 +59,12 @@ public class BRDRTPersistence
 
         final DataProvider dataProvider = chooseDataProvider( model );
         final DataProviderCompiler tplCompiler = new DataProviderCompiler();
-        final String generatedDRl = tplCompiler.compile( dataProvider,
+        final String generatedDrl = tplCompiler.compile( dataProvider,
                                                          new ByteArrayInputStream( ruleTemplate.getBytes() ) );
         log.debug( "generated drl:\n{}",
-                   generatedDRl );
+                   generatedDrl );
 
-        return generatedDRl;
+        return generatedDrl;
     }
 
     protected String marshalRule( final RuleModel model ) {

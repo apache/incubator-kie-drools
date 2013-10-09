@@ -27,6 +27,6 @@ public class SharedConstants
     //This is a near magical constant! Any Operators that can accept parameters (only CEP at the time of writing) 
     //need to specify an implementation of "org.drools.ide.common.server.util.OperatorParameterBuilder" to construct
     //the necessary DRL from the parameters. This is the key name for the applicable class amongst the Parameters.
-    public static final String OPERATOR_PARAMETER_GENERATOR = "org.kie.guvnor.guided.server.util.BRDRLPersistence.operatorParameterGenerator";
+    public static final String OPERATOR_PARAMETER_GENERATOR = "org.drools.workbench.models.commons.backend.rule.operatorParameterGenerator";
 
 }
