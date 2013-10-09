@@ -42,4 +42,6 @@ public interface NetworkNode
      */
     public RuleBasePartitionId getPartitionId();
 
+    public short getType();
+
 }

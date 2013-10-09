@@ -144,7 +144,7 @@ public class BuildUtils {
             node.setPartitionId( partition );
             node.attach(context);
             // adds the node to the context list to track all added nodes
-            context.getNodes().add( node );
+            context.addNode( node );
         } else {
             // shared node found
             // undo previous id assignment

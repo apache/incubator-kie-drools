@@ -28,6 +28,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -35,8 +36,10 @@ import java.io.StringReader;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.drools.Cheese;
@@ -69,9 +72,15 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.type.FactType;
 import org.drools.definitions.impl.KnowledgePackageImp;
+import org.drools.event.rule.ActivationCancelledEvent;
 import org.drools.event.rule.ActivationCreatedEvent;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
+import org.drools.event.rule.AgendaGroupPoppedEvent;
+import org.drools.event.rule.AgendaGroupPushedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.RuleFlowGroupActivatedEvent;
+import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.EnvironmentFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.marshalling.ObjectMarshallingStrategy;
@@ -83,6 +92,7 @@ import org.drools.runtime.Environment;
 import org.drools.runtime.EnvironmentName;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
+import org.drools.runtime.rule.Variable;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -1065,6 +1075,73 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         }
     }
 
+
+    @Test
+    public void testRuleBaseAddRemoveQuery() throws Exception {
+        try {
+            String drl = "package org.drools.test; \n" +
+                         "global java.util.List list; \n" +
+                         "query foo( String $s ) $s := String() end \n" +
+                         "" +
+                         "rule R when String() ?foo( $s ; ) then list.add( $s ); end \n";
+
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            StatefulSession sf = ruleBase.newStatefulSession();
+            ArrayList list = new ArrayList();
+
+            //add and remove
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( new ByteArrayInputStream( drl.getBytes() ) ) );
+            Package pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+
+            sf.setGlobal( "list", list );
+            sf.fireAllRules();
+            sf.insert( "bar" );
+            sf.fireAllRules();
+
+            org.drools.QueryResults rs = sf.getQueryResults( "foo", Variable.v );
+            assertEquals( 1, rs.size() );
+            assertEquals( Arrays.asList( "bar" ), list );
+
+            ruleBase.removePackage( pkg.getName() );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Should not raise any exception" );
+        }
+    }
+
+    @Test
+    public void testRuleBaseAddRemoveEval() throws Exception {
+        try {
+            String drl = "package org.drools.test; \n" +
+                         "global java.util.List list; \n" +
+                         "rule R when $s : String() from \"bar\" eval( $s.length() > 0 ) then list.add( $s ); end \n";
+
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase();
+            StatefulSession sf = ruleBase.newStatefulSession();
+            ArrayList list = new ArrayList();
+
+            //add and remove
+            PackageBuilder builder = new PackageBuilder();
+            builder.addPackageFromDrl( new InputStreamReader( new ByteArrayInputStream( drl.getBytes() ) ) );
+            Package pkg = builder.getPackage();
+            ruleBase.addPackage( pkg );
+
+            sf.setGlobal( "list", list );
+            sf.fireAllRules();
+            assertEquals( Arrays.asList( "bar" ), list );
+
+            ruleBase.removePackage( pkg.getName() );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( "Should not raise any exception" );
+        }
+    }
+
+
     @Test
     public void testDynamicRuleAdditionsWithEntryPoints() throws Exception {
         Reader reader = new InputStreamReader( getClass().getResourceAsStream( "test_DynamicWithEntryPoint.drl" ) );
@@ -1362,9 +1439,23 @@ public class DynamicRulesTest extends CommonTestMethodBase {
         ((RuleBaseConfiguration) config).setRuleBaseUpdateHandler( null );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( config );
         StatefulKnowledgeSession session = createKnowledgeSession(kbase);
-        
+
         AgendaEventListener ael = mock( AgendaEventListener.class );
         session.addEventListener( ael );
+        session.addEventListener( new AgendaEventListener() {
+            public void activationCreated( ActivationCreatedEvent activationCreatedEvent ) {
+                System.out.println( activationCreatedEvent );
+            }
+            public void activationCancelled( ActivationCancelledEvent activationCancelledEvent ) { }
+            public void beforeActivationFired( BeforeActivationFiredEvent beforeActivationFiredEvent ) {}
+            public void afterActivationFired( AfterActivationFiredEvent afterActivationFiredEvent ) {}
+            public void agendaGroupPopped( AgendaGroupPoppedEvent agendaGroupPoppedEvent ) {}
+            public void agendaGroupPushed( AgendaGroupPushedEvent agendaGroupPushedEvent ) {}
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent ruleFlowGroupActivatedEvent ) {}
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent ruleFlowGroupActivatedEvent ) {}
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent ruleFlowGroupDeactivatedEvent ) {}
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent ruleFlowGroupDeactivatedEvent ) {}
+        } );
 
         for ( int i = 0; i < 5; i++ ) {
             session.insert( new Cheese() );
@@ -1427,4 +1518,131 @@ public class DynamicRulesTest extends CommonTestMethodBase {
             return c;
         }
     }
+
+
+
+    @Test
+    public void testDynamicRulesWithInheritance() {
+        String type = "package com.sample\n" +
+                      "global java.util.List list; \n" +
+                      "declare Foo\n" +
+                      "  id : int\n" +
+                      "end\n" +
+                      "" +
+                      "declare Bar extends Foo end\n" +
+                      "";
+
+        String r1 = "package com.sample\n" +
+                    "global java.util.List list; \n" +
+                    "rule R1 when\n" +
+                    "  Bar()\n" +
+                    "then\n" +
+                    "  list.add( 1 ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule Init when \n" +
+                    "then \n" +
+                    "  insert( new Bar() );\n" +
+                    "end\n";
+
+        String r2 = "package com.sample\n" +
+                    "global java.util.List list; \n" +
+                    "rule R2 when\n" +
+                    "  $f : Foo()\n" +
+                    "then\n" +
+                    "  list.add( 2 );\n" +
+                    "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( type.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r1.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+
+        ksession.fireAllRules();
+        assertEquals( Arrays.asList( 1 ), list );
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r2.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+
+        ksession.fireAllRules();
+        assertEquals( Arrays.asList( 1, 2 ), list );
+
+        ksession.dispose();
+
+    }
+
+
+
+    @Test
+    public void testDynamicRulesWithNamedConsequencesAndConditionalBranches() {
+        String type = "package com.sample\n" +
+                      "declare type Foo\n" +
+                      "  id : int\n" +
+                      "end\n" +
+                      "" +
+                      "rule Init when then \n" +
+                      " insert( new Foo( 1 ) ); \n" +
+                      " insert( new Foo( 2 ) ); \n" +
+                      "end \n";
+
+        String r1 = "package com.sample\n" +
+                    "global java.util.Set set; \n" +
+                    "rule R1 when\n" +
+                    "  $s: String() do[c1] \n" +
+                    "  Foo( $i : id ) do[c2] \n" +
+                    "  if ( id == 1 ) do[c3] \n" +
+                    "  else do[c4]" +
+                    "then\n" +
+                    "  set.add( $i ); \n" +
+                    "then[c1] \n" +
+                    "  set.add( $s ); \n" +
+                    "then[c2] \n" +
+                    "  set.add( 100 + $i ); \n" +
+                    "then[c3] \n" +
+                    "  set.add( 200 + $i ); \n" +
+                    "then[c4] \n" +
+                    "  set.add( 300 + $i ); \n" +
+                    "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( type.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+
+        kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kbase );
+        kbuilder.add( ResourceFactory.newByteArrayResource( r1.getBytes() ), ResourceType.DRL );
+        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        HashSet set = new HashSet();
+        ksession.setGlobal( "set", set );
+        ksession.insert( "go" );
+
+        ksession.fireAllRules();
+
+        System.out.print( set );
+        assertTrue( set.containsAll( Arrays.asList( 1, 2, 101, 201, 102, 302, "go" ) ) );
+
+        ksession.dispose();
+
+    }
+
+
 }

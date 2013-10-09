@@ -116,6 +116,10 @@ public class WindowNode extends ObjectSource
         out.writeObject(entryPoint);
     }
 
+    public short getType() {
+        return NodeTypeEnums.WindowNode;
+    }
+
     /**
      * Returns the <code>FieldConstraints</code>
      *
@@ -135,22 +139,12 @@ public class WindowNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink(this);
-        if (context == null) {
-            return;
-        }
-
-        for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
-            final PropagationContext propagationContext = new PropagationContextImpl(
-                    workingMemory.getNextPropagationIdCounter(),
-                    PropagationContext.RULE_ADDITION,
-                    null,
-                    null,
-                    null);
-            this.source.updateSink(this,
-                    propagationContext,
-                    workingMemory);
-        }
     }
+
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        // do nothing, this node's updateSink will be called from the beta network
+    }
+
 
     public void assertObject(final InternalFactHandle factHandle,
             final PropagationContext context,

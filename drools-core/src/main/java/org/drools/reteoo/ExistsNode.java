@@ -436,7 +436,7 @@ public class ExistsNode extends BetaNode {
                 // this is now blocked so remove from memory
                 leftMemory.remove( leftTuple );
 
-                // subclasses like ForallNotNode might override this propagation
+                // subclasses might override this propagation
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     context,
                                                     workingMemory,
@@ -497,7 +497,7 @@ public class ExistsNode extends BetaNode {
                     // was previous blocked and not in memory, so add
                     memory.getLeftTupleMemory().add( leftTuple );
 
-                    // subclasses like ForallNotNode might override this propagation
+                    // subclasses might override this propagation
                     this.sink.propagateRetractLeftTuple( leftTuple,
                                                          context,
                                                          workingMemory );

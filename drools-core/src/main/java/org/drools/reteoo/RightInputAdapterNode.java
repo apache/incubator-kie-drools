@@ -225,16 +225,10 @@ public class RightInputAdapterNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
-        if (context == null) {
-            return;
-        }
+    }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        if ( ! context.getNodes().contains( this.getLeftTupleSource() ) ) {
             this.tupleSource.updateSink( this,
                                          propagationContext,
                                          workingMemory );
@@ -331,7 +325,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
     public short getType() {
-        return NodeTypeEnums.RightInputAdaterNode;
+        return NodeTypeEnums.RightInputAdapterNode;
     }
 
     public int hashCode() {
@@ -420,7 +414,7 @@ public class RightInputAdapterNode extends ObjectSource
         }
 
         public short getNodeType() {
-            return NodeTypeEnums.RightInputAdaterNode;
+            return NodeTypeEnums.RightInputAdapterNode;
         }
     }
 

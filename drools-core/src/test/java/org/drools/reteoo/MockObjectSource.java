@@ -95,10 +95,16 @@ public class MockObjectSource extends ObjectSource {
 
     public void attach(BuildContext context) {
     }
-    
+
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+    }
+
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
-    }    
+    }
 
+    public short getType() {
+        return -1;
+    }
 }

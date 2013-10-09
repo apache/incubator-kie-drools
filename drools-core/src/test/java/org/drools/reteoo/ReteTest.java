@@ -40,7 +40,6 @@ import org.drools.rule.EntryPoint;
 import org.drools.FactHandle;
 import org.drools.spi.PropagationContext;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -247,6 +246,7 @@ public class ReteTest extends DroolsTestCase {
                                                            new ClassObjectType( List.class ),
                                                            buildContext );
         listOtn.attach(buildContext);
+        //listOtn.updateSinkOnAttach(buildContext, true, true );
 
         // Will automatically create an ArrayList ObjectTypeNode
         FactHandle handle = workingMemory.insert( new ArrayList() );
@@ -296,7 +296,16 @@ public class ReteTest extends DroolsTestCase {
         final MockObjectSink collectionSink = new MockObjectSink();
         collectionOtn.addObjectSink( collectionSink );
 
-        collectionOtn.attach( new TestBuildContext( new InternalWorkingMemory[]{workingMemory} ) );
+        final PropagationContext mockPropagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
+                                                                                      PropagationContext.RULE_ADDITION,
+                                                                                      null,
+                                                                                      null,
+                                                                                      null );
+
+
+        TestBuildContext testBuildContext = new TestBuildContext( new InternalWorkingMemory[]{workingMemory} );
+        collectionOtn.attach( testBuildContext );
+        collectionOtn.updateSinkOnAttach( testBuildContext, mockPropagationContext, workingMemory );
 
         assertEquals( 1,
                       collectionSink.getAsserted().size() );

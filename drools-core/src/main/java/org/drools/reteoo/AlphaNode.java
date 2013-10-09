@@ -31,7 +31,6 @@ import org.drools.common.PropagationContextImpl;
 import org.drools.common.RuleBasePartitionId;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.Pattern;
 import org.drools.rule.constraint.EvaluatorConstraint;
 import org.drools.rule.constraint.MvelConstraint;
 import org.drools.runtime.rule.Operator;
@@ -106,6 +105,10 @@ public class AlphaNode extends ObjectSource
         out.writeLong(inferredMask);
     }
 
+    public short getType() {
+        return NodeTypeEnums.AlphaNode;
+    }
+
     /**
      * Retruns the <code>FieldConstraint</code>
      *
@@ -117,22 +120,12 @@ public class AlphaNode extends ObjectSource
 
     public void attach(BuildContext context) {
         this.source.addObjectSink( this );
-        if (context == null) {
-            return;
-        }
+    }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            this.source.updateSink( this,
-                                    propagationContext,
-                                    workingMemory );
-        }
-    }   
-    
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        // do nothing, this node's updateSink will be called from the beta network
+    }
+
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
@@ -336,6 +329,10 @@ public class AlphaNode extends ObjectSource
 
         public int getId() {
             return 0;
+        }
+
+        public short getType() {
+            return -1;
         }
 
         public RuleBasePartitionId getPartitionId() {

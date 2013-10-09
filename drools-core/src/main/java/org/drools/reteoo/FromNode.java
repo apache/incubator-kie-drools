@@ -25,7 +25,6 @@ import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.Memory;
-import org.drools.common.NamedEntryPoint;
 import org.drools.common.NodeMemory;
 import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
@@ -40,7 +39,6 @@ import org.drools.marshalling.impl.ProtobufMessages;
 import org.drools.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.reteoo.builder.BuildContext;
 import org.drools.rule.ContextEntry;
-import org.drools.rule.EntryPoint;
 import org.drools.rule.From;
 import org.drools.spi.AlphaNodeFieldConstraint;
 import org.drools.spi.DataProvider;
@@ -406,20 +404,10 @@ public class FromNode extends LeftTupleSource
     public void attach( BuildContext context ) {
         betaConstraints.init(context, getType());
         this.tupleSource.addTupleSink( this, context );
-        if (context == null) {
-            return;
-        }
+    }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            this.tupleSource.updateSink( this,
-                                         propagationContext,
-                                         workingMemory );
-        }
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        // do nothing, this node's updateSink will be called from the beta network
     }
 
     public void networkUpdated(UpdateContext updateContext) {

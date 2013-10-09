@@ -101,6 +101,10 @@ public class PropagationQueuingNode extends ObjectSource
         out.writeObject( action );
     }
 
+    public short getType() {
+        return NodeTypeEnums.PropagationQueueingNode;
+    }
+
     /**
      * @see org.drools.reteoo.ObjectSource#updateSink(org.drools.reteoo.ObjectSink, org.drools.spi.PropagationContext, org.drools.common.InternalWorkingMemory)
      */
@@ -124,6 +128,10 @@ public class PropagationQueuingNode extends ObjectSource
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
         // this node does not require update, so nothing else to do.
+    }
+
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        // do nothing, this node does not require updates
     }
 
     /**

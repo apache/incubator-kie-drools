@@ -38,7 +38,6 @@ import java.io.ObjectOutput;
  * </p>
  *
  * @see QueryRiaFixerNode
- * @see Eval
  * @see LeftTuple
  */
 public class QueryRiaFixerNode extends LeftTupleSource
@@ -71,11 +70,12 @@ public class QueryRiaFixerNode extends LeftTupleSource
     /**
      * Construct.
      *
-     * @param rule
-     *            The rule
+     * @param id
+     *            The node id
      * @param tupleSource
      *            The source of incoming <code>Tuples</code>.
-     * @param eval
+     * @param context
+     *            The build context
      */
     public QueryRiaFixerNode(final int id,
                              final LeftTupleSource tupleSource,
@@ -113,16 +113,10 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
-        if (context == null) {
-            return;
-        }
+    }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        if ( ! context.getNodes().contains( this.getLeftTupleSource() ) ) {
             this.tupleSource.updateSink( this,
                                          propagationContext,
                                          workingMemory );
@@ -148,7 +142,6 @@ public class QueryRiaFixerNode extends LeftTupleSource
      *            The <code>Tuple</code> being asserted.
      * @param workingMemory
      *            The working memory seesion.
-     * @throws AssertionException
      *             If an error occurs while asserting.
      */
     public void assertLeftTuple(final LeftTuple leftTuple,

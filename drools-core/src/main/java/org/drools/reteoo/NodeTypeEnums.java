@@ -24,10 +24,10 @@ public class NodeTypeEnums {
     public static final short FromNode                = 4;
     //public static final short CollectNode          = 5;   // no longer used, since accumulate nodes execute collect logic now
     public static final short AccumulateNode          = 6;
-    public static final short RightInputAdaterNode    = 7;
+    public static final short RightInputAdapterNode   = 7;
     public static final short QueryTerminalNode       = 8;
     public static final short RuleTerminalNode        = 9;
-    public static final short ForallNotNode           = 10;
+
     public static final short UnificationNode         = 11;
     public static final short QueryRiaFixerNode       = 12;
     public static final short WindowNode              = 13;
@@ -35,7 +35,10 @@ public class NodeTypeEnums {
     public static final short AlphaNode               = 15;
     public static final short ObjectTypeNode          = 16;
     public static final short PropagationQueueingNode = 17;
-    public static final short QueryElementNode        = 18;
+    public static final short QueryElementNode        = 18; // duplicated by UnificationNode ?
     public static final short OperatorNode            = 19;
     public static final short ConditionalBranchNode   = 20;
+    public static final short EntryPointNode          = 21;
+    public static final short LeftInputAdapterNode    = 22;
+
 }

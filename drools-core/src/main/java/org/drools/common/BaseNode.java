@@ -22,6 +22,7 @@ import org.drools.reteoo.NodeSet;
 import org.drools.reteoo.ReteooBuilder;
 import org.drools.reteoo.RuleRemovalContext;
 import org.drools.reteoo.builder.BuildContext;
+import org.drools.spi.PropagationContext;
 import org.drools.spi.RuleComponent;
 
 import java.io.IOException;
@@ -93,6 +94,18 @@ public abstract class BaseNode
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     public abstract void attach(BuildContext context);
+
+    public abstract void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory );
+
+    public void updateSinkOnAttach( BuildContext context, InternalWorkingMemory workingMemory ) {
+        final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
+                                                                                 PropagationContext.RULE_ADDITION,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null);
+        this.updateSinkOnAttach( context, propagationContext, workingMemory );
+        propagationContext.evaluateActionQueue( workingMemory );
+    }
 
     /**
      * A method that is called for all nodes whose network below them

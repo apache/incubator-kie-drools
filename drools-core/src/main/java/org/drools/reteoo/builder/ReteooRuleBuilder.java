@@ -21,6 +21,8 @@ import org.drools.RuleIntegrationException;
 import org.drools.base.ClassObjectType;
 import org.drools.common.BaseNode;
 import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.common.PropagationContextImpl;
 import org.drools.common.UpdateContext;
 import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.ReteooBuilder;
@@ -42,6 +44,7 @@ import org.drools.rule.QueryElement;
 import org.drools.rule.Rule;
 import org.drools.rule.WindowDeclaration;
 import org.drools.rule.WindowReference;
+import org.drools.spi.PropagationContext;
 import org.drools.time.TemporalDependencyMatrix;
 
 import java.util.ArrayList;
@@ -73,7 +76,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         this.utils.addBuilder( EntryPoint.class,
                                new EntryPointBuilder() );
         this.utils.addBuilder( WindowReference.class, 
-                               new WindowReferenceBuilder() );
+                                new WindowReferenceBuilder() );
         this.utils.addBuilder( NamedConsequence.class,
                                new NamedConsequenceBuilder() );
         this.utils.addBuilder( ConditionalBranch.class,
@@ -169,16 +172,30 @@ public class ReteooRuleBuilder implements RuleBuilder {
                                                                   context );
 
         BaseNode baseTerminalNode = (BaseNode) terminal;
-        baseTerminalNode.networkUpdated(new UpdateContext());
-        baseTerminalNode.attach(context);
-        
-        // adds the terminal node to the list of nodes created/added by this sub-rule
-        context.getNodes().add( baseTerminalNode );
+        baseTerminalNode.attach( context );
+        context.addNode( baseTerminalNode );
 
-        // assigns partition IDs to the new nodes
-        //assignPartitionId(context);
+        updatePropagations( baseTerminalNode, context );
 
         return terminal;
+    }
+
+    private void updatePropagations( BaseNode baseTerminalNode, BuildContext context ) {
+        baseTerminalNode.networkUpdated( new UpdateContext() );
+
+        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
+            final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
+                                                                                     PropagationContext.RULE_ADDITION,
+                                                                                     null,
+                                                                                     null,
+                                                                                     null);
+
+            for ( BaseNode node : context.getNodes() ) {
+                node.updateSinkOnAttach( context, propagationContext, workingMemory );
+            }
+
+            propagationContext.evaluateActionQueue( workingMemory );
+        }
     }
 
     /**

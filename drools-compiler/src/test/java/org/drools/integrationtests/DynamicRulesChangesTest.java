@@ -43,11 +43,11 @@ public class DynamicRulesChangesTest {
         addRule("raiseAlarm");
     }
 
-    protected static StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) { 
+    protected static StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
         return kbase.newStatefulKnowledgeSession();
     }
-    
-    
+
+
     @Test(timeout=10000)
     public void testConcurrentRuleAdditions() throws Exception {
         parallelExecute(RulesExecutor.getSolvers());

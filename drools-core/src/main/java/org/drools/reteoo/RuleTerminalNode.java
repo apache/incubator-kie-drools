@@ -16,7 +16,6 @@
 
 package org.drools.reteoo;
 
-import org.drools.RuleBaseConfiguration;
 import org.drools.base.mvel.MVELEnabledExpression;
 import org.drools.base.mvel.MVELSalienceExpression;
 import org.drools.common.AgendaItem;
@@ -329,16 +328,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink(this, context);
-        if (context == null) {
-            return;
-        }
+    }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        if ( ! context.getNodes().contains( this.getLeftTupleSource() ) ) {
             getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
         }
     }

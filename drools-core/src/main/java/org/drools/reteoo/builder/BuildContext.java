@@ -396,11 +396,8 @@ public class BuildContext {
         return nodes;
     }
 
-    /**
-     * @param nodes the nodes to set
-     */
-    public void setNodes(List<BaseNode> nodes) {
-        this.nodes = nodes;
+    public void addNode(BaseNode node) {
+        nodes.add(node);
     }
 
     /**

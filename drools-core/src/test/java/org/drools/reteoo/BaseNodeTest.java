@@ -59,6 +59,9 @@ public class BaseNodeTest {
 
         }
 
+        public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        }
+
         public void updateNewNode(final InternalWorkingMemory workingMemory,
                                   final PropagationContext context) {
             // TODO Auto-generated method stub
@@ -82,6 +85,9 @@ public class BaseNodeTest {
             
         }
 
+        public short getType() {
+            return -1;
+        }
     }
 
 }

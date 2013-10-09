@@ -125,6 +125,10 @@ public class EntryPointNode extends ObjectSource
         out.writeObject( objectTypeNodes );
     }
 
+    public short getType() {
+        return NodeTypeEnums.EntryPointNode;
+    }
+
     /**
      * @return the entryPoint
      */
@@ -399,22 +403,15 @@ public class EntryPointNode extends ObjectSource
 
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null) {
-            return;
-        }
-
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            workingMemory.updateEntryPointsCache();
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
-            this.source.updateSink( this,
-                                    propagationContext,
-                                    workingMemory );
-        }
     }
+
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        workingMemory.updateEntryPointsCache();
+        this.source.updateSink( this,
+                                propagationContext,
+                                workingMemory );
+    }
+
 
     protected void doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
