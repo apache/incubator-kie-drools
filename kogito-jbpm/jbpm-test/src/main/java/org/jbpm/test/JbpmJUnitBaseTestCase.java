@@ -627,15 +627,23 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
     }
     
     protected void clearHistory() {
-        if (sessionPersistence) {
+        if (sessionPersistence && logService != null) {
             logService.clear();
-        } else {
+        } else if (inMemoryLogger != null) {
             inMemoryLogger.clear();
         }
     }
     
     protected TestWorkItemHandler getTestWorkItemHandler() {
         return workItemHandler;
+    }
+    
+    protected AuditLogService getLogService() {
+        return logService;
+    }
+    
+    protected WorkingMemoryInMemoryLogger getInMemoryLogger() {
+        return inMemoryLogger;
     }
 
     protected static class TestWorkItemHandler implements WorkItemHandler {
