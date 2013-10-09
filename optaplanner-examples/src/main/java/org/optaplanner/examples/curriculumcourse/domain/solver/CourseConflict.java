@@ -28,28 +28,26 @@ import org.optaplanner.examples.curriculumcourse.domain.Course;
  */
 public class CourseConflict implements Serializable, Comparable<CourseConflict> {
 
-    private Course leftCourse;
-    private Course rightCourse;
+    private final Course leftCourse;
+    private final Course rightCourse;
+    private final int conflictCount;
 
-    public CourseConflict(Course leftCourse, Course rightCourse) {
+    public CourseConflict(Course leftCourse, Course rightCourse, int conflictCount) {
         this.leftCourse = leftCourse;
         this.rightCourse = rightCourse;
+        this.conflictCount = conflictCount;
     }
 
     public Course getLeftCourse() {
         return leftCourse;
     }
 
-    public void setLeftCourse(Course leftCourse) {
-        this.leftCourse = leftCourse;
-    }
-
     public Course getRightCourse() {
         return rightCourse;
     }
 
-    public void setRightCourse(Course rightCourse) {
-        this.rightCourse = rightCourse;
+    public int getConflictCount() {
+        return conflictCount;
     }
 
     public boolean equals(Object o) {

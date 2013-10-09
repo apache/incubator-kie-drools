@@ -170,19 +170,17 @@ public class CourseSchedule extends AbstractPersistable implements Solution<Hard
         for (Course leftCourse : courseList) {
             for (Course rightCourse : courseList) {
                 if (leftCourse.getId() < rightCourse.getId()) {
-                    boolean conflicted = false;
+                    int conflictCount = 0;
                     if (leftCourse.getTeacher().equals(rightCourse.getTeacher())) {
-                        conflicted = true;
-                    } else {
-                        for (Curriculum curriculum : leftCourse.getCurriculumList()) {
-                            if (rightCourse.getCurriculumList().contains(curriculum)) {
-                                conflicted = true;
-                                break;
-                            }
+                        conflictCount++;
+                    }
+                    for (Curriculum curriculum : leftCourse.getCurriculumList()) {
+                        if (rightCourse.getCurriculumList().contains(curriculum)) {
+                            conflictCount++;
                         }
                     }
-                    if (conflicted) {
-                        courseConflictList.add(new CourseConflict(leftCourse, rightCourse));
+                    if (conflictCount > 0) {
+                        courseConflictList.add(new CourseConflict(leftCourse, rightCourse, conflictCount));
                     }
                 }
             }
