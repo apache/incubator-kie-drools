@@ -25,17 +25,17 @@ public interface PackageDataModelOracle extends ProjectDataModelOracle {
 
     void setPackageName( String packageName );
 
-    void addPackageWorkbenchEnumDefinitions( Map<String, String[]> dataEnumLists );
+    void addPackageWorkbenchEnumDefinitions( Map<String, String[]> workbenchEnumDefinitions );
 
     void addPackageDslConditionSentences( List<DSLSentence> dslConditionSentences );
 
     void addPackageDslActionSentences( List<DSLSentence> dslActionSentences );
 
-    void addPackageGlobals( Map<String, String> packageGlobalTypes );
+    void addPackageGlobals( Map<String, String> globalss );
 
     String getPackageName();
 
-    Map<String, String[]> getPackageWorkbenchEnums();
+    Map<String, String[]> getPackageWorkbenchDefinitions();
 
     List<DSLSentence> getPackageDslConditionSentences();
 

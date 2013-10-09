@@ -57,7 +57,7 @@ public class PackageDataModelOracleImpl extends ProjectDataModelOracleImpl imple
     }
 
     @Override
-    public Map<String, String[]> getPackageWorkbenchEnums() {
+    public Map<String, String[]> getPackageWorkbenchDefinitions() {
         return this.packageWorkbenchEnumDefinitions;
     }
 
