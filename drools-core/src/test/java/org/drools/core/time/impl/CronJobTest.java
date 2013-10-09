@@ -32,7 +32,7 @@ public class CronJobTest {
     public void testCronTriggerJob() throws Exception {
         SessionConfiguration config = new SessionConfiguration();
         config.setClockType( ClockType.PSEUDO_CLOCK );
-        PseudoClockScheduler timeService = (PseudoClockScheduler) TimerServiceFactory.getTimerService( null, config );
+        PseudoClockScheduler timeService = (PseudoClockScheduler) TimerServiceFactory.getTimerService( config );
 
         timeService.advanceTime( 0,
                                  TimeUnit.MILLISECONDS );
