@@ -83,13 +83,13 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     }
 
     public List<TaskSummary> getTasksAssignedByGroupsByExpirationDateOptional(List<String> groupIds, String language, Date expirationDate) {
-        List<TaskSummary> tasksByGroups = (List<TaskSummary>)pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional", 
+        List<Object[]> tasksByGroups = (List<Object[]>)pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDateOptional", 
                 pm.addParametersToMap("groupIds", groupIds, "expirationDate", expirationDate));
                 
         return collectTasksByPotentialOwners(tasksByGroups, language);
     }  
     
-    protected List<TaskSummary> collectTasksByPotentialOwners(List<TaskSummary> tasksByGroups, String language) {
+    protected List<TaskSummary> collectTasksByPotentialOwners(List<Object[]> tasksByGroups, String language) {
         Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
         Map<Long, List<String>> potentialOwners = Collections.synchronizedMap(new HashMap<Long, List<String>>());
         for (Object o : tasksByGroups) {
@@ -115,14 +115,14 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     
     public List<TaskSummary> getTasksAssignedByGroupsByExpirationDate(List<String> groupIds, String language, Date expirationDate) {
 
-        List<TaskSummary> tasksByGroups = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate", 
+        List<Object[]> tasksByGroups = (List<Object[]>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroupsByExpirationDate", 
                 pm.addParametersToMap("groupIds", groupIds, "expirationDate", expirationDate));
         return collectTasksByPotentialOwners(tasksByGroups, language);
     }        
             
     public List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds, String language) {
 
-        List<TaskSummary> tasksByGroups = (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroups", 
+        List<Object[]> tasksByGroups = (List<Object[]>) pm.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByGroups", 
                 pm.addParametersToMap("groupIds", groupIds));
                 
         Set<Long> tasksIds = Collections.synchronizedSet(new HashSet<Long>());
@@ -211,7 +211,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 tasksIds.add(ts.getId());
             }
 
-            List tasksPotentialOwners = (List) pm.queryWithParametersInTransaction("TasksOwnedPotentialOwnersByTaskIds",
+            List<Object[]> tasksPotentialOwners = (List<Object[]>) pm.queryWithParametersInTransaction("TasksOwnedPotentialOwnersByTaskIds",
                         pm.addParametersToMap("taskIds", tasksIds));
 
             Map<Long, List<String>> potentialOwners = new HashMap<Long, List<String>>();
