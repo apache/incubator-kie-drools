@@ -77,7 +77,7 @@ rule "unavailablePeriodPenalty"
         $unavailablePeriodPenalty : UnavailablePeriodPenalty($course : course, $period : period)
         $lecture : Lecture(course == $course, period == $period)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, -1);
+        scoreHolder.addHardConstraintMatch(kcontext, -10);
 end
 
 // ############################################################################

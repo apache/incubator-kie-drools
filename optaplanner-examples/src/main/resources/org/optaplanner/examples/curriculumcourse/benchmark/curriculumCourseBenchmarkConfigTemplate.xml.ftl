@@ -35,7 +35,7 @@
         <maximumSecondsSpend>300</maximumSecondsSpend>
       </termination>
       <constructionHeuristic>
-        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>

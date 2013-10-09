@@ -24,6 +24,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("Day")
 public class Day extends AbstractPersistable {
 
+    private static final String[] WEEKDAYS = {"Mo", "Tu", "We", "Th", "Fr"};
+
     private int dayIndex;
 
     private List<Period> periodList;
@@ -45,7 +47,7 @@ public class Day extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return toString();
+        return dayIndex + " " + WEEKDAYS[dayIndex % WEEKDAYS.length];
     }
 
     @Override

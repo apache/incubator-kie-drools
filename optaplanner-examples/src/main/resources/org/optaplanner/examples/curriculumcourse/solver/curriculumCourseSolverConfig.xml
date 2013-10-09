@@ -26,7 +26,7 @@
     <!--<scoreAttained>-0hard/-999999soft</scoreAttained>-->
   </termination>
   <constructionHeuristic>
-    <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
     <!--<forager>-->
       <!--<pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>-->
     <!--</forager>-->
