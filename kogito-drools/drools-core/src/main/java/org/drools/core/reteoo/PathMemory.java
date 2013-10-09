@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.ActivationsFilter;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
@@ -114,10 +115,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void queueRuleAgendaItem(InternalWorkingMemory wm) {
+        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
         synchronized ( agendaItem ) {
             agendaItem.getRuleExecutor().setDirty(true);
-            
-            ActivationsFilter activationFilter = ((InternalAgenda) wm.getAgenda()).getActivationsFilter();
+            ActivationsFilter activationFilter = agenda.getActivationsFilter();
             if ( activationFilter != null && !activationFilter.accept( agendaItem,
                                                                        wm,
                                                                        agendaItem.getTerminalNode() ) ) {
@@ -136,6 +137,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             // will return if already added
             ((InternalAgenda)wm.getAgenda()).addEagerRuleAgendaItem( agendaItem );
         }
+        agenda.notifyHalt();
     }
 
     public void unlinkedSegment(long mask,
