@@ -356,7 +356,9 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
                 solverBenchmarkCount++;
             }
         }
-        averageScore = totalScore.divide(solverBenchmarkCount);
+        if (totalScore != null) {
+            averageScore = totalScore.divide(solverBenchmarkCount);
+        }
     }
 
     private void determineSolverBenchmarkRanking() {
@@ -441,5 +443,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
 //            IOUtils.closeQuietly(writer);
 //        }
 //    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 
 }

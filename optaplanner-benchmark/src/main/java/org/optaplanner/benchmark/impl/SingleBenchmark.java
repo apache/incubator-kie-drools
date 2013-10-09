@@ -218,4 +218,9 @@ public class SingleBenchmark implements Callable<SingleBenchmark> {
         return singleStatisticMap.get(statisticType);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }

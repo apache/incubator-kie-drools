@@ -263,7 +263,7 @@ public class BenchmarkReport {
                                     plannerBenchmark.getSolverBenchmarkList().size()));
                         }
                         List<XYSeries> seriesList = seriesListList.get(i);
-                        if (solverBenchmarkIndex >= seriesList.size()) {
+                        while (solverBenchmarkIndex >= seriesList.size()) {
                             seriesList.add(new XYSeries(solverLabel));
                         }
                         seriesList.get(solverBenchmarkIndex).add((double) problemScale, levelValues[i]);
@@ -431,7 +431,7 @@ public class BenchmarkReport {
                                     plannerBenchmark.getSolverBenchmarkList().size()));
                         }
                         List<XYSeries> seriesList = seriesListList.get(i);
-                        if (solverBenchmarkIndex >= seriesList.size()) {
+                        while (solverBenchmarkIndex >= seriesList.size()) {
                             seriesList.add(new XYSeries(solverLabel));
                         }
                         seriesList.get(solverBenchmarkIndex).add((Long) timeMillisSpend, (Double) levelValues[i]);

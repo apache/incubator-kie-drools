@@ -295,4 +295,9 @@ public class ProblemBenchmark {
         }
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }

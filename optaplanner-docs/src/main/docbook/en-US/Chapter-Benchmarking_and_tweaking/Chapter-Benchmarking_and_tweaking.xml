@@ -146,25 +146,31 @@
       <para>This <literal>PlannerBenchmark</literal> will try 3 configurations (1 move tabu, 1 entity tabu and 1 value
       tabu) on 2 data sets (32 and 64 queens), so it will run 6 solvers.</para>
 
-      <para>Every <literal>solverBenchmark</literal> element contains a solver configuration (for example with a local
-      search solver phase) and one or more <literal>inputSolutionFile</literal> elements. It will run the solver
-      configuration on each of those unsolved solution files. The element <literal>name</literal> is optional, because
-      it is generated if absent. The inputSolutionFile is read by a <link linkend="problemIO">ProblemIO</link>.</para>
+      <para>Every <literal>&lt;solverBenchmark&gt;</literal> element contains a solver configuration (for example with a
+      local search solver phase) and one or more <literal>&lt;inputSolutionFile&gt;</literal> elements. It will run the
+      solver configuration on each of those unsolved solution files. The element <literal>name</literal> is optional,
+      because it is generated if absent. The inputSolutionFile is read by a <link
+      linkend="problemIO">ProblemIO</link>.</para>
 
-      <para>To lower verbosity, the common part of multiple <literal>solverBenchmark</literal> entities can be extracted
-      to the <literal>inheritedSolverBenchmark</literal> element. Yet, every element can still be overwritten per
-      <literal>solverBenchmark</literal> element. Note that inherited solver phases such as
+      <para>To lower verbosity, the common part of multiple <literal>&lt;solverBenchmark&gt;</literal> elements can be
+      extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Yet, every property can still be
+      overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
       <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
       instead are added to the tail of the solver phases list.</para>
 
-      <para>You need to specify a <literal>benchmarkDirectory</literal> (relative to the working directory). A benchmark
-      report will be written in that directory.</para>
+      <para>You need to specify a <literal>&lt;benchmarkDirectory&gt;</literal> element (relative to the working
+      directory). A benchmark report will be written in that directory.</para>
 
       <note>
         <para>It's recommended that the <literal>benchmarkDirectory</literal> is a directory ignored for source control
         and not cleaned by your build system. This way the generated files are not bloating your source control and they
         aren't lost when doing a build. Usually that directory is called <literal>local</literal>.</para>
       </note>
+
+      <para>If an <literal>Exception</literal> or <literal>Error</literal> occurs in a single benchmark, the entire
+      Benchmarker will not fail-fast (unlike everything else in OptaPlanner). Instead, the Benchmarker will continue to
+      run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single
+      benchmark). The failing benchmarks will be clearly marked in the benchmark report. </para>
     </section>
 
     <section xml:id="problemIO">

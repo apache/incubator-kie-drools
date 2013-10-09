@@ -290,4 +290,9 @@ public class SolverBenchmark {
         return StringEscapeUtils.escapeHtml(xml);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }
