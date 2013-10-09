@@ -24,7 +24,6 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -51,8 +50,6 @@ public class JDKTimerService
     protected ScheduledThreadPoolExecutor   scheduler;
 
     protected TimerJobFactoryManager        jobFactoryManager = DefaultTimerJobFactoryManager.instance;
-
-    private transient InternalWorkingMemory session;
 
     public JDKTimerService() {
         this(1);
@@ -165,16 +162,6 @@ public class JDKTimerService
 
     public Collection<TimerJobInstance> getTimerJobInstances(int id) {
         return jobFactoryManager.getTimerJobInstances();
-    }
-
-    @Override
-    public void setSession(InternalWorkingMemory wm) {
-        this.session = wm;
-    }
-
-    @Override
-    public InternalWorkingMemory getSession() {
-        return session;
     }
 
 }

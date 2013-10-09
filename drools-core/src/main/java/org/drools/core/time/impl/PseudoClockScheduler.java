@@ -218,9 +218,6 @@ public class PseudoClockScheduler
             }
         }
         this.timer.set( endTime );
-        if( session != null ) {
-            ((InternalAgenda)session.getAgenda()).notifyHalt();
-        }
         return this.timer.get(); 
     }
 

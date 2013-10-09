@@ -17,11 +17,10 @@
 package org.drools.core.time;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalWorkingMemory;
 
 public class TimerServiceFactory {
     
-    public static TimerService getTimerService( InternalWorkingMemory wm, SessionConfiguration config ) {
+    public static TimerService getTimerService( SessionConfiguration config ) {
         TimerService service = null;
         switch( config.getClockType() ) {
             case REALTIME_CLOCK:
@@ -30,9 +29,6 @@ public class TimerServiceFactory {
             case PSEUDO_CLOCK:
                 service = (TimerService) config.getClockType().createInstance();
                 break;
-        }
-        if( service != null ) {
-            service.setSession(wm);
         }
         return service;
     }
