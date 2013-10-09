@@ -17,7 +17,6 @@ package org.jbpm.process.core.timer.impl;
 
 import java.util.Collection;
 
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -107,15 +106,5 @@ public class RegisteredTimerServiceDelegate implements TimerService, InternalSch
     public Collection<TimerJobInstance> getTimerJobInstances(int id) {        
         return timerService.getTimerJobInstances(id);
     }
-
-	@Override
-	public void setSession(InternalWorkingMemory wm) {
-		timerService.setSession(wm);		
-	}
-
-	@Override
-	public InternalWorkingMemory getSession() {
-		return timerService.getSession();
-	}
 
 }

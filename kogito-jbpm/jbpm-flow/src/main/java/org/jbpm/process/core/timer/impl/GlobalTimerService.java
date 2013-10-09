@@ -25,7 +25,6 @@ import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -277,17 +276,5 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         }
         
     }
-
-	@Override
-	public void setSession(InternalWorkingMemory wm) {
-		// not used here
-		
-	}
-
-	@Override
-	public InternalWorkingMemory getSession() {
-		// not used here
-		return null;
-	}
 
 }
