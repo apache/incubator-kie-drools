@@ -113,6 +113,8 @@ public class TimerManager {
             if (timer.getCronExpression() != null) {
                 Date startTime = new Date(timerService.getCurrentTime() + 1000);
                 trigger = new CronTrigger(timerService.getCurrentTime(), startTime, null, -1, timer.getCronExpression(), null, null);
+                // cron timers are by nature repeatable
+                timer.setPeriod(1);
             } else {
                 trigger = new IntervalTrigger(timerService.getCurrentTime(), null, null, timer.getRepeatLimit(), timer.getDelay(),
                         timer.getPeriod(), null, null);
@@ -290,6 +292,7 @@ public class TimerManager {
 
                 if (ctx.getTimer().getPeriod() == 0) {
                     tm.getTimerMap().remove(ctx.getTimer().getId());
+                    tm.getTimerService().removeJob(ctx.getJobHandle());
                 }
 
             } catch (Throwable e) {
@@ -328,6 +331,7 @@ public class TimerManager {
 
                 if (ctx.getTimer().getPeriod() == 0) {
                     tm.getTimerMap().remove(ctx.getTimer().getId());
+                    tm.getTimerService().removeJob(ctx.getJobHandle());
                 }
 
             } catch (Throwable e) {
