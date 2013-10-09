@@ -35,7 +35,7 @@
         <maximumSecondsSpend>300</maximumSecondsSpend>
       </termination>
       <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
@@ -46,21 +46,19 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>period</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>room</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+          </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
@@ -78,21 +76,19 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>period</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>room</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+          </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <lateSimulatedAnnealingSize>${lateSimulatedAnnealingSize}</lateSimulatedAnnealingSize>

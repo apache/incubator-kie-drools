@@ -46,36 +46,6 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>entityTabu10-custom-phase-shuffled</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <selectionOrder>SHUFFLED</selectionOrder>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-        </unionMoveSelector>
-        <acceptor>
-          <entityTabuSize>10</entityTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
     <name>jit</name>
     <solver>
       <localSearch>

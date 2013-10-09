@@ -38,7 +38,6 @@ import javax.swing.SwingConstants;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
-import org.optaplanner.examples.common.swingui.timetable.TimeTableLayoutConstraints;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
@@ -47,8 +46,6 @@ import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 import org.optaplanner.examples.curriculumcourse.domain.Period;
 import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.curriculumcourse.domain.Teacher;
-import org.optaplanner.examples.curriculumcourse.solver.move.PeriodChangeMove;
-import org.optaplanner.examples.curriculumcourse.solver.move.RoomChangeMove;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
@@ -264,11 +261,11 @@ public class CurriculumCoursePanel extends SolutionPanel {
             if (result == JOptionPane.OK_OPTION) {
                 Period toPeriod = (Period) periodListField.getSelectedItem();
                 if (lecture.getPeriod() != toPeriod) {
-                    solutionBusiness.doMove(new PeriodChangeMove(lecture, toPeriod));
+                    solutionBusiness.doChangeMove(lecture, "period", toPeriod);
                 }
                 Room toRoom = (Room) roomListField.getSelectedItem();
                 if (lecture.getRoom() != toRoom) {
-                    solutionBusiness.doMove(new RoomChangeMove(lecture, toRoom));
+                    solutionBusiness.doChangeMove(lecture, "room", toRoom);
                 }
                 boolean toLocked = lockedField.isSelected();
                 if (lecture.isLocked() != toLocked) {

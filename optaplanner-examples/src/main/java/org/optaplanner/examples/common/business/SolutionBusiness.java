@@ -28,8 +28,10 @@ import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.event.BestSolutionChangedEvent;
 import org.optaplanner.core.impl.event.SolverEventListener;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -277,6 +279,17 @@ public class SolutionBusiness {
 
     public void terminateSolvingEarly() {
         solver.terminateEarly();
+    }
+
+    public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
+        PlanningVariableDescriptor variableDescriptor = guiScoreDirector.getSolutionDescriptor()
+                .findVariableDescriptor(entity, variableName);
+        return new ChangeMove(entity, variableDescriptor, toPlanningValue);
+    }
+
+    public void doChangeMove(Object entity, String variableName, Object toPlanningValue) {
+        ChangeMove move = createChangeMove(entity, variableName, toPlanningValue);
+        doMove(move);
     }
 
 }

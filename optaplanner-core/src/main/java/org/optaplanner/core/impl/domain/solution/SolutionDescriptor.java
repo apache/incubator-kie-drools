@@ -257,6 +257,11 @@ public class SolutionDescriptor {
         return new PlanningVariableListenerSupport(variableListenerMap);
     }
 
+    public PlanningVariableDescriptor findVariableDescriptor(Object entity, String variableName) {
+        PlanningEntityDescriptor entityDescriptor = getEntityDescriptor(entity.getClass());
+        return entityDescriptor.getVariableDescriptor(variableName);
+    }
+
     // ************************************************************************
     // Extraction methods
     // ************************************************************************

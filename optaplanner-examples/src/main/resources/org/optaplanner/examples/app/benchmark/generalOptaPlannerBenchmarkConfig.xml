@@ -52,7 +52,6 @@
     <problemBenchmarks>
       <xstreamAnnotatedClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</xstreamAnnotatedClass>
       <inputSolutionFile>data/curriculumcourse/unsolved/comp08.xml</inputSolutionFile>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
@@ -65,29 +64,26 @@
         <maximumMinutesSpend>10</maximumMinutesSpend>
       </termination>
       <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.PeriodChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.RoomChangeMoveFactory</moveListFactoryClass>
-          </moveListFactory>
-          <moveListFactory>
-            <cacheType>PHASE</cacheType>
-            <moveListFactoryClass>org.optaplanner.examples.curriculumcourse.solver.move.factory.LectureSwapMoveFactory</moveListFactoryClass>
-          </moveListFactory>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>period</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <changeMoveSelector>
+            <valueSelector>
+              <variableName>room</variableName>
+            </valueSelector>
+          </changeMoveSelector>
+          <swapMoveSelector>
+            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+          </swapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>10</entityTabuSize>
-          <solutionTabuSize>1500</solutionTabuSize>
         </acceptor>
         <forager>
           <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->

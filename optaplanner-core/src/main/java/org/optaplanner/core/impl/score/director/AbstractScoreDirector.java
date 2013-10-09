@@ -170,8 +170,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void beforeVariableChanged(Object entity, String variableName) {
-        PlanningEntityDescriptor entityDescriptor = getSolutionDescriptor().getEntityDescriptor(entity.getClass());
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+        PlanningVariableDescriptor variableDescriptor = getSolutionDescriptor()
+                .findVariableDescriptor(entity, variableName);
         if (variableDescriptor != null) {
             beforeVariableChanged(variableDescriptor, entity);
         } else {
@@ -181,8 +181,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public final void afterVariableChanged(Object entity, String variableName) {
-        PlanningEntityDescriptor entityDescriptor = getSolutionDescriptor().getEntityDescriptor(entity.getClass());
-        PlanningVariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+        PlanningVariableDescriptor variableDescriptor = getSolutionDescriptor()
+                .findVariableDescriptor(entity, variableName);
         if (variableDescriptor != null) {
             afterVariableChanged(variableDescriptor, entity);
         } else {
