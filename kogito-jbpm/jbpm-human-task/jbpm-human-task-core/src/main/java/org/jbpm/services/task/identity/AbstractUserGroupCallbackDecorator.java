@@ -6,10 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.inject.Inject;
 
 import org.drools.core.util.StringUtils;
+import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.services.task.exception.CannotAddTaskException;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
@@ -32,6 +37,9 @@ import org.slf4j.LoggerFactory;
 public class AbstractUserGroupCallbackDecorator {
     
     private static final Logger logger = LoggerFactory.getLogger(AbstractUserGroupCallbackDecorator.class);
+    
+    private static ReentrantLock lock = new ReentrantLock();
+    private volatile static Set<String> localcache = new CopyOnWriteArraySet<String>();
 
     @Inject 
     private JbpmServicesPersistenceManager pm;
@@ -95,12 +103,68 @@ public class AbstractUserGroupCallbackDecorator {
     }
 
     protected void addUserFromCallbackOperation(String userId) {
-        
-        boolean userExists = pm.find(UserImpl.class, userId) != null;
+    	UserImpl user = pm.find(UserImpl.class, userId);
+        boolean userExists = user != null;
         if (!StringUtils.isEmpty(userId) && !userExists) {
-            UserImpl user = new UserImpl(userId);
-            pm.persist(user);
-        }
+            user = new UserImpl(userId);
+            persistIfNotExists(user);
+        } 
+    }
+    
+    protected void persistIfNotExists(final OrganizationalEntity entity) {
+    	boolean exists = localcache.contains(entity.getId());
+    	if (exists) {
+    		logger.debug("No need to lock {}", Thread.currentThread().getName());
+    		return;
+    	}
+    	
+    	logger.debug("About to lock {}", Thread.currentThread().getName());
+    	lock.lock();
+    	logger.debug("Lock accuried {}" + Thread.currentThread().getName());
+		try {
+			exists = localcache.contains(entity.getId());
+	    	logger.debug("Entity {} exists {} thread {}", entity, exists, Thread.currentThread().getName());
+	        if (!StringUtils.isEmpty(entity.getId()) && !exists) {
+	            pm.persist(entity);
+	            
+	            logger.debug("Persisted {} by thread {}", entity, Thread.currentThread().getName());
+	        }
+    	} finally {
+    		if (exists) {
+    			logger.debug("Unlock directly {}", Thread.currentThread().getName());
+    			// unlock directly when exists in local cache
+    			lock.unlock();
+    		} else {
+    			logger.debug("Unlock on transaction completion {}", Thread.currentThread().getName());
+    			
+    			JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
+    			if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
+    	                && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
+    	                && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+	    			// unlock after transaction was completed
+		    		
+		    		tm.registerTransactionSynchronization(new TransactionSynchronization() {
+						
+						@Override
+						public void beforeCompletion() {					
+						}
+						
+						@Override
+						public void afterCompletion(int status) {
+							if (lock.hasQueuedThreads()) {
+								localcache.add(entity.getId());
+							}
+							lock.unlock();	
+							logger.debug("Unlocked {}", Thread.currentThread().getName());
+						}
+					});
+    			} else {
+    				logger.debug("Unlock directly no tx sync avaliable {}", Thread.currentThread().getName());
+        			// unlock directly when exists in local cache
+        			lock.unlock();
+    			}
+    		}
+    	}
     }
 
     protected void doCallbackGroupsOperation(String userId, List<String> groupIds) {
@@ -138,11 +202,12 @@ public class AbstractUserGroupCallbackDecorator {
     }
 
     protected void addGroupFromCallbackOperation(String groupId) {
-        boolean groupExists = pm.find(GroupImpl.class, groupId) != null;
+    	GroupImpl group = pm.find(GroupImpl.class, groupId);
+    	boolean groupExists = group != null;
         if (!StringUtils.isEmpty(groupId) && !groupExists) {
-            GroupImpl group = new GroupImpl(groupId);
-            pm.persist(group);
-        }        
+            group = new GroupImpl(groupId);
+            persistIfNotExists(group);
+        }    
     }
 
     protected void doCallbackOperationForTaskData(InternalTaskData data) {
