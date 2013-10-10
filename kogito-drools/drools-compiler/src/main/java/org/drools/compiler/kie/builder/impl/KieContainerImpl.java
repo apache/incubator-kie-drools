@@ -220,7 +220,8 @@ public class KieContainerImpl
         // if we get to here, then we know the pkgs is now cached
         pkgs = kModule.getKnowledgePackagesForKieBase(kBaseModel.getName());
 
-        if (kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD) {
+        if ( kBaseModel.getEventProcessingMode() == EventProcessingOption.CLOUD &&
+            (conf == null || conf.getOption(EventProcessingOption.class) == EventProcessingOption.CLOUD ) ) {
             for (KnowledgePackage kpkg : pkgs) {
                 if ( ((KnowledgePackageImp) kpkg).pkg.needsStreamMode() ) {
                     throw new RuntimeException( "The requested KieBase \"" + kBaseName + "\" has been set to run in CLOUD mode but requires features only available in STREAM mode" );
