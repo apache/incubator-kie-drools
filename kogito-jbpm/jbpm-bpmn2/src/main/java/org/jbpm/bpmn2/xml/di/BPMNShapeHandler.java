@@ -72,10 +72,22 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
                 String width = ((Element) xmlNode).getAttribute("width");
                 String height = ((Element) xmlNode).getAttribute("height");
                 try {
-                    int xValue = new Float(x).intValue();
-                    int yValue = new Float(y).intValue();
-                    int widthValue = new Float(width).intValue();
-                    int heightValue = new Float(height).intValue();
+                    int xValue = 0;
+                    if (x != null && x.trim().length() != 0) {
+                    	xValue = new Float(x).intValue();
+                    }
+                    int yValue = 0;
+                    if (y != null && y.trim().length() != 0) {
+                    	yValue = new Float(y).intValue();
+                    }
+                    int widthValue = 20;
+                    if (width != null && width.trim().length() != 0) {
+                    	widthValue = new Float(width).intValue();
+                    }
+                    int heightValue = 20;
+                    if (height != null && height.trim().length() != 0) {
+                    	heightValue = new Float(height).intValue();
+                    }
                     nodeInfo.setX(xValue);
                     nodeInfo.setY(yValue);
                     nodeInfo.setWidth(widthValue);
