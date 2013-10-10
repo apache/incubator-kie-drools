@@ -12,7 +12,6 @@ import org.kie.api.builder.model.KieModuleModel;
 public class CepJavaTypeTest extends CommonTestMethodBase {
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1005204")
     public void testJavaTypeAnnotatedWithRole_WindowTime() {
         String drl = "package org.drools.compiler.integrationtests\n"
                 + "\n"
@@ -42,7 +41,6 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1005204")
     public void testJavaTypeAnnotatedWithRole_WindowLength() {
         String drl = "package org.drools.compiler.integrationtests\n"
                 + "\n"
