@@ -14,57 +14,72 @@ import org.kie.api.runtime.KieSession;
 
 public class ScenarioRunner4JUnit extends Runner {
 
+    private final int maxRuleFirings;
     // The description of the test suite
     private Description descr;
     // the actual scenario test to be executed
     private List<Scenario> scenarios;
-    private KieSession  ksession;
+    private KieSession ksession;
 
-    public ScenarioRunner4JUnit( Scenario scenario,
-                                 KieSession ksession) throws InitializationError {
-    	this.scenarios = new ArrayList<Scenario>();
+    public ScenarioRunner4JUnit(Scenario scenario,
+            KieSession ksession,
+            int maxRuleFirings) throws InitializationError {
+        this.scenarios = new ArrayList<Scenario>();
         this.scenarios.add(scenario);
         this.ksession = ksession;
-        this.descr = Description.createSuiteDescription( "Scenario test cases" );
+        this.descr = Description.createSuiteDescription("Scenario test cases");
+        this.maxRuleFirings = maxRuleFirings;
     }
 
-	public ScenarioRunner4JUnit(List<Scenario> scenarios, KieSession ksession)
-			throws InitializationError {
-		this.scenarios = scenarios;
-		this.ksession = ksession;
-		this.descr = Description.createSuiteDescription("Scenario test cases");
-	}
-	
+    public ScenarioRunner4JUnit(Scenario scenario,
+            KieSession ksession) throws InitializationError {
+        this(scenario, ksession, 0);
+    }
+
+    public ScenarioRunner4JUnit(List<Scenario> scenarios,
+            KieSession ksession,
+            int maxRuleFirings) throws InitializationError {
+        this.scenarios = scenarios;
+        this.ksession = ksession;
+        this.descr = Description.createSuiteDescription("Scenario test cases");
+        this.maxRuleFirings = maxRuleFirings;
+    }
+
+    public ScenarioRunner4JUnit(List<Scenario> scenarios,
+            KieSession ksession) throws InitializationError {
+        this(scenarios, ksession, 0);
+    }
+
     @Override
     public Description getDescription() {
         return descr;
     }
 
     @Override
-    public void run( RunNotifier notifier ) {
-   	    for(Scenario scenario : scenarios) {
-   	        Description childDescription = Description.createTestDescription(getClass(),
+    public void run(RunNotifier notifier) {
+        for (Scenario scenario : scenarios) {
+            Description childDescription = Description.createTestDescription(getClass(),
                     scenario.getName());
-   	        descr.addChild(childDescription);
-            EachTestNotifier eachNotifier = new EachTestNotifier( notifier, childDescription );
+            descr.addChild(childDescription);
+            EachTestNotifier eachNotifier = new EachTestNotifier(notifier, childDescription);
             try {
                 eachNotifier.fireTestStarted();
-                ScenarioRunner runner = new ScenarioRunner( ksession );
-                runner.run( scenario );
-                if ( !scenario.wasSuccessful() ) {
+                ScenarioRunner runner = new ScenarioRunner(ksession, maxRuleFirings);
+                runner.run(scenario);
+                if (!scenario.wasSuccessful()) {
                     StringBuilder builder = new StringBuilder();
-                    for ( String message : scenario.getFailureMessages() ) {
-                        builder.append( message ).append( "\n" );
+                    for (String message : scenario.getFailureMessages()) {
+                        builder.append(message).append("\n");
                     }
-                    eachNotifier.addFailedAssumption( new AssumptionViolatedException( builder.toString() ) );
+                    eachNotifier.addFailedAssumption(new AssumptionViolatedException(builder.toString()));
                 }
-            } catch ( Throwable t ) {
-                eachNotifier.addFailure( t );
+            } catch (Throwable t) {
+                eachNotifier.addFailure(t);
             } finally {
                 // has to always be called as per junit docs
                 eachNotifier.fireTestFinished();
-            }    		
-    	}
+            }
+        }
     }
 
 }
