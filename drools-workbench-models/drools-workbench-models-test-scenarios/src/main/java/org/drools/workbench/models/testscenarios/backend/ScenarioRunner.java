@@ -49,6 +49,7 @@ import org.mvel2.MVEL;
 public class ScenarioRunner {
 
     private final KieSession ksession;
+    private final int maximumAmountOfRuleFirings;
     private TestScenarioKSessionWrapper workingMemoryWrapper;
     private FactPopulatorFactory factPopulatorFactory;
     private FactPopulator factPopulator;
@@ -66,8 +67,22 @@ public class ScenarioRunner {
      * provide a suitable TypeResolver for a given package header,
      * and the Package config can provide a classloader.
      */
-    public ScenarioRunner( final KieSession ksession ) throws ClassNotFoundException {
+    public ScenarioRunner( final KieSession ksession )
+            throws ClassNotFoundException {
+        this(ksession, 0);
+    }
+
+    /**
+     *
+     * @param ksession  A populated type resolved to be used to resolve the types in
+     * the scenario.
+     * @param maximumAmountOfRuleFirings Limit for amout of rules that can fire. To prevent infinite loops.
+     * @throws ClassNotFoundException
+     */
+    public ScenarioRunner( final KieSession ksession, int maximumAmountOfRuleFirings )
+            throws ClassNotFoundException {
         this.ksession = ksession;
+        this.maximumAmountOfRuleFirings = maximumAmountOfRuleFirings;
     }
 
     public void run( Scenario scenario )
@@ -126,12 +141,11 @@ public class ScenarioRunner {
         return scenarioSettings;
     }
 
-    private int getMaxRuleFirings( Scenario scenario ) {
-        String property = System.getProperty( "guvnor.testscenario.maxrulefirings" );
-        if ( property == null ) {
+    private int getMaxRuleFirings(Scenario scenario) {
+        if (maximumAmountOfRuleFirings <= 0) {
             return scenario.getMaxRuleFirings();
         } else {
-            return Integer.parseInt( property );
+            return maximumAmountOfRuleFirings;
         }
     }
 
