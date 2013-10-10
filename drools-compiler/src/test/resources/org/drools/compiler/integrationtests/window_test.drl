@@ -1,0 +1,71 @@
+package org.drools.compiler.integrationtests;
+
+import org.drools.compiler.integrationtests.WindowTest.TestEvent
+
+global java.util.List result
+
+declare TestEvent
+    @role( event )
+end
+
+declare window DeclaredTimeWindow
+    TestEvent ( name == "timeDec" ) over window:time( 50ms ) from entry-point EventStream
+end
+
+declare window DeclaredLengthWindow
+    TestEvent ( name == "lengthDec" ) over window:length( 5 ) from entry-point EventStream
+end
+
+query "TestTimeWindow"
+    Number( $eventCount : longValue ) from
+        accumulate (
+            $event : TestEvent ( name == "time" ) over window:time( 300ms ) from entry-point EventStream,
+            count($event)
+        )
+end
+
+query "TestLengthWindow"
+    Number( $eventCount : longValue ) from
+        accumulate (
+            $event : TestEvent ( name == "length" ) over window:length( 10 ) from entry-point EventStream,
+            count($event)
+        )
+end
+
+query "TestDeclaredTimeWindow"
+    Number( $eventCount : longValue ) from
+        accumulate ( 
+            $event : TestEvent () from window DeclaredTimeWindow,
+            count( $event )
+        )
+end
+
+query "TestDeclaredLengthWindow"
+    Number( $eventCount : longValue ) from
+        accumulate ( 
+            $event : TestEvent () from window DeclaredLengthWindow,
+            count( $event )
+        )
+end
+
+rule "TestDeclaredTimeWindowRule"
+    when
+        Number( $eventCount : longValue, longValue > 0 ) from 
+            accumulate ( 
+                $event : TestEvent () from window DeclaredTimeWindow,
+                count( $event )
+            )
+    then
+        result.add($eventCount);
+end
+
+rule "TestDeclaredLengthWindowRule"
+    when
+        Number( $eventCount : longValue, longValue > 0 ) from 
+            accumulate ( 
+                $event : TestEvent () from window DeclaredLengthWindow,
+                count( $event )
+            )
+    then
+        result.add($eventCount);
+end
