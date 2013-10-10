@@ -526,14 +526,26 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         if( associations != null ) { 
             for( Association association : associations ) { 
                String sourceRef = association.getSourceRef();
-               Object source = findNodeOrDataStoreByUniqueId(definitions, nodeContainer, sourceRef,
+               Object source = null;
+               try {
+            	   source = findNodeOrDataStoreByUniqueId(definitions, nodeContainer, sourceRef,
                        "Could not find source [" + sourceRef + "] for association " + association.getId() + "]" );
+               } catch (IllegalArgumentException e) {
+            	   // source not found
+               }
                String targetRef = association.getTargetRef();
-               Object target = findNodeOrDataStoreByUniqueId(definitions, nodeContainer, targetRef, 
+               Object target = null;
+               try {
+            	   target = findNodeOrDataStoreByUniqueId(definitions, nodeContainer, targetRef, 
                        "Could not find target [" + targetRef + "] for association [" + association.getId() + "]" );
-               if( target instanceof DataStore || source instanceof DataStore ) { 
-                   // handle data store
-               } else if( source instanceof EventNode ) { 
+               } catch (IllegalArgumentException e) {
+            	   // target not found
+               }
+               if (source == null || target == null) {
+            	   // TODO: ignoring this association for now
+               } else if (target instanceof DataStore || source instanceof DataStore) { 
+                   // TODO: ignoring data store associations for now
+               } else if (source instanceof EventNode) { 
                    EventNode sourceNode = (EventNode) source;
                    Node targetNode = (Node) target;
                    checkBoundaryEventCompensationHandler(association, sourceNode, targetNode);
