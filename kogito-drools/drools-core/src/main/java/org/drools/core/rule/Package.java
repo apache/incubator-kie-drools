@@ -27,6 +27,7 @@ import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.util.ClassUtils;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
 
 import java.io.ByteArrayInputStream;
@@ -523,7 +524,11 @@ public class Package
      */
     public boolean isEvent( Class clazz ) {
         TypeDeclaration typeDeclaration = getTypeDeclaration(clazz);
-        return typeDeclaration != null && typeDeclaration.getRole() == TypeDeclaration.Role.EVENT;
+        if (typeDeclaration != null) {
+            return typeDeclaration.getRole() == TypeDeclaration.Role.EVENT;
+        }
+        Role role = (Role) clazz.getAnnotation( Role.class );
+        return role != null && role.value() == Role.Type.EVENT;
     }
 
     public void clear() {
