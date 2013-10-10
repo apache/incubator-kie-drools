@@ -16,8 +16,10 @@
 
 package org.optaplanner.examples.travelingtournament.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
@@ -27,19 +29,47 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
+import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
+
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
 
 public class TravelingTournamentPanel extends SolutionPanel {
 
+    private final TimeTablePanel<Team, Day> teamsPanel;
+    private TangoColorFactory tangoColorFactory;
+
     public TravelingTournamentPanel() {
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        teamsPanel = new TimeTablePanel<Team, Day>();
+        tabbedPane.add("Teams", new JScrollPane(teamsPanel));
+        add(tabbedPane, BorderLayout.CENTER);
+        setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
+    }
+
+    @Override
+    public boolean isWrapInScrollPane() {
+        return false;
+    }
+
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
     }
 
     private TravelingTournament getTravelingTournament() {
@@ -47,42 +77,92 @@ public class TravelingTournamentPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        removeAll();
+        teamsPanel.reset();
         TravelingTournament travelingTournament = (TravelingTournament) solution;
-        Map<Day, DayPanel> dayPanelMap = new HashMap<Day, DayPanel>();
-        for (Day day : travelingTournament.getDayList()) {
-            TravelingTournamentPanel.DayPanel dayPanel = new DayPanel();
-            add(dayPanel);
-            dayPanelMap.put(day, dayPanel);
+        tangoColorFactory = new TangoColorFactory();
+        defineGrid(travelingTournament);
+        fillCells(travelingTournament);
+        repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
+    }
+
+    private void defineGrid(TravelingTournament travelingTournament) {
+        JButton footprint = new JButton("MMMMM");
+        footprint.setMargin(new Insets(0, 0, 0, 0));
+        int footprintWidth = footprint.getPreferredSize().width;
+
+        teamsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Day header
+        for (Team team : travelingTournament.getTeamList()) {
+            teamsPanel.defineColumnHeader(team, footprintWidth);
         }
+        teamsPanel.defineColumnHeader(null, footprintWidth); // Unassigned
+
+        teamsPanel.defineRowHeaderByKey(HEADER_ROW); // Team header
+        for (Day day : travelingTournament.getDayList()) {
+            teamsPanel.defineRowHeader(day);
+        }
+        teamsPanel.defineRowHeader(null); // Unassigned day
+    }
+
+    private void fillCells(TravelingTournament travelingTournament) {
+        teamsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Day")));
+        fillTeamCells(travelingTournament);
+        fillDayCells(travelingTournament);
+        fillMatchCells(travelingTournament);
+    }
+
+    private void fillTeamCells(TravelingTournament travelingTournament) {
+        for (Team team : travelingTournament.getTeamList()) {
+            JPanel teamPanel = createHeaderPanel(new JLabel(team.getLabel(), SwingConstants.CENTER));
+            teamPanel.setBackground(tangoColorFactory.pickColor(team));
+            teamsPanel.addColumnHeader(team, HEADER_ROW,
+                    teamPanel);
+        }
+        teamsPanel.addColumnHeader(null, HEADER_ROW,
+                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
+    }
+
+    private void fillDayCells(TravelingTournament travelingTournament) {
+        for (Day day : travelingTournament.getDayList()) {
+            teamsPanel.addRowHeader(HEADER_COLUMN, day,
+                    createHeaderPanel(new JLabel(day.getLabel())));
+        }
+        teamsPanel.addRowHeader(HEADER_COLUMN, null,
+                createHeaderPanel(new JLabel("Unassigned")));
+    }
+
+    private void fillMatchCells(TravelingTournament travelingTournament) {
         for (Match match : travelingTournament.getMatchList()) {
-            TravelingTournamentPanel.DayPanel dayPanel = dayPanelMap.get(match.getDay());
-            dayPanel.addMatch(match);
+            Team homeTeam = match.getHomeTeam();
+            Team awayTeam = match.getAwayTeam();
+            teamsPanel.addCell(homeTeam, match.getDay(),
+                    createButton(match, tangoColorFactory.pickColor(awayTeam), awayTeam.getLabel()));
+            teamsPanel.addCell(awayTeam, match.getDay(),
+                    createButton(match, tangoColorFactory.pickColor(homeTeam), homeTeam.getLabel()));
         }
     }
 
-    private class DayPanel extends JPanel {
+    private JPanel createHeaderPanel(JLabel label) {
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(label, BorderLayout.NORTH);
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(TangoColorFactory.ALUMINIUM_5),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        return headerPanel;
+    }
 
-        public DayPanel() {
-            super(new GridLayout(1, 0));
-            setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        }
-
-        public void addMatch(Match match) {
-            JButton button = new JButton(new MatchAction(match));
-            add(button);
-        }
-
+    private JButton createButton(Match match, Color color, String label) {
+        JButton button = new JButton(new MatchAction(match, label));
+        button.setMargin(new Insets(0, 0, 0, 0));
+        button.setBackground(color);
+        return button;
     }
 
     private class MatchAction extends AbstractAction {
 
         private Match match;
 
-        public MatchAction(Match match) {
-            super(match.toString());
+        public MatchAction(Match match, String label) {
+            super(label);
             this.match = match;
         }
 

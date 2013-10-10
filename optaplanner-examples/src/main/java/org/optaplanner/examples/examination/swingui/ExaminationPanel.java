@@ -84,7 +84,7 @@ public class ExaminationPanel extends SolutionPanel {
     }
 
     private void defineGrid(Examination examination) {
-        JButton footprint = new JButton("LinLetGre1-0");
+        JButton footprint = new JButton("999999");
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
 
