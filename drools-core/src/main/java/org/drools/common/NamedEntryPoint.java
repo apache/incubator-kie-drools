@@ -20,7 +20,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.drools.base.ClassObjectType;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.ObjectHashSet.ObjectEntry;
-import org.drools.definition.type.FactType;
 import org.drools.factmodel.traits.TraitProxy;
 import org.drools.factmodel.traits.TraitableBean;
 import org.drools.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
@@ -563,14 +561,20 @@ public class NamedEntryPoint
                 handle = this.objectStore.reconnect( handle );
             }
 
-            if ( handle.getObject() instanceof TraitableBean && ( (TraitableBean) handle.getObject() ).hasTraits() ) {
-                PriorityQueue removedTypes = new PriorityQueue( ( (TraitableBean) handle.getObject() )._getTraitMap().values() );
-                while ( ! removedTypes.isEmpty() ) {
-                    retract( getFactHandle( removedTypes.poll() ),
-                            removeLogical,
-                            updateEqualsMap,
-                            rule,
-                            activation );
+            if ( handle.isTraitable() ) {
+                TraitableBean traitableBean = (TraitableBean) handle.getObject();
+                if( traitableBean.hasTraits() ){
+                    PriorityQueue<TraitProxy> removedTypes =
+                            new PriorityQueue<TraitProxy>( traitableBean._getTraitMap().values().size() );
+                    removedTypes.addAll( traitableBean._getTraitMap().values() );
+
+                    while ( ! removedTypes.isEmpty() ) {
+                        retract( getFactHandle( removedTypes.poll() ),
+                                removeLogical,
+                                updateEqualsMap,
+                                rule,
+                                activation );
+                    }
                 }
             }
 
@@ -649,7 +653,7 @@ public class NamedEntryPoint
             if ( rule == null ) {
                 // This is not needed for internal WM actions as the firing rule will unstage
                 this.wm.getAgenda().unstageActivations();
-            }            
+            }
         } finally {
             this.wm.endOperation();
             this.ruleBase.readUnlock();
@@ -892,6 +896,4 @@ public class NamedEntryPoint
             }
         }
     }
-
-
 }
