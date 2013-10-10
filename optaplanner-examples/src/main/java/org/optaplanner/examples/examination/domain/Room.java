@@ -41,6 +41,10 @@ public class Room extends AbstractPersistable {
         this.penalty = penalty;
     }
 
+    public String getLabel() {
+        return "Room " + id;
+    }
+
     @Override
     public String toString() {
         return id + " {C" + capacity + "}";

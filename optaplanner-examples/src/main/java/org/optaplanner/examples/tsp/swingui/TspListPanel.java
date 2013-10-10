@@ -33,9 +33,6 @@ import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class TspListPanel extends JPanel {
 
     private static final Color HEADER_COLOR = TangoColorFactory.BUTTER_1;

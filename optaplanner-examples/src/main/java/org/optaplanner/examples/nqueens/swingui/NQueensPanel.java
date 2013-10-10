@@ -40,9 +40,6 @@ import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class NQueensPanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/nqueens/swingui/nqueensLogo.png";

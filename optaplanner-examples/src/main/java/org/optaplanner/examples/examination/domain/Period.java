@@ -77,6 +77,10 @@ public class Period extends AbstractPersistable {
         this.frontLoadLast = frontLoadLast;
     }
 
+    public String getLabel() {
+        return startDateTimeString;
+    }
+
     @Override
     public String toString() {
         return id + " {D" + duration + "}";

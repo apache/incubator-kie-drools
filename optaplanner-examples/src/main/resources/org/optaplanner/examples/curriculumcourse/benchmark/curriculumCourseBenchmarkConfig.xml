@@ -109,16 +109,6 @@
     <solver>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <variableName>period</variableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <variableName>room</variableName>
-            </valueSelector>
-          </changeMoveSelector>
           <cartesianProductMoveSelector>
             <changeMoveSelector>
               <entitySelector id="entitySelector"/>

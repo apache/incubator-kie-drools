@@ -30,9 +30,6 @@ import org.optaplanner.examples.tsp.domain.City;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class TspPanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/tsp/swingui/tspLogo.png";

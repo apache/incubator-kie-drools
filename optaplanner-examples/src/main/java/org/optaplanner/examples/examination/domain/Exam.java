@@ -176,6 +176,10 @@ public class Exam extends AbstractPersistable implements PlanningCloneable<Exam>
                 .toHashCode();
     }
 
+    public String getLabel() {
+        return Long.toString(topic.getId());
+    }
+
     @Override
     public String toString() {
         return topic + " @ " + period + " + " + room;

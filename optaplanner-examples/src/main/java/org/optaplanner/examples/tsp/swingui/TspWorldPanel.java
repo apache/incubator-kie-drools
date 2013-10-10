@@ -36,9 +36,6 @@ import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class TspWorldPanel extends JPanel {
 
     private static final int TEXT_SIZE = 8;

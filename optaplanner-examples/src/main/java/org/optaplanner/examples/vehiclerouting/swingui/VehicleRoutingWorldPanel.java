@@ -27,9 +27,6 @@ import javax.swing.JPanel;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class VehicleRoutingWorldPanel extends JPanel {
     private final VehicleRoutingPanel vehicleRoutingPanel;
 

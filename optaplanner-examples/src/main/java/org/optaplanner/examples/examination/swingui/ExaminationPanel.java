@@ -16,40 +16,59 @@
 
 package org.optaplanner.examples.examination.swingui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.domain.Room;
 
-/**
- * TODO this code is highly unoptimized
- */
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
+import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.HEADER_ROW;
+
 public class ExaminationPanel extends SolutionPanel {
 
-    private static final Color HEADER_COLOR = TangoColorFactory.BUTTER_1;
-
-    private GridLayout gridLayout;
+    private final TimeTablePanel<Room, Period> roomsPanel;
 
     public ExaminationPanel() {
-        gridLayout = new GridLayout(0, 1);
-        setLayout(gridLayout);
+        setLayout(new BorderLayout());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        roomsPanel = new TimeTablePanel<Room, Period>();
+        tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
+        add(tabbedPane, BorderLayout.CENTER);
+        setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
+    }
+
+    @Override
+    public boolean isWrapInScrollPane() {
+        return false;
+    }
+
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
     }
 
     private Examination getExamination() {
@@ -57,66 +76,79 @@ public class ExaminationPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        removeAll();
+        roomsPanel.reset();
         Examination examination = (Examination) solution;
-        gridLayout.setColumns(examination.getRoomList().size() + 1);
-        JLabel headerCornerLabel = new JLabel("Period         \\         Room");
-        headerCornerLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.DARK_GRAY),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        headerCornerLabel.setBackground(HEADER_COLOR);
-        headerCornerLabel.setOpaque(true);
-        add(headerCornerLabel);
+        defineGrid(examination);
+        fillCells(examination);
+        repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
+    }
+
+    private void defineGrid(Examination examination) {
+        JButton footprint = new JButton("LinLetGre1-0");
+        footprint.setMargin(new Insets(0, 0, 0, 0));
+        int footprintWidth = footprint.getPreferredSize().width;
+
+        roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
         for (Room room : examination.getRoomList()) {
-            JLabel roomLabel = new JLabel(room.toString());
-            roomLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            roomLabel.setBackground(HEADER_COLOR);
-            roomLabel.setOpaque(true);
-            add(roomLabel);
+            roomsPanel.defineColumnHeader(room, footprintWidth);
         }
-        Map<Period, Map<Room, PeriodRoomPanel>> periodRoomPanelMap = new HashMap<Period, Map<Room, PeriodRoomPanel>>();
+        roomsPanel.defineColumnHeader(null, footprintWidth); // Unassigned
+
+        roomsPanel.defineRowHeaderByKey(HEADER_ROW); // Room header
         for (Period period : examination.getPeriodList()) {
-            JLabel periodLabel = new JLabel(period.toString() + " " + period.getStartDateTimeString());
-            periodLabel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-            periodLabel.setBackground(HEADER_COLOR);
-            periodLabel.setOpaque(true);
-            add(periodLabel);
-            Map<Room, PeriodRoomPanel> roomPanelMap = new HashMap<Room, PeriodRoomPanel>();
-            periodRoomPanelMap.put(period, roomPanelMap);
-            for (Room room : examination.getRoomList()) {
-                PeriodRoomPanel periodRoomPanel = new PeriodRoomPanel();
-                add(periodRoomPanel);
-                roomPanelMap.put(room, periodRoomPanel);
-            }
+            roomsPanel.defineRowHeader(period);
         }
+        roomsPanel.defineRowHeader(null); // Unassigned period
+    }
+
+    private void fillCells(Examination examination) {
+        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Time")));
+        fillRoomCells(examination);
+        fillDayCells(examination);
+        fillLectureCells(examination);
+    }
+
+    private void fillRoomCells(Examination examination) {
+        for (Room room : examination.getRoomList()) {
+            roomsPanel.addColumnHeader(room, HEADER_ROW,
+                    createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.CENTER)));
+        }
+        roomsPanel.addColumnHeader(null, HEADER_ROW,
+                createHeaderPanel(new JLabel("Unassigned", SwingConstants.CENTER)));
+    }
+
+    private void fillDayCells(Examination examination) {
+        for (Period period : examination.getPeriodList()) {
+            roomsPanel.addRowHeader(HEADER_COLUMN, period,
+                    createHeaderPanel(new JLabel(period.getLabel())));
+        }
+        roomsPanel.addRowHeader(HEADER_COLUMN, null,
+                createHeaderPanel(new JLabel("Unassigned")));
+    }
+
+    private void fillLectureCells(Examination examination) {
+        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Exam exam : examination.getExamList()) {
-            Period period = exam.getPeriod();
-            Room room = exam.getRoom();
-            if (period != null && room != null) {
-                PeriodRoomPanel periodRoomPanel = periodRoomPanelMap.get(period).get(room);
-                periodRoomPanel.addExam(exam);
-            }
+            Color examColor = tangoColorFactory.pickColor(exam);
+            roomsPanel.addCell(exam.getRoom(), exam.getPeriod(),
+                    createButton(exam, examColor));
         }
     }
 
-    private class PeriodRoomPanel extends JPanel {
+    private JPanel createHeaderPanel(JLabel label) {
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.add(label, BorderLayout.NORTH);
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(TangoColorFactory.ALUMINIUM_5),
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+        return headerPanel;
+    }
 
-        public PeriodRoomPanel() {
-            super(new GridLayout(0, 1));
-            setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(Color.DARK_GRAY),
-                    BorderFactory.createEmptyBorder(2, 2, 2, 2)));
-        }
-
-        public void addExam(Exam exam) {
-            JButton button = new JButton(new ExamAction(exam));
-            add(button);
-        }
-
+    private JButton createButton(Exam exam, Color color) {
+        JButton button = new JButton(new ExamAction(exam));
+        button.setMargin(new Insets(0, 0, 0, 0));
+        button.setBackground(color);
+        return button;
     }
 
     private class ExamAction extends AbstractAction {
@@ -124,7 +156,7 @@ public class ExaminationPanel extends SolutionPanel {
         private Exam exam;
 
         public ExamAction(Exam exam) {
-            super(exam.getTopic().toString());
+            super(exam.getLabel());
             this.exam = exam;
         }
 

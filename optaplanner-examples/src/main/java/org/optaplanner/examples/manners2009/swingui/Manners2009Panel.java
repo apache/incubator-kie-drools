@@ -39,9 +39,6 @@ import org.optaplanner.examples.manners2009.domain.Seat;
 import org.optaplanner.examples.manners2009.domain.SeatDesignation;
 import org.optaplanner.examples.manners2009.domain.Table;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class Manners2009Panel extends SolutionPanel {
 
     private GridLayout gridLayout;

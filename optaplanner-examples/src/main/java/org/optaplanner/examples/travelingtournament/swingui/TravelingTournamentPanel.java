@@ -36,9 +36,6 @@ import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-/**
- * TODO this code is highly unoptimized
- */
 public class TravelingTournamentPanel extends SolutionPanel {
 
     public TravelingTournamentPanel() {
