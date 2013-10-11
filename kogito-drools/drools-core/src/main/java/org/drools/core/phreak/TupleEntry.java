@@ -15,4 +15,6 @@ public interface TupleEntry {
     PropagationContext getPropagationContext();
 
     Memory getNodeMemory();
+
+    int getPropagationType();
 }

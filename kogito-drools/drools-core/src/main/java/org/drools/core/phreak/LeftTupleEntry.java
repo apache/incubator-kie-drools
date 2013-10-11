@@ -7,14 +7,16 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.PropagationContext;
 
 public class LeftTupleEntry implements TupleEntry {
-    private LeftTuple          lt;
-    private PropagationContext pctx;
-    private Memory             nodeMemory;
+    private final LeftTuple          lt;
+    private final PropagationContext pctx;
+    private final Memory             nodeMemory;
+    private final int                propagationType;
 
-    public LeftTupleEntry(LeftTuple lt, PropagationContext pctx, Memory nodeMemory) {
+    public LeftTupleEntry(LeftTuple lt, PropagationContext pctx, Memory nodeMemory, int propagationType) {
         this.lt = lt;
         this.pctx = pctx;
         this.nodeMemory = nodeMemory;
+        this.propagationType = propagationType;
     }
 
     public LeftTuple getLeftTuple() {
@@ -32,6 +34,11 @@ public class LeftTupleEntry implements TupleEntry {
     public Memory getNodeMemory() {
         return nodeMemory;
     }
+
+    public int getPropagationType() {
+        return propagationType;
+    }
+
 
     @Override
     public String toString() {

@@ -232,26 +232,6 @@ public class PhreakPropagationContext
         return this.type;
     }
 
-    public PhreakPropagationContext compareTypeAndClone(int expectedType, int newType) {
-        if ( type != expectedType ) {
-            return this;
-        }
-
-        PhreakPropagationContext clone = new PhreakPropagationContext();
-        clone.type = newType;
-        clone.rule = this.rule;
-        clone.leftTuple = this.leftTuple;
-        clone.factHandle = this.factHandle;
-        clone.propagationNumber = this.propagationNumber;
-        clone.entryPoint = this.entryPoint;
-        clone.originOffset = this.originOffset;
-        clone.modificationMask = this.modificationMask;
-        clone.originalMask = this.originalMask;
-        clone.modifiedClass = this.modifiedClass;
-        clone.readerContext = this.readerContext;
-        return clone;
-    }
-
     public void releaseResources() {
         this.leftTuple = null;
         //this.rule = null;

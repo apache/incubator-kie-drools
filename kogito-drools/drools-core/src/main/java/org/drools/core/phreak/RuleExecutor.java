@@ -214,7 +214,7 @@ public class RuleExecutor {
                 SegmentMemory sm = tupleEntry.getNodeMemory().getSegmentMemory();
                 LeftTupleSets tuples = sm.getStagedLeftTuples();
                 tupleEntry.getLeftTuple().setPropagationContext(tupleEntry.getPropagationContext());
-                switch (tupleEntry.getPropagationContext().getType()) {
+                switch (tupleEntry.getPropagationType()) {
                     case PropagationContext.INSERTION:
                     case PropagationContext.RULE_ADDITION:
                         tuples.addInsert(tupleEntry.getLeftTuple());
@@ -231,7 +231,7 @@ public class RuleExecutor {
             } else {
                 BetaMemory bm = (BetaMemory) tupleEntry.getNodeMemory();
                 tupleEntry.getRightTuple().setPropagationContext(tupleEntry.getPropagationContext());
-                switch (tupleEntry.getPropagationContext().getType()) {
+                switch (tupleEntry.getPropagationType()) {
                     case PropagationContext.INSERTION:
                     case PropagationContext.RULE_ADDITION:
                         bm.getStagedRightTuples().addInsert(tupleEntry.getRightTuple());

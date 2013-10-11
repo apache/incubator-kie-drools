@@ -82,6 +82,4 @@ public interface PropagationContext
     void cleanReaderContext();
 
     void setEntryPoint(EntryPointId entryPoint);
-
-    PropagationContext compareTypeAndClone(int expectedType, int newType);
 }

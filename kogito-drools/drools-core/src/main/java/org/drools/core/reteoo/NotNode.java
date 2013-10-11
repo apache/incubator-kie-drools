@@ -154,7 +154,7 @@ public class NotNode extends BetaNode {
         boolean stagedInsertWasEmpty = false;
         if ( streamMode ) {
             stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
             //log.trace( "NotNode insert queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
         }  else {
             stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
@@ -170,15 +170,15 @@ public class NotNode extends BetaNode {
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
-                                  final PropagationContext context,
+                                  final PropagationContext pctx,
                                   final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        rightTuple.setPropagationContext( context );
+        rightTuple.setPropagationContext( pctx );
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
         boolean  stagedDeleteWasEmpty = false;
         if ( streamMode ) {
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, context, memory ));
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
             //log.trace( "NotNode delete queue={} size={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), rightTuple );
         } else {
             stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );

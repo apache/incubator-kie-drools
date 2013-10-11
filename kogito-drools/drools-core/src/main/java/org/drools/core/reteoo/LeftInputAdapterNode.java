@@ -240,7 +240,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             // mask check is necessary if insert is a result of a modify
             if ( liaNode.isStreamMode() && sm.getTupleQueue() != null ) {
                 stagedInsertWasEmpty = sm.getTupleQueue().isEmpty();
-                sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst() ));
+                int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.INSERTION : pctx.getType();
+                sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), propagationType));
 
                 if ( log.isTraceEnabled() ) {
                     log.trace( "LeftInputAdapterNode insert size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple);
@@ -293,19 +294,18 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext context, final LiaNodeMemory lm,
+    private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, final LiaNodeMemory lm,
                                               SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify) {
         LeftTupleSets leftTuples = sm.getStagedLeftTuples();
-        leftTuple.setPropagationContext( context );
+        leftTuple.setPropagationContext( pctx );
 
         boolean stagedDeleteWasEmpty = false;
         if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
             stagedDeleteWasEmpty = sm.getTupleQueue().isEmpty();
-            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple,
-                                                      context.compareTypeAndClone(PropagationContext.MODIFICATION, PropagationContext.DELETION),
-                                                      sm.getNodeMemories().getFirst() ));
+            int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.DELETION : pctx.getType();
+            sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), propagationType));
             if ( log.isTraceEnabled() ) {
-                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PhreakPropagationContext.intEnumToString(context), leftTuple );
+                log.trace( "LeftInputAdapterNode delete size={}  queue={} pctx={} lt={}", System.identityHashCode( sm.getTupleQueue() ), sm.getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), leftTuple );
             }
         } else {
             stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
@@ -352,13 +352,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory wm, boolean linkOrNotify,
+    private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
                                               final LiaNodeMemory lm, SegmentMemory sm, LeftTupleSets leftTuples, LeftTupleSink sink) {
         if ( leftTuple.getStagedType() != LeftTuple.INSERT ) {
             // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
-            leftTuple.setPropagationContext( context );
+            leftTuple.setPropagationContext( pctx );
             if (leftTuple.getFirstChild() != null) {
-                leftTuple.getFirstChild().setPropagationContext( context );
+                leftTuple.getFirstChild().setPropagationContext( pctx );
             }
         }
         synchronized ( ((SynchronizedLeftTupleSets)leftTuples).getLock() ) {
@@ -368,13 +368,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 long mask = sink.getLeftInferredMask();
 
                 if ( mask == Long.MAX_VALUE ||
-                     intersect( context.getModificationMask(),  mask) ) {
+                     intersect( pctx.getModificationMask(),  mask) ) {
                     // only add to staging if masks match
 
                     boolean stagedUpdateWasEmpty = false;
                     if ( ((BaseNode)sm.getRootNode()).isStreamMode() && sm.getTupleQueue() != null ) {
                         stagedUpdateWasEmpty = sm.getTupleQueue().isEmpty();
-                        sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, context, sm.getNodeMemories().getFirst() ));
+                        sm.getTupleQueue().add(new LeftTupleEntry(leftTuple, pctx, sm.getNodeMemories().getFirst(), pctx.getType()));
                     } else {
                         stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
                     }
