@@ -308,7 +308,7 @@ public class SolverAndPersistenceFrame extends JFrame {
         }
 
         public void actionPerformed(ActionEvent e) {
-            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getUnsolvedDataDir());
+            JFileChooser fileChooser = new JFileChooser(solutionBusiness.getSolvedDataDir());
             fileChooser.setFileFilter(new FileFilter() {
                 public boolean accept(File file) {
                     return file.isDirectory() || file.getName().endsWith(".xml");

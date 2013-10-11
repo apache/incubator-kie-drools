@@ -36,6 +36,7 @@ import java.util.concurrent.Future;
 import org.apache.commons.collections.comparators.ReverseComparator;
 import org.drools.core.util.StringUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
+import org.optaplanner.benchmark.api.PlannerBenchmarkException;
 import org.optaplanner.benchmark.api.ranking.SolverBenchmarkRankingWeightFactory;
 import org.optaplanner.benchmark.impl.history.BenchmarkHistoryReport;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -329,7 +330,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
             logger.info("Benchmarking failed: time spend ({}), failureCount ({}), statistic html overview ({}).",
                     benchmarkTimeMillisSpend, failureCount,
                     benchmarkReport.getHtmlOverviewFile().getAbsolutePath());
-            throw new IllegalStateException("Benchmarking failed: failureCount (" + failureCount + ")." +
+            throw new PlannerBenchmarkException("Benchmarking failed: failureCount (" + failureCount + ")." +
                     " The exception of the firstFailureSingleBenchmark (" + firstFailureSingleBenchmark.getName()
                     + ") is chained.",
                     firstFailureSingleBenchmark.getFailureThrowable());

@@ -54,11 +54,16 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         plannerBenchmark.benchmark();
     }
     
-    private PlannerBenchmarkFactory buildPlannerBenchmarkFactory(File unsolvedDataFile) {
+    protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory(File unsolvedDataFile) {
         String benchmarkConfigResource = createBenchmarkConfigResource();
         PlannerBenchmarkFactory benchmarkFactory = new XmlPlannerBenchmarkFactory(benchmarkConfigResource);
         PlannerBenchmarkConfig plannerBenchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
-        plannerBenchmarkConfig.setBenchmarkDirectory(new File("target/test/data/nqueens"));
+        String path = plannerBenchmarkConfig.getBenchmarkDirectory().getPath();
+        String prefix = "local/data/";
+        if (!path.startsWith(prefix)) {
+            throw new IllegalStateException("The path (" + path + ") should start with prefix (" + prefix + ")");
+        }
+        plannerBenchmarkConfig.setBenchmarkDirectory(new File(path.replace(prefix, "target/test/data/")));
         plannerBenchmarkConfig.setWarmUpHoursSpend(0L);
         plannerBenchmarkConfig.setWarmUpMinutesSpend(0L);
         plannerBenchmarkConfig.setWarmUpSecondsSpend(WARM_UP_SECONDS_SPEND);
