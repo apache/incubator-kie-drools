@@ -15,14 +15,26 @@
  */
 package org.jbpm.kie.services.impl.form;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.drools.core.util.StringUtils;
-import org.jbpm.form.builder.services.model.InputData;
-import org.jbpm.form.builder.services.model.OutputData;
 import org.jbpm.kie.services.api.DeployedUnit;
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.FormProviderService;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
+import org.jbpm.kie.services.impl.form.model.InputData;
+import org.jbpm.kie.services.impl.form.model.OutputData;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
@@ -34,13 +46,6 @@ import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.*;
 
 @ApplicationScoped
 public class FormProviderServiceImpl implements FormProviderService {
