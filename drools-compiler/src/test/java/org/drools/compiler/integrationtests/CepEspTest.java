@@ -3575,6 +3575,53 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals(0, list.size());
     }
 
+    @Test
+    public void testCollectAfterUpdate() {
+        // DROOLS-295
+        String drl =
+                "import org.drools.compiler.integrationtests.CepEspTest.SimpleFact;\n" +
+                "import java.util.List;\n" +
+                "\n" +
+                "declare SimpleFact\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Rule1\"\n" +
+                "    when\n" +
+                "        event : SimpleFact( status == \"NOK\" )\n" +
+                "        list: List(size < 4) from collect( SimpleFact(this != event, status==\"1\") )\n" +
+                "    then\n" +
+                "        event.setStatus(\"1\");\n" +
+                "        update(event);\n" +
+                "    end\n" +
+                "\n" +
+                "rule \"Rule2\"\n" +
+                "    when\n" +
+                "        event : SimpleFact( status == \"NOK\" )\n" +
+                "        list: List(size >= 4) from collect( SimpleFact(this != event, status==\"1\") )\n" +
+                "    then\n" +
+                "        for (Object ev2: new java.util.LinkedList(list)) retract(ev2);\n" +
+                "        event.setStatus(\"2\");\n" +
+                "        update(event);\n" +
+                "    end\n";
+
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        for (int i = 0; i < 4; i++) {
+            ksession.insert(new SimpleFact("id" + i));
+        }
+        ksession.fireAllRules();
+        assertEquals("all events should be in WM", 4, ksession.getFactCount());
+
+        ksession.insert(new SimpleFact("last"));
+        ksession.fireAllRules();
+        assertEquals("only one event should be still in WM", 1, ksession.getFactCount());
+    }
+
     public static class SimpleFact {
 
         private String status = "NOK";
