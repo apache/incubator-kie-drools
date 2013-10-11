@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.model.InternalI18NText;
 
 public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest {
     
@@ -908,5 +909,25 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         assertEquals("List of tasks", 0, results.size());
         results = taskService.getTasksByVariousFields(null, null, null, null, null, testStringList, testStatusList, true);
         assertEquals("List of tasks", 2, results.size());
+    }
+    
+    @Test
+    public void testModifyTaskName() {
+        // JBPM-4148
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')  ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
+        assertEquals(1, tasks.size());
+        assertEquals("This is my task name", tasks.get(0).getName());
+        
+        Task newTask = taskService.getTaskById(tasks.get(0).getId());
+        ((InternalI18NText)newTask.getNames().get(0)).setText("New task name");
+        
+        List<TaskSummary> newTasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
+        assertEquals(1, newTasks.size());
+        assertEquals("New task name", newTasks.get(0).getName());
     }
 }
