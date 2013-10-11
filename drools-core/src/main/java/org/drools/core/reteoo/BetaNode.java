@@ -293,7 +293,8 @@ public abstract class BetaNode extends LeftTupleSource
         boolean stagedInsertWasEmpty = false;
         if ( streamMode ) {
             stagedInsertWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory ));
+            int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.INSERTION : pctx.getType();
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
             if ( log.isTraceEnabled() ) {
                 log.trace( "JoinNode insert queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PhreakPropagationContext.intEnumToString(pctx), rightTuple );
             }
@@ -328,7 +329,9 @@ public abstract class BetaNode extends LeftTupleSource
         boolean stagedDeleteWasEmpty = false;
         if ( isStreamMode() ) {
             stagedDeleteWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
+            PropagationContext pctx = rightTuple.getPropagationContext();
+            int propagationType = pctx.getType() == PropagationContext.MODIFICATION ? PropagationContext.DELETION : pctx.getType();
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, propagationType));
             if ( log.isTraceEnabled() ) {
                 log.trace( "JoinNode delete queue={} size={} pctx={} lt={}", System.identityHashCode( memory.getSegmentMemory().getTupleQueue() ), memory.getSegmentMemory().getTupleQueue().size(), PhreakPropagationContext.intEnumToString(rightTuple.getPropagationContext()), rightTuple );
             }
@@ -353,7 +356,8 @@ public abstract class BetaNode extends LeftTupleSource
         boolean stagedUpdateWasEmpty = false;
         if ( streamMode ) {
             stagedUpdateWasEmpty = memory.getSegmentMemory().getTupleQueue().isEmpty();
-            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, rightTuple.getPropagationContext(), memory ));
+            PropagationContext pctx = rightTuple.getPropagationContext();
+            memory.getSegmentMemory().getTupleQueue().add(new RightTupleEntry(rightTuple, pctx, memory, pctx.getType()));
         } else {
             stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
         }
