@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
@@ -69,6 +70,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableIntegerParameterD
 import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDefinition;
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -229,6 +231,74 @@ public class BRDRLPersistenceTest {
         m.parentName = "secondRule";
 
         m.name = "my rule";
+
+        checkMarshallUnmarshall( expected, m );
+    }
+
+    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
+    @Test
+    public void testSumAsGivenValue() {
+        String expected = "" +
+                "rule \"my rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    m:Message()\n" +
+                "  then\n" +
+                "    m.setText( \"Hello \" + \"world\" );\n" +
+                "    update(m);\n" +
+                "end\n";
+        final RuleModel m = new RuleModel();
+
+        FactPattern factPattern = new FactPattern();
+        factPattern.setFactType("Message");
+        factPattern.setBoundName("m");
+        m.lhs = new IPattern[]{factPattern};
+
+        ActionUpdateField actionUpdateField = new ActionUpdateField();
+        actionUpdateField.setVariable("m");
+        ActionFieldValue actionFieldValue = new ActionFieldValue();
+        actionFieldValue.setField("text");
+        actionFieldValue.setNature(1);
+        actionFieldValue.setType("String");
+        actionFieldValue.setValue("\"Hello \" + \"world\"");
+        actionUpdateField.setFieldValues(new ActionFieldValue[]{actionFieldValue});
+        m.rhs = new IAction[]{actionUpdateField};
+
+        m.name = "my rule";
+
+        checkMarshallUnmarshall( expected, m );
+    }
+
+//    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
+    @Test
+    public void testCallFunction() throws Exception {
+        String expected = "" +
+                "package org.mortgages;\n" +
+                "import org.mortgages.LoanApplication;\n" +
+                "\n" +
+                "rule \"my rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    a : LoanApplication( )\n" +
+                "  then\n" +
+                "    keke.clear(  );\n" +
+                "end\n";
+
+        final RuleModel m = new RuleModel();
+        m.setPackageName("org.mortgages");
+        m.getImports().addImport(new Import("org.mortgages.LoanApplication"));
+        m.name = "my rule";
+
+        FactPattern factPattern = new FactPattern();
+        factPattern.setFactType("LoanApplication");
+        factPattern.setBoundName("a");
+        m.lhs = new IPattern[]{factPattern};
+
+        ActionCallMethod actionCallMethod = new ActionCallMethod();
+        actionCallMethod.setState(1);
+        actionCallMethod.setMethodName("clear");
+        actionCallMethod.setVariable("keke");
+        m.rhs = new IAction[]{actionCallMethod};
 
         checkMarshallUnmarshall( expected, m );
     }

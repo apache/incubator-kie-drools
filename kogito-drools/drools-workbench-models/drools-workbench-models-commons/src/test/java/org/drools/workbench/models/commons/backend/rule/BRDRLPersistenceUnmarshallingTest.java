@@ -25,6 +25,8 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.FieldAccessorsAndMutators;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
+import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
+import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.CEPWindow;
 import org.drools.workbench.models.datamodel.rule.CompositeFactPattern;
@@ -40,6 +42,7 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -1660,6 +1663,104 @@ public class BRDRLPersistenceUnmarshallingTest {
                       m.attributes[ 0 ].getAttributeName() );
         assertEquals( "myCalendar, Yet Another Calendar",
                       m.attributes[ 0 ].getValue() );
+    }
+
+    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
+    @Test
+    public void testFunctionCall() {
+        String drl = "" +
+                "package org.mortgages;\n" +
+                "import org.mortgages.LoanApplication;\n" +
+                "\n" +
+                "rule \"my rule\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    a : LoanApplication( )\n" +
+                "  then\n" +
+                "    keke.clear(  );\n" +
+                "end\n";
+
+        when(
+                dmo.getGlobalCollections()
+        ).thenReturn(
+                new String[]{"keke"}
+        );
+        when(
+                dmo.getGlobalVariable("keke")
+        ).thenReturn(
+                "java.util.ArrayList"
+        );
+
+        when(
+                dmo.getGlobalVariables()
+        ).thenReturn(
+                new String[]{"keke"}
+        );
+        when(
+                dmo.getAllFactTypes()
+        ).thenReturn(
+                new String[]{"java.util.ArrayList", "org.mortgages.LoanApplication"}
+        );
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
+
+        assertTrue(m.rhs[0] instanceof ActionCallMethod);
+        ActionCallMethod actionGlobalCollectionAdd = (ActionCallMethod) m.rhs[0];
+        assertEquals("clear", actionGlobalCollectionAdd.getMethodName());
+        assertEquals("keke", actionGlobalCollectionAdd.getVariable());
+        assertEquals(1, actionGlobalCollectionAdd.getState());
+        assertEquals(0, actionGlobalCollectionAdd.getFieldValues().length);
+
+    }
+
+    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
+    @Test
+    public void testGlobalCollectionAdd() {
+        String drl = "package org.mortgages;\n" +
+                "\n" +
+                "import org.mortgages.LoanApplication;\n" +
+                "\n" +
+                "rule \"Bankruptcy history\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    a : LoanApplication( )\n" +
+                "  then\n" +
+                "    keke.add( a );\n" +
+                "end";
+
+        /**
+         * Not sure what is needed so filling all these. Could be that these are not enough.
+         */
+        when(
+                dmo.getGlobalCollections()
+        ).thenReturn(
+                new String[]{"keke"}
+        );
+        when(
+                dmo.getGlobalVariable("keke")
+        ).thenReturn(
+                "java.util.ArrayList"
+        );
+
+        when(
+                dmo.getGlobalVariables()
+        ).thenReturn(
+                new String[]{"keke"}
+        );
+        when(
+                dmo.getAllFactTypes()
+        ).thenReturn(
+                new String[]{"java.util.ArrayList", "org.mortgages.LoanApplication"}
+        );
+
+
+        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
+
+        assertTrue(m.rhs[0] instanceof ActionGlobalCollectionAdd);
+        ActionGlobalCollectionAdd actionGlobalCollectionAdd= (ActionGlobalCollectionAdd)m.rhs[0];
+        assertEquals("keke",actionGlobalCollectionAdd.getGlobalName());
+        assertEquals("a",actionGlobalCollectionAdd.getFactName());
+
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
