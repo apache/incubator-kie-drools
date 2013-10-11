@@ -10,6 +10,7 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -181,8 +182,8 @@ public class DefaultExpanderTest {
         //        System.out.println("["+drl+"]" );
         //        System.out.println("["+expected+"]" );
         assertFalse( ex.hasErrors() );
-        equalsIgnoreWhiteSpace( expected,
-                                drl );
+        equalsIgnoreWhiteSpace(expected,
+                               drl);
 
     }
 
@@ -430,7 +431,7 @@ public class DefaultExpanderTest {
                 "     then\n" + 
                 "end";
 
-        file.parseAndLoad( new StringReader( dsl ) );
+        file.parseAndLoad(new StringReader(dsl));
         assertEquals( 0,
                 file.getErrors().size() );
 
@@ -441,7 +442,7 @@ public class DefaultExpanderTest {
         
         assertFalse( ex.hasErrors() );
 
-        assertEquals( expected, drl );
+        assertEquals(expected, drl);
     }
 
     @Test(timeout=1000)
@@ -457,5 +458,60 @@ public class DefaultExpanderTest {
         String source = "rule 'dsl rule'\nwhen\n Foo with {var} bars\nthen\n\nend";
         ex.expand( source );
         assertFalse( ex.hasErrors() );
+    }
+
+    @Test @Ignore
+    public void testEqualSignInTernaryOp() throws Exception {
+        // BZ-1013960
+        String source =
+                "declare Person\n" +
+                "    age : int\n" +
+                "    name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Your First Rule\"\n" +
+                "    when\n" +
+                "        There is a Person\n" +
+                "            - with a negative age\n" +
+                "            - with a positive age\n" +
+                "            - with a zero age\n" +
+                "    then\n" +
+                "        print \"Your First Rule\"\n" +
+                "\n" +
+                "end\n";
+
+        String dsl =
+                "[when][]There is an? {entity}=${entity!lc}: {entity!ucfirst}()\n" +
+                "[when][]- with an? {attr} greater than {amount}={attr} > {amount!num}\n" +
+                "[then]print \"{text}\"=System.out.println(\"{text}\");\n" +
+                "\n" +
+                "[when]- with a {what} {attr}={attr} {what!zero?==0/!=0}\n";
+
+        String expected =
+                "declare Person\n" +
+                "    age : int\n" +
+                "    name : String\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Your First Rule\"\n" +
+                "    when\n" +
+                "        $person: Person(age  !=0, age  !=0, age  ==0)\n" +
+                "    then\n" +
+                "        System.out.println(\"Your First Rule\");\n" +
+                "\n" +
+                "end";
+
+        DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0,
+                      file.getErrors().size() );
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+
+        String drl = ex.expand( source );
+        assertFalse( ex.hasErrors() );
+
+        assertEquals( expected, drl );
     }
 }
