@@ -199,7 +199,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(requiredPatientEquipmentList);
         facts.addAll(preferredPatientEquipmentList);
         facts.addAll(precalculateAdmissionPartConflictList());
-//        facts.addAll(precalculateAdmissionPartSpecialismMissingInRoomList());
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
     }
@@ -219,29 +218,6 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         }
         return admissionPartConflictList;
     }
-
-//    private List<AdmissionPartSpecialismMissingInRoom> precalculateAdmissionPartSpecialismMissingInRoomList() {
-//        List<AdmissionPartSpecialismMissingInRoom> admissionPartSpecialismMissingInRoomList
-//                = new ArrayList<AdmissionPartSpecialismMissingInRoom>();
-//        for (AdmissionPart admissionPart : admissionPartList) {
-//            if (admissionPart.getSpecialism() != null) {
-//                for (Room room : roomList) {
-//                    int mininumPriority = Integer.MAX_VALUE;
-//                    for (RoomSpecialism roomSpecialism : room.getRoomSpecialismList()) {
-//                        if (roomSpecialism.getSpecialism().equals(admissionPart.getSpecialism())) {
-//                            mininumPriority = Math.min(mininumPriority, roomSpecialism.getPriority());
-//                        }
-//                    }
-//                    int weight = (mininumPriority == Integer.MAX_VALUE) ? 2 : mininumPriority - 1;
-//                    if (weight > 0) {
-//                        admissionPartSpecialismMissingInRoomList.add(
-//                                new AdmissionPartSpecialismMissingInRoom(admissionPart, room, mininumPriority));
-//                    }
-//                }
-//            }
-//        }
-//        return admissionPartSpecialismMissingInRoomList;
-//    }
 
     public boolean equals(Object o) {
         if (this == o) {

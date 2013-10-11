@@ -37,7 +37,6 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 import org.optaplanner.examples.pas.domain.solver.AdmissionPartConflict;
-import org.optaplanner.examples.pas.domain.solver.AdmissionPartSpecialismMissingInRoom;
 
 // Two patients in the same bed for a number of nights.
 rule "sameBedInSameNight"
