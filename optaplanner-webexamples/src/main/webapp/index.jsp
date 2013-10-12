@@ -28,6 +28,7 @@
   <p>Which example do you want to see?</p>
   <ul>
     <li><a href="vehiclerouting/loaded.jsp">Vehicle routing</a></li>
+    <li><a href="cloudbalancing/loaded.jsp">Cloud Balancing</a></li>
   </ul>
 </div>
 </div>
