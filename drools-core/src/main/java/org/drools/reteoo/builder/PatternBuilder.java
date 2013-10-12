@@ -34,7 +34,6 @@ import org.drools.conf.EventProcessingOption;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.ObjectSource;
 import org.drools.reteoo.ObjectTypeNode;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.PropagationQueuingNode;
 import org.drools.reteoo.WindowNode;
 import org.drools.rule.Behavior;
@@ -284,6 +283,10 @@ public class PatternBuilder
                                           ruleBase.getRete(),
                                           context );
                 epn.attach( context );
+                for ( InternalWorkingMemory wm : wms ) {
+                    wm.updateEntryPointsCache();
+                    epn.updateSinkOnAttach( context, wm );
+                }
             }
 
             ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
@@ -296,6 +299,9 @@ public class PatternBuilder
             otn.setExpirationOffset( expirationOffset );
 
             otn.attach( context );
+            for ( InternalWorkingMemory wm : wms ) {
+                otn.updateSinkOnAttach( context, wm );
+            }
 
             return otn;
         } finally {

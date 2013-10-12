@@ -245,7 +245,7 @@ public class ReteooBuilder
 
         final RuleRemovalContext context = new RuleRemovalContext( rule );
         final BaseNode[] nodes = this.rules.remove( rule );
-
+        System.out.println( Thread.currentThread().getName() + " removing " + rule.getName() );
         for (BaseNode node : nodes) {
             NodeSet nodeSet = new NodeSet();
             node.collectAncestors(nodeSet);

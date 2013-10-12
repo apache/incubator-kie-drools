@@ -165,6 +165,10 @@ public class Rete extends ObjectSource
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        // do nothing
+    }
+
     public void networkUpdated(UpdateContext updateContext) {
         // nothing to do
     }
@@ -260,5 +264,9 @@ public class Rete extends ObjectSource
     @Override
     public long calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
-    }    
+    }
+
+    public short getType() {
+        return -1;
+    }
 }

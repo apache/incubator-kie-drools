@@ -139,7 +139,7 @@ public class ObjectTypeNode extends ObjectSource
                source,
                context.getRuleBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.objectType = objectType;
-        idGenerator = new IdGenerator(objectType);
+        idGenerator = new IdGenerator(id);
 
         setObjectMemoryEnabled( context.isObjectTypeNodeMemoryEnabled() );
 
@@ -151,15 +151,15 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     private static class IdGenerator {
-        private final Class<?> otnClass;
+        private final int otnId;
         private int otnIdCounter;
 
-        private IdGenerator(ObjectType objectType) {
-            otnClass = objectType instanceof ClassObjectType ? ((ClassObjectType)objectType).getClassType() : Object.class;
+        private IdGenerator(int otnId) {
+            this.otnId = otnId;
         }
 
         private Id nextId() {
-            return new Id(otnClass, otnIdCounter++);
+            return new Id(otnId, otnIdCounter++);
         }
 
         private void reset() {
@@ -167,21 +167,21 @@ public class ObjectTypeNode extends ObjectSource
         }
     }
 
-    public static Id DEFAULT_ID = new Id(Object.class, 0);
+    public static Id DEFAULT_ID = new Id(-1, 0);
 
     public static class Id {
 
-        private final Class<?> clazz;
+        private final int otnId;
         private final int id;
 
-        public Id(Class<?> clazz, int id) {
-            this.clazz = clazz;
+        public Id(int otnId, int id) {
+            this.otnId = otnId;
             this.id = id;
         }
 
         @Override
         public String toString() {
-            return "ObjectTypeNode.Id[" + clazz.getName() + "#" + id + "]";
+            return "ObjectTypeNode.Id[" + otnId + "#" + id + "]";
         }
 
         @Override
@@ -190,22 +190,16 @@ public class ObjectTypeNode extends ObjectSource
             if (o == null || !(o instanceof Id)) return false;
 
             Id otherId = (Id) o;
-            return id == otherId.id && clazz == otherId.clazz;
+            return id == otherId.id && otnId == otherId.otnId;
         }
 
         @Override
         public int hashCode() {
-            int result = clazz.hashCode();
-            result = 31 * result + id;
-            return result;
+            return 31 * otnId + 37 * id;
         }
 
         public boolean before(Id otherId) {
-            return otherId != null && clazz == otherId.clazz && this.id < otherId.id;
-        }
-
-        public Class<?> getTypeNodeClass() {
-            return clazz;
+            return otherId != null && (otnId < otherId.otnId || ( otnId == otherId.otnId && id < otherId.id));
         }
 
         public int getId() {
@@ -223,13 +217,14 @@ public class ObjectTypeNode extends ObjectSource
         if ( objectType instanceof ClassObjectType ) {
             objectType = ((AbstractRuleBase) ((DroolsObjectInputStream) in).getRuleBase()).getClassFieldAccessorCache().getClassObjectType( (ClassObjectType) objectType );
         }
-        idGenerator = new IdGenerator(objectType);
 
         objectMemoryEnabled = in.readBoolean();
         expirationOffset = in.readLong();
         lrUnlinkingEnabled = in.readBoolean();
         queryNode = in.readBoolean();
+
         dirty = true;
+        idGenerator = new IdGenerator(id);
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -248,6 +243,10 @@ public class ObjectTypeNode extends ObjectSource
      */
     public ObjectType getObjectType() {
         return this.objectType;
+    }
+
+    public short getType() {
+        return NodeTypeEnums.ObjectTypeNode;
     }
 
     @Override
@@ -435,24 +434,13 @@ public class ObjectTypeNode extends ObjectSource
      */
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
-        if (context == null) {
-            return;
-        }
+    }
 
-        // we need to call updateSink on Rete, because someone
-        // might have already added facts matching this ObjectTypeNode
-        // to working memories
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContextImpl propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                          PropagationContext.RULE_ADDITION,
-                                                                                          null,
-                                                                                          null,
-                                                                                          null );
-            propagationContext.setEntryPoint( ((EntryPointNode) this.source).getEntryPoint() );
-            this.source.updateSink( this,
-                                    propagationContext,
-                                    workingMemory );
-        }
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        ((PropagationContextImpl)propagationContext).setEntryPoint( ( (EntryPointNode) this.source ).getEntryPoint() );
+        this.source.updateSink( this,
+                                propagationContext,
+                                workingMemory );
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -558,7 +546,7 @@ public class ObjectTypeNode extends ObjectSource
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
 
-        return this.objectType.equals(other.objectType) && this.source.equals(other.source);
+        return this.objectType.equals( other.objectType ) && this.source.equals( other.source );
     }
 
     private boolean usesDeclaration(final Constraint[] constraints) {

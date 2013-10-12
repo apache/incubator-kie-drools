@@ -77,7 +77,6 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.ObjectTypeNode;
 import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
-import org.drools.reteoo.ReteooComponentFactory;
 import org.drools.reteoo.ReteooStatefulSession;
 import org.drools.reteoo.ReteooWorkingMemory;
 import org.drools.reteoo.RightTuple;
@@ -268,6 +267,7 @@ public class InputMarshaller {
                 try {
                     // Yeah, I know, because one session is being deserialized, we go and lock all of them...
                     initialFactNode.attach( buildContext );
+                    initialFactNode.updateSinkOnAttach( buildContext, context.wm );
                 } finally {
                     context.ruleBase.unlock();
                 }
@@ -659,8 +659,7 @@ public class InputMarshaller {
                 }
                 break;
             }
-            case NodeTypeEnums.NotNode:
-            case NodeTypeEnums.ForallNotNode: {
+            case NodeTypeEnums.NotNode: {
                 BetaMemory memory = (BetaMemory) context.wm.getNodeMemory( (BetaNode) sink );
                 int type = stream.readShort();
                 if (type == PersisterEnums.LEFT_TUPLE_NOT_BLOCKED) {
@@ -768,7 +767,7 @@ public class InputMarshaller {
                 }
                 break;
             }
-            case NodeTypeEnums.RightInputAdaterNode: {
+            case NodeTypeEnums.RightInputAdapterNode: {
                 // RIANs generate new fact handles on-demand to wrap tuples and need special procedures when de-serializing from persistent storage
                 ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (NodeMemory) sink );
                 // create fact handle

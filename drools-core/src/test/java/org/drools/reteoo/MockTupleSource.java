@@ -64,6 +64,9 @@ public class MockTupleSource extends LeftTupleSource {
 
     }
 
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+    }
+
     @Override
     public void networkUpdated(UpdateContext updateContext) {
         // TODO Auto-generated method stub
@@ -74,4 +77,7 @@ public class MockTupleSource extends LeftTupleSource {
         return null;
     }
 
+    public short getType() {
+        return -1;
+    }
 }

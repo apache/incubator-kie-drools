@@ -297,7 +297,7 @@ public class ProtobufOutputMarshaller {
                         _node = writeAccumulateNodeMemory(i, memory);
                         break;
                     }
-                    case NodeTypeEnums.RightInputAdaterNode: {
+                    case NodeTypeEnums.RightInputAdapterNode: {
                         _node = writeRIANodeMemory(i, memory);
                         break;
                     }

@@ -28,4 +28,6 @@ public interface PMMLCompiler extends Service {
     public String compile(InputStream stream, Map<String,PackageRegistry> registries);
 
     public List<KnowledgeBuilderResult> getResults();
+
+    public void clearResults();
 }

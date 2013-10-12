@@ -50,6 +50,10 @@ import org.drools.definition.type.FactType;
 import org.drools.event.rule.AfterActivationFiredEvent;
 import org.drools.event.rule.AgendaEventListener;
 import org.drools.event.rule.DebugAgendaEventListener;
+import org.drools.event.rule.ObjectInsertedEvent;
+import org.drools.event.rule.ObjectRetractedEvent;
+import org.drools.event.rule.ObjectUpdatedEvent;
+import org.drools.event.rule.WorkingMemoryEventListener;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
@@ -4371,5 +4375,58 @@ public class TraitTest extends CommonTestMethodBase {
         assertTrue(list.contains("correct1"));
         assertTrue(list.contains("correct2"));
     }
+
+
+
+
+    @Test
+    public void testTraitRetractOrder() {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.*;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "declare trait A end \n" +
+                     "declare trait B extends A end \n" +
+                     "declare trait C end \n" +
+                     "\n" +
+                     "rule \"don\"\n" +
+                     "when \n" +
+                     "  $e : Entity() \n" +
+                     "then\n" +
+                     "  don( $e, A.class ); \n" +
+                     "  don( $e, C.class ); \n" +
+                     "  don( $e, B.class ); \n" +
+                     "end\n" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+
+        FactHandle handle = ksession.insert( new Entity(  ) );
+        ksession.fireAllRules();
+
+        final ArrayList list = new ArrayList();
+
+        ksession.addEventListener( new WorkingMemoryEventListener() {
+            public void objectInserted( ObjectInsertedEvent objectInsertedEvent ) { }
+            public void objectUpdated( ObjectUpdatedEvent objectUpdatedEvent ) { }
+            public void objectRetracted( ObjectRetractedEvent objectRetractedEvent ) {
+                Object o = objectRetractedEvent.getOldObject();
+                if ( o instanceof TraitProxy ) {
+                    String traitName = ( (TraitProxy) o ).getTraitName();
+                    list.add( traitName.substring( traitName.lastIndexOf( "." ) + 1 ) );
+                }
+            }
+        } );
+
+        ksession.retract( handle );
+        ksession.fireAllRules();
+
+        System.out.println( list );
+        assertEquals( Arrays.asList( "B", "C", "A", "Thing" ), list );
+    }
+
 
 }

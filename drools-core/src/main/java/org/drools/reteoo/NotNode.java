@@ -140,7 +140,7 @@ public class NotNode extends BetaNode {
                 // this is now blocked so remove from memory
                 memory.getLeftTupleMemory().remove( leftTuple );
 
-                // subclasses like ForallNotNode might override this propagation
+                // subclasses might override this propagation
                 propagateRetractLeftTuple( context,
                                            workingMemory,
                                            leftTuple );
@@ -200,7 +200,7 @@ public class NotNode extends BetaNode {
                 // was previous blocked and not in memory, so add
                 memory.getLeftTupleMemory().add( leftTuple );
 
-                // subclasses like ForallNotNode might override this propagation
+                // subclasses might override this propagation
                 propagateAssertLeftTuple( context,
                                           workingMemory,
                                           leftTuple );
@@ -368,7 +368,7 @@ public class NotNode extends BetaNode {
                 // this is now blocked so remove from memory
                 leftMemory.remove( leftTuple );
 
-                // subclasses like ForallNotNode might override this propagation
+                // subclasses might override this propagation
                 propagateRetractLeftTuple( context,
                                            workingMemory,
                                            leftTuple );
@@ -426,7 +426,7 @@ public class NotNode extends BetaNode {
                     // was previous blocked and not in memory, so add
                     memory.getLeftTupleMemory().add( leftTuple );
 
-                    // subclasses like ForallNotNode might override this propagation
+                    // subclasses might override this propagation
                     propagateAssertLeftTuple( context,
                                               workingMemory,
                                               leftTuple );

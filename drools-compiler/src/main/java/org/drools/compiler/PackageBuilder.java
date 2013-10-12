@@ -754,6 +754,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
             } else {
                 this.results.addAll( compiler.getResults() );
             }
+            compiler.clearResults();
         } else {
             addPackageForExternalType( resource, type, configuration );
         }

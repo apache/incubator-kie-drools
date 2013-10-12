@@ -30,13 +30,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Map;
-
-import static org.drools.core.util.BitMaskUtil.intersect;
-
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
  * then there are no BetaNodes to propagate to. <code>LeftInputAdapter</code> is used to adapt an ObjectSink propagation into a
@@ -102,6 +95,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeBoolean( leftTupleMemoryEnabled );
         out.writeBoolean(  rootQueryNode );
     }
+
+    public short getType() {
+        return NodeTypeEnums.LeftInputAdapterNode;
+    }
     
     public boolean isRootQueryNode() {
         return this.rootQueryNode;
@@ -113,16 +110,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
     
     public void attach( BuildContext context ) {
         this.objectSource.addObjectSink( this );
-        if (context == null) {
-            return;
-        }
+    }
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl( workingMemory.getNextPropagationIdCounter(),
-                                                                                      PropagationContext.RULE_ADDITION,
-                                                                                      null,
-                                                                                      null,
-                                                                                      null );
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
+        if ( ! context.getNodes().contains( this.getParentObjectSource() ) || this.getParentObjectSource().getType() == NodeTypeEnums.AlphaNode ) {
             this.objectSource.updateSink( this,
                                           propagationContext,
                                           workingMemory );
@@ -301,6 +292,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         public int getId() {
             return 0;
+        }
+
+        public short getType() {
+            return -1;
         }
 
         public RuleBasePartitionId getPartitionId() {

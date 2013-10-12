@@ -32,7 +32,7 @@ public class ConditionalBranchBuilder implements ReteooComponentBuilder {
         RuleTerminalNode terminalNode = buildTerminalNodeForNamedConsequence(context, conditionalBranch.getNamedConsequence());
         terminalNode.networkUpdated(new UpdateContext());
         // adds the terminal node to the list of nodes created/added by this sub-rule
-        context.getNodes().add(terminalNode);
+        context.addNode(terminalNode);
 
         return new ConditionalBranchEvaluator( conditionalBranch.getEvalCondition(),
                                                context.getTupleSource().getPartitionId(),

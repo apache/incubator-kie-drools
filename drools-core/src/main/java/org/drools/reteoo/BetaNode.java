@@ -95,7 +95,7 @@ public abstract class BetaNode extends LeftTupleSource
     protected boolean         tupleMemoryEnabled;
     protected boolean         concurrentRightTupleMemory = false;
 
-    /** @see LRUnlinkingOption */
+    /** @see org.drools.builder.conf.LRUnlinkingOption */
     protected boolean         lrUnlinkingEnabled         = false;
 
     private boolean           indexedUnificationJoin;
@@ -390,17 +390,12 @@ public abstract class BetaNode extends LeftTupleSource
 
         this.rightInput.addObjectSink( this );
         this.leftInput.addTupleSink( this, context );
+    }
 
-        if (context == null) {
-            return;
-        }
+    public void updateSinkOnAttach( BuildContext context, PropagationContext propagationContext, InternalWorkingMemory workingMemory ) {
 
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            final PropagationContext propagationContext = new PropagationContextImpl(workingMemory.getNextPropagationIdCounter(),
-                    PropagationContext.RULE_ADDITION,
-                    null,
-                    null,
-                    null);
+        boolean leftUpdate = ! context.getNodes().contains( this.getLeftTupleSource() );
+        boolean rightUpdate = this.getRightInput().getType() == NodeTypeEnums.AlphaNode || ! context.getNodes().contains( this.getRightInput() );
 
             /* FIXME: This should be generalized at BetaNode level and the
              * instanceof should be removed!
@@ -409,18 +404,18 @@ public abstract class BetaNode extends LeftTupleSource
              * that is initially linked. If there are tuples to be propagated,
              * they will trigger the update (thus, population) of the other side.
              * */
-            if (!lrUnlinkingEnabled || !(this instanceof JoinNode)) {
+        if ( ! lrUnlinkingEnabled && rightUpdate) {
 
-                this.rightInput.updateSink(this,
-                        propagationContext,
-                        workingMemory);
-            }
-
-            this.leftInput.updateSink(this,
-                    propagationContext,
-                    workingMemory);
+            this.rightInput.updateSink(this,
+                                       propagationContext,
+                                       workingMemory);
         }
 
+        if ( leftUpdate ) {
+            this.leftInput.updateSink(this,
+                                      propagationContext,
+                                      workingMemory);
+        }
     }
 
     protected void doRemove(final RuleRemovalContext context,
@@ -774,5 +769,9 @@ public abstract class BetaNode extends LeftTupleSource
 
     public void setRightInputOtnId(ObjectTypeNode.Id rightInputOtnId) {
         this.rightInputOtnId = rightInputOtnId;
+    }
+
+    public ObjectSource getRightInput() {
+        return rightInput;
     }
 }

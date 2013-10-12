@@ -472,6 +472,8 @@ public class KnowledgeBuilderTest {
             public List<KnowledgeBuilderResult> getResults() {
                 return Collections.emptyList();
             }
+
+            public void clearResults() {}
         });
 
         kbuilder2.add( res2, ResourceType.PMML );

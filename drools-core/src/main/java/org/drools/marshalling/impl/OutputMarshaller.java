@@ -605,8 +605,7 @@ public class OutputMarshaller {
                 //context.out.println( "---- EvalConditionNode   ---   END" );
                 break;
             }
-            case NodeTypeEnums.NotNode :
-            case NodeTypeEnums.ForallNotNode : {
+            case NodeTypeEnums.NotNode : {
                 if ( leftTuple.getBlocker() == null ) {
                     // is not blocked so has children
                     stream.writeShort( PersisterEnums.LEFT_TUPLE_NOT_BLOCKED );
@@ -682,7 +681,7 @@ public class OutputMarshaller {
                 //context.out.println( "---- AccumulateNode   ---   END" );
                 break;
             }
-            case NodeTypeEnums.RightInputAdaterNode : {
+            case NodeTypeEnums.RightInputAdapterNode : {
                 //context.out.println( ".... RightInputAdapterNode" );
                 // RIANs generate new fact handles on-demand to wrap tuples and need special procedures when serializing to persistent storage
                 ObjectHashMap memory = (ObjectHashMap) context.wm.getNodeMemory( (NodeMemory) sink );
