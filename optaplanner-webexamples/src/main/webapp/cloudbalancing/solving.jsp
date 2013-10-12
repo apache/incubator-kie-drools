@@ -80,7 +80,7 @@ for (Iterator i = keys.iterator(); i.hasNext();) {
 %>
 <tr>  
    <th rowspan '4'> 
-		<img src='../website/img/baldes.png' alt='My Physical Machine' height=15% width=15%>
+		<img src='../website/img/blades.png' alt='My Physical Machine' height=15% width=15%>
    </th>
    <th rowspan='4'>
  	<%= valueArray[0]  %>
