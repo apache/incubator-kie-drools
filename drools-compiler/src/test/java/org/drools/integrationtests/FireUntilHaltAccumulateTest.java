@@ -20,6 +20,7 @@ import org.drools.runtime.conf.ClockTypeOption;
 import org.drools.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -28,6 +29,7 @@ import org.junit.Test;
  * fed into the engine by thread A while the engine had been started by
  * fireUntilHalt by thread B.
  */
+@Ignore
 public class FireUntilHaltAccumulateTest {
 
     private StatefulKnowledgeSession statefulSession;
