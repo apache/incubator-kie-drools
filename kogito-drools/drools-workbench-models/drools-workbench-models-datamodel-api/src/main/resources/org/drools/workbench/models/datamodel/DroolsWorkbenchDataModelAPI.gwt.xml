@@ -25,5 +25,6 @@
   <source path='packages'/>
   <source path='rule'/>
   <source path='workitems'/>
+  <source path='util'/>
 
 </module>

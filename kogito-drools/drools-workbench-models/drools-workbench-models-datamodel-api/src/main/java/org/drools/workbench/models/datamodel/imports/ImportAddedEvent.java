@@ -1,8 +1,7 @@
 package org.drools.workbench.models.datamodel.imports;
 
-import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
-import org.kie.commons.validation.PortablePreconditions;
+import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 
 /**
  * An event signalling adding an import
