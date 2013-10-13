@@ -1,22 +1,22 @@
 package org.jbpm.shared.services.impl;
 
-import static org.kie.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.io.File;
 import java.io.OutputStream;
 import java.net.URI;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Alternative;
 
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
-import org.kie.commons.java.nio.IOException;
-import org.kie.commons.java.nio.file.DirectoryStream;
-import org.kie.commons.java.nio.file.Path;
-import org.kie.commons.java.nio.file.StandardOpenOption;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
+import org.uberfire.java.nio.IOException;
+import org.uberfire.java.nio.file.DirectoryStream;
+import org.uberfire.java.nio.file.Files;
+import org.uberfire.java.nio.file.Path;
+import org.uberfire.java.nio.file.StandardOpenOption;
+
+import static org.uberfire.commons.validation.PortablePreconditions.*;
 
 @Alternative
 public class TestVFSFileServiceImpl implements FileService {
@@ -59,7 +59,7 @@ public class TestVFSFileServiceImpl implements FileService {
         return ioService.newDirectoryStream( path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept( final Path entry ) throws IOException {
-                if ( !org.kie.commons.java.nio.file.Files.isDirectory(entry) && 
+                if ( !Files.isDirectory( entry ) &&
                         (entry.getFileName().toString().endsWith( fileType )
                                 || entry.getFileName().toString().matches(fileType))) {
                     return true;
@@ -120,8 +120,7 @@ public class TestVFSFileServiceImpl implements FileService {
                 new DirectoryStream.Filter<Path>() {
                     @Override
                     public boolean accept(final Path entry) throws IOException {
-                        if (org.kie.commons.java.nio.file.Files
-                                .isDirectory(entry)) {
+                        if (Files.isDirectory( entry )) {
                             return true;
                         }
                         return false;

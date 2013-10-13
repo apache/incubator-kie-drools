@@ -13,8 +13,8 @@ import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.commons.java.nio.file.Path;
 import org.mvel2.MVEL;
+import org.uberfire.java.nio.file.Path;
 
 public class VfsMVELWorkItemHandlerProducer implements WorkItemHandlerProducer {
 

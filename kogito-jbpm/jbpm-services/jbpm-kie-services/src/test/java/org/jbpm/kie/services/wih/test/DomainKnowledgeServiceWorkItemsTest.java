@@ -43,9 +43,8 @@ import org.junit.Test;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.commons.java.nio.file.Path;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-
+import org.uberfire.java.nio.file.Path;
 
 public abstract class DomainKnowledgeServiceWorkItemsTest extends AbstractBaseTest {
 

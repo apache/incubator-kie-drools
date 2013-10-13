@@ -4,15 +4,12 @@
  */
 package org.jbpm.services.task.wih.internals;
 
-import static org.kie.commons.io.FileSystemType.Bootstrap.BOOTSTRAP_INSTANCE;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
@@ -25,10 +22,12 @@ import javax.persistence.PersistenceUnit;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
+
+import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 /**
  *
@@ -39,7 +38,7 @@ public class TaskEnvironmentProducer {
   
     private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
 
-    private IOService ioService = new IOServiceNio2WrapperImpl();    
+    private IOService ioService = new IOServiceNio2WrapperImpl();
     private EntityManagerFactory emf;
 
     

@@ -28,8 +28,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.kie.commons</groupId>
-      <artifactId>kie-commons-io</artifactId>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-io</artifactId>
       <exclusions>
         <exclusion>
           <artifactId>log4j</artifactId>

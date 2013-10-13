@@ -15,9 +15,9 @@
  */
 package org.jbpm.shared.services.api;
 
-
 import java.io.OutputStream;
-import org.kie.commons.java.nio.file.Path;
+
+import org.uberfire.java.nio.file.Path;
 
 /**
  *

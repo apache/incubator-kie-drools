@@ -11,9 +11,9 @@ import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.shared.services.api.FileException;
 import org.jbpm.shared.services.api.FileService;
 import org.kie.api.task.model.Task;
-import org.kie.commons.java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.uberfire.java.nio.file.Path;
 
 @ApplicationScoped
 public class VFSFormProvider extends FreemakerFormProvider {

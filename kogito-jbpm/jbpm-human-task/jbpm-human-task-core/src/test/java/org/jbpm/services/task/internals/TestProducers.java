@@ -15,18 +15,17 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 
 import org.jbpm.shared.services.cdi.Selectable;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.kie.internal.task.api.UserGroupCallback;
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
 /**
  *
  */
 public class TestProducers {
-    
+
     private EntityManagerFactory emf;
     private final IOService ioService = new IOServiceNio2WrapperImpl();
-    
 
     @Inject
     @Selectable
@@ -41,10 +40,10 @@ public class TestProducers {
     @ApplicationScoped
     @Produces
     public EntityManagerFactory getEntityManagerFactory() {
-        if (this.emf == null) {
+        if ( this.emf == null ) {
             // this needs to be here for non EE containers
 
-            this.emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
+            this.emf = Persistence.createEntityManagerFactory( "org.jbpm.services.task" );
 
         }
         return this.emf;
@@ -59,24 +58,19 @@ public class TestProducers {
     }
 
     @ApplicationScoped
-    public void commitAndClose(@Disposes EntityManager em) {
+    public void commitAndClose( @Disposes EntityManager em ) {
         try {
             em.getTransaction().commit();
             em.close();
-        } catch (Exception e) {
+        } catch ( Exception e ) {
 
         }
     }
 
-    
-    
     @Produces
     @Named("ioStrategy")
-    public IOService createIOService(){
+    public IOService createIOService() {
         return ioService;
     }
-     
-    
-    
-    
+
 }

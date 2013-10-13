@@ -15,19 +15,21 @@
  */
 package org.jbpm.kie.services.test.support;
 
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KnowledgeAdminDataServiceImpl;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.VFSDeploymentService;
 import org.jbpm.kie.services.impl.VfsMVELWorkItemHandlerProducer;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
+import org.jbpm.kie.services.impl.bpmn2.AbstractTaskGetInformationHandler;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceSemanticModule;
+import org.jbpm.kie.services.impl.bpmn2.DataServiceItemDefinitionHandler;
 import org.jbpm.kie.services.impl.bpmn2.GetReusableSubProcessesHandler;
 import org.jbpm.kie.services.impl.bpmn2.HumanTaskGetInformationHandler;
 import org.jbpm.kie.services.impl.bpmn2.ProcessDescriptionRepository;
@@ -45,16 +47,11 @@ import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.task.TaskService;
-import org.kie.commons.io.IOService;
-import org.kie.commons.io.impl.IOServiceNio2WrapperImpl;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
-import org.jbpm.kie.services.impl.bpmn2.AbstractTaskGetInformationHandler;
-import org.jbpm.kie.services.impl.bpmn2.DataServiceItemDefinitionHandler;
-
+import org.uberfire.io.IOService;
+import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
 public class NoCDISupportProcessTest extends SupportProcessBaseTest {
 
