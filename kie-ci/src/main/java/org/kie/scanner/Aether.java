@@ -4,6 +4,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.repository.internal.MavenServiceLocator;
 import org.apache.maven.wagon.Wagon;
+import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonatype.aether.RepositorySystem;
@@ -28,7 +29,7 @@ public class Aether {
 
     private static final Logger log = LoggerFactory.getLogger(Aether.class);
 
-    private static final String M2_REPO = System.getProperty( "user.home" ) + "/.m2/repository";
+    private static final String M2_REPO = MavenSettings.getSettings().getLocalRepository();
     private String localRepoDir = M2_REPO;
 
     public static final Aether DEFUALT_AETHER = new Aether();
