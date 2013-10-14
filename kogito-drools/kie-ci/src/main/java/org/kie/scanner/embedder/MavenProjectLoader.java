@@ -19,7 +19,7 @@ public class MavenProjectLoader {
         if (!pomFile.exists()) {
             return null;
         }
-        MavenRequest mavenRequest = new MavenRequest();
+        MavenRequest mavenRequest = createMavenRequest();
         mavenRequest.setPom( pomFile.getAbsolutePath() );
         try {
             MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
@@ -30,13 +30,19 @@ public class MavenProjectLoader {
     }
 
     public static MavenProject parseMavenPom(InputStream pomStream) {
-        MavenRequest mavenRequest = new MavenRequest();
+        MavenRequest mavenRequest = createMavenRequest();
         try {
             MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
             return mavenEmbedder.readProject( pomStream );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static MavenRequest createMavenRequest() {
+        MavenRequest mavenRequest = new MavenRequest();
+        mavenRequest.setLocalRepositoryPath( MavenSettings.getSettings().getLocalRepository() );
+        return mavenRequest;
     }
 
     public static MavenProject loadMavenProject() {
