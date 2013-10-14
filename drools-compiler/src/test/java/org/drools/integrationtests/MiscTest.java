@@ -181,6 +181,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import org.drools.builder.KnowledgeBuilderResult;
+import org.drools.builder.KnowledgeBuilderResults;
+import org.drools.builder.ResultSeverity;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Matchers.any;
@@ -11878,6 +11881,43 @@ public class MiscTest extends CommonTestMethodBase {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
     }
 
+    @Test
+    public void testDontFailOnDuplicatedRuleWithDeclaredTypeError() {
+        String rule1 =
+                "rule \"Some Rule\"\n" +
+                "when\n" +
+                "   $s: String()\n" +
+                "then\n" +
+                "end";
+
+        String rule2 =
+                "declare DClass\n" +
+                "  prop : String\n" +
+                "end\n" +
+                "rule \"Some Rule\"\n" +
+                "when\n" +
+                "   $d: DClass()\n" +
+                "then\n" +
+                "end";
+        
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule2.getBytes()), ResourceType.DRL );
+        
+        
+        //the default behavior of kbuilder is not to fail because of duplicated
+        //rules.
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        
+        //We must have 1 INFO result.
+        KnowledgeBuilderResults infos = kbuilder.getResults(ResultSeverity.INFO);
+        Assert.assertNotNull(infos);
+        Assert.assertEquals(1, infos.size());
+        
+    }
+    
     public static class RuleTime {
         public Date getTime() {
             return new Date();
