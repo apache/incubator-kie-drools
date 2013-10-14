@@ -1652,6 +1652,15 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    keke.clear(  );\n" +
                 "end\n";
 
+        HashMap<String, String> globals = new HashMap<String, String>() ;
+        globals.put("keke","java.util.ArrayList");
+
+        when(
+                dmo.getPackageGlobals()
+        ).thenReturn(
+                globals
+        );
+
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
         assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
@@ -1677,6 +1686,15 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "  then\n" +
                 "    keke.add( a );\n" +
                 "end";
+        HashMap<String, String> globals = new HashMap<String, String>() ;
+        globals.put("keke","java.util.ArrayList");
+
+
+        when(
+                dmo.getPackageGlobals()
+        ).thenReturn(
+                globals
+        );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
