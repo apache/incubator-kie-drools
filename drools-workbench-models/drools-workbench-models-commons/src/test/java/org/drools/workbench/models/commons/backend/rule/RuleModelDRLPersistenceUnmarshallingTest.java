@@ -1637,9 +1637,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       m.attributes[ 0 ].getValue() );
     }
 
-    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
     @Test
     public void testFunctionCall() {
+        // BZ-1013682
         String drl = "" +
                 "package org.mortgages;\n" +
                 "import org.mortgages.LoanApplication;\n" +
@@ -1672,9 +1672,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
 
     }
 
-    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
     @Test
     public void testGlobalCollectionAdd() {
+        // BZ-1013682
         String drl = "package org.mortgages;\n" +
                 "\n" +
                 "import org.mortgages.LoanApplication;\n" +
@@ -1686,9 +1686,9 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "  then\n" +
                 "    keke.add( a );\n" +
                 "end";
+
         HashMap<String, String> globals = new HashMap<String, String>() ;
         globals.put("keke","java.util.ArrayList");
-
 
         when(
                 dmo.getPackageGlobals()
