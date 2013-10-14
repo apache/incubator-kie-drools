@@ -18,8 +18,8 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-      <div class="benchmark-report-nav">
-        <a href="http://www.optaplanner.org/"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
+      <div class="logo-nav">
+    <a href="http://www.optaplanner.org"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
       </div>
     </div>
     <div class="span10">
@@ -31,10 +31,9 @@
       <p>The solver has been terminated. Below is the final solution.</p>
 
       <div>
-        <button class="btn" onclick="window.location.href='loaded.jsp'"><i class="icon-fast-backward"></i> Start again
-        </button>
+        <button class="btn" onclick="window.location.href='loaded.jsp'"><i class="icon-fast-backward"></i> Start again</button>
       </div>
-      <img src="showSchedule.png"/>
+      <jsp:include page="cloudBalancingPage.jsp"/>
     </div>
   </div>
 </div>

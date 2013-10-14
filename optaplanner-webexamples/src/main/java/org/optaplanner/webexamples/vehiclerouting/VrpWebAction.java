@@ -45,7 +45,6 @@ public class VrpWebAction {
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
     }
 
-
     public void solve(final HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(VrpSessionAttributeName.SOLVER);
         VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) session.getAttribute(VrpSessionAttributeName.SHOWN_SOLUTION);

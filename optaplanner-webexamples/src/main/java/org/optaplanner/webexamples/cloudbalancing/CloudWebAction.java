@@ -47,28 +47,25 @@ public class CloudWebAction {
     private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 
     public void setup(HttpSession session) {
-        SolverFactory solverFactory = new XmlSolverFactory("/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        SolverFactory solverFactory = new XmlSolverFactory(
+                "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(CloudSessionAttributeName.SOLVER, solver);
 
         // Load a problem with 40 computers and 120 processes
-        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(40, 120);
-
-        //URL unsolvedSolutionURL = getClass().getResource("/org/drools/planner/webexamples/vehiclerouting/A-n33-k6.vrp");
-        //VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingSolutionImporter().readSolution(unsolvedSolutionURL);
-
-        session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, unsolvedCloudBalance);
+        CloudBalance unsolvedSolution = new CloudBalancingGenerator().createCloudBalance(40, 120);
+        session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
     }
 
     public void solve(final HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(CloudSessionAttributeName.SOLVER);
-        CloudBalance unsolvedCloudBalance = (CloudBalance) session.getAttribute(CloudSessionAttributeName.SHOWN_SOLUTION);
+        CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudSessionAttributeName.SHOWN_SOLUTION);
 
-        solver.setPlanningProblem(unsolvedCloudBalance);
+        solver.setPlanningProblem(unsolvedSolution);
         solver.addEventListener(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
-                CloudBalance bestSolutionCloudBalance = (CloudBalance) event.getNewBestSolution();
-                session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, bestSolutionCloudBalance);
+                CloudBalance bestSolution = (CloudBalance) event.getNewBestSolution();
+                session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, bestSolution);
             }
         });
         solvingExecutor.submit(new Runnable() {

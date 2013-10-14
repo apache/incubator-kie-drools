@@ -1,6 +1,6 @@
 <%@ page import="org.optaplanner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
-  new org.optaplanner.webexamples.vehiclerouting.VrpWebAction().terminateEarly(session);
+  new VrpWebAction().terminateEarly(session);
 %>
 <!DOCTYPE html>
 <html lang="en">

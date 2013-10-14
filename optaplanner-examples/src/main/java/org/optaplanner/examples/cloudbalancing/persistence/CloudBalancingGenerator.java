@@ -88,18 +88,15 @@ public class CloudBalancingGenerator extends LoggingMain {
     private static final int MAXIMUM_REQUIRED_MEMORY = 32; // in gigabyte RAM
     private static final int MAXIMUM_REQUIRED_NETWORK_BANDWIDTH = 12; // in gigabyte per hour
 
-    private static final File outputDir = new File("data/cloudbalancing/unsolved/");
-
     public static void main(String[] args) {
         new CloudBalancingGenerator().generate();
     }
 
-    protected SolutionDao solutionDao;
+    protected SolutionDao solutionDao = null;
     private Random random;
 
     public CloudBalancingGenerator() {
         checkConfiguration();
-        solutionDao = new CloudBalancingDao();
     }
 
     public void generate() {
@@ -120,6 +117,10 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void writeCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
+        if (solutionDao == null) {
+            solutionDao = new CloudBalancingDao();
+        }
+        File outputDir = new File(solutionDao.getDataDir(), "unsolved");
         String inputId = determineInputId(cloudComputerListSize, cloudProcessListSize);
         File outputFile = new File(outputDir, inputId + ".xml");
         CloudBalance cloudBalance = createCloudBalance(inputId, cloudComputerListSize, cloudProcessListSize);

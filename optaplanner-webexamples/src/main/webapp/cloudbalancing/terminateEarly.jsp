@@ -1,6 +1,6 @@
 <%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudWebAction" %>
 <%
-  new org.optaplanner.webexamples.cloudbalancing.CloudWebAction().terminateEarly(session);
+  new CloudWebAction().terminateEarly(session);
 %>
 <!DOCTYPE html>
 <html lang="en">

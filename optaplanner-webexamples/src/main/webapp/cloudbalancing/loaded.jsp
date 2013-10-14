@@ -21,7 +21,7 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-      <div class="benchmark-report-nav">
+      <div class="logo-nav">
         <a href="http://www.optaplanner.org/"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
       </div>
     </div>
@@ -29,16 +29,14 @@
       <header class="main-page-header">
         <h1>Cloud Balancing</h1>
       </header>
-      <p>Balance processes over cloud resources</p>
-
+      <p>Assign processes to computers.</p>
       <p>A dataset has been loaded.</p>
-
       <div>
         <button class="btn" onclick="window.location.href='solve.jsp'">
           <i class="icon-play"></i> Solve this planning problem
         </button>
       </div>
-      <img src="showSchedule.png"/>
+      <jsp:include page="cloudBalancingPage.jsp"/>
     </div>
   </div>
 </div>

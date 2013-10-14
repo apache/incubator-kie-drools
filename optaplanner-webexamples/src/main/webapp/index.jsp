@@ -17,7 +17,7 @@
 <div class="container-fluid">
 <div class="row-fluid">
 <div class="span2">
-  <div class="benchmark-report-nav">
+  <div class="logo-nav">
     <a href="http://www.optaplanner.org"><img src="website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
   </div>
 </div>
