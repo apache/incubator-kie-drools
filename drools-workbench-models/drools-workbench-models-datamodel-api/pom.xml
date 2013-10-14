@@ -32,6 +32,15 @@
   <name>Drools Workbench - Data Model API</name>
   <description>Drools Workbench - Data Model API</description>
 
+  <dependencies>
+
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-commons</artifactId>
+    </dependency>
+
+  </dependencies>
+
   <build>
     <resources>
       <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
