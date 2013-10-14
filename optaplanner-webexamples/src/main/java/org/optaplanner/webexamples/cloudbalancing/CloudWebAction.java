@@ -44,11 +44,10 @@ import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerat
 
 public class CloudWebAction {
 
-
     private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 
     public void setup(HttpSession session) {
-        SolverFactory solverFactory = new XmlSolverFactory( "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        SolverFactory solverFactory = new XmlSolverFactory("/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(CloudSessionAttributeName.SOLVER, solver);
 
@@ -58,10 +57,8 @@ public class CloudWebAction {
         //URL unsolvedSolutionURL = getClass().getResource("/org/drools/planner/webexamples/vehiclerouting/A-n33-k6.vrp");
         //VrpSchedule unsolvedSolution = (VrpSchedule) new VehicleRoutingSolutionImporter().readSolution(unsolvedSolutionURL);
 
-
         session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, unsolvedCloudBalance);
     }
-
 
     public void solve(final HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(CloudSessionAttributeName.SOLVER);
@@ -86,17 +83,17 @@ public class CloudWebAction {
         solver.terminateEarly();
     }
 
-    public TreeMap toDisplayString(HttpSession session) {
+    public Map toDisplayString(HttpSession session) {
 
         CloudBalance bestSolutionCloudBalance = (CloudBalance) session.getAttribute(CloudSessionAttributeName.SHOWN_SOLUTION);
         Hashtable ht = new Hashtable();
-	//Hashtable htTmp = new Hashtable();
-	TreeMap tm2 = new TreeMap();
+        //Hashtable htTmp = new Hashtable();
+        Map tm2 = new TreeMap();
 
         for (CloudProcess process : bestSolutionCloudBalance.getProcessList()) {
-            String[ ] computerArray = new String[9];
+            String[] computerArray = new String[9];
             CloudComputer computer = process.getComputer();
-            if (computer == null){
+            if (computer == null) {
                 computerArray[0] = "N/A";
                 computerArray[1] = "N/A";
                 computerArray[2] = "N/A";
@@ -106,10 +103,8 @@ public class CloudWebAction {
                 computerArray[6] = "N/A";
                 computerArray[7] = "N/A";
                 computerArray[8] = "N/A";
-                ht.put(process.getLabel(),computerArray);
-            }
-            else
-            {
+                ht.put(process.getLabel(), computerArray);
+            } else {
                 computerArray[0] = computer.getLabel();
                 computerArray[1] = String.valueOf(computer.getCpuPower());
                 computerArray[2] = String.valueOf(computer.getMemory());
@@ -118,115 +113,104 @@ public class CloudWebAction {
                 computerArray[5] = String.valueOf(process.getRequiredCpuPower());
                 computerArray[6] = String.valueOf(process.getRequiredMemory());
                 computerArray[7] = String.valueOf(process.getRequiredNetworkBandwidth());
-		computerArray[8] = process.getLabel();
-		ht.put(process.getLabel(),computerArray);
+                computerArray[8] = process.getLabel();
+                ht.put(process.getLabel(), computerArray);
             }
-	}
-	tm2=sortValue(ht);
-	//return htTmp;
-	return tm2;
-	//return ht;
+        }
+        tm2 = sortValue(ht);
+        //return htTmp;
+        return tm2;
+        //return ht;
     }
 
-	  
-
-
-
-    public TreeMap sortValue(Hashtable<String, String[ ]> ht){
+    public Map sortValue(Hashtable<String, String[]> ht) {
         Enumeration enumeration;
         Hashtable htTmp1 = new Hashtable();
-	TreeMap tm = new TreeMap();
+        TreeMap tm = new TreeMap();
         //Hashtable htTmp2 = new Hashtable();
-	String key;
-	String computerKey="Process 0";
-	String computerName="N/A";
-	String[ ] valueArray;
-	int i = 0;
-	int j = 0;
-	int k = 0;
-	String delims = "[ ]";
-	String[ ] computerArray = new String[9];
-	String[ ] computerNameArray = new String[2];
-	String computerId = "0";
-	String highestComputerId = "0";
-	String originalHighestComputerId = "0";
-	String oldComputerId = "0";
+        String key;
+        String computerKey = "Process 0";
+        String computerName = "N/A";
+        String[] valueArray;
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        String delims = "[ ]";
+        String[] computerArray = new String[9];
+        String[] computerNameArray = new String[2];
+        String computerId = "0";
+        String highestComputerId = "0";
+        String originalHighestComputerId = "0";
+        String oldComputerId = "0";
 
-	System.out.println(" ");
-	System.out.println("//////////////////////");
-	System.out.println("NEW CALL TO THE METHOD");
+        System.out.println(" ");
+        System.out.println("//////////////////////");
+        System.out.println("NEW CALL TO THE METHOD");
 
-		htTmp1=(Hashtable) ht.clone();
-		enumeration = htTmp1.keys();
-		while (enumeration.hasMoreElements()) {
-                	                key = (String) enumeration.nextElement();
-                        	        valueArray = (String[ ]) htTmp1.get(key);
-					if (valueArray[0].equals("N/A")){
-						i = 1;
-						j = 1;
-						//htTmp2=(Hashtable) htTmp1.clone();
-						tm.putAll(htTmp1);
-						break;
-					}
-					else
-					{
-                               			computerNameArray = valueArray[0].split(delims);
-						computerId = computerNameArray[1];
-						//System.out.println("COMPUTERID : " + computerId + " >=  OLDCOMPUTERID : " + oldComputerId);
-                                		if ( Integer.valueOf(computerId) >= Integer.valueOf(oldComputerId) ) {
-							highestComputerId = computerId;
-							oldComputerId = highestComputerId;
-                                		}
-					}
-		}	
+        htTmp1 = (Hashtable) ht.clone();
+        enumeration = htTmp1.keys();
+        while (enumeration.hasMoreElements()) {
+            key = (String) enumeration.nextElement();
+            valueArray = (String[]) htTmp1.get(key);
+            if (valueArray[0].equals("N/A")) {
+                i = 1;
+                j = 1;
+                //htTmp2=(Hashtable) htTmp1.clone();
+                tm.putAll(htTmp1);
+                break;
+            } else {
+                computerNameArray = valueArray[0].split(delims);
+                computerId = computerNameArray[1];
+                //System.out.println("COMPUTERID : " + computerId + " >=  OLDCOMPUTERID : " + oldComputerId);
+                if (Integer.valueOf(computerId) >= Integer.valueOf(oldComputerId)) {
+                    highestComputerId = computerId;
+                    oldComputerId = highestComputerId;
+                }
+            }
+        }
 
-		originalHighestComputerId=highestComputerId;
-		while ( i == 0) {
-			//System.out.println(" ");
-			//System.out.println("REAL VALUE");
-			//System.out.println(highestComputerId);
-                        if (htTmp1.isEmpty())
-                        {
-				System.out.println("OUT IS EMPTY ");
-				i = 1;
-			}
-			else
-			{
-				enumeration = htTmp1.keys();
-        			while (enumeration.hasMoreElements()) {
-	        			        key = (String) enumeration.nextElement();
-               					valueArray = (String[ ]) htTmp1.get(key);
-						computerNameArray = valueArray[0].split(delims);
-						computerId = computerNameArray[1];
-						if ( Integer.valueOf(computerId) <= Integer.valueOf(highestComputerId) )
-						{
-							computerKey = key;
-							computerArray = valueArray;
-							computerNameArray = computerArray[0].split(delims);
-							highestComputerId = computerNameArray[1];
-							//System.out.println(" HIGHEST COMPUTER : " + computerArray[0]);
-							
-						}
-				}
-			//	System.out.println(" ");
-			//	System.out.println("computer : " + computerArray[0] + " PROCESS : " + computerKey);
-				computerName=String.format("%06d", k++);
-				computerArray[8]=computerKey;			
-				//htTmp2.put(computerName,computerArray);
-				System.out.println("COMPUTER ID : " + computerName  + " COMPUTER NAME : " + computerArray[0]);
-				tm.put(computerName,computerArray);
-                        	htTmp1.remove(computerKey);
-				highestComputerId=originalHighestComputerId;
-				if (htTmp1.isEmpty())
-                        	{
-		//			System.out.println("OUT DO NOT CONTAIN ANY KEY");
-					i = 1;
-                        	}
+        originalHighestComputerId = highestComputerId;
+        while (i == 0) {
+            //System.out.println(" ");
+            //System.out.println("REAL VALUE");
+            //System.out.println(highestComputerId);
+            if (htTmp1.isEmpty()) {
+                System.out.println("OUT IS EMPTY ");
+                i = 1;
+            } else {
+                enumeration = htTmp1.keys();
+                while (enumeration.hasMoreElements()) {
+                    key = (String) enumeration.nextElement();
+                    valueArray = (String[]) htTmp1.get(key);
+                    computerNameArray = valueArray[0].split(delims);
+                    computerId = computerNameArray[1];
+                    if (Integer.valueOf(computerId) <= Integer.valueOf(highestComputerId)) {
+                        computerKey = key;
+                        computerArray = valueArray;
+                        computerNameArray = computerArray[0].split(delims);
+                        highestComputerId = computerNameArray[1];
+                        //System.out.println(" HIGHEST COMPUTER : " + computerArray[0]);
 
-			}
-		}	
-	System.out.println("//////////////////////");
-	System.out.println("//////////////////////");
+                    }
+                }
+                //	System.out.println(" ");
+                //	System.out.println("computer : " + computerArray[0] + " PROCESS : " + computerKey);
+                computerName = String.format("%06d", k++);
+                computerArray[8] = computerKey;
+                //htTmp2.put(computerName,computerArray);
+                System.out.println("COMPUTER ID : " + computerName + " COMPUTER NAME : " + computerArray[0]);
+                tm.put(computerName, computerArray);
+                htTmp1.remove(computerKey);
+                highestComputerId = originalHighestComputerId;
+                if (htTmp1.isEmpty()) {
+                    //			System.out.println("OUT DO NOT CONTAIN ANY KEY");
+                    i = 1;
+                }
+
+            }
+        }
+        System.out.println("//////////////////////");
+        System.out.println("//////////////////////");
 //	if (j == 0) {
 //		Set ref = htTmp2.keySet();
 //		Iterator it = ref.iterator();
@@ -235,17 +219,16 @@ public class CloudWebAction {
 //			valueArray = (String[ ]) htTmp2.get(key);
 //			System.out.println("COMPUTER : "+ key + " has PROCESS : " + valueArray[0]);
 //		}
-	//	enumeration = htTmp2.keys();
+        //	enumeration = htTmp2.keys();
         //	while (enumeration.hasMoreElements()) {
         //		key = (String) enumeration.nextElement();
         //       		valueArray = (String[ ]) htTmp2.get(key);
-	//		System.out.println("COMPUTER : "+ valueArray[0] + "has PROCESS : " + key); 
-	//	}
+        //		System.out.println("COMPUTER : "+ valueArray[0] + "has PROCESS : " + key);
+        //	}
 //	}
-	
-	return tm;
-	}
-			
+
+        return tm;
+    }
 
 // COMMENTAIRE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /* 
