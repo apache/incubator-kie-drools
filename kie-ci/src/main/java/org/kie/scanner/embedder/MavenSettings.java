@@ -14,6 +14,8 @@ public class MavenSettings {
 
     private static final Logger log = LoggerFactory.getLogger(MavenSettings.class);
 
+    private static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
+
     private static final Settings settings = initSettings();
 
     public static Settings getSettings() {
@@ -25,14 +27,28 @@ public class MavenSettings {
 
         DefaultSettingsBuildingRequest request = new DefaultSettingsBuildingRequest();
 
-        String userHome = System.getProperty( "user.home" );
-        if (userHome != null) {
-            File userSettingsFile = new File( userHome + "/.m2/settings.xml" );
-            if (userSettingsFile.exists()) {
-                request.setUserSettingsFile( userSettingsFile );
+        boolean useCustomSettingsLocation = false;
+        String customSettings = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
+        if (customSettings != null) {
+            File customSettingsFile = new File( customSettings );
+            if (customSettingsFile.exists()) {
+                request.setUserSettingsFile( customSettingsFile );
+                useCustomSettingsLocation = true;
+            } else {
+                log.warn("Cannot find custom maven settings file: " + customSettings);
             }
-        } else {
-            log.warn("User home is not set");
+        }
+
+        String userHome = System.getProperty( "user.home" );
+        if ( !useCustomSettingsLocation ) {
+            if (userHome != null) {
+                File userSettingsFile = new File( userHome + "/.m2/settings.xml" );
+                if (userSettingsFile.exists()) {
+                    request.setUserSettingsFile( userSettingsFile );
+                }
+            } else {
+                log.warn("User home is not set");
+            }
         }
 
         String mavenHome = System.getenv( "M2_HOME" );
