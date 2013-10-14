@@ -1,6 +1,7 @@
-<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudWebAction" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudBalancingWebAction" %>
 <%
-  new CloudWebAction().setup(session);
+  new CloudBalancingWebAction().setup(session);
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -21,13 +22,11 @@
 <div class="container-fluid">
   <div class="row-fluid">
     <div class="span2">
-      <div class="logo-nav">
-        <a href="http://www.optaplanner.org/"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
-      </div>
+      <jsp:include page="/menu.jsp"/>
     </div>
     <div class="span10">
       <header class="main-page-header">
-        <h1>Cloud Balancing</h1>
+        <h1>Cloud balancing</h1>
       </header>
       <p>Assign processes to computers.</p>
       <p>A dataset has been loaded.</p>

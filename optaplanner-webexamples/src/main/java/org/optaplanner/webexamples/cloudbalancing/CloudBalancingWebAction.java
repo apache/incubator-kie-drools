@@ -30,30 +30,32 @@ import org.optaplanner.core.impl.event.SolverEventListener;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 
-public class CloudWebAction {
+public class CloudBalancingWebAction {
 
     private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 
     public void setup(HttpSession session) {
+        terminateEarly(session);
+
         SolverFactory solverFactory = new XmlSolverFactory(
                 "/org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
-        session.setAttribute(CloudSessionAttributeName.SOLVER, solver);
+        session.setAttribute(CloudBalancingSessionAttributeName.SOLVER, solver);
 
         // Load a problem with 40 computers and 120 processes
-        CloudBalance unsolvedSolution = new CloudBalancingGenerator().createCloudBalance(100, 300);
-        session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
+        CloudBalance unsolvedSolution = new CloudBalancingGenerator(true).createCloudBalance(100, 300);
+        session.setAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
     }
 
     public void solve(final HttpSession session) {
-        final Solver solver = (Solver) session.getAttribute(CloudSessionAttributeName.SOLVER);
-        CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudSessionAttributeName.SHOWN_SOLUTION);
+        final Solver solver = (Solver) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
+        CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
 
         solver.setPlanningProblem(unsolvedSolution);
         solver.addEventListener(new SolverEventListener() {
             public void bestSolutionChanged(BestSolutionChangedEvent event) {
                 CloudBalance bestSolution = (CloudBalance) event.getNewBestSolution();
-                session.setAttribute(CloudSessionAttributeName.SHOWN_SOLUTION, bestSolution);
+                session.setAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION, bestSolution);
             }
         });
         solvingExecutor.submit(new Runnable() {
@@ -64,8 +66,11 @@ public class CloudWebAction {
     }
 
     public void terminateEarly(HttpSession session) {
-        final Solver solver = (Solver) session.getAttribute(CloudSessionAttributeName.SOLVER);
-        solver.terminateEarly();
+        final Solver solver = (Solver) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
+        if (solver != null) {
+            solver.terminateEarly();
+            session.setAttribute(CloudBalancingSessionAttributeName.SOLVER, null);
+        }
     }
 
 }

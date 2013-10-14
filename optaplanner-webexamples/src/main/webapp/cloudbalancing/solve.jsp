@@ -1,6 +1,7 @@
-<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudWebAction" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudBalancingWebAction" %>
 <%
-  new CloudWebAction().solve(session);
+  new CloudBalancingWebAction().solve(session);
 %>
 <!DOCTYPE html>
 <html lang="en">

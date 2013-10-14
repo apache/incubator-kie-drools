@@ -51,6 +51,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         super(new VehicleRoutingDao());
     }
 
+    public VehicleRoutingImporter(boolean withoutDao) {
+        super(withoutDao);
+    }
+
     @Override
     public String getInputFileSuffix() {
         return VehicleRoutingProblemIO.FILE_EXTENSION;

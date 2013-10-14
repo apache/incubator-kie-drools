@@ -16,7 +16,7 @@
 
 package org.optaplanner.webexamples.cloudbalancing;
 
-public class CloudSessionAttributeName {
+public class CloudBalancingSessionAttributeName {
 
      public static final String SOLVER = "cloudbalancing.solver";
      public static final String SHOWN_SOLUTION = "cloudbalancing.shownSolution";

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.optaplanner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
   new VrpWebAction().solve(session);

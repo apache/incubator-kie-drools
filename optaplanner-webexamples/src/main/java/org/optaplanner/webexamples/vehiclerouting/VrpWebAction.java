@@ -34,13 +34,15 @@ public class VrpWebAction {
     private static ExecutorService solvingExecutor = Executors.newFixedThreadPool(4);
 
     public void setup(HttpSession session) {
+        terminateEarly(session);
+
         SolverFactory solverFactory = new XmlSolverFactory(
                 "/org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         session.setAttribute(VrpSessionAttributeName.SOLVER, solver);
 
         URL unsolvedSolutionURL = getClass().getResource("/org/optaplanner/webexamples/vehiclerouting/A-n33-k6.vrp");
-        VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) new VehicleRoutingImporter()
+        VehicleRoutingSolution unsolvedSolution = (VehicleRoutingSolution) new VehicleRoutingImporter(true)
                 .readSolution(unsolvedSolutionURL);
         session.setAttribute(VrpSessionAttributeName.SHOWN_SOLUTION, unsolvedSolution);
     }
@@ -65,7 +67,10 @@ public class VrpWebAction {
 
     public void terminateEarly(HttpSession session) {
         final Solver solver = (Solver) session.getAttribute(VrpSessionAttributeName.SOLVER);
-        solver.terminateEarly();
+        if (solver != null) {
+            solver.terminateEarly();
+            session.setAttribute(VrpSessionAttributeName.SOLVER, null);
+        }
     }
 
 }

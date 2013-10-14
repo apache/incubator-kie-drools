@@ -46,6 +46,15 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         outputDir = new File(solutionDao.getDataDir(), "unsolved");
     }
 
+    public AbstractSolutionImporter(boolean withoutDao) {
+        if (!withoutDao) {
+            throw new IllegalArgumentException("The parameter withoutDao (" + withoutDao + ") must be true.");
+        }
+        solutionDao = null;
+        inputDir = null;
+        outputDir = null;
+    }
+
     protected File getInputDir() {
         return inputDir;
     }

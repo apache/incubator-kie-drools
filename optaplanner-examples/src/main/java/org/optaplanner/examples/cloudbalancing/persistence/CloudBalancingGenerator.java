@@ -92,11 +92,23 @@ public class CloudBalancingGenerator extends LoggingMain {
         new CloudBalancingGenerator().generate();
     }
 
-    protected SolutionDao solutionDao = null;
-    private Random random;
+    protected final SolutionDao solutionDao;
+    protected final File outputDir;
+    protected Random random;
 
     public CloudBalancingGenerator() {
         checkConfiguration();
+        solutionDao = new CloudBalancingDao();
+        outputDir = new File(solutionDao.getDataDir(), "unsolved");
+    }
+
+    public CloudBalancingGenerator(boolean withoutDao) {
+        if (!withoutDao) {
+            throw new IllegalArgumentException("The parameter withoutDao (" + withoutDao + ") must be true.");
+        }
+        checkConfiguration();
+        solutionDao = null;
+        outputDir = null;
     }
 
     public void generate() {
@@ -117,10 +129,6 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void writeCloudBalance(int cloudComputerListSize, int cloudProcessListSize) {
-        if (solutionDao == null) {
-            solutionDao = new CloudBalancingDao();
-        }
-        File outputDir = new File(solutionDao.getDataDir(), "unsolved");
         String inputId = determineInputId(cloudComputerListSize, cloudProcessListSize);
         File outputFile = new File(outputDir, inputId + ".xml");
         CloudBalance cloudBalance = createCloudBalance(inputId, cloudComputerListSize, cloudProcessListSize);

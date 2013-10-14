@@ -1,16 +1,17 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudComputer" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudProcess" %>
 <%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudBalance" %>
-<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudSessionAttributeName" %>
+<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudBalancingSessionAttributeName" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.LinkedHashMap" %>
 <%@ page import="org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore" %>
 
 <%
-  CloudBalance solution = (CloudBalance) session.getAttribute(CloudSessionAttributeName.SHOWN_SOLUTION);
+  CloudBalance solution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
   HardSoftScore score = solution.getScore();
   List<CloudComputer> computerList = solution.getComputerList();
   Map<CloudComputer, List<CloudProcess>> computerToProcessListMap = new LinkedHashMap<CloudComputer, List<CloudProcess>>(
@@ -48,6 +49,9 @@
         memoryUsage += process.getRequiredMemory();
         networkBandwidthUsage += process.getRequiredNetworkBandwidth();
       }
+      int cpuPowerCapacity = computer == null ? 0 : computer.getCpuPower();
+      int memoryCapacity = computer == null ? 0 : computer.getMemory();
+      int networkBandwidthCapacity = computer == null ? 0 : computer.getNetworkBandwidth();
       boolean used = processList.size() > 0;
   %>
   <tr <%=used ? "" : "class=\"disabled\""%>>
@@ -55,18 +59,24 @@
       if (computer == null) {
     %>
       <th>Unassigned</th>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
     <%
       } else {
     %>
-      <th><img src="cloudComputer.png" alt=""/> <%=computer.getLabel()%></th>
-      <td style="text-align: center;"><%=cpuPowerUsage%> GHz / <%=computer.getCpuPower()%> GHz</td>
-      <td style="text-align: center;"><%=memoryUsage%> GB / <%=computer.getMemory()%> GB</td>
-      <td style="text-align: center;"><%=networkBandwidthUsage%> GB / <%=computer.getNetworkBandwidth()%> GB</td>
-      <td style="text-align: right;"><%=computer.getCost()%> $</td>
+      <th><img src="cloudComputer.png" alt=""/>&nbsp;<%=computer.getLabel()%></th>
+    <%
+      }
+    %>
+    <td style="text-align: center;"><%=cpuPowerUsage%> GHz / <%=cpuPowerCapacity%> GHz</td>
+    <td style="text-align: center;"><%=memoryUsage%> GB / <%=memoryCapacity%> GB</td>
+    <td style="text-align: center;"><%=networkBandwidthUsage%> GB / <%=networkBandwidthCapacity%> GB</td>
+    <%
+      if (computer == null) {
+    %>
+    <td></td>
+    <%
+    } else {
+    %>
+    <td style="text-align: right;"><%=computer.getCost()%> $</td>
     <%
       }
     %>

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,9 +18,7 @@
 <div class="container-fluid">
 <div class="row-fluid">
 <div class="span2">
-  <div class="logo-nav">
-    <a href="http://www.optaplanner.org"><img src="website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
-  </div>
+  <jsp:include page="/menu.jsp"/>
 </div>
 <div class="span10">
   <header class="main-page-header">
@@ -28,7 +27,7 @@
   <p>Which example do you want to see?</p>
   <ul>
     <li><a href="vehiclerouting/loaded.jsp">Vehicle routing</a></li>
-    <li><a href="cloudbalancing/loaded.jsp">Cloud Balancing</a></li>
+    <li><a href="cloudbalancing/loaded.jsp">Cloud balancing</a></li>
   </ul>
   <p>For more information, visit <a href="http://www.optaplanner.org">the OptaPlanner project homepage</a>.</p>
 </div>

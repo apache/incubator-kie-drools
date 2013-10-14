@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="org.optaplanner.webexamples.vehiclerouting.VrpWebAction" %>
 <%
   new VrpWebAction().setup(session);
@@ -21,9 +22,7 @@
 <div class="container-fluid">
 <div class="row-fluid">
 <div class="span2">
-  <div class="logo-nav">
-        <a href="http://www.optaplanner.org/"><img src="../website/img/optaPlannerLogo.png" alt="OptaPlanner"/></a>
-  </div>
+  <jsp:include page="/menu.jsp"/>
 </div>
 <div class="span10">
   <header class="main-page-header">
