@@ -2215,7 +2215,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
 
         List<TypeDefinition> unresolvedTypeDefinitions = null;
 
-        if ( ! results.isEmpty() ) {
+        if ( hasErrors() ) {
             return unresolvedTypeDefinitions;
         }
 
@@ -2316,7 +2316,7 @@ public class PackageBuilder implements DeepCloneable<PackageBuilder> {
                 // the type declaration is generated in any case (to be used by subclasses, if any)
                 // the actual class will be generated only if needed
 
-                if ( results.isEmpty() ) {
+                if ( !this.hasErrors() ) {
                     generateDeclaredBean( typeDescr,
                                           type,
                                           pkgRegistry,
