@@ -1652,36 +1652,14 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    keke.clear(  );\n" +
                 "end\n";
 
-        when(
-                dmo.getGlobalCollections()
-        ).thenReturn(
-                new String[]{"keke"}
-        );
-        when(
-                dmo.getGlobalVariable("keke")
-        ).thenReturn(
-                "java.util.ArrayList"
-        );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
-        when(
-                dmo.getGlobalVariables()
-        ).thenReturn(
-                new String[]{"keke"}
-        );
-        when(
-                dmo.getAllFactTypes()
-        ).thenReturn(
-                new String[]{"java.util.ArrayList", "org.mortgages.LoanApplication"}
-        );
-
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal(drl, dmo);
-
-        assertTrue(m.rhs[0] instanceof ActionCallMethod);
-        ActionCallMethod actionGlobalCollectionAdd = (ActionCallMethod) m.rhs[0];
-        assertEquals("clear", actionGlobalCollectionAdd.getMethodName());
-        assertEquals("keke", actionGlobalCollectionAdd.getVariable());
-        assertEquals(1, actionGlobalCollectionAdd.getState());
-        assertEquals(0, actionGlobalCollectionAdd.getFieldValues().length);
+        assertTrue( m.rhs[ 0 ] instanceof ActionCallMethod );
+        ActionCallMethod actionGlobalCollectionAdd = (ActionCallMethod) m.rhs[ 0 ];
+        assertEquals( "clear", actionGlobalCollectionAdd.getMethodName() );
+        assertEquals( "keke", actionGlobalCollectionAdd.getVariable() );
+        assertEquals( 1, actionGlobalCollectionAdd.getState() );
+        assertEquals( 0, actionGlobalCollectionAdd.getFieldValues().length );
 
     }
 
@@ -1700,38 +1678,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    keke.add( a );\n" +
                 "end";
 
-        /**
-         * Not sure what is needed so filling all these. Could be that these are not enough.
-         */
-        when(
-                dmo.getGlobalCollections()
-        ).thenReturn(
-                new String[]{"keke"}
-        );
-        when(
-                dmo.getGlobalVariable("keke")
-        ).thenReturn(
-                "java.util.ArrayList"
-        );
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
-        when(
-                dmo.getGlobalVariables()
-        ).thenReturn(
-                new String[]{"keke"}
-        );
-        when(
-                dmo.getAllFactTypes()
-        ).thenReturn(
-                new String[]{"java.util.ArrayList", "org.mortgages.LoanApplication"}
-        );
-
-
-        RuleModel m = BRDRLPersistence.getInstance().unmarshal( drl, dmo );
-
-        assertTrue(m.rhs[0] instanceof ActionGlobalCollectionAdd);
-        ActionGlobalCollectionAdd actionGlobalCollectionAdd= (ActionGlobalCollectionAdd)m.rhs[0];
-        assertEquals("keke",actionGlobalCollectionAdd.getGlobalName());
-        assertEquals("a",actionGlobalCollectionAdd.getFactName());
+        assertTrue( m.rhs[ 0 ] instanceof ActionGlobalCollectionAdd );
+        ActionGlobalCollectionAdd actionGlobalCollectionAdd = (ActionGlobalCollectionAdd) m.rhs[ 0 ];
+        assertEquals( "keke", actionGlobalCollectionAdd.getGlobalName() );
+        assertEquals( "a", actionGlobalCollectionAdd.getFactName() );
 
     }
 
