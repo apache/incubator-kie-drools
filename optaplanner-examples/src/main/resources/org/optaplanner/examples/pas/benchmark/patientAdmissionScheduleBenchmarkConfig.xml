@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/data/pas</benchmarkDirectory>
-  <!--<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>-->
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
   <warmUpSecondsSpend>30</warmUpSecondsSpend>
 
   <inheritedSolverBenchmark>
@@ -28,23 +28,19 @@
       <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <!-- TODO SameBedInSameNightScoreRule should only be checked for construction heuristics -->
-        <!--<scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>-->
       </scoreDirectorFactory>
       <termination>
-        <!--
-           On Geoffrey De Smet's PC: 372 (short run), 3720 (long run).
-           On Peter Demeester's PC: 300 (short run), 3000 (long run).
-        -->
-        <maximumSecondsSpend>372</maximumSecondsSpend>
+        <maximumSecondsSpend>300</maximumSecondsSpend>
       </termination>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>SolutionInitializer</name>
+    <name>old CH</name>
     <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
@@ -52,8 +48,59 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>undoMoveTabuSize3-random</name>
+    <name>FF</name>
     <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
+    <name>FFD</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
+    <name>BFD</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
+    <name>old MH</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
       </customSolverPhase>
@@ -67,29 +114,61 @@
           <undoMoveTabuSize>3</undoMoveTabuSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>500</acceptedCountLimit><!-- TODO tweak me -->
+          <acceptedCountLimit>500</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>undoMoveTabuSize3-shuffled</name>
+    <name>TS 7</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
       <localSearch>
-        <moveListFactory>
-          <cacheType>STEP</cacheType>
-          <selectionOrder>SHUFFLED</selectionOrder>
-          <moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <undoMoveTabuSize>3</undoMoveTabuSize>
+          <entityTabuSize>7</entityTabuSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>500</acceptedCountLimit><!-- TODO tweak me -->
+          <acceptedCountLimit>1000</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>LA 200</name>
+    <solver>
+      <scoreDirectorFactory>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+        <forager>
+          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
+        </forager>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>200</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
