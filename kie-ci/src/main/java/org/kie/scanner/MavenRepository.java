@@ -27,7 +27,7 @@ import java.util.List;
 
 public class MavenRepository {
 
-    private static final MavenRepository DEFAUL_MAVEN_REPOSITORY = new MavenRepository(Aether.DEFUALT_AETHER);
+    private static final MavenRepository DEFAULT_MAVEN_REPOSITORY = new MavenRepository(Aether.DEFUALT_AETHER);
 
     private final Aether aether;
     private static final List<RemoteRepository> extraRepositories = new ArrayList<RemoteRepository>();
@@ -37,7 +37,7 @@ public class MavenRepository {
     }
     
     public static MavenRepository getMavenRepository() {
-        return DEFAUL_MAVEN_REPOSITORY;
+        return DEFAULT_MAVEN_REPOSITORY;
     }
     
     public static void addExtraRepository(RemoteRepository r){
