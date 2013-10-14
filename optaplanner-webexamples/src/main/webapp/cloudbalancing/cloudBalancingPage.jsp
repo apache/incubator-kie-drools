@@ -1,100 +1,78 @@
-<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudWebAction, java.util.Iterator, java.util.Set, java.util.Map, java.util.TreeMap" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudComputer" %>
+<%@ page import="java.util.List" %>
+<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudProcess" %>
+<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudBalance" %>
+<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudSessionAttributeName" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.LinkedHashMap" %>
+<%@ page import="org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore" %>
 
 <%
-  Map tm = new TreeMap();
-  CloudWebAction cloudwebaction = new CloudWebAction();
-  //bestSolution = (Hashtable) cloudwebaction.toDisplayString(session);
-  tm = (TreeMap) cloudwebaction.toDisplayString(session);
-  String key;
-  String[] valueArray = new String[9];
-  String value;
+  CloudBalance solution = (CloudBalance) session.getAttribute(CloudSessionAttributeName.SHOWN_SOLUTION);
+  HardSoftScore score = solution.getScore();
+  List<CloudComputer> computerList = solution.getComputerList();
+  Map<CloudComputer, List<CloudProcess>> computerToProcessListMap = new LinkedHashMap<CloudComputer, List<CloudProcess>>(
+      computerList.size());
+  computerToProcessListMap.put(null, new ArrayList<CloudProcess>()); // unassigned
+  for (CloudComputer computer : computerList) {
+    computerToProcessListMap.put(computer, new ArrayList<CloudProcess>());
+  }
+  for (CloudProcess process : solution.getProcessList()) {
+    computerToProcessListMap.get(process.getComputer()).add(process);
+  }
 %>
-
-<table border='1'>
-  <caption>Cloud Balance</caption>
+<p style="margin-top: 10px;">Cost: <%=score == null ? "" : score.isFeasible() ? - score.getSoftScore() + " $" : "Infeasible"%></p>
+<table>
   <thead>
   <tr>
-    <th></th>
     <th>Computer Name</th>
-    <th>Computer Resources</th>
-    <th>Process Name</th>
-    <th>Process Resources</th>
+    <th>CPU power</th>
+    <th>Memory</th>
+    <th>Network bandwidth</th>
+    <th>Price</th>
+    <th>Process count</th>
   </tr>
   </thead>
-  <tfoot>
-  <tr>
-    <td></td>
-  </tr>
-  </tfoot>
   <tbody>
   <%
-    //Enumeration k = bestSolution.keys();
-//while (k.hasMoreElements()) {
-//	key = (String) k.nextElement();
-//        valueArray = (String[ ]) bestSolution.get(key); 
-
-//Set set = tm.entrySet();
-//Iterator i = set.iterator();
-//while(i.hasNext()) {
-//	Map.Entry me = (Map.Entry)i.next();
-//	key = (String) me.getKey();
-// valueArray = (String[ ]) me.getValue()
-
-//   for (key : tm.KeySet() {
-//	valueArray = (String[ ]) tm.get(key);
-
-    Set keys = tm.keySet();
-    for (Iterator i = keys.iterator(); i.hasNext(); ) {
-      key = (String) i.next();
-      valueArray = (String[]) tm.get(key);
-
-
+    for (Map.Entry<CloudComputer, List<CloudProcess>> entry : computerToProcessListMap.entrySet()) {
+      CloudComputer computer = entry.getKey();
+      List<CloudProcess> processList = entry.getValue();
+      int cpuPowerUsage = 0;
+      int memoryUsage = 0;
+      int networkBandwidthUsage = 0;
+      for (CloudProcess process : processList) {
+        cpuPowerUsage += process.getRequiredCpuPower();
+        memoryUsage += process.getRequiredMemory();
+        networkBandwidthUsage += process.getRequiredNetworkBandwidth();
+      }
+      boolean used = processList.size() > 0;
   %>
-  <tr>
-    <th rowspan='4'>
-      <img src='cloudComputer.png' alt='My Physical Machine'>
-    </th>
-    <th rowspan='4'>
-      <%= valueArray[0]  %>
-    </th>
-    <td>
-      CPU : <%= valueArray[1] %>
-    </td>
-    <th rowspan='4'>
-      <%= valueArray[8]  %>
-    </th>
-    <td>
-      CPU : <%= valueArray[5] %>
-    </td>
+  <tr <%=used ? "" : "class=\"disabled\""%>>
+    <%
+      if (computer == null) {
+    %>
+      <th>Unassigned</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    <%
+      } else {
+    %>
+      <th><img src="cloudComputer.png" alt=""/> <%=computer.getLabel()%></th>
+      <td style="text-align: center;"><%=cpuPowerUsage%> GHz / <%=computer.getCpuPower()%> GHz</td>
+      <td style="text-align: center;"><%=memoryUsage%> GB / <%=computer.getMemory()%> GB</td>
+      <td style="text-align: center;"><%=networkBandwidthUsage%> GB / <%=computer.getNetworkBandwidth()%> GB</td>
+      <td style="text-align: right;"><%=computer.getCost()%> $</td>
+    <%
+      }
+    %>
+    <td style="text-align: right;"><%=processList.size()%> processes</td>
   </tr>
-  <tr>
-    <td>
-      RAM : <%= valueArray[2] %>
-    </td>
-    <td>
-      MEM : <%= valueArray[6] %>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      NET : <%= valueArray[3] %>
-    </td>
-    <td>
-      NET : <%= valueArray[7] %>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      $ : <%= valueArray[4] %>
-    </td>
-    <td>
-      ID : <%= key %>
-    </td>
-  </tr>
-
   <%
-      //System.out.println(" +++++++++++ " + valueArray[0] + " -> CPU : " + valueArray[1]);
-      valueArray = null;
     }
   %>
   </tbody>

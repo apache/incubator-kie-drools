@@ -30,3 +30,15 @@
     padding-bottom: 17px;
     border-bottom: 2px solid #dddddd;
 }
+
+table {
+    margin: 10px;
+}
+td, th {
+    border: solid thin;
+    padding: 5px;
+}
+
+.disabled {
+    background-color: #babdb6;
+}
