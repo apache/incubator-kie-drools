@@ -1376,7 +1376,7 @@ public class RuleModelDRLPersistenceImpl
         if ( str == null || str.isEmpty() ) {
             return new RuleModel();
         }
-        return getRuleModel( preprocessDRL( str ), dmo );
+        return getRuleModel( preprocessDRL( str ).registerGlobals( dmo, null ), dmo );
     }
 
     public RuleModel unmarshalUsingDSL( final String str,
@@ -1386,7 +1386,7 @@ public class RuleModelDRLPersistenceImpl
         if ( str == null || str.isEmpty() ) {
             return new RuleModel();
         }
-        return getRuleModel( parseDSLs( preprocessDRL( str ), dsls ).registerGlobals( globals ), dmo );
+        return getRuleModel( parseDSLs( preprocessDRL( str ), dsls ).registerGlobals( dmo, globals ), dmo );
     }
 
     private ExpandedDRLInfo parseDSLs( ExpandedDRLInfo expandedDRLInfo,
@@ -1625,7 +1625,7 @@ public class RuleModelDRLPersistenceImpl
             return globals.contains( name );
         }
 
-        public ExpandedDRLInfo registerGlobals( List<String> globalStatements ) {
+        public ExpandedDRLInfo registerGlobals( PackageDataModelOracle dmo, List<String> globalStatements ) {
             if ( globalStatements != null ) {
                 for ( String globalStatement : globalStatements ) {
                     String identifier = getIdentifier( globalStatement );
@@ -1633,6 +1633,10 @@ public class RuleModelDRLPersistenceImpl
                         globals.add( identifier );
                     }
                 }
+            }
+            Map<String, String> globalsFromDmo = dmo != null ? dmo.getPackageGlobals() : null;
+            if ( globalsFromDmo != null ) {
+                globals.addAll(globalsFromDmo.keySet());
             }
             return this;
         }
@@ -2022,6 +2026,7 @@ public class RuleModelDRLPersistenceImpl
                             ActionCallMethod acm = new ActionCallMethod();
                             acm.setMethodName( methodName );
                             acm.setVariable( variable );
+                            acm.setState(1);
                             m.addRhsItem( acm );
                             String params = unwrapParenthesis( line );
                             for ( String param : params.split( "," ) ) {

@@ -233,9 +233,9 @@ public class RuleModelDRLPersistenceTest {
         checkMarshallUnmarshall( expected, m );
     }
 
-    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
     @Test
     public void testSumAsGivenValue() {
+        // BZ-1013682
         String expected = "" +
                 "rule \"my rule\" \n" +
                 "  dialect \"mvel\"\n" +
@@ -257,7 +257,6 @@ public class RuleModelDRLPersistenceTest {
         ActionFieldValue actionFieldValue = new ActionFieldValue();
         actionFieldValue.setField("text");
         actionFieldValue.setNature(1);
-        actionFieldValue.setType("String");
         actionFieldValue.setValue("\"Hello \" + \"world\"");
         actionUpdateField.setFieldValues(new ActionFieldValue[]{actionFieldValue});
         m.rhs = new IAction[]{actionUpdateField};
@@ -267,7 +266,6 @@ public class RuleModelDRLPersistenceTest {
         checkMarshallUnmarshall( expected, m );
     }
 
-//    @Ignore("Bug 1013682 - GRE doesn't recognize formulas, calls on globals, etc. when reopening rule")
     @Test
     public void testCallFunction() throws Exception {
         String expected = "" +
