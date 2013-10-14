@@ -374,6 +374,28 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testIncrementalCompilationWithDuplicatedRuleInSameDRL() throws Exception {
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n" +
+
+                "rule R1 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 1, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+    }
+
+    @Test
     public void testIncrementalCompilationAddErrorBuildAllMessages() throws Exception {
         //Valid
         String drl1 = "package org.drools.compiler\n" +
