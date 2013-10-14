@@ -25,6 +25,10 @@ public class GetVariableCommand
     private String identifier;
     private String contextName;
     
+    public GetVariableCommand() {
+        // no-arg constructor neccessary for serialization
+    }    
+
     public GetVariableCommand(String identifier) {
         this.identifier = identifier;
     }    
