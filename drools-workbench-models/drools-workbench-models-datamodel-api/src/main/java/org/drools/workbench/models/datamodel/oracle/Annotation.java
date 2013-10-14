@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.workbench.models.datamodel.util.PortablePreconditions;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Portable representation of an annotation
