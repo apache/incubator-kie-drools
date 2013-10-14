@@ -50,6 +50,9 @@ public class BedDesignationDifficultyWeightFactory
             return new CompareToBuilder()
                     .append(nightCount, other.nightCount)
                     .append(disallowedCount, other.disallowedCount)
+                    // Descending (earlier nights are more difficult) // TODO probably because less occupancy
+                    .append(other.bedDesignation.getAdmissionPart().getFirstNight().getIndex(),
+                            bedDesignation.getAdmissionPart().getFirstNight().getIndex())
                     .append(bedDesignation.getId(), other.bedDesignation.getId())
                     .toComparison();
         }
