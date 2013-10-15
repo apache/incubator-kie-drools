@@ -30,7 +30,6 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  * Since version 6.0 this class is deprecated. Instead <code>RuntimeManager</code> should be used directly.
  * See documentation on how to use <code>RuntimeManager</code>
  */
-@Deprecated
 public final class JBPMHelper {
 
     public static String[] processStateName = {"PENDING", "ACTIVE", "COMPLETED", "ABORTED", "SUSPENDED"};
@@ -48,6 +47,7 @@ public final class JBPMHelper {
     private JBPMHelper() {
     }
 
+    @Deprecated
     public static void startUp() {
         cleanupSingletonSessionId();
         Properties properties = getProperties();
@@ -92,6 +92,7 @@ public final class JBPMHelper {
         return pds;
     }
 
+    @Deprecated
     public static TaskService startTaskService() {
         Properties properties = getProperties();
         String dialect = properties.getProperty("persistence.persistenceunit.dialect", "org.hibernate.dialect.H2Dialect");
@@ -108,15 +109,18 @@ public final class JBPMHelper {
         return taskService;
     }
 
+    @Deprecated
     public static void registerTaskService(StatefulKnowledgeSession ksession) {
         // no-op HT work item handler is already registered when using RuntimeManager
 
     }
 
+    @Deprecated
     public static StatefulKnowledgeSession newStatefulKnowledgeSession(KnowledgeBase kbase) {
         return loadStatefulKnowledgeSession(kbase, -1);
     }
 
+    @Deprecated
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(KnowledgeBase kbase, int sessionId) {
         Properties properties = getProperties();
         String persistenceEnabled = properties.getProperty("persistence.enabled", "false");
@@ -141,6 +145,7 @@ public final class JBPMHelper {
         return (StatefulKnowledgeSession) manager.getRuntimeEngine(EmptyContext.get()).getKieSession();
     }
     
+    @Deprecated
     @SuppressWarnings("unchecked")
     public static UserGroupCallback getUserGroupCallback() {
         Properties properties = getProperties();
@@ -158,6 +163,7 @@ public final class JBPMHelper {
         }
     }
 
+    @Deprecated
     public static Properties getProperties() {
         Properties properties = new Properties();
         try {
@@ -168,6 +174,7 @@ public final class JBPMHelper {
         return properties;
     }
     
+    @Deprecated
     protected static void cleanupSingletonSessionId() {
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         if (tempDir.exists()) {
