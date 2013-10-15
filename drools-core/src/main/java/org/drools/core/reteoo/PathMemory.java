@@ -28,15 +28,18 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     private volatile RuleAgendaItem    agendaItem;
     private          SegmentMemory[]   segmentMemories;
     private          SegmentMemory     segmentMemory;
-    private          Queue             queue;
+    protected          Queue             queue;
 
     public PathMemory(NetworkNode networkNode) {
         this.networkNode = networkNode;
-        this.queue = new ConcurrentLinkedQueue();
         this.linkedSegmentMask = new AtomicBitwiseLong();
     }
 
-    public Queue<TupleEntry> getQueue() {
+    public void initQueue() {
+        this.queue = new ConcurrentLinkedQueue();
+    }
+
+    public Queue<TupleEntry> getTupleQueue() {
         return queue;
     }
 
