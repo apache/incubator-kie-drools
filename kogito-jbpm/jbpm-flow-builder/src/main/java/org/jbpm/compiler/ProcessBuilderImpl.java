@@ -394,7 +394,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         	"rule \"RuleFlow-Split-" + process.getId() + "-" +
         		((org.jbpm.workflow.core.Node) connection.getFrom()).getUniqueId() + "-" + 
         		((org.jbpm.workflow.core.Node) connection.getTo()).getUniqueId() + "-" +
-        		connection.getToType() + "\" \n" +
+        		connection.getToType() + "\"  @Eager(true) \n" +
         	"      ruleflow-group \"DROOLS_SYSTEM\" \n" + 
         	"    when \n" + 
         	"      " + constraint + "\n" + 
@@ -479,7 +479,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
         
         String result = 
-        	"rule \"RuleFlow-Start-" + process.getId() + "\" \n" + 
+        	"rule \"RuleFlow-Start-" + process.getId() + "\" @Eager(true) \n" + 
         	(trigger.getHeader() == null ? "" : "        " + trigger.getHeader() + " \n") + 
         	"    when\n" + 
         	"        " + trigger.getConstraint() + "\n" + 
