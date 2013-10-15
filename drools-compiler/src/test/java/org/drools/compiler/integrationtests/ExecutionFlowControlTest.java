@@ -543,7 +543,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     
     @Test
     public void testLockOnActiveWithModify3() throws Exception {
-        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActiveWithModify.drl");
+        KnowledgeBase kbase = loadKnowledgeBase("test_LockOnActiveWithModify3.drl");
         KieSession ksession = createKnowledgeSession(kbase);
 		
 		Poc poc = new Poc();
@@ -556,8 +556,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 		ksession.fireAllRules();
 				
 		// Clean up
-		ksession.dispose();
-		
 		assertTrue("broken",poc.getFoundTest()==2);
 
         ksession.dispose();

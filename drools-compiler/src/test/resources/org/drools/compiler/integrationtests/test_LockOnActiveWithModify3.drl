@@ -1,6 +1,6 @@
 package org.drools.compiler.test
 
-import com.example.poc.*
+import org.drools.compiler.integrationtests.facts.*
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.ArrayList;
