@@ -1,9 +1,12 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.phreak.TupleEntry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RiaPathMemory extends PathMemory {
 
@@ -14,6 +17,14 @@ public class RiaPathMemory extends PathMemory {
     public RiaPathMemory(RightInputAdapterNode riaNode) {
         super( riaNode );
         this.riaNode = riaNode;
+    }
+
+    public void initQueue() {
+        throw new UnsupportedOperationException("Queues can only be created onthe outer Rule PathMemory");
+    }
+
+    public void setTupleQueue(Queue<TupleEntry> queue) {
+        this.queue = queue;
     }
 
     public RightInputAdapterNode getRightInputAdapterNode() {
