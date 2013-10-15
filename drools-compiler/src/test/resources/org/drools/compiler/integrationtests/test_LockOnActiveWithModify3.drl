@@ -1,0 +1,30 @@
+package org.drools.compiler.test
+
+import com.example.poc.*
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.ArrayList;
+global java.io.PrintStream out;
+
+
+rule "test1"
+lock-on-active 
+dialect "mvel"
+    when
+    	$poc:Poc( isTest1() )
+    then
+    	System.out.println("test1 found");
+    	modify($poc) { setFoundTest($poc.getFoundTest() + 1) }    	
+end
+
+
+rule "test2"
+lock-on-active 
+dialect "mvel"
+    when
+    	$poc:Poc( isTest2() )
+    then
+    	System.out.println("test2 found");
+    	modify($poc) { setFoundTest($poc.getFoundTest() + 1) }    	
+end
+
