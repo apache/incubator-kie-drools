@@ -2,6 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -429,5 +430,43 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         //Check errors on a full build
         assertEquals( 1, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
     }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1009369")
+    public void testIncrementalCompilationAddErrorThenEmptyWithoutError() throws Exception {
+        //Invalid. Type "Smurf" is unknown
+        String drl1 = "Smurf";
+
+        //Valid
+        String drl2 = "package org.drools.compiler\n" +
+                "rule R2_2 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        //Add file with error - expect 2 build messages
+        KieFileSystem kfs = ks.newKieFileSystem()
+                .write( "src/main/resources/r1.drl", drl1 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 2, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        //Add empty file - expect no "added" messages and no "removed" messages
+        kfs.write( "src/main/resources/r2.drl",
+                   "" );
+        IncrementalResults addResults1 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+        assertEquals( 0, addResults1.getAddedMessages().size() );
+        assertEquals( 0, addResults1.getRemovedMessages().size() );
+
+        //Update file with no errors - expect no "added" messages and no "removed" messages
+        kfs.write( "src/main/resources/r2.drl",
+                   drl2 );
+        IncrementalResults addResults2 = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
+        assertEquals( 0, addResults2.getAddedMessages().size() );
+        assertEquals( 0, addResults2.getRemovedMessages().size() );
+    }
+
 
 }
