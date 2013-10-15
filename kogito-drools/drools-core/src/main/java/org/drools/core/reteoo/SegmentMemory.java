@@ -7,6 +7,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.SynchronizedLeftTupleSets;
+import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.phreak.TupleEntry;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
@@ -366,10 +367,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                     proto.populateMemory(wm, mem);
                 }
             }
-            if (hasQueue && tipNode instanceof RuleTerminalNode) {
-                PathMemory pmem = (PathMemory)wm.getNodeMemory((MemoryFactory) tipNode);
-                smem.queue = pmem.getQueue();
+
+            if ( hasQueue && smem.getTupleQueue() == null ) {
+                // need to make sure there is one Queue, for the rule, when a stream mode node is found.
+                Queue<TupleEntry> queue = SegmentUtilities.initAndGetTupleQueue(smem.getTipNode(), wm);
+                smem.setTupleQueue( queue );
             }
+
             if (hasSyncStagedLeftTuple) {
                 smem.setStagedTuples( new SynchronizedLeftTupleSets() );
             }

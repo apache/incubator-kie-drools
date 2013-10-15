@@ -183,12 +183,12 @@ public class RuleExecutor {
     }
 
     public void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
-        if (isDirty() || (pmem.getQueue() != null && !pmem.getQueue().isEmpty())) {
+        if (isDirty() || (pmem.getTupleQueue() != null && !pmem.getTupleQueue().isEmpty())) {
             setDirty(false);
 
             boolean evaled = false;
-            if (pmem.getQueue() != null) {
-                while (!pmem.getQueue().isEmpty()) {
+            if (pmem.getTupleQueue() != null) {
+                while (!pmem.getTupleQueue().isEmpty()) {
                     removeQueuedTupleEntry();
                     NETWORK_EVALUATOR.evaluateNetwork(pmem, outerStack, this, wm);
                     evaled = true;
@@ -202,13 +202,13 @@ public class RuleExecutor {
     }
 
     private void removeQueuedTupleEntry() {
-        TupleEntry tupleEntry = pmem.getQueue().remove();
+        TupleEntry tupleEntry = pmem.getTupleQueue().remove();
         PropagationContext originalPctx = tupleEntry.getPropagationContext();
 
         boolean repeat = true;
         while (repeat) {
             if (log.isTraceEnabled()) {
-                log.trace("Stream removed entry {} {} size {}", System.identityHashCode(pmem.getQueue()), tupleEntry, pmem.getQueue().size());
+                log.trace("Stream removed entry {} {} size {}", System.identityHashCode(pmem.getTupleQueue()), tupleEntry, pmem.getTupleQueue().size());
             }
             if (tupleEntry.getLeftTuple() != null) {
                 SegmentMemory sm = tupleEntry.getNodeMemory().getSegmentMemory();
@@ -246,8 +246,8 @@ public class RuleExecutor {
                         break;
                 }
             }
-            if (!pmem.getQueue().isEmpty()) {
-                tupleEntry = pmem.getQueue().peek();
+            if (!pmem.getTupleQueue().isEmpty()) {
+                tupleEntry = pmem.getTupleQueue().peek();
                 PropagationContext pctx = tupleEntry.getPropagationContext();
 
                 // repeat if either the pctx number is the same, or the event time is the same or before
@@ -272,13 +272,13 @@ public class RuleExecutor {
                 repeat = false;
             }
             if (repeat) {
-                tupleEntry = pmem.getQueue().remove();
+                tupleEntry = pmem.getTupleQueue().remove();
             }
         }
     }
 
     //    private void removeQueuedTupleEntry(boolean fireUntilHalt) {
-    //        TupleEntry tupleEntry = pmem.getQueue().remove();
+    //        TupleEntry tupleEntry = pmem.getTupleQueue().remove();
     //        TupleEntry originalTupleEntry = tupleEntry;
     //        PropagationContext originalPctx = tupleEntry.getPropagationContext();
     //        PropagationContext pctx = originalPctx;
@@ -294,7 +294,7 @@ public class RuleExecutor {
     //        boolean repeat = true;
     //        while ( repeat ) {
     //            if ( log.isTraceEnabled() ) {
-    //                log.trace( "Stream removed entry {} {} size {}",  System.identityHashCode(  pmem.getQueue() ), tupleEntry, pmem.getQueue().size() );
+    //                log.trace( "Stream removed entry {} {} size {}",  System.identityHashCode(  pmem.getTupleQueue() ), tupleEntry, pmem.getTupleQueue().size() );
     //            }
     //            if (tupleEntry.getLeftTuple() != null) {
     //                SegmentMemory sm = (SegmentMemory) tupleEntry.getNodeMemory().getSegmentMemory();
@@ -331,8 +331,8 @@ public class RuleExecutor {
     //                        break;
     //                }
     //            }
-    //            if ( !pmem.getQueue().isEmpty() ) {
-    //                tupleEntry = pmem.getQueue().peek();
+    //            if ( !pmem.getTupleQueue().isEmpty() ) {
+    //                tupleEntry = pmem.getTupleQueue().peek();
     //                pctx = tupleEntry.getPropagationContext();
     //
     //                if ( fireUntilHalt ) {
@@ -365,7 +365,7 @@ public class RuleExecutor {
     //                repeat = false;
     //            }
     //            if ( repeat ) {
-    //                tupleEntry = pmem.getQueue().remove();
+    //                tupleEntry = pmem.getTupleQueue().remove();
     //            }
     //        }
     //    }

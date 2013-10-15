@@ -3247,7 +3247,7 @@ public class CepEspTest extends CommonTestMethodBase {
         } catch (Exception e) { }
     }
 
-    @Test @Ignore
+    @Test
     public void testStreamModeWithSubnetwork() {
         // BZ-1009348
 
