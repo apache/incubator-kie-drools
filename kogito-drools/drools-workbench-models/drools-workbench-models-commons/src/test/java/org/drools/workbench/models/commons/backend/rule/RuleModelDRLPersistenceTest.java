@@ -49,6 +49,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromAccumulateCompositeFactPattern;
 import org.drools.workbench.models.datamodel.rule.FromCollectCompositeFactPattern;
@@ -234,6 +235,7 @@ public class RuleModelDRLPersistenceTest {
     }
 
     @Test
+    @Ignore
     public void testSumAsGivenValue() {
         // BZ-1013682
         String expected = "" +
@@ -256,7 +258,8 @@ public class RuleModelDRLPersistenceTest {
         actionUpdateField.setVariable("m");
         ActionFieldValue actionFieldValue = new ActionFieldValue();
         actionFieldValue.setField("text");
-        actionFieldValue.setNature(1);
+        actionFieldValue.setType("String");
+        actionFieldValue.setNature(FieldNatureType.TYPE_FORMULA);
         actionFieldValue.setValue("\"Hello \" + \"world\"");
         actionUpdateField.setFieldValues(new ActionFieldValue[]{actionFieldValue});
         m.rhs = new IAction[]{actionUpdateField};
