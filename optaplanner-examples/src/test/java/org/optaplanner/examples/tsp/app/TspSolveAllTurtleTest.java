@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.examples.common.app.SolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.tsp.persistence.TspDao;
@@ -43,10 +44,8 @@ public class TspSolveAllTurtleTest extends SolveAllTurtleTest {
     }
 
     @Override
-    protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory() {
-        ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        assertionScoreDirectorFactoryConfig.setSimpleScoreCalculatorClass(TspSimpleScoreCalculator.class);
-        return assertionScoreDirectorFactoryConfig;
+    protected Class<? extends SimpleScoreCalculator> overwritingSimpleScoreCalculatorClass() {
+        return TspSimpleScoreCalculator.class;
     }
 
     @Override

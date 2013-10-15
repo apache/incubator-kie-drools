@@ -35,9 +35,11 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
+import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator;
 
 import static org.junit.Assume.*;
 
@@ -102,13 +104,15 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
 
     protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode,
             Solution planningProblem, long maximumMinutesSpend) {
-        solverFactory.getSolverConfig().getTerminationConfig().setMaximumMinutesSpend(maximumMinutesSpend);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
+        solverConfig.getTerminationConfig().setMaximumMinutesSpend(maximumMinutesSpend);
         solverConfig.setEnvironmentMode(environmentMode);
-        ScoreDirectorFactoryConfig assertionScoreDirectorFactory = createOverwritingAssertionScoreDirectorFactory();
-        if (assertionScoreDirectorFactory != null && environmentMode.isAsserted()) {
+        Class<? extends SimpleScoreCalculator> simpleScoreCalculatorClass = overwritingSimpleScoreCalculatorClass();
+        if (simpleScoreCalculatorClass != null && environmentMode.isAsserted()) {
+            ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+            assertionScoreDirectorFactoryConfig.setSimpleScoreCalculatorClass(simpleScoreCalculatorClass);
             solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
-                    assertionScoreDirectorFactory);
+                    assertionScoreDirectorFactoryConfig);
         }
         Solver solver = solverFactory.buildSolver();
         solver.setPlanningProblem(planningProblem);
@@ -121,7 +125,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         return bestSolution;
     }
 
-    protected ScoreDirectorFactoryConfig createOverwritingAssertionScoreDirectorFactory()  {
+    protected Class<? extends SimpleScoreCalculator>  overwritingSimpleScoreCalculatorClass()  {
         return null;
     }
 
