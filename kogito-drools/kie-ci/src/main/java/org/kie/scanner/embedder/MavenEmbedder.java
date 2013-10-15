@@ -325,7 +325,14 @@ public class MavenEmbedder {
         try {
             Thread.currentThread().setContextClassLoader( this.plexusContainer.getContainerRealm() );
             ProjectBuilder projectBuilder = lookup( ProjectBuilder.class );
-            return projectBuilder.build( modelSource, getProjectBuildingRequest() ).getProject();
+            // BZ-1007894: Check if added dependencies are resolvable.
+            ProjectBuildingResult result = projectBuilder.build( modelSource, getProjectBuildingRequest() );
+            if (result != null && result.getDependencyResolutionResult() != null && !result.getDependencyResolutionResult().getCollectionErrors().isEmpty()) {
+                // A dependency resolution error has been produced. It can contains some error. Throw the first one to the client, so the user will fix every one sequentially.
+                Exception depedencyResolutionException = result.getDependencyResolutionResult().getCollectionErrors().get(0);
+                if (depedencyResolutionException != null) throw new MavenEmbedderException(depedencyResolutionException.getMessage(), depedencyResolutionException);
+            }
+            return result.getProject();
         } catch(ComponentLookupException e) {
             throw new MavenEmbedderException(e.getMessage(), e);
         } finally {
