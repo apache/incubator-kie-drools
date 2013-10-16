@@ -1200,9 +1200,41 @@ end</programlisting>
       <title>stepLimit benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
-      calculation performance outright. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link>
-      to do a 1 minute run and check what happens to the average
-      calculation count per second if you comment out all but 1 of the score constraints.</para>
+      calculation performance outright. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to do a 1
+      minute run and check what happens to the average calculation count per second if you comment out all but 1 of the
+      score constraints.</para>
+    </section>
+
+    <section xml:id="fairnessScoreConstraints">
+      <title>Fairness score constraints</title>
+
+      <para>Some use cases have a business requirement to provide a fair schedule (usually as a soft score constraint),
+      for example:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Fairly distribute the workload amongst the employees, to avoid envy.</para>
+        </listitem>
+
+        <listitem>
+          <para>Evenly distribute the workload amongst assets, to improve reliability.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Implementing such a constraint can seem difficult (especially because there are different ways to formalize
+      fairness), but usually the <emphasis>squared workload</emphasis> implementation behaves most desirable: for each
+      employee/asset, count the workload <literal>w</literal> and subtract the square <literal>w²</literal> from the
+      score.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/fairnessScoreConstraints.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>As shown above, the <emphasis>squared workload</emphasis> implementation guarantees that if you select 2
+      employees from a given solution and make their distribution between those 2 employees more fair that the resulting
+      new solution will have a better overall score.</para>
     </section>
   </section>
 
