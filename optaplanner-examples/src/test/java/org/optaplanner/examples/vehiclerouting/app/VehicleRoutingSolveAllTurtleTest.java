@@ -20,22 +20,24 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.examples.common.app.SolveAllTurtleTest;
+import org.optaplanner.examples.common.app.ImportDirSolveAllTurtleTest;
+import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator;
 
-public class VehicleRoutingSolveAllTurtleTest extends SolveAllTurtleTest {
+public class VehicleRoutingSolveAllTurtleTest extends ImportDirSolveAllTurtleTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDataFilesAsParameters(new VehicleRoutingDao());
+        return getImportDirFilesAsParameters(new VehicleRoutingImporter());
     }
 
-    public VehicleRoutingSolveAllTurtleTest(File unsolvedDataFile) {
-        super(unsolvedDataFile);
+    public VehicleRoutingSolveAllTurtleTest(File dataFile) {
+        super(dataFile);
     }
 
     @Override
@@ -44,13 +46,13 @@ public class VehicleRoutingSolveAllTurtleTest extends SolveAllTurtleTest {
     }
 
     @Override
-    protected Class<? extends SimpleScoreCalculator> overwritingSimpleScoreCalculatorClass() {
-        return VehicleRoutingSimpleScoreCalculator.class;
+    protected AbstractSolutionImporter createSolutionImporter() {
+        return new VehicleRoutingImporter();
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
-        return new VehicleRoutingDao();
+    protected Class<? extends SimpleScoreCalculator> overwritingSimpleScoreCalculatorClass() {
+        return VehicleRoutingSimpleScoreCalculator.class;
     }
 
 }

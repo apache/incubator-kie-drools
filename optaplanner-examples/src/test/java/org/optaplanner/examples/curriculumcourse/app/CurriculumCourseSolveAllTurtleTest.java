@@ -20,15 +20,15 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.app.SolveAllTurtleTest;
+import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 
-public class CurriculumCourseSolveAllTurtleTest extends SolveAllTurtleTest {
+public class CurriculumCourseSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDataFilesAsParameters(new CurriculumCourseDao());
+        return getUnsolvedDirFilesAsParameters(new CurriculumCourseDao());
     }
 
     public CurriculumCourseSolveAllTurtleTest(File unsolvedDataFile) {

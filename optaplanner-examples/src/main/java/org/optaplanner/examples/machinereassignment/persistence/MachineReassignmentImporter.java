@@ -55,11 +55,6 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
     }
 
     @Override
-    public boolean acceptInputFile(File inputFile) {
-        return super.acceptInputFile(inputFile) && inputFile.getName().startsWith("model_");
-    }
-
-    @Override
     public boolean acceptInputFileDuringBulkConvert(File inputFile) {
         // Blacklist: too big to write as XML
         return !Arrays.asList(
@@ -357,7 +352,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter {
                         + ") is expected to start with \"" + inputFilePrefix + "\".");
             }
             File assignmentInputFile = new File(inputFile.getParent(),
-                    inputFileName.replaceFirst(inputFilePrefix, "assignment_"));
+                    inputFileName.replaceFirst(inputFilePrefix, "assignment_").replaceAll("\\.txt$", ".sol"));
             BufferedReader assignmentBufferedReader = null;
             try {
                 assignmentBufferedReader = new BufferedReader(new InputStreamReader(

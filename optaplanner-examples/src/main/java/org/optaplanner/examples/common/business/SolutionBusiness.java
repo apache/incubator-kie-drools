@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -148,22 +149,16 @@ public class SolutionBusiness {
     }
 
     public List<File> getUnsolvedFileList() {
-        List<File> fileList = extractFileList(unsolvedDataDir);
+        List<File> fileList = new ArrayList<File>(
+                FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()} , true));
         Collections.sort(fileList, FILE_COMPARATOR);
         return fileList;
     }
 
     public List<File> getSolvedFileList() {
-        List<File> fileList = extractFileList(solvedDataDir);
+        List<File> fileList = new ArrayList<File>(
+                FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()} , true));
         Collections.sort(fileList, FILE_COMPARATOR);
-        return fileList;
-    }
-
-    public List<File> extractFileList(File directory) {
-        List<File> fileList = Arrays.asList(directory.listFiles(new ExtensionFileFilter(solutionDao.getFileExtension())));
-        for (File subDirectory : directory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE)) {
-            fileList.addAll(extractFileList(subDirectory));
-        }
         return fileList;
     }
 

@@ -14,7 +14,7 @@ public class ProblemFileComparator implements Comparator<File> {
         String aLowerCaseName = a.getName().toLowerCase(Locale.US);
         String bLowerCaseName = b.getName().toLowerCase(Locale.US);
         return new CompareToBuilder()
-                .append(a.getParent(), b.getParent())
+                .append(a.getParent(), b.getParent(), ALPHA_NUMERIC_STRING_COMPARATOR)
                 .append(a.isDirectory(), b.isDirectory())
                 .append(!aLowerCaseName.startsWith("demo"), !bLowerCaseName.startsWith("demo"))
                 .append(aLowerCaseName, bLowerCaseName, ALPHA_NUMERIC_STRING_COMPARATOR)

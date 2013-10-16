@@ -20,18 +20,17 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
-import org.optaplanner.examples.common.app.SolveAllTurtleTest;
+import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 import org.optaplanner.examples.nqueens.solver.score.NQueensSimpleScoreCalculator;
 
-public class NQueensSolveAllTurtleTest extends SolveAllTurtleTest {
+public class NQueensSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDataFilesAsParameters(new NQueensDao());
+        return getUnsolvedDirFilesAsParameters(new NQueensDao());
     }
 
     public NQueensSolveAllTurtleTest(File unsolvedDataFile) {

@@ -55,11 +55,11 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         outputDir = null;
     }
 
-    protected File getInputDir() {
+    public File getInputDir() {
         return inputDir;
     }
 
-    protected File getOutputDir() {
+    public File getOutputDir() {
         return outputDir;
     }
 

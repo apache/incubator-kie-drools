@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.persistence;
+package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,45 +24,36 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.app.LoggingTest;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.persistence.SolutionDao;
 
-@RunWith(Parameterized.class)
-public abstract class SolutionDaoTest extends LoggingTest {
+public abstract class UnsolvedDirSolveAllTurtleTest extends SolveAllTurtleTest {
 
-    protected static Collection<Object[]> getSolutionFilesAsParameters(SolutionDao solutionDao) {
-        List<File> fileList = new ArrayList<File>(0);
+    protected static Collection<Object[]> getUnsolvedDirFilesAsParameters(SolutionDao solutionDao) {
+        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist.");
-        }
-        fileList.addAll(
-                FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
-        File solvedDataDir = new File(dataDir, "solved");
-        fileList.addAll(
-                FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
-        Collections.sort(fileList, new ProblemFileComparator());
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
-        for (File file : fileList) {
-            filesAsParameters.add(new Object[]{file});
+        } else {
+            List<File> fileList = new ArrayList<File>(
+                    FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+            Collections.sort(fileList, new ProblemFileComparator());
+            for (File file : fileList) {
+                filesAsParameters.add(new Object[]{file});
+            }
         }
         return filesAsParameters;
     }
 
     protected SolutionDao solutionDao;
 
-    protected File solutionFile;
-
-    protected SolutionDaoTest(File solutionFile) {
-        this.solutionFile = solutionFile;
+    protected UnsolvedDirSolveAllTurtleTest(File dataFile) {
+        super(dataFile);
     }
 
     @Before
@@ -73,9 +63,8 @@ public abstract class SolutionDaoTest extends LoggingTest {
 
     protected abstract SolutionDao createSolutionDao();
 
-    @Test
-    public void readSolution() {
-        solutionDao.readSolution(solutionFile);
+    protected Solution readPlanningProblem() {
+        return solutionDao.readSolution(dataFile);
     }
 
 }

@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.persistence;
+package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,36 +24,36 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.app.LoggingTest;
+import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.business.ExtensionFileFilter;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
+import org.optaplanner.examples.common.persistence.SolutionDao;
 
-@RunWith(Parameterized.class)
-public abstract class SolutionImporterTest extends LoggingTest {
+public abstract class ImportDirSolveAllTurtleTest extends SolveAllTurtleTest {
 
-    protected static Collection<Object[]> getInputFilesAsParameters(AbstractSolutionImporter solutionImporter) {
-        File importDir = solutionImporter.getInputDir();
-        List<File> fileList = new ArrayList<File>(
-                FileUtils.listFiles(importDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
-        Collections.sort(fileList, new ProblemFileComparator());
+    protected static Collection<Object[]> getImportDirFilesAsParameters(AbstractSolutionImporter solutionImporter) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
-        for (File file : fileList) {
-            filesAsParameters.add(new Object[]{file});
+        File importDataDir = solutionImporter.getInputDir();
+        if (!importDataDir.exists()) {
+            throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
+                    + ") does not exist.");
+        } else {
+            List<File> fileList = new ArrayList<File>(
+                    FileUtils.listFiles(importDataDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
+            Collections.sort(fileList, new ProblemFileComparator());
+            for (File file : fileList) {
+                filesAsParameters.add(new Object[]{file});
+            }
         }
         return filesAsParameters;
     }
 
     protected AbstractSolutionImporter solutionImporter;
 
-    protected File importFile;
-
-    protected SolutionImporterTest(File importFile) {
-        this.importFile = importFile;
+    protected ImportDirSolveAllTurtleTest(File dataFile) {
+        super(dataFile);
     }
 
     @Before
@@ -64,9 +63,8 @@ public abstract class SolutionImporterTest extends LoggingTest {
 
     protected abstract AbstractSolutionImporter createSolutionImporter();
 
-    @Test
-    public void readSolution() {
-        solutionImporter.readSolution(importFile);
+    protected Solution readPlanningProblem() {
+        return solutionImporter.readSolution(dataFile);
     }
 
 }

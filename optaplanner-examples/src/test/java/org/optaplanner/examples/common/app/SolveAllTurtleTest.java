@@ -17,14 +17,8 @@
 package org.optaplanner.examples.common.app;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -37,9 +31,6 @@ import org.optaplanner.core.config.solver.XmlSolverFactory;
 import org.optaplanner.core.config.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.simple.SimpleScoreCalculator;
 import org.optaplanner.core.impl.solution.Solution;
-import org.optaplanner.examples.common.business.ExtensionFileFilter;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.vehiclerouting.solver.score.VehicleRoutingSimpleScoreCalculator;
 
 import static org.junit.Assume.*;
 
@@ -53,46 +44,21 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         assumeTrue(ObjectUtils.equals("true", System.getProperty("runTurtleTests")));
     }
 
-    protected static Collection<Object[]> getUnsolvedDataFilesAsParameters(SolutionDao solutionDao) {
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
-        File dataDir = solutionDao.getDataDir();
-        File unsolvedDataDir = new File(dataDir, "unsolved");
-        if (!unsolvedDataDir.exists()) {
-            throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
-                    + ") does not exist.");
-        } else {
-            List<File> unsolvedFileList = Arrays.asList(unsolvedDataDir.listFiles(
-                    new ExtensionFileFilter(solutionDao.getFileExtension())));
-            Collections.sort(unsolvedFileList);
-            for (File unsolvedFile : unsolvedFileList) {
-                filesAsParameters.add(new Object[]{unsolvedFile});
-            }
-        }
-        return filesAsParameters;
-    }
+    protected File dataFile;
 
-    protected SolutionDao solutionDao;
-
-    protected File unsolvedDataFile;
-
-    protected SolveAllTurtleTest(File unsolvedDataFile) {
-        this.unsolvedDataFile = unsolvedDataFile;
-    }
-
-    @Before
-    public void setUp() {
-        solutionDao = createSolutionDao();
+    protected SolveAllTurtleTest(File dataFile) {
+        this.dataFile = dataFile;
     }
 
     protected abstract String createSolverConfigResource();
 
-    protected abstract SolutionDao createSolutionDao();
+    protected abstract Solution readPlanningProblem();
 
     @Test
     public void runFastAndFullAssert() {
         checkRunTurtleTests();
         SolverFactory solverFactory = buildSolverFactory();
-        Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
+        Solution planningProblem = readPlanningProblem();
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
         planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 2L);
