@@ -289,10 +289,10 @@ public class PatternBuilder
                 }
             }
 
-            ObjectTypeNode otn = new ObjectTypeNode( context.getNextId(),
-                                                     epn,
-                                                     objectType,
-                                                     context );
+            ObjectTypeNode otn = context.getRuleBase().getConfiguration().getComponentFactory().getNodeFactoryService().buildObjectTypeNode( context.getNextId(),
+                                                                                                                                             epn,
+                                                                                                                                             objectType,
+                                                                                                                                             context );
 
             long expirationOffset = getExpiratioOffsetForType( context,
                                                                objectType );

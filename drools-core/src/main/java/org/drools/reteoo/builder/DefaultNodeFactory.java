@@ -17,9 +17,11 @@
 package org.drools.reteoo.builder;
 
 
+import org.drools.base.ClassObjectType;
 import org.drools.base.ValueType;
 import org.drools.common.BaseNode;
 import org.drools.common.BetaConstraints;
+import org.drools.factmodel.traits.TraitProxy;
 import org.drools.reteoo.AlphaNode;
 import org.drools.reteoo.EntryPointNode;
 import org.drools.reteoo.FromNode;
@@ -33,6 +35,7 @@ import org.drools.reteoo.QueryElementNode;
 import org.drools.reteoo.QueryTerminalNode;
 import org.drools.reteoo.TerminalNode;
 import org.drools.reteoo.TraitObjectTypeNode;
+import org.drools.reteoo.TraitProxyObjectTypeNode;
 import org.drools.rule.From;
 import org.drools.rule.GroupElement;
 import org.drools.rule.QueryElement;
@@ -56,7 +59,11 @@ public class DefaultNodeFactory implements NodeFactory, Serializable {
 
     public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
         if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
-            return new TraitObjectTypeNode( id, objectSource, objectType, context );
+            if ( TraitProxy.class.isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() ) ) {
+                return new TraitProxyObjectTypeNode( id, objectSource, objectType, context );
+            } else {
+                return new TraitObjectTypeNode( id, objectSource, objectType, context );
+            }
         } else {
             return new ObjectTypeNode( id, objectSource, objectType, context );
         }
