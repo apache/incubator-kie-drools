@@ -1085,6 +1085,27 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+
+    @Test
+    public void testQueryEmptyEntryPoint() throws Exception {
+        // check that PR#289 does not apply to 5.6
+        String str = "" +
+                     "package org.drools;\n" +
+                     "" +
+                     "declare Foo @role(event) end \n" +
+                     "" +
+                     "query queryEntryPoint \n" +
+                     "    $f: Foo() from entry-point bar \n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+
+        org.drools.runtime.rule.QueryResults res = ksession.getQueryResults( "queryEntryPoint" );
+        assertEquals( 0, res.size() );
+
+    }
+
     private KnowledgeBase loadKnowledgeBaseFromString( String str ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
