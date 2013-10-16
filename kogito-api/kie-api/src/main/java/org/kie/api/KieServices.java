@@ -27,6 +27,7 @@ import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.marshalling.KieMarshallers;
 import org.kie.api.persistence.jpa.KieStoreServices;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSessionConfiguration;
 
@@ -139,6 +140,14 @@ public interface KieServices {
      * Create a KieSessionConfiguration on which properties can be set.
      */
     KieSessionConfiguration newKieSessionConfiguration(Properties properties);
+
+    /**
+     * Instantiate and return an Environment
+     *
+     * @return
+     *      The Environment
+     */
+    Environment newEnvironment();
 
     /**
      * A Factory for this KieServices
