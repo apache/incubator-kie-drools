@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.Agenda;
@@ -28,7 +27,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.drools.core.common.TimedRuleExecution;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.event.AgendaEventListener;
@@ -611,9 +610,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public Queue<TimedRuleExecution> getTimedExecutionsQueue() {
+    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
         return null;
     }
 
-    public void setTimedExecutionsQueue(Queue<TimedRuleExecution> timedExecutionsQueue) { }
+    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+    }
+
 }

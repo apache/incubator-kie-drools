@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.FactException;
@@ -27,7 +26,6 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
@@ -40,6 +38,7 @@ import org.drools.core.type.DateFormats;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 
 public interface InternalWorkingMemory
     extends
@@ -206,7 +205,7 @@ public interface InternalWorkingMemory
 
     void closeLiveQuery(InternalFactHandle factHandle);
 
-    Queue<TimedRuleExecution> getTimedExecutionsQueue();
+    void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter);
 
-    void setTimedExecutionsQueue(Queue<TimedRuleExecution> timedExecutionsQueue);
+    TimedRuleExecutionFilter getTimedRuleExecutionFilter();
 }

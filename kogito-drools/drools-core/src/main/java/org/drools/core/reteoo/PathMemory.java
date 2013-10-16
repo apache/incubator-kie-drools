@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.drools.core.base.mvel.MVELSalienceExpression;
 import org.drools.core.common.ActivationsFilter;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
@@ -13,6 +12,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.TupleEntry;
+import org.drools.core.rule.Rule;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.AtomicBitwiseLong;
 import org.slf4j.Logger;
@@ -45,6 +45,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public NetworkNode getNetworkNode() {
         return networkNode;
+    }
+
+    public Rule getRule() {
+        return ((TerminalNode) getNetworkNode()).getRule();
     }
 
     public RuleAgendaItem getRuleAgendaItem() {
@@ -180,7 +184,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public String toString() {
-        return "[RuleMem " + ((TerminalNode) getNetworkNode()).getRule().getName() + "]";
+        return "[RuleMem " + getRule().getName() + "]";
     }
 
 }

@@ -3,13 +3,13 @@ package org.drools.core.phreak;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Queue;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TimedRuleExecution;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
@@ -35,12 +35,13 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultJobHandle;
-import org.drools.core.time.impl.IntervalTrigger;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.index.LeftTupleList;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.rule.PropagationContext;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -365,10 +366,10 @@ public class PhreakTimerNode {
             implements
             Job {
         public void execute(JobContext ctx) {
-            TimerNodeJobContext timerJobCtx = (TimerNodeJobContext) ctx;
+            final TimerNodeJobContext timerJobCtx = (TimerNodeJobContext) ctx;
             Trigger trigger = timerJobCtx.getTrigger();
 
-            PathMemory pmem = timerJobCtx.getPathMemory();
+            final PathMemory pmem = timerJobCtx.getPathMemory();
             pmem.doLinkRule( timerJobCtx.getWorkingMemory() );
 
             LeftTupleList leftTuples = timerJobCtx.getTimerNodeMemory().getInsertOrUpdateLeftTuples();
@@ -394,14 +395,25 @@ public class PhreakTimerNode {
 
             pmem.queueRuleAgendaItem( timerJobCtx.getWorkingMemory() );
 
-            Queue<TimedRuleExecution> queue = timerJobCtx.getWorkingMemory().getTimedExecutionsQueue();
-            if (queue != null) {
-                queue.add(new Executor(pmem,
-                                       timerJobCtx.getWorkingMemory(),
-                                       timerJobCtx.getSink(),
-                                       timerJobCtx.getTimerNodeMemory()));
+            final TimedRuleExecutionFilter timedRuleExecutionFilter = timerJobCtx.getWorkingMemory().getTimedRuleExecutionFilter();
+            if (timedRuleExecutionFilter != null) {
+                ExecutorHolder.executor.execute( new Runnable() {
+                    @Override
+                    public void run() {
+                        if (timedRuleExecutionFilter.accept( new Rule[] { pmem.getRule() } )) {
+                            new Executor(pmem,
+                                         timerJobCtx.getWorkingMemory(),
+                                         timerJobCtx.getSink(),
+                                         timerJobCtx.getTimerNodeMemory()).evauateAndFireRule();
+                        }
+                    }
+                });
             }
         }
+    }
+
+    private static class ExecutorHolder {
+        private static final java.util.concurrent.Executor executor = ExecutorProviderFactory.getExecutorProvider().getExecutor();
     }
 
     public static class Executor implements TimedRuleExecution {

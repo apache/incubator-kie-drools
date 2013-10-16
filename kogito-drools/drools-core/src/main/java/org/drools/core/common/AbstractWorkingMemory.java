@@ -130,6 +130,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.LiveQuery;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.event.rule.RuleEventListener;
@@ -229,7 +230,7 @@ public class AbstractWorkingMemory
     private transient ObjectMarshallingStrategyStore marshallingStore;
     private transient List                           ruleBaseListeners;
 
-    private transient Queue<TimedRuleExecution> timedExecutionsQueue;
+    private volatile TimedRuleExecutionFilter timedRuleExecutionFilter;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1881,11 +1882,11 @@ public class AbstractWorkingMemory
         return this.marshallingStore;
     }
 
-    public Queue<TimedRuleExecution> getTimedExecutionsQueue() {
-        return timedExecutionsQueue;
+    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
+        return timedRuleExecutionFilter;
     }
 
-    public void setTimedExecutionsQueue(Queue<TimedRuleExecution> timedExecutionsQueue) {
-        this.timedExecutionsQueue = timedExecutionsQueue;
+    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+        this.timedRuleExecutionFilter = timedRuleExecutionFilter;
     }
 }

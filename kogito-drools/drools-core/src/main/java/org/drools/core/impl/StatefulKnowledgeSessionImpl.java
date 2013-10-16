@@ -74,6 +74,7 @@ import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimerService;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
@@ -851,6 +852,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public KieSessionConfiguration getSessionConfiguration() {
         return this.session.getSessionConfiguration();
+    }
+
+    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
+        return this.session.getTimedRuleExecutionFilter();
+    }
+
+    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+        this.session.setTimedRuleExecutionFilter(timedRuleExecutionFilter);
     }
 
     public TimerService getTimerService() {
