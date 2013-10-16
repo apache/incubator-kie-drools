@@ -22,6 +22,7 @@ import java.io.ObjectOutput;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
@@ -49,6 +50,10 @@ public class CompositeMaxDurationTimer extends BaseTimer
 
     public CompositeMaxDurationTimer() {
 
+    }
+
+    public Declaration[][] getTimerDeclarations(Map<String, Declaration> outerDeclrs) {
+        return null;
     }
 
     public void addDurationTimer( final DurationTimer durationTimer ) {

@@ -20,8 +20,11 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.time.impl.BaseTimer;
+import org.drools.core.time.impl.CronTimer;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
+import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.time.impl.Timer;
 
 import java.util.Arrays;
@@ -37,33 +40,9 @@ public class TimerBuilder
         final Timer timer = (Timer) rce;
         context.pushRuleComponent( timer );
 
-        Declaration[][] declrs = null;
-        if ( timer instanceof ExpressionIntervalTimer ) {
-            Map<String, Declaration> outerDeclrs = context.getSubRule().getOuterDeclarations();
-            ExpressionIntervalTimer exprTimer = ( ExpressionIntervalTimer )  timer;
-            Declaration[] delayDeclrs = exprTimer.getDelayMVELCompilationUnit().getPreviousDeclarations();
-            Declaration[] periodDeclrs = exprTimer.getPeriodMVELCompilationUnit().getPreviousDeclarations();
-
-            delayDeclrs = Arrays.copyOf(delayDeclrs, delayDeclrs.length); // make copies as originals must not be changed
-            periodDeclrs = Arrays.copyOf(periodDeclrs, delayDeclrs.length);  // make copies as originals must not be changed
-
-
-            for ( int i = 0; i < delayDeclrs.length; i++  ) {
-                delayDeclrs[i] = outerDeclrs.get( delayDeclrs[i].getIdentifier() );
-            }
-            Arrays.sort(delayDeclrs, SortDeclarations.instance);
-
-            for ( int i = 0; i < periodDeclrs.length; i++  ) {
-                periodDeclrs[i] = outerDeclrs.get( periodDeclrs[i].getIdentifier() );
-            }
-            Arrays.sort(periodDeclrs, SortDeclarations.instance);
-
-            declrs = new Declaration[][] { delayDeclrs, periodDeclrs };
-        } else if ( timer instanceof DurationTimer ) {
-            DurationTimer durTimer = ( DurationTimer ) timer;
-            declrs = new Declaration[][] { new Declaration[] {durTimer.getEventFactHandleDeclaration()}, null};
-
-        }
+        Declaration[][] declrs = timer instanceof BaseTimer ?
+                                 ((BaseTimer)timer).getTimerDeclarations(context.getSubRule().getOuterDeclarations()) :
+                                 null;
 
         context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
                                 context.getComponentFactory().getNodeFactoryService().buildTimerNode( context.getNextId(),

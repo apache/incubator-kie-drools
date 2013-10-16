@@ -54,8 +54,5 @@ public interface TerminalNode
 
     Declaration[] getSalienceDeclarations();
 
-    Declaration[] getTimerPeriodDeclarations();
-
-    Declaration[] getTimerDelayDeclarations();
-    
+    Declaration[][] getTimerDeclarations();
 }

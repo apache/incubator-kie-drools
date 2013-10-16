@@ -38,6 +38,7 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.time.impl.BaseTimer;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.kie.api.event.rule.MatchCancelledCause;
 
@@ -68,8 +69,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     protected int                           subruleIndex;
     protected Declaration[]                 declarations;
 
-    protected Declaration[]                 timerDelayDeclarations;
-    protected Declaration[]                 timerPeriodDeclarations;
+    protected Declaration[][]               timerDeclarations;
     protected Declaration[]                 salienceDeclarations;
     protected Declaration[]                 enabledDeclarations;
 
@@ -146,26 +146,10 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                 this.enabledDeclarations[i++] = decls.get( declr.getIdentifier() );
             }
             Arrays.sort( this.enabledDeclarations, SortDeclarations.instance );              
-        }        
-        
-        if ( rule.getTimer() instanceof ExpressionIntervalTimer ) {
-            ExpressionIntervalTimer expr = ( ExpressionIntervalTimer ) rule.getTimer();
-            
-            Declaration[] declrs = expr.getDelayMVELCompilationUnit().getPreviousDeclarations();            
-            this.timerDelayDeclarations = new Declaration[declrs.length];
-            int i = 0;
-            for ( Declaration declr : declrs ) {
-                this.timerDelayDeclarations[i++] = decls.get( declr.getIdentifier() );
-            }
-            Arrays.sort( this.timerDelayDeclarations, SortDeclarations.instance );      
-            
-            declrs = expr.getPeriodMVELCompilationUnit().getPreviousDeclarations();            
-            this.timerPeriodDeclarations = new Declaration[declrs.length];
-            i = 0;
-            for ( Declaration declr : declrs ) {
-                this.timerPeriodDeclarations[i++] = decls.get( declr.getIdentifier() );
-            }
-            Arrays.sort( this.timerPeriodDeclarations, SortDeclarations.instance );             
+        }
+
+        if ( rule.getTimer() instanceof BaseTimer ) {
+            this.timerDeclarations = ((BaseTimer)rule.getTimer()).getTimerDeclarations(decls);
         }
     }
     
@@ -183,8 +167,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         declarations = ( Declaration[]) in.readObject();
 
-        timerDelayDeclarations = ( Declaration[]) in.readObject();
-        timerPeriodDeclarations = ( Declaration[]) in.readObject();
+        timerDeclarations = ( Declaration[][] ) in.readObject();
         salienceDeclarations = ( Declaration[]) in.readObject();
         enabledDeclarations = ( Declaration[]) in.readObject();
         consequenceName = (String) in.readObject();
@@ -201,8 +184,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         out.writeObject( nextTupleSinkNode );
         out.writeObject( declarations );
         
-        out.writeObject( timerDelayDeclarations );
-        out.writeObject( timerPeriodDeclarations );
+        out.writeObject( timerDeclarations );
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
         out.writeObject( consequenceName );
@@ -275,20 +257,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return this.declarations;
     }
     
-    public Declaration[] getTimerDelayDeclarations() {
-        return timerDelayDeclarations;
-    }
-
-    public void setTimerDelayDeclarations(Declaration[] timerDelayDeclarations) {
-        this.timerDelayDeclarations = timerDelayDeclarations;
-    }
-
-    public Declaration[] getTimerPeriodDeclarations() {
-        return timerPeriodDeclarations;
-    }
-
-    public void setTimerPeriodDeclarations(Declaration[] timerPeriodDeclarations) {
-        this.timerPeriodDeclarations = timerPeriodDeclarations;
+    public Declaration[][] getTimerDeclarations() {
+        return timerDeclarations;
     }
 
     public Declaration[] getSalienceDeclarations() {

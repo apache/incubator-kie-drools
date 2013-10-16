@@ -26,6 +26,7 @@ import org.drools.core.common.TimedRuleExecution;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.DateUtils;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
@@ -774,7 +775,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "global java.util.List list \n";
         str += "rule xxx \n";
         str += "  calendars \"cal1\"\n";
-        str += "  timer (0d 1d start=3-JAN-2010 end=5-JAN-2010) "; //int: protocol is assumed
+        str += "  timer (0d 1d; start=3-JAN-2010, end=5-JAN-2010) "; //int: protocol is assumed
         str += "when \n";
         str += "then \n";
         str += "  list.add(\"fired\"); \n";
@@ -833,7 +834,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         str += "global java.util.List list \n";
         str += "rule xxx \n";
         str += "  calendars \"cal1\"\n";
-        str += "  timer (0d 1d start=3-JAN-2010 repeat-limit=4) "; //int: protocol is assumed
+        str += "  timer (0d 1d; start=3-JAN-2010, repeat-limit=4) "; //int: protocol is assumed
         str += "when \n";
         str += "then \n";
         str += "  list.add(\"fired\"); \n";
@@ -890,16 +891,18 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         Locale defaultLoc = Locale.getDefault();
         try {
             Locale.setDefault( Locale.UK ); // Because of the date strings in the DRL, fixable with JBRULES-3444
-            String str = "";
-            str += "package org.simple \n";
-            str += "global java.util.List list \n";
-            str += "rule xxx \n";
-            str += "  calendars \"cal1\"\n";
-            str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 end=5-JAN-2010) ";
-            str += "when \n";
-            str += "then \n";
-            str += "  list.add(\"fired\"); \n";
-            str += "end  \n";
+            String str =
+                "package org.simple \n" +
+                "global java.util.List list \n" +
+                "rule xxx \n" +
+                "  date-effective \"2-JAN-2010\"\n" +
+                "  date-expires \"6-JAN-2010\"\n" +
+                "  calendars \"cal1\"\n" +
+                "  timer (cron: 0 0 0 * * ?) " +
+                "when \n" +
+                "then \n" +
+                "  list.add(\"fired\"); \n" +
+                "end  \n";
 
             KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             conf.setOption(ClockTypeOption.get("pseudo"));
@@ -955,16 +958,19 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         Locale defaultLoc = Locale.getDefault();
         try {
             Locale.setDefault( Locale.UK ); // Because of the date strings in the DRL, fixable with JBRULES-3444
-            String str = "";
-            str += "package org.simple \n";
-            str += "global java.util.List list \n";
-            str += "rule xxx \n";
-            str += "  calendars \"cal1\"\n";
-            str += "  timer (cron: 0 0 0 * * ? start=3-JAN-2010 repeat-limit=4) ";
-            str += "when \n";
-            str += "then \n";
-            str += "  list.add(\"fired\"); \n";
-            str += "end  \n";
+            String str =
+                    "package org.simple \n" +
+                    "global java.util.List list \n" +
+                    "rule xxx \n" +
+                    "  date-effective \"2-JAN-2010\"\n" +
+                    "  calendars \"cal1\"\n" +
+                    // FIXME: I have to set the repeate-limit to 6 instead of 4 becuase
+                    // it is incremented regardless of the effective date
+                    "  timer (cron: 0 0 0 * * ?; repeat-limit=6) " +
+                    "when \n" +
+                    "then \n" +
+                    "  list.add(\"fired\"); \n" +
+                    "end  \n";
 
             KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
             conf.setOption(ClockTypeOption.get("pseudo"));
@@ -1015,7 +1021,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         }
     }
     
-    @Test //(timeout=10000)
+    @Test(timeout=10000)
     public void testTimerWithNot() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("test_Timer_With_Not.drl");
         KieSession ksession = createKnowledgeSession(kbase);
@@ -1122,7 +1128,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         List list = new ArrayList();
 
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+        timeService.setStartupTime( DateUtils.parseDate("3-JAN-2010").getTime() );
 
         ksession.setGlobal( "list", list );
 
@@ -1153,12 +1159,32 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithStringExpressions() throws Exception {
+        checkIntervalTimerWithStringExpressions(false, "3-JAN-2010");
+    }
+
+    @Test(timeout=10000)
+    public void testIntervalTimerWithAllExpressions() throws Exception {
+        checkIntervalTimerWithStringExpressions(true, "3-JAN-2010");
+    }
+
+    @Test(timeout=10000)
+    public void testIntervalTimerWithStringExpressionsAfterStart() throws Exception {
+        checkIntervalTimerWithStringExpressions(false, "3-FEB-2010");
+    }
+
+    @Test(timeout=10000)
+    public void testIntervalTimerWithAllExpressionsAfterStart() throws Exception {
+        checkIntervalTimerWithStringExpressions(true, "3-FEB-2010");
+    }
+
+    private void checkIntervalTimerWithStringExpressions(boolean useExprForStart, String startTime) throws Exception {
         String str = "package org.simple;\n" +
                 "global java.util.List list;\n" +
                 "\n" +
                 "declare Bean\n" +
                 "  delay   : String = \"30s\"\n" +
-                "  period  : long = 10000\n" +
+                "  period  : long = 60000\n" +
+                "  start   : String = \"3-JAN-2010\"\n" +
                 "end\n" +
                 "\n" +
                 "rule init \n" +
@@ -1169,9 +1195,9 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                 "\n" +
                 "rule xxx\n" +
                 "  salience ($d) \n" +
-                "  timer( expr: $d, $p; start=3-JAN-2010 )\n" +
+                "  timer( expr: $d, $p; start=" + (useExprForStart ? "$s" : "3-JAN-2010") +" )\n" +
                 "when\n" +
-                "  Bean( $d : delay, $p : period )\n" +
+                "  Bean( $d : delay, $p : period, $s : start )\n" +
                 "then\n" +
                 "  list.add( \"fired\" );\n" +
                 "end";
@@ -1185,7 +1211,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         List list = new ArrayList();
 
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+        timeService.setStartupTime( DateUtils.parseDate(startTime).getTime() );
 
         ksession.setGlobal( "list", list );
 
@@ -1196,21 +1222,45 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
 
-        timeService.advanceTime( 15, TimeUnit.SECONDS );
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 3, TimeUnit.SECONDS );
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
 
-        timeService.advanceTime( 2, TimeUnit.SECONDS );
+        timeService.advanceTime( 40, TimeUnit.SECONDS );
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
 
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
         ksession.fireAllRules();
         assertEquals( 3, list.size() );
+
+        // simulate a pause in the use of the engine by advancing the system clock
+        timeService.setStartupTime( DateUtils.parseDate("3-MAR-2010").getTime() );
+        list.clear();
+
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() ); // fires once to recover from missing activation
+
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+
+        timeService.advanceTime( 40, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 3, list.size() );
+
+        timeService.advanceTime( 60, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+        assertEquals( 4, list.size() );
     }
 
     @Test(timeout=10000)

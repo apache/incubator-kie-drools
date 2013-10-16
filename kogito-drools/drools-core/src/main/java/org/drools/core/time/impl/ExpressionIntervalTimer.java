@@ -16,7 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.AgendaItem;
@@ -26,7 +25,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
-import org.drools.core.time.TimeUtils;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
@@ -35,15 +33,18 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
+import java.util.Map;
+
+import static org.drools.core.time.TimeUtils.evalDateExpression;
+import static org.drools.core.time.TimeUtils.evalTimeExpression;
 
 public class ExpressionIntervalTimer  extends BaseTimer
     implements
     Timer,
     Externalizable {
 
-    private Date startTime;
-
-    private Date endTime;
+    private MVELObjectExpression startTime;
+    private MVELObjectExpression endTime;
 
     private int  repeatLimit;
 
@@ -56,8 +57,8 @@ public class ExpressionIntervalTimer  extends BaseTimer
 
 
 
-    public ExpressionIntervalTimer(Date startTime,
-                                   Date endTime,
+    public ExpressionIntervalTimer(MVELObjectExpression startTime,
+                                   MVELObjectExpression endTime,
                                    int repeatLimit,
                                    MVELObjectExpression delay,
                                    MVELObjectExpression period) {
@@ -78,73 +79,51 @@ public class ExpressionIntervalTimer  extends BaseTimer
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.startTime = (Date) in.readObject();
-        this.endTime = (Date) in.readObject();
+        this.startTime = (MVELObjectExpression) in.readObject();
+        this.endTime = (MVELObjectExpression) in.readObject();
         this.repeatLimit = in.readInt();
         this.delay = (MVELObjectExpression) in.readObject();
         this.period = (MVELObjectExpression) in.readObject();
     }
     
-    public MVELCompilationUnit getDelayMVELCompilationUnit() {
-        return this.delay.getMVELCompilationUnit();
+    public Declaration[] getStartDeclarations() {
+        return this.startTime != null ? this.startTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
     }  
     
-    public MVELCompilationUnit getPeriodMVELCompilationUnit() {
-        return this.period.getMVELCompilationUnit();
-    }       
-
-    public Date getStartTime() {
-        return startTime;
+    public Declaration[] getEndDeclarations() {
+        return this.endTime != null ? this.endTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Declaration[] getDelayDeclarations() {
+        return this.delay.getMVELCompilationUnit().getPreviousDeclarations();
     }
 
-    public MVELObjectExpression getDelay() {
-        return delay;
+    public Declaration[] getPeriodDeclarations() {
+        return this.period.getMVELCompilationUnit().getPreviousDeclarations();
     }
 
-    public MVELObjectExpression getPeriod() {
-        return period;
+    public Declaration[][] getTimerDeclarations(Map<String, Declaration> outerDeclrs) {
+        return new Declaration[][] { sortDeclarations(outerDeclrs, getDelayDeclarations()),
+                                     sortDeclarations(outerDeclrs, getPeriodDeclarations()),
+                                     sortDeclarations(outerDeclrs, getStartDeclarations()),
+                                     sortDeclarations(outerDeclrs, getEndDeclarations()) };
     }
-
 
     public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
 
-        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        long timestamp = wm.getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        Calendars calendars = wm.getCalendars();
 
-        Declaration[] delayDeclrs = ((AgendaItem)item).getTerminalNode().getTimerDelayDeclarations();
-        Declaration[] periodDeclrs = ((AgendaItem)item).getTerminalNode().getTimerPeriodDeclarations();
-//
-//        long timeSinceLastFire = 0;
+        Declaration[][] timerDeclrs = ((AgendaItem)item).getTerminalNode().getTimerDeclarations();
+
         ScheduledAgendaItem schItem = ( ScheduledAgendaItem ) item;
         DefaultJobHandle jh = null;
         if ( schItem.getJobHandle() != null ) {
             jh = ( DefaultJobHandle) schItem.getJobHandle();
-//            IntervalTrigger preTrig = ( IntervalTrigger ) jh.getTimerJobInstance().getTrigger();
-//            if ( preTrig.hasNextFireTime() != null ) {
-//                timeSinceLastFire = timestamp - preTrig.getLastFireTime().getTime();
-//            }
         }
-//
-//
-//        long newDelay = (delay  != null ? evalDelay( item.getTuple(), ((AgendaItem)item).getTerminalNode().getTimerDelayDeclarations(), wm ) : 0) - timeSinceLastFire;
-//        if ( newDelay < 0 ) {
-//            newDelay = 0;
-//        }
-//
-//        return new IntervalTrigger( timestamp,
-//                                    this.startTime,
-//                                    this.endTime,
-//                                    this.repeatLimit,
-//                                    newDelay,
-//                                    period != null ? evalPeriod( item.getTuple(), ((AgendaItem)item).getTerminalNode().getTimerPeriodDeclarations(), wm) : 0,
-//                                    calendarNames,
-//                                    calendars );
-        return createTrigger(timestamp, item.getTuple(), jh, calendarNames, calendars, new Declaration[][] { delayDeclrs, periodDeclrs }, wm);
+
+        return createTrigger(timestamp, item.getTuple(), jh, calendarNames, calendars, timerDeclrs, wm);
     }
 
     public Trigger createTrigger(long timestamp,
@@ -158,6 +137,8 @@ public class ExpressionIntervalTimer  extends BaseTimer
 
         Declaration[] delayDeclarations = declrs[0];
         Declaration[] periodDeclarations = declrs[1];
+        Declaration[] startDeclarations = declrs[2];
+        Declaration[] endDeclarations = declrs[3];
 
         if ( jh != null ) {
             IntervalTrigger preTrig = (IntervalTrigger) jh.getTimerJobInstance().getTrigger();
@@ -167,17 +148,17 @@ public class ExpressionIntervalTimer  extends BaseTimer
         }
 
 
-        long newDelay = (delay != null ? evalDelay(leftTuple, delayDeclarations, wm) : 0) - timeSinceLastFire;
+        long newDelay = (delay != null ? evalTimeExpression(this.delay, leftTuple, delayDeclarations, wm) : 0) - timeSinceLastFire;
         if (newDelay < 0) {
             newDelay = 0;
         }
 
         return new IntervalTrigger(timestamp,
-                                   this.startTime,
-                                   this.endTime,
+                                   evalDateExpression( this.startTime, leftTuple, startDeclarations, wm ),
+                                   evalDateExpression( this.endTime, leftTuple, startDeclarations, wm ),
                                    this.repeatLimit,
                                    newDelay,
-                                   period != null ? evalPeriod(leftTuple, periodDeclarations, wm) : 0,
+                                   period != null ? evalTimeExpression(this.period, leftTuple, periodDeclarations, wm) : 0,
                                    calendarNames,
                                    calendars);
     }
@@ -186,31 +167,13 @@ public class ExpressionIntervalTimer  extends BaseTimer
                                  String[] calendarNames,
                                  Calendars calendars) {
         return new IntervalTrigger( timestamp,
-                                    this.startTime,
-                                    this.endTime,
+                                    null, // this.startTime,
+                                    null, // this.endTime,
                                     this.repeatLimit,
                                     0,
                                     0,
                                     calendarNames,
                                     calendars );
-    }
-
-    private long evalPeriod(LeftTuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm) {
-        Object p = this.period.getValue( leftTuple,  declrs, null, wm );
-        if ( p instanceof Number ) {
-            return ((Number) p).longValue();
-        } else {
-            return TimeUtils.parseTimeString( p.toString() );
-        }
-    }
-
-    private long evalDelay(LeftTuple leftTuple, Declaration[] declrs, InternalWorkingMemory wm) {
-        Object d = this.delay.getValue( leftTuple,  declrs, null, wm );
-        if ( d instanceof Number ) {
-            return ((Number) d).longValue();
-        } else {
-            return TimeUtils.parseTimeString( d.toString() );
-        }
     }
 
     @Override

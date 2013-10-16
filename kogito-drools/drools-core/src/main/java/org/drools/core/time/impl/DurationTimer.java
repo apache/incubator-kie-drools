@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -60,6 +61,10 @@ public class DurationTimer extends BaseTimer
 
     public long getDuration() {
         return duration;
+    }
+
+    public Declaration[][] getTimerDeclarations(Map<String, Declaration> outerDeclrs) {
+        return new Declaration[][] { new Declaration[] { getEventFactHandleDeclaration()}, null };
     }
 
     public Trigger createTrigger(Activation item, InternalWorkingMemory wm) {

@@ -265,17 +265,10 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         throw new UnsupportedOperationException();
     }
 
-
     @Override
-    public Declaration[] getTimerPeriodDeclarations() {
+    public Declaration[][] getTimerDeclarations() {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public Declaration[] getTimerDelayDeclarations() {
-        throw new UnsupportedOperationException();
-    }
-
 
     @Override
     public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {

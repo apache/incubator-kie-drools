@@ -162,35 +162,8 @@ public class TimerNode extends LeftTupleSource
             }
         }
 
-        if ( declarations != null ) {
-            if ( other.declarations == null ) {
-                return false;
-            }
-
-            if ( declarations.length != other.declarations.length) {
-                return false;
-            }
-
-            for ( int i = 0; i < declarations.length; i++ ) {
-                Declaration[] declrs = declarations[i];
-                Declaration[] otherDeclrs = other.declarations[i];
-
-                if ( declrs.length != otherDeclrs.length) {
-                    return false;
-                }
-
-                for ( int j = 0; j < declrs.length; j++ ) {
-                    if ( !declrs[j].equals(otherDeclrs[j])) {
-                          return false;
-                    }
-                }
-            }
-        } else if ( other.declarations != null ) {
-            return false;
-        }
-
-
-        return this.timer.equals(other.timer) && this.leftInput.equals(other.leftInput);
+        return Arrays.deepEquals(declarations, other.declarations) &&
+               this.timer.equals(other.timer) && this.leftInput.equals(other.leftInput);
     }
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
