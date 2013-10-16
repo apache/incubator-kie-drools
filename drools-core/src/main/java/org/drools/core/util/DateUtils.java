@@ -60,6 +60,10 @@ public class DateUtils {
         return fmt;
     }
 
+    public static Date parseDate(final String input) {
+        return parseDate(input, null);
+    }
+
     /** Use the simple date formatter to read the date from a string */
     public static Date parseDate(final String input, DateFormats dateFormats) {
         try {

@@ -57,6 +57,7 @@ public class IntervalTrigger
         this.period = period;
 
         if ( startTime == null ) {
+            this.nextFireTime = new Date( timestamp + delay );
             startTime = new Date( timestamp );
         }
         setStartTime( startTime );
@@ -70,9 +71,7 @@ public class IntervalTrigger
         this.calendarNames = calendarNames;
         this.calendars = calendars;
 
-        this.nextFireTime = new Date( timestamp + delay );
-
-        setFirstFireTime();
+        setFirstFireTime(timestamp);
 
         // Update to next include time, if we have calendars
         updateToNextIncludeDate();
@@ -153,12 +152,23 @@ public class IntervalTrigger
         return lastFireTime;
     }
 
-    private void setFirstFireTime() {
-        if ( getStartTime().after( this.nextFireTime ) ) {
-            this.nextFireTime = new Date( getStartTime().getTime() - 1000l );
+    private void setFirstFireTime(long timestamp) {
+        if ( this.nextFireTime == null ) {
+            long start = this.startTime.getTime() + delay;
+            if ( timestamp > start ) {
+                long distanceFromLastPhase = ( timestamp - start ) % period;
+                if ( distanceFromLastPhase == 0) {
+                    this.nextFireTime = new Date( timestamp );
+                } else {
+                    long phase = period - distanceFromLastPhase;
+                    this.nextFireTime = new Date( timestamp + phase );
+                }
+            } else {
+                this.nextFireTime = new Date( start );
+            }
         }
 
-        if ( getEndTime() != null && (this.nextFireTime.compareTo( getEndTime() ) >= 0) ) {
+        if ( getEndTime() != null && this.nextFireTime.after( getEndTime() ) ) {
             this.nextFireTime = null;
         }
 

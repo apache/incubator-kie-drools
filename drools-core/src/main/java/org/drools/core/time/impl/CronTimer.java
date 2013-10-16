@@ -22,9 +22,13 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.base.mvel.MVELObjectExpression;
+import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
@@ -32,21 +36,23 @@ import org.drools.core.spi.Activation;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
+import static org.drools.core.time.TimeUtils.evalDateExpression;
+
 public class CronTimer extends BaseTimer
     implements
     Timer,
     Externalizable {
-    private Date           startTime;
-    private Date           endTime;
-    private int            repeatLimit;
-    private CronExpression cronExpression;
+    private MVELObjectExpression startTime;
+    private MVELObjectExpression endTime;
+    private int                  repeatLimit;
+    private CronExpression       cronExpression;
     
     public CronTimer() {
         
     }
 
-    public CronTimer(Date startTime,
-                     Date endTime,
+    public CronTimer(MVELObjectExpression startTime,
+                     MVELObjectExpression endTime,
                      int repeatLimit,
                      CronExpression cronExpression) {
         this.startTime = startTime;
@@ -64,8 +70,8 @@ public class CronTimer extends BaseTimer
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.startTime = (Date) in.readObject();
-        this.endTime = (Date) in.readObject();
+        this.startTime = (MVELObjectExpression) in.readObject();
+        this.endTime = (MVELObjectExpression) in.readObject();
         this.repeatLimit = in.readInt();
         String string = (String) in.readObject();
         try {
@@ -76,12 +82,17 @@ public class CronTimer extends BaseTimer
         }
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public Declaration[] getStartDeclarations() {
+        return this.startTime != null ? this.startTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public Declaration[] getEndDeclarations() {
+        return this.endTime != null ? this.endTime.getMVELCompilationUnit().getPreviousDeclarations() : null;
+    }
+
+    public Declaration[][] getTimerDeclarations(Map<String, Declaration> outerDeclrs) {
+        return new Declaration[][] { sortDeclarations(outerDeclrs, getStartDeclarations()),
+                                     sortDeclarations(outerDeclrs, getEndDeclarations()) };
     }
 
     public CronExpression getCronExpression() {
@@ -93,7 +104,16 @@ public class CronTimer extends BaseTimer
         long timestamp = wm.getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
         Calendars calendars = wm.getCalendars();
-        return createTrigger( timestamp, calendarNames, calendars );
+
+        Declaration[][] timerDeclrs = ((AgendaItem)item).getTerminalNode().getTimerDeclarations();
+
+        ScheduledAgendaItem schItem = ( ScheduledAgendaItem ) item;
+        DefaultJobHandle jh = null;
+        if ( schItem.getJobHandle() != null ) {
+            jh = ( DefaultJobHandle) schItem.getJobHandle();
+        }
+
+        return createTrigger( timestamp, item.getTuple(), jh, calendarNames, calendars, timerDeclrs, wm );
     }
 
     public Trigger createTrigger(long timestamp,
@@ -103,15 +123,24 @@ public class CronTimer extends BaseTimer
                                  Calendars calendars,
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm) {
-        return createTrigger( timestamp, calendarNames, calendars );
+        Declaration[] startDeclarations = declrs[0];
+        Declaration[] endDeclarations = declrs[1];
+
+        return new CronTrigger( timestamp,
+                                evalDateExpression( this.startTime, leftTuple, startDeclarations, wm ),
+                                evalDateExpression( this.endTime, leftTuple, startDeclarations, wm ),
+                                this.repeatLimit,
+                                this.cronExpression,
+                                calendarNames,
+                                calendars );
     }
 
     public Trigger createTrigger(long timestamp,
                                  String[] calendarNames,
                                  Calendars calendars) {
         return new CronTrigger( timestamp,
-                                this.startTime,
-                                this.endTime,
+                                null, // this.startTime,
+                                null, // this.endTime,
                                 this.repeatLimit,
                                 this.cronExpression,
                                 calendarNames,
