@@ -24,8 +24,8 @@ import org.drools.persistence.map.EnvironmentBuilder;
 import org.drools.persistence.map.KnowledgeSessionStorage;
 import org.drools.persistence.map.KnowledgeSessionStorageEnvironmentBuilder;
 import org.junit.Before;
+import org.kie.api.KieServices;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -44,7 +44,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
     protected StatefulKnowledgeSession createSession(KnowledgeBase kbase) {
         
         EnvironmentBuilder envBuilder = new KnowledgeSessionStorageEnvironmentBuilder( storage );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = KieServices.Factory.get().newEnvironment();
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  envBuilder.getTransactionManager() );
         env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,
@@ -61,7 +61,7 @@ public class MapBasedPersistenceTest extends MapPersistenceTest{
         int sessionId = ksession.getId();
         ksession.dispose();
         EnvironmentBuilder envBuilder = new KnowledgeSessionStorageEnvironmentBuilder( storage );
-        Environment env = KnowledgeBaseFactory.newEnvironment();
+        Environment env = KieServices.Factory.get().newEnvironment();
         env.set( EnvironmentName.TRANSACTION_MANAGER,
                  envBuilder.getTransactionManager() );
         env.set( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER,

@@ -5,6 +5,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
+import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.io.impl.ResourceFactoryServiceImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
@@ -19,6 +20,7 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.command.KieCommands;
 import org.kie.api.concurrent.KieExecutors;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.internal.io.ResourceFactoryService;
@@ -157,6 +159,10 @@ public class KieServicesImpl implements KieServices {
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties) {
         return new SessionConfiguration(properties);
+    }
+
+    public Environment newEnvironment() {
+        return EnvironmentFactory.newEnvironment();
     }
 }
 
