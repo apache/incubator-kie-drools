@@ -24,7 +24,7 @@ public class ActionFieldValue
 
     private String field;
     private String value;
-    private long nature;
+    private int nature;
     /**
      * This is the datatype archectype (eg String, Numeric etc).
      */
@@ -46,7 +46,7 @@ public class ActionFieldValue
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#isFormula()
      */
     public boolean isFormula() {
-        return this.value != null && this.value.trim().startsWith( "=" );
+        return this.nature == FieldNatureType.TYPE_FORMULA;
     }
 
     /*
@@ -89,7 +89,7 @@ public class ActionFieldValue
      * (non-Javadoc)
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getNature()
      */
-    public long getNature() {
+    public int getNature() {
         return nature;
     }
 
@@ -98,7 +98,7 @@ public class ActionFieldValue
      * @see
      * org.drools.ide.common.client.modeldriven.brl.FieldNature#setNature(long)
      */
-    public void setNature( long nature ) {
+    public void setNature( int nature ) {
         this.nature = nature;
     }
 

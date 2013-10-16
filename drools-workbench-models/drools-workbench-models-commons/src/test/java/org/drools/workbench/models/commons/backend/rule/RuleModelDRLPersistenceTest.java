@@ -235,7 +235,6 @@ public class RuleModelDRLPersistenceTest {
     }
 
     @Test
-    @Ignore
     public void testSumAsGivenValue() {
         // BZ-1013682
         String expected = "" +
