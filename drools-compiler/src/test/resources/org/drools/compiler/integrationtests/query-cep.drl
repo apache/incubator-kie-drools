@@ -1,0 +1,11 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.QueryCepTest.TestEvent
+
+declare TestEvent
+    @role( event )
+end
+
+query EventsFromStream
+    $event : TestEvent() from entry-point FirstStream
+end
