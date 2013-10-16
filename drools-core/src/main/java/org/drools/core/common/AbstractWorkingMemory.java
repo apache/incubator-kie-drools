@@ -544,7 +544,7 @@ public class AbstractWorkingMemory
             lmem.linkNode(this);
             List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
             PathMemory pmm = pmems!=null && !pmems.isEmpty() ? pmems.get(0) : null;
-            if( pmm != null ) {
+            if( pmm != null && pmm.getRuleAgendaItem() != null ) {
                 RuleAgendaItem item = pmm.getRuleAgendaItem();
                 item.getRuleExecutor().reEvaluateNetwork( this, new org.drools.core.util.LinkedList<StackEntry>(), false);
             }
