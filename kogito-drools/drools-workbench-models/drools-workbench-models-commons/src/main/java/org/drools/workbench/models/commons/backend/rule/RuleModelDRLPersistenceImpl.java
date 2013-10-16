@@ -1246,7 +1246,7 @@ public class RuleModelDRLPersistenceImpl
 
         protected void buildFormulaFieldValue( final ActionFieldValue fieldValue,
                                                final StringBuilder buf ) {
-            buf.append( fieldValue.getValue().substring( 1 ) );
+            buf.append( fieldValue.getValue() );
         }
 
         protected void buildTemplateFieldValue( final ActionFieldValue fieldValue,

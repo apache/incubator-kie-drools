@@ -35,9 +35,9 @@ public interface FieldNature {
 
     public abstract void setValue( String value );
 
-    public abstract long getNature();
+    public abstract int getNature();
 
-    public abstract void setNature( long nature );
+    public abstract void setNature( int nature );
 
     public abstract String getType();
 
