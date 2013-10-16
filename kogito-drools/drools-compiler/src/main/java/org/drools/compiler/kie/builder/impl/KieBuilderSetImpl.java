@@ -90,14 +90,14 @@ public class KieBuilderSetImpl implements KieBuilderSet {
             KnowledgeBuilder kBuilder = kieModule.getKnowledgeBuilderForKieBase( kBaseModel.getName() );
             CompositeKnowledgeBuilder ckbuilder = kBuilder.batch();
 
+            boolean modified = false;
             PackageBuilder pkgBuilder = ((KnowledgeBuilderImpl)kBuilder).getPackageBuilder();
             Set<String> wrongResources = resourcesWithErrors.get(kBaseModel.getName());
             for ( String resourceName : wrongResources ) {
-                pkgBuilder.removeObjectsGeneratedFromResource(new DummyResource(resourceName));
-                addResource(ckbuilder, kBaseModel, kieModule, resourceName);
+                modified = pkgBuilder.removeObjectsGeneratedFromResource(new DummyResource(resourceName)) || modified;
+                modified = addResource(ckbuilder, kBaseModel, kieModule, resourceName) || modified;
             }
 
-            boolean modified = false;
             for (String file : files) {
                 String resourceName = file.startsWith(KieBuilderImpl.RESOURCES_ROOT) ?
                         file.substring(KieBuilderImpl.RESOURCES_ROOT.length()) :
