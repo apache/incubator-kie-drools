@@ -16,6 +16,7 @@ import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -124,7 +125,7 @@ public class SerializationHelper {
         return session2;
     }
 
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession,
                                                                                  boolean dispose) throws Exception {
 //        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
 //            return ksession;
@@ -136,19 +137,19 @@ public class SerializationHelper {
         
     }
 
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession,
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
         return getSerialisedStatefulKnowledgeSession( ksession,ksession.getKieBase(), dispose, testRoundTrip );
     }
 
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession,
                                                                                  KieBase kbase,
                                                                                  boolean dispose ) throws Exception {
         return getSerialisedStatefulKnowledgeSession( ksession, kbase, dispose, true );
     }
 
-    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(StatefulKnowledgeSession ksession,
+    public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession,
                                                                                  KieBase kbase,
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {

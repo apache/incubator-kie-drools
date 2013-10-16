@@ -291,7 +291,8 @@ public class RuleBuilder {
         }
         
         int colonPos = timerString.indexOf( ":" );
-        String protocol = null;
+        int semicolonPos = timerString.indexOf( ";" );
+        String protocol = "int"; // default protocol
         if ( colonPos == -1 ) {
             if ( timerString.startsWith( "int" ) || timerString.startsWith( "cron" ) || timerString.startsWith( "expr" ) ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
@@ -299,70 +300,21 @@ public class RuleBuilder {
                 context.addError( err );
                 return;
             }
-            // no protocol so assume interval semantics
-            protocol = "int";
         } else {
             protocol = timerString.substring( 0, colonPos );
         }
         
-        int startPos = timerString.indexOf( "start" );
-        int endPos = timerString.indexOf( "end" );
-        int repeatPos = timerString.indexOf( "repeat-limit" );
+        String startDate = extractParam(timerString, "start");
+        String endDate = extractParam(timerString, "end");
+        String repeatLimitString = extractParam(timerString, "repeat-limit");
+        int repeatLimit = repeatLimitString != null ? Integer.parseInt( repeatLimitString ) : -1;
         
-        Date startDate = null;
-        Date endDate = null;
-        int repeatLimit = -1;
-        
-        int  optionsPos = timerString.length();
-        
-        if ( startPos != -1 ) {
-            optionsPos = startPos;
-            int p = ( endPos != -1 && endPos < repeatPos ) ? endPos : repeatPos;
-            
-            if ( p == -1 ) {
-                p = timerString.length();
-            }
-            
-            int equalsPos = timerString.indexOf( '=', startPos );
-            startDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim(),
-                                             context.getPackageBuilder().getDateFormats()  );
-        }
-        
-        if ( endPos != -1 ) {
-            if ( optionsPos > endPos ) {
-                optionsPos = endPos;
-            }
-            int p = ( startPos != -1 && startPos < repeatPos ) ? startPos : repeatPos;
-            
-            if ( p == -1 ) {
-                p = timerString.length();
-            }
-            
-            int equalsPos = timerString.indexOf( '=', endPos );
-            endDate = DateUtils.parseDate( timerString.substring( equalsPos + 1, p ).trim(),
-                                           context.getPackageBuilder().getDateFormats()  );
-        }
-        
-        if ( repeatPos != -1 ) {
-            if ( optionsPos > repeatPos ) {
-                optionsPos = repeatPos;
-            }
-            int p = ( startPos != -1 && startPos < endPos ) ? startPos : endPos;
-            
-            if ( p == -1 ) {
-                p = timerString.length();
-            }
-            
-            int equalsPos = timerString.indexOf( '=', repeatPos );
-            repeatLimit = Integer.parseInt( timerString.substring( equalsPos + 1, p ).trim() );
-        }
-                     
-        String body = timerString.substring( colonPos + 1, optionsPos ).trim();
+        String body = timerString.substring( colonPos + 1, semicolonPos > 0 ? semicolonPos : timerString.length() ).trim();
         
         Timer timer = null;
         if ( "cron".equals( protocol ) ) {
             try {
-                timer = new CronTimer( startDate, endDate, repeatLimit, new CronExpression( body ) );
+                timer = new CronTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, new CronExpression( body ) );
             } catch ( ParseException e ) {
                 DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                       "Unable to build set timer '" + timerString + "'" );                
@@ -397,7 +349,7 @@ public class RuleBuilder {
                 return;
             }
 
-            timer = new IntervalTimer(startDate, endDate, repeatLimit, delay, period);
+            timer = new IntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, delay, period );
         } else if ( "expr".equals( protocol ) ) {
             body = body.trim();
             StringTokenizer tok = new StringTokenizer( body, ",;" );
@@ -417,7 +369,7 @@ public class RuleBuilder {
                 period = MVELObjectExpressionBuilder.build( "0", context );
             }
 
-            timer = new ExpressionIntervalTimer( startDate, endDate, repeatLimit, times, period );
+            timer = new ExpressionIntervalTimer( createMVELExpr(startDate, context), createMVELExpr(endDate, context), repeatLimit, times, period );
         } else {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   "Protocol for timer does not exist '" + timerString +"'" );
@@ -427,4 +379,25 @@ public class RuleBuilder {
         rule.setTimer( timer );
     }
 
+    private String extractParam(String timerString, String name) {
+        int paramPos = timerString.indexOf( name );
+        if (paramPos < 0) {
+            return null;
+        }
+        int equalsPos = timerString.indexOf( '=', paramPos );
+        int sepPos = timerString.indexOf( ',', equalsPos );
+        int endPos = sepPos > 0 ? sepPos : timerString.length();
+        return timerString.substring( equalsPos + 1, endPos ).trim();
+    }
+
+    private MVELObjectExpression createMVELExpr(String expr, RuleBuildContext context) {
+        if (expr == null) {
+            return null;
+        }
+        try {
+            DateUtils.parseDate( expr, context.getPackageBuilder().getDateFormats() );
+            expr = "\"" + expr + "\""; // if expr is a valid date wrap in quotes
+        } catch (Exception e) { }
+        return MVELObjectExpressionBuilder.build( expr, context );
+    }
 }
