@@ -8,12 +8,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.compiler.Alarm;
 import org.drools.compiler.Cheese;
@@ -23,11 +21,13 @@ import org.drools.core.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
 import org.drools.core.common.TimedRuleExecution;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -244,27 +244,27 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
         
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertEquals(0, list.size());
         
-        timeService.advanceTime( 20, TimeUnit.SECONDS );
+        timeService.advanceTime(20, TimeUnit.SECONDS);
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
         
         timeService.advanceTime( 15, TimeUnit.SECONDS );
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertEquals(1, list.size());
         
-        timeService.advanceTime( 3, TimeUnit.SECONDS );
+        timeService.advanceTime(3, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertEquals(1, list.size());
         
-        timeService.advanceTime( 2, TimeUnit.SECONDS );
+        timeService.advanceTime(2, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
+        assertEquals(2, list.size());
         
-        timeService.advanceTime( 10, TimeUnit.SECONDS );
+        timeService.advanceTime(10, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals( 3, list.size() );
+        assertEquals(3, list.size());
     }
 
     @Test(timeout=10000)
@@ -285,30 +285,45 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
 
-        final BlockingQueue<TimedRuleExecution> queue = new LinkedBlockingQueue<TimedRuleExecution>();
-        ((StatefulKnowledgeSessionImpl)ksession).session.setTimedExecutionsQueue(queue);
-
         final CyclicBarrier barrier = new CyclicBarrier(2);
-        final AtomicBoolean run = new AtomicBoolean(true);
 
-        Thread t = new Thread(new Runnable() {
-            public void run() {
+        AgendaEventListener agendaEventListener = new AgendaEventListener() {
+            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) { }
+
+            public void matchCancelled(org.kie.api.event.rule.MatchCancelledEvent event) { }
+
+            public void beforeMatchFired(org.kie.api.event.rule.BeforeMatchFiredEvent event) { }
+
+            public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
                 try {
-                    while (run.get()) {
-                        queue.take().evauateAndFireRule();
-                        try {
-                            barrier.await();
-                        } catch (BrokenBarrierException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                } catch (InterruptedException e) {
+                    barrier.await();
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             }
+
+            public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) { }
+
+            public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) { }
+
+            public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) { }
+
+            public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) { }
+
+            public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) { }
+
+            public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) { }
+        };
+        ksession.addEventListener(agendaEventListener);
+
+        final BlockingQueue<TimedRuleExecution> queue = new LinkedBlockingQueue<TimedRuleExecution>();
+        ksession.setTimedRuleExecutionFilter(new TimedRuleExecutionFilter() {
+            @Override
+            public boolean accept(Rule[] rule) {
+                assertEquals("xxx", rule[0].getName());
+                return true;
+            }
         });
-        t.setDaemon(true);
-        t.start();
 
         List list = new ArrayList();
 
@@ -334,9 +349,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         barrier.await();
         barrier.reset();
         assertEquals( 3, list.size() );
-
-        run.set(false);
-        barrier.reset();
     }
 
     @Test(timeout=10000)
@@ -1239,7 +1251,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         assertEquals( 3, list.size() );
 
         // simulate a pause in the use of the engine by advancing the system clock
-        timeService.setStartupTime( DateUtils.parseDate("3-MAR-2010").getTime() );
+        timeService.setStartupTime(DateUtils.parseDate("3-MAR-2010").getTime());
         list.clear();
 
         timeService.advanceTime( 20, TimeUnit.SECONDS );
