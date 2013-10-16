@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -41,6 +42,7 @@ public class QueryCepTest {
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
     }
 
+    @Ignore
     @Test
     public void test() {
         
