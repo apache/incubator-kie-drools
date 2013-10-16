@@ -427,8 +427,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1009369")
     public void testIncrementalCompilationAddErrorThenEmptyWithoutError() throws Exception {
+        // BZ-1009369
+
         //Invalid. Type "Smurf" is unknown
         String drl1 = "Smurf";
 
@@ -462,6 +463,4 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 0, addResults2.getAddedMessages().size() );
         assertEquals( 0, addResults2.getRemovedMessages().size() );
     }
-
-
 }
