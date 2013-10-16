@@ -27,7 +27,7 @@ public class CallFieldValue
 
     public String field;
     public String value;
-    public long nature;
+    public int nature;
     /**
      * This is the datatype archectype (eg String, Numeric etc).
      */
@@ -71,11 +71,11 @@ public class CallFieldValue
         this.value = value;
     }
 
-    public long getNature() {
+    public int getNature() {
         return this.nature;
     }
 
-    public void setNature( final long nature ) {
+    public void setNature( final int nature ) {
         this.nature = nature;
     }
 
