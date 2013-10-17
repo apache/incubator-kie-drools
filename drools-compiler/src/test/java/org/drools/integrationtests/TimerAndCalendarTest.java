@@ -1665,4 +1665,63 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testCronTimerWithModify() throws Exception {
+        String str = "package org.drools.test; \n" +
+                     "global java.util.List list; \n" +
+                     "declare Environment \n" +
+                     "  state : boolean \n " +
+                     "end \n" +
+                     "" +
+                     "dialect \"mvel\" \n" +
+                     "" +
+                     "rule Init \n" +
+                     "when\n" +
+                     "then \n" +
+                     "    insert( new Environment( true ) ); \n" +
+                     "end \n" +
+                     "" +
+                     "" +
+                     "rule \"set environment night\" \n" +
+                     "    no-loop \n" +
+                     "    timer (cron:0 30 20 1/1 * ? *)\n" +
+                     "when\n" +
+                     "    $env : Environment ( )\n" +
+                     "then\n" +
+                     "    System.out.println( $env ); \n" +
+                     "    modify ( $env )  { state = false }\n" +
+                     "end\n" +
+                     "" +
+                     "rule AtNight \n" +
+                     "when \n" +
+                     "  Environment( state == false ) \n" +
+                     "then \n" +
+                     "  list.add( true ); \n" +
+                     "end \n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KnowledgeSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( conf, null );
+
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        ((SessionPseudoClock)ksession.getSessionClock()).advanceTime( 21, TimeUnit.HOURS );
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( true ), list );
+        ksession.dispose();
+    }
+
+
 }
