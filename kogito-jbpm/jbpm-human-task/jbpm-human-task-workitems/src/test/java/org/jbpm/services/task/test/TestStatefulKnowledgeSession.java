@@ -9,6 +9,7 @@ import org.drools.core.impl.AbstractRuntime;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
@@ -261,6 +262,13 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
     }
 
     public void update(FactHandle arg0, Object arg1) {
+    }
+
+    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
+        return null;
+    }
+
+    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
     }
 
     public void dispose() {

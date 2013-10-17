@@ -9,6 +9,7 @@ import java.util.Queue;
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.MapGlobalResolver;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.WorkingMemoryAction;
@@ -17,6 +18,7 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
+import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
@@ -359,6 +361,13 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 		throw new UnsupportedOperationException();
 	}
 
+    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
+        throw new UnsupportedOperationException();
+    }
+
+    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public ProcessInstance startProcess(String processId,
