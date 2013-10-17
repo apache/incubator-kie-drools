@@ -9,3 +9,8 @@ end
 query EventsFromStream
     $event : TestEvent() from entry-point FirstStream
 end
+
+query ZeroToNineteenSeconds
+    $event : TestEvent() from entry-point FirstStream
+    $result : TestEvent ( this after [0s, 19s] $event) from entry-point SecondStream
+end
