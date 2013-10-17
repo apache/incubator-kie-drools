@@ -21,6 +21,8 @@ import org.drools.core.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
 import org.drools.core.common.TimedRuleExecution;
+import org.drools.core.runtime.rule.impl.AgendaImpl;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.time.impl.PseudoClockScheduler;
@@ -40,6 +42,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
@@ -239,18 +242,18 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         List list = new ArrayList();
 
         PseudoClockScheduler timeService = ( PseudoClockScheduler ) ksession.<SessionClock>getSessionClock();
-        timeService.advanceTime( new Date().getTime(), TimeUnit.MILLISECONDS );
+        timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
         
-        ksession.setGlobal( "list", list );
+        ksession.setGlobal("list", list);
         
         ksession.fireAllRules();
         assertEquals(0, list.size());
         
         timeService.advanceTime(20, TimeUnit.SECONDS);
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertEquals(0, list.size());
         
-        timeService.advanceTime( 15, TimeUnit.SECONDS );
+        timeService.advanceTime(15, TimeUnit.SECONDS);
         ksession.fireAllRules();
         assertEquals(1, list.size());
         
@@ -269,15 +272,15 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testIntervalTimerWithoutFire() throws Exception {
-        String str = "";
-        str += "package org.simple \n";
-        str += "global java.util.List list \n";
-        str += "rule xxx \n";
-        str += "  timer (int:30s 10s) ";
-        str += "when \n";
-        str += "then \n";
-        str += "  list.add(\"fired\"); \n";
-        str += "end  \n";
+        String str =
+                "package org.simple \n" +
+                "global java.util.List list \n" +
+                "rule xxx \n" +
+                "  timer (int:30s 10s) " +
+                "when \n" +
+                "then \n" +
+                "  list.add(\"fired\"); \n" +
+                "end  \n";
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
@@ -287,13 +290,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         final CyclicBarrier barrier = new CyclicBarrier(2);
 
-        AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) { }
-
-            public void matchCancelled(org.kie.api.event.rule.MatchCancelledEvent event) { }
-
-            public void beforeMatchFired(org.kie.api.event.rule.BeforeMatchFiredEvent event) { }
-
+        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
             public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
                 try {
                     barrier.await();
@@ -301,18 +298,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
                     throw new RuntimeException(e);
                 }
             }
-
-            public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) { }
-
-            public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) { }
-
-            public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) { }
-
-            public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) { }
-
-            public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) { }
-
-            public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) { }
         };
         ksession.addEventListener(agendaEventListener);
 
@@ -333,17 +318,17 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals( 0, list.size() );
+        assertEquals(0, list.size());
 
         timeService.advanceTime(35, TimeUnit.SECONDS);
         barrier.await();
         barrier.reset();
-        assertEquals( 1, list.size() );
+        assertEquals(1, list.size());
 
         timeService.advanceTime(10, TimeUnit.SECONDS);
         barrier.await();
         barrier.reset();
-        assertEquals( 2, list.size() );
+        assertEquals(2, list.size());
 
         timeService.advanceTime(10, TimeUnit.SECONDS);
         barrier.await();

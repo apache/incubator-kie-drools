@@ -48,13 +48,13 @@ public class RuleExecutor {
         }
     }
 
-    public void evaluateNetwork(InternalWorkingMemory wm) {
+    public synchronized void evaluateNetwork(InternalWorkingMemory wm) {
         NETWORK_EVALUATOR.evaluateNetwork(pmem, null, this, wm);
         setDirty(false);
         wm.executeQueuedActions();
     }
 
-    public int evaluateNetworkAndFire(InternalWorkingMemory wm,
+    public synchronized int evaluateNetworkAndFire(InternalWorkingMemory wm,
             final AgendaFilter filter,
             int fireCount,
             int fireLimit) {
@@ -69,7 +69,7 @@ public class RuleExecutor {
         return fire(wm, filter, fireCount, fireLimit, outerStack, agenda, fireUntilHalt);
     }
 
-    public void fire(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
+    public synchronized void fire(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack) {
         InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
         boolean fireUntilHalt = agenda.isFireUntilHalt();
         fire(wm, null, 0, Integer.MAX_VALUE, outerStack, agenda, fireUntilHalt);
@@ -182,7 +182,7 @@ public class RuleExecutor {
         }
     }
 
-    public void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
+    public synchronized void reEvaluateNetwork(InternalWorkingMemory wm, LinkedList<StackEntry> outerStack, boolean fireUntilHalt) {
         if (isDirty() || (pmem.getTupleQueue() != null && !pmem.getTupleQueue().isEmpty())) {
             setDirty(false);
 

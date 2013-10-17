@@ -3039,4 +3039,38 @@ public class Misc2Test extends CommonTestMethodBase {
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         assertTrue( kb.hasErrors() );
     }
+
+    @Test
+    public void testDeleteInFromNode() {
+        String drl =
+                "global java.util.Map context\n" +
+                "\n" +
+                "rule A\n" +
+                "  when\n" +
+                "     $i : Integer()\n" +
+                "  then\n" +
+                "     context.remove(\"key\");\n" +
+                "end\n" +
+                "\n" +
+                "rule B\n" +
+                "  when\n" +
+                "    $s : String() from context.get(\"key\")\n" +
+                "  then\n" +
+                "    System.out.println($s);" +
+                "end\n";
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        Map<String, String> context = new HashMap<String, String>();
+        context.put("key", "value");
+        ks.setGlobal("context", context);
+
+        ks.insert(1);
+        ks.fireAllRules();
+
+        context.put("key", "value");
+        //ks.insert(2);
+        ks.fireAllRules();
+    }
 }

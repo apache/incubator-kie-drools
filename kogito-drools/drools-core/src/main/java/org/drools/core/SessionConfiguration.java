@@ -24,6 +24,7 @@ import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.internal.utils.CompositeClassLoader;
@@ -80,6 +81,8 @@ public class SessionConfiguration
     private volatile boolean               immutable;
 
     private boolean                        keepReference;
+
+    private boolean                        forceEagerActivation;
 
     private ClockType                      clockType;
     
@@ -157,7 +160,10 @@ public class SessionConfiguration
 
         setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( KeepReferenceOption.PROPERTY_NAME,
                                                                                "true" ) ).booleanValue() );
-        
+
+        setForceEagerActivation( Boolean.valueOf( this.chainedProperties.getProperty( ForceEagerActivationOption.PROPERTY_NAME,
+                                                                                      "false" ) ).booleanValue() );
+
         setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,
                                                                                                            BeliefSystemType.SIMPLE.getId())) );
 
@@ -191,6 +197,8 @@ public class SessionConfiguration
 
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
             setKeepReference( StringUtils.isEmpty(value) || Boolean.parseBoolean(value) );
+        } else if ( name.equals( ForceEagerActivationOption.PROPERTY_NAME ) ) {
+            setForceEagerActivation( StringUtils.isEmpty(value) || Boolean.parseBoolean(value) );
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             setClockType( ClockType.resolveClockType( StringUtils.isEmpty( value ) ? "realtime" : value ) );
         } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {
@@ -249,7 +257,16 @@ public class SessionConfiguration
     public boolean isKeepReference() {
         return this.keepReference;
     }
-    
+
+    public void setForceEagerActivation(boolean forceEagerActivation) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.forceEagerActivation = forceEagerActivation;
+    }
+
+    public boolean isForceEagerActivation() {
+        return this.forceEagerActivation;
+    }
+
     public BeliefSystemType getBeliefSystemType() {
         return this.beliefSystemType;
     }
@@ -492,6 +509,8 @@ public class SessionConfiguration
             setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(((TimerJobFactoryOption) option).getTimerJobType()));
         } else if ( option instanceof KeepReferenceOption ) {
             setKeepReference(((KeepReferenceOption) option).isKeepReference());
+        } else if ( option instanceof ForceEagerActivationOption ) {
+            setForceEagerActivation(((ForceEagerActivationOption) option).isForceEagerActivation());
         } else if ( option instanceof WorkItemHandlerOption ) {
             getWorkItemHandlers().put( ((WorkItemHandlerOption) option).getName(),
                                        ((WorkItemHandlerOption) option).getHandler() );
