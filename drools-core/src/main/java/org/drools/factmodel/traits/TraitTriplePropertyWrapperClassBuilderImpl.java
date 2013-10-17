@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,7 +72,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = traitRegistry.getFieldMask(trait.getName(), core.getDefinedClass().getName());
+        BitSet mask = traitRegistry.getFieldMask(trait.getName(), core.getDefinedClass().getName());
 
         String name = TraitFactory.getPropertyWrapperName( trait, core );
         String masterName = TraitFactory.getProxyName(trait, core);
@@ -261,7 +262,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
     
     
-    protected void buildRemove( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildRemove( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
@@ -344,7 +345,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         return false;
     }
 
-    protected void buildInitSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildInitSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PRIVATE, "initSoftFields", "()V", null, null);
         mv.visitCode();
@@ -357,7 +358,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitEnd();
     }
 
-    protected int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected int initSoftFields( MethodVisitor mv, String wrapperName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         int j = 0;
         int stackSize = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
@@ -445,7 +446,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
 
     
-    protected void buildClear( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildClear( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         boolean hasPrimitiveFields = false;
@@ -490,7 +491,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected void buildClearSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, long mask ) {
+    protected void buildClearSoftFields( ClassWriter cw, String wrapperName, ClassDefinition trait, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "clearSoftFields", "()V", null, null );
         mv.visitCode();
@@ -550,7 +551,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected void buildContainsValue( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildContainsValue( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "containsValue", "(" + Type.getDescriptor( Object.class ) + ")Z", null, null );
         mv.visitCode();
@@ -619,7 +620,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitLabel( l0 );
     }
 
-    protected void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, long mask) {
+    protected void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, BitSet mask) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
                                            "containsKey", 
@@ -646,7 +647,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
 
 
-    protected void buildSize( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildSize( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "size", "()I", null, null);
         mv.visitCode();
@@ -671,7 +672,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
 
 
-    protected void buildIsEmpty( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildIsEmpty( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         boolean hasHardFields = core.getFieldsDefinitions().size() > 0;
 
@@ -716,7 +717,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
                                            "get",
@@ -767,7 +768,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
         mv.visitLabel( l1 );
     }
     
-    protected void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
                                            "put", 
@@ -799,7 +800,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     
 
 
-    protected void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
                                            "entrySet", 
@@ -854,7 +855,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
     }
 
 
-    protected void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
                                            "keySet", 
@@ -904,7 +905,7 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
 
-    protected void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, 
                                            "values", 

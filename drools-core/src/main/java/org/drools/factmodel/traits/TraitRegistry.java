@@ -27,6 +27,7 @@ import org.drools.util.HierarchyEncoderImpl;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class TraitRegistry implements Externalizable {
 
     private int codeSize = 0;
 
-    private Map<String, Long> masks;
+    private Map<String, BitSet> masks;
 
     private HierarchyEncoder<String> hierarchy = new HierarchyEncoderImpl<String>();
 
@@ -97,7 +98,7 @@ public class TraitRegistry implements Externalizable {
         }
 
         if ( masks == null ) {
-            masks = new HashMap<String, Long>();
+            masks = new HashMap<String, BitSet>();
         }
         if ( other.masks != null ) {
             this.masks.putAll( other.masks );
@@ -177,16 +178,16 @@ public class TraitRegistry implements Externalizable {
 
 
 
-    public static boolean isSoftField( FieldDefinition field, int index, long mask ) {
-        return (mask & (1 << index)) == 0;
+    public static boolean isSoftField( FieldDefinition field, int index, BitSet mask ) {
+        return ! mask.get( index );
     }
 
-    public long getFieldMask( String trait, String traitable ) {
+    public BitSet getFieldMask( String trait, String traitable ) {
         if ( masks == null ) {
-            masks = new HashMap<String, Long>();
+            masks = new HashMap<String, BitSet>();
         }
         String key = trait + traitable;
-        Long mask = masks.get( key );
+        BitSet mask = masks.get( key );
 
         if ( mask == null ) {
             mask = bind( trait, traitable );
@@ -196,7 +197,7 @@ public class TraitRegistry implements Externalizable {
         return mask;
     }
 
-    private Long bind( String trait, String traitable ) throws UnsupportedOperationException {
+    private BitSet bind( String trait, String traitable ) throws UnsupportedOperationException {
         ClassDefinition traitDef = getTrait( trait );
         if ( traitDef == null ) {
             throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " : not a trait " );
@@ -207,7 +208,7 @@ public class TraitRegistry implements Externalizable {
         }
 
         int j = 0;
-        long bitmask = 0;
+        BitSet bitmask = new BitSet( traitDef.getFields().size() );
         for ( FactField field : traitDef.getFields() ) {
             String alias = ((FieldDefinition) field).resolveAlias();
 
@@ -221,7 +222,7 @@ public class TraitRegistry implements Externalizable {
                                                              " mode using @Traitable( logical = true )" );
                 }
 
-                bitmask |= 1 << j;
+                bitmask.set( j );
             }
             j++;
         }
@@ -241,7 +242,7 @@ public class TraitRegistry implements Externalizable {
     public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
         traits = (Map<String, ClassDefinition>) objectInput.readObject();
         traitables = (Map<String, ClassDefinition>) objectInput.readObject();
-        masks = (Map<String, Long>) objectInput.readObject();
+        masks = (Map<String, BitSet>) objectInput.readObject();
         hierarchy = (HierarchyEncoderImpl) objectInput.readObject();
         codeSize = objectInput.readInt();
         init();
