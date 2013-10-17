@@ -2,6 +2,7 @@ package org.drools.compiler.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CyclicBarrier;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActivationIterator;
@@ -12,6 +13,10 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -20,6 +25,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 
@@ -751,5 +757,33 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             }
         }
     }
-    
+
+    @Test(timeout=10000)
+    public void testEagerEvaluation() throws Exception {
+        String str =
+                "package org.simple \n" +
+                "rule xxx @Eager(true) \n" +
+                "when \n" +
+                "  $s : String()\n" +
+                "then \n" +
+                "end  \n";
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ForceEagerActivationOption.YES );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
+        final List list = new ArrayList();
+
+        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
+            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
+                list.add("activated");
+            }
+        };
+        ksession.addEventListener(agendaEventListener);
+
+        ksession.insert("test");
+        assertEquals(1, list.size());
+    }
 }
