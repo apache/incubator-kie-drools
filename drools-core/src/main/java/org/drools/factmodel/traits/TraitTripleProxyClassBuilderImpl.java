@@ -86,7 +86,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
         String masterName = TraitFactory.getProxyName( getTrait(), core );
@@ -561,7 +561,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-    protected void buildProxyAccessors( long mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet) {
+    protected void buildProxyAccessors( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet) {
         int j = 0;
 
         for ( FieldDefinition field : getTrait().getFieldsDefinitions() ) {
@@ -572,7 +572,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
     }
 
 
-    protected void buildProxyAccessor( long mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
+    protected void buildProxyAccessor( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
         FieldVisitor fv;
 
         if ( ! isSoftField ) {
@@ -1337,11 +1337,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-    protected void buildExtendedMethods(ClassWriter cw, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildExtendedMethods(ClassWriter cw, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         buildSynchFields( cw, TraitFactory.getProxyName(trait, core), trait, core, mask );
     }
 
-    protected void buildSynchFields( ClassWriter cw, String proxyName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildSynchFields( ClassWriter cw, String proxyName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         {
             MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "synchFields", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.BOOLEAN_TYPE } ), null, null );
             mv.visitCode();

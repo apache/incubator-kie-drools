@@ -108,7 +108,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         if ( compiledNetwork != null ) {
             compiledNetwork.modifyObject( factHandle,
                     modifyPreviousTuples,
-                    context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                    context.adaptModificationMaskForObjectType( objectType, workingMemory ),
                     workingMemory );
         } else {
             if ( factHandle.getObject() instanceof TraitProxy )  {
@@ -138,7 +138,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
-                                context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                                context.adaptModificationMaskForObjectType( objectType, workingMemory ),
                                 workingMemory );
                         ((PropagationContextImpl) context).setModificationMask( originalMask );
 
@@ -146,7 +146,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
-                                context.getModificationMask() > 0L ? context.adaptModificationMaskForObjectType( objectType, workingMemory ) : context,
+                                context.adaptModificationMaskForObjectType( objectType, workingMemory ),
                                 workingMemory );
                     }
 
