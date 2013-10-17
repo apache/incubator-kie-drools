@@ -4429,4 +4429,40 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testTraitWithManySoftFields() {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.*;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "declare trait Tx \n";
+
+        for ( int j = 0; j < 150; j ++ ) {
+            drl += " fld" + j + " : String \n";
+        }
+
+               drl += "" +
+                     "end \n" +
+                     "\n" +
+                     "declare TBean @Traitable fld0 : String end \n" +
+                     "" +
+                     "rule \"don\"\n" +
+                     "when \n" +
+                     "then\n" +
+                     "  don( new TBean(), Tx.class ); \n" +
+                     "end\n" +
+                     "" +
+                     "";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+
+        ksession.fireAllRules();
+
+        assertEquals( 3, ksession.getObjects().size() );
+
+    }
+
 }

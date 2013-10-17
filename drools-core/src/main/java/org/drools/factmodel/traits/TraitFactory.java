@@ -257,7 +257,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
 
         try {
-            long mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
+            BitSet mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
             Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName, true );
             bindAccessors( proxyClass, tdef, cdef, mask );
             Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName, true );
@@ -269,7 +269,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         }
     }
 
-    private void bindAccessors( Class<T> proxyClass, ClassDefinition tdef, ClassDefinition cdef, long mask ) {
+    private void bindAccessors( Class<T> proxyClass, ClassDefinition tdef, ClassDefinition cdef, BitSet mask ) {
         int j = 0;
         for ( FieldDefinition traitField : tdef.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( traitField, j++, mask );

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -63,7 +64,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = traitRegistry.getFieldMask( trait.getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistry.getFieldMask( trait.getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactory.getPropertyWrapperName(trait, core);
 
@@ -189,7 +190,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         mv.visitLabel( l1 );
     }
 
-    private void buildRemove( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildRemove( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "remove", "(" + Type.getDescriptor( Object.class ) +")" + Type.getDescriptor( Object.class ), null, null );
@@ -247,7 +248,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, ClassDefinition core, String internalWrapper, long mask, int varNum ) {
+    private int initSoftFields( MethodVisitor mv, ClassDefinition trait, ClassDefinition core, String internalWrapper, BitSet mask, int varNum ) {
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
@@ -297,7 +298,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private void buildClear( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildClear( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         boolean hasPrimitiveFields = false;
@@ -342,7 +343,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private void buildContainsValue( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildContainsValue( ClassWriter cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "containsValue", "(" + Type.getDescriptor( Object.class ) + ")Z", null, null );
@@ -415,7 +416,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
         mv.visitLabel( l0 );
     }
 
-    private void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, long mask) {
+    private void buildContainsKey(ClassWriter cw, String name, String className, ClassDefinition trait, ClassDefinition core, BitSet mask) {
         String internalWrapper = BuildUtils.getInternalType( name );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "containsKey", "(" + Type.getDescriptor( Object.class ) + ")Z", null, null );
@@ -436,7 +437,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     }
 
 
-    private void buildSize( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildSize( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "size", "()I", null, null );
@@ -458,7 +459,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     }
 
 
-    private void buildIsEmpty( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildIsEmpty( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         boolean hasHardFields = core.getFieldsDefinitions().size() > 0;
@@ -501,7 +502,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     }
 
 
-    private void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildGet( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "get", "(" + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ), null, null );
@@ -549,7 +550,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     }
 
 
-    private void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildPut( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "put", "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Object.class ), null, null );
@@ -577,7 +578,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildEntryset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "entrySet", "()" + Type.getDescriptor( Set.class ),
@@ -620,7 +621,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
     }
 
 
-    private void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildKeyset( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "keySet", "()" + Type.getDescriptor( Set.class ), "()Ljava/util/Set<Ljava/lang/String;>;", null );
@@ -652,7 +653,7 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
 
 
 
-    private void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    private void buildValues( ClassVisitor cw, String wrapperName, String coreName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         String internalWrapper = BuildUtils.getInternalType( wrapperName );
 
         MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, "values", "()" + Type.getDescriptor( Collection.class ), "()Ljava/util/Collection<Ljava/lang/Object;>;", null );

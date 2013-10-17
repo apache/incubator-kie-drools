@@ -85,7 +85,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
         String masterName = TraitFactory.getProxyName( getTrait(), core );
@@ -1240,11 +1240,11 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
 
 
-    protected void buildExtendedMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildExtendedMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         buildSynchFields( cw, TraitFactory.getProxyName( trait, core ), trait, core, mask );
     }
 
-    protected void buildSynchFields( ClassWriter cw, String proxyName, ClassDefinition trait, ClassDefinition core, long mask ) {
+    protected void buildSynchFields( ClassWriter cw, String proxyName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         {
             MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "synchFields", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.BOOLEAN_TYPE } ), null, null );
             mv.visitCode();
