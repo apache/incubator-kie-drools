@@ -25,7 +25,7 @@ import org.drools.spi.PropagationContext;
 import org.drools.time.JobHandle;
 import org.drools.time.Trigger;
 import org.drools.time.impl.CronTrigger;
-import org.drools.time.impl.JDKTimerService;
+import org.drools.time.impl.DefaultJobHandle;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -122,7 +122,7 @@ public class ScheduledAgendaItem extends AgendaItem
     }
 
     public boolean isPendingReactivation() {
-        JDKTimerService.JDKJobHandle timeHandle = (JDKTimerService.JDKJobHandle) getJobHandle();
+        DefaultJobHandle timeHandle = (DefaultJobHandle) getJobHandle();
         Trigger trig = timeHandle.getTimerJobInstance().getTrigger();
         return trig.hasNextFireTime() != null && trig instanceof CronTrigger;
     }
