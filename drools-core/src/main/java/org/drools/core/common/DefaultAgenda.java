@@ -56,6 +56,7 @@ import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,7 +266,12 @@ public class DefaultAgenda
     }
 
     @Override
-    public void addEagerRuleAgendaItem(RuleAgendaItem item) {
+    public void addEagerRuleAgendaItem(final RuleAgendaItem item) {
+        if ( workingMemory.getSessionConfiguration().isForceEagerActivation() ) {
+            item.getRuleExecutor().evaluateNetwork(workingMemory);
+            return;
+        }
+
         if ( item.isInList() ) {
             return;
         }
@@ -273,7 +279,9 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Added {} to eager evaluation list.", item.getRule().getName() );
         }
-        eager.add( item );
+        synchronized (eager) {
+            eager.add( item );
+        }
         notifyHalt();
     }
 
@@ -286,7 +294,9 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Removed {} from eager evaluation list.", item.getRule().getName() );
         }
-        eager.remove(item);
+        synchronized (eager) {
+            eager.remove(item);
+        }
     }
 
     public void scheduleItem(final ScheduledAgendaItem item,
@@ -946,9 +956,11 @@ public class DefaultAgenda
     }
 
     public void evaluateEagerList() {
-        while ( !eager.isEmpty() ) {
-            RuleAgendaItem item = eager.removeFirst();
-            item.getRuleExecutor().evaluateNetwork(this.workingMemory);
+        synchronized (eager) {
+            while ( !eager.isEmpty() ) {
+                RuleAgendaItem item = eager.removeFirst();
+                item.getRuleExecutor().evaluateNetwork(this.workingMemory);
+            }
         }
     }
 
