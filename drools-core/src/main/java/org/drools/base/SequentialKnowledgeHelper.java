@@ -16,6 +16,7 @@
 
 package org.drools.base;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -183,6 +184,14 @@ public class SequentialKnowledgeHelper
     }
 
     public <T, K> T don( K core, Class<T> trait, boolean logical ) {
+        return null;
+    }
+
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait, boolean logical ) {
+        return null;
+    }
+
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait ) {
         return null;
     }
 
