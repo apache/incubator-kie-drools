@@ -254,8 +254,12 @@ public class PhreakFromNode {
             }
 
 
-            // @TODO (mdp) is this really necessary? won't the entire FH and RightTuple chaines just et GC'd?
-            unlinkCreatedHandles(leftTuple);
+            // if matches == null, the deletion might be happening before the fact was even propagated. See BZ-1019473 for details.
+            if( matches != null ) {
+                
+                // @TODO (mdp) is this really necessary? won't the entire FH and RightTuple chaines just et GC'd?
+                unlinkCreatedHandles(leftTuple);
+            }
 
             leftTuple.clearStaged();
             leftTuple = next;
