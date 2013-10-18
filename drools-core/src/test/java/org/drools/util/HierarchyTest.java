@@ -16,6 +16,7 @@
 
 package org.drools.util;
 
+import org.drools.factmodel.IndexedTypeHierarchy;
 import org.drools.factmodel.traits.TypeHierarchy;
 import org.junit.Test;
 
@@ -1071,7 +1072,7 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        CodedHierarchy<String> types = new TypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
+        CodedHierarchy<String> types = new IndexedTypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
 
         types.addMember( "A", ak );
         types.addMember( "c", ck );
