@@ -43,5 +43,7 @@ public interface GlobalSchedulerService extends SchedulerService, InternalSchedu
     
     boolean isTransactional();
     
+    boolean retryEnabled();
+    
     void setInterceptor(SchedulerServiceInterceptor interceptor);
 }

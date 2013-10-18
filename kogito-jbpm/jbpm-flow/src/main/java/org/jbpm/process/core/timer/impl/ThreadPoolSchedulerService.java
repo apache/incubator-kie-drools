@@ -202,5 +202,8 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
         this.interceptor = interceptor;        
     }
 
-
+	@Override
+	public boolean retryEnabled() {
+		return true;
+	}
 }

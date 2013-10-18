@@ -193,7 +193,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
             CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
             ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((KnowledgeCommandContext) cmd.getCommandService().getContext()).getKieSession());
             
-            return new DisposableCommandService(cmd.getCommandService(), manager, runtime);
+            return new DisposableCommandService(cmd.getCommandService(), manager, runtime, schedulerService.retryEnabled());
         } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime) {
             ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
             
@@ -253,17 +253,27 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         private CommandService delegate;
         private RuntimeManager manager;
         private RuntimeEngine runtime;
+        private boolean retry = false;
         
         
-        public DisposableCommandService(CommandService delegate, RuntimeManager manager, RuntimeEngine runtime) {
+        public DisposableCommandService(CommandService delegate, RuntimeManager manager, RuntimeEngine runtime, boolean retry) {
             this.delegate = delegate;
             this.manager = manager;
             this.runtime = runtime;
+            this.retry = retry;
         }
 
         @Override
         public <T> T execute(Command<T> command) {
-            return delegate.execute(command);
+        	try {
+        		return delegate.execute(command);
+        	} catch (RuntimeException e) {
+        		if (retry) {
+        			return delegate.execute(command);
+        		} else {
+        			throw e;
+        		}
+        	}
         }
 
         @Override

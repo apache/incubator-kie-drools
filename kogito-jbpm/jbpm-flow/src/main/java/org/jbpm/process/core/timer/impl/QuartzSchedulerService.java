@@ -378,4 +378,9 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         this.interceptor = interceptor;
         
     }
+
+	@Override
+	public boolean retryEnabled() {
+		return false;
+	}
 }
