@@ -81,20 +81,44 @@ public class CartesianProductMoveSelectorTest {
     }
 
     @Test
-    public void emptyOriginSelectionNotIgnoringEmpty() {
-        emptyOriginSelection(false);
+    public void emptyFirstOriginSelectionNotIgnoringEmpty() {
+        emptyOriginSelection(false, true, false);
     }
 
     @Test
-    public void emptyOriginSelectionIgnoringEmpty() {
-        emptyOriginSelection(true);
+    public void emptyFirstOriginSelectionIgnoringEmpty() {
+        emptyOriginSelection(true, true, false);
     }
 
-    public void emptyOriginSelection(boolean ignoreEmptyChildIterators) {
+    @Test
+    public void emptySecondOriginSelectionNotIgnoringEmpty() {
+        emptyOriginSelection(false, false, true);
+    }
+
+    @Test
+    public void emptySecondOriginSelectionIgnoringEmpty() {
+        emptyOriginSelection(true, false, true);
+    }
+
+    @Test
+    public void emptyAllOriginSelectionNotIgnoringEmpty() {
+        emptyOriginSelection(false, true, true);
+    }
+
+    @Test
+    public void emptyAllOriginSelectionIgnoringEmpty() {
+        emptyOriginSelection(true, true, true);
+    }
+
+    public void emptyOriginSelection(boolean ignoreEmptyChildIterators, boolean emptyFirst, boolean emptySecond) {
+        assertTrue(emptyFirst || emptySecond);
+        MoveSelector nonEmptyChildMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));// One side is not empty
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
-        new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"))); // One side is not empty
-        childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
+        childMoveSelectorList.add(emptyFirst
+                ? SelectorTestUtils.mockMoveSelector(DummyMove.class) : nonEmptyChildMoveSelector);
+        childMoveSelectorList.add(emptySecond
+                ? SelectorTestUtils.mockMoveSelector(DummyMove.class) : nonEmptyChildMoveSelector);
         CartesianProductMoveSelector moveSelector = new CartesianProductMoveSelector(childMoveSelectorList,
                 ignoreEmptyChildIterators, false);
 
@@ -107,7 +131,7 @@ public class CartesianProductMoveSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
-        if (ignoreEmptyChildIterators) {
+        if (ignoreEmptyChildIterators && !(emptyFirst && emptySecond)) {
             assertAllCodesOfMoveSelector(moveSelector, "a1", "a2", "a3");
         } else {
             assertAllCodesOfMoveSelector(moveSelector);

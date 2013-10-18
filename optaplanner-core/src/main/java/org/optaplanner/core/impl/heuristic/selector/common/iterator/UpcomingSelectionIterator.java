@@ -16,8 +16,19 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import org.optaplanner.core.impl.heuristic.selector.Selector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
+
+/**
+ * IMPORTANT: The constructor of any subclass of this abstract class, should never call any of its child
+ * {@link Selector}'s {@link Iterator#hasNext()} or {@link Iterator#next()} methods,
+ * because that can cause descendant {@link Selector}s to be selected too early
+ * (which breaks {@link MimicReplayingEntitySelector}).
+ * @param <S>
+ */
 public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S>  {
 
     protected boolean upcomingCreated = false;
