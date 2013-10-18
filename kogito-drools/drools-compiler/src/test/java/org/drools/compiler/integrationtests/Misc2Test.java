@@ -19,6 +19,7 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
@@ -143,6 +144,43 @@ public class Misc2Test extends CommonTestMethodBase {
         System.out.println( rulesFired );
         assertEquals( 1, rulesFired );
 
+        ksession.dispose();
+    }
+
+    @Test
+    public void testNPEOnMutableGlobal() throws Exception {
+        // BZ-1019473
+        String str = "package org.drools.compiler\n" +
+                "global java.util.List context\n" + 
+                "rule B\n" + 
+                "  when\n" +
+                "    Message( message == \"b\" )\n" +
+                "    $s : String() from context\n" + 
+                "  then\n" + 
+                "    System.out.println($s);\n" + 
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write(ResourceFactory.newByteArrayResource(str.getBytes()).setTargetPath("org/drools/compiler/rules.drl") );
+        
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
+        kbuilder.buildAll();
+        
+        assertEquals(0, kbuilder.getResults().getMessages().size());
+
+        ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
+        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+        assertNotNull( ksession );
+        
+        List<String> context = new ArrayList<String>();
+        ksession.setGlobal("context", context);
+        
+        FactHandle b = ksession.insert( new Message( "b" ) );
+        ksession.delete(b);
+        int fired = ksession.fireAllRules(1);
+        
+        assertEquals( 0, fired );
         ksession.dispose();
     }
 
