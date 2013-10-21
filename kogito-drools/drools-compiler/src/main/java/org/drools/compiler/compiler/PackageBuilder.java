@@ -2603,7 +2603,9 @@ public class PackageBuilder
         }
 
         try {
-            return resolver.resolveType( annotation.substring( 0, 1 ).toUpperCase() + annotation.substring( 1 ) );
+            return resolver.resolveType( annotation.indexOf( '.' ) < 0 ?
+                                         annotation.substring( 0, 1 ).toUpperCase() + annotation.substring( 1 ) :
+                                         annotation );
         } catch ( ClassNotFoundException e ) {
             // internal annotation, or annotation which can't be resolved.
             if ( TypeDeclaration.Role.ID.equals( annotation ) ) {

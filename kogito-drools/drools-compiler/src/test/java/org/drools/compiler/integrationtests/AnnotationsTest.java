@@ -35,6 +35,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Role;
 import org.kie.internal.KnowledgeBase;
@@ -318,4 +319,37 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         return kbase;
     }
 
+    @Test
+    public void testAnnotationNameClash() {
+        String drl = "package org.drools.test\n" +
+                     "" +
+                     "declare Annot\n" +
+                     " id : int " +
+                     " @org.drools.compiler.integrationtests.AnnotationsTest.Annot( intProp = 3, typeProp = String.class, typeArrProp = {} ) \n" +
+                     " " +
+                     "end\n" +
+                     "" +
+                     "rule X\n" +
+                     "when\n"+
+                     " \n" +
+                     "then\n" +
+                     " insert( new Annot( 22 ) ); " +
+                     "end";
+
+        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+
+        KnowledgeBase kbase = loadKnowledgeBase( "kb1", drl, conf );
+        FactType ft = kbase.getFactType( "org.drools.test", "Annot" );
+        try {
+            Object o = ft.newInstance();
+            Annot a = o.getClass().getDeclaredField( "id" ).getAnnotation( Annot.class );
+            assertEquals( 3, a.intProp() );
+            assertEquals( String.class, a.typeProp() );
+            assertEquals( 0, a.typeArrProp().length );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+
+    }
 }

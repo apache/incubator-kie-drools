@@ -178,7 +178,9 @@ finally { ternOp--; }
 
 
 fullAnnotation [AnnotatedDescrBuilder inDescrBuilder] returns [AnnotationDescr result]
-  : AT name=ID { if( buildDescr ) { $result = inDescrBuilder != null ? (AnnotationDescr) inDescrBuilder.newAnnotation( $name.text ).getDescr() : new AnnotationDescr( $name.text ); } }
+@init{ String n = ""; }
+  : AT name=ID { n = $name.text; } ( DOT x=ID { n += "." + $x.text; } )*
+        { if( buildDescr ) { $result = inDescrBuilder != null ? (AnnotationDescr) inDescrBuilder.newAnnotation( n ).getDescr() : new AnnotationDescr( n ); } }
     annotationArgs[result]
   ;
 
@@ -204,7 +206,7 @@ annotationValue
   ;
 
 annotationArray
-  :  LEFT_CURLY annotationValue ( COMMA annotationValue )* RIGHT_CURLY
+  :  LEFT_CURLY ( annotationValue ( COMMA annotationValue )* )? RIGHT_CURLY
   ;
 
 

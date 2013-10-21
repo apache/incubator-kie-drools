@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL5Lexer.g 2013-08-12 14:28:21
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL5Lexer.g 2013-10-21 16:06:17
 
     package org.drools.compiler.lang;
 

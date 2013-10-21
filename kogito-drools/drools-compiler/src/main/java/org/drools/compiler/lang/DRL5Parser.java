@@ -4035,15 +4035,11 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
                 if ( state.failed ) return;
 
                 // identifier
-                Token id = match( input,
-                                  DRL5Lexer.ID,
-                                  null,
-                                  null,
-                                  DroolsEditorType.IDENTIFIER );
+                String fqn = qualifiedIdentifier();
                 if ( state.failed ) return;
 
                 if ( state.backtracking == 0 ) {
-                    annotation = adb.newAnnotation( id.getText() );
+                    annotation = adb.newAnnotation( fqn );
                     helper.setStart( annotation,
                                      at );
                 }

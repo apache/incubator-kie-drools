@@ -39,6 +39,11 @@
     </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
       <artifactId>antlr-runtime</artifactId>
     </dependency>
     <dependency>
