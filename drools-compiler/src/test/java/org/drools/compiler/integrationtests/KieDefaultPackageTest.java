@@ -38,6 +38,26 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         assertEquals( 0,
                       builder.getResults().getMessages().size() );
     }
+    
+    @Test
+    @Ignore
+    public void testInTestPackage() throws Exception {
+        String javaClass = ""
+                + "package org.jbpm\n"
+                + "public class Test{}\n";
+
+       
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( "src/test/java/org/jbpm/Test.java", javaClass );
+        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+
+        assertEquals( 0,
+                      builder.getResults().getMessages().size() );
+    }
+    
 
     @Test
     @Ignore("How do you access Type 'Smurf'? Test 1 - No import prefix")
