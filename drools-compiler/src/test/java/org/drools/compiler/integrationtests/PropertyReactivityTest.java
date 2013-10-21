@@ -583,4 +583,80 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( 0, 1, 2, 0, 3, 4, 0, 5, 0 ), list );
 
     }
+
+    @Test
+    public void testPRWithPositionalUnification() {
+        // DROOLS-247
+        String str1 =
+                "package org.test;\n" +
+                "global java.util.List list; \n" +
+                "" +
+                "declare Man \n" +
+                "@propertyReactive \n" +
+                " name : String \n" +
+                "end \n" +
+                "" +
+                "declare Animal \n" +
+                "@propertyReactive \n" +
+                " id : int \n" +
+                " owner : String \n" +
+                " age : int \n" +
+                "end \n" +
+                "" +
+                "rule Init \n" +
+                "when \n" +
+                "then \n" +
+                " insert( new Man( \"alan\" ) ); \n" +
+                " insert( new Animal( 1, \"bob\", 7 ) ); \n" +
+                "end \n" +
+                "" +
+                "rule \"Mod Man\" \n" +
+                "when \n" +
+                " $m :Man() \n" +
+                "then \n" +
+                " modify ( $m ) { setName( \"bob\" ); } \n" +
+                "end \n" +
+                "" +
+                "rule \"Mod Per\" \n" +
+                "when \n" +
+                " $m :Animal() \n" +
+                "then \n" +
+                " modify ( $m ) { " +
+                " setId( 1 ); \n " +
+                " } \n" +
+                "end \n" +
+                "" +
+                "rule Join_1\n" +
+                "when\n" +
+                " Man( $name ; ) \n" +
+                " Animal( $name := owner ) \n" +
+                "then\n" +
+                " list.add( 1 ); \n" +
+                "end\n" +
+                "" +
+                "rule Join_3\n" +
+                "when\n" +
+                " Man( $name ; ) \n" +
+                " Animal( $id, $name; ) \n" +
+                " Integer( this == $id ) \n" +
+                "then\n" +
+                " list.add( 2 ); \n" +
+                "end\n" +
+                "";
+
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str1 );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+
+        ksession.fireAllRules();
+
+        assertTrue( list.contains( 1 ) );
+        assertTrue( list.contains( 2 ) );
+        assertEquals( 2, list.size() );
+
+    }
 }

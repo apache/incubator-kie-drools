@@ -16,6 +16,7 @@
 
 package org.drools.compiler.rule.builder;
 
+import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.ValueType;
@@ -441,9 +442,11 @@ public class PatternBuilder
 
     protected List<String> getSettableProperties(RuleBuildContext context, PatternDescr patternDescr, Pattern pattern) {
         ObjectType patternType = pattern.getObjectType();
-        if (!(patternType instanceof ClassObjectType)) return null;
+        if (!(patternType instanceof ClassObjectType)) {
+            return null;
+        }
         Class<?> patternClass = ((ClassObjectType)patternType).getClassType();
-        TypeDeclaration typeDeclaration = context.getPackageBuilder().getTypeDeclaration(patternClass);
+        TypeDeclaration typeDeclaration = getTypeDeclarationForPattern(context, pattern);
         if (!typeDeclaration.isPropertyReactive()) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                     patternDescr,
@@ -452,6 +455,15 @@ public class PatternBuilder
         }
         typeDeclaration.setTypeClass(patternClass);
         return typeDeclaration.getSettableProperties();
+    }
+
+    private TypeDeclaration getTypeDeclarationForPattern(RuleBuildContext context, Pattern pattern) {
+        ObjectType patternType = pattern.getObjectType();
+        if (!(patternType instanceof ClassObjectType)) {
+            return null;
+        }
+        Class<?> patternClass = ((ClassObjectType)patternType).getClassType();
+        return context.getPackageBuilder().getTypeDeclaration(patternClass);
     }
 
     /**
@@ -1123,6 +1135,23 @@ public class PatternBuilder
                                                                      true );
         declr.setReadAccessor( extractor );
 
+        if ( extractor instanceof ClassFieldReader ) {
+            ObjectType patternType = pattern.getObjectType();
+            if (patternType instanceof ClassObjectType) {
+                Class<?> patternClass = ((ClassObjectType)patternType).getClassType();
+                TypeDeclaration typeDeclaration = context.getPackageBuilder().getTypeDeclaration(patternClass);
+
+                String fieldName = (( ClassFieldReader) extractor ).getFieldName();
+                if ( typeDeclaration.getSettableProperties().contains(fieldName) ) {
+                    List<String> watchlist = pattern.getListenedProperties();
+                    if ( watchlist == null ) {
+                        watchlist = new ArrayList<String>( );
+                        pattern.setListenedProperties( watchlist );
+                    }
+                    watchlist.add( fieldName );
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
