@@ -10,7 +10,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
-public class GetTasksByVariousFields extends TaskCommand<List<TaskSummary>> {
+public class GetTasksByVariousFieldsCommand extends TaskCommand<List<TaskSummary>> {
 
     @XmlElement
     private List<Long> workItemIds;
@@ -36,10 +36,10 @@ public class GetTasksByVariousFields extends TaskCommand<List<TaskSummary>> {
     @XmlElement(name="parameter")
     private Boolean union;
     
-	public GetTasksByVariousFields() {
+	public GetTasksByVariousFieldsCommand() {
 	}
 	
-	public GetTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
+	public GetTasksByVariousFieldsCommand(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
 	        List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, 
 	        boolean union) { 
 		this.workItemIds = workItemIds;
@@ -51,7 +51,7 @@ public class GetTasksByVariousFields extends TaskCommand<List<TaskSummary>> {
 		this.union = union;
     }
 	
-	public GetTasksByVariousFields(Map<String, List<?>> params, boolean union) { 
+	public GetTasksByVariousFieldsCommand(Map<String, List<?>> params, boolean union) { 
 	    this.union = union;
 	    if( params == null ) { 
 	        return;
