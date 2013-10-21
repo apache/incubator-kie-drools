@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2013-08-12 14:28:33
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2013-10-21 16:06:28
 
     package org.drools.compiler.rule.builder.dialect.java.parser;
     import java.util.Iterator;
@@ -13424,11 +13424,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred173_Java() {
+	public final boolean synpred139_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred173_Java_fragment(); // can never throw exception
+			synpred139_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13438,11 +13438,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred139_Java() {
+	public final boolean synpred173_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred139_Java_fragment(); // can never throw exception
+			synpred173_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
