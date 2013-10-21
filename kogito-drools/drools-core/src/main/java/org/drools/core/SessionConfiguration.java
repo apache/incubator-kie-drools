@@ -23,11 +23,13 @@ import org.drools.core.util.StringUtils;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
@@ -49,8 +51,6 @@ import java.io.ObjectOutput;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
-import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
 /**
  * SessionConfiguration
@@ -82,7 +82,8 @@ public class SessionConfiguration
 
     private boolean                        keepReference;
 
-    private boolean                        forceEagerActivation;
+    private ForceEagerActivationFilter     forceEagerActivationFilter;
+    private TimedRuleExecutionFilter       timedRuleExecutionFilter;
 
     private ClockType                      clockType;
     
@@ -161,8 +162,11 @@ public class SessionConfiguration
         setKeepReference( Boolean.valueOf( this.chainedProperties.getProperty( KeepReferenceOption.PROPERTY_NAME,
                                                                                "true" ) ).booleanValue() );
 
-        setForceEagerActivation( Boolean.valueOf( this.chainedProperties.getProperty( ForceEagerActivationOption.PROPERTY_NAME,
-                                                                                      "false" ) ).booleanValue() );
+        setForceEagerActivationFilter(ForceEagerActivationOption.resolve(this.chainedProperties.getProperty(ForceEagerActivationOption.PROPERTY_NAME,
+                                                                                                            "false")).getFilter());
+
+        setTimedRuleExecutionFilter(TimedRuleExectionOption.resolve(this.chainedProperties.getProperty(TimedRuleExectionOption.PROPERTY_NAME,
+                                                                                                       "false")).getFilter());
 
         setBeliefSystemType( BeliefSystemType.resolveBeliefSystemType( this.chainedProperties.getProperty( BeliefSystemTypeOption.PROPERTY_NAME,
                                                                                                            BeliefSystemType.SIMPLE.getId())) );
@@ -173,8 +177,8 @@ public class SessionConfiguration
         setQueryListenerClass( this.chainedProperties.getProperty( QueryListenerOption.PROPERTY_NAME,
                                                                    QueryListenerOption.STANDARD.getAsString() ) );
 
-        setTimerJobFactoryType( TimerJobFactoryType.resolveTimerJobFactoryType( this.chainedProperties.getProperty( TimerJobFactoryOption.PROPERTY_NAME,
-                                                                                                                    TimerJobFactoryType.DEFUALT.getId() ) ) );
+        setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(this.chainedProperties.getProperty(TimerJobFactoryOption.PROPERTY_NAME,
+                                                                                                                 TimerJobFactoryType.DEFUALT.getId())));
     }
 
     public void addDefaultProperties(Properties properties) {
@@ -185,7 +189,7 @@ public class SessionConfiguration
             }
         }
 
-        this.chainedProperties.addProperties( defaultProperties );
+        this.chainedProperties.addProperties(defaultProperties);
     }
 
     public void setProperty(String name,
@@ -198,7 +202,9 @@ public class SessionConfiguration
         if ( name.equals( KeepReferenceOption.PROPERTY_NAME ) ) {
             setKeepReference( StringUtils.isEmpty(value) || Boolean.parseBoolean(value) );
         } else if ( name.equals( ForceEagerActivationOption.PROPERTY_NAME ) ) {
-            setForceEagerActivation( StringUtils.isEmpty(value) || Boolean.parseBoolean(value) );
+            setForceEagerActivationFilter(ForceEagerActivationOption.resolve(StringUtils.isEmpty(value) ? "false" : value).getFilter());
+        } else if ( name.equals( TimedRuleExectionOption.PROPERTY_NAME ) ) {
+            setTimedRuleExecutionFilter(TimedRuleExectionOption.resolve(StringUtils.isEmpty(value) ? "false" : value).getFilter());
         } else if ( name.equals( ClockTypeOption.PROPERTY_NAME ) ) {
             setClockType( ClockType.resolveClockType( StringUtils.isEmpty( value ) ? "realtime" : value ) );
         } else if ( name.equals( TimerJobFactoryOption.PROPERTY_NAME ) ) {
@@ -258,13 +264,22 @@ public class SessionConfiguration
         return this.keepReference;
     }
 
-    public void setForceEagerActivation(boolean forceEagerActivation) {
+    public void setForceEagerActivationFilter(ForceEagerActivationFilter forceEagerActivationFilter) {
         checkCanChange(); // throws an exception if a change isn't possible;
-        this.forceEagerActivation = forceEagerActivation;
+        this.forceEagerActivationFilter = forceEagerActivationFilter;
     }
 
-    public boolean isForceEagerActivation() {
-        return this.forceEagerActivation;
+    public ForceEagerActivationFilter getForceEagerActivationFilter() {
+        return this.forceEagerActivationFilter;
+    }
+
+    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.timedRuleExecutionFilter = timedRuleExecutionFilter;
+    }
+
+    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
+        return this.timedRuleExecutionFilter;
     }
 
     public BeliefSystemType getBeliefSystemType() {
@@ -510,7 +525,9 @@ public class SessionConfiguration
         } else if ( option instanceof KeepReferenceOption ) {
             setKeepReference(((KeepReferenceOption) option).isKeepReference());
         } else if ( option instanceof ForceEagerActivationOption ) {
-            setForceEagerActivation(((ForceEagerActivationOption) option).isForceEagerActivation());
+            setForceEagerActivationFilter(((ForceEagerActivationOption) option).getFilter());
+        } else if ( option instanceof TimedRuleExectionOption ) {
+            setTimedRuleExecutionFilter(((TimedRuleExectionOption) option).getFilter());
         } else if ( option instanceof WorkItemHandlerOption ) {
             getWorkItemHandlers().put( ((WorkItemHandlerOption) option).getName(),
                                        ((WorkItemHandlerOption) option).getHandler() );

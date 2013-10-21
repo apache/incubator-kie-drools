@@ -9,7 +9,7 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.common.TimedRuleExecution;
-import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
@@ -395,12 +395,12 @@ public class PhreakTimerNode {
 
             pmem.queueRuleAgendaItem( timerJobCtx.getWorkingMemory() );
 
-            final TimedRuleExecutionFilter timedRuleExecutionFilter = timerJobCtx.getWorkingMemory().getTimedRuleExecutionFilter();
-            if (timedRuleExecutionFilter != null) {
+            final TimedRuleExecutionFilter filter = timerJobCtx.getWorkingMemory().getSessionConfiguration().getTimedRuleExecutionFilter();
+            if (filter != null) {
                 ExecutorHolder.executor.execute( new Runnable() {
                     @Override
                     public void run() {
-                        if (timedRuleExecutionFilter.accept( new Rule[] { pmem.getRule() } )) {
+                        if (filter.accept(  new Rule[] { pmem.getRule() } )) {
                             new Executor(pmem,
                                          timerJobCtx.getWorkingMemory(),
                                          timerJobCtx.getSink(),

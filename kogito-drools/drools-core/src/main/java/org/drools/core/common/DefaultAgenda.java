@@ -267,7 +267,7 @@ public class DefaultAgenda
 
     @Override
     public void addEagerRuleAgendaItem(final RuleAgendaItem item) {
-        if ( workingMemory.getSessionConfiguration().isForceEagerActivation() ) {
+        if ( workingMemory.getSessionConfiguration().getForceEagerActivationFilter().accept(item.getRule()) ) {
             item.getRuleExecutor().evaluateNetwork(workingMemory);
             return;
         }

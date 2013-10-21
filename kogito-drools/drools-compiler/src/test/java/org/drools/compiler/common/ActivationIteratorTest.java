@@ -13,6 +13,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.runtime.KieSession;
@@ -25,6 +26,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
@@ -766,10 +768,54 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
+                "end  \n" +
+                "rule yyy @Eager(true) \n" +
+                "when \n" +
+                "  $s : String()\n" +
+                "then \n" +
                 "end  \n";
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ForceEagerActivationOption.YES );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KieSession ksession = createKnowledgeSession(kbase, conf);
+
+        final List list = new ArrayList();
+
+        AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
+            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
+                list.add("activated");
+            }
+        };
+        ksession.addEventListener(agendaEventListener);
+
+        ksession.insert("test");
+        assertEquals(2, list.size());
+    }
+
+    @Test(timeout=10000)
+    public void testFilteredEagerEvaluation() throws Exception {
+        String str =
+                "package org.simple \n" +
+                "rule xxx @Eager(true) \n" +
+                "when \n" +
+                "  $s : String()\n" +
+                "then \n" +
+                "end  \n" +
+                "rule yyy @Eager(true) \n" +
+                "when \n" +
+                "  $s : String()\n" +
+                "then \n" +
+                "end  \n";
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( new ForceEagerActivationOption.FILTERED( new ForceEagerActivationFilter() {
+            @Override
+            public boolean accept(Rule rule) {
+                return rule.getName().equals("xxx");
+            }
+        }));
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         KieSession ksession = createKnowledgeSession(kbase, conf);

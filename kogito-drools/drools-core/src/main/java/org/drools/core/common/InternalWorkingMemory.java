@@ -38,7 +38,6 @@ import org.drools.core.type.DateFormats;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 
 public interface InternalWorkingMemory
     extends
@@ -204,8 +203,4 @@ public interface InternalWorkingMemory
     InternalProcessRuntime getProcessRuntime();
 
     void closeLiveQuery(InternalFactHandle factHandle);
-
-    void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter);
-
-    TimedRuleExecutionFilter getTimedRuleExecutionFilter();
 }

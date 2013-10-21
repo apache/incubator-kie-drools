@@ -63,7 +63,7 @@ import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.rule.EntryPointId;
-import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
@@ -531,13 +531,5 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         
         return this.commandService.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
-    }
-
-    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
-        return ((KnowledgeCommandContext) commandService.getContext()).getKieSession().getTimedRuleExecutionFilter();
-    }
-
-    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
-        ((KnowledgeCommandContext) commandService.getContext()).getKieSession().setTimedRuleExecutionFilter(timedRuleExecutionFilter);
     }
 }
