@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
 import static org.mvel2.asm.Opcodes.AASTORE;
 import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
@@ -500,25 +501,7 @@ public class ClassGenerator {
                 return;
             }
 
-            String typeName = type.getClassName();
-            if (typeName.equals("int"))
-                printRegistryValue(reg, int.class);
-            else if (typeName.equals("boolean"))
-                printRegistryValue(reg, boolean.class);
-            else if (typeName.equals("char"))
-                printRegistryValue(reg, char.class);
-            else if (typeName.equals("byte"))
-                printRegistryValue(reg, byte.class);
-            else if (typeName.equals("short"))
-                printRegistryValue(reg, short.class);
-            else if (typeName.equals("float"))
-                printRegistryValue(reg, float.class);
-            else if (typeName.equals("long"))
-                printRegistryValue(reg, long.class);
-            else if (typeName.equals("double"))
-                printRegistryValue(reg, double.class);
-            else
-                printRegistryValue(reg, Object.class);
+            printRegistryValue(reg, convertPrimitiveNameToType(type.getClassName()));
         }
 
         protected final void printRegistryValue(int reg, Class<?> clazz) {
