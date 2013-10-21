@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.*;
+import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 import static org.mvel2.asm.Opcodes.AALOAD;
 import static org.mvel2.asm.Opcodes.ACC_FINAL;
 import static org.mvel2.asm.Opcodes.ACC_PRIVATE;
@@ -184,7 +185,9 @@ public final class GeneratorHelper {
         protected int storeObjectFromDeclaration(Declaration declaration, String declarationType, int registry) {
             String readMethod = declaration.getNativeReadMethodName();
             boolean isObject = readMethod.equals("getValue");
-            String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarationType);
+            String expectedTypeDescr = typeDescr( declarationType );
+            boolean needsPrimitive = ! ( expectedTypeDescr.startsWith( "L" ) || expectedTypeDescr.startsWith( "[" ) );
+            String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declaration.getTypeName());
             mv.visitMethodInsn(INVOKEVIRTUAL, Declaration.class.getName().replace('.', '/'), readMethod,
                                "(L" + InternalWorkingMemory.class.getName().replace('.', '/') +";Ljava/lang/Object;)" + returnedType);
             if (isObject) {
@@ -193,6 +196,15 @@ public final class GeneratorHelper {
                     cast(extractor.getExtractToClass());
                 }
             }
+
+            if ( needsPrimitive && isObject ) {
+                castToPrimitive( convertPrimitiveNameToType( declarationType) );
+            } else if ( ! needsPrimitive && ! isObject ) {
+                castFromPrimitive( convertPrimitiveNameToType( declaration.getExtractor().getExtractToClassName() ) );
+            } else if ( needsPrimitive && ! isObject && ! returnedType.equals( declarationType ) ) {
+                castPrimitiveToPrimitive( declaration.getExtractor().getExtractToClass(), convertPrimitiveNameToType( declarationType ) );
+            }
+
             return store(registry, declarationType);
         }
 

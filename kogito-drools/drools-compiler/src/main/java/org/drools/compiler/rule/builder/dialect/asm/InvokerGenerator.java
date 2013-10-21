@@ -2,11 +2,13 @@ package org.drools.compiler.rule.builder.dialect.asm;
 
 import org.drools.core.base.TypeResolver;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
 import org.drools.core.rule.builder.dialect.asm.InvokerDataProvider;
 import org.mvel2.asm.MethodVisitor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -52,6 +54,15 @@ public class InvokerGenerator {
             public void body(MethodVisitor mv) {
                 push(data.getInvokerClassName() + "Generated");
                 mv.visitInsn(ARETURN);
+            }
+        }).addMethod(ACC_PUBLIC, "getExpectedDeclarationTypes", generator.methodDescr(String[].class), new ClassGenerator.MethodBody() {
+            public void body(MethodVisitor mv) {
+                Declaration[] declarations = ( (InvokerContext) data ).getDeclarations();
+                List<String> declarationTypes = new ArrayList<String>( declarations.length );
+                for ( Declaration decl : declarations ) {
+                    declarationTypes.add( decl.getTypeName() );
+                }
+                returnAsArray( declarationTypes, String.class );
             }
         }).addMethod(ACC_PUBLIC, "getRuleClassName", generator.methodDescr(String.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
