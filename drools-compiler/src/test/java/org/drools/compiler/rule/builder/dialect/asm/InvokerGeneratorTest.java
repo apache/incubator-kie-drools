@@ -1,5 +1,6 @@
 package org.drools.compiler.rule.builder.dialect.asm;
 
+import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.InvokerStub;
 import org.junit.*;
@@ -19,6 +20,7 @@ public class InvokerGeneratorTest {
         invokerContext.put("methodName", "testMethod");
         invokerContext.put("consequenceName", "TestConsequence");
         invokerContext.put("hashCode", 111);
+        invokerContext.put("declarations", new Declaration[0]);
         invokerContext.put("globals", new String[]{"globalList"});
         invokerContext.put("globalTypes", new String[]{"java/util/List"});
 

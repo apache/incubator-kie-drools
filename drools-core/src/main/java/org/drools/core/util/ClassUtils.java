@@ -493,7 +493,35 @@ public final class ClassUtils {
         if (type == Number.class) return double.class;
         throw new RuntimeException("Class not convertible to primitive: " + type.getName());
     }
-    
+
+    public static Class<?> convertPrimitiveNameToType( String typeName ) {
+        if (typeName.equals("int")) {
+            return int.class;
+        }
+        if (typeName.equals("boolean")) {
+            return boolean.class;
+        }
+        if (typeName.equals("char")) {
+            return char.class;
+        }
+        if (typeName.equals("byte")) {
+            return byte.class;
+        }
+        if (typeName.equals("short")) {
+            return short.class;
+        }
+        if (typeName.equals("float")) {
+            return float.class;
+        }
+        if (typeName.equals("long")) {
+            return long.class;
+        }
+        if (typeName.equals("double")) {
+            return double.class;
+        }
+        return Object.class;
+    }
+
     public static boolean isWindows() {
         String os =  System.getProperty("os.name");
         return os.toUpperCase().contains( "WINDOWS" );
