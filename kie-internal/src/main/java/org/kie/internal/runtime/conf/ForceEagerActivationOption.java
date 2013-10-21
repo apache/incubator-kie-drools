@@ -1,30 +1,52 @@
 package org.kie.internal.runtime.conf;
 
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.conf.SingleValueKieSessionOption;
 
 /**
  * Option to force evaluation and then activation of rules annotated with @Eager.
  */
-public enum ForceEagerActivationOption implements SingleValueKieSessionOption {
-
-    YES(true),
-    NO(false);
+public class ForceEagerActivationOption implements SingleValueKieSessionOption {
 
     private static final long serialVersionUID = 510l;
 
     public static final String PROPERTY_NAME = "drools.forceEagerActivation";
 
-    private final boolean forceEagerActivation;
+    public static final ForceEagerActivationOption YES = new ForceEagerActivationOption(new ForceEagerActivationFilter() {
+        @Override
+        public boolean accept(Rule rule) {
+            return true;
+        }
+    });
 
-    private ForceEagerActivationOption( final boolean forceEagerActivation ) {
-        this.forceEagerActivation = forceEagerActivation;
+    public static final ForceEagerActivationOption NO = new ForceEagerActivationOption(new ForceEagerActivationFilter() {
+        @Override
+        public boolean accept(Rule rule) {
+            return false;
+        }
+    });
+
+    private final ForceEagerActivationFilter filter;
+
+    private ForceEagerActivationOption( final ForceEagerActivationFilter filter ) {
+        this.filter = filter;
     }
 
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
 
-    public boolean isForceEagerActivation() {
-        return forceEagerActivation;
+    public ForceEagerActivationFilter getFilter() {
+        return filter;
+    }
+
+    public static class FILTERED extends ForceEagerActivationOption {
+        public FILTERED(ForceEagerActivationFilter filter) {
+            super(filter);
+        }
+    }
+
+    public static ForceEagerActivationOption resolve(String value) {
+        return Boolean.valueOf( value ) ? YES : NO;
     }
 }
