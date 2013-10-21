@@ -86,11 +86,11 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         Person person = new Person();
         person.setName("jack");
         ksession.insert(person);
-        ksession.fireAllRules();
+        
         person = new Person();
         person.setName("john");
         ksession.insert(person);
-        ksession.fireAllRules();
+        
 
     }
 

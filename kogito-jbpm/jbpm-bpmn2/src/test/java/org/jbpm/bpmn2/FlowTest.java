@@ -1157,7 +1157,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
         assertEquals(0, list.size());
 
-        ksession.fireAllRules();
+        
         Thread.sleep(1500);
 
         assertEquals(1, list.size());

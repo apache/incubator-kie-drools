@@ -16,6 +16,7 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import static org.kie.api.runtime.EnvironmentName.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,7 +37,6 @@ import javax.transaction.Status;
 import javax.transaction.Transaction;
 
 import org.junit.Assert;
-
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
@@ -101,6 +101,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.slf4j.Logger;
@@ -428,6 +429,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         if (conf == null) {
             conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         }
+        
         // Do NOT use the Pseudo clock yet..
         // conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() )
         // );
@@ -439,6 +441,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             if( pessimisticLocking ) { 
                 env.set(USE_PESSIMISTIC_LOCKING, true);
             }
+            conf.setOption(ForceEagerActivationOption.YES);
             result = JPAKnowledgeService.newStatefulKnowledgeSession(kbase,
                     conf, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
@@ -454,7 +457,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
             defaultProps.setProperty("drools.processInstanceManagerFactory",
                     DefaultProcessInstanceManagerFactory.class.getName());
             conf = new SessionConfiguration(defaultProps);
-
+            conf.setOption(ForceEagerActivationOption.YES);
             result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
             logger = new WorkingMemoryInMemoryLogger(result);
         }
@@ -481,6 +484,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
                 env.set(USE_PESSIMISTIC_LOCKING, true);
             }
             KieSessionConfiguration config = ksession.getSessionConfiguration();
+            config.setOption(ForceEagerActivationOption.YES);
             StatefulKnowledgeSession result = JPAKnowledgeService.loadStatefulKnowledgeSession(id, kbase, config, env);
             AuditLoggerFactory.newInstance(Type.JPA, result, null);
             ksession.dispose();

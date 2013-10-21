@@ -38,6 +38,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
@@ -149,10 +150,16 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
 
     @Override
     public KieSessionConfiguration getConfiguration() {
-        if (this.sessionConfigProperties != null) {
-            return KnowledgeBaseFactory.newKnowledgeSessionConfiguration(this.sessionConfigProperties);
+    	KieSessionConfiguration config = null;
+    	if (this.sessionConfigProperties != null) {
+    		config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration(this.sessionConfigProperties);
+        } else {
+        	config = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         }
-        return null;
+    	// add special option to fire activations marked as eager directly
+    	config.setOption(ForceEagerActivationOption.YES);
+    	
+    	return config;
     }
     @Override
     public boolean usePersistence() {
