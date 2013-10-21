@@ -3111,4 +3111,53 @@ public class Misc2Test extends CommonTestMethodBase {
         //ks.insert(2);
         ks.fireAllRules();
     }
+
+    @Test
+    public void testSortWithNot() {
+        // DROOLS-200
+        String str =
+                "import java.util.*; \n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "declare Bean \n" +
+                " value : Integer @key \n" +
+                " mark : boolean = false \n" +
+                "end \n" +
+                "" +
+                "declare Holder\n" +
+                " map : Map \n" +
+                "end \n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "then\n" +
+                " insert( new Holder( new HashMap() ) ); \n" +
+                " insert( new Bean( 10 ) );\n" +
+                " insert( new Bean( 30 ) );\n" +
+                " insert( new Bean( 20 ) );\n" +
+                " insert( new Bean( 50 ) );\n" +
+                " insert( new Bean( 40 ) );\n" +
+                "end\n" +
+                "" +
+                "rule Sort when \n" +
+                " $h : Holder( $map : map ) \n" +
+                " $b : Bean( ! $map.containsKey( value ), $v : value ) \n" +
+                " not Bean( ! $map.containsKey( value ), value > $v ) \n" +
+                "then \n" +
+                " list.add( $v ); \n" +
+                " System.out.println( \"Marking \" + $v ); \n" +
+                " modify ( $h ) { getMap().put( $v, $b ); } \n" +
+                "end \n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 50, 40, 30, 20, 10 ), list );
+    }
 }
