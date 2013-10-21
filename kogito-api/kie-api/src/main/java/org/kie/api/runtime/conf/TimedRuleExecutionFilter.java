@@ -1,4 +1,4 @@
-package org.kie.api.runtime.rule;
+package org.kie.api.runtime.conf;
 
 import org.kie.api.definition.rule.Rule;
 

@@ -20,7 +20,7 @@ import org.kie.api.KieBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.RuleRuntime;
-import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.time.SessionClock;
 
 import java.util.Map;
@@ -66,8 +66,4 @@ public interface KieRuntime
     Map< String, Channel> getChannels();
     
     KieSessionConfiguration getSessionConfiguration();
-
-    TimedRuleExecutionFilter getTimedRuleExecutionFilter();
-
-    void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter);
 }
