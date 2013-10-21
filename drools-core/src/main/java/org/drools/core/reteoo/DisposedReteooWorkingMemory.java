@@ -39,7 +39,6 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
-import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.event.AgendaEventListener;
@@ -560,14 +559,6 @@ public class DisposedReteooWorkingMemory implements ReteooWorkingMemoryInterface
     }
 
     public long getLastIdleTimestamp() {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public TimedRuleExecutionFilter getTimedRuleExecutionFilter() {
-        throw new IllegalStateException( ERRORMSG );
-    }
-
-    public void setTimedRuleExecutionFilter(TimedRuleExecutionFilter timedRuleExecutionFilter) {
         throw new IllegalStateException( ERRORMSG );
     }
 }

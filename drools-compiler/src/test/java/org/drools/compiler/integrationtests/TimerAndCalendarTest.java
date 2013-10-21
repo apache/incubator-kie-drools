@@ -21,10 +21,9 @@ import org.drools.core.FactHandle;
 import org.drools.compiler.Foo;
 import org.drools.compiler.Pet;
 import org.drools.core.common.TimedRuleExecution;
-import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.runtime.rule.TimedRuleExecutionFilter;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.kie.api.runtime.conf.TimedRuleExectionOption;
+import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.junit.Test;
@@ -42,7 +41,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.time.Calendar;
 import org.kie.api.time.SessionClock;
-import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 public class TimerAndCalendarTest extends CommonTestMethodBase {
     
@@ -284,6 +282,7 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption( ClockTypeOption.get( "pseudo" ) );
+        conf.setOption( TimedRuleExectionOption.YES );
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str );
         KieSession ksession = createKnowledgeSession(kbase, conf);
@@ -300,15 +299,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
             }
         };
         ksession.addEventListener(agendaEventListener);
-
-        final BlockingQueue<TimedRuleExecution> queue = new LinkedBlockingQueue<TimedRuleExecution>();
-        ksession.setTimedRuleExecutionFilter(new TimedRuleExecutionFilter() {
-            @Override
-            public boolean accept(Rule[] rule) {
-                assertEquals("xxx", rule[0].getName());
-                return true;
-            }
-        });
 
         List list = new ArrayList();
 
