@@ -68,7 +68,7 @@ public class RuleFiredVerifier {
     private void verifyFiredAtLeastOnce(VerifyRuleFired verifyRuleFired) {
         if ( verifyRuleFired.getActualResult() > 0 ) {
             verifyRuleFired.setSuccessResult( true );
-            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was actived " + verifyRuleFired.getActualResult() + " times." );
+            verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was activated " + verifyRuleFired.getActualResult() + " times." );
         } else {
             verifyRuleFired.setSuccessResult( false );
             verifyRuleFired.setExplanation( "Rule [" + verifyRuleFired.getRuleName() + "] was not activated. Expected it to be activated." );
