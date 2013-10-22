@@ -1,18 +1,23 @@
 package org.drools.compiler.kproject;
 
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.StringReader;
 import java.util.Properties;
 
 import org.drools.core.util.StringUtils;
 import org.kie.api.builder.ReleaseId;
 
-public class ReleaseIdImpl implements ReleaseId {
-    private final String groupId;
-    private final String artifactId;
-    private final String version;
+public class ReleaseIdImpl implements ReleaseId, Externalizable {
+    private String groupId;
+    private String artifactId;
+    private String version;
 
     private String snapshotVersion;
+
+    public ReleaseIdImpl() { }
 
     public ReleaseIdImpl(String releaseId) {
         String[] split = releaseId.split(":");
@@ -114,5 +119,19 @@ public class ReleaseIdImpl implements ReleaseId {
 
     public void setSnapshotVersion(String snapshotVersion) {
         this.snapshotVersion = snapshotVersion;
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(groupId);
+        out.writeObject(artifactId);
+        out.writeObject(version);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        groupId = (String)in.readObject();
+        artifactId = (String)in.readObject();
+        version = (String)in.readObject();
     }
 }
