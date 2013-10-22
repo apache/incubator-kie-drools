@@ -31,17 +31,17 @@
   </section>
 
   <section>
-    <title>StatefulKnowledgeSession</title>
+    <title>KieSession</title>
 
-    <para>The <code>StatefulKnowledgeSession</code> stores and executes on the
+    <para>The <code>KieSession</code> stores and executes on the
     runtime data. It is created from the <code>KnowledgeBase</code>.</para>
 
     <figure>
-      <title>StatefulKnowledgeSession</title>
+      <title>KieSession</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/StatefulKnowledgeSession.png"
+          <imagedata fileref="images/Chapter-User_Guide/KieSession.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -59,9 +59,9 @@
     <title>KnowledgeRuntime</title>
 
     <section>
-      <title>WorkingMemoryEntryPoint</title>
+      <title>EntryPoint</title>
 
-      <para>The <code>WorkingMemoryEntryPoint</code> provides the methods
+      <para>The <code>EntryPoint</code> provides the methods
       around inserting, updating and retrieving facts. The term "entry point"
       is related to the fact that we have multiple partitions in a Working
       Memory and you can choose which one you are inserting into, although
@@ -82,11 +82,11 @@
       <code>KnowledgeRuntime</code> itself.</para>
 
       <figure>
-        <title>WorkingMemoryEntryPoint</title>
+        <title>EntryPoint</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEntryPoint.png"/>
+            <imagedata fileref="images/Chapter-User_Guide/EntryPoint.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -189,17 +189,17 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
     </section>
 
     <section>
-      <title>WorkingMemory</title>
+      <title>RuleRuntime</title>
 
-      <para>The WorkingMemory provides access to the Agenda, permits query
+      <para>The RuleRuntime provides access to the Agenda, permits query
       executions, and lets you access named Entry Points.</para>
 
       <figure>
-        <title>WorkingMemory</title>
+        <title>RuleRuntime</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/WorkingMemory.png"
+            <imagedata fileref="images/Chapter-User_Guide/RuleRuntime.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -313,11 +313,11 @@ query.dispose() // calling dispose to terminate the live query</programlisting>
       registering channels. ("Exit point" is an obsolete synonym for "channel".)</para>
 
       <figure>
-        <title>KnowledgeRuntime</title>
+        <title>KieRuntime</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntime.png"
+            <imagedata fileref="images/Chapter-User_Guide/KieRuntime.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -601,7 +601,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeEventManager.png"
+          <imagedata fileref="images/Chapter-User_Guide/KieRuntimeEventManager.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -657,7 +657,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeRuntimeEvent.png"
+          <imagedata fileref="images/Chapter-User_Guide/KieRuntimeEvent.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -750,9 +750,9 @@ logger.close();</programlisting>
   </section>
 
   <section>
-    <title>StatelessKnowledgeSession</title>
+    <title>StatelessKieSession</title>
 
-    <para>The <code>StatelessKnowledgeSession</code> wraps the
+    <para>The <code>StatelessKieSession</code> wraps the
     <code>StatefulKnowledgeSession</code>, instead of extending it. Its main
     focus is on decision service type scenarios. It avoids the need to call
     <code>dispose()</code>. Stateless sessions do not support iterative
@@ -769,11 +769,11 @@ logger.close();</programlisting>
     are talked about in detail in their own section.</para>
 
     <figure>
-      <title>StatelessKnowledgeSession</title>
+      <title>StatelessKieSession</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/StatelessKnowledgeSession.png"
+          <imagedata fileref="images/Chapter-User_Guide/StatelessKieSession.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -1462,11 +1462,11 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
     Stateful Knowledge Sessions.</para>
 
     <figure>
-      <title>MarshallerFactory</title>
+      <title>KieMarshallers</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/MarshallerFactory.png"
+          <imagedata fileref="images/Chapter-User_Guide/KieMarshallers.png"
                      format=""/>
         </imageobject>
       </mediaobject>

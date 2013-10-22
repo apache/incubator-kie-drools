@@ -23,7 +23,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgePackage.png"/>
+          <imagedata fileref="images/Chapter-User_Guide/KiePackage.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -48,11 +48,11 @@
     to allow for repeated session creation.</para>
 
     <figure>
-      <title>KnowledgeBase</title>
+      <title>KieBase</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KnowledgeBase.png"/>
+          <imagedata fileref="images/Chapter-User_Guide/KieBase.png"/>
         </imageobject>
       </mediaobject>
     </figure>
