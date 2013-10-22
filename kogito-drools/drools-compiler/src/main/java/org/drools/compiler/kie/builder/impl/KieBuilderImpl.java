@@ -32,7 +32,6 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.CompilationData;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
@@ -67,6 +66,7 @@ public class KieBuilderImpl
 
     static final String           RESOURCES_ROOT = "src/main/resources/";
     static final String           JAVA_ROOT      = "src/main/java/";
+    static final String           JAVA_TEST_ROOT = "src/test/java/";
 
     private ResultsImpl           results;
     private final ResourceReader  srcMfs;
@@ -562,38 +562,46 @@ public class KieBuilderImpl
         }
 
         List<String> javaFiles = new ArrayList<String>();
+        List<String> javaTestFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".java" ) && !classFiles.contains( fileName.substring( 0,
                                                                                            fileName.length() - ".java".length() ) ) ) {
                 fileName = fileName.replace(File.separatorChar, '/');
 
-                if ( !fileName.startsWith(JAVA_ROOT) ) {
-                    // Found Java file out of the Java source folder: ignore it - TODO should it be compiled anyway?
-                    // results.addMessage(Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"");
+                if ( !fileName.startsWith(JAVA_ROOT) && !fileName.startsWith(JAVA_TEST_ROOT) ) {
+                    results.addMessage(Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"");
                 } else if ( fileName.substring(JAVA_ROOT.length()).indexOf('/') < 0 ) {
                     results.addMessage(Level.ERROR, fileName, "A Java class must have a package: " + fileName.substring(JAVA_ROOT.length()) + " is not allowed");
                 } else {
-                    javaFiles.add( fileName );
+                    if (fileName.startsWith(JAVA_ROOT)) {
+                        javaFiles.add( fileName );
+                    } else {
+                        javaTestFiles.add( fileName );
+                    }
                 }
             }
         }
-        if ( javaFiles.isEmpty() ) {
-            return;
-        }
 
-        String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
+        compileJavaClasses(classLoader, javaFiles, JAVA_ROOT);
+        compileJavaClasses(classLoader, javaTestFiles, JAVA_TEST_ROOT);
+    }
 
-        EclipseJavaCompiler compiler = createCompiler( JAVA_ROOT );
-        CompilationResult res = compiler.compile( sourceFiles,
-                                                  srcMfs,
-                                                  trgMfs,
-                                                  classLoader );
+    private void compileJavaClasses(ClassLoader classLoader, List<String> javaFiles, String rootFolder) {
+        if ( !javaFiles.isEmpty() ) {
+            String[] sourceFiles = javaFiles.toArray( new String[javaFiles.size()] );
 
-        for ( CompilationProblem problem : res.getErrors() ) {
-            results.addMessage( problem );
-        }
-        for ( CompilationProblem problem : res.getWarnings() ) {
-            results.addMessage( problem );
+            EclipseJavaCompiler compiler = createCompiler( rootFolder );
+            CompilationResult res = compiler.compile( sourceFiles,
+                                                      srcMfs,
+                                                      trgMfs,
+                                                      classLoader );
+
+            for ( CompilationProblem problem : res.getErrors() ) {
+                results.addMessage( problem );
+            }
+            for ( CompilationProblem problem : res.getWarnings() ) {
+                results.addMessage( problem );
+            }
         }
     }
 
