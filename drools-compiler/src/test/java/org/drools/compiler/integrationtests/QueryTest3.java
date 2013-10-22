@@ -16,7 +16,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-public class Query2Test {
+public class QueryTest3 {
 
     private KnowledgeBase knowledgeBase;
 
@@ -27,9 +27,9 @@ public class Query2Test {
     public void setUp() throws Exception {
         String text = "";
         text += "package org.drools.integrationtests\n";
-        text += "import " + Query2Test.Bar.class.getCanonicalName() + "\n";
-        text += "import " + Query2Test.Foo.class.getCanonicalName() + "\n";
-        text += "import " + Query2Test.Foo2.class.getCanonicalName() + "\n";
+        text += "import " + QueryTest3.Bar.class.getCanonicalName() + "\n";
+        text += "import " + QueryTest3.Foo.class.getCanonicalName() + "\n";
+        text += "import " + QueryTest3.Foo2.class.getCanonicalName() + "\n";
         text += "query \"testDifferent\"\n";
         text += "    foo : Foo();\n";
         text += "    bar : Bar(id == foo.id)\n";
