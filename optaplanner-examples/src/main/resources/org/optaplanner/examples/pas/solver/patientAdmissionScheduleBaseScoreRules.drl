@@ -48,18 +48,14 @@ global HardSoftScoreHolder scoreHolder;
 
 // In separate drl or build-in: Two patients in the same bed for a number of nights
 
-// ############################################################################
-// Soft constraints
-// ############################################################################
-
 // Gender limitation: Female in a male only room
 rule "femaleInMaleRoom"
     when
-        // TODO try optimizing joins with $room : Room(genderLimitation == GenderLimitation.MALE_ONLY)
         $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.MALE_ONLY,
                 patientGender == Gender.FEMALE)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $bedDesignation.getAdmissionPartNightCount());
+        // Note: the original spec classified this as a soft constraint
+        scoreHolder.addHardConstraintMatch(kcontext, -50 * $bedDesignation.getAdmissionPartNightCount());
 end
 // Gender limitation: Male in a female only room
 rule "maleInFemaleRoom"
@@ -67,10 +63,10 @@ rule "maleInFemaleRoom"
         $bedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.FEMALE_ONLY,
                 patientGender == Gender.MALE)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $bedDesignation.getAdmissionPartNightCount());
+        // Note: the original spec classified this as a soft constraint
+        scoreHolder.addHardConstraintMatch(kcontext, -50 * $bedDesignation.getAdmissionPartNightCount());
 end
 // Gender limitation: Different genders in the same room when the room doesn't allow it
-// TODO the official spec gives lower scores in big rooms (capacity >= 6) with minimum 3 males and 3 females
 rule "differentGenderInSameGenderRoomInSameNight"
     when
         $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
@@ -80,7 +76,9 @@ rule "differentGenderInSameGenderRoomInSameNight"
                 admissionPart == $leftAdmissionPart, $room : room)
         $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $admissionPartConflict.getNightSize());
+        // Note: the original spec classified this as a soft constraint
+        // Note: the original spec gives lower scores in big rooms (capacity >= 6) with minimum 3 males and 3 females
+        scoreHolder.addHardConstraintMatch(kcontext, -50 * $admissionPartConflict.getNightSize());
 end
 
 // Department's minimumAge constraint
@@ -89,7 +87,8 @@ rule "departmentMinimumAge"
         $department : Department(minimumAge != null, $minimumAge : minimumAge)
         $bedDesignation : BedDesignation(department == $department, patientAge < $minimumAge)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 100 * $bedDesignation.getAdmissionPartNightCount());
+        // Note: the original spec classified this as a soft constraint
+        scoreHolder.addHardConstraintMatch(kcontext, -100 * $bedDesignation.getAdmissionPartNightCount());
 end
 // Department's maximumAge constraint
 rule "departmentMaximumAge"
@@ -97,8 +96,24 @@ rule "departmentMaximumAge"
         $department : Department(maximumAge != null, $maximumAge : maximumAge)
         $bedDesignation : BedDesignation(department == $department, patientAge > $maximumAge)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 100 * $bedDesignation.getAdmissionPartNightCount());
+        // Note: the original spec classified this as a soft constraint
+        scoreHolder.addHardConstraintMatch(kcontext, -100 * $bedDesignation.getAdmissionPartNightCount());
 end
+
+// RequiredPatientEquipment constraint
+rule "requiredPatientEquipment"
+    when
+        $requiredPatientEquipment : RequiredPatientEquipment($patient : patient, $equipment : equipment)
+        $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
+        not RoomEquipment(room == $room, equipment == $equipment)
+    then
+        // Note: the original spec classified this as a soft constraint
+        scoreHolder.addHardConstraintMatch(kcontext, -50 * $bedDesignation.getAdmissionPartNightCount());
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
 
 // Not yet applicable: Patient's requiredMaximumRoomCapacity constraint
 
@@ -111,7 +126,7 @@ rule "preferredMaximumRoomCapacity"
         // TODO this would be better for the problem, though the official spec does not do it
         // 8 * ($bedDesignation.getPatientPreferredMaximumRoomCapacity() - $bedDesignation.getRoomCapacity())
         // * $bedDesignation.getAdmissionPartNightCount(),
-        scoreHolder.addSoftConstraintMatch(kcontext, - 8 * $bedDesignation.getAdmissionPartNightCount());
+        scoreHolder.addSoftConstraintMatch(kcontext, -8 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // DepartmentSpecialism constraint
@@ -120,7 +135,7 @@ rule "departmentSpecialism"
         $bedDesignation : BedDesignation($specialism : admissionPartSpecialism, $department : department, bed != null)
         not DepartmentSpecialism(department == $department, specialism == $specialism)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 10 * $bedDesignation.getAdmissionPartNightCount());
+        scoreHolder.addSoftConstraintMatch(kcontext, -10 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // RoomSpecialism constraint
@@ -130,7 +145,7 @@ rule "roomSpecialismNotExists"
             $room : room, bed != null)
         not RoomSpecialism(room == $room, specialism == $specialism)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 20 * $bedDesignation.getAdmissionPartNightCount());
+        scoreHolder.addSoftConstraintMatch(kcontext, -20 * $bedDesignation.getAdmissionPartNightCount());
 end
 rule "roomSpecialismNotFirstPriority"
     when
@@ -139,17 +154,7 @@ rule "roomSpecialismNotFirstPriority"
         RoomSpecialism(priority > 1, room == $room, specialism == $specialism, $priority : priority)
     then
         scoreHolder.addSoftConstraintMatch(kcontext,
-                - 10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount());
-end
-
-// RequiredPatientEquipment constraint
-rule "requiredPatientEquipment"
-    when
-        $requiredPatientEquipment : RequiredPatientEquipment($patient : patient, $equipment : equipment)
-        $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
-        not RoomEquipment(room == $room, equipment == $equipment)
-    then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 50 * $bedDesignation.getAdmissionPartNightCount());
+                -10 * ($priority - 1) * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // PreferredPatientEquipment constraint
@@ -159,7 +164,7 @@ rule "preferredPatientEquipment"
         $bedDesignation : BedDesignation(patient == $patient, $room : room, bed != null)
         not RoomEquipment(room == $room, equipment == $equipment)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - 20 * $bedDesignation.getAdmissionPartNightCount());
+        scoreHolder.addSoftConstraintMatch(kcontext, -20 * $bedDesignation.getAdmissionPartNightCount());
 end
 
 // Do not change bed in an AdmissionPart on different Nights constraint is build-in

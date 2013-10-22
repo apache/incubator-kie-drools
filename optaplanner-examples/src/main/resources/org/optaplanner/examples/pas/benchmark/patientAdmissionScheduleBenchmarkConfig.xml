@@ -136,6 +136,7 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
+          <pillarSwapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>7</entityTabuSize>
@@ -163,6 +164,7 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
+          <pillarSwapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
           <lateAcceptanceSize>200</lateAcceptanceSize>

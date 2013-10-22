@@ -10,8 +10,8 @@
   <section xml:id="examplesOverview">
     <title>Examples overview</title>
 
-    <para>OptaPlanner has several examples. In this manual we explain OptaPlanner mainly using the n queens example. So
-    it's advisable to read at least the section about that example.</para>
+    <para>OptaPlanner has several examples. In this manual we explain OptaPlanner mainly using the n queens example and
+    cloud balancing example. So it's advisable to read at least those sections.</para>
 
     <para>The source code of all these examples is available in the distribution zip under
     <filename>examples/sources</filename> and also in git under
@@ -265,7 +265,7 @@
                 </listitem>
 
                 <listitem>
-                  <para>1 variable</para>
+                  <para>1 nullable variable</para>
                 </listitem>
               </itemizedlist></entry>
 
@@ -275,7 +275,7 @@
 
             <entry>&lt;= <literal>10^6851</literal></entry>
 
-            <entry>Realistic</entry>
+            <entry>Nearly realistic</entry>
           </row>
 
           <row>
@@ -1101,6 +1101,8 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
         in the hospital. Each bed belongs to a room and each room belongs to a department. The arrival and departure
         dates of the patients is fixed: only a bed needs to be assigned for each night.</para>
 
+        <para>This problem features <emphasis>overconstrained</emphasis> datasets.</para>
+
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png"/>
@@ -1111,20 +1113,32 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
 
         <itemizedlist>
           <listitem>
-            <para>2 patients must not be assigned to the same bed in the same night.</para>
+            <para>2 patients must not be assigned to the same bed in the same night. Weight: <literal>-1000hard *
+            conflictNightCount</literal>.</para>
           </listitem>
 
           <listitem>
             <para>A room can have a gender limitation: only females, only males, the same gender in the same night or no
-            gender limitation at all.</para>
+            gender limitation at all. Weight: <literal>-50hard * nightCount</literal>.</para>
           </listitem>
 
           <listitem>
-            <para>A department can have a minimum or maximum age.</para>
+            <para>A department can have a minimum or maximum age. Weight: <literal>-100hard *
+            nightCount</literal>.</para>
           </listitem>
 
           <listitem>
-            <para>A patient can require a room with specific equipment(s).</para>
+            <para>A patient can require a room with specific equipment(s). Weight: <literal>-50hard *
+            nightCount</literal>.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Medium constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Assign every patient to a bed, unless the dataset is overconstrained. Weight: <literal>-1medium *
+            nightCount</literal>.</para>
           </listitem>
         </itemizedlist>
 
@@ -1132,24 +1146,35 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
 
         <itemizedlist>
           <listitem>
-            <para>A patient can prefer a maximum room size, for example if he/she want a single room.</para>
+            <para>A patient can prefer a maximum room size, for example if he/she want a single room. Weight:
+            <literal>-8soft * nightCount</literal>.</para>
           </listitem>
 
           <listitem>
-            <para>A patient is best assigned to a department that specializes in his/her problem.</para>
+            <para>A patient is best assigned to a department that specializes in his/her problem. Weight:
+            <literal>-10soft * nightCount</literal>.</para>
           </listitem>
 
           <listitem>
-            <para>A patient is best assigned to a room that specializes in his/her problem.</para>
+            <para>A patient is best assigned to a room that specializes in his/her problem. Weight: <literal>-20soft *
+            nightCount</literal>.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>That room specialism should be priority 1. Weight: <literal>-10soft * (priority - 1) *
+                nightCount</literal>.</para>
+              </listitem>
+            </itemizedlist>
           </listitem>
 
           <listitem>
-            <para>A patient can prefer a room with specific equipment(s).</para>
+            <para>A patient can prefer a room with specific equipment(s). Weight: <literal>-20soft *
+            nightCount</literal>.</para>
           </listitem>
         </itemizedlist>
 
-        <para>The problem is defined on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">this webpage</link> and
-        the test data comes from real world hospitals.</para>
+        <para>The problem is a variant on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">Kaho's Patient
+        Scheduling</link> and the datasets come from real world hospitals.</para>
       </section>
 
       <section>

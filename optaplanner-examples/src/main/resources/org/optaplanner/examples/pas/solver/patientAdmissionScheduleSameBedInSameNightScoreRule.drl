@@ -46,5 +46,5 @@ rule "sameBedInSameNight"
         $leftBedDesignation : BedDesignation(admissionPart == $leftAdmissionPart, $bed : bed, bed != null)
         $rightBedDesignation : BedDesignation(admissionPart == $rightAdmissionPart, bed == $bed)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - 1000 * $admissionPartConflict.getNightSize());
+        scoreHolder.addHardConstraintMatch(kcontext, -1000 * $admissionPartConflict.getNightSize());
 end
