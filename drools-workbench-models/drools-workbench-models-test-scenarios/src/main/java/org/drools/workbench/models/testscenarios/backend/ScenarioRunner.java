@@ -67,53 +67,47 @@ public class ScenarioRunner {
      * provide a suitable TypeResolver for a given package header,
      * and the Package config can provide a classloader.
      */
-    public ScenarioRunner( final KieSession ksession )
-            throws ClassNotFoundException {
-        this(ksession, 0);
+    public ScenarioRunner( final KieSession ksession ) throws ClassNotFoundException {
+        this( ksession, 0 );
     }
 
     /**
-     *
-     * @param ksession  A populated type resolved to be used to resolve the types in
+     * @param ksession A populated type resolved to be used to resolve the types in
      * the scenario.
-     * @param maximumAmountOfRuleFirings Limit for amout of rules that can fire. To prevent infinite loops.
+     * @param maximumAmountOfRuleFirings Limit for amount of rules that can fire. To prevent infinite loops.
      * @throws ClassNotFoundException
      */
-    public ScenarioRunner( final KieSession ksession, int maximumAmountOfRuleFirings )
-            throws ClassNotFoundException {
+    public ScenarioRunner( final KieSession ksession,
+                           final int maximumAmountOfRuleFirings ) throws ClassNotFoundException {
         this.ksession = ksession;
         this.maximumAmountOfRuleFirings = maximumAmountOfRuleFirings;
     }
 
-    public void run( Scenario scenario )
-            throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public void run( final Scenario scenario ) throws ClassNotFoundException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
 
-        Map<String, Object> populatedData = new HashMap<String, Object>();
-        Map<String, Object> globalData = new HashMap<String, Object>();
-
-
-        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        final Map<String, Object> populatedData = new HashMap<String, Object>();
+        final Map<String, Object> globalData = new HashMap<String, Object>();
+        final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
         // This looks safe!
-        KieBase kieBase = ksession.getKieBase();
-        RuleBase ruleBase = ((KnowledgeBaseImpl) kieBase).getRuleBase();
-        ClassLoader classloader2 = ((InternalRuleBase) ruleBase).getRootClassLoader();
+        final KieBase kieBase = ksession.getKieBase();
+        final RuleBase ruleBase = ( (KnowledgeBaseImpl) kieBase ).getRuleBase();
+        final ClassLoader classloader2 = ( (InternalRuleBase) ruleBase ).getRootClassLoader();
 
-        ClassTypeResolver resolver = new ClassTypeResolver(
-                getImports(scenario),
-                classloader2 );
+        final ClassTypeResolver resolver = new ClassTypeResolver( getImports( scenario ),
+                                                                  classloader2 );
 
-        this.workingMemoryWrapper = new TestScenarioKSessionWrapper(ksession,
-                resolver,
-                classloader,
-                populatedData,
-                globalData);
-        this.factPopulatorFactory = new FactPopulatorFactory(populatedData,
-                globalData,
-                resolver,
-                classloader);
-        this.factPopulator = new FactPopulator(ksession,
-                populatedData);
+        this.workingMemoryWrapper = new TestScenarioKSessionWrapper( ksession,
+                                                                     resolver,
+                                                                     classloader,
+                                                                     populatedData,
+                                                                     globalData );
+        this.factPopulatorFactory = new FactPopulatorFactory( populatedData,
+                                                              globalData,
+                                                              resolver,
+                                                              classloader );
+        this.factPopulator = new FactPopulator( ksession,
+                                                populatedData );
 
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         scenario.setLastRunResult( new Date() );
@@ -124,34 +118,33 @@ public class ScenarioRunner {
                        createScenarioSettings( scenario ) );
     }
 
-    private Set<String> getImports(Scenario scenario) {
-        Set<String> imports = new HashSet<String>();
-        imports.addAll(scenario.getImports().getImportStrings());
-        if(scenario.getPackageName() != null && !scenario.getPackageName().isEmpty()){
-          imports.add(scenario.getPackageName()+".*");
+    private Set<String> getImports( final Scenario scenario ) {
+        final Set<String> imports = new HashSet<String>();
+        imports.addAll( scenario.getImports().getImportStrings() );
+        if ( scenario.getPackageName() != null && !scenario.getPackageName().isEmpty() ) {
+            imports.add( scenario.getPackageName() + ".*" );
         }
         return imports;
     }
 
-    private ScenarioSettings createScenarioSettings( Scenario scenario ) {
-        ScenarioSettings scenarioSettings = new ScenarioSettings();
+    private ScenarioSettings createScenarioSettings( final Scenario scenario ) {
+        final ScenarioSettings scenarioSettings = new ScenarioSettings();
         scenarioSettings.setRuleList( scenario.getRules() );
         scenarioSettings.setInclusive( scenario.isInclusive() );
         scenarioSettings.setMaxRuleFirings( getMaxRuleFirings( scenario ) );
         return scenarioSettings;
     }
 
-    private int getMaxRuleFirings(Scenario scenario) {
-        if (maximumAmountOfRuleFirings <= 0) {
+    private int getMaxRuleFirings( final Scenario scenario ) {
+        if ( maximumAmountOfRuleFirings <= 0 ) {
             return scenario.getMaxRuleFirings();
         } else {
             return maximumAmountOfRuleFirings;
         }
     }
 
-    private void applyFixtures( List<Fixture> fixtures,
-                                ScenarioSettings scenarioSettings )
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void applyFixtures( final List<Fixture> fixtures,
+                                final ScenarioSettings scenarioSettings ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
@@ -193,8 +186,7 @@ public class ScenarioRunner {
         factPopulator.populate();
     }
 
-    private void populateGlobals( List<FactData> globals )
-            throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private void populateGlobals( final List<FactData> globals ) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         for ( final FactData fact : globals ) {
             factPopulator.add(
