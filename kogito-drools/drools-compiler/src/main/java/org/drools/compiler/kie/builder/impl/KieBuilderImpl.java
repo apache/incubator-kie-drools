@@ -568,7 +568,8 @@ public class KieBuilderImpl
                 fileName = fileName.replace(File.separatorChar, '/');
 
                 if ( !fileName.startsWith(JAVA_ROOT) ) {
-                    results.addMessage(Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"");
+                    // Found Java file out of the Java source folder: ignore it - TODO should it be compiled anyway?
+                    // results.addMessage(Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"");
                 } else if ( fileName.substring(JAVA_ROOT.length()).indexOf('/') < 0 ) {
                     results.addMessage(Level.ERROR, fileName, "A Java class must have a package: " + fileName.substring(JAVA_ROOT.length()) + " is not allowed");
                 } else {

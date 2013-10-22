@@ -40,7 +40,6 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
     }
     
     @Test
-    @Ignore
     public void testInTestPackage() throws Exception {
         String javaClass = ""
                 + "package org.jbpm\n"
