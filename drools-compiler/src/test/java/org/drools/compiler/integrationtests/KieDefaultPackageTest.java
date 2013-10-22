@@ -42,7 +42,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
     @Test
     public void testInTestPackage() throws Exception {
         String javaClass = ""
-                + "package org.jbpm\n"
+                + "package org.jbpm;\n"
                 + "public class Test{}\n";
 
        
