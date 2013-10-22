@@ -33,6 +33,12 @@ public class QueryElementBuilder
     implements
     RuleConditionBuilder {
 
+    private  static final QueryElementBuilder INSTANCE = new QueryElementBuilder();
+
+    public static QueryElementBuilder getInstance() {
+        return INSTANCE;
+    }
+
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr ) {
         return this.build( context,

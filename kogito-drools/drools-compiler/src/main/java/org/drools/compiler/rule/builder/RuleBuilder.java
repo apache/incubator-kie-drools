@@ -59,12 +59,8 @@ public class RuleBuilder {
     public RuleBuilder() {
     }
 
-    /**
-     * Build the give rule into the
-     * @param context
-     * @return
-     */
-    public void build(final RuleBuildContext context) {
+
+    public void preProcess(final RuleBuildContext context) {
         RuleDescr ruleDescr = context.getRuleDescr();
 
         //Query and get object instead of using String
@@ -74,13 +70,23 @@ public class RuleBuilder {
         // add all the rule's meta attributes
         buildMetaAttributes( context );
 
+        if ( context.getRuleDescr() instanceof QueryDescr ) {
+            context.getDialect().getQueryBuilder().build( context,
+                                                          (QueryDescr) context.getRuleDescr() );
+        }
+    }
+
+    /**
+     * Build the give rule into the
+     * @param context
+     * @return
+     */
+    public void build(final RuleBuildContext context) {
+        RuleDescr ruleDescr = context.getRuleDescr();
+
         final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( ruleDescr.getLhs().getClass() );
         if ( builder != null ) {
-            Pattern prefixPattern = null;
-            if ( context.getRuleDescr() instanceof QueryDescr ) {
-                prefixPattern = context.getDialect().getQueryBuilder().build( context,
-                                                                              (QueryDescr) context.getRuleDescr() );
-            }
+            Pattern prefixPattern = context.getPrefixPattern(); // this is established during pre-processing, if it's query
             final GroupElement ce = (GroupElement) builder.build( context,
                                                                   ruleDescr.getLhs(),
                                                                   prefixPattern );

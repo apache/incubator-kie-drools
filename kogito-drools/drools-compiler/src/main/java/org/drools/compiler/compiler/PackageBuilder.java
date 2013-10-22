@@ -1030,7 +1030,9 @@ public class PackageBuilder
         // ensure that rules are ordered by dependency, so that dependent rules are built later
         sortRulesByDependency( packageDescr );
 
-        // iterate and compile
+
+
+        // iterate and prepare RuleDescr
         for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
             if ( isEmpty( ruleDescr.getNamespace() ) ) {
                 // make sure namespace is set on components
@@ -1045,8 +1047,53 @@ public class PackageBuilder
                 ruleDescr.addAttribute( new AttributeDescr( "dialect",
                                                             pkgRegistry.getDialect() ) );
             }
-            addRule( ruleDescr );
         }
+
+        // Build up map of contexts  and process all rules
+        Map<String, RuleBuildContext> ruleCxts = preProcessRules(packageDescr, pkgRegistry);
+
+        // iterate and compile
+        for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+            addRule( ruleCxts.get( ruleDescr.getName() ) );
+        }
+    }
+
+    private Map<String, RuleBuildContext> preProcessRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+        Map<String, RuleBuildContext> ruleCxts = buildRuleBuilderContext( packageDescr.getRules() );
+
+        Package pkg = pkgRegistry.getPackage();
+        if ( this.ruleBase != null ) {
+            boolean needsRemoval = false;
+            for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+                if ( pkg.getRule( ruleDescr.getName() ) != null ) {
+                    needsRemoval = true;
+                    break;
+                }
+            }
+
+            if ( needsRemoval ) {
+                try {
+                    this.ruleBase.lock();
+                    for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+                        if ( pkg.getRule( ruleDescr.getName() ) != null ) {
+                            // XXX: this one notifies listeners
+                            this.ruleBase.removeRule( pkg, pkg.getRule( ruleDescr.getName() ) );
+
+                        }
+                    }
+                } finally {
+                    this.ruleBase.unlock();
+                }
+            }
+        }
+
+        // Pre Process each rule, needed for Query signuture registration
+        for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+            RuleBuildContext ruleBuildContext = ruleCxts.get( ruleDescr.getName() );
+            ruleBuilder.preProcess( ruleBuildContext );
+            pkg.addRule( ruleBuildContext.getRule() );
+        }
+        return ruleCxts;
     }
 
     private void sortRulesByDependency(PackageDescr packageDescr) {
@@ -3161,20 +3208,33 @@ public class PackageBuilder
                                         pkgRegistry.getTypeResolver() );
     }
 
-    private void addRule(final RuleDescr ruleDescr) {
-        if ( ruleDescr.getResource() == null ) {
-            ruleDescr.setResource( resource );
+    private Map<String, RuleBuildContext> buildRuleBuilderContext(List<RuleDescr> rules) {
+        Map<String, RuleBuildContext> map = new HashMap<String, RuleBuildContext>();
+        for ( RuleDescr ruleDescr : rules ) {
+            if ( ruleDescr.getResource() == null ) {
+                ruleDescr.setResource( resource );
+            }
+
+            PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
+
+            Package pkg = pkgRegistry.getPackage();
+            DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
+            RuleBuildContext context = new RuleBuildContext( this,
+                                                             ruleDescr,
+                                                             ctr,
+                                                             pkg,
+                                                             ctr.getDialect( pkgRegistry.getDialect() ) );
+            map.put( ruleDescr.getName(), context );
         }
 
-        PackageRegistry pkgRegistry = this.pkgRegistryMap.get( ruleDescr.getNamespace() );
+        return map;
+    }
 
-        Package pkg = pkgRegistry.getPackage();
-        DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
-        RuleBuildContext context = new RuleBuildContext( this,
-                                                         ruleDescr,
-                                                         ctr,
-                                                         pkg,
-                                                         ctr.getDialect( pkgRegistry.getDialect() ) );
+    private void addRule(RuleBuildContext context) {
+        final RuleDescr ruleDescr = context.getRuleDescr();
+
+        Package pkg = context.getPkg();
+
         ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
@@ -3182,21 +3242,6 @@ public class PackageBuilder
         context.getRule().setResource( ruleDescr.getResource() );
 
         context.getDialect().addRule( context );
-
-        if ( this.ruleBase != null ) {
-            if ( pkg.getRule( ruleDescr.getName() ) != null ) {
-                this.ruleBase.lock();
-                try {
-                    // XXX: this one notifies listeners
-                    this.ruleBase.removeRule( pkg,
-                                              pkg.getRule( ruleDescr.getName() ) );
-                } finally {
-                    this.ruleBase.unlock();
-                }
-            }
-        }
-
-        pkg.addRule( context.getRule() );
 
         if ( context.needsStreamMode() ) {
             pkg.setNeedStreamMode();

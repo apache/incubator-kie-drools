@@ -62,6 +62,7 @@ public class QueryBuilder implements EngineElementBuilder {
                                                           e,
                                                           "Unable to resolve type '" + types[i] + " for parameter" + params[i] ) );
         }
+        context.setPrefixPattern( pattern );
         return pattern;
     }
 }

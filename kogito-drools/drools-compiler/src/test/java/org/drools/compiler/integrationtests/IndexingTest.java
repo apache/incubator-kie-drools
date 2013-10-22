@@ -445,7 +445,7 @@ public class IndexingTest extends CommonTestMethodBase {
         }
     }
 
-    public ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
+    public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
         List<ObjectTypeNode> nodes = ((InternalRuleBase)((KnowledgeBaseImpl)kbase).ruleBase).getRete().getObjectTypeNodes();
         for ( ObjectTypeNode n : nodes ) {
             if ( ((ClassObjectType)n.getObjectType()).getClassType() == nodeClass ) {
@@ -454,6 +454,7 @@ public class IndexingTest extends CommonTestMethodBase {
         }
         return null;
     }
+
     @Test(timeout=10000)
     public void testRangeIndex() {
         String str = "import org.drools.compiler.*;\n" +

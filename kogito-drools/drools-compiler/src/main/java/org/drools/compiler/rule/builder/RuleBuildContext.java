@@ -24,6 +24,7 @@ import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.rule.Package;
+import org.drools.core.rule.Pattern;
 import org.drools.core.rule.Query;
 import org.drools.core.rule.Rule;
 import org.drools.core.rule.RuleConditionElement;
@@ -35,24 +36,26 @@ import org.drools.core.spi.DeclarationScopeResolver;
 public class RuleBuildContext extends PackageBuildContext {
 
     // current rule
-    private Rule                            rule;
+    private Rule rule;
 
     // a stack for the rule building used
     // for declarations resolution
-    private Stack<RuleConditionElement>     buildStack;
+    private Stack<RuleConditionElement> buildStack;
 
     // current Rule descriptor
-    private RuleDescr                       ruleDescr;
+    private RuleDescr ruleDescr;
 
     // available declarationResolver 
-    private DeclarationScopeResolver        declarationResolver;
+    private DeclarationScopeResolver declarationResolver;
 
     // a simple counter for patterns
-    private int                             patternId = -1;
+    private int patternId = -1;
 
-    private DroolsCompilerComponentFactory  compilerFactory;
+    private DroolsCompilerComponentFactory compilerFactory;
 
-    private boolean                         needStreamMode   = false;
+    private boolean needStreamMode = false;
+
+    private Pattern prefixPattern;
 
     /**
      * Default constructor
@@ -64,27 +67,27 @@ public class RuleBuildContext extends PackageBuildContext {
                             final Dialect defaultDialect) {
         this.buildStack = new Stack<RuleConditionElement>();
 
-        this.declarationResolver = new DeclarationScopeResolver( pkgBuilder.getGlobals(),
-                                                                 this.buildStack );
-        this.declarationResolver.setPackage( pkg );
+        this.declarationResolver = new DeclarationScopeResolver(pkgBuilder.getGlobals(),
+                                                                this.buildStack);
+        this.declarationResolver.setPackage(pkg);
         this.ruleDescr = ruleDescr;
 
-        if ( ruleDescr instanceof QueryDescr ) {
-            this.rule = new Query( ruleDescr.getName() );
+        if (ruleDescr instanceof QueryDescr) {
+            this.rule = new Query(ruleDescr.getName());
         } else {
-            this.rule = new Rule( ruleDescr.getName() );
+            this.rule = new Rule(ruleDescr.getName());
         }
-        this.rule.setPackage( pkg.getName() );
-        this.rule.setDialect( ruleDescr.getDialect() );
-        
-        init(pkgBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule );
-        
-        if ( this.rule.getDialect() == null ) {
-            this.rule.setDialect( getDialect().getId() );
+        this.rule.setPackage(pkg.getName());
+        this.rule.setDialect(ruleDescr.getDialect());
+
+        init(pkgBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule);
+
+        if (this.rule.getDialect() == null) {
+            this.rule.setDialect(getDialect().getId());
         }
 
         Dialect dialect = getDialect();
-        if ( dialect != null ) {
+        if (dialect != null ) {
             dialect.init( ruleDescr );
         }
 
@@ -154,5 +157,13 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public void setNeedStreamMode() {
         this.needStreamMode = true;
+    }
+
+    public void setPrefixPattern(Pattern prefixPattern) {
+        this.prefixPattern = prefixPattern;
+    }
+
+    public Pattern getPrefixPattern() {
+        return prefixPattern;
     }
 }
