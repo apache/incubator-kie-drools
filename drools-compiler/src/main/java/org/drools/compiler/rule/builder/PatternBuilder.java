@@ -188,7 +188,7 @@ public class PatternBuilder
             // it might be a recursive query, so check for same names
             if ( context.getRule().getName().equals( patternDescr.getObjectType() ) ) {
                 // it's a query so delegate to the QueryElementBuilder
-                QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
                 rce = qeBuilder.build( context,
                                         descr,
                                         prefixPattern,
@@ -199,7 +199,7 @@ public class PatternBuilder
                 Rule rule = context.getPkg().getRule( patternDescr.getObjectType() );
                 if ( rule instanceof Query ) {
                     // it's a query so delegate to the QueryElementBuilder
-                    QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                    QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
                     rce = qeBuilder.build( context,
                                            descr,
                                            prefixPattern,
@@ -218,7 +218,7 @@ public class PatternBuilder
                             rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
                             if ( rule instanceof Query ) {
                                 // it's a query so delegate to the QueryElementBuilder
-                                QueryElementBuilder qeBuilder = new QueryElementBuilder();
+                                QueryElementBuilder qeBuilder = QueryElementBuilder.getInstance();
                                 rce = qeBuilder.build( context,
                                                        descr,
                                                        prefixPattern,
