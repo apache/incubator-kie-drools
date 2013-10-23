@@ -31,7 +31,7 @@
               <outputDirectory>${basedir}/target/docbook/publish/en-US/html_single/images</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${basedir}../shared/images/</directory>
+                  <directory>${basedir}/../shared/images/</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>
@@ -48,7 +48,7 @@
               <outputDirectory>${basedir}/target/docbook/publish/en-US/html/images</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${basedir}../shared/images/</directory>
+                  <directory>${basedir}/../shared/images/</directory>
                   <filtering>true</filtering>
                 </resource>
               </resources>
