@@ -2491,4 +2491,75 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         assertFalse( list.contains( 0 ) );
     }
+
+    @Test
+    public void testManySlidingWindows() throws Exception {
+        String drl = "package com.sample;\n" +
+                     "\n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare Fakt\n" +
+                     "  @role( event ) \n" +
+                     "  id : int \n" +
+                     "end\n" +
+                     " \n" +
+                     "rule Init \n" +
+                     "when \n" +
+                     "  $i : Integer() \n" +
+                     "then \n" +
+                     "  insert( new Fakt( $i ) ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule \"Test\"\n" +
+                     "when\n" +
+                     "   accumulate ( $d : Fakt( id > 10 ) over window:length(2), $tot1 : count( $d ) ) \n" +
+                     "   accumulate ( $d : Fakt( id < 50 ) over window:length(5), $tot2 : count( $d ) ) \n" +
+                     "then\n" +
+                     "  System.out.println( \"Fire!\" ); \n" +
+                     "  list.clear();\n " +
+                     "  list.add( $tot1.intValue() ); \n" +
+                     "  list.add( $tot2.intValue() ); \n" +
+                     "end\n" +
+                     "\n";
+
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        System.out.println( kbuilder.getErrors() );
+        assertFalse( kbuilder.hasErrors() );
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Integer( 20 ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 1, 1 ) );
+
+        ksession.insert( new Integer( 20 ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 2, 2 ) );
+
+        ksession.insert( new Integer( 20 ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 2, 3 ) );
+
+        ksession.insert( new Integer( 2 ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 2, 4 ) );
+
+        ksession.insert( new Integer( 2 ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 2, 5 ) );
+
+        ksession.insert( new Integer( 2 ) );
+        ksession.fireAllRules();
+        assertEquals( list, Arrays.asList( 2, 5 ) );
+
+
+    }
+
 }
