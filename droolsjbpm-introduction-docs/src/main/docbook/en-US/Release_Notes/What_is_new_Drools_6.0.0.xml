@@ -11,9 +11,73 @@
     <title>Drools Expert</title>
 
     <section>
-      <title>TODO</title>
+      <title>Expression timers and additional timers parameters</title>
 
-      <para>TODO</para>
+      <para>When declaring an interval timer it can be sometimes useful to define both the delay
+      and interval as an expression instead of a fixed value. To do that it is now possible to
+      use an expression timer (indicated by "expr:") as in the following example:</para>
+
+      <example>
+        <title>An Expression Timer Example</title>
+
+        <programlisting language="java">declare Bean
+    delay   : String = "30s"
+    period  : long = 60000
+end
+
+rule "Expression timer"
+    timer( expr: $d, $p )
+when
+    Bean( $d : delay, $p : period )
+then
+end</programlisting>
+      </example>
+
+      <para>The expressions, $d and $p in this case, can use any variable defined in the
+      pattern matching part of the rule and can be any String that can be parsed in a time
+      duration or any numeric value that will be internally converted in a long representing
+      a duration expressed in milliseconds.</para>
+
+      <para>Both interval and expression timers can have 3 optional parameters named
+      "start", "end" and "repeat-limit". When one or more of these parameters are used the first
+      part of the timer definition must be followed by a semicolon ';' and the parameters have
+      to be separated by a comma ',' as in the following example:</para>
+
+      <example>
+        <title>An Interval Timer with a start and an end</title>
+
+        <programlisting language="java">timer (int: 30s 10s; start=3-JAN-2010, end=5-JAN-2010)</programlisting>
+      </example>
+
+      <para>The value for start and end parameters can be a Date, a String representing
+      a Date or a long, or more in general any Number, that will be transformed in a Java Date
+      applying the following conversion:</para>
+
+      <programlisting language="java">new Date( ((Number) n).longValue() )</programlisting>
+
+      <para>Conversely the repeat-limit can be only an integer and it defines the maximum
+      number of repetitions allowed by the timer. If both the end and the repeat-limit parameters
+      are set the timer will stop when the first of the two will be matched.</para>
+
+      <para>The using of the start parameter implies the definition of a phase for the timer,
+      where the beginning of the phase is given by the start itself plus the eventual delay.
+      In other words in this case the timed rule will then be scheduled at times:</para>
+
+      <programlisting language="java">start + delay + n*period</programlisting>
+
+      <para>for up to repeat-limit times and no later than the end timestamp (whichever first).
+      For instance the rule having the following interval timer</para>
+
+      <programlisting language="java">timer ( int: 30s 1m; start="3-JAN-2010" )</programlisting>
+
+      <para>will be scheduled at the 30th second of every minute after the midnight of the
+      3-JAN-2010. This also means that if for example you turn the system on at midnight of
+      the 3-FEB-2010 it won't be scheduled immediately but will preserve the phase defined by
+      the timer and so it will be scheduled for the first time 30 seconds after the midnight.
+      If for some reason the system is paused (e.g. the session is serialized and then deserialized
+      after a while) the rule will be scheduled only once to recover from missing activations
+      (regardless of how many activations we missed) and subsequently it will be scheduled
+      again in phase with the timer.</para>
     </section>
 
     <section>
