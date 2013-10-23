@@ -41,15 +41,15 @@ public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTe
     // ************************************************************************
 
     @Test(timeout = 600000)
-    public void solveComp01_initialized() {
-        File unsolvedDataFile = new File("data/pas/unsolved/testdata01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-8534soft");
+    public void solveTestdata01() {
+        File unsolvedDataFile = new File("data/pas/unsolved/testdata01.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7172soft");
     }
 
     @Test(timeout = 600000)
-    public void solveTestdata01_initializedFastAssert() {
-        File unsolvedDataFile = new File("data/pas/unsolved/testdata01_initialized.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-8758soft", EnvironmentMode.FAST_ASSERT);
+    public void solveTestdata01FastAssert() {
+        File unsolvedDataFile = new File("data/pas/unsolved/testdata01.xml");
+        runSpeedTest(unsolvedDataFile, "0hard/0medium/-7192soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

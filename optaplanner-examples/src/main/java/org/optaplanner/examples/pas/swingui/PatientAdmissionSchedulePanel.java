@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -177,7 +178,10 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
             List<Bed> bedList = getPatientAdmissionSchedule().getBedList();
-            JComboBox bedListField = new JComboBox(bedList.toArray());
+            List<Bed> bedListWithNull = new ArrayList<Bed>(bedList.size() + 1);
+            bedListWithNull.add(null);
+            bedListWithNull.addAll(bedList);
+            JComboBox bedListField = new JComboBox(bedListWithNull.toArray());
             bedListField.setSelectedItem(bedDesignation.getBed());
             listFieldsPanel.add(bedListField);
             int result = JOptionPane.showConfirmDialog(PatientAdmissionSchedulePanel.this.getRootPane(), listFieldsPanel,
