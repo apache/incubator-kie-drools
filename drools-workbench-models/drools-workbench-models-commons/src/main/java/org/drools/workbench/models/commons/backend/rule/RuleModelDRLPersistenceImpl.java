@@ -1625,7 +1625,8 @@ public class RuleModelDRLPersistenceImpl
             return globals.contains( name );
         }
 
-        public ExpandedDRLInfo registerGlobals( PackageDataModelOracle dmo, List<String> globalStatements ) {
+        public ExpandedDRLInfo registerGlobals( PackageDataModelOracle dmo,
+                                                List<String> globalStatements ) {
             if ( globalStatements != null ) {
                 for ( String globalStatement : globalStatements ) {
                     String identifier = getIdentifier( globalStatement );
@@ -1636,7 +1637,7 @@ public class RuleModelDRLPersistenceImpl
             }
             Map<String, String> globalsFromDmo = dmo != null ? dmo.getPackageGlobals() : null;
             if ( globalsFromDmo != null ) {
-                globals.addAll(globalsFromDmo.keySet());
+                globals.addAll( globalsFromDmo.keySet() );
             }
             return this;
         }
@@ -1907,6 +1908,7 @@ public class RuleModelDRLPersistenceImpl
     }
 
     private static String findOperator( String expr ) {
+        final Set<String> potentialOperators = new HashSet<String>();
         for ( Operator op : Operator.getAllOperators() ) {
             if ( op.isNegated() ) {
                 if ( expr.contains( " not " + op.getOperatorString() ) ) {
@@ -1914,9 +1916,21 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
             if ( expr.contains( op.getOperatorString() ) ) {
-                return op.getOperatorString();
+                potentialOperators.add( op.getOperatorString() );
             }
         }
+        String operator = "";
+        if ( !potentialOperators.isEmpty() ) {
+            for ( String potentialOperator : potentialOperators ) {
+                if ( potentialOperator.length() > operator.length() ) {
+                    operator = potentialOperator;
+                }
+            }
+        }
+        if ( !operator.isEmpty() ) {
+            return operator;
+        }
+
         if ( expr.contains( "not in" ) ) {
             return "not in";
         }
@@ -2026,7 +2040,7 @@ public class RuleModelDRLPersistenceImpl
                             ActionCallMethod acm = new ActionCallMethod();
                             acm.setMethodName( methodName );
                             acm.setVariable( variable );
-                            acm.setState(1);
+                            acm.setState( 1 );
                             m.addRhsItem( acm );
                             String params = unwrapParenthesis( line );
                             for ( String param : params.split( "," ) ) {
