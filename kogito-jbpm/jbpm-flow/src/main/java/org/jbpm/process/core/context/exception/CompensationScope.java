@@ -42,7 +42,7 @@ public class CompensationScope extends ExceptionScope {
     private static final long serialVersionUID = 510l;
 
     public static final String COMPENSATION_SCOPE = "CompensationScope";
-    public static final String GENERAL_COMPENSATION_PREFIX = "general:";
+    public static final String IMPLICIT_COMPENSATION_PREFIX = "implicit:";
     
     private String containerId; 
     
@@ -89,8 +89,8 @@ public class CompensationScope extends ExceptionScope {
         if( getExceptionHandler(activityRef) != null ) { 
             return this;
         } 
-        if( activityRef.startsWith(GENERAL_COMPENSATION_PREFIX) ) { 
-           String containerRef = activityRef.substring(GENERAL_COMPENSATION_PREFIX.length());
+        if( activityRef.startsWith(IMPLICIT_COMPENSATION_PREFIX) ) { 
+           String containerRef = activityRef.substring(IMPLICIT_COMPENSATION_PREFIX.length());
            if( containerId.equals(containerRef) ) { 
                return this;
            }

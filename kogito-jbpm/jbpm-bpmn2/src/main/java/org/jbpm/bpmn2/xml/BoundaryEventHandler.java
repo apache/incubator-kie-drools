@@ -274,7 +274,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
         eventNode.setEventFilters(eventFilters);
         eventFilters.add(eventFilter);
         
-        // 3. Add compensation scope
+        // 3. Add compensation scope (with key/id: attachedTo)
         ProcessHandler.addCompensationScope((RuleFlowProcess) parser.getParent(RuleFlowProcess.class), eventNode, parentContainer, attachedTo);
     }
     

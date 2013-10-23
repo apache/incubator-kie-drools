@@ -103,7 +103,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess(processId, params);
         
         // twice
-        ksession.signalEvent("Compensation", CompensationScope.GENERAL_COMPENSATION_PREFIX + processId, processInstance.getId());
+        ksession.signalEvent("Compensation", CompensationScope.IMPLICIT_COMPENSATION_PREFIX + processId, processInstance.getId());
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
 
         // compensation activity (assoc. with script task) signaled *after* script task
@@ -142,7 +142,7 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         
         // user task -> script task (associated with compensation) --> intermeidate throw compensation event
         ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), null);
-
+        
         // compensation activity (assoc. with script task) signaled *after* to-compensate script task
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertProcessVarValue(processInstance, "x", "1");
@@ -204,6 +204,25 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         // compensation activity (assoc. with script task) signaled *after* script task
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
         assertProcessVarValue(processInstance, "x", "1");
+    }
+    
+    @Test
+    public void specificCompensationOfASubProcess() throws Exception {
+        KieSession ksession = createKnowledgeSession("compensation/BPMN2-Compensation-ThrowSpecificForSubProcess.bpmn2");
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "1");
+        ProcessInstance processInstance = ksession.startProcess("CompensationSpecificSubProcess", params);
+        
+        // compensation activity (assoc. with script task) signaled *after* to-compensate script task
+        assertProcessInstanceCompleted(processInstance.getId(), ksession);
+        if( ! isPersistence() ) { 
+            assertProcessVarValue(processInstance, "x", null);
+        } else { 
+            assertProcessVarValue(processInstance, "x", "");
+        }
     }
     
     @Test

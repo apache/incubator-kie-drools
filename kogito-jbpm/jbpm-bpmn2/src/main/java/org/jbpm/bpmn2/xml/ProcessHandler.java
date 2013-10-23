@@ -940,11 +940,11 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
             String compensationEvent; 
             if( activityRef.length() == 0 ) { 
-                // general compensation
-                compensationEvent = CompensationScope.GENERAL_COMPENSATION_PREFIX + parentId;
+                // general/implicit compensation
+                compensationEvent = CompensationScope.IMPLICIT_COMPENSATION_PREFIX + parentId;
             } else { 
                 // specific compensation
-                compensationEvent = CompensationScope.GENERAL_COMPENSATION_PREFIX + activityRef;
+                compensationEvent = activityRef;
             }
 
             DroolsConsequenceAction compensationAction = new DroolsConsequenceAction("java", 

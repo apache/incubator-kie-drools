@@ -92,7 +92,7 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                 int begin = 12; // : Compensation
                 int end = s.length() - 3; // ");
                 String compensationEvent = s.substring(begin, end);
-                if( ! compensationEvent.startsWith(CompensationScope.GENERAL_COMPENSATION_PREFIX) ) { 
+                if( ! compensationEvent.startsWith(CompensationScope.IMPLICIT_COMPENSATION_PREFIX) ) { 
                     // specific
                     activityRef = "activityRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(activityRef) + "\" ";
                 } // else general: activityRef = "" (above) 

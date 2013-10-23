@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<definitions id="my-definitions" targetNamespace="http://www.jboss.org/drools" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+
+  <itemDefinition id="var_x" structureRef="Integer" />
+  <process id="CompensationSpecificSubProcess" name="Test process" isExecutable="true">
+    <property id="x" itemSubjectRef="var_x" />
+    
+    <startEvent id="start" name="start" />
+    <sequenceFlow sourceRef="start" targetRef="subprocess"/>
+    
+    <subProcess id="subprocess" name="subprocess">
+        <startEvent id="sub-start" name="sub-start" />
+        <sequenceFlow sourceRef="sub-start" targetRef="script"/>
+        <scriptTask id="script" name="script" scriptFormat="http://www.java.com/java">
+            <script>kcontext.setVariable("x", 0);</script>
+        </scriptTask>
+        <sequenceFlow sourceRef="script" targetRef="sub-end"/>
+        <endEvent id="sub-end" name="sub-end" />
+    </subProcess>
+    
+    <sequenceFlow sourceRef="subprocess" targetRef="end"/>
+    <endEvent id="end" name="end">
+      <compensateEventDefinition activityRef="subprocess" />
+    </endEvent>
+    
+    <!-- boundary event -->
+    <boundaryEvent id="compensate-catch" name="compensate-catch" attachedToRef="subprocess" cancelActivity="false">
+        <compensateEventDefinition />
+    </boundaryEvent>
+    <association associationDirection="One" sourceRef="compensate-catch" targetRef="compensate" />
+    <scriptTask id="compensate" name="compensate" scriptFormat="http://www.java.com/java" isForCompensation="true">
+        <script>kcontext.setVariable("x", null);</script>
+    </scriptTask>
+  </process>
+</definitions>

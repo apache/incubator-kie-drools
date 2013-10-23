@@ -16,7 +16,7 @@
 
 package org.jbpm.process.instance.context.exception;
 
-import static org.jbpm.process.core.context.exception.CompensationScope.GENERAL_COMPENSATION_PREFIX;
+import static org.jbpm.process.core.context.exception.CompensationScope.IMPLICIT_COMPENSATION_PREFIX;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -64,8 +64,8 @@ public class CompensationScopeInstance extends ExceptionScopeInstance  {
         
         CompensationScope compensationScope = (CompensationScope) getExceptionScope();
         // broadcast/general compensation in reverse order
-        if( activityRef.startsWith(GENERAL_COMPENSATION_PREFIX) ) { 
-            activityRef = activityRef.substring(GENERAL_COMPENSATION_PREFIX.length());
+        if( activityRef.startsWith(IMPLICIT_COMPENSATION_PREFIX) ) { 
+            activityRef = activityRef.substring(IMPLICIT_COMPENSATION_PREFIX.length());
             assert activityRef.equals(compensationScope.getContextContainerId())
             : "Compensation activity ref [" + activityRef + "] does not match" +
             " Compensation Scope container id [" + compensationScope.getContextContainerId() + "]";

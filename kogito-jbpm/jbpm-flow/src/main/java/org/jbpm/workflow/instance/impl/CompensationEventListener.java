@@ -40,8 +40,8 @@ class CompensationEventListener implements EventListener {
      * 1. signalEvent("Compensation", <node-with-compensation-handler-id>)
      *    This is specific compensation, that only possibly triggers the compensation handler
      *    attached to the node referred to by the <node-with-compensation-handler-id>.
-     * 2. signalEvent("Compensation", "general:" + <node-container-containing-compensation-scope-id> )
-     *    This is general compensation, in which you trigger all visible compensation handlers 
+     * 2. signalEvent("Compensation", "implicit:" + <node-container-containing-compensation-scope-id> )
+     *    This is implicit or general compensation, in which you trigger all visible compensation handlers 
      *    (in the proper order, etc.) in the (sub-)process referred to by 
      *    the <node-container-containing-compensation-scope-id>. 
      */
@@ -56,8 +56,8 @@ class CompensationEventListener implements EventListener {
         String activityRef = (String) activityRefStr;
         String toCompensateNodeId = activityRef;
         boolean generalCompensation = false;
-        if( activityRef.startsWith(GENERAL_COMPENSATION_PREFIX) ) {
-            toCompensateNodeId = activityRef.substring(GENERAL_COMPENSATION_PREFIX.length());
+        if( activityRef.startsWith(IMPLICIT_COMPENSATION_PREFIX) ) {
+            toCompensateNodeId = activityRef.substring(IMPLICIT_COMPENSATION_PREFIX.length());
             generalCompensation = true;
         } 
        
