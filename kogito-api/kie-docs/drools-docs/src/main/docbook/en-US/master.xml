@@ -35,5 +35,6 @@
     </mediaobject>
   </preface>
 
+  <xi:include href="ReleaseNotes.xml"/>
 
 </book>
