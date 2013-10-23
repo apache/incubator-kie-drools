@@ -20,11 +20,11 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,20 +40,29 @@ import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Department;
+import org.optaplanner.examples.pas.domain.Gender;
+import org.optaplanner.examples.pas.domain.GenderLimitation;
 import org.optaplanner.examples.pas.domain.Night;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.domain.Room;
-import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
+    private final ImageIcon anyGenderIcon;
+    private final ImageIcon maleIcon;
+    private final ImageIcon femaleIcon;
+    private final ImageIcon sameGenderIcon;
+
     private TimeTablePanel<Night, Bed> timeTablePanel;
 
-
     public PatientAdmissionSchedulePanel() {
+        anyGenderIcon = new ImageIcon(getClass().getResource("anyGender.png"));
+        maleIcon = new ImageIcon(getClass().getResource("male.png"));
+        femaleIcon = new ImageIcon(getClass().getResource("female.png"));
+        sameGenderIcon = new ImageIcon(getClass().getResource("sameGender.png"));
         setLayout(new BorderLayout());
         timeTablePanel = new TimeTablePanel<Night, Bed>();
         add(timeTablePanel, BorderLayout.CENTER);
@@ -121,9 +130,11 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
                     createHeaderPanel(new JLabel(department.getLabel())));
             for (Room room : roomList) {
                 List<Bed> bedList = room.getBedList();
+                JLabel roomLabel = new JLabel(room.getLabel(), determineRoomGenderIcon(room.getGenderLimitation()),
+                        SwingConstants.RIGHT);
                 timeTablePanel.addRowHeader(HEADER_COLUMN_GROUP1, bedList.get(0),
                         HEADER_COLUMN_GROUP1, bedList.get(bedList.size() - 1),
-                        createHeaderPanel(new JLabel(room.getLabel(), SwingConstants.RIGHT)));
+                        createHeaderPanel(roomLabel));
                 for (Bed bed : bedList) {
                     timeTablePanel.addRowHeader(HEADER_COLUMN, bed,
                             createHeaderPanel(new JLabel(bed.getLabel(), SwingConstants.RIGHT)));
@@ -158,7 +169,8 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         private BedDesignation bedDesignation;
 
         public BedDesignationAction(BedDesignation bedDesignation) {
-            super(bedDesignation.getAdmissionPart().getPatient().getName());
+            super(bedDesignation.getAdmissionPart().getPatient().getName(),
+                    determinePatientGenderIcon(bedDesignation.getAdmissionPart().getPatient().getGender()));
             this.bedDesignation = bedDesignation;
         }
 
@@ -177,6 +189,32 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             }
         }
 
+    }
+
+    private ImageIcon determineRoomGenderIcon(GenderLimitation genderLimitation) {
+        switch (genderLimitation) {
+            case ANY_GENDER:
+                return anyGenderIcon;
+            case MALE_ONLY:
+                return maleIcon;
+            case FEMALE_ONLY:
+                return femaleIcon;
+            case SAME_GENDER:
+                return sameGenderIcon;
+            default:
+                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented.");
+        }
+    }
+
+    private ImageIcon determinePatientGenderIcon(Gender gender) {
+        switch (gender) {
+            case MALE:
+                return maleIcon;
+            case FEMALE:
+                return femaleIcon;
+            default:
+                throw new IllegalStateException("The gender (" + gender + ") is not implemented.");
+        }
     }
 
 }

@@ -59,11 +59,6 @@ public class AdmissionPart extends AbstractPersistable {
         this.specialism = specialism;
     }
 
-    @Override
-    public String toString() {
-        return patient + "(" + firstNight + "-" + lastNight + ")";
-    }
-
     public int getNightCount() {
         return lastNight.getIndex() - firstNight.getIndex() + 1;
     }
@@ -72,6 +67,11 @@ public class AdmissionPart extends AbstractPersistable {
         int firstNightIndex = Math.max(getFirstNight().getIndex(), other.getFirstNight().getIndex());
         int lastNightIndex = Math.min(getLastNight().getIndex(), other.getLastNight().getIndex());
         return Math.max(0, lastNightIndex - firstNightIndex + 1);
+    }
+
+    @Override
+    public String toString() {
+        return patient + "(" + firstNight + "-" + lastNight + ")";
     }
 
 }
