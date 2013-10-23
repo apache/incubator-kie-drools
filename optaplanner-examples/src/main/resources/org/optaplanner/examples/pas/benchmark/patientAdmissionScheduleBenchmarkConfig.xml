@@ -27,7 +27,7 @@
       <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
       <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+        <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
       </scoreDirectorFactory>
       <termination>
         <maximumSecondsSpend>300</maximumSecondsSpend>
@@ -40,9 +40,11 @@
     <solver>
       <scoreDirectorFactory>
         <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <!--<scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>-->
       </scoreDirectorFactory>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
+        <forceUpdateBestSolution>true</forceUpdateBestSolution>
       </customSolverPhase>
     </solver>
   </solverBenchmark>
@@ -56,9 +58,6 @@
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -72,9 +71,6 @@
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -88,9 +84,6 @@
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
     </solver>
   </solverBenchmark>
@@ -100,9 +93,11 @@
     <solver>
       <scoreDirectorFactory>
         <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <!--<scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>-->
       </scoreDirectorFactory>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
+        <forceUpdateBestSolution>true</forceUpdateBestSolution>
       </customSolverPhase>
       <localSearch>
         <moveListFactory>
@@ -128,9 +123,6 @@
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
@@ -156,9 +148,6 @@
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
-        <forager>
-          <pickEarlyType>FIRST_NON_DETERIORATING_SCORE</pickEarlyType>
-        </forager>
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>

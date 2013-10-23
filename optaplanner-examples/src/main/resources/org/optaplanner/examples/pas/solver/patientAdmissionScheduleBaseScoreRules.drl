@@ -17,7 +17,7 @@
 package org.optaplanner.examples.pas.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 
 import org.optaplanner.examples.pas.domain.AdmissionPart;
 import org.optaplanner.examples.pas.domain.Bed;
@@ -38,7 +38,7 @@ import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
 import org.optaplanner.examples.pas.domain.solver.AdmissionPartConflict;
 
-global HardSoftScoreHolder scoreHolder;
+global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -100,6 +100,8 @@ rule "departmentMaximumAge"
         scoreHolder.addHardConstraintMatch(kcontext, -100 * $bedDesignation.getAdmissionPartNightCount());
 end
 
+// Not yet applicable: Patient requiredMaximumRoomCapacity constraint
+
 // RequiredPatientEquipment constraint
 rule "requiredPatientEquipment"
     when
@@ -112,10 +114,20 @@ rule "requiredPatientEquipment"
 end
 
 // ############################################################################
-// Soft constraints
+// Medium constraints
 // ############################################################################
 
-// Not yet applicable: Patient's requiredMaximumRoomCapacity constraint
+// Assign every patient to a bed, unless the dataset is overconstrained
+rule "assignEveryPatientToABed"
+    when
+        $bedDesignation : BedDesignation(bed == null)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, - $bedDesignation.getAdmissionPartNightCount());
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
 
 // Patient preferredMaximumRoomCapacity
 rule "preferredMaximumRoomCapacity"

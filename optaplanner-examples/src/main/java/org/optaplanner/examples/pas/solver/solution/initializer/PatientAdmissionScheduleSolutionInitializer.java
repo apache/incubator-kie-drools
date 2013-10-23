@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.phase.custom.CustomSolverPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -65,7 +66,7 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
             int firstNightIndex = bedDesignation.getAdmissionPart().getFirstNight().getIndex();
             int lastNightIndex = bedDesignation.getAdmissionPart().getLastNight().getIndex();
             boolean perfectMatch = false;
-            Score bestScore = HardSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE);
+            Score bestScore = HardMediumSoftScore.valueOf(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE);
             Bed bestBed = null;
 
             boolean added = false;
@@ -155,6 +156,7 @@ public class PatientAdmissionScheduleSolutionInitializer implements CustomSolver
         }
         // For the GUI's combobox list mainly, not really needed
         Collections.sort(bedDesignationList, new PersistableIdComparator());
+        // TODO FIXME the solution.getScore() isn't correct at this point in time
         patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
     }
 

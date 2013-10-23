@@ -27,7 +27,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -36,7 +38,7 @@ import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("PatientAdmissionSchedule")
-public class PatientAdmissionSchedule extends AbstractPersistable implements Solution<HardSoftScore> {
+public class PatientAdmissionSchedule extends AbstractPersistable implements Solution<HardMediumSoftScore> {
 
     private List<Specialism> specialismList;
     private List<Equipment> equipmentList;
@@ -54,8 +56,8 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
 
     private List<BedDesignation> bedDesignationList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    private HardSoftScore score;
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftScoreDefinition.class})
+    private HardMediumSoftScore score;
 
     public List<Specialism> getSpecialismList() {
         return specialismList;
@@ -171,11 +173,11 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         this.bedDesignationList = bedDesignationList;
     }
 
-    public HardSoftScore getScore() {
+    public HardMediumSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardMediumSoftScore score) {
         this.score = score;
     }
 

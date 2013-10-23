@@ -3678,3 +3678,10 @@ After in *SolverConfig.java and *BenchmarkConfig.java:
     </acceptor>
     ...
   </localSearch>
+
+
+From 6.0.0.CR5 to 6.0.0.Final
+-----------------------------
+
+[MINOR] The hospital bed planning (PAS) example's score function has severally changed.
+It now has more hard constraints and demonstrates overconstrained planning (with a nullable variable).

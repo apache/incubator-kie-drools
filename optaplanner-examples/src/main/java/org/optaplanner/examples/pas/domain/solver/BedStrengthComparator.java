@@ -26,6 +26,14 @@ import org.optaplanner.examples.pas.domain.Room;
 public class BedStrengthComparator implements Comparator<Bed>, Serializable {
 
     public int compare(Bed a, Bed b) {
+        if (a == null) {
+            if (b == null) {
+                return 0;
+            }
+            return -1;
+        } else if (b == null) {
+            return 1;
+        }
         Room aRoom = a.getRoom();
         Room bRoom = b.getRoom();
         return new CompareToBuilder()
