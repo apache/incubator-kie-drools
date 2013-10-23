@@ -68,14 +68,11 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
             moveScope.setMoveIndex(moveIndex);
             moveIndex++;
             moveScope.setMove(move);
-            // TODO use Selector filtering to filter out not doable moves
-            if (!move.isMoveDoable(stepScope.getScoreDirector())) {
-                logger.trace("        Move index ({}) not doable, ignoring move ({}).", moveScope.getMoveIndex(), move);
-            } else {
-                doMove(moveScope);
-                if (forager.isQuitEarly()) {
-                    break;
-                }
+            // Do not filter out pointless moves, because the original value of the entity(s) is irrelevant.
+            // If the original value is null and the variable is nullable, the move to null must be done too.
+            doMove(moveScope);
+            if (forager.isQuitEarly()) {
+                break;
             }
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;

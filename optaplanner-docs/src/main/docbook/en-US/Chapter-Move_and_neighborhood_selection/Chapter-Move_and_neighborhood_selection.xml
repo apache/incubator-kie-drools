@@ -1068,7 +1068,7 @@
       </warning>
 
       <para>Planner automatically filters out <emphasis>non doable moves</emphasis> by calling the
-      <literal>isDoable(ScoreDirector)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
+      <literal>isMoveDoable(ScoreDirector)</literal> method on a move. A <emphasis>non doable move</emphasis> is:</para>
 
       <itemizedlist>
         <listitem>
