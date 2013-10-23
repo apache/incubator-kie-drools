@@ -131,10 +131,12 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
         String key = getKey( core.getClass(), trait );
 
-
-        Constructor<T> konst = factoryCache.get( key );
-        if ( konst == null ) {
-            konst = cacheConstructor( key, core, trait );
+        Constructor<T> konst;
+        synchronized ( factoryCache ) {
+             konst = factoryCache.get( key );
+            if ( konst == null ) {
+                konst = cacheConstructor( key, core, trait );
+            }
         }
 
         T proxy = null;
@@ -344,7 +346,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
 
-    public CoreWrapper<K> getCoreWrapper( Class<K> coreKlazz , ClassDefinition coreDef ) {
+    public synchronized CoreWrapper<K> getCoreWrapper( Class<K> coreKlazz , ClassDefinition coreDef ) {
         if ( wrapperCache == null ) {
             wrapperCache = new HashMap<Class, Class<? extends CoreWrapper<?>>>();
         }

@@ -29,6 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 
@@ -4634,6 +4637,93 @@ public class TraitTest extends CommonTestMethodBase {
 
         assertEquals( 4, list.size() );
         assertTrue( list.containsAll( Arrays.asList( 0, 1, 2, 3 ) ) );
+    }
+
+
+
+
+    @Traitable
+    public static class Item {
+        private String id;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+    public static class TraitRulesThread implements Runnable {
+        int threadIndex;
+        int numRepetitions;
+        StatefulKnowledgeSession ksession;
+
+        public TraitRulesThread(int threadIndex, int numRepetitions, final StatefulKnowledgeSession ksession) {
+            this.threadIndex = threadIndex;
+            this.numRepetitions = numRepetitions;
+            this.ksession = ksession;
+        }
+        public void run() {
+            for (int repetitionIndex = 0; repetitionIndex < numRepetitions; repetitionIndex++) {
+                final Item i = new Item();
+                i.setId(String.format("testId_%d%d", threadIndex, repetitionIndex));
+                ksession.insert(i);
+                ksession.fireAllRules();
+            }
+        }
+    }
+
+    @Test
+    @Ignore("Triple Store is not thread safe and needs to be rewritten")
+    public void testMultithreadingTraits() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.factmodel.traits.TraitTest.Item;\n" +
+                          "declare Item end\n" +
+                          "declare trait ItemStyle\n" +
+                          "	id: String\n" +
+                          "	adjustable: boolean\n" +
+                          "end\n" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	no-loop true\n" +
+                          "	when\n" +
+                          "		$p : Item ()\n" +
+                          "		not ItemStyle ( id == $p.id )\n" +
+                          "	then\n" +
+                          "		don($p, ItemStyle.class);\n" +
+                          "end\n" +
+                          "rule \"Item Style - Adjustable\"" +
+                          "	no-loop true" +
+                          "	when" +
+                          "		$style : ItemStyle ( !adjustable )" +
+                          "		Item (" +
+                          "			id == $style.id " +
+                          "		)" +
+                          "	then" +
+                          "		modify($style) {" +
+                          "			setAdjustable(true)" +
+                          "		};" +
+                          "end";
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+
+        // might need to tweak these numbers.  often works with 7-10,100,60, but often fails 15-20,100,60
+        int MAX_THREADS = 20;
+        int MAX_REPETITIONS = 100;
+        int MAX_WAIT_SECONDS = 60;
+
+        final ExecutorService executorService = Executors.newFixedThreadPool( MAX_THREADS );
+        for (int threadIndex = 0; threadIndex < MAX_THREADS; threadIndex++) {
+            executorService.execute(new TraitRulesThread(threadIndex, MAX_REPETITIONS, kbase.newStatefulKnowledgeSession()));
+        }
+
+        executorService.shutdown();
+        executorService.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        final List<Runnable> queuedTasks = executorService.shutdownNow();
+
+        assertEquals(0, queuedTasks.size());
+        assertEquals(true, executorService.isTerminated());
     }
 
 
