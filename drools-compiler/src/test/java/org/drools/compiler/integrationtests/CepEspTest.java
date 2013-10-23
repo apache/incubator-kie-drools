@@ -8,6 +8,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
@@ -3697,4 +3698,113 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+
+
+    public static class ProbeEvent {
+        private int value = 1;
+        public int getValue() { return value; }
+        public ProbeEvent(int value) { this.value = value; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ProbeEvent that = (ProbeEvent) o;
+
+            if (value != that.value) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "ProbeEvent{" +
+                   "value=" + value +
+                   '}';
+        }
+    }
+    public static class ProbeCounter {
+        private long total = 0;
+        public void setTotal(long total) { this.total = total; }
+        public long getTotal() { return total; }
+        public void addValue () { total += 1; }
+    }
+
+    @Test
+    @Ignore("fails with random extra activations")
+    public void testExpirationAtHighRates() throws InterruptedException {
+        String drl = "package droolsfusioneval\n" +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "import org.drools.compiler.integrationtests.CepEspTest.ProbeEvent;\n" +
+                     "import org.drools.compiler.integrationtests.CepEspTest.ProbeCounter;\n" +
+                     "\n" +
+                     "declare ProbeEvent\n" +
+                     "    @role (event)\n" +
+                     "    @expires(1ms)\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Probe rule\"\n" +
+                     "when\n" +
+                     "    $pe : ProbeEvent () from entry-point ep01\n" +
+                     "    $pc : ProbeCounter ()\n" +
+                     "then\n" +
+                     "   list.add( $pe.getValue() ); \n" +
+                     "    $pc.addValue ();\n" +
+                     "end";
+
+        KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconfig.setOption (EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconfig);
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder ();
+        kbuilder.add (ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            System.err.println (kbuilder.getErrors().toString());
+        }
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList( );
+        session.setGlobal( "list", list );
+        EntryPoint ep01 = session.getEntryPoint("ep01");
+
+
+        new Thread () {
+            public void run () {
+                session.fireUntilHalt();
+            }
+        }.start ();
+
+        int eventLimit = 5000;
+
+        ProbeCounter pc = new ProbeCounter ();
+        long myTotal = 0;
+
+        try {
+            FactHandle pch = session.insert(pc);
+            for ( int i = 0; i < eventLimit; i++ ) {
+                ep01.insert ( new ProbeEvent ( i ) );
+                myTotal++;
+            }
+
+            Thread.sleep( 2500 );
+        } catch ( Throwable t ) {
+            fail( t.getMessage() );
+        }
+
+        assertEquals( eventLimit, myTotal );
+        assertEquals( eventLimit, list.size() );
+        assertEquals( 0, session.getEntryPoint( "ep01" ).getObjects().size() );
+    }
+
 }
