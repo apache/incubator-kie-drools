@@ -30,7 +30,7 @@
           <execution>
             <id>copy-resources-html_single</id>
             <!-- here the phase you need -->
-            <phase>validate</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -47,7 +47,7 @@
           <execution>
             <id>copy-resources-html</id>
             <!-- here the phase you need -->
-            <phase>validate</phase>
+            <phase>generate-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
