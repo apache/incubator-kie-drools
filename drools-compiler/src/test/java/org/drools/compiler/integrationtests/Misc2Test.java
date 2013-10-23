@@ -3220,4 +3220,40 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue( list.contains( "+" ) );
         assertTrue( list.contains( "-" ) );
     }
+
+
+    @Test
+    public void testFactLeak() throws InterruptedException {
+        //DROOLS-131
+        String drl = "package org.drools.test; \n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "" +
+                     "rule Intx when\n" +
+                     "  $x : Integer() from entry-point \"x\" \n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "end";
+        int N = 1100;
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        new Thread () {
+            public void run () {
+                ks.fireUntilHalt();
+            }
+        }.start ();
+
+        for ( int j = 0; j < N; j++ ) {
+            ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+        }
+
+        Thread.sleep( 1000 );
+        ks.halt();
+
+        assertEquals( N, list.size() );
+    }
 }
