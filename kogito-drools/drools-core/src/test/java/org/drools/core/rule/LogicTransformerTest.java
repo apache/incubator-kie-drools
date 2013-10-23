@@ -376,32 +376,34 @@ public class LogicTransformerTest extends DroolsTestCase {
      * This data structure is now valid (Exists (OR (A B) ) )
      *
      * <pre>
-     *             Exists
-     *              |
-     *             or
-     *            /  \
-     *           a    b
+     * Exists
+     * |
+     * or
+     * / \
+     * a b
      * </pre>
      *
      * Should become:
      *
      * <pre>
-     *              Or
-     *             /  \
-     *        Exists  Exists
-     *            |    |
-     *            a    b
+     * Not
+     * |
+     * And
+     * / \
+     * Not Not
+     * | |
+     * a b
      * </pre>
      */
     @Test
     public void testExistOrTransformation() throws InvalidPatternException {
         final ObjectType type = new ClassObjectType( String.class );
         final Pattern a = new Pattern( 0,
-                                     type,
-                                     "a" );
+                                       type,
+                                       "a" );
         final Pattern b = new Pattern( 1,
-                                     type,
-                                     "b" );
+                                       type,
+                                       "b" );
 
         final GroupElement parent = GroupElementFactory.newExistsInstance();
         final GroupElement or = GroupElementFactory.newOrInstance();
@@ -412,15 +414,19 @@ public class LogicTransformerTest extends DroolsTestCase {
 
         LogicTransformer.getInstance().applyOrTransformation( parent );
 
-        assertTrue( parent.isOr() );
-        assertEquals( 2,
+        assertTrue( parent.isNot() );
+        assertEquals( 1,
                       parent.getChildren().size() );
 
+        final GroupElement and = (GroupElement) parent.getChildren().get( 0 );
+        assertTrue( and.isAnd() );
+        assertEquals( 2, and.getChildren().size() );
+
         // we must ensure order
-        final GroupElement b1 = (GroupElement) parent.getChildren().get( 0 );
-        final GroupElement b2 = (GroupElement) parent.getChildren().get( 1 );
-        assertTrue( b1.isExists() );
-        assertTrue( b2.isExists() );
+        final GroupElement b1 = (GroupElement) and.getChildren().get( 0 );
+        final GroupElement b2 = (GroupElement) and.getChildren().get( 1 );
+        assertTrue( b1.isNot() );
+        assertTrue( b2.isNot() );
 
         assertEquals( 1,
                       b1.getChildren().size() );

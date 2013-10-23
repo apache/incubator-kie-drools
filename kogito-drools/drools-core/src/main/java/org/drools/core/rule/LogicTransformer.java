@@ -421,74 +421,77 @@ public class LogicTransformer {
 
     /**
      * (Exist (OR (A B)
-     * 
+     *
      * <pre>
-     *         Exist
-     *          | 
-     *         or   
-     *        /  \
-     *       a    b
+     * Exist
+     * |
+     * or
+     * / \
+     * a b
      * </pre>
-     * 
-     * (Exist ( Not (a) Not (b)) )
-     * 
+     *
+     * (Not Exist ( Not (a) And Not (b)) )
+     *
      * <pre>
-     *          Or   
-     *        /   \
-     *    Exists  Exists
-     *      |       |
-     *      a       b
+     * Not
+     * |
+     * And
+     * / \
+     * Not Not
+     * | |
+     * a b
      * </pre>
      */
     class ExistOrTransformation
-        implements
-        Transformation {
+            implements
+            Transformation {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
             if ( (!(parent.getChildren().get( 0 ) instanceof GroupElement)) || (!((GroupElement) parent.getChildren().get( 0 )).isOr()) ) {
                 throw new RuntimeException( "ExistOrTransformation expected 'OR' but instead found '" + parent.getChildren().get( 0 ).getClass().getName() + "'" );
             }
 
-            /*
-             * we know an Exists only ever has one child, and the previous algorithm
-             * has confirmed the child is an OR
-             */
+            // we know an Exists only ever has one child, and the previous algorithm
+            // has confirmed the child is an OR
+
             final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
-            parent.setType( GroupElement.OR );
+            parent.setType( GroupElement.NOT );
             parent.getChildren().clear();
+            final GroupElement and = GroupElementFactory.newAndInstance();
             for (RuleConditionElement ruleConditionElement : or.getChildren()) {
-                final GroupElement newExists = GroupElementFactory.newExistsInstance();
-                newExists.addChild(ruleConditionElement);
-                parent.addChild(newExists);
+                final GroupElement newNot = GroupElementFactory.newNotInstance();
+                newNot.addChild(ruleConditionElement);
+                and.addChild(newNot);
             }
+            parent.addChild( and );
             parent.pack();
         }
     }
 
     /**
-     * (Not (OR (A B)
-     * 
+     * (Not (OR (A B) )
+     *
      * <pre>
-     *         Not
-     *          | 
-     *         or   
-     *        /  \
-     *       a    b
+     * Not
+     * |
+     * or
+     * / \
+     * a b
      * </pre>
-     * 
-     * (And ( Not (a) Exist (b)) )
-     * 
+     *
+     * (And ( Not (a) Not (b)) )
+     *
      * <pre>
-     *         And   
-     *        /   \
-     *       Not  Not
-     *       |     |
-     *       a     b
+     * And
+     * / \
+     * Not Not
+     * | |
+     * a b
      * </pre>
      */
     public class NotOrTransformation
-        implements
-        Transformation {
+            implements
+            Transformation {
 
         public void transform(final GroupElement parent) throws InvalidPatternException {
 
@@ -496,10 +499,9 @@ public class LogicTransformer {
                 throw new RuntimeException( "NotOrTransformation expected 'OR' but instead found '" + parent.getChildren().get( 0 ).getClass().getName() + "'" );
             }
 
-            /*
-             * we know a Not only ever has one child, and the previous algorithm
-             * has confirmed the child is an OR
-             */
+            // we know a Not only ever has one child, and the previous algorithm
+            // has confirmed the child is an OR
+
             final GroupElement or = (GroupElement) parent.getChildren().get( 0 );
             parent.setType( GroupElement.AND );
             parent.getChildren().clear();
@@ -511,38 +513,4 @@ public class LogicTransformer {
             parent.pack();
         }
     }
-
-    //@todo for 3.1
-    //    public class NotAndTransformation
-    //        implements
-    //        Transformation {
-    //
-    //        public GroupElement transform(GroupElement not) throws InvalidPatternException {
-    //            if ( !(not.getChildren().get( 0 ) instanceof And) ) {
-    //                throw new RuntimeException( "NotAndTransformation expected '" + And.class.getName() + "' but instead found '" + not.getChildren().get( 0 ).getClass().getName() + "'" );
-    //            }
-    //
-    //            /*
-    //             * we know a Not only ever has one child, and the previous algorithm
-    //             * has confirmed the child is an And
-    //             */
-    //            And and = (And) not.getChildren().get( 0 );
-    //            for ( Iterator it = and.getChildren().iterator(); it.hasNext(); ) {
-    //                Object object1 = it.next();
-    //
-    //                for ( Iterator it2 = and.getChildren().iterator(); it.hasNext(); ) {
-    //                    Object object2 = it.next();
-    //                    if ( object2 != object1 ) {
-    //
-    //                    }
-    //                }
-    //
-    //                Not newNot = new Not();
-    //                newNot.addChild( it.next() );
-    //                and.addChild( newNot );
-    //            }
-    //
-    //            return and;
-    //        }
-    //    }
 }
