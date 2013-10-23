@@ -74,6 +74,14 @@ public class BedDesignation extends AbstractPersistable {
         return admissionPart.getSpecialism();
     }
 
+    public int getFirstNightIndex() {
+        return admissionPart.getFirstNight().getIndex();
+    }
+
+    public int getLastNightIndex() {
+        return admissionPart.getLastNight().getIndex();
+    }
+
     public int getAdmissionPartNightCount() {
         return admissionPart.getNightCount();
     }

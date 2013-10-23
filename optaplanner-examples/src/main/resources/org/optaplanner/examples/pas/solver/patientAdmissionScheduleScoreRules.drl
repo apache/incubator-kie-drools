@@ -36,7 +36,6 @@ import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.pas.domain.RoomSpecialism;
 import org.optaplanner.examples.pas.domain.Specialism;
-import org.optaplanner.examples.pas.domain.solver.AdmissionPartConflict;
 
 global HardMediumSoftScoreHolder scoreHolder;
 
@@ -44,9 +43,24 @@ global HardMediumSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-// Not yet applicable: RoomMaintenance constraint
+// Two patients in the same bed for a number of nights.
+rule "sameBedInSameNight"
+    when
+        $leftBedDesignation : BedDesignation(
+                bed != null, $bed : bed,
+                $leftFirst : firstNightIndex, $leftLast : lastNightIndex,
+                $leftId : id)
+        $rightBedDesignation : BedDesignation(
+                bed == $bed,
+                $leftFirst <= lastNightIndex, $leftLast >= firstNightIndex,
+                $rightFirst : firstNightIndex, $rightLast : lastNightIndex,
+                id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext,
+                -1000 * (1 + Math.max($leftLast, $rightLast) - Math.max($leftFirst, $rightFirst)));
+end
 
-// In separate drl or build-in: Two patients in the same bed for a number of nights
+// Not yet applicable: RoomMaintenance constraint
 
 // Gender limitation: Female in a male only room
 rule "femaleInMaleRoom"
@@ -69,16 +83,18 @@ end
 // Gender limitation: Different genders in the same room when the room doesn't allow it
 rule "differentGenderInSameGenderRoomInSameNight"
     when
-        $admissionPartConflict : AdmissionPartConflict($leftAdmissionPart : leftAdmissionPart,
-                $rightAdmissionPart : rightAdmissionPart,
-                differentGender == true)
         $leftBedDesignation : BedDesignation(roomGenderLimitation == GenderLimitation.SAME_GENDER,
-                admissionPart == $leftAdmissionPart, $room : room)
-        $rightBedDesignation : BedDesignation(room == $room, admissionPart == $rightAdmissionPart)
+                bed != null, $room : room, $leftGender : patientGender,
+                $leftFirst : firstNightIndex, $leftLast : lastNightIndex,
+                $leftId : id)
+        $rightBedDesignation : BedDesignation(
+                room == $room, patientGender != $leftGender,
+                $leftFirst <= lastNightIndex, $leftLast >= firstNightIndex,
+                $rightFirst : firstNightIndex, $rightLast : lastNightIndex,
+                id > $leftId)
     then
-        // Note: the original spec classified this as a soft constraint
-        // Note: the original spec gives lower scores in big rooms (capacity >= 6) with minimum 3 males and 3 females
-        scoreHolder.addHardConstraintMatch(kcontext, -50 * $admissionPartConflict.getNightSize());
+        scoreHolder.addHardConstraintMatch(kcontext,
+                -1000 * (1 + Math.max($leftLast, $rightLast) - Math.max($leftFirst, $rightFirst)));
 end
 
 // Department's minimumAge constraint

@@ -28,12 +28,9 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.pas.domain.solver.AdmissionPartConflict;
 import org.optaplanner.persistence.xstream.XStreamScoreConverter;
 
 @PlanningSolution
@@ -200,25 +197,8 @@ public class PatientAdmissionSchedule extends AbstractPersistable implements Sol
         facts.addAll(admissionPartList);
         facts.addAll(requiredPatientEquipmentList);
         facts.addAll(preferredPatientEquipmentList);
-        facts.addAll(precalculateAdmissionPartConflictList());
         // Do not add the planning entity's (bedDesignationList) because that will be done automatically
         return facts;
-    }
-
-    private List<AdmissionPartConflict> precalculateAdmissionPartConflictList() {
-        List<AdmissionPartConflict> admissionPartConflictList = new ArrayList<AdmissionPartConflict>();
-        for (AdmissionPart leftAdmissionPart : admissionPartList) {
-            for (AdmissionPart rightAdmissionPart : admissionPartList) {
-                if (leftAdmissionPart.getId() < rightAdmissionPart.getId()) {
-                    int sameNightCount = leftAdmissionPart.calculateSameNightCount(rightAdmissionPart);
-                    if (sameNightCount > 0) {
-                        admissionPartConflictList.add(new AdmissionPartConflict(
-                                leftAdmissionPart, rightAdmissionPart, sameNightCount));
-                    }
-                }
-            }
-        }
-        return admissionPartConflictList;
     }
 
     public boolean equals(Object o) {

@@ -28,6 +28,7 @@
       <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
         <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <maximumSecondsSpend>300</maximumSecondsSpend>
@@ -38,10 +39,6 @@
   <solverBenchmark>
     <name>old CH</name>
     <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <!--<scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>-->
-      </scoreDirectorFactory>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
         <forceUpdateBestSolution>true</forceUpdateBestSolution>
@@ -50,25 +47,8 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>FF</name>
-    <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
-      </scoreDirectorFactory>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
     <name>FFD</name>
     <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
-      </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
@@ -78,10 +58,6 @@
   <solverBenchmark>
     <name>BFD</name>
     <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
-      </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
@@ -91,10 +67,6 @@
   <solverBenchmark>
     <name>old MH</name>
     <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <!--<scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>-->
-      </scoreDirectorFactory>
       <customSolverPhase>
         <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
         <forceUpdateBestSolution>true</forceUpdateBestSolution>
@@ -117,10 +89,6 @@
   <solverBenchmark>
     <name>TS 7</name>
     <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
-      </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
@@ -142,10 +110,6 @@
   <solverBenchmark>
     <name>LA 200</name>
     <solver>
-      <scoreDirectorFactory>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleSameBedInSameNightScoreRule.drl</scoreDrl>
-      </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
