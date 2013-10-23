@@ -32,6 +32,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
 import org.drools.workbench.models.datamodel.rule.ExpressionVariable;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -1652,14 +1653,14 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    keke.clear(  );\n" +
                 "end\n";
 
-        HashMap<String, String> globals = new HashMap<String, String>() ;
-        globals.put("keke","java.util.ArrayList");
+        HashMap<String, String> globals = new HashMap<String, String>();
+        globals.put( "keke", "java.util.ArrayList" );
 
         when(
                 dmo.getPackageGlobals()
-        ).thenReturn(
+            ).thenReturn(
                 globals
-        );
+                        );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
@@ -1687,14 +1688,14 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "    keke.add( a );\n" +
                 "end";
 
-        HashMap<String, String> globals = new HashMap<String, String>() ;
-        globals.put("keke","java.util.ArrayList");
+        HashMap<String, String> globals = new HashMap<String, String>();
+        globals.put( "keke", "java.util.ArrayList" );
 
         when(
                 dmo.getPackageGlobals()
-        ).thenReturn(
+            ).thenReturn(
                 globals
-        );
+                        );
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl, dmo );
 
@@ -1703,6 +1704,44 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "keke", actionGlobalCollectionAdd.getGlobalName() );
         assertEquals( "a", actionGlobalCollectionAdd.getFactName() );
 
+    }
+
+    @Test
+    public void testFieldConstraintLessThanOrEqualTo() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Applicant( age <= 22 )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Applicant",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+
+        FieldConstraint fc = fp.getConstraint( 0 );
+        assertNotNull( fc );
+        assertTrue( fc instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint sfc = (SingleFieldConstraint) fc;
+        assertEquals( "<=",
+                      sfc.getOperator() );
+        assertEquals( "22",
+                      sfc.getValue() );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
