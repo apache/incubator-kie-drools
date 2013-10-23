@@ -107,4 +107,9 @@ public class JbpmJTATransactionManager implements JbpmServicesTransactionManager
         
         tm.registerTransactionSynchronization(txSync);
     }
+
+	@Override
+	public boolean supportsTXSynchronization() {
+		return true;
+	}
 }

@@ -20,12 +20,12 @@ import javax.persistence.Persistence;
 
 import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
-import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.InternalTaskService;
 
 public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
 
@@ -49,7 +49,7 @@ public class HTWorkItemHandlerCDITest extends HTWorkItemHandlerBaseTest {
 
     @After
     public void tearDown() throws Exception {
-        int removeAllTasks = ((TaskServiceEntryPointImpl)taskService).removeAllTasks();
+        int removeAllTasks = ((InternalTaskService)taskService).removeAllTasks();
         emf.close();
 
     }

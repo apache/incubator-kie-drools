@@ -136,30 +136,18 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         return result;
     }
      
+    /**
+     * Find method is explicitly left without managing transaction to avoid 
+     * huge overhead it introduces with heavy load and it only attaches to
+     * persistence context to be part of transaction that is managed outside.
+     */
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey) { 
-        boolean txOwner = false;
-        boolean operationSuccessful = false;
-        boolean txStarted = false;
         T find = null;
-        try {
-            txOwner = beginTransaction();
-            txStarted = true;
-            find = getEm().find(entityClass, primaryKey);
-            operationSuccessful = true;
-            
-            endTransaction(txOwner);
-        } catch(Exception e) {
-            rollBackTransaction(txOwner);
-            
-            String message; 
-            if( !txStarted ) { message = "Could not start transaction."; }
-            else if( !operationSuccessful ) { message = "Operation failed"; }
-            else { message = "Could not commit transaction"; }
-            
-            throw new RuntimeException(message, e);
-            
-        }
+    	if (ttxm != null) {
+    		ttxm.attachPersistenceContext(getEm());
+    	}
+        find = getEm().find(entityClass, primaryKey);
              
        return find;
     }
@@ -333,6 +321,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
                 this.ttxm.rollback(getEm(), txOwner);
 
                 throw re;
+            } finally {
+            	if (!ttxm.supportsTXSynchronization() && txOwner) {
+            		noScopeEmLocal.set(null);
+            	}
             }
         }
     }
@@ -343,6 +335,10 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
                 this.ttxm.rollback(getEm(), txOwner);
             } catch(RuntimeException re) { 
                 logger.error("Unable to rollback transaction (or to mark as 'to rollback')!", re);
+            } finally {
+            	if (!ttxm.supportsTXSynchronization() && txOwner) {
+            		noScopeEmLocal.set(null);
+            	}
             }
         }
         
@@ -399,7 +395,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
                 this.em.toString();  
                 return this.em;
             } else {
-                return this.emf.createEntityManager();
+            	return getLocalEntityManager();
             }
         } catch (ContextNotActiveException e) {
             /*
@@ -408,19 +404,22 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
              * It will be reset by the transaction synchronization on transaction completion.
              * This is usually used with background tasks triggered by timers so no RequestScope
              */
-            LocalEntityMangerHolder noScopeEntityManager = noScopeEmLocal.get();
-            logger.debug("No ctx available trying to use no scoped entity manager {}", noScopeEntityManager);
-            if (noScopeEntityManager == null) {                
-                noScopeEntityManager = new LocalEntityMangerHolder(emf.createEntityManager());
-                logger.debug("local (no scoped) entity manager was not set, creating new entity manager {}", noScopeEntityManager);
-                noScopeEmLocal.set(noScopeEntityManager);
-         
-            }
-            return noScopeEntityManager.getEntityManager();
+            return getLocalEntityManager();
         }
 
     }
 
+   protected EntityManager getLocalEntityManager() {
+	   LocalEntityMangerHolder noScopeEntityManager = noScopeEmLocal.get();
+       logger.debug("No entity manager available trying to use no scoped entity manager {}", noScopeEntityManager);
+       if (noScopeEntityManager == null) {                
+           noScopeEntityManager = new LocalEntityMangerHolder(emf.createEntityManager());
+           logger.debug("local (no scoped) entity manager was not set, creating new entity manager {}", noScopeEntityManager);
+           noScopeEmLocal.set(noScopeEntityManager);
+    
+       }
+       return noScopeEntityManager.getEntityManager();
+   }
 
     /**
      * This method runs a query within a transaction and returns the result. 

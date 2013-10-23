@@ -18,6 +18,8 @@ package org.jbpm.services.task;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
+import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.internal.task.api.InternalTaskService;
@@ -36,8 +38,11 @@ public class NoCDIWithFactoriesLifeCycleLocalTest extends LifeCycleBaseTest {
         
         emf = Persistence.createEntityManagerFactory("org.jbpm.services.task");
         // Default Configuration for standalone environments
-        HumanTaskServiceFactory.setEntityManagerFactory(emf);
-        taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskService();
+        taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
+        		.transactionManager(new JbpmLocalTransactionManager())
+        		.userGroupCallback(new MvelUserGroupCallbackImpl())
+                .entityManagerFactory(emf)
+                .getTaskService();
 
         super.setUp();
         

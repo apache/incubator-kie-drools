@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
+import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.exception.TaskException;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.rule.TaskRuleService;
@@ -63,7 +65,7 @@ import org.kie.internal.task.api.model.TaskEvent;
  */
 @Transactional
 @ApplicationScoped
-public class TaskServiceEntryPointImpl implements InternalTaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
+public class TaskServiceEntryPointImpl implements ThrowableInteranlTaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
 
     @Inject
     private TaskDefService taskDefService;
@@ -265,7 +267,7 @@ public class TaskServiceEntryPointImpl implements InternalTaskService, EventServ
         taskInstanceService.deleteOutput(taskId, userId);
     }
 
-    public void exit(long taskId, String userId) {
+    public void exit(long taskId, String userId) throws PermissionDeniedException {
         taskInstanceService.exit(taskId, userId);
     }
 

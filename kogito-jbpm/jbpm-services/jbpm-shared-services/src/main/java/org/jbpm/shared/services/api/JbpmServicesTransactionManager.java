@@ -42,4 +42,6 @@ public interface JbpmServicesTransactionManager {
     public void dispose();
     
     public void registerTXSynchronization(TransactionSynchronization txSync);
+    
+    public boolean supportsTXSynchronization();
 }

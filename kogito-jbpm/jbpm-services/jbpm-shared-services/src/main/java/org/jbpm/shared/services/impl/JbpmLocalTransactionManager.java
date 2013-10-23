@@ -99,4 +99,9 @@ public class JbpmLocalTransactionManager implements JbpmServicesTransactionManag
         
     }
 
+	@Override
+	public boolean supportsTXSynchronization() {
+		return false;
+	}
+
 }

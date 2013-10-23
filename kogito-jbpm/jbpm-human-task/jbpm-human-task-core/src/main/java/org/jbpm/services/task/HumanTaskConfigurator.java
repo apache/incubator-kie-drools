@@ -1,6 +1,28 @@
+/*
+ * Copyright 2013 JBoss by Red Hat.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.jbpm.services.task;
 
-import javax.persistence.EntityManager;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.services.task.deadlines.DeadlinesDecorator;
@@ -8,6 +30,7 @@ import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.services.task.identity.UserGroupTaskInstanceServiceDecorator;
 import org.jbpm.services.task.identity.UserGroupTaskQueryServiceDecorator;
+import org.jbpm.services.task.impl.ThrowableInteranlTaskService;
 import org.jbpm.services.task.impl.TaskAdminServiceImpl;
 import org.jbpm.services.task.impl.TaskContentServiceImpl;
 import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
@@ -27,6 +50,8 @@ import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.task.TaskService;
+import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskAdminService;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskDeadlinesService;
@@ -35,6 +60,20 @@ import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.UserGroupCallback;
 
+/**
+ * Task service configurator that provides fluent API approach to building <code>TaskService</code>
+ * instances. Most of the attributes have their defaults but there is on that must be explicitly set
+ * <ul>
+ * 	<li>entityManagerFactory</li>
+ * </ul>
+ * Important to notice is defaults for:
+ * <ul>
+ * 	<li>transactionManager - uses local transactions by default</li>
+ * 	<li>userGroupCallback - uses MvelUserGroupCallbackImpl by default</li>
+ * </ul>
+ * Before returning the instance of <code>TaskService</code> it will be wrapped with proxy instance to provide transaction
+ * handling capabilities - begin and commit/rollback to simplify usage.
+ */
 public class HumanTaskConfigurator {
 
     private TaskService service;
@@ -187,13 +226,13 @@ public class HumanTaskConfigurator {
             ((TaskRuleServiceImpl)taskRuleService).setRuleContextProvider(ruleProvider);
             ((TaskServiceEntryPointImpl)service).setTaskRuleService(taskRuleService);
         }
-        return service;
+        return (TaskService) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {ThrowableInteranlTaskService.class,
+        	EventService.class}, new TransactionInterceptor((InternalTaskService) service, pm));
     }
     
-    protected void configurePersistenceManager(){
-        EntityManager em = emf.createEntityManager();
+    protected void configurePersistenceManager(){        
         // Persistence and Transactions
-        ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
+        ((JbpmServicesPersistenceManagerImpl)pm).setEmf(emf);
         ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(jbpmTransactionManager);
         
     }
@@ -289,5 +328,54 @@ public class HumanTaskConfigurator {
         deadlinesDecorator.setInstanceService(subTaskDecorator);
         return deadlinesDecorator;
 
-    }    
+    }   
+    
+    private static class TransactionInterceptor implements InvocationHandler {
+    	
+    	private List<String> excludedMethods = new ArrayList<String>();
+    	private InternalTaskService delegate;
+    	private JbpmServicesPersistenceManager pm;
+    	
+    	TransactionInterceptor(InternalTaskService delegate, JbpmServicesPersistenceManager pm) {
+    		this.delegate = delegate;
+    		this.pm = pm;
+    		this.excludedMethods.add("addMarshallerContext");
+    		this.excludedMethods.add("removeMarshallerContext");
+    		this.excludedMethods.add("getMarshallerContext");
+    	}
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] aruments) throws Throwable {
+			if (!isTransactional(method)) {
+				return method.invoke(delegate, aruments);
+			}
+			boolean owner = pm.beginTransaction();
+			try {
+				Object result = method.invoke(delegate, aruments);
+				pm.endTransaction(owner);
+				
+				return result;
+			} catch (Exception e) {
+				if (owner) {
+					pm.rollBackTransaction(owner);
+				}
+				if (e instanceof InvocationTargetException) {
+					throw ((InvocationTargetException) e).getTargetException();
+				} else {
+					throw e;
+				}
+			}
+			
+		}
+		
+		private boolean isTransactional(Method method) {
+			if (method.getDeclaringClass().isAssignableFrom(EventService.class)) {
+				return false;
+			} else if (excludedMethods.contains(method.getName())) {
+				return false;
+			}
+			
+			return true;
+		}
+    }
 }

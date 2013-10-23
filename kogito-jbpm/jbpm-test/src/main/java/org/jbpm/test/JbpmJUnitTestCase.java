@@ -31,6 +31,8 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
+import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -56,6 +58,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -515,7 +518,11 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
     }
 
     public TaskService getService() {
-        return HumanTaskServiceFactory.newTaskService();
+        return (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
+        		.transactionManager(new JbpmJTATransactionManager())
+        		.userGroupCallback(new MvelUserGroupCallbackImpl())
+                .entityManagerFactory(emf)
+                .getTaskService();
     }
     private static class H2Server {
 

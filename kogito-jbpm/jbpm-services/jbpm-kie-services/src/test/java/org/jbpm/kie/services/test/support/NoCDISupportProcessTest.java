@@ -20,6 +20,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KnowledgeAdminDataServiceImpl;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
@@ -38,10 +39,12 @@ import org.jbpm.kie.services.impl.bpmn2.ProcessGetInputHandler;
 import org.jbpm.kie.services.test.TestIdentityProvider;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
 import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.shared.services.api.FileService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.shared.services.impl.TestVFSFileServiceImpl;
 import org.junit.After;
@@ -136,10 +139,11 @@ public class NoCDISupportProcessTest extends SupportProcessBaseTest {
         ((BPMN2DataServiceImpl) bpmn2Service).setSemanticModule(semanticModule);
         ((BPMN2DataServiceImpl) bpmn2Service).init();
       
-        HumanTaskServiceFactory.setEntityManagerFactory(emf);
-      
-        HumanTaskServiceFactory.setJbpmServicesTransactionManager(jbpmJTATransactionManager);
-        taskService = HumanTaskServiceFactory.newTaskService();
+        taskService = HumanTaskServiceFactory.newTaskServiceConfigurator()
+											.transactionManager(jbpmJTATransactionManager)
+											.userGroupCallback(new MvelUserGroupCallbackImpl())
+									        .entityManagerFactory(emf)
+									        .getTaskService();
 
         RuntimeDataService runtimeDataService = new RuntimeDataServiceImpl();
         ((RuntimeDataServiceImpl)runtimeDataService).setPm(pm);
