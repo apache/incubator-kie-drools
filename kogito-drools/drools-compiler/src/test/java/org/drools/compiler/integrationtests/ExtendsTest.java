@@ -27,6 +27,7 @@ import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
@@ -969,6 +970,55 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertEquals( "field1", sw.getFields().get(3).getName() );
         assertEquals( "field3", sw.getFields().get(4).getName() );
         assertEquals( "mfield1", sw.getFields().get(5).getName() );
+    }
+
+    public static interface A {}
+
+    public static interface B extends A {}
+
+    public static interface C extends B {}
+
+    public static class X implements C {
+        private int x = 1;
+        public int getX() { return x; }
+    }
+
+
+    @Test
+    public void testDeclareInheritance() throws Exception {
+        String s1 = "package org.drools;\n" +
+                    "import org.drools.compiler.integrationtests.ExtendsTest.*;\n" +
+                    "\n" +
+                    "declare A \n" +
+                    " @role( event )" +
+                    " @typesafe( false )\n" +
+                    "end\n" +
+                    "" +
+                    "declare C @role( event ) @typesafe( false ) end \n" +
+                    "" +
+                    "rule R \n" +
+                    "when " +
+                    "   $x : C( this.x == 1 ) \n" +
+                    "then\n" +
+                    "   System.out.println( $x ); \n" +
+                    "end\n" +
+                    "";
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertFalse( kBuilder.hasErrors() );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        FactHandle h = knowledgeSession.insert( new X() );
+
+        assertTrue( ( (InternalFactHandle) h ).isEvent() );
+
     }
 }
 

@@ -342,7 +342,7 @@ public class InlineCastTest extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore("fixed with mvel 2.1.7.Final")
+    @Test
     public void testMatchesOperator() {
         // BZ-971008
         String drl = "package org.drools.compiler.integrationtests\n"
