@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-multiproject</artifactId>
+    <version>6.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kie-docs</artifactId>
+  <packaging>pom</packaging>
+
+  <name>KIE :: Documentation</name>
+  <description>KIE Documentation</description>
+
+  <modules>
+    <!--module>drools</module-->
+    <module>template</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+
+        <plugin>
+          <groupId>org.jboss.maven.plugins</groupId>
+          <artifactId>maven-jdocbook-plugin</artifactId>
+          <version>2.3.8</version>
+          <extensions>true</extensions>
+
+          <dependencies>
+            <dependency>
+              <groupId>org.jboss.pressgang</groupId>
+              <artifactId>pressgang-xslt-ns</artifactId>
+              <version>2.0.2</version>
+            </dependency>
+            <dependency>
+              <groupId>org.jboss.pressgang</groupId>
+              <artifactId>pressgang-jdocbook-style</artifactId>
+              <type>jdocbook-style</type>
+              <version>3.0.0</version>
+            </dependency>
+          </dependencies>
+
+          <configuration>
+            <sourceDocumentName>master.xml</sourceDocumentName>
+            <masterTranslation>en-US</masterTranslation>
+            <imageResource>
+              <directory>${basedir}/src/main/docbook/en-US</directory>
+              <includes>
+                <include>images/</include>
+              </includes>
+            </imageResource>
+            <formats>
+              <format>
+                <formatName>html_single</formatName>
+                <stylesheetResource>classpath:/xslt/org/jboss/xhtml-single.xsl</stylesheetResource>
+                <finalName>index.html</finalName>
+                <!-- <profilingTypeName>two_pass</profilingTypeName> -->
+              </format>
+              <format>
+                <formatName>html</formatName>
+                <stylesheetResource>classpath:/xslt/org/jboss/xhtml.xsl</stylesheetResource>
+                <finalName>index.html</finalName>
+                <!-- <profilingTypeName>two_pass</profilingTypeName> -->
+              </format>
+              <format>
+                <formatName>pdf</formatName>
+                <stylesheetResource>classpath:/xslt/org/jboss/pdf.xsl</stylesheetResource>
+                <finalName>${project.artifactId}.pdf</finalName>
+              </format>
+              <!--<format>-->
+              <!--<formatName>eclipse</formatName>-->
+              <!--<stylesheetResource>classpath:/xslt/org/jboss/eclipse.xsl</stylesheetResource>-->
+              <!--<finalName>${project.artifactId}.html</finalName>-->
+              <!--</format>-->
+            </formats>
+            <injections>
+              <injection>
+                <name>project.version</name>
+                <value>${project.version}</value>
+              </injection>
+            </injections>
+            <options>
+              <xmlTransformerType>saxon</xmlTransformerType>
+              <xincludeSupported>true</xincludeSupported>
+              <useRelativeImageUris>true</useRelativeImageUris>
+              <!-- TODO Probably obsolete after the upgrade to maven-jdocbook-plugin 2.3.0 -->
+              <docbookVersion>1.72.0</docbookVersion>
+              <!-- <localeSeparator>-</localeSeparator> -->
+            </options>
+          </configuration>
+        </plugin>
+
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>
