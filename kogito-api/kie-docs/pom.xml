@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools-multiproject</artifactId>
+    <version>6.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>kie-docs</artifactId>
+  <packaging>pom</packaging>
+
+  <name>KIE :: Documentation</name>
+  <description>KIE Documentation</description>
+
+  <modules>
+    <module>drools-docs</module>
+    <module>jbpm-docs</module>
+    <module>optaplanner-docs</module>
+    <module>template-docs</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources-html_single</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/docbook/publish/en-US/html_single/images</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/../shared/images/</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources-html</id>
+            <!-- here the phase you need -->
+            <phase>validate</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/docbook/publish/en-US/html/images</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/../shared/images/</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
