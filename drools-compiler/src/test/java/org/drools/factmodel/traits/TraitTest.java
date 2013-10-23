@@ -29,6 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 
@@ -4464,5 +4467,264 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( 3, ksession.getObjects().size() );
 
     }
+
+
+
+    public static class CountingWorkingMemoryEventListener implements WorkingMemoryEventListener {
+
+        private int inserts = 0;
+        private int updates = 0;
+        private int retracts = 0;
+
+        public int getInserts() {
+            return inserts;
+        }
+
+        public int getUpdates() {
+            return updates;
+        }
+
+        public int getRetracts() {
+            return retracts;
+        }
+
+        public void objectInserted( ObjectInsertedEvent objectInsertedEvent ) {
+            if ( ! ( objectInsertedEvent.getObject() instanceof String ) ) {
+                inserts++;
+            }
+        }
+
+        public void objectUpdated( ObjectUpdatedEvent objectUpdatedEvent ) {
+            System.out.println( objectUpdatedEvent );
+            if ( ! ( objectUpdatedEvent.getObject() instanceof String ) ) {
+                updates++;
+            }
+        }
+
+        public void objectRetracted( ObjectRetractedEvent objectRetractedEvent ) {
+            if ( ! ( objectRetractedEvent.getOldObject() instanceof String ) ) {
+                retracts++;
+            }
+        }
+
+        public void reset() {
+            inserts = 0;
+            retracts = 0;
+            updates = 0;
+        }
+    }
+
+
+    @Test
+    public void testDonManyTraitsAtOnce() {
+        String drl = "" +
+                     "package org.drools.factmodel.traits.test;\n" +
+                     "\n" +
+                     "import org.drools.factmodel.traits.*;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "global List list; \n" +
+                     "" +
+                     "declare trait A end \n" +
+                     "declare trait B end \n" +
+                     "declare trait C end \n" +
+                     "declare trait D end \n" +
+                     "declare trait E end \n" +
+                     "declare trait F end \n" +
+                     "\n" +
+                     "declare TBean @Traitable @propertyReactive fld0 : String end \n" +
+                     "" +
+                     "rule \"Don 1\"\n" +
+                     "when \n" +
+                     "then\n" +
+                     "  TBean t = new TBean(); \n" +
+                     "  don( t, A.class ); \n" +
+                     "  don( t, B.class ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule \"Don 2\" " +
+                     "when \n" +
+                     "  $s : String( this == \"go\" ) \n" +
+                     "  $t : TBean() \n" +
+                     "then \n" +
+                     "  list.add( 0 ); \n" +
+                     "  System.out.println( \"Call DON MANY \" ); " +
+                     "  don( $t, Arrays.asList( C.class, D.class, E.class, F.class ), true ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule Clear \n" +
+                     "when \n" +
+                     "  $s : String( this == \"undo\" ) \n" +
+                     "  $t : TBean() \n" +
+                     "then \n" +
+                     "  retract( $s ); \n" +
+                     "  retract( $t ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule C \n" +
+                     "when\n" +
+                     "  B( this isA C ) \n" +
+                     "then \n" +
+                     "  list.add( 1 ); \n" +
+                     "  System.err.println( \"C is HERE !! \" ); " +
+                     "end \n" +
+                     "rule D \n" +
+                     "when\n" +
+                     "  D( this isA A, this isA C ) \n" +
+                     "then \n" +
+                     "  list.add( 2 ); \n" +
+                     "  System.err.println( \"D is HERE TOO !! \" ); " +
+                     "end \n"+
+                     "rule E \n" +
+                     "when\n" +
+                     "  D( this isA A, this isA E ) \n" +
+                     "then \n" +
+                     "  list.add( 3 ); \n" +
+                     "  System.err.println( \"AND E JOINS THE COMPANY !! \" ); " +
+                     "end \n";
+
+        StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
+        TraitFactory.setMode( mode, ksession.getKnowledgeBase() );
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        CountingWorkingMemoryEventListener cwm = new CountingWorkingMemoryEventListener();
+        ksession.addEventListener( cwm );
+
+        ksession.fireAllRules();
+
+        // insert Core Bean, A, B, Thing.
+        // Update the bean on don A, update the bean and A on don B
+        assertEquals( 0, cwm.getRetracts() );
+        assertEquals( 4, cwm.getInserts() );
+        assertEquals( 3, cwm.getUpdates() );
+        cwm.reset();
+
+        FactHandle handle = ksession.insert( "go" );
+        ksession.fireAllRules();
+
+        // don C, D, E, F at once : 4 inserts
+        // Update the bean, A and B.
+        assertEquals( 0, cwm.getRetracts() );
+        assertEquals( 4, cwm.getInserts() );
+        assertEquals( 3, cwm.getUpdates() );
+        cwm.reset();
+
+        ksession.retract( handle );
+        ksession.fireAllRules();
+
+        // logically asserted C, D, E, F are retracted
+        // as a logical retraction, no update is made. This could be a bug....
+        assertEquals( 4, cwm.getRetracts() );
+        assertEquals( 0, cwm.getInserts() );
+        assertEquals( 0, cwm.getUpdates() );
+        cwm.reset();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.out.println( o );
+        }
+
+        ksession.insert( "undo" );
+        ksession.fireAllRules();
+
+        // retracting the core bean
+        // A, B, Thing are retracted too
+        assertEquals( 4, cwm.getRetracts() );
+        assertEquals( 0, cwm.getInserts() );
+        assertEquals( 0, cwm.getUpdates() );
+        cwm.reset();
+
+
+        assertEquals( 4, list.size() );
+        assertTrue( list.containsAll( Arrays.asList( 0, 1, 2, 3 ) ) );
+    }
+
+
+
+
+    @Traitable
+    public static class Item {
+        private String id;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
+
+    public static class TraitRulesThread implements Runnable {
+        int threadIndex;
+        int numRepetitions;
+        StatefulKnowledgeSession ksession;
+
+        public TraitRulesThread(int threadIndex, int numRepetitions, final StatefulKnowledgeSession ksession) {
+            this.threadIndex = threadIndex;
+            this.numRepetitions = numRepetitions;
+            this.ksession = ksession;
+        }
+        public void run() {
+            for (int repetitionIndex = 0; repetitionIndex < numRepetitions; repetitionIndex++) {
+                final Item i = new Item();
+                i.setId(String.format("testId_%d%d", threadIndex, repetitionIndex));
+                ksession.insert(i);
+                ksession.fireAllRules();
+            }
+        }
+    }
+
+    @Test
+    @Ignore("Triple Store is not thread safe and needs to be rewritten")
+    public void testMultithreadingTraits() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.factmodel.traits.TraitTest.Item;\n" +
+                          "declare Item end\n" +
+                          "declare trait ItemStyle\n" +
+                          "	id: String\n" +
+                          "	adjustable: boolean\n" +
+                          "end\n" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	no-loop true\n" +
+                          "	when\n" +
+                          "		$p : Item ()\n" +
+                          "		not ItemStyle ( id == $p.id )\n" +
+                          "	then\n" +
+                          "		don($p, ItemStyle.class);\n" +
+                          "end\n" +
+                          "rule \"Item Style - Adjustable\"" +
+                          "	no-loop true" +
+                          "	when" +
+                          "		$style : ItemStyle ( !adjustable )" +
+                          "		Item (" +
+                          "			id == $style.id " +
+                          "		)" +
+                          "	then" +
+                          "		modify($style) {" +
+                          "			setAdjustable(true)" +
+                          "		};" +
+                          "end";
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+
+        // might need to tweak these numbers.  often works with 7-10,100,60, but often fails 15-20,100,60
+        int MAX_THREADS = 20;
+        int MAX_REPETITIONS = 100;
+        int MAX_WAIT_SECONDS = 60;
+
+        final ExecutorService executorService = Executors.newFixedThreadPool( MAX_THREADS );
+        for (int threadIndex = 0; threadIndex < MAX_THREADS; threadIndex++) {
+            executorService.execute(new TraitRulesThread(threadIndex, MAX_REPETITIONS, kbase.newStatefulKnowledgeSession()));
+        }
+
+        executorService.shutdown();
+        executorService.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+        final List<Runnable> queuedTasks = executorService.shutdownNow();
+
+        assertEquals(0, queuedTasks.size());
+        assertEquals(true, executorService.isTerminated());
+    }
+
 
 }
