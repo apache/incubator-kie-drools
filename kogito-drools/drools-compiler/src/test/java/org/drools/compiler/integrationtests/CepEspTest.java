@@ -3807,4 +3807,69 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 0, session.getEntryPoint( "ep01" ).getObjects().size() );
     }
 
+
+    @Test
+    public void AfterOperatorInCEPQueryTest() {
+
+        String drl = "package org.drools;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "    @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeNineSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 9s] $event) from entry-point EventStream\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeNineteenSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 19s] $event) from entry-point EventStream\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeHundredSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 100s] $event) from entry-point EventStream\n" +
+                     "end\n";
+
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
+
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        EntryPoint ePoint = ksession.getEntryPoint( "EStream" );
+        EntryPoint entryPoint = ksession.getEntryPoint( "EventStream" );
+
+
+        ePoint.insert(new StockTick(0L, "zero", 0.0, 0));
+
+        entryPoint.insert(new StockTick(1L, "one", 0.0, 0));
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        entryPoint.insert(new StockTick(2L, "two",0.0,  0));
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        entryPoint.insert(new StockTick(3L, "three", 0.0, 0));
+
+        QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
+
+        assertEquals( 1, results.size());
+
+        results = ksession.getQueryResults("EventsBeforeNineteenSeconds");
+
+        assertEquals( 2, results.size() );
+
+        results = ksession.getQueryResults("EventsBeforeHundredSeconds");
+
+        assertEquals( 3, results.size() );
+
+        ksession.dispose();
+    }
 }
