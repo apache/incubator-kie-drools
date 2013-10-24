@@ -19,10 +19,24 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeManager;
 
-
+/**
+ * Extension to stable API of RuntimeManager that provides additional capabilities
+ * that eventually will get propagated to main interface.
+ *
+ */
 public interface InternalRuntimeManager extends RuntimeManager {
 
+	/**
+	 * Validates if given <code>KieSession</code> is eligible to be used with given context.
+	 * @param ksession instance of <code>KieSession</code>
+	 * @param context instance of <code>Context</code>
+	 * @throws IllegalStateException in case validation fails
+	 */
     void validate(KieSession ksession, Context<?> context) throws IllegalStateException;
     
+    /**
+     * Returns the actual environment used by the <code>RuntimeManager</code>
+     * @return
+     */
     RuntimeEnvironment getEnvironment();
 }
