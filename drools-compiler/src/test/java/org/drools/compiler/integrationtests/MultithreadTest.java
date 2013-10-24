@@ -37,6 +37,7 @@ import org.drools.compiler.StockTick;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
@@ -498,10 +499,18 @@ public class MultithreadTest extends CommonTestMethodBase {
         // DROOLS-175
         StringBuilder drl = new StringBuilder(  );
         drl.append( "package org.drools.test;\n" +
-                    "query foo( ) end" );
+                    "" +
+                    "query foo( ) \n" +
+                    "   Object() from new Object() \n" +
+                    "end\n" +
+                    "" +
+                    "rule XYZ when then end \n"
+        );
 
-
-        final KnowledgeBase kbase = loadKnowledgeBaseFromString( drl.toString() );
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.toString().getBytes() ), ResourceType.DRL );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
 
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
