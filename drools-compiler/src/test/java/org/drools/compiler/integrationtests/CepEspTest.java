@@ -4238,4 +4238,133 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( 3L, 1L ), list );
     }
+
+
+    public static class MyEvent {
+        private long timestamp;
+        public MyEvent( long timestamp ) { this.timestamp = timestamp; }
+        public long getTimestamp() { return timestamp; }
+        public void setTimestamp( long timestamp ) { this.timestamp = timestamp; }
+        public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
+    }
+
+    @Test
+    public void testEventStreamWithEPsAndDefaultPseudo() throws InterruptedException {
+        //DROOLS-286
+        String drl = "\n" +
+                     "import java.util.*;\n" +
+                     "import org.drools.compiler.integrationtests.CepEspTest.MyEvent; \n" +
+                     "" +
+                     "declare MyEvent\n" +
+                     "    @role(event)\n" +
+                     "    @timestamp(timestamp)\n" +
+                     "end\n" +
+                     "\n" +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "rule \"over 0.3s\"\n" +
+                     "salience 1 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(300ms))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 0.3s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 1s\"\n" +
+                     "salience 2 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(1s))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 1s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 3s\"\n" +
+                     "salience 3 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(3s))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 3s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 0.3s ep\"\n" +
+                     "salience 4 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(300ms) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 0.3s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 1s ep\"\n" +
+                     "salience 5 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(1s) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 1s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 3s ep\"\n" +
+                     "salience 6 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(3s) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 3s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ArrayList list = new ArrayList( );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        list.clear();
+
+        for ( int j = 0; j < 5; j++ ) {
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            ksession.insert( new MyEvent( clock.getCurrentTime() ) );
+            ksession.getEntryPoint( "stream" ).insert( new MyEvent( clock.getCurrentTime() ) );
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+
+            System.out.println( list );
+            switch ( j ) {
+                case 0 : assertEquals( Arrays.asList( 1, 1, 0, 1, 1, 0 ), list );
+                    break;
+                case 1 : assertEquals( Arrays.asList( 2, 1, 0, 2, 1, 0 ), list );
+                    break;
+                case 2 :
+                case 3 :
+                case 4 : assertEquals( Arrays.asList( 3, 1, 0, 3, 1, 0 ), list );
+                    break;
+                default: fail();
+            }
+            list.clear();
+
+            System.out.println( "-------------- SLEEP ------------" );
+        }
+
+        ksession.dispose();
+    }
 }
