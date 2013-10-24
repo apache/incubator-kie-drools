@@ -16,6 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import junit.framework.Assert;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -61,6 +62,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
@@ -3687,4 +3689,42 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
 
     }
+
+    @Test
+    public void testDontFailOnDuplicatedRuleWithDeclaredTypeError() {
+        String rule1 =
+                "rule \"Some Rule\"\n" +
+                "when\n" +
+                "   $s: String()\n" +
+                "then\n" +
+                "end";
+
+        String rule2 =
+                "declare DClass\n" +
+                "  prop : String\n" +
+                "end\n" +
+                "rule \"Some Rule\"\n" +
+                "when\n" +
+                "   $d: DClass()\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule2.getBytes()), ResourceType.DRL );
+
+
+        //the default behavior of kbuilder is not to fail because of duplicated
+        //rules.
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        //We must have 1 INFO result.
+        KnowledgeBuilderResults infos = kbuilder.getResults( ResultSeverity.INFO);
+        Assert.assertNotNull( infos );
+        Assert.assertEquals(1, infos.size());
+
+    }
+
 }
