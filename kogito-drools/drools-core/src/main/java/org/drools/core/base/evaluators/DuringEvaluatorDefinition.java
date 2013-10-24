@@ -95,15 +95,26 @@ public class DuringEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator         DURING        = Operator.addOperatorToRegistry( "during",
-                                                                                         false );
-    public static final Operator         NOT_DURING    = Operator.addOperatorToRegistry( "during",
-                                                                                         true );
+    public static final String          duringOp = "during";
 
-    private static final String[]        SUPPORTED_IDS = {DURING.getOperatorString()};
+    public static Operator              DURING;
+
+    public static Operator              NOT_DURING;
+
+    private static String[]             SUPPORTED_IDS;
 
     private Map<String, DuringEvaluator> cache         = Collections.emptyMap();
     private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( duringOp, false ) == null ) {
+            DURING = Operator.addOperatorToRegistry( duringOp, false );
+            NOT_DURING = Operator.addOperatorToRegistry( duringOp, true );
+            SUPPORTED_IDS = new String[] { duringOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
@@ -219,6 +230,10 @@ public class DuringEvaluatorDefinition
         private long              startMinDev, startMaxDev;
         private long              endMinDev, endMaxDev;
         private String            paramText;
+
+        {
+            DuringEvaluatorDefinition.init();
+        }
 
         public DuringEvaluator() {
         }

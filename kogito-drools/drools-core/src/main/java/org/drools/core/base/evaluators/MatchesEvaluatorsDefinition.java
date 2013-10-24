@@ -35,12 +35,23 @@ import org.drools.core.spi.InternalReadAccessor;
  */
 public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
 
-    public static final Operator  MATCHES       = Operator.addOperatorToRegistry( "matches",
-                                                                                  false );
-    public static final Operator  NOT_MATCHES   = Operator.addOperatorToRegistry( "matches",
-                                                                                  true );
+    protected static final String   matchesOp = "matches";
 
-    private static final String[] SUPPORTED_IDS = { MATCHES.getOperatorString() };
+    public static Operator          MATCHES;
+    public static Operator          NOT_MATCHES;
+
+    private static String[]         SUPPORTED_IDS;
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( matchesOp, false ) == null ) {
+            MATCHES = Operator.addOperatorToRegistry( matchesOp, false );
+            NOT_MATCHES = Operator.addOperatorToRegistry( matchesOp, true );
+            SUPPORTED_IDS = new String[] { matchesOp };
+        }
+    }
+
     private EvaluatorCache evaluators = new EvaluatorCache() {
         private static final long serialVersionUID = 510l;
         {
@@ -128,6 +139,9 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringMatchesEvaluator();
 
+        {
+            MatchesEvaluatorsDefinition.init();
+        }
 
         public StringMatchesEvaluator() {
             super( ValueType.STRING_TYPE,
@@ -183,6 +197,10 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
     public static class StringNotMatchesEvaluator extends BaseEvaluator {
         private static final long     serialVersionUID = 400L;
         public final static Evaluator INSTANCE         = new StringNotMatchesEvaluator();
+
+        {
+            MatchesEvaluatorsDefinition.init();
+        }
 
         public StringNotMatchesEvaluator() {
             super( ValueType.STRING_TYPE,

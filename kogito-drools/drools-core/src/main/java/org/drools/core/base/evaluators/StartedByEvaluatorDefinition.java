@@ -74,15 +74,25 @@ public class StartedByEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    public static final Operator  STARTED_BY       = Operator.addOperatorToRegistry( "startedby",
-                                                                                  false );
-    public static final Operator  NOT_STARTED_BY   = Operator.addOperatorToRegistry( "startedby",
-                                                                                  true );
+    protected static final String   startedByOp = "startedby";
 
-    private static final String[] SUPPORTED_IDS = { STARTED_BY.getOperatorString() };
+    public static Operator          STARTED_BY;
+    public static Operator          NOT_STARTED_BY;
 
-    private Map<String, StartedByEvaluator> cache        = Collections.emptyMap();
-    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
+    private static String[]         SUPPORTED_IDS;
+
+    private Map<String, StartedByEvaluator> cache     = Collections.emptyMap();
+    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( startedByOp, false ) == null ) {
+            STARTED_BY = Operator.addOperatorToRegistry( startedByOp, false );
+            NOT_STARTED_BY = Operator.addOperatorToRegistry( startedByOp, true );
+            SUPPORTED_IDS = new String[] { startedByOp };
+        }
+    }
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -194,8 +204,12 @@ public class StartedByEvaluatorDefinition
     public static class StartedByEvaluator extends BaseEvaluator {
         private static final long serialVersionUID = 510l;
 
-        private long                  startDev;
-        private String            paramText;
+        private long                startDev;
+        private String              paramText;
+
+        {
+            StartedByEvaluatorDefinition.init();
+        }
 
         public StartedByEvaluator() {
         }
