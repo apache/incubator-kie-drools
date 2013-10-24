@@ -47,6 +47,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -142,25 +143,34 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 15000)
+    @Test(timeout = 10000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
+                     "global java.util.List list; \n" +
                      "declare StockTick @role(event) end\n" +
+                     "" +
+                     "" +
                      "rule R\n" +
-                     " duration(1s)" +
+                     " duration(200ms)" +
                      "when\n" +
-                     " accumulate( $st : StockTick() over window:time(2s)\n" +
+                     " accumulate( $st : StockTick() over window:time(400ms)\n" +
                      "             from entry-point X,\n" +
                      "             $c : count(1) )" +
                      "then\n" +
-                     "    //System.out.println( $c );\n" +
-                     "end";
+                     "   System.out.println( $c );\n" +
+                     "   list.add( $c ); \n" +
+                     "end \n";
+
+        final List<Exception> errors = new ArrayList<Exception>(  );
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
+        kbconf.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, str );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        final EntryPoint ep = ksession.getEntryPoint("X");
+        final EntryPoint ep = ksession.getEntryPoint( "X" );
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -170,7 +180,7 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
-        final int RUN_TIME = 10000; // runs for 10 seconds
+        final int RUN_TIME = 5000; // runs for 10 seconds
         final int THREAD_NR = 2;
 
         CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
@@ -180,6 +190,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                     ksession.fireUntilHalt();
                     return true;
                 } catch (Exception e) {
+                    errors.add( e );
                     e.printStackTrace();
                     return false;
                 }
@@ -190,13 +201,16 @@ public class MultithreadTest extends CommonTestMethodBase {
             ecs.submit(new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     try {
+                        final String s = Thread.currentThread().getName();
                         long endTS = System.currentTimeMillis() + RUN_TIME;
+                        int j = 0;
                         while( System.currentTimeMillis() < endTS) {
-                            ep.insert(new StockTick());
+                            ep.insert( new StockTick( j++, s, 0.0, 0 ) );
                             Thread.sleep(1);
                         }
                         return true;
                     } catch (Exception e) {
+                        errors.add( e );
                         e.printStackTrace();
                         return false;
                     }
@@ -209,17 +223,24 @@ public class MultithreadTest extends CommonTestMethodBase {
             try {
                 success = ecs.take().get() && success;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                errors.add( e );
             }
         }
         ksession.halt();
         try {
             success = ecs.take().get() && success;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            errors.add( e );
         }
 
-        assertTrue(success);
+        for ( Exception e : errors ) {
+            e.printStackTrace();
+        }
+        assertTrue( errors.isEmpty() );
+        assertTrue( success );
+
+        System.out.print( list );
+        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 200 );
         ksession.dispose();
     }
 
