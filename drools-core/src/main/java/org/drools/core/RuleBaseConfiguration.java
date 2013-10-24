@@ -171,10 +171,12 @@ public class RuleBaseConfiguration
 
     private KieComponentFactory componentFactory;
 
-    private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
+    private static class DefaultRuleBaseConfigurationHolder {
+        private static final RuleBaseConfiguration defaultConf = new RuleBaseConfiguration();
+    }
 
     public static RuleBaseConfiguration getDefaultInstance() {
-        return defaultConf;
+        return DefaultRuleBaseConfigurationHolder.defaultConf;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
