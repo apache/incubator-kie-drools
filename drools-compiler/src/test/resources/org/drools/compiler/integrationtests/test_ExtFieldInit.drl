@@ -48,8 +48,8 @@ declare MyBoxExpressionBean
 
     fielddbl  : Double = Math.sqrt(16.0)
     fieldflt  : Float = 1.0f/2
-    fieldsht : Short = (short) 2*3
-    fieldbyt : Byte = (byte) 1+1
+    fieldsht : Short = 2*3
+    fieldbyt : Byte = 1+1
     fieldbln : Boolean = true || false
     fieldchr : Character = x
     fieldlng : Long = 9999
@@ -63,8 +63,8 @@ declare MySimpleExpressionBean
 
     fielddbl  : double = Math.sqrt(16.0)
     fieldflt  : float = 1.0f/2
-    fieldsht : short = (short) 2*3
-    fieldbyt : byte = (byte) 1+1
+    fieldsht : short = 2*3
+    fieldbyt : byte = 1+1
     fieldbln : boolean = true || false
     fieldchr : char = x
     fieldlng : long = 9999
@@ -74,6 +74,6 @@ end
 
 rule "mock"
 when
-    MyBean2( fieldsht > 10 )
+    MyBean2( fieldsht > (short) 10 )
 then
 end
