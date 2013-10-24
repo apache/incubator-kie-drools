@@ -8,6 +8,7 @@ import java.io.StringReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
@@ -478,6 +480,16 @@ public class KnowledgeBuilderTest {
         PMMLCompilerFactory.setProvider(new PMMLCompiler() {
             public String compile(InputStream stream, Map<String, PackageRegistry> registries) {
                 return "rule R2 when then end";
+            }
+
+            @Override
+            public List<KnowledgeBuilderResult> getResults() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void clearResults() {
+                //To change body of implemented methods use File | Settings | File Templates.
             }
         });
 
