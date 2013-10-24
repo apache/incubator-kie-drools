@@ -41,6 +41,8 @@ import org.kie.api.runtime.process.WorkItemHandler;
  */
 public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
 
+	private static final String DEFAULT_KIE_SESSION = "defaultKieSession";
+	
     private KieContainer kieContainer;
     private String ksessionName;
     
@@ -65,6 +67,10 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         KieSessionModel ksessionModel = null;
         if(StringUtils.isEmpty(ksessionName)) {
             ksessionModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieSession();
+            if (ksessionModel == null) {
+            	ksessionName = DEFAULT_KIE_SESSION;
+            	ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(ksessionName);
+            }
         } else {            
             ksessionModel = ((KieContainerImpl)kieContainer).getKieSessionModel(ksessionName);
         }
