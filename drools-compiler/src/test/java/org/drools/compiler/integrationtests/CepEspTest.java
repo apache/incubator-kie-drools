@@ -1,14 +1,13 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.StockTickEvent;
-import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
+import org.drools.compiler.StockTickEvent;
 import org.drools.compiler.StockTickInterface;
-import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.ClockType;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
@@ -16,7 +15,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -27,6 +25,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,33 +34,31 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
 import java.io.File;
@@ -3871,5 +3868,53 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 3, results.size() );
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testFromWithEvents() {
+        String drl = "\n" +
+                     "\n" +
+                     "package org.drools.test\n" +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "declare MyEvent\n" +
+                     "@role(event)\n" +
+                     "@timestamp( stamp )\n" +
+                     "id : int\n" +
+                     "stamp : long\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare MyBean\n" +
+                     "id : int\n" +
+                     "event : MyEvent\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "MyEvent ev = new MyEvent( 1, 1000 );\n" +
+                     "MyBean bin = new MyBean( 99, ev );\n" +
+                     "MyEvent ev2 = new MyEvent( 2, 2000 );\n" +
+                     "\n" +
+                     "drools.getWorkingMemory().getWorkingMemoryEntryPoint( \"X\" ).insert( ev2 );\n" +
+                     "insert( bin );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Check\"\n" +
+                     "when\n" +
+                     "$e2 : MyEvent( id == 2 ) from entry-point \"X\" \n" +
+                     "$b1 : MyBean( id == 99, $ev : event )\n" +
+                     "MyEvent( this before $e2 ) from $ev\n" +
+                     "then\n" +
+                     "System.out.println( \"Success\" );\n" +
+                     "list.add( 1 ); \n" +
+                     "end\n";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList( 1 );
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+        assertEquals( Arrays.asList( 1 ), list );
+
     }
 }
