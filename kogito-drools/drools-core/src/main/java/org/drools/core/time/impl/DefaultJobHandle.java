@@ -53,8 +53,8 @@ public class DefaultJobHandle
         return cancel.get();
     }
 
-    public Job getJob() {
-        return timerJobInstance.getJob();
+    protected Job getJob() {
+        return timerJobInstance != null ? timerJobInstance.getJob() : null;
     }
 
     public void setTimerJobInstance(TimerJobInstance scheduledJob) {
