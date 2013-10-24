@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Sliding Length Windows</title>
+
+  <para>Sliding Length Windows work the same way as Time Windows, but consider
+  events based on order of their insertion into the session instead of flow of
+  time.</para>
+
+  <para>For instance, if the user wants to consider only the last 10 RHT Stock
+  Ticks, independent of how old they are, the pattern would look like
+  this:</para>
+
+  <programlisting>StockTick( company == "RHT" ) over window:length( 10 )</programlisting>
+
+  <para>As you can see, the pattern is similar to the one presented in the
+  previous section, but instead of using window:time to define the sliding
+  window, it uses window:length.</para>
+
+  <para>Using a similar example to the one in the previous section, if the
+  user wants to sound an alarm in case the average temperature over the last
+  100 readings from a sensor is above the threshold value, the rule would look
+  like:</para>
+
+  <example>
+    <title>aggregating values over length windows</title>
+
+    <programlisting>rule "Sound the alarm in case temperature rises above threshold"
+when
+    TemperatureThreshold( $max : max )
+    Number( doubleValue &gt; $max ) from accumulate(
+        SensorReading( $temp : temperature ) over window:length( 100 ),
+        average( $temp ) )
+then
+    // sound the alarm
+end</programlisting>
+  </example>
+
+  <para>The engine will keep only consider the last 100 readings to calculate
+  the average temperature.</para>
+
+  <important>
+    <para>Please note that falling off a length based window is not criteria
+    for event expiration in the session. The engine disregards events that
+    fall off a window when calculating that window, but does not remove the
+    event from the session based on that condition alone as there might be
+    other rules that depend on that event.</para>
+  </important>
+
+  <important>
+    <para>Please note that length based windows do not define temporal
+    constraints for event expiration from the session, and the engine will not
+    consider them. If events have no other rules defining temporal constraints
+    and no explicit expiration policy, the engine will keep them in the
+    session indefinitely. </para>
+  </important>
+</section>

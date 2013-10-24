@@ -36,5 +36,7 @@
   </preface>
 
   <xi:include href="ReleaseNotes.xml"/>
-
+  <xi:include href="LanguageReference.xml"/>
+  <xi:include href="ComplexEventProcessing.xml"/>
+  
 </book>

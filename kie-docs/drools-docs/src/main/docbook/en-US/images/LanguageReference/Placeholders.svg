@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="156" height="71"
+     viewBox="0 0 156 73">
+<title>Placeholders</title>
+<rect x='10.5' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='16' y='65.43'>(</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 27.40 62.5 L 32.4 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30.40 60.5 L 32.4 62.5 L 30.4 64.5'/>
+<rect x='57.9' y='42.5' width='44.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Identifier.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='33.98' x='63.40' y='51.83'>Identifier</text>
+</a>
+<rect x='71.94' y='21.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='77.44' y='31.43'>,</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 90.84 26.5 L 88.84 28.5 L 90.84 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 47.40 49.5 L 57.4 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.88 49.5 L 112.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 28.5 L 71.44 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 88.84 28.5 L 102.88 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 57.40 49.5 A 5 5 0 0 1 52.40 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 33.5 A 5 5 0 0 1 57.40 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 102.88 49.5 A 5 5 0 0 0 107.88 44.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 107.88 33.5 A 5 5 0 0 0 102.88 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 52.40 44.5 L 52.4 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 107.88 44.5 L 107.88 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 45.40 47.5 L 47.4 49.5 L 45.4 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 32.40 62.5 L 127.88 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 32.40 62.5 A 5 5 0 0 0 37.40 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 37.40 54.5 A 5 5 0 0 1 42.40 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 42.40 49.5 L 47.4 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 127.88 62.5 A 5 5 0 0 1 122.88 57.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 122.88 54.5 A 5 5 0 0 0 117.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 112.88 49.5 L 117.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 37.40 57.5 L 37.4 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 122.88 57.5 L 122.88 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 127.88 62.5 L 132.88 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 130.88 60.5 L 132.88 62.5 L 130.88 64.5'/>
+<rect x='133.38' y='55.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='138.88' y='65.43'>)</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 150.28 62.5 L 155.28 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 153.28 60.5 L 155.28 62.5 L 153.28 64.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='Placeholders' x='0' y='8.33'>Placeholders</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 62.5 L 10 62.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 60.5 L 10 62.5 L 8 64.5'/>
+</svg>
