@@ -419,8 +419,9 @@ public class AbstractWorkingMemory
 
         try {
             startOperation();
-            this.ruleBase.readLock();
+
             this.lock.lock();
+            this.ruleBase.readLock();
 
             this.ruleBase.executeQueuedActions();
             executeQueuedActions();
@@ -462,8 +463,8 @@ public class AbstractWorkingMemory
                                      this,
                                      ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
         } finally {
-            this.lock.unlock();
             this.ruleBase.readUnlock();
+            this.lock.unlock();
             endOperation();
         }
     }
