@@ -15,6 +15,10 @@
  */
 package org.kie.internal.runtime.manager;
 
+/**
+ * Exception that indicates that ksession could not be found
+ *
+ */
 public class SessionNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
