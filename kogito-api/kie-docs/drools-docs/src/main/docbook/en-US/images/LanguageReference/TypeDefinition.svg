@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="290" height="50"
+     viewBox="0 0 290 52">
+<title>TypeDefinition</title>
+<rect x='10.5' y='34.5' rx='7.75' ry='7.75' width='49.3' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='declare.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='38.3' x='16' y='44.43'>declare</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 59.80 41.5 L 64.8 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 62.80 39.5 L 64.8 41.5 L 62.8 43.5'/>
+<rect x='65.3' y='34.5' width='66.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='QualifiedName.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='55.98' x='70.80' y='43.83'>QualifiedName</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 132.28 41.5 L 137.28 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.28 39.5 L 137.28 41.5 L 135.28 43.5'/>
+<rect x='137.78' y='34.5' width='58.49' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='TypeOptions.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='47.49' x='143.28' y='43.83'>TypeOptions</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 196.27 41.5 L 201.27 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 199.27 39.5 L 201.27 41.5 L 199.27 43.5'/>
+<rect x='211.77' y='21.5' width='30' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Field.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='19' x='217.27' y='30.83'>Field</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 243.77 26.5 L 241.77 28.5 L 243.77 30.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 201.27 41.5 L 251.77 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 211.27 41.5 A 5 5 0 0 1 206.27 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 206.27 33.5 A 5 5 0 0 1 211.27 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 241.77 41.5 A 5 5 0 0 0 246.77 36.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 246.77 33.5 A 5 5 0 0 0 241.77 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 206.27 36.5 L 206.27 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 246.77 36.5 L 246.77 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 251.77 41.5 L 256.77 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 254.77 39.5 L 256.77 41.5 L 254.77 43.5'/>
+<rect x='257.27' y='34.5' rx='7.75' ry='7.75' width='27.7' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<a xlink:href='end.svg'>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='16.7' x='262.77' y='44.43'>end</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 284.97 41.5 L 289.97 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 287.97 39.5 L 289.97 41.5 L 287.97 43.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='TypeDefinition' x='0' y='8.33'>TypeDefinition</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 41.5 L 10 41.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 39.5 L 10 41.5 L 8 43.5'/>
+</svg>

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     version="1.2"
+     width="310" height="92"
+     viewBox="0 0 310 94">
+<title>Annotation</title>
+<rect x='10.5' y='76.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='16' y='86.43'>@</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 27.40 83.5 L 32.4 83.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 30.40 81.5 L 32.4 83.5 L 30.4 85.5'/>
+<rect x='32.9' y='76.5' width='44.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Identifier.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='33.98' x='38.40' y='85.83'>Identifier</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 77.88 83.5 L 82.88 83.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 80.88 81.5 L 82.88 83.5 L 80.88 85.5'/>
+<rect x='98.38' y='42.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='103.88' y='52.43'>(</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 115.28 49.5 L 120.28 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 118.28 47.5 L 120.28 49.5 L 118.28 51.5'/>
+<rect x='130.78' y='21.5' width='37.99' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Tokens.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='26.99' x='136.28' y='30.83'>Tokens</text>
+</a>
+<rect x='140.78' y='63.5' width='44.98' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Identifier.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='33.98' x='146.28' y='72.83'>Identifier</text>
+</a>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 185.76 70.5 L 190.76 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 188.76 68.5 L 190.76 70.5 L 188.76 72.5'/>
+<rect x='191.26' y='63.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='196.76' y='73.43'>=</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 208.16 70.5 L 213.16 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 211.16 68.5 L 213.16 70.5 L 211.16 72.5'/>
+<rect x='213.66' y='63.5' width='32.99' height='15.5' fill='rgb(255,255,0)' stroke='black' stroke-width='1'/>
+<a xlink:href='Value.svg'>
+<text font-size='9' font-family='Times' font-weight='normal' textLength='21.99' x='219.16' y='72.83'>Value</text>
+</a>
+<rect x='185.26' y='42.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='190.76' y='52.43'>,</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 204.16 47.5 L 202.16 49.5 L 204.16 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 130.28 70.5 L 140.28 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 246.65 70.5 L 256.65 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 140.28 49.5 L 184.76 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 202.16 49.5 L 246.64 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 140.28 70.5 A 5 5 0 0 1 135.28 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.28 54.5 A 5 5 0 0 1 140.28 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 246.65 70.5 A 5 5 0 0 0 251.65 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 251.65 54.5 A 5 5 0 0 0 246.65 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 135.28 65.5 L 135.28 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 251.65 65.5 L 251.65 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 120.28 49.5 L 125.28 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 261.65 49.5 L 266.65 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 125.28 33.5 A 5 5 0 0 1 130.28 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 130.28 70.5 A 5 5 0 0 1 125.28 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 125.28 65.5 L 125.28 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 261.65 33.5 A 5 5 0 0 0 256.65 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 256.65 70.5 A 5 5 0 0 0 261.65 65.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 261.65 65.5 L 261.65 33.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 168.77 28.5 L 256.65 28.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 256.65 70.5 L 256.65 70.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 266.65 49.5 L 271.65 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 269.65 47.5 L 271.65 49.5 L 269.65 51.5'/>
+<rect x='272.15' y='42.5' rx='7.75' ry='7.75' width='16.9' height='15.5' fill='rgb(220,255,155)' stroke='black' stroke-width='1'/>
+<text font-size='9' font-family='Courier' font-weight='bold' textLength='5.9' x='277.65' y='52.43'>)</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 95.88 47.5 L 97.88 49.5 L 95.88 51.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 82.88 83.5 L 304.05 83.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 82.88 83.5 A 5 5 0 0 0 87.88 78.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.88 54.5 A 5 5 0 0 1 92.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 92.88 49.5 L 97.88 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 304.05 83.5 A 5 5 0 0 1 299.05 78.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 299.05 54.5 A 5 5 0 0 0 294.05 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 289.05 49.5 L 294.05 49.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 87.88 78.5 L 87.88 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 299.05 78.5 L 299.05 54.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 304.05 83.5 L 309.05 83.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 307.05 81.5 L 309.05 83.5 L 307.05 85.5'/>
+<text font-size='10' font-family='Times' font-weight='normal' kerning='0' letter-spacing='0' xml:id='Annotation' x='0' y='8.33'>Annotation</text>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 0 83.5 L 10 83.5'/>
+<path fill='none' stroke-width='0.30' stroke='black' d='M 8 81.5 L 10 83.5 L 8 85.5'/>
+</svg>
