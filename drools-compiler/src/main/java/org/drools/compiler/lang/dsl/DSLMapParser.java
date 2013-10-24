@@ -462,7 +462,7 @@ public class DSLMapParser extends Parser {
 			}
 
 			// AST REWRITE
-			// elements: meta_section, key_section, value_section, scope_section
+			// elements: key_section, meta_section, scope_section, value_section
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -655,7 +655,7 @@ public class DSLMapParser extends Parser {
 			if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE12);
 
 			// AST REWRITE
-			// elements: value2, value1, value4, value3
+			// elements: value1, value3, value2, value4
 			// token labels: 
 			// rule labels: retval, value3, value4, value1, value2
 			// token list labels: 
@@ -1674,7 +1674,7 @@ public class DSLMapParser extends Parser {
 			      isIdentifier( name );
 			    }
 			// AST REWRITE
-			// elements: name, name, name, q, q, q, q, name, name, q, name, q, q, name, name, q, q, name
+			// elements: name, name, name, q, name, q, name, name, q, q, q, name, q, name, name, q, q, q
 			// token labels: q, name
 			// rule labels: retval
 			// token list labels: 

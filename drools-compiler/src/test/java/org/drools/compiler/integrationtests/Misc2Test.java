@@ -60,10 +60,12 @@ import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.Modifies;
@@ -3726,5 +3728,94 @@ public class Misc2Test extends CommonTestMethodBase {
         Assert.assertEquals(1, infos.size());
 
     }
+
+
+
+    @Test
+    public void testBindingComplexExpression() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo \n" +
+                     "  a : int \n" +
+                     "  b : int \n" +
+                     "end \n" +
+                     "" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "" +
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  $c := Integer() from new Integer( 4 ) \n" +
+                     "  Foo(  $a : a + b == 7 && a == 3 && $b : b > 0, $c := b - a == 1 ) \n" +
+                     "then\n" +
+                     "  list.add( $a );\n" +
+                     "  list.add( $b );\n" +
+                     "  list.add( $c );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbConf.setOption( LanguageLevelOption.DRL6 );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertTrue( ! list.isEmpty() );
+        assertEquals( 3, list.size() );
+        assertEquals( 3, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 4, list.get( 2 ) );
+
+    }
+
+
+    @Test
+    public void testBindingComplexExpressionWithDRL5() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo \n" +
+                     "  a : int \n" +
+                     "  b : int \n" +
+                     "end \n" +
+                     "" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "" +
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  $c := Integer() from new Integer( 4 ) \n" +
+                     "  Foo(  $a : a + b == 7 && a == 3 && $b : b > 0, $c := b - a == 1 ) \n" +
+                     "then\n" +
+                     "  list.add( $a );\n" +
+                     "  list.add( $b );\n" +
+                     "  list.add( $c );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbConf.setOption( LanguageLevelOption.DRL5 );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertTrue( ! list.isEmpty() );
+        assertEquals( 3, list.size() );
+        assertEquals( 3, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 4, list.get( 2 ) );
+
+    }
+
 
 }
