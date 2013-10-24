@@ -291,7 +291,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                     throw new RuntimeException(t);
                 }
             } else {
-                logger.warn("Exception jitting: " + expression, t);
+                logger.warn( "Exception jitting: " + expression, t.getMessage() );
             }
         }
     }
