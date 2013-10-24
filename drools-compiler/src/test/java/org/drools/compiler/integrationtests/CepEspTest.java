@@ -3738,7 +3738,6 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("fails with random extra activations")
     public void testExpirationAtHighRates() throws InterruptedException {
         String drl = "package droolsfusioneval\n" +
                      "" +
