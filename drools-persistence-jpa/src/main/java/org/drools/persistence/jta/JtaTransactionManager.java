@@ -79,7 +79,7 @@ public class JtaTransactionManager
     }
 
     protected javax.transaction.TransactionManager findTransactionManager(UserTransaction ut) {
-        if ( ut instanceof TransactionManager ) {
+        if ( ut instanceof javax.transaction.TransactionManager ) {
             logger.debug( "JTA UserTransaction object [{}] implements TransactionManager",
                           ut );
             return (javax.transaction.TransactionManager) ut;
