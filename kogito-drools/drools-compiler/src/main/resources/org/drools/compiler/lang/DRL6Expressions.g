@@ -356,11 +356,26 @@ scope { BaseDescr lsd; }
 @init { $relationalExpression::lsd = null; }
   : left=shiftExpression
     { if( buildDescr  ) {
-          $result = ( $left.result != null &&
-                      ( (!($left.result instanceof AtomicExprDescr)) ||
-                        ($left.text.equals(((AtomicExprDescr)$left.result).getExpression())) )) ?
-                    $left.result :
-                    new AtomicExprDescr( $left.text ) ;
+          if ( $left.result == null ) {
+            $result = new AtomicExprDescr( $left.text );
+          } else if ( $left.result instanceof AtomicExprDescr ) {
+            if ( $left.text.equals(((AtomicExprDescr)$left.result).getExpression()) ) {
+              $result = $left.result;
+            } else {
+              $result = new AtomicExprDescr( $left.text ) ;
+            }
+          } else if ( $left.result instanceof BindingDescr ) {
+              if ( $left.text.equals(((BindingDescr)$left.result).getExpression()) ) {
+                $result = $left.result;
+              } else {
+                BindingDescr bind = (BindingDescr) $left.result;
+                int offset = bind.isUnification() ? 2 : 1;
+                String fullExpression = $left.text.substring( $left.text.indexOf( ":" ) + offset ).trim();
+                $result = new BindingDescr( bind.getVariable(), bind.getExpression(), fullExpression, bind.isUnification() );
+              }
+          } else {
+              $result = $left.result;
+          }
           $relationalExpression::lsd = $result;
       } 
     }
@@ -493,7 +508,7 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
                     } else {
                         expr = expr.substring( expr.indexOf( ":" ) + 1 ).trim();
                     }
-                    bind.setExpression( expr );
+                    bind.setExpressionAndBindingField( expr );
                     helper.setEnd( bind );
                     $result = bind;
                 }
@@ -537,8 +552,6 @@ primary returns [BaseDescr result]
                                     expression (COMMA { helper.emit($COMMA, DroolsEditorType.SYMBOL); } expression)*
                                     RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
             )
-            |
-            ( (SHARP ID)=>s=SHARP i2=ID { helper.emit($s, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
             ( (HASH ID)=>h=HASH i2=ID { helper.emit($h, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |

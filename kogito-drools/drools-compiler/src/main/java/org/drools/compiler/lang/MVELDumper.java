@@ -165,7 +165,11 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
             sbuilder.append( constrAndExpr[ 0 ].substring( 0, constrAndExpr[ 0 ].length() - 4 ) );
         }
 
-        bind.setExpression( constrAndExpr[1] );
+        if (bind.getExpression().equals(bind.getBindingField())) {
+            bind.setExpressionAndBindingField( constrAndExpr[1] );
+        } else {
+            bind.setExpression( constrAndExpr[1] );
+        }
         context.addBinding(bind);
     }
 
