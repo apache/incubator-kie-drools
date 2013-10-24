@@ -134,14 +134,4 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
         return tnodes;
     }
 
-    public void initInitialFact() {
-        if ( initialFactHandle == null ) {
-            synchronized ( this ) {
-                // this sync is lazy, but now we know it's synchronise, retest the null, to avoid duplicate creation
-                if ( initialFactHandle == null ) {
-                    initInitialFact(ruleBase, null);
-                }
-            }
-        }
-    }
 }
