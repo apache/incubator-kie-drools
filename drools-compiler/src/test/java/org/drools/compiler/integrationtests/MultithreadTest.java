@@ -39,10 +39,15 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -463,6 +468,60 @@ public class MultithreadTest extends CommonTestMethodBase {
         public Throwable getError() {
             return error;
         }
+    }
+
+
+
+    @Test( timeout = 5000 )
+    public void testConcurrentQueries() {
+        // DROOLS-175
+        StringBuilder drl = new StringBuilder(  );
+        drl.append( "package org.drools.test;\n" +
+                    "query foo( ) end" );
+
+
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( drl.toString() );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final int THREAD_NR = 5;
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (int i = 0; i < THREAD_NR; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    boolean succ = false;
+                    try {
+                        QueryResults res = ksession.getQueryResults( "foo", Variable.v );
+                        succ = (res.size() == 1);
+                        return succ;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return succ;
+                    }
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < THREAD_NR; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        assertTrue(success);
+        ksession.dispose();
     }
 
     // FIXME
