@@ -3660,4 +3660,17 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "john", p.getName() );
     }
 
+    @Test
+    public void testPrimitiveGlobals() {
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "\n" +
+                     "global int foo;\n" +
+                     "\n" +
+                     "";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.out.println( kb.getErrors() );
+        assertTrue( kb.hasErrors() );
+    }
+
 }
