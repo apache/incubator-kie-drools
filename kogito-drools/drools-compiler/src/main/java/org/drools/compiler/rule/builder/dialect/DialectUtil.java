@@ -77,7 +77,7 @@ public final class DialectUtil {
                                             final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        final String newName = prefix + "_" + NON_ALPHA_REGEX.matcher(name).replaceAll("_");
+        final String newName = normalizeRuleName( name );
         if (ext.equals("java")) {
             return newName + Math.abs(seed);
         }
@@ -925,5 +925,23 @@ public final class DialectUtil {
             }
         }
         return null;
+    }
+
+    static String normalizeRuleName(String name) {
+        String normalized = name.replace(' ', '_');
+        if (!NON_ALPHA_REGEX.matcher(normalized).find()) {
+            return normalized;
+        }
+        StringBuilder sb = new StringBuilder(normalized.length());
+        for (char ch : normalized.toCharArray()) {
+            if (ch == '$') {
+                sb.append("_dollar_");
+            } else if (Character.isJavaIdentifierPart(ch)) {
+                sb.append(ch);
+            } else {
+                sb.append("$u").append((int)ch).append("$");
+            }
+        }
+        return sb.toString();
     }
 }
