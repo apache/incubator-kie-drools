@@ -21,6 +21,7 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -63,6 +64,8 @@ public class FromNode extends LeftTupleSource
     protected Class<?>                   resultClass;
 
     protected boolean                    tupleMemoryEnabled;
+
+    protected transient ObjectTypeConf   objectTypeConf;
 
     public FromNode() {
     }
@@ -137,6 +140,10 @@ public class FromNode extends LeftTupleSource
                                         final Object object ) {
         InternalFactHandle handle;
         ProtobufMessages.FactHandle _handle = null;
+        if ( objectTypeConf == null ) {
+            // use default entry point and object class. Notice that at this point object is assignable to resultClass
+            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, (InternalRuleBase) workingMemory.getRuleBase() );
+        }
         if( context.getReaderContext() != null ) {
             Map<ProtobufInputMarshaller.TupleKey, List<FactHandle>> map = (Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
             if( map != null ) {
@@ -155,12 +162,12 @@ public class FromNode extends LeftTupleSource
             handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
                                                                          object,
                                                                          _handle.getRecency(),
-                                                                         null, // set this to null, otherwise it uses the driver fact's entrypoint
+                                                                         objectTypeConf,
                                                                          workingMemory,
                                                                          null );
         } else {
             handle = workingMemory.getFactHandleFactory().newFactHandle( object,
-                                                                         null, // set this to null, otherwise it uses the driver fact's entrypoint
+                                                                         objectTypeConf,
                                                                          workingMemory,
                                                                          null );
         }
