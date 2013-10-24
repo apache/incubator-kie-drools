@@ -28,7 +28,7 @@ public class JtaTransactionSynchronizationAdapter
                 this.ts.afterCompletion(  TransactionManager.STATUS_NO_TRANSACTION );
                 break;
             case Status.STATUS_ACTIVE :
-                this.afterCompletion( TransactionManager.STATUS_ACTIVE );
+                this.ts.afterCompletion( TransactionManager.STATUS_ACTIVE );
                 break;
             default :
                 this.ts.afterCompletion( TransactionManager.STATUS_UNKNOWN );
