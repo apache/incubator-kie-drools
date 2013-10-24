@@ -1027,7 +1027,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testDeclareExtendsMissingDeclareForParent() {
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.Person; \n" +
+                     "import org.drools.compiler.Person; \n" +
                      "declare Student extends Person end \n" +
                      "";
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
@@ -1044,7 +1044,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     @Test
     public void testDeclareExtendsMissingDeclareForParentOuterPackaga() {
         String drl = "package org.drools.test; \n" +
-                     "import org.drools.integrationtests.ExtendsTest.X; \n" +
+                     "import org.drools.compiler.integrationtests.ExtendsTest.X; \n" +
                      "declare Student extends X end \n" +
                      "";
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
