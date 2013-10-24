@@ -773,9 +773,17 @@ public class PackageBuilder
                                    ResourceConfiguration configuration) throws Exception {
         PMMLCompiler compiler = getPMMLCompiler();
         if ( compiler != null ) {
-            this.resource = resource;
-            addPackage( pmmlModelToPackageDescr( compiler, resource ) );
-            this.resource = null;
+            if ( compiler.getResults().isEmpty() ) {
+                this.resource = resource;
+                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
+                if ( descr != null ) {
+                    addPackage( descr );
+                }
+                this.resource = null;
+            } else {
+                this.results.addAll( compiler.getResults() );
+            }
+            compiler.clearResults();
         } else {
             addPackageForExternalType( resource, type, configuration );
         }
@@ -786,6 +794,11 @@ public class PackageBuilder
                                                            IOException {
         String theory = compiler.compile( resource.getInputStream(),
                                           getPackageRegistry() );
+
+        if ( ! compiler.getResults().isEmpty() ) {
+            this.results.addAll( compiler.getResults() );
+            return null;
+        }
 
         DrlParser parser = new DrlParser( configuration.getLanguageLevel() );
         PackageDescr pkg = parser.parse( resource, new StringReader( theory ) );
