@@ -47,7 +47,7 @@ public class MiscTest {
         if ( kBaseConfig == null ) {
             kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         }
-        KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase( kBaseConfig );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kBaseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }

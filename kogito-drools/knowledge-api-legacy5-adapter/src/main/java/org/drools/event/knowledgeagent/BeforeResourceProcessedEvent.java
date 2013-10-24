@@ -17,7 +17,6 @@
 package org.drools.event.knowledgeagent;
 
 import org.drools.ChangeSet;
-import org.drools.agent.KnowledgeAgent.ResourceStatus;
 import org.drools.builder.ResourceType;
 import org.drools.io.Resource;
 
@@ -27,21 +26,15 @@ public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
 
     private final Resource resource;
     private final ResourceType resourceType;
-    private final ResourceStatus status;
 
-    public BeforeResourceProcessedEvent(ChangeSet changeSet, Resource resource, ResourceType resourceType, ResourceStatus status) {
+    public BeforeResourceProcessedEvent(ChangeSet changeSet, Resource resource, ResourceType resourceType) {
         super(changeSet);
         this.resource = resource;
         this.resourceType = resourceType;
-        this.status = status;
     }
 
     public Resource getResource() {
         return resource;
-    }
-
-    public ResourceStatus getStatus() {
-        return status;
     }
 
     public ResourceType getResourceType() {
@@ -50,7 +43,7 @@ public class BeforeResourceProcessedEvent extends ChangeSetProcessingEvent{
 
     @Override
     public String toString() {
-        return "==>[BeforeResourceProcessedEvent(" + getStatus() + "): " + getResource() + "]";
+        return "==>[BeforeResourceProcessedEvent: " + getResource() + "]";
     }
 
 }
