@@ -1,5 +1,5 @@
 
-declare LongTermStudent extends org.drools.compiler.test.Student
+declare LongTermStudent extends org.drools.compiler.ext.test.Student
     years : int
 end
 
