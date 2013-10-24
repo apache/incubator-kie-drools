@@ -24,6 +24,10 @@ import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.conflict.SalienceConflictResolver;
+import org.drools.core.event.ActivationCancelledEvent;
+import org.drools.core.event.ActivationCreatedEvent;
+import org.drools.core.event.AfterActivationFiredEvent;
+import org.drools.core.event.BeforeActivationFiredEvent;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -38,6 +42,15 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
@@ -2763,4 +2776,181 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( "ok" ), list );
     }
+
+    public static interface TradeBooking {
+        public TradeHeader getTrade();
+    }
+
+    public static interface TradeHeader {
+        public void setAction( String s );
+        public String getAction();
+    }
+
+    public static class TradeHeaderImpl implements TradeHeader {
+        private String action;
+
+        public String getAction() {
+            return action;
+        }
+
+        public void setAction( String action ) {
+            this.action = action;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            TradeHeaderImpl that = (TradeHeaderImpl) o;
+
+            if ( action != null ? !action.equals( that.action ) : that.action != null ) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return action != null ? action.hashCode() : 0;
+        }
+    }
+
+    public static class TradeBookingImpl implements TradeBooking {
+        private TradeHeader header;
+
+        public TradeBookingImpl( TradeHeader h ) {
+            this.header = h;
+        }
+
+        public TradeHeader getTrade() {
+            return header;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            TradeBookingImpl that = (TradeBookingImpl) o;
+
+            if ( header != null ? !header.equals( that.header ) : that.header != null ) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return header != null ? header.hashCode() : 0;
+        }
+    }
+
+
+    @Test
+    public void testLockOnActive() {
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.TradeHeader;\n" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "when\n" +
+                     "  $booking: TradeBooking()\n" +
+                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
+                     "  not String()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  $trade.setAction(\"New\");\n" +
+                     "  modify($booking) {}\n" +
+                     "  insert (\"run\");\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $booking: TradeBooking( )\n" +
+                     "  $trade: Object( ) from $booking.getTrade()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" ); \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        ks.addEventListener( new AgendaEventListener() {
+            int step = 0;
+
+            public void matchCreated( MatchCreatedEvent event ) {}
+
+            public void matchCancelled( MatchCancelledEvent event ) {
+                switch ( step ) {
+                    case 0 : assertEquals( "Rule2", event.getMatch().getRule().getName() );
+                        step++;
+                        break;
+                    case 1 : assertEquals( "Rule1", event.getMatch().getRule().getName() );
+                        step++;
+                        break;
+                    default: fail( "More cancelled activations than expected" );
+                }
+            }
+
+            public void beforeMatchFired( BeforeMatchFiredEvent event ) {}
+
+            public void afterMatchFired( AfterMatchFiredEvent event ) {
+                assertEquals( "Rule1", event.getMatch().getRule().getName() );
+            }
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {}
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {}
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+        } );
+        ks.fireAllRules();
+
+        TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
+
+        ks.insert( tb );
+        assertEquals( 1, ks.fireAllRules() );
+    }
+
+
+    @Test
+    public void testLockOnActiveWithModify() {
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.Person; \n" +
+                     "" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "lock-on-active true\n" +
+                     "no-loop \n" +
+                     "when\n" +
+                     "  $p: Person()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  modify( $p ) { setAge( 44 ); }\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person() \n" +
+                     "  String() from $p.getName() \n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" + $p ); " +
+                     "  modify ( $p ) { setName( \"john\" ); } \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ks.fireAllRules();
+
+        Person p = new Person( "mark", 76 );
+        ks.insert( p );
+        ks.fireAllRules();
+
+        assertEquals( 44, p.getAge() );
+        assertEquals( "john", p.getName() );
+    }
+
 }
