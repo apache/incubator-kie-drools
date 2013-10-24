@@ -3886,13 +3886,63 @@ public class PackageBuilder
         }
     }
 
-    public void registerBuildResource(final Resource resource) {
-        buildResources.push( new ArrayList<Resource>() {
-            {
-                add( resource );
+    private ChangeSet parseChangeSet( Resource resource ) throws IOException, SAXException {
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+        if (resource instanceof ClassPathResource) {
+            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
+                                   ( (ClassPathResource) resource ).getClazz() );
+        } else {
+            reader.setClassLoader( this.configuration.getClassLoader(),
+                                   null );
+        }
+        Reader resourceReader = null;
+
+        try {
+            resourceReader = resource.getReader();
+            ChangeSet changeSet = reader.read( resourceReader );
+            return changeSet;
+        } finally {
+            if (resourceReader != null) {
+                resourceReader.close();
             }
-        } );
+        }
     }
+
+    public void registerBuildResource( final Resource resource, ResourceType type ) {
+        InternalResource ires = (InternalResource) resource;
+        if ( ires.getResourceType() == null ) {
+            ires.setResourceType( type );
+        } else if ( ires.getResourceType() != type ) {
+            this.results.add( new ResourceTypeDeclarationWarning( resource, ires.getResourceType(), type ) );
+        }
+        if ( ResourceType.CHANGE_SET == type ) {
+            try {
+                ChangeSet changeSet = parseChangeSet( resource );
+                List<Resource> resources = new ArrayList<Resource>(  );
+                resources.add( resource );
+                for ( Resource addedRes : changeSet.getResourcesAdded() ) {
+                    resources.add( addedRes );
+                }
+                for ( Resource modifiedRes : changeSet.getResourcesModified() ) {
+                    resources.add( modifiedRes );
+                }
+                for ( Resource removedRes : changeSet.getResourcesRemoved() ) {
+                    resources.add( removedRes );
+                }
+                buildResources.push( resources );
+            } catch ( Exception e ) {
+                results.add( new DroolsError() {
+                    public String getMessage() {
+                        return "Unable to register changeset resource " + resource;
+                    }
+                    public int[] getLines() { return new int[ 0 ]; }
+                } );
+            }
+        } else {
+            buildResources.push( Arrays.asList( resource ) );
+        }
+    }
+
 
     public void registerBuildResources(List<Resource> resources) {
         buildResources.push( resources );
