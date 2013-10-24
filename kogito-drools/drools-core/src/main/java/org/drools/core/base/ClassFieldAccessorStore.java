@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +41,9 @@ import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.AcceptsWriteAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 
 public class ClassFieldAccessorStore
     implements
@@ -122,6 +125,10 @@ public class ClassFieldAccessorStore
 
         if ( this.eagerWire ) {
             wire( entry.getClassFieldReader() );
+            ClassFieldReader reader = (ClassFieldReader) entry.getClassFieldReader();
+            if ( ! reader.hasReadAccessor() ) {
+                return null;
+            }
         }
 
 
@@ -491,6 +498,14 @@ public class ClassFieldAccessorStore
         } catch ( ClassNotFoundException e ) {
             throw new RuntimeDroolsException( "Unable to load ClassObjectType class '" + wireable.getClassName() + "'" );
         }
+    }
+
+    public Collection<KnowledgeBuilderResult> getWiringResults( Class klass, String fieldName ) {
+        if ( cache == null ) {
+            return Collections.EMPTY_LIST;
+        }
+        Map<Class<?>, ClassFieldInspector> inspectors = cache.getCacheEntry( klass ).getInspectors();
+        return inspectors.containsKey( klass ) ? inspectors.get( klass ).getInspectionResults( fieldName ) : Collections.EMPTY_LIST;
     }
 
     public static abstract class BaseLookupEntry

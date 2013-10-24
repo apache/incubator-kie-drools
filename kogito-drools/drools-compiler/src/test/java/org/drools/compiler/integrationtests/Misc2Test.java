@@ -47,6 +47,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
@@ -3364,5 +3365,42 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( Arrays.asList( "ok" ), list );
+    }
+
+
+    public static class Foo3 {
+        public boolean getX() { return true; }
+        public String isX() { return "x"; }
+        public boolean isY() { return true; }
+        public String getZ() { return "ok"; }
+        public boolean isZ() { return true; }
+    }
+
+    @Test
+    public void testIsGetClash() {
+        // DROOLS-18
+        String str =
+                "import org.drools.compiler.integrationtests.Misc2Test.Foo3;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $x : Foo3( x == true, y == true, z == \"ok\", isZ() == true ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        assertEquals( 2, kbuilder.getResults( ResultSeverity.WARNING ).size() );
+        for ( KnowledgeBuilderResult res : kbuilder.getResults( ResultSeverity.WARNING ) ) {
+            System.out.println( res.getMessage() );
+        }
     }
 }
