@@ -82,6 +82,10 @@ public class ClassFieldReader
         return this.fieldName;
     }
 
+    public boolean hasReadAccessor() {
+        return this.reader != null;
+    }
+    
     public Object getValue(InternalWorkingMemory workingMemory,
                            final Object object) {
         return this.reader.getValue( workingMemory,
@@ -205,7 +209,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getBooleanValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getBooleanValue(java.lang.Object)
      */
     public boolean getBooleanValue(Object object) {
         return reader.getBooleanValue( object );
@@ -214,7 +218,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getByteValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getByteValue(java.lang.Object)
      */
     public byte getByteValue(Object object) {
         return reader.getByteValue( object );
@@ -223,7 +227,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getCharValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getCharValue(java.lang.Object)
      */
     public char getCharValue(Object object) {
         return reader.getCharValue( object );
@@ -232,7 +236,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getDoubleValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getDoubleValue(java.lang.Object)
      */
     public double getDoubleValue(Object object) {
         return reader.getDoubleValue( object );
@@ -241,7 +245,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getFloatValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getFloatValue(java.lang.Object)
      */
     public float getFloatValue(Object object) {
         return reader.getFloatValue( object );
@@ -250,7 +254,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getHashCode(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getHashCode(java.lang.Object)
      */
     public int getHashCode(Object object) {
         return reader.getHashCode( object );
@@ -259,7 +263,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getIntValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getIntValue(java.lang.Object)
      */
     public int getIntValue(Object object) {
         return reader.getIntValue( object );
@@ -268,7 +272,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getLongValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getLongValue(java.lang.Object)
      */
     public long getLongValue(Object object) {
         return reader.getLongValue( object );
@@ -277,7 +281,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getShortValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getShortValue(java.lang.Object)
      */
     public short getShortValue(Object object) {
         return reader.getShortValue( object );
@@ -286,7 +290,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#getValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#getValue(java.lang.Object)
      */
     public Object getValue(Object object) {
         return reader.getValue( object );
@@ -295,7 +299,7 @@ public class ClassFieldReader
     /**
      * @param object
      * @return
-     * @see org.kie.spi.ReadAccessor#isNullValue(java.lang.Object)
+     * @see org.drools.core.spi.ReadAccessor#isNullValue(java.lang.Object)
      */
     public boolean isNullValue(Object object) {
         return reader.isNullValue( object );
