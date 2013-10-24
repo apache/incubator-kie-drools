@@ -41,11 +41,13 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
@@ -3915,6 +3917,115 @@ public class CepEspTest extends CommonTestMethodBase {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
         assertEquals( Arrays.asList( 1 ), list );
+
+    }
+
+    @Test
+    public void testDeserializationWithTrackableTimerJob() throws InterruptedException {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "  @role( event )\n" +
+                     "  @expires( 1s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"One\"\n" +
+                     "when\n" +
+                     "  StockTick( $id : seq, company == \"AAA\" ) over window:time( 1s )\n" +
+                     "then\n" +
+                     "  list.add( $id ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Two\"\n" +
+                     "when\n" +
+                     "  StockTick( $id : seq, company == \"BBB\" ) \n" +
+                     "then\n" +
+                     "  System.out.println( $id ); \n" +
+                     "  list.add( $id );\n" +
+                     "end";
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( RuleEngineOption.PHREAK );
+
+        KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( kbconf, drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession( knowledgeSessionConfiguration, null );
+
+        ks.insert( new StockTick( 2, "BBB", 1.0, 0 ) );
+        Thread.sleep( 1100 );
+
+        try {
+            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        ks.insert( new StockTick( 3, "BBB", 1.0, 0 ) );
+        ks.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( 2L, 3L ), list );
+
+
+    }
+
+
+    @Test
+    public void testWindowExpireActionDeserialization() throws InterruptedException {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "  @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"One\"\n" +
+                     "when\n" +
+                     "  StockTick( $id : seq, company == \"BBB\" ) over window:time( 1s )\n" +
+                     "then\n" +
+                     "  list.add( $id );\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kb = loadKnowledgeBaseFromString( kbconf, drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession( );
+
+        ks.insert( new StockTick( 2, "BBB", 1.0, 0 ) );
+        Thread.sleep( 1500 );
+
+        try {
+            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        ks.insert( new StockTick( 3, "BBB", 1.0, 0 ) );
+        ks.fireAllRules();
+
+        System.out.print( list );
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( 3L ), list );
+
 
     }
 }
