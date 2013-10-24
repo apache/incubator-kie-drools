@@ -162,7 +162,6 @@ public class AddRemoveRulesTest {
 
 
     @Test
-    @Ignore("NPE in AddRemoveRule.initNewSegment")
     public void test() throws Exception {
         KieSession knowledgeSession = base.newKieSession();
         knowledgeSession.fireAllRules();
