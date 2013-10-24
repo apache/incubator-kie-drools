@@ -26,12 +26,23 @@ import org.drools.core.spi.InternalReadAccessor;
  * <pre>$m : Message( routingValue str[length] 17 )</pre>
  */
 public class StrEvaluatorDefinition implements EvaluatorDefinition {
-    public static final Operator STR_COMPARE = Operator.addOperatorToRegistry(
-            "str", false);
-    public static final Operator NOT_STR_COMPARE = Operator
-            .addOperatorToRegistry("str", true);
-    private static final String[] SUPPORTED_IDS = { STR_COMPARE
-            .getOperatorString() };
+
+    protected static final String   strOp = "str";
+
+    public static Operator          STR_COMPARE;
+    public static Operator          NOT_STR_COMPARE;
+
+    private static String[]         SUPPORTED_IDS;
+
+    { init(); }
+
+    static void init() {
+        if ( Operator.determineOperator( strOp, false ) == null ) {
+            STR_COMPARE = Operator.addOperatorToRegistry( strOp, false );
+            NOT_STR_COMPARE = Operator.addOperatorToRegistry( strOp, true );
+            SUPPORTED_IDS = new String[] { strOp };
+        }
+    }
 
     public enum Operations {
         startsWith, endsWith, length;
@@ -121,6 +132,10 @@ public class StrEvaluatorDefinition implements EvaluatorDefinition {
 
     public static class StrEvaluator extends BaseEvaluator {
         private Operations parameter;
+
+        {
+            StrEvaluatorDefinition.init();
+        }
 
         public void setParameterText(String parameterText) {
             this.parameter = Operations.valueOf(parameterText);
