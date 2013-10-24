@@ -184,7 +184,8 @@ public class SubTaskDecorator implements TaskInstanceService {
             parentTask = pm.find(TaskImpl.class, task.getTaskData().getParentId());
         }
         if (parentTask != null){
-            if(((InternalTask) parentTask).getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
+            if(((InternalTask) parentTask).getSubTaskStrategy() != null && 
+            		((InternalTask) parentTask).getSubTaskStrategy().equals(SubTasksStrategy.EndParentOnAllSubTasksEnd)){
                 List<TaskSummary> subTasks = queryService.getSubTasksByParent(parentTask.getId());
                     // If there are no more sub tasks or if the last sub task is the one that we are completing now
                     if (subTasks.isEmpty() || (subTasks.size() == 1 && subTasks.get(0).getId() == taskId)) {
@@ -193,7 +194,8 @@ public class SubTaskDecorator implements TaskInstanceService {
                     }
             }
         }
-        if (((InternalTask) task).getSubTaskStrategy().equals(SubTasksStrategy.SkipAllSubTasksOnParentSkip)){
+        if (((InternalTask) task).getSubTaskStrategy() != null && 
+        		((InternalTask) task).getSubTaskStrategy().equals(SubTasksStrategy.SkipAllSubTasksOnParentSkip)){
             List<TaskSummary> subTasks = queryService.getSubTasksByParent(task.getId());
             for(TaskSummary taskSummary : subTasks){
                 Task subTask = queryService.getTaskInstanceById(taskSummary.getId());
