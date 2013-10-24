@@ -77,7 +77,7 @@ public final class DialectUtil {
                                             final String prefix,
                                             final ResourceReader src) {
         // replaces all non alphanumeric or $ chars with _
-        final String newName = normalizeRuleName( name );
+        final String newName = prefix + "_" + normalizeRuleName( name );
         if (ext.equals("java")) {
             return newName + Math.abs(seed);
         }

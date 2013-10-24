@@ -191,7 +191,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.write("src/main/resources/r2.drl", drl2_2);
         IncrementalResults results = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r2.drl").build();
 
-        assertEquals(1, results.getAddedMessages().size());
+        assertEquals(2, results.getAddedMessages().size());
         assertEquals(0, results.getRemovedMessages().size());
 
         kieContainer.updateToVersion(ks.getRepository().getDefaultReleaseId());
@@ -227,13 +227,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 .write("src/main/resources/r2.drl", drl2_1);
 
         KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals( 1, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size() );
+        assertEquals( 2, kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).size() );
 
         kfs.write("src/main/resources/r2.drl", drl2_2);
         IncrementalResults results = ((InternalKieBuilder) kieBuilder).createFileSet("src/main/resources/r2.drl").build();
 
         assertEquals( 0, results.getAddedMessages().size() );
-        assertEquals( 1, results.getRemovedMessages().size() );
+        assertEquals( 2, results.getRemovedMessages().size() );
 
         KieContainer kieContainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
         KieSession ksession = kieContainer.newKieSession();
@@ -276,7 +276,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.write( "src/main/resources/r2.drl", drl2_1 );
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 1, addResults.getAddedMessages().size() );
+        assertEquals( 2, addResults.getAddedMessages().size() );
         assertEquals( 0, addResults.getRemovedMessages().size() );
 
         //Update flawed file with correct version - expect 0 "added" error messages and removal of 1 previous error
@@ -284,7 +284,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         IncrementalResults removeResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
         assertEquals( 0, removeResults.getAddedMessages().size() );
-        assertEquals( 1, removeResults.getRemovedMessages().size() );
+        assertEquals( 2, removeResults.getRemovedMessages().size() );
     }
 
     @Test
@@ -323,7 +323,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.write( "src/main/resources/r2.drl", drl2_1  );
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 1, addResults.getAddedMessages().size() );
+        assertEquals( 2, addResults.getAddedMessages().size() );
         assertEquals( 0, addResults.getRemovedMessages().size() );
 
         //Update flawed file with correct version - expect 0 "added" error messages and removal of 1 previous error relating to updated file
@@ -331,7 +331,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         IncrementalResults removeResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
         assertEquals( 0, removeResults.getAddedMessages().size() );
-        assertEquals( 1, removeResults.getRemovedMessages().size() );
+        assertEquals( 2, removeResults.getRemovedMessages().size() );
     }
 
     @Test
@@ -419,11 +419,11 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kfs.write( "src/main/resources/r2.drl", drl2_1 );
         IncrementalResults addResults = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r2.drl" ).build();
 
-        assertEquals( 1, addResults.getAddedMessages().size() );
+        assertEquals( 2, addResults.getAddedMessages().size() );
         assertEquals( 0, addResults.getRemovedMessages().size() );
 
         //Check errors on a full build
-        assertEquals( 1, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
+        assertEquals( 2, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
     }
 
     @Test
