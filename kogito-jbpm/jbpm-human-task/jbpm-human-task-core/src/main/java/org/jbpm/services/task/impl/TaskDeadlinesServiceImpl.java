@@ -134,19 +134,25 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
             ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
         }
-        
-        long now = System.currentTimeMillis();
-        List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedStartDeadlines");
-        for (DeadlineSummaryImpl summary : resultList) {
-            long delay = summary.getDate().getTime() - now;
-            schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.START);
-
-        }
-        
-        resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedEndDeadlines");
-        for (DeadlineSummaryImpl summary : resultList) {
-            long delay = summary.getDate().getTime() - now;
-            schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
+        boolean txowner = pm.beginTransaction();
+        try {
+	        long now = System.currentTimeMillis();
+	        List<DeadlineSummaryImpl> resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedStartDeadlines");
+	        for (DeadlineSummaryImpl summary : resultList) {
+	            long delay = summary.getDate().getTime() - now;
+	            schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.START);
+	
+	        }
+	        
+	        resultList = (List<DeadlineSummaryImpl>)pm.queryInTransaction("UnescalatedEndDeadlines");
+	        for (DeadlineSummaryImpl summary : resultList) {
+	            long delay = summary.getDate().getTime() - now;
+	            schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
+	        }
+	        pm.endTransaction(txowner);
+        } catch (Exception e) {
+        	pm.rollBackTransaction(txowner);
+        	logger.error("Error when executing deadlines", e);
         }
     }
 
@@ -156,70 +162,76 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
             ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
         }
-        
-        TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
-        Deadline deadline = (DeadlineImpl) pm.find(DeadlineImpl.class, deadlineId);
-
-        TaskData taskData = task.getTaskData();
-        
-        
-        if (taskData != null) {
-            // check if task is still in valid status
-            if (type.isValidStatus(taskData.getStatus())) {
-                Map<String, Object> variables = null;
-
-
-                    ContentImpl content = (ContentImpl) pm.find(ContentImpl.class, taskData.getDocumentContentId());
-
-                    if (content != null) {
-                        ContentMarshallerContext context = taskContentService.getMarshallerContext(task);
-                        Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), context.getEnvironment(), context.getClassloader());
-
-                        if (objectFromBytes instanceof Map) {
-                            variables = (Map) objectFromBytes;
-
-                        } else {
-
-                            variables = new HashMap<String, Object>();
-                            variables.put("content", objectFromBytes);
-                        }
-                    } else {
-                        variables = Collections.emptyMap();
-                    }
-
-                if (deadline == null || deadline.getEscalations() == null ) {
-                    return;
-                }
-
-                for (Escalation escalation : deadline.getEscalations()) {
-
-                    // we won't impl constraints for now
-                    //escalation.getConstraints()
-
-                    // run reassignment first to allow notification to be send to new potential owners
-                    if (!escalation.getReassignments().isEmpty()) {
-                        // get first and ignore the rest.
-                        Reassignment reassignment = escalation.getReassignments().get(0);
-                        logger.debug("Reassigning to {}", reassignment.getPotentialOwners());
-                        ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
-                        
-                        List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
-                        ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
-                        ((InternalTaskData) task.getTaskData()).setActualOwner(null);
-
-                    }
-                    for (Notification notification : escalation.getNotifications()) {
-                        if (notification.getNotificationType() == NotificationType.Email) {
-                            logger.debug("Sending an Email");
-                            notificationEvents.fire(new NotificationEvent(notification, task, variables));
-                        }
-                    }
-                }
-            }
-            
+        boolean txowner = pm.beginTransaction();
+        try {
+	        TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
+	        Deadline deadline = (DeadlineImpl) pm.find(DeadlineImpl.class, deadlineId);
+	
+	        TaskData taskData = task.getTaskData();
+	        
+	        
+	        if (taskData != null) {
+	            // check if task is still in valid status
+	            if (type.isValidStatus(taskData.getStatus())) {
+	                Map<String, Object> variables = null;
+	
+	
+	                    ContentImpl content = (ContentImpl) pm.find(ContentImpl.class, taskData.getDocumentContentId());
+	
+	                    if (content != null) {
+	                        ContentMarshallerContext context = taskContentService.getMarshallerContext(task);
+	                        Object objectFromBytes = ContentMarshallerHelper.unmarshall(content.getContent(), context.getEnvironment(), context.getClassloader());
+	
+	                        if (objectFromBytes instanceof Map) {
+	                            variables = (Map) objectFromBytes;
+	
+	                        } else {
+	
+	                            variables = new HashMap<String, Object>();
+	                            variables.put("content", objectFromBytes);
+	                        }
+	                    } else {
+	                        variables = Collections.emptyMap();
+	                    }
+	
+	                if (deadline == null || deadline.getEscalations() == null ) {
+	                    return;
+	                }
+	
+	                for (Escalation escalation : deadline.getEscalations()) {
+	
+	                    // we won't impl constraints for now
+	                    //escalation.getConstraints()
+	
+	                    // run reassignment first to allow notification to be send to new potential owners
+	                    if (!escalation.getReassignments().isEmpty()) {
+	                        // get first and ignore the rest.
+	                        Reassignment reassignment = escalation.getReassignments().get(0);
+	                        logger.debug("Reassigning to {}", reassignment.getPotentialOwners());
+	                        ((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
+	                        
+	                        List potentialOwners = new ArrayList(reassignment.getPotentialOwners());
+	                        ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
+	                        ((InternalTaskData) task.getTaskData()).setActualOwner(null);
+	
+	                    }
+	                    for (Notification notification : escalation.getNotifications()) {
+	                        if (notification.getNotificationType() == NotificationType.Email) {
+	                            logger.debug("Sending an Email");
+	                            notificationEvents.fire(new NotificationEvent(notification, task, variables));
+	                        }
+	                    }
+	                }
+	            }
+	            
+	        }
+	        
+	        deadline.setEscalated(true);
+	        pm.endTransaction(txowner);
+        } catch (Exception e) {
+        	pm.rollBackTransaction(txowner);
+        	logger.error("Error when executing deadlines", e);
         }
-        
-        deadline.setEscalated(true);
     }
 
     public void schedule(long taskId, long deadlineId, long delay, DeadlineType type) {

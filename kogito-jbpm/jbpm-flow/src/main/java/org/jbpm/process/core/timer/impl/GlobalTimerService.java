@@ -164,7 +164,9 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
 
     @Override
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
-
+    	if (this.jobFactoryManager.getCommandService() == null) {
+    		this.jobFactoryManager.setCommandService(timerJobFactoryManager.getCommandService());
+    	}
     }
 
     @Override
