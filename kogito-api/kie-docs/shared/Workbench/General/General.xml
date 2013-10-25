@@ -1,31 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="./" xml:id="wb.General"
+<section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
+         xml:base="../../" xml:id="wb.General" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-
   <title>General</title>
+
+  <section xml:id="wb.UserManagement">
+    <title>User management</title>
+
+    <para>The workbench authenticates its users against the application server's authentication and authorization
+    (JAAS).</para>
+
+    <para>On JBoss EAP and WildFly, add a user with the script <literal>$JBOSS_HOME/bin/add-user.sh</literal> (or
+    <literal>.bat</literal>):</para>
+
+    <programlisting>$ ./add-user.sh
+// Type: Application User
+// Realm: empty (defaults to ApplicationRealm)
+// Role: admin</programlisting>
+
+    <para>There is no need to restart the application server.</para>
+  </section>
+
+  <section xml:id="wb.Roles">
+    <title>Roles</title>
+
+    <para>The following roles are available:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>admin</para>
+      </listitem>
+
+      <listitem>
+        <para>analyst</para>
+      </listitem>
+
+      <listitem>
+        <para>developer</para>
+      </listitem>
+
+      <listitem>
+        <para>manager</para>
+      </listitem>
+
+      <listitem>
+        <para>user</para>
+      </listitem>
+    </itemizedlist>
+  </section>
 
   <section xml:id="wb.LogInAndLogOut">
     <title>Log in and log out</title>
 
-    <para>todo</para>
+    <para>Create a user with the role <literal>admin</literal> and log in with those credentials.</para>
 
+    <para>After successfully logging in, the account username is displayed at the top right. Click on it to review the
+    roles of the current account.</para>
   </section>
 
-  <section xml:id="wb.Home">
-    <title>Home</title>
+  <section xml:id="wb.HomeScreen">
+    <title>Home screen</title>
 
-    <para>todo</para>
+    <para>After logging in, the home screen shows. The actual content of the home screen depends on the workbench
+    variant (drools, jbpm, ...).</para>
 
     <mediaobject>
       <imageobject>
         <imagedata fileref="images/Workbench/General/home.png"/>
       </imageobject>
     </mediaobject>
-
   </section>
-
 </section>
