@@ -87,7 +87,9 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     
     @After
     public void teardown() {
-        manager.close();
+    	if (manager != null) {
+    		manager.close();
+    	}
         pds.close();
     }
     
@@ -219,6 +221,48 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     	
     	RuntimeEnvironment environment = RuntimeEnvironmentBuilder
     			.getDefault(GROUP_ID, ARTIFACT_ID, VERSION, "defaultKieBase", "defaultKieSession")
+                .userGroupCallback(userGroupCallback)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("ScriptTask", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+    }
+    
+    @Test
+    public void testScriptTaskFromClasspathContainer() {
+
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getClasspathKmoduleDefault()
+                .userGroupCallback(userGroupCallback)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("ScriptTask", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+    }
+    
+    @Test
+    public void testScriptTaskFromClasspathContainerNamedKbaseKsession() {
+
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getClasspathKmoduleDefault("defaultKieBase", "defaultKieSession")
                 .userGroupCallback(userGroupCallback)
                 .get();
         

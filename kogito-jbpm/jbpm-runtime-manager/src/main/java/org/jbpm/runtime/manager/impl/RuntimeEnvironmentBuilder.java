@@ -47,6 +47,8 @@ import org.kie.scanner.MavenRepository;
  *  <li>getDefault(String, String, String) - returns preconfigured environment with enabled persistence that is tailored for kjar</li>
  *  <li>getDefault(String, String, String, String, String) - returns preconfigured environment with enabled persistence that is tailored for kjar and allows to specify kbase and ksession name</li>
  *  <li>getEmpty() - completely empty environment for self configuration</li>
+ *  <li>getClasspathKModuleDefault() - returns preconfigured environment with enabled persistence based on classpath kiecontainer</li>
+ *  <li>getClasspathKModuleDefault(String, String) - returns preconfigured environment with enabled persistence based on classpath kiecontainer</li>
  * </ul>  
  *
  */
@@ -192,6 +194,61 @@ public class RuntimeEnvironmentBuilder {
         
         RuntimeEnvironmentBuilder builder = getDefault()
         										.knowledgeBase(kbase)
+        										.classLoader(kieContainer.getClassLoader())
+        										.registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, ksessionName));
+        return builder;
+    }
+    
+    /**
+     * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
+     * <ul>
+     * 	<li>DefaultRuntimeEnvironment</li>
+     * </ul>
+     * It relies on KieClasspathContainer that requires to have kmodule.xml present in META-INF folder which 
+     * defines the kjar itself.
+     * Expects to use default kbase and ksession from kmodule.
+     * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
+     * 
+     * @see DefaultRuntimeEnvironment
+     */
+    public static RuntimeEnvironmentBuilder getClasspathKmoduleDefault() {
+    	return getClasspathKmoduleDefault(null, null);
+    }
+    
+    /**
+     * Provides default configuration of <code>RuntimeEnvironmentBuilder</code> that is based on:
+     * <ul>
+     * 	<li>DefaultRuntimeEnvironment</li>
+     * </ul>
+     * It relies on KieClasspathContainer that requires to have kmodule.xml present in META-INF folder which 
+     * defines the kjar itself.
+     * @param kbaseName name of the kbase defined in kmodule.xml
+     * @param ksessionName name of the ksession define in kmodule.xml   
+     * @return new instance of <code>RuntimeEnvironmentBuilder</code> that is already preconfigured with defaults
+     * 
+     * @see DefaultRuntimeEnvironment
+     */
+    public static RuntimeEnvironmentBuilder getClasspathKmoduleDefault(String kbaseName, String ksessionName) {    	
+    	KieServices ks = KieServices.Factory.get();
+    	KieContainer kieContainer = ks.getKieClasspathContainer();
+
+        if (StringUtils.isEmpty(kbaseName)) {
+            KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
+            if (defaultKBaseModel != null) {
+                kbaseName = defaultKBaseModel.getName();
+            } else {
+                kbaseName = DEFAULT_KBASE_NAME;
+            }
+        }
+        InternalKieModule module = (InternalKieModule) ((KieContainerImpl)kieContainer).getKieModuleForKBase(kbaseName);
+        if (module == null) {
+            throw new IllegalStateException("Cannot find kbase with name " + kbaseName);
+        }
+        KieBase kbase = kieContainer.getKieBase(kbaseName);
+        
+        RuntimeEnvironmentBuilder builder = getDefault()
+        										.knowledgeBase(kbase)
+        										.classLoader(kieContainer.getClassLoader())
         										.registerableItemsFactory(new KModuleRegisterableItemsFactory(kieContainer, ksessionName));
         return builder;
     }
