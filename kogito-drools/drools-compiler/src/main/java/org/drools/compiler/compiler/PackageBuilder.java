@@ -2058,7 +2058,7 @@ public class PackageBuilder
                 ClassDefinition classDef = superTypeDeclaration.getTypeClassDef();
                 // inherit fields
                 for ( FactField fld : classDef.getFields() ) {
-                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld );
+                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld, typeDescr );
                     fieldMap.put( inheritedFlDescr.getFieldName(),
                                   inheritedFlDescr );
                 }
@@ -2153,7 +2153,7 @@ public class PackageBuilder
         return true;
     }
 
-    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition(FactField fld) {
+    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition( FactField fld, TypeDeclarationDescr typeDescr ) {
         PatternDescr fldType = new PatternDescr();
         TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
         inheritedFldDescr.setFieldName( fld.getName() );
@@ -2163,9 +2163,24 @@ public class PackageBuilder
             inheritedFldDescr.getAnnotations().put( TypeDeclaration.ATTR_KEY,
                                                     new AnnotationDescr( TypeDeclaration.ATTR_KEY ) );
         }
-        inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
-        inheritedFldDescr.setInherited( true );
-        inheritedFldDescr.setInitExpr( ((FieldDefinition) fld).getInitExpr() );
+            inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
+            inheritedFldDescr.setInherited( true );
+
+            String initExprOverride = ( (FieldDefinition) fld ).getInitExpr();
+            int overrideCount = 0;
+            // only @aliasing local fields may override defaults.
+            for ( TypeFieldDescr localField : typeDescr.getFields().values() ) {
+                AnnotationDescr ann = localField.getAnnotation( "Alias" );
+                if ( ann != null && fld.getName().equals( ann.getSingleValue().replaceAll( "\"", "" ) ) && localField.getInitExpr() != null ) {
+                    overrideCount++;
+                    initExprOverride = localField.getInitExpr();
+                }
+            }
+            if ( overrideCount > 1 ) {
+                // however, only one is allowed
+                initExprOverride = null;
+            }
+            inheritedFldDescr.setInitExpr( initExprOverride );
         return inheritedFldDescr;
     }
 
@@ -2751,7 +2766,8 @@ public class PackageBuilder
             }
         }
 
-        boolean traitable = typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null;
+        AnnotationDescr traitableAnn = typeDescr.getAnnotation( Traitable.class.getSimpleName() );
+        boolean traitable = traitableAnn != null;
 
         String[] fullSuperTypes = new String[typeDescr.getSuperTypes().size() + 1];
         int j = 0;
@@ -2783,9 +2799,11 @@ public class PackageBuilder
             case CLASS :
             default :
                 def = new ClassDefinition( fullName,
-                                           fullSuperTypes[0],
-                                           interfaces );
-                def.setTraitable( traitable );
+                        				   fullSuperTypes[0],
+                        				   interfaces );
+                def.setTraitable( traitable, traitableAnn != null &&
+                                             traitableAnn.getValue( "logical" ) != null &&
+                                             Boolean.valueOf( traitableAnn.getValue( "logical" ) ) );
         }
 
         for ( String annotationName : typeDescr.getAnnotationNames() ) {

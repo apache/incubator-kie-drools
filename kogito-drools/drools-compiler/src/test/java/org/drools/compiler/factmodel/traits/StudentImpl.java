@@ -18,6 +18,7 @@ package org.drools.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -37,7 +38,7 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     private int age;
 
 
-    private Map<String,Thing<StudentImpl>> traitMap = new TraitTypeMap<String, Thing<StudentImpl>, StudentImpl>( new HashMap() );
+    private Map<String,Thing<StudentImpl>> traitMap = new TraitTypeMap<String, Thing<StudentImpl>, StudentImpl>( new HashMap() );;
 
     public StudentImpl() {
     }
@@ -46,8 +47,9 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         this.school = school;
         this.name = name;
         this.age = age;
-
     }
+
+
 
     public String getSchool() {
         return school;
@@ -122,8 +124,13 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         return traitMap.get( type );
     }
 
+    public boolean hasTraits() {
+        return traitMap != null && ! traitMap.isEmpty();
+    }
+
+
     public boolean hasTrait(String type) {
-        return traitMap.containsKey(type);
+        return traitMap.containsKey( type );
     }
 
     public Collection<Thing<StudentImpl>> removeTrait(String type) {
@@ -131,7 +138,7 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
     }
 
     public Collection<Thing<StudentImpl>> removeTrait(BitSet typeCode) {
-            return ((TraitTypeMap) _getTraitMap()).removeCascade(typeCode);
+        return ((TraitTypeMap) _getTraitMap()).removeCascade(typeCode);
     }
 
     public Collection<String> getTraits() {
@@ -144,6 +151,10 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
 
     public void _setBottomTypeCode(BitSet code) {
         //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public TraitFieldTMS _getFieldTMS() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public BitSet getBottomTypeCode() {

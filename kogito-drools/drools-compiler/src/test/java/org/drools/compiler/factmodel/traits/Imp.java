@@ -16,7 +16,6 @@
 
 package org.drools.compiler.factmodel.traits;
 
-
 public class Imp {
 
     private String name;

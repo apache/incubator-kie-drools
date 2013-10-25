@@ -16,10 +16,10 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
@@ -27,6 +27,8 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
 public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
 
@@ -46,17 +48,15 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
             
             if ( Object.class.getName().equals( classDef.getSuperClass() ) ) {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
-                intfaces = new String[ tmp.length + 2 ];
+                intfaces = new String[ tmp.length + 1 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ tmp.length ] = Type.getInternalName( Serializable.class );
-                intfaces[ tmp.length + 1 ] = Type.getInternalName( GeneratedFact.class );
             } else {
                 String[] tmp = BuildUtils.getInternalTypes( classDef.getInterfaces() );
-                intfaces = new String[ tmp.length + 3 ];
+                intfaces = new String[ tmp.length + 2 ];
                 System.arraycopy( tmp, 0, intfaces, 0, tmp.length );
                 intfaces[ tmp.length ] = BuildUtils.getInternalType( classDef.getSuperClass() );
                 intfaces[ tmp.length + 1 ] = Type.getInternalName( Serializable.class );
-                intfaces[ tmp.length + 2 ] = Type.getInternalName( GeneratedFact.class );
             }
 
             cw.visit( ClassGenerator.JAVA_VERSION, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
@@ -68,6 +68,21 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
             {
                 if ( classDef.getDefinedClass() == null || classDef.getDefinedClass().getAnnotation( Trait.class ) == null ) {
                     AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Trait.class ), true);
+                    List<AnnotationDefinition> annotations = classDef.getAnnotations();
+                    if ( annotations != null && ! annotations.isEmpty() ) {
+                        for ( Iterator<AnnotationDefinition> iter = annotations.iterator(); iter.hasNext(); ) {
+                            AnnotationDefinition adef = iter.next();
+                            if ( Trait.class.getName().equals( adef.getName() ) ) {
+                                if ( adef.getPropertyValue( "logical" ) != null ) {
+                                    av0.visit( "logical", (Boolean) adef.getPropertyValue( "logical" ) );
+                                }
+                                if ( adef.getPropertyValue( "impl" ) != null ) {
+                                    av0.visit( "impl", Type.getType( (Class) adef.getPropertyValue( "impl" ) ) );
+                                }
+                                break;
+                            }
+                        }
+                    }
                     av0.visitEnd();
                 }
             }

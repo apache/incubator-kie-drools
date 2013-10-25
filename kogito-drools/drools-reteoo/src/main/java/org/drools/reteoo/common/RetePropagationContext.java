@@ -342,27 +342,30 @@ public class RetePropagationContext
         return modificationMask;
     }
 
+    public void setModificationMask( long modificationMask ) {
+        this.modificationMask = modificationMask;
+    }
+
     public PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory) {
-        modificationMask = originalMask;
-        if (modificationMask == Long.MAX_VALUE || !(type instanceof ClassObjectType)) {
+        if (originalMask == Long.MAX_VALUE || originalMask <= 0 || !(type instanceof ClassObjectType)) {
+            return this;
+        }
+        ClassObjectType classObjectType = (ClassObjectType)type;
+        Long cachedMask = classObjectType.getTransformedMask(modifiedClass, originalMask);
+
+        if (cachedMask != null) {
             return this;
         }
 
+        modificationMask = originalMask;
         long typeBit = modificationMask & Long.MIN_VALUE;
         modificationMask &= Long.MAX_VALUE;
 
-        ClassObjectType classObjectType = (ClassObjectType)type;
+
         Class<?> classType = classObjectType.getClassType();
         String pkgName = classType.getPackage().getName();
 
         if (classType == modifiedClass || "java.lang".equals(pkgName) || !(classType.isInterface() || modifiedClass.isInterface())) {
-            modificationMask |= typeBit;
-            return this;
-        }
-
-        Long cachedMask = classObjectType.getTransformedMask(modifiedClass, originalMask);
-        if (cachedMask != null) {
-            modificationMask = cachedMask;
             modificationMask |= typeBit;
             return this;
         }

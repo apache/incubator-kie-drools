@@ -16,13 +16,14 @@
 
 package org.drools.compiler.factmodel.traits;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.factmodel.traits.TraitTypeMap;
+import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.WriteAccessor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class StudentProxy2 extends TraitProxy implements IStudent {
 
@@ -38,6 +39,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
 
     private static final String traitType = IStudent.class.getName();
 
+
     public StudentProxy2(Imp2 obj, Map<String, Object> m) {
         if ( m == null ) {
             m = new HashMap<String,Object>();
@@ -49,19 +51,15 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         fields = new StudentProxyWrapper2( obj, m );
 
         if ( obj._getDynamicProperties() == null ) {
-            obj._setDynamicProperties(m);
+            obj._setDynamicProperties( m );
         }
 
         if ( obj._getTraitMap() == null ) {
-            obj._setTraitMap(new TraitTypeMap(new HashMap()));
+            obj._setTraitMap( new TraitTypeMap( new HashMap() ) );
         }
     }
 
     public Imp2 getCore() {
-        return object;
-    }
-
-    public Object getObject() {
         return object;
     }
 
@@ -72,6 +70,12 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
     public String getTraitName() {
         return traitType;
     }
+
+    public TraitableBean getObject() {
+        return object;
+    }
+
+
 
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -92,8 +96,6 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         result = "Student".hashCode() * result;
         return result;
     }
-
-
 
     public String toString() {
         return "(@Student) : " + getFields().entrySet().toString();
@@ -120,23 +122,31 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
     }
 
     public String getName() {
-// return object.getName();
+//        return object.getName();
         return (String) name_reader.getValue(object);
     }
 
     public void setName(String name) {
-// object.setName( name );
+//        object.setName( name );
         name_writer.setValue(object, name);
     }
 
     public int getAge() {
         Object tmp = map.get( "age" );
-        return (Integer) (
+        return  (Integer) (
                 tmp != null ?
-                        tmp : 0 );
+                tmp : 0 );
     }
 
     public void setAge(int age) {
         map.put( "age", Integer.valueOf( age ) );
     }
+
+
+
+
+
+
+
+
 }

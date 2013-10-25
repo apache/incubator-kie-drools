@@ -20,6 +20,6 @@ public interface IDoSomething<K> {
 
     public String doSomething( int x );
 
-    public void doAnotherTask( );
+    public void doAnotherTask();
 
 }

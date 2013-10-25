@@ -1,8 +1,26 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.core.factmodel;
 
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFieldTMS;
+import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
@@ -12,16 +30,16 @@ import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 @Traitable
-public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object> {
+public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializable, Map<String,Object>, CoreWrapper<Map> {
 
     private String id;
 
+    private TraitFieldTMS __$$field_Tms$$;
     private Map<String,Object> __$$dynamic_properties_map$$;
     private Map<String,Thing<Map>> __$$dynamic_traits_map$$;
 
@@ -29,10 +47,22 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
 
     }
 
-    public MapCore(Map map) {
+    public MapCore( Map map ) {
         id = UUID.randomUUID().toString();
         __$$dynamic_properties_map$$ = map;
     }
+
+    public TraitFieldTMS _getFieldTMS() {
+        if ( __$$field_Tms$$ == null ) {
+            __$$field_Tms$$ = new TraitFieldTMSImpl();
+        }
+        return __$$field_Tms$$;
+    }
+
+    public void _setFieldTMS( TraitFieldTMS __$$field_Tms$$ ) {
+        this.__$$field_Tms$$ = __$$field_Tms$$;
+    }
+
 
     public String getId() {
         return id;
@@ -43,7 +73,7 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
     }
 
     public Map<String, Object> _getDynamicProperties() {
-        return __$$dynamic_properties_map$$;
+        return  __$$dynamic_properties_map$$;
     }
 
     public void _setDynamicProperties( Map map ) {
@@ -88,6 +118,10 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         }
     }
 
+    public boolean hasTraits() {
+        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
+    }
+
     public Collection<String> getTraits() {
         if ( isTraitMapInitialized() ) {
             return _getTraitMap().keySet();
@@ -97,6 +131,7 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
     }
 
     public Collection<Thing> getMostSpecificTraits() {
+        if ( _getTraitMap() == null ) { return Collections.EMPTY_LIST; }
         return ((TraitTypeMap) _getTraitMap()).getMostSpecificTraits();
     }
 
@@ -179,7 +214,8 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
         ((TraitTypeMap) _getTraitMap()).setBottomCode( bottomTypeCode );
     }
 
-    public void init( MapCore core ) {
+    public void init( Map core ) {
+//        __$$dynamic_properties_map$$ = core;
     }
 
     public Map getCore() {
@@ -213,3 +249,4 @@ public class MapCore<K> implements TraitableBean<Map,CoreWrapper<Map>>, Serializ
                '}';
     }
 }
+

@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -183,6 +184,16 @@ public class SequentialKnowledgeHelper
     }
 
     public <T, K> T don(Thing<K> core, Class<T> trait) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait, boolean logical ) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public <T, K> T don( K core, Collection<Class<? extends Thing>> trait ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

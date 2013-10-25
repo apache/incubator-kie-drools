@@ -73,6 +73,7 @@ public interface PropagationContext
 
     long getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);
+    void setModificationMask(long mask);
 
     ObjectType getObjectType();
     void setObjectType(ObjectType objectType);

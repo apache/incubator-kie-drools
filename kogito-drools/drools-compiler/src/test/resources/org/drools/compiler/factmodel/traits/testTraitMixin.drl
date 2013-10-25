@@ -1,13 +1,14 @@
 package org.drools.compiler.test;
 
-import org.drools.core.factmodel.traits.Entity;
+import org.drools.core.factmodel.traits.*;
 
-import org.drools.compiler.factmodel.traits.ISomethingWithBehaviour
 import org.drools.compiler.factmodel.traits.ISomethingWithBehaviour;
-
 
 global java.util.List list;
 
+declare Foo
+@Traitable
+end
 
 declare trait ISomethingWithBehaviour
 
@@ -19,14 +20,14 @@ rule "Init"
 when 
 then 
     Entity core = new Entity();
-    insert( core );
+    insert( new Foo() );
 end
 
 
 rule "Mixin'"
 dialect "java"
 when
-    $core: Entity( )
+    $core: Foo( )
 then
     ISomethingWithBehaviour x = don( $core, ISomethingWithBehaviour.class );
     x.setName( "john" );

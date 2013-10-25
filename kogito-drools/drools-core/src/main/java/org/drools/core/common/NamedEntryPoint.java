@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -563,7 +564,22 @@ public class NamedEntryPoint
             if ( handle.isDisconnected() ) {
                 handle = this.objectStore.reconnect( handle );
             }
-            
+
+            if ( handle.isTraitable() ) {
+                TraitableBean traitableBean = (TraitableBean) handle.getObject();
+                if( traitableBean.hasTraits() ){
+                    PriorityQueue<TraitProxy> removedTypes =
+                            new PriorityQueue<TraitProxy>( traitableBean._getTraitMap().values().size() );
+                    removedTypes.addAll( traitableBean._getTraitMap().values() );
+
+                    while ( ! removedTypes.isEmpty() ) {
+                        delete( getFactHandle( removedTypes.poll() ),
+                                rule,
+                                activation );
+                    }
+                }
+            }
+
             if ( handle.getEntryPoint() != this ) {
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
             }            
@@ -613,8 +629,8 @@ public class NamedEntryPoint
                 }
             }
 
-            if ( handle.isTrait() && handle.getObject() instanceof TraitProxy ) {
-                (( TraitableBean) ( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
+            if ( handle.isTraiting() && handle.getObject() instanceof TraitProxy ) {
+                (( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
             }
 
             propagationContext.evaluateActionQueue( this.wm );

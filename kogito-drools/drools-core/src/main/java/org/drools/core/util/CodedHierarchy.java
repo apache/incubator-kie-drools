@@ -16,12 +16,11 @@
 
 package org.drools.core.util;
 
+
 import java.util.BitSet;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface CodedHierarchy<T> {
 
@@ -33,6 +32,7 @@ public interface CodedHierarchy<T> {
     public void removeMember( T val );
 
     public void removeMember( BitSet key );
+
 
 
     public BitSet getCode( T val );
@@ -83,7 +83,7 @@ public interface CodedHierarchy<T> {
      * @param key a key, possibly the join of a number of member keys
      * @return
      */
-    public Collection<T>    immediateChildren( BitSet key );
+    public Collection<T> immediateChildren( BitSet key );
 
     /**
      * Returns all elements whose code is a descendant of key

@@ -96,6 +96,10 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return evaluator != null && evaluator.isTemporal();
     }
 
+    public boolean isSelf() {
+        return rightReadAccessor.isSelfReference();
+    }
+
     public Interval getInterval() {
         return evaluator == null ? null : evaluator.getInterval();
     }

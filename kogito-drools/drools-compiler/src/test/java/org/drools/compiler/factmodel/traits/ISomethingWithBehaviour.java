@@ -22,10 +22,10 @@ import org.drools.core.factmodel.traits.Trait;
 public interface ISomethingWithBehaviour<K> extends IDoSomething<K> {
 
     public String getName();
-    public void setName(String name);
+    public void setName( String name );
 
     public int getAge();
-    public void setAge(int age);
+    public void setAge( int age );
 
 
 

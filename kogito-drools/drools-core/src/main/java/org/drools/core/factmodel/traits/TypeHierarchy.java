@@ -16,15 +16,16 @@
 
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.util.CodedHierarchyImpl;
+import org.drools.core.util.AbstractCodedHierarchyImpl;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.BitSet;
+import java.util.List;
 
-public class TypeHierarchy<T> extends CodedHierarchyImpl<T> implements TypeLattice<T>, Externalizable {
+public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements TypeLattice<T>, Externalizable {
 
     private BitSet bottom;
     private BitSet top;
@@ -53,14 +54,29 @@ public class TypeHierarchy<T> extends CodedHierarchyImpl<T> implements TypeLatti
     }
 
     @Override
+    protected HierNode<T> getNode( T name ) {
+        throw new UnsupportedOperationException( "Concrete Type lattices should be indexed by key (BitSet), not by value" );
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append( super.toString() );
         sb.append("***************************************** \n");
-        for ( T member : getSortedMembers() ) {
-            sb.append( member ).append( " >>> " ).append( getCode( member ) ).append( "\n" );
-            sb.append("\t parents ").append( getNode( member ).getParents() ).append( "\n ");
-            sb.append( "\t children " ).append( getNode( member ).getChildren() ).append( "\n ");
+        List<T> sorted = getSortedMembers();
+        for ( T member : sorted ) {
+            HierNode<T> node = null;
+            // no index by value is preserved for performance reasons, so I need to look it up
+            for ( HierNode<T> n : line.values() ) {
+                if ( member.equals( n.getValue() ) ) {
+                    node = n;
+                    break;
+                }
+            }
+            if ( node == null ) { throw new IllegalStateException( "Serious corruption: member node is no longer in the lattice" ); }
+            sb.append( member ).append( " >>> " ).append( node.getBitMask() ).append( "\n" );
+            sb.append("\t parents ").append( node.getParents() ).append( "\n ");
+            sb.append( "\t children " ).append( node.getChildren() ).append( "\n ");
         }
         sb.append( "***************************************** \n" );
         return sb.toString();

@@ -187,7 +187,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
         //System.out.println( "Getting parents of " + y + " >> " + y.getParents() );
         Collection<HierNode<T>> py = y.getParents();
-        BitSet t = new BitSet();
+        BitSet t = new BitSet( y.getBitMask().length() );
         for ( HierNode<T> parent : py ) {
             t.or( parent.getBitMask() );
         }
@@ -265,7 +265,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
     }
 
     protected void inheritMerged( HierNode<T> x ) {
-        BitSet mask = new BitSet();
+        BitSet mask = new BitSet( x.getBitMask() != null ? x.getBitMask().length() : 1 );
         for ( HierNode<T> p : x.getParents() ) {
             mask.or(p.getBitMask());
         }
@@ -277,7 +277,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
         Set<HierNode<T>> s = new HashSet<HierNode<T>>();
 
         Iterator<HierNode<T>> iter = set.iterator();
-        BitSet a = new BitSet();
+        BitSet a = new BitSet( this.size() );
         a.or( iter.next().getBitMask() );
         while ( iter.hasNext() ) {
             a.and( iter.next().getBitMask() );
@@ -367,7 +367,7 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
     protected int freeBit( HierNode<T> x, HierNode<T> z ) {
         //System.out.println( "Looking for a free bit in node " + x );
-        BitSet forbid = new BitSet();
+        BitSet forbid = new BitSet( this.size() );
         forbid.or( x.getBitMask() );
         for ( HierNode<T> y : getNodes() ) {
 
@@ -420,21 +420,21 @@ public class HierarchyEncoderImpl<T> extends CodedHierarchyImpl<T> implements Hi
 
 
     BitSet increment( BitSet id, int i ) {
-        BitSet x = new BitSet();
+        BitSet x = new BitSet( Math.max( i + 1, id.length() ) );
         x.or( id );
         x.set(i);
         return x;
     }
 
     BitSet decrement( BitSet id, int d ) {
-        BitSet x = new BitSet();
+        BitSet x = new BitSet( id.length() );
         x.or( id );
         x.clear(d);
         return x;
     }
 
     BitSet singleBitDiff( BitSet x, BitSet y ) {
-        BitSet t = new BitSet();
+        BitSet t = new BitSet( x.length() );
         t.or( x );
         t.flip(0, t.size());
         t.and( y );

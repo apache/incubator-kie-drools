@@ -33,6 +33,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.ShadowProxy;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.PatternBuilder;
@@ -62,10 +63,13 @@ public class ClassObjectTypeConf
     private TypeDeclaration            typeDecl;
     
     private boolean                    tmsEnabled;
+    private boolean                    traitTmsEnabled;
     
     private boolean                    supportsPropertyListeners;
 
     private boolean                    isEvent;
+
+    private boolean                    isTrait;
 
 
     public ClassObjectTypeConf() {
@@ -80,6 +84,7 @@ public class ClassObjectTypeConf
         this.entryPoint = entryPoint;
         this.typeDecl = ruleBase.getTypeDeclaration( clazz );
         isEvent = typeDecl != null && typeDecl.getRole() == TypeDeclaration.Role.EVENT;
+        isTrait = determineTraitStatus();
 
         ObjectType objectType = ((ReteooRuleBase) ruleBase).getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz,
                                                                                                                                     isEvent ) );
@@ -109,6 +114,9 @@ public class ClassObjectTypeConf
 
         defineShadowProxyData( clazz );
         this.supportsPropertyListeners = checkPropertyListenerSupport( clazz );
+
+        Traitable ttbl = cls.getAnnotation( Traitable.class );
+        this.traitTmsEnabled = ttbl != null && ttbl.logical();
     }
 
     public void readExternal(ObjectInput stream) throws IOException,
@@ -120,8 +128,10 @@ public class ClassObjectTypeConf
         concreteObjectTypeNode = (ObjectTypeNode) stream.readObject();
         entryPoint = (EntryPointId) stream.readObject();
         tmsEnabled = stream.readBoolean();
+        traitTmsEnabled = stream.readBoolean();
         supportsPropertyListeners = stream.readBoolean();
         isEvent = stream.readBoolean();
+        isTrait = stream.readBoolean();
         defineShadowProxyData( cls );
     }
 
@@ -133,8 +143,10 @@ public class ClassObjectTypeConf
         stream.writeObject( concreteObjectTypeNode );
         stream.writeObject( entryPoint );
         stream.writeBoolean( tmsEnabled );
+        stream.writeBoolean( traitTmsEnabled );
         stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
+        stream.writeBoolean( isTrait );
     }
 
     public boolean isAssignableFrom(Object object) {
@@ -184,6 +196,10 @@ public class ClassObjectTypeConf
         return this.shadowEnabled;
     }
 
+    public boolean isTraitTMSEnabled() {
+        return traitTmsEnabled;
+    }
+
     public void resetCache() {
         this.objectTypeNodes = null;
         defineShadowProxyData( cls );
@@ -231,11 +247,17 @@ public class ClassObjectTypeConf
     }
 
     public boolean isTrait() {
+        return isTrait;
+    }
+
+    protected boolean determineTraitStatus() {
         return typeDecl != null && (
-            typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
-            || typeDecl.getTypeClassDef().isTraitable()
+                typeDecl.getKind() == TypeDeclaration.Kind.TRAIT
+                || typeDecl.getTypeClassDef().isTraitable()
+                || typeDecl.getTypeClass().getAnnotation( Traitable.class ) != null
         ) || Thing.class.isAssignableFrom( cls )
-          || TraitableBean.class.isAssignableFrom( cls );
+               || TraitableBean.class.isAssignableFrom( cls )
+               || ( this.getTypeDeclaration() != null );
     }
 
     public TypeDeclaration getTypeDeclaration() {

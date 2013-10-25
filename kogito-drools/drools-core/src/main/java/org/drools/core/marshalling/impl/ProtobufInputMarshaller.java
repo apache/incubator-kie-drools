@@ -525,13 +525,24 @@ public class ProtobufInputMarshaller {
                                          (context.ruleBase == null) ? null : context.ruleBase.getRootClassLoader() );
         }
 
+
+        EntryPointId confEP;
+        if ( entryPoint != null ) {
+            confEP = ((NamedEntryPoint) entryPoint).getEntryPoint();
+        } else {
+            confEP = context.wm.getEntryPoint();
+        }
+        ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
+
+
         InternalFactHandle handle = null;
         switch ( _handle.getType() ) {
             case FACT : {
                 handle = new DefaultFactHandle( _handle.getId(),
                                                 object,
                                                 _handle.getRecency(),
-                                                entryPoint );
+                                                entryPoint,
+                                                typeConf != null && typeConf.isTrait() );
                 break;
             }
             case QUERY : {
@@ -546,7 +557,8 @@ public class ProtobufInputMarshaller {
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
                                               _handle.getDuration(),
-                                              entryPoint );
+                                              entryPoint,
+                                              typeConf != null && typeConf.isTrait() );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
                 // the event is re-propagated through the network, so the activations counter will be recalculated
                 //((EventFactHandle) handle).setActivationsCount( _handle.getActivationsCount() );

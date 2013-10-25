@@ -17,10 +17,12 @@
 package org.drools.reteoo.builder;
 
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -37,6 +39,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryRiaFixerNode;
+import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.reteoo.nodes.ReteAccumulateNode;
 import org.drools.reteoo.nodes.ReteConditionalBranchNode;
 import org.drools.reteoo.nodes.ReteEntryPointNode;
@@ -93,9 +96,13 @@ public class ReteNodeFactory implements NodeFactory, Serializable {
 
     public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
         if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
-            return new TraitObjectTypeNode( id, objectSource, objectType, context );
+            if ( TraitProxy.class.isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() ) ) {
+                return new TraitProxyObjectTypeNode( id, objectSource, objectType, context );
+            } else {
+                return new TraitObjectTypeNode( id, objectSource, objectType, context );
+            }
         } else {
-            return new ReteObjectTypeNode( id, objectSource, objectType, context );
+            return new ObjectTypeNode( id, objectSource, objectType, context );
         }
     }
 

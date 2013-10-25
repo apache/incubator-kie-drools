@@ -24,6 +24,7 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     public static final String MAP_FIELD_NAME = "__$$dynamic_properties_map$$";
     public String TRAITSET_FIELD_NAME = "__$$dynamic_traits_map$$";
+    public static String FIELDTMS_FIELD_NAME = "__$$field_Tms$$";
 
     public Map<String,Object> _getDynamicProperties();
 
@@ -40,6 +41,8 @@ public interface TraitableBean<K, X extends TraitableBean> {
 
     public boolean hasTrait( String type );
 
+    public boolean hasTraits();
+
     public Collection<Thing<K>> removeTrait( String type );
 
     public Collection<Thing<K>> removeTrait( BitSet typeCode );
@@ -52,5 +55,8 @@ public interface TraitableBean<K, X extends TraitableBean> {
     public BitSet getCurrentTypeCode();
 
     public void _setBottomTypeCode( BitSet code );
+
+
+    public TraitFieldTMS _getFieldTMS();
 
 }
