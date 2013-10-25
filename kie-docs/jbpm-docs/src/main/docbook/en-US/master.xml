@@ -13,14 +13,14 @@
     <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
-        <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss jBPM team</link></orgname>
+        <orgname><link xlink:href="http://www.jboss.org/jbpm">The JBoss jBPM team</link></orgname>
       </author>
     </authorgroup>
 
     <cover>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/droolsExpertLogo.png" />
+          <imagedata fileref="images/jBPMLogo.png" />
         </imageobject>
       </mediaobject>
     </cover>
@@ -30,10 +30,32 @@
   <preface>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/droolsExpertLogo.png" />
+        <imagedata fileref="images/jBPMLogo.png" />
       </imageobject>
     </mediaobject>
   </preface>
 
+  <xi:include href="Overview.xml"/>
+  <xi:include href="GettingStarted.xml"/>
+  <xi:include href="Installer.xml"/>
+  <xi:include href="CoreEngine.xml"/>
+  <xi:include href="BPMN2.xml"/>
+  <xi:include href="TaskService.xml"/>
+  <xi:include href="Persistence.xml"/>
+  <xi:include href="Workbench.xml"/>
+  <xi:include href="Designer.xml"/>
+  <xi:include href="DataModeler.xml"/>
+  <xi:include href="FormModeler.xml"/>
+  <xi:include href="Console.xml"/>
+  <xi:include href="BAM.xml"/>
+  <xi:include href="RemoteAPI.xml"/>
+  <xi:include href="Eclipse.xml"/>
+  <xi:include href="DomainSpecificProcesses.xml"/>
+  <xi:include href="Migration.xml"/>
+  <xi:include href="FlexibleProcesses.xml"/>
+  <xi:include href="Integration.xml"/>
+  <xi:include href="Examples.xml"/>
+  <!--xi:include href="Quickstarts.xml"/-->
+  <xi:include href="ReleaseNotes.xml"/>
 
 </book>
