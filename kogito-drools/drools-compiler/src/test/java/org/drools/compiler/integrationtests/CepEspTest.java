@@ -3811,6 +3811,7 @@ public class CepEspTest extends CommonTestMethodBase {
     public void AfterOperatorInCEPQueryTest() {
 
         String drl = "package org.drools;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
                      "\n" +
                      "declare StockTick\n" +
                      "    @role( event )\n" +
@@ -4041,7 +4042,9 @@ public class CepEspTest extends CommonTestMethodBase {
                      "" +
                      "rule \"slidingTimeCount\"\n" +
                      "when\n" +
-                     "\t$n: Number ( intValue > 0 ) from accumulate ( $e: StockTick() over window:time(300ms) from entry-point SensorEventStream, count($e))\n" +
+                     "  accumulate ( $e: StockTick() over window:time(300ms) from entry-point SensorEventStream, " +
+                     "              $n : count( $e );" +
+                     "              $n > 0 )\n" +
                      "then\n" +
                      "  list.add( $n ); \n" +
                      "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
@@ -4099,6 +4102,7 @@ public class CepEspTest extends CommonTestMethodBase {
 
         //let thread sleep for another 1m to see if dereffered rules fire (timers, (not) after rules)
         Thread.sleep(100*40*1);
+        ksession.fireAllRules();
 
         assertEquals( Arrays.asList( 1L, 2L, 3L, 3L, 3L, 3L, -1 ), list );
 

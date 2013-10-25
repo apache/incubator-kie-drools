@@ -125,6 +125,10 @@ public class SlidingTimeWindow
                               final InternalWorkingMemory workingMemory) {
         final SlidingTimeWindowContext queue = (SlidingTimeWindowContext) context;
         final EventFactHandle handle = (EventFactHandle) fact;
+        long currentTime = workingMemory.getTimerService().getCurrentTime();
+        if ( isExpired( currentTime, handle ) ) {
+            return false;
+        }
         synchronized (queue.queue) {
             queue.queue.add( handle );
             if ( queue.queue.peek() == handle ) {
