@@ -21,9 +21,10 @@ import java.util.Map;
 @Trait
 public interface Thing<K> {
 
-    Map<String,Object> getFields();
+    public Map<String,Object> getFields();
 
-    K getCore();
+    public K getCore();
 
-    boolean isTop();
+    public boolean isTop();
+
 }

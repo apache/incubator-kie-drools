@@ -233,7 +233,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
     private static void doInsertSegmentMemory(PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
                                               SegmentMemory sm, LeftTuple leftTuple, LeftInputAdapterNode liaNode, long mask) {
         if ( pctx.getType() == PropagationContext.INSERTION ||
-                mask == Long.MAX_VALUE ||
                 intersect( pctx.getModificationMask(),  mask) ) {
             boolean stagedInsertWasEmpty = false;
 
@@ -367,8 +366,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 // if LeftTuple is already staged, leave it there
                 long mask = sink.getLeftInferredMask();
 
-                if ( mask == Long.MAX_VALUE ||
-                     intersect( pctx.getModificationMask(),  mask) ) {
+                if ( intersect( pctx.getModificationMask(),  mask) ) {
                     // only add to staging if masks match
 
                     boolean stagedUpdateWasEmpty = false;

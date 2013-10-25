@@ -17,6 +17,7 @@
 package org.drools.core.spi;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -141,6 +142,10 @@ public interface KnowledgeHelper
     <T, K> T don( K core, Class<T> trait );
 
     <T, K> T don( Thing<K> core, Class<T> trait );
+
+    <T, K> T don( K core, Collection<Class<? extends Thing>> trait, boolean logical );
+
+    <T, K> T don( K core, Collection<Class<? extends Thing>> trait );
 
     <T, K> Thing<K> shed( Thing<K> thing, Class<T> trait );
 

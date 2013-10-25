@@ -32,4 +32,6 @@ public @interface Trait {
         private NullMixin() {}
     }
 
+    boolean logical() default false;
+
 }

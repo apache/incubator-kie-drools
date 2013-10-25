@@ -182,7 +182,9 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             }
 
             TraitableBean core;
-            if ( objectValue instanceof Thing ) {
+            if ( objectValue == null ) {
+                return this.getOperator().isNegated();
+            } if ( objectValue instanceof Thing ) {
                 Thing thing = (Thing) objectValue;
                 core = (TraitableBean) thing.getCore();
                 BitSet code = core.getCurrentTypeCode();

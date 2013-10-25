@@ -16,15 +16,19 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.kie.api.runtime.rule.Variable;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.BitSet;
 import java.util.Map;
 
-public abstract class TraitProxy implements Externalizable, TraitType {
+public abstract class TraitProxy implements Externalizable, TraitType, Comparable<TraitProxy> {
 
     protected TripleFactory tripleFactory;
 
@@ -52,6 +56,7 @@ public abstract class TraitProxy implements Externalizable, TraitType {
 
     public abstract String getTraitName();
 
+    
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( fields );
         out.writeObject( tripleFactory );
@@ -90,10 +95,10 @@ public abstract class TraitProxy implements Externalizable, TraitType {
     }
 
 
-    public abstract Object getObject();
+    public abstract TraitableBean getObject();
 
 
-    public boolean equals( Object o ) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         return getObject().equals( ( (TraitProxy) o ).getObject() );
@@ -101,7 +106,7 @@ public abstract class TraitProxy implements Externalizable, TraitType {
 
 
     public int hashCode() {
-        return this.getClass().hashCode() ^ getObject().hashCode();
+        return getClass().hashCode() ^ getObject().hashCode();
     }
 
 
@@ -140,6 +145,18 @@ public abstract class TraitProxy implements Externalizable, TraitType {
 
     public void setTypeFilter(BitSet typeFilter) {
         this.typeFilter = typeFilter;
+    }
+
+    public void shed() {
+
+    }
+
+    public int compareTo( TraitProxy o ) {
+        if ( HierarchyEncoderImpl.supersetOrEqualset( this.typeCode, o.typeCode ) ) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 }
 
