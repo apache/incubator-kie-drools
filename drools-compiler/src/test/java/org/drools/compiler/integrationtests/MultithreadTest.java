@@ -144,21 +144,20 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 1000000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
                      "global java.util.List list; \n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "" +
                      "declare StockTick @role(event) end\n" +
                      "" +
-                     "" +
                      "rule R\n" +
-                     " duration(200ms)" +
                      "when\n" +
                      " accumulate( $st : StockTick() over window:time(400ms)\n" +
                      "             from entry-point X,\n" +
                      "             $c : count(1) )" +
                      "then\n" +
-                     "   System.out.println( $c );\n" +
                      "   list.add( $c ); \n" +
                      "end \n";
 
@@ -240,7 +239,6 @@ public class MultithreadTest extends CommonTestMethodBase {
         assertTrue( errors.isEmpty() );
         assertTrue( success );
 
-        System.out.print( list );
         assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 200 );
         ksession.dispose();
     }
