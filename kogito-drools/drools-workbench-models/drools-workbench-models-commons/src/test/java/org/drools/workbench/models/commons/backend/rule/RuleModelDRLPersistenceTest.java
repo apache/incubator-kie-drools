@@ -249,19 +249,19 @@ public class RuleModelDRLPersistenceTest {
         final RuleModel m = new RuleModel();
 
         FactPattern factPattern = new FactPattern();
-        factPattern.setFactType("Message");
-        factPattern.setBoundName("m");
-        m.lhs = new IPattern[]{factPattern};
+        factPattern.setFactType( "Message" );
+        factPattern.setBoundName( "m" );
+        m.lhs = new IPattern[]{ factPattern };
 
         ActionUpdateField actionUpdateField = new ActionUpdateField();
-        actionUpdateField.setVariable("m");
+        actionUpdateField.setVariable( "m" );
         ActionFieldValue actionFieldValue = new ActionFieldValue();
-        actionFieldValue.setField("text");
-        actionFieldValue.setType("String");
-        actionFieldValue.setNature(FieldNatureType.TYPE_FORMULA);
-        actionFieldValue.setValue("\"Hello \" + \"world\"");
-        actionUpdateField.setFieldValues(new ActionFieldValue[]{actionFieldValue});
-        m.rhs = new IAction[]{actionUpdateField};
+        actionFieldValue.setField( "text" );
+        actionFieldValue.setType( "String" );
+        actionFieldValue.setNature( FieldNatureType.TYPE_FORMULA );
+        actionFieldValue.setValue( "\"Hello \" + \"world\"" );
+        actionUpdateField.setFieldValues( new ActionFieldValue[]{ actionFieldValue } );
+        m.rhs = new IAction[]{ actionUpdateField };
 
         m.name = "my rule";
 
@@ -283,20 +283,20 @@ public class RuleModelDRLPersistenceTest {
                 "end\n";
 
         final RuleModel m = new RuleModel();
-        m.setPackageName("org.mortgages");
-        m.getImports().addImport(new Import("org.mortgages.LoanApplication"));
+        m.setPackageName( "org.mortgages" );
+        m.getImports().addImport( new Import( "org.mortgages.LoanApplication" ) );
         m.name = "my rule";
 
         FactPattern factPattern = new FactPattern();
-        factPattern.setFactType("LoanApplication");
-        factPattern.setBoundName("a");
-        m.lhs = new IPattern[]{factPattern};
+        factPattern.setFactType( "LoanApplication" );
+        factPattern.setBoundName( "a" );
+        m.lhs = new IPattern[]{ factPattern };
 
         ActionCallMethod actionCallMethod = new ActionCallMethod();
-        actionCallMethod.setState(1);
-        actionCallMethod.setMethodName("clear");
-        actionCallMethod.setVariable("keke");
-        m.rhs = new IAction[]{actionCallMethod};
+        actionCallMethod.setState( 1 );
+        actionCallMethod.setMethodName( "clear" );
+        actionCallMethod.setVariable( "keke" );
+        m.rhs = new IAction[]{ actionCallMethod };
 
         checkMarshallUnmarshall( expected, m );
     }
@@ -3837,6 +3837,118 @@ public class RuleModelDRLPersistenceTest {
         m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( "",
                                                                  dmo );
         assertNotNull( m );
+    }
+
+    @Test
+    public void testIncompleteFieldConstraintStringWithNull() {
+        String expected = "" +
+                "rule \"rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Message( text == \"\" )\n" +
+                "  then\n" +
+                "end\n";
+
+        final RuleModel m = new RuleModel();
+        m.name = "rule";
+
+        final FactPattern pat = new FactPattern( "Message" );
+        m.addLhsItem( pat );
+
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "text" );
+        con.setOperator( "==" );
+        con.setValue( null );
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        pat.addConstraint( con );
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testIncompleteFieldConstraintStringWithNonNull() {
+        String expected = "" +
+                "rule \"rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Message( text == \"\" )\n" +
+                "  then\n" +
+                "end\n";
+
+        final RuleModel m = new RuleModel();
+        m.name = "rule";
+
+        final FactPattern pat = new FactPattern( "Message" );
+        m.addLhsItem( pat );
+
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "text" );
+        con.setOperator( "==" );
+        con.setValue( "" );
+        con.setFieldType( DataType.TYPE_STRING );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        pat.addConstraint( con );
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testIncompleteFieldConstraintNonStringWithNull() {
+        String expected = "" +
+                "rule \"rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Message()\n" +
+                "  then\n" +
+                "end\n";
+
+        final RuleModel m = new RuleModel();
+        m.name = "rule";
+
+        final FactPattern pat = new FactPattern( "Message" );
+        m.addLhsItem( pat );
+
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "number" );
+        con.setOperator( "==" );
+        con.setValue( null );
+        con.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        pat.addConstraint( con );
+
+        checkMarshallUnmarshall( expected,
+                                 m );
+    }
+
+    @Test
+    public void testIncompleteFieldConstraintNonStringWithNonNull() {
+        String expected = "" +
+                "rule \"rule\" \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Message()\n" +
+                "  then\n" +
+                "end\n";
+
+        final RuleModel m = new RuleModel();
+        m.name = "rule";
+
+        final FactPattern pat = new FactPattern( "Message" );
+        m.addLhsItem( pat );
+
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "number" );
+        con.setOperator( "==" );
+        con.setValue( "" );
+        con.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        pat.addConstraint( con );
+
+        checkMarshallUnmarshall( expected,
+                                 m );
     }
 
 }
