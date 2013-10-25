@@ -721,13 +721,10 @@ public class RuleModelDRLPersistenceImpl
                     buf.append( constr.getFieldBinding() );
                     buf.append( " : " );
                 }
-                if ( ( constr.getOperator() != null
-                        && ( constr.getValue() != null
-                        || constr.getOperator().equals( "== null" )
-                        || constr.getOperator().equals( "!= null" ) ) )
-                        || constr.getFieldBinding() != null
-                        || constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE
-                        || constr instanceof SingleFieldConstraintEBLeftSide ) {
+
+                assertConstraintValue( constr );
+
+                if ( isConstraintComplete( constr ) ) {
                     SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
                     StringBuilder parentBuf = new StringBuilder();
                     while ( parent != null ) {
@@ -743,55 +740,86 @@ public class RuleModelDRLPersistenceImpl
                         String fieldName = constr.getFieldName();
                         buf.append( fieldName );
                     }
-                }
 
-                Map<String, String> parameters = null;
-                if ( constr instanceof HasParameterizedOperator ) {
-                    HasParameterizedOperator hop = constr;
-                    parameters = hop.getParameters();
-                }
+                    Map<String, String> parameters = null;
+                    if ( constr instanceof HasParameterizedOperator ) {
+                        HasParameterizedOperator hop = constr;
+                        parameters = hop.getParameters();
+                    }
 
-                if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
-                    SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constr;
-                    addFieldRestriction( buf,
-                                         sfexp.getConstraintValueType(),
-                                         sfexp.getExpressionLeftSide().getGenericType(),
-                                         sfexp.getOperator(),
-                                         parameters,
-                                         sfexp.getValue(),
-                                         sfexp.getExpressionValue() );
-                } else {
-                    addFieldRestriction( buf,
-                                         constr.getConstraintValueType(),
-                                         constr.getFieldType(),
-                                         constr.getOperator(),
-                                         parameters,
-                                         constr.getValue(),
-                                         constr.getExpressionValue() );
-                }
-
-                // and now do the connectives.
-                if ( constr.getConnectives() != null ) {
-                    for ( int j = 0; j < constr.getConnectives().length; j++ ) {
-                        final ConnectiveConstraint conn = constr.getConnectives()[ j ];
-
-                        parameters = null;
-                        if ( conn instanceof HasParameterizedOperator ) {
-                            HasParameterizedOperator hop = (HasParameterizedOperator) conn;
-                            parameters = hop.getParameters();
-                        }
-
+                    if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
+                        SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constr;
                         addFieldRestriction( buf,
-                                             conn.getConstraintValueType(),
-                                             conn.getFieldType(),
-                                             conn.getOperator(),
+                                             sfexp.getConstraintValueType(),
+                                             sfexp.getExpressionLeftSide().getGenericType(),
+                                             sfexp.getOperator(),
                                              parameters,
-                                             conn.getValue(),
-                                             conn.getExpressionValue() );
+                                             sfexp.getValue(),
+                                             sfexp.getExpressionValue() );
+                    } else {
+                        addFieldRestriction( buf,
+                                             constr.getConstraintValueType(),
+                                             constr.getFieldType(),
+                                             constr.getOperator(),
+                                             parameters,
+                                             constr.getValue(),
+                                             constr.getExpressionValue() );
+                    }
+
+                    // and now do the connectives.
+                    if ( constr.getConnectives() != null ) {
+                        for ( int j = 0; j < constr.getConnectives().length; j++ ) {
+                            final ConnectiveConstraint conn = constr.getConnectives()[ j ];
+
+                            parameters = null;
+                            if ( conn instanceof HasParameterizedOperator ) {
+                                HasParameterizedOperator hop = (HasParameterizedOperator) conn;
+                                parameters = hop.getParameters();
+                            }
+
+                            addFieldRestriction( buf,
+                                                 conn.getConstraintValueType(),
+                                                 conn.getFieldType(),
+                                                 conn.getOperator(),
+                                                 parameters,
+                                                 conn.getValue(),
+                                                 conn.getExpressionValue() );
+                        }
                     }
                 }
-
             }
+        }
+
+        private void assertConstraintValue( final SingleFieldConstraint sfc ) {
+            if ( DataType.TYPE_STRING.equals( sfc.getFieldType() ) ) {
+                if ( sfc.getValue() == null ) {
+                    sfc.setValue( "" );
+                }
+            }
+        }
+
+        private boolean isConstraintComplete( final SingleFieldConstraint constr ) {
+            if ( constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE ) {
+                return true;
+            } else if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
+                return true;
+            } else if ( constr.getFieldBinding() != null ) {
+                return true;
+            }
+            final String operator = constr.getOperator();
+            final String fieldType = constr.getFieldType();
+            final String fieldValue = constr.getValue();
+            if ( operator == null ) {
+                return false;
+            }
+            if ( operator.equals( "== null" ) || operator.equals( "!= null" ) ) {
+                return true;
+            }
+            if ( DataType.TYPE_STRING.equals( fieldType ) ) {
+                return true;
+            }
+
+            return !( fieldValue == null || fieldValue.isEmpty() );
         }
 
         private void addFieldRestriction( final StringBuilder buf,
