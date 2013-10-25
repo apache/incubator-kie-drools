@@ -18,7 +18,8 @@
   <modules>
     <module>drools-docs</module>
     <module>jbpm-docs</module>
-    <module>optaplanner-docs</module>
+    <!-- Until they are moved: don't install an empty artifact in the maven repo that overwrites the other artifact -->
+    <!--<module>optaplanner-docs</module>-->
     <module>template-docs</module>
   </modules>
 
