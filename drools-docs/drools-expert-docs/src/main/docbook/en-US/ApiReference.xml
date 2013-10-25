@@ -6,8 +6,8 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>API Reference</title>
 
-  <xi:include href="Building.xml" />
+  <xi:include href="KieBuilding.xml" />
   <xi:include href="Deploying.xml" />
-  <xi:include href="Running.xml" />
+  <xi:include href="KieRunning.xml" />
 
 </chapter>
