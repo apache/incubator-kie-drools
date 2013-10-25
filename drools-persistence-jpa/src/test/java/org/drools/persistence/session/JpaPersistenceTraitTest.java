@@ -293,8 +293,10 @@ public class JpaPersistenceTraitTest {
     public void traitsLegacyWrapperWithJPA( TraitFactory.VirtualPropertyMode mode ) {
         String str = "package org.drools.trait.test; \n" +
                 "global java.util.List list; \n" +
+                "import org.drools.core.factmodel.traits.*; \n" +
                 "" +                "" +
                 "declare TBean \n" +
+                "@Traitable \n" +
                 "  fld : String \n" +
                 "end \n " +
                 "" +

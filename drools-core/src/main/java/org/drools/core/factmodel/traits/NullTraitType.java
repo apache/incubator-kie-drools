@@ -29,7 +29,8 @@ public class NullTraitType implements TraitType, Thing, Externalizable {
 
     private BitSet typeCode;
 
-    public NullTraitType() { }
+    public NullTraitType() {
+    }
 
     public NullTraitType( BitSet code ) {
         typeCode = code;

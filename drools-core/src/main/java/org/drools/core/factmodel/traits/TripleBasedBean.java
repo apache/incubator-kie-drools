@@ -1,6 +1,8 @@
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
+import org.drools.core.util.TripleImpl;
 import org.drools.core.util.TripleStore;
 
 import java.io.IOException;

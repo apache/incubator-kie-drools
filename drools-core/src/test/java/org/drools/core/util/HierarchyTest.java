@@ -16,6 +16,7 @@
 
 package org.drools.core.util;
 
+import org.drools.core.factmodel.traits.IndexedTypeHierarchy;
 import org.drools.core.factmodel.traits.TypeHierarchy;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
@@ -1073,9 +1074,9 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-        CodedHierarchy<String> types = new TypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
+        CodedHierarchy<String> types = new IndexedTypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
 
-        types.addMember( "a", ak );
+        types.addMember( "A", ak );
         types.addMember( "c", ck );
         types.addMember( "f", fk );
         types.addMember( "j", jk );
@@ -1087,7 +1088,7 @@ public class HierarchyTest {
 
         System.out.println( types );
 
-        assertEquals( Arrays.asList( "c", "h" ), types.children( "a" ) );
+        assertEquals( Arrays.asList( "c", "h" ), types.children( "A" ) );
         assertEquals( Arrays.asList( "f", "n", "o" ), types.children( "c" ) );
         assertEquals( Arrays.asList( "j", "k" ), types.children( "f" ) );
         assertEquals( Arrays.asList( "ZZZZ" ), types.children( "j" ) );
@@ -1098,13 +1099,13 @@ public class HierarchyTest {
         assertEquals( Arrays.asList( ), types.children( "ZZZZ" ) );
 
         assertEquals( Arrays.asList( ), types.parents( "a" ) );
-        assertEquals( Arrays.asList( "a" ), types.parents( "c" ) );
+        assertEquals( Arrays.asList( "A" ), types.parents( "c" ) );
         assertEquals( Arrays.asList( "c" ), types.parents( "f" ) );
         assertEquals( Arrays.asList( "f" ), types.parents( "j" ) );
         assertEquals( Arrays.asList( "f" ), types.parents( "k" ) );
         assertEquals( Arrays.asList( "c" ), types.parents( "n" ) );
         assertEquals( Arrays.asList( "c", "h" ), types.parents( "o" ) );
-        assertEquals( Arrays.asList( "a" ), types.parents( "h" ) );
+        assertEquals( Arrays.asList( "A" ), types.parents( "h" ) );
         assertEquals( Arrays.asList( "j", "k", "n", "o" ), types.parents( "ZZZZ" ) );
 
 

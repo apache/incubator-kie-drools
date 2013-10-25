@@ -16,42 +16,49 @@
 
 package org.drools.core.factmodel.traits;
 
+import org.drools.core.factmodel.BuildUtils;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
 import org.drools.core.util.asm.ClassFieldInspector;
-import org.drools.core.factmodel.BuildUtils;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.MVEL;
-import org.mvel2.asm.*;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 import java.beans.IntrospectionException;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import java.io.Serializable;
 
 public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
 
     private transient ClassDefinition trait;
-
+    
     private transient Class<?> proxyBaseClass;
 
     private transient TraitRegistry traitRegistry;
@@ -85,7 +92,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         MethodVisitor mv;
 
         // get the method bitmask
-        long mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
+        BitSet mask = traitRegistry.getFieldMask( getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
         String masterName = TraitFactory.getProxyName( getTrait(), core );
@@ -134,11 +141,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
         cw.visit( ClassGenerator.JAVA_VERSION,
-                ACC_PUBLIC + ACC_SUPER,
-                internalProxy,
-                null,
-                Type.getInternalName( proxyBaseClass ),
-                new String[] { internalTrait, Type.getInternalName( Externalizable.class ) } );
+                  ACC_PUBLIC + ACC_SUPER,
+                  internalProxy,
+                  null,
+                  Type.getInternalName( proxyBaseClass ),
+                  new String[] { internalTrait, Type.getInternalName( Externalizable.class ) } );
 
         {
             fv = cw.visitField( ACC_PRIVATE + ACC_FINAL + ACC_STATIC,
@@ -167,16 +174,22 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 fv.visitEnd();
             }
         }
+
         {
             mv = cw.visitMethod( ACC_STATIC, "<clinit>", "()V", null, null );
             mv.visitCode();
             mv.visitLdcInsn( Type.getType( Type.getDescriptor( trait.getDefinedClass() ) ) );
-            mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( Class.class ), "getName", "()" + Type.getDescriptor( String.class ) );
-            mv.visitFieldInsn( PUTSTATIC, internalProxy, TraitType.traitNameField, Type.getDescriptor( String.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                    Type.getInternalName( Class.class ), "getName", "()" + Type.getDescriptor( String.class ) );
+            mv.visitFieldInsn( PUTSTATIC,
+                    internalProxy,
+                    TraitType.traitNameField,
+                    Type.getDescriptor( String.class ) );
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
+
         {
             mv = cw.visitMethod( ACC_PUBLIC, "<init>", "()V", null, null );
             mv.visitCode();
@@ -191,7 +204,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         }
 
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "<init>", "(" + descrCore + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "<init>", "(" + descrCore + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + Type.getDescriptor( BitSet.class ) + Type.getDescriptor( BitSet.class ) + Type.getDescriptor( boolean.class  ) +")V", null, null );
             mv.visitCode();
 
             mv.visitVarInsn( ALOAD, 0 );
@@ -227,10 +240,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "getObject", "()" + Type.getDescriptor( Object.class ), null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "getObject", "()" + Type.getDescriptor( TraitableBean.class ), null, null );
             mv.visitCode();
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitFieldInsn( GETFIELD, internalProxy, "object", descrCore );
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
             mv.visitInsn( ARETURN );
 //            mv.visitMaxs( 1, 1 );
             mv.visitMaxs( 0, 0 );
@@ -271,6 +285,24 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         }
 
         {
+            mv = cw.visitMethod( ACC_PUBLIC, "shed", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] {} ), null, null );
+            mv.visitCode();
+
+            if ( core.isFullTraiting() ) {
+                Iterator<FieldDefinition> iter = trait.getFieldsDefinitions().iterator();
+                for ( int j = 0; j < trait.getFieldsDefinitions().size(); j++ ) {
+                    FieldDefinition fld = iter.next();
+                    boolean hardField = ! TraitRegistry.isSoftField( fld, j, mask );
+                    shedField( mv, fld, internalProxy, trait, core, hardField, j + 2 );
+                }
+            }
+
+            mv.visitInsn( RETURN );
+            mv.visitMaxs( 0, 0 );
+            mv.visitEnd();
+        }
+
+        {
             mv = cw.visitMethod( ACC_PUBLIC, "writeExternal", "(" + Type.getDescriptor( ObjectOutput.class )+ ")V", null, new String[] { Type.getInternalName( IOException.class ) } );
             mv.visitCode();
 
@@ -281,7 +313,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "getObject", "()" + Type.getDescriptor( Object.class ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "getObject", "()" + Type.getDescriptor( TraitableBean.class ) );
             mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
 
 
@@ -303,8 +335,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             mv.visitEnd();
         }
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V", null,
-                    new String[] { Type.getInternalName( IOException.class ), Type.getInternalName( ClassNotFoundException.class ) } );
+            mv = cw.visitMethod( ACC_PUBLIC, "readExternal", "(" + Type.getDescriptor( ObjectInput.class ) + ")V", null, 
+                                 new String[] { Type.getInternalName( IOException.class ), Type.getInternalName( ClassNotFoundException.class ) } );
             mv.visitCode();
 
             mv.visitVarInsn( ALOAD, 0 );
@@ -363,7 +395,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         buildCommonMethods( cw, masterName );
 
 
-        buildExtendedMethods( cw, getTrait(), core );
+        buildExtendedMethods( cw, getTrait(), core, mask );
 
 
         cw.visitEnd();
@@ -444,6 +476,9 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "setTripleFactory", "(" + Type.getDescriptor( TripleFactory.class ) + ")V" );
 
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, 4 );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalProxy, "setTypeCode", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[]{ Type.getType( BitSet.class ) } ) );
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitTypeInsn( NEW, internalWrapper );
@@ -467,7 +502,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 2 );
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedBean.class ), "<init>",
-                "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V" );
+                            "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V" );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setDynamicProperties", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
         mv.visitLabel( l0 );
@@ -488,21 +523,30 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 2 );
         mv.visitVarInsn( ALOAD, 3 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TripleBasedTypes.class ), "<init>",
-                "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class )  + Type.getDescriptor( TripleFactory.class ) + ")V" );
+                            "(" + Type.getDescriptor( Object.class ) + Type.getDescriptor( TripleStore.class ) + Type.getDescriptor( TripleFactory.class ) + ")V" );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( TraitTypeMap.class ), "<init>", "(" + Type.getDescriptor( Map.class )+ ")V" );
         mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setTraitMap", "(" + Type.getDescriptor( Map.class ) + ")V" );
 
         mv.visitLabel( l1 );
 
+
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitVarInsn( ALOAD, 5 );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "_setBottomTypeCode", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.getType( BitSet.class ) } ) );
+
+        // core.addTrait
+        mv.visitVarInsn( ALOAD, 1 );
+        mv.visitLdcInsn( trait.getName().endsWith( TraitFactory.SUFFIX ) ? trait.getName().replace(  TraitFactory.SUFFIX , "" ) : trait.getName() );
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitMethodInsn( INVOKESPECIAL, internalProxy, "synchFields", "()V" );
+        mv.visitMethodInsn( INVOKEVIRTUAL, internalCore, "addTrait",  Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.getType( String.class ), Type.getType( Thing.class ) } ) );
 
         return 3;
     }
 
     protected void initFields( MethodVisitor mv, String internalProxy ) {
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitMethodInsn( INVOKESPECIAL, internalProxy, "synchFields", "()V" );
+        mv.visitVarInsn( ILOAD, 6 );
+        mv.visitMethodInsn( INVOKESPECIAL, internalProxy, "synchFields", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.BOOLEAN_TYPE } ) );
     }
 
     private Class getPossibleConstructor(Class klass, Class arg) throws NoSuchMethodException {
@@ -523,7 +567,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-    protected void buildProxyAccessors( long mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet) {
+    protected void buildProxyAccessors( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet) {
         int j = 0;
 
         for ( FieldDefinition field : getTrait().getFieldsDefinitions() ) {
@@ -534,30 +578,36 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
     }
 
 
-    protected void buildProxyAccessor( long mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
+    protected void buildProxyAccessor( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
         FieldVisitor fv;
 
-        if ( isSoftField ) {
-            if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
-                buildSoftGetter( cw, field, masterName );
-                buildSoftSetter( cw, field, masterName );
+        if ( ! isSoftField ) {
+            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null );
+            fv.visitEnd();
+            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
+            fv.visitEnd();
+        }
+
+        if ( core.isFullTraiting() ) {
+            buildLogicalGetter( cw, field, masterName, trait, core );
+            if ( ! isSoftField ) {
+                buildHardSetter( cw, field, masterName, trait, core );
             } else {
-                //
+                buildSoftSetter( cw, field, masterName, trait, core );
             }
-
         } else {
-            {
-                fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null );
-                fv.visitEnd();
-            }
-            {
-                fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
-                fv.visitEnd();
-            }
+            if ( isSoftField ) {
+                if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
+                    buildSoftGetter( cw, field, masterName, trait, core );
+                    buildSoftSetter( cw, field, masterName, trait, core );
+                } else {
+                    //
+                }
 
-            buildHardGetter( cw, field, masterName, getTrait(), core );
-            buildHardSetter( cw, field, masterName, getTrait(), core );
-
+            } else {
+                buildHardGetter( cw, field, masterName, trait, core );
+                buildHardSetter( cw, field, masterName, trait, core );
+            }
         }
     }
 
@@ -596,16 +646,137 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
+    private void logicalSetter( MethodVisitor mv, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core, boolean hardField ) {
+        String fieldType = field.getTypeName();
+        int reg = 1 + BuildUtils.sizeOf( fieldType );
+
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( masterName ), "object", Type.getDescriptor( core.getDefinedClass() ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+        mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+
+        mv.visitVarInsn( ASTORE, reg );
+        mv.visitVarInsn( ALOAD, reg );
+
+        mv.visitLdcInsn( field.resolveAlias() );
+        if ( BuildUtils.isPrimitive( fieldType ) ) {
+            mv.visitVarInsn( BuildUtils.varType( fieldType ), 1 );
+            mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
+                                "valueOf",
+                                Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( fieldType ) ) ), new Type[] { Type.getType( BuildUtils.getTypeDescriptor( fieldType ) ) } ) );
+        } else {
+            mv.visitVarInsn( ALOAD, 1 );
+        }
+        if ( BuildUtils.isPrimitive( fieldType ) ) {
+            //            mv.visitFieldInsn( GETSTATIC, BuildUtils.getInternalType( BuildUtils.box( fieldType ) ), "TYPE", Type.getDescriptor( Class.class ) );
+            mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( field.getTypeName() ) ) ) );
+        } else {
+            mv.visitLdcInsn( Type.getType( Type.getDescriptor( field.getType() ) ) );
+        }
+        mv.visitMethodInsn( INVOKEINTERFACE,
+                            Type.getInternalName( TraitFieldTMS.class ),
+                            "set",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] {
+                                    Type.getType( String.class ), Type.getType( Object.class ), Type.getType( Class.class )
+                            } ) );
+
+        mv.visitVarInsn( ASTORE, 1 );
+        mv.visitVarInsn( ALOAD, 1 );
+
+        if ( BuildUtils.isPrimitive( fieldType ) ) {
+
+            Label l0 = new Label();
+            mv.visitJumpInsn( IFNULL, l0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            Label l1 = new Label();
+            mv.visitJumpInsn( GOTO, l1 );
+            mv.visitLabel( l0 );
+            mv.visitInsn( BuildUtils.zero( fieldType ) );
+            mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
+                                "valueOf",
+                                Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( fieldType ) ) ), new Type[] { Type.getType( BuildUtils.getTypeDescriptor( fieldType ) ) } ) );
+            mv.visitLabel( l1 );
+
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fieldType ) ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                                BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
+                                BuildUtils.numericMorph( BuildUtils.box( fieldType ) ),
+                                Type.getMethodDescriptor( Type.getType( field.getType() ), new Type[] {} ) );
+            mv.visitVarInsn( BuildUtils.storeType( fieldType ), 1 );
+        }
+
+    }
+
+
+    private void buildLogicalGetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition trait, ClassDefinition core ) {
+        String fieldName = field.getName();
+        String fieldType = field.getTypeName();
+
+        String getter = BuildUtils.getterName( fieldName, fieldType );
+
+        MethodVisitor mv = cw.visitMethod( ACC_PUBLIC, getter, "()" + BuildUtils.getTypeDescriptor( fieldType ), null, null );
+        mv.visitCode();
+
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "object", Type.getDescriptor( core.getDefinedClass() ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+        mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+
+        mv.visitLdcInsn( field.resolveAlias() );
+        if ( BuildUtils.isPrimitive( fieldType ) ) {
+            //            mv.visitFieldInsn( GETSTATIC, BuildUtils.getInternalType( BuildUtils.box( fieldType ) ), "TYPE", Type.getDescriptor( Class.class ) );
+            mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( field.getTypeName() ) ) ) );
+        } else {
+            mv.visitLdcInsn( Type.getType( Type.getDescriptor( field.getType() ) ) );
+        }
+        mv.visitMethodInsn( INVOKEINTERFACE,
+                            Type.getInternalName( TraitFieldTMS.class ),
+                            "get",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( String.class ), Type.getType( Class.class ) } ) );
+
+        mv.visitVarInsn( ASTORE, 1 );
+        mv.visitVarInsn( ALOAD, 1 );
+
+        if ( BuildUtils.isPrimitive( fieldType ) ) {
+            Label l0 = new Label();
+            mv.visitJumpInsn( IFNULL, l0 );
+            mv.visitVarInsn( ALOAD, 1 );
+            Label l1 = new Label();
+            mv.visitJumpInsn( GOTO, l1 );
+            mv.visitLabel( l0 );
+            mv.visitInsn( BuildUtils.zero( fieldType ) );
+            mv.visitMethodInsn( Opcodes.INVOKESTATIC,
+                                BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
+                                "valueOf",
+                                Type.getMethodDescriptor( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( fieldType ) ) ), new Type[] { Type.getType( BuildUtils.getTypeDescriptor( fieldType ) ) } ) );
+            mv.visitLabel( l1 );
+
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fieldType ) ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                                BuildUtils.getInternalType( BuildUtils.box( fieldType ) ),
+                                BuildUtils.numericMorph( BuildUtils.box( fieldType ) ),
+                                Type.getMethodDescriptor( Type.getType( field.getType() ), new Type[] {} ) );
+            mv.visitInsn( BuildUtils.returnType( fieldType ) );
+        } else {
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldType ) );
+            mv.visitInsn( ARETURN );
+        }
+
+        mv.visitMaxs( 0, 0 );
+        mv.visitEnd();
+    }
 
 
 
 
 
-    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core) {
+    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core ) {
         buildHardGetter( cw, field, masterName, proxy, core, BuildUtils.getterName( field.getName(), field.getTypeName() ), false );
     }
 
-    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core, String getterName, boolean protect ) {
+    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core, String getterName, boolean protect ) {        
         Class fieldType = field.getType();
 
 
@@ -616,32 +787,10 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 null);
         mv.visitCode();
 
+        TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
 
-        if ( field.hasAlias() && proxy.getField( field.getAlias() ) != null ) {
-            FieldDefinition aliasedField = proxy.getField( field.getAlias() );
-            if ( field.getType().isAssignableFrom( aliasedField.getType() ) ) {
-                // a simple cast is sufficient
-                TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
-                if ( ! BuildUtils.isPrimitive( fieldType.getName() ) ) {
-                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
-                }
-            } else {
-                TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
-                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
-                mv.visitVarInsn( ASTORE, 1 );
-                mv.visitVarInsn( ALOAD, 1 );
-                mv.visitLdcInsn( fieldType.getName() );
-                mv.visitMethodInsn( INVOKEINTERFACE,
-                                    Type.getInternalName( TraitableBean.class ),
-                                    "getTrait",
-                                    Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ) );
-                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
-            }
-        } else {
-            TraitFactory.invokeExtractor( mv, masterName, proxy, core, field );
-            if ( ! BuildUtils.isPrimitive( fieldType.getName() ) ) {
-                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
-            }
+        if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
         }
 
         mv.visitInsn( BuildUtils.returnType ( fieldType.getName() ) );
@@ -661,55 +810,77 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         Class fieldType = field.getType();
 
         MethodVisitor mv = cw.visitMethod( protect ? ACC_PROTECTED : ACC_PUBLIC,
-                setterName,
-                "(" + Type.getDescriptor(field.getType()) + ")V",
-                null,
-                null);
+                                           setterName,
+                                           "(" + Type.getDescriptor( field.getType() ) + ")V",
+                                           null,
+                                           null );
         mv.visitCode();
 
-        if ( field.hasAlias() && trait.getField( field.getAlias() ) != null ) {
-            FieldDefinition aliasedField = trait.getField( field.getAlias() );
-            if ( field.getType().isAssignableFrom( aliasedField.getType() ) ) {
-                TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
-            } else {
-                mv.visitFieldInsn( GETSTATIC,
-                                   BuildUtils.getInternalType( masterName ),
-                                   field.getName() + "_writer",
-                                   Type.getDescriptor( WriteAccessor.class ) );
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitFieldInsn( GETFIELD,
-                                   BuildUtils.getInternalType( masterName ),
-                                   "object",
-                                   BuildUtils.getTypeDescriptor( core.getName() ) );
+        if ( core.isFullTraiting() ) {
+            // The trait field update will be done by the core setter. However, types may mismatch here
+            FieldDefinition hardField = core.getFieldByAlias( field.resolveAlias() );
+            if ( ! field.getType().isPrimitive() && ! field.getTypeName().equals( hardField.getTypeName() ) ) {
+                boolean isCoreTrait = hardField.getType().getAnnotation( Trait.class ) != null;
+                boolean isTraitTrait = field.getType().getAnnotation( Trait.class ) != null;
+
+                Label l0 = new Label();
                 mv.visitVarInsn( ALOAD, 1 );
-                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Thing.class ) );
-                mv.visitMethodInsn( INVOKEINTERFACE,
-                                    Type.getInternalName( Thing.class ),
-                                    "getCore",
-                                    Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] {} ) );
-                mv.visitMethodInsn( INVOKEINTERFACE,
-                                    Type.getInternalName( WriteAccessor.class ),
-                                    "setValue",
-                                    Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( Object.class ), Type.getType( Object.class ) } ) );
+                mv.visitJumpInsn( IFNULL, l0 );
+                if ( isCoreTrait && ! isTraitTrait ) {
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+                    mv.visitLdcInsn( hardField.getTypeName() );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "getTrait", Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ) );
+                    mv.visitVarInsn( ASTORE, 1 );
+                } else if ( ! isCoreTrait && isTraitTrait ) {
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitProxy.class ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitProxy.class ), "getObject", Type.getMethodDescriptor( Type.getType( TraitableBean.class ), new Type[]{ } ) );
+                    mv.visitVarInsn( ASTORE, 1 );
+                } else if ( isCoreTrait && isTraitTrait ) {
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitProxy.class ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TraitProxy.class ), "getObject", Type.getMethodDescriptor( Type.getType( TraitableBean.class ), new Type[] {} ) );
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+                    mv.visitLdcInsn( hardField.getTypeName() );
+                    mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "getTrait", Type.getMethodDescriptor( Type.getType( Thing.class ), new Type[] { Type.getType( String.class ) } ) );
+                    mv.visitVarInsn( ASTORE, 1 );
+                } else {
+                    // handled by normal inheritance, exceptions should have been thrown
+                    if ( ! hardField.getType().isAssignableFrom( field.getType() ) ) {
+                        mv.visitInsn( RETURN );
+                    }
+                }
+                Label l1 = new Label();
+                mv.visitJumpInsn(GOTO, l1);
+
+                mv.visitLabel( l0 );
+                mv.visitInsn( ACONST_NULL );
+                mv.visitVarInsn( ASTORE, 1 );
+                mv.visitLabel( l1 );
+            } else if ( field.getType().isPrimitive() ) {
+                if ( ! hardField.getType().equals( field.getType() ) ) {
+                    mv.visitInsn( RETURN );
+                }
             }
-        } else {
-            TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
         }
 
-        mv.visitInsn(RETURN);
-//        mv.visitMaxs( 2 + BuildUtils.sizeOf( fieldType ),
-//                1 + BuildUtils.sizeOf( fieldType ) );
+        TraitFactory.invokeInjector( mv, masterName, trait, core, field, false, 1 );
+
+        mv.visitInsn( RETURN );
         mv.visitMaxs( 0, 0 );
         mv.visitEnd();
 
     }
 
 
-    protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy ) {
-        buildSoftSetter( cw, field, proxy, BuildUtils.setterName( field.getName(), field.getTypeName() ), false );
+
+
+    protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition trait, ClassDefinition core ) {
+        buildSoftSetter( cw, field, proxy, trait, core, BuildUtils.setterName( field.getName(), field.getTypeName() ), false );
     }
 
-    protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, String setterName, boolean protect  ) {
+    protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition trait, ClassDefinition core, String setterName, boolean protect ) {
         String fieldName = field.getName();
         String type = field.getTypeName();
 
@@ -719,16 +890,21 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 null,
                 null );
         mv.visitCode();
+
+        if ( core.isFullTraiting() ) {
+            logicalSetter( mv, field, proxy, this.trait, core, true );
+        }
+
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "store", Type.getDescriptor( TripleStore.class ) );
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitLdcInsn( fieldName );
+        mv.visitLdcInsn( field.resolveAlias() );
         mv.visitVarInsn( BuildUtils.varType( type ), 1 );
         if ( BuildUtils.isPrimitive( type ) ) {
             TraitFactory.valueOf( mv, type );
         }
-        mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "property",
-                "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Triple.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "property", 
+                            "(" + Type.getDescriptor( String.class ) + Type.getDescriptor( Object.class ) + ")" + Type.getDescriptor( Triple.class ) );
         mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TripleStore.class ), "put", "(" + Type.getDescriptor( Triple.class )+ ")Z" );
 
         mv.visitInsn( POP );
@@ -740,12 +916,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
     }
 
 
-
-    protected void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy ) {
-        buildSoftGetter( cw, field, proxy, BuildUtils.getterName( field.getName(), field.getTypeName() ), false );
+    protected void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition trait, ClassDefinition core ) {
+        buildSoftGetter( cw, field, proxy, trait, core, BuildUtils.getterName( field.getName(), field.getTypeName() ), false );
     }
 
-    protected void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy, String getterName, boolean protect ) {
+    protected void buildSoftGetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition trait, ClassDefinition core, String getterName, boolean protect ) {
         String fieldName = field.getName();
         String type = field.getTypeName();
 
@@ -758,37 +933,47 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxy ), "store", Type.getDescriptor( TripleStore.class ) );
         mv.visitVarInsn( ALOAD, 0 );
-        mv.visitLdcInsn( fieldName );
+        mv.visitLdcInsn( field.resolveAlias() );
 
-        mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "propertyKey",
-                "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( Triple.class ) );
-        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TripleStore.class ), "get",
-                "(" + Type.getDescriptor( Triple.class ) + ")" + Type.getDescriptor( Triple.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( proxy ), "propertyKey", 
+                            "(" + Type.getDescriptor( String.class ) + ")" + Type.getDescriptor( Triple.class ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TripleStore.class ), "get", 
+                            "(" + Type.getDescriptor( Triple.class ) + ")" + Type.getDescriptor( Triple.class ) );
 
+        String actualType = BuildUtils.isPrimitive( type ) ? BuildUtils.box( type ) : type;
 
         mv.visitVarInsn( ASTORE, 1 );
         mv.visitVarInsn( ALOAD, 1 );
         Label l0 = new Label();
-
         mv.visitJumpInsn( IFNULL, l0 );
         mv.visitVarInsn( ALOAD, 1 );
-
         mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Triple.class ), "getValue", "()" + Type.getDescriptor( Object.class ) );
+        mv.visitVarInsn( ASTORE, 2 );
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitTypeInsn( INSTANCEOF, BuildUtils.getInternalType( actualType ) );
         Label l1 = new Label();
-        mv.visitJumpInsn( IFNONNULL, l1 );
-        mv.visitLabel( l0 );
-        mv.visitInsn( BuildUtils.zero( type ) );
-        mv.visitInsn( BuildUtils.returnType( type ) );
-        mv.visitLabel( l1 );
-        mv.visitVarInsn( ALOAD, 1 );
-        mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( Triple.class ), "getValue", "()" + Type.getDescriptor( Object.class ) );
+        mv.visitJumpInsn( IFEQ, l1 );
+        mv.visitVarInsn( ALOAD, 2 );
+        mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( actualType ) );
 
         if ( BuildUtils.isPrimitive( type ) ) {
-            TraitFactory.promote( mv, type );
+            TraitFactory.primitiveValue( mv, type );
+            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitLabel( l1 );
+            mv.visitInsn( BuildUtils.zero( type ) );
+            mv.visitInsn( BuildUtils.returnType( type ) );
+            mv.visitLabel( l0 );
+            mv.visitInsn( BuildUtils.zero( type ) );
+            mv.visitInsn( BuildUtils.returnType( type ) );
         } else {
-            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( type ) );
+            mv.visitInsn( ARETURN );
+            mv.visitLabel( l1 );
+            mv.visitInsn( ACONST_NULL );
+            mv.visitInsn( ARETURN );
+            mv.visitLabel( l0 );
+            mv.visitInsn( ACONST_NULL );
+            mv.visitInsn( ARETURN );
         }
-        mv.visitInsn( BuildUtils.returnType( type ) );
 //        mv.visitMaxs( 3, 2 );
         mv.visitMaxs( 0, 0 );
 
@@ -862,26 +1047,26 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
 
                     mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     Label l11 = new Label();
                     mv.visitJumpInsn( IFNULL, l11 );
                     mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitVarInsn( ALOAD, 2 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( field.getTypeName() ), "equals",
-                            "(" + Type.getDescriptor( Object.class ) + ")Z" );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( field.getTypeName() ), "equals", 
+                                        "(" + Type.getDescriptor( Object.class ) + ")Z" );
                     Label l12 = new Label();
                     mv.visitJumpInsn( IFNE, l12 );
                     Label l13 = new Label();
                     mv.visitJumpInsn( GOTO, l13 );
                     mv.visitLabel( l11 );
                     mv.visitVarInsn( ALOAD, 2 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitJumpInsn( IFNULL, l12 );
                     mv.visitLabel( l13 );
                     mv.visitInsn( ICONST_0 );
@@ -891,11 +1076,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 } else if ( "double".equals( field.getTypeName() ) ) {
 
                     mv.visitVarInsn( ALOAD, 2 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitMethodInsn( INVOKESTATIC, Type.getInternalName( Double.class ), "compare", "(DD)I" );
                     Label l5 = new Label();
                     mv.visitJumpInsn( IFEQ, l5 );
@@ -908,11 +1093,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 } else if ( "float".equals( field.getTypeName() ) ) {
 
                     mv.visitVarInsn( ALOAD, 2 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitMethodInsn( INVOKESTATIC, Type.getInternalName( Float.class ), "compare", "(FF)I" );
                     Label l6 = new Label();
                     mv.visitJumpInsn( IFEQ, l6 );
@@ -924,11 +1109,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 }  else if ( "long".equals( field.getTypeName() ) ) {
 
                     mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitVarInsn( ALOAD, 2 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitInsn( LCMP );
                     Label l8 = new Label();
                     mv.visitJumpInsn( IFEQ, l8 );
@@ -941,11 +1126,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 } else {
 
                     mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     mv.visitVarInsn( ALOAD, 2 );
-                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                    mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                        "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                     Label l4 = new Label();
                     mv.visitJumpInsn( IF_ICMPEQ, l4 );
                     mv.visitInsn( ICONST_0 );
@@ -989,13 +1174,13 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                         mv.visitVarInsn( ILOAD, 1 );
                         mv.visitInsn( IMUL );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         Label l8 = new Label();
                         mv.visitJumpInsn( IFNULL, l8 );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( field.getTypeName() ), "hashCode", "()I" );
                         Label l9 = new Label();
                         mv.visitJumpInsn( GOTO, l9 );
@@ -1008,15 +1193,15 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                     } else if ( "double".equals( field.getTypeName() ) ) {
 
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitInsn( DCONST_0 );
                         mv.visitInsn( DCMPL );
                         Label l2 = new Label();
                         mv.visitJumpInsn( IFEQ, l2 );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitMethodInsn( INVOKESTATIC, Type.getInternalName( Double.class ), "doubleToLongBits", "(D)J" );
                         Label l3 = new Label();
                         mv.visitJumpInsn( GOTO, l3 );
@@ -1045,8 +1230,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                         mv.visitVarInsn( ILOAD, 1 );
                         mv.visitInsn( IMUL );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         Label l4 = new Label();
                         mv.visitJumpInsn( IFEQ, l4 );
                         mv.visitInsn( ICONST_1 );
@@ -1064,15 +1249,15 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                         mv.visitVarInsn( ILOAD, 1 );
                         mv.visitInsn( IMUL );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitInsn( FCONST_0 );
                         mv.visitInsn( FCMPL );
                         Label l6 = new Label();
                         mv.visitJumpInsn( IFEQ, l6 );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitMethodInsn( INVOKESTATIC, Type.getInternalName( Float.class ), "floatToIntBits", "(F)I" );
                         Label l7 = new Label();
                         mv.visitJumpInsn( GOTO, l7 );
@@ -1090,11 +1275,11 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                         mv.visitVarInsn( ILOAD, 1 );
                         mv.visitInsn( IMUL );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) );
                         mv.visitIntInsn( BIPUSH, 32 );
                         mv.visitInsn( LUSHR );
                         mv.visitInsn( LXOR );
@@ -1110,8 +1295,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                         mv.visitVarInsn( ILOAD, 1 );
                         mv.visitInsn( IMUL );
                         mv.visitVarInsn( ALOAD, 0 );
-                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ),
-                                "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) ) ;
+                        mv.visitMethodInsn( INVOKEVIRTUAL, proxyType, BuildUtils.getterName( field.getName(), field.getTypeName() ), 
+                                            "()" + BuildUtils.getTypeDescriptor( field.getTypeName() ) ) ;
                         mv.visitInsn( IADD );
                         mv.visitVarInsn( ISTORE, 1 );
 
@@ -1158,19 +1343,30 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-    protected void buildExtendedMethods(ClassWriter cw, ClassDefinition trait, ClassDefinition core ) {
-        buildSynchFields( cw, TraitFactory.getProxyName(trait, core), core.getName(), getTrait() );
+    protected void buildExtendedMethods(ClassWriter cw, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
+        buildSynchFields( cw, TraitFactory.getProxyName( trait, core ), trait, core, mask );
     }
 
-    protected void buildSynchFields( ClassWriter cw, String proxyName, String coreName, ClassDefinition def ) {
+    protected void buildSynchFields( ClassWriter cw, String proxyName, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
         {
-            MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "synchFields", "()V", null, null );
+            MethodVisitor mv = cw.visitMethod( ACC_PRIVATE, "synchFields", Type.getMethodDescriptor( Type.VOID_TYPE, new Type[] { Type.BOOLEAN_TYPE } ), null, null );
             mv.visitCode();
-            for ( FieldDefinition fld : def.getFieldsDefinitions() ) {
-                if ( fld.getInitExpr() != null ) {
-                    synchField( mv, fld, proxyName );
+
+            if ( core.isFullTraiting() ) {
+                Iterator<FieldDefinition> iter = trait.getFieldsDefinitions().iterator();
+                for ( int j = 0; j < trait.getFieldsDefinitions().size(); j++ ) {
+                    FieldDefinition fld = iter.next();
+                    boolean hardField = ! TraitRegistry.isSoftField( fld, j, mask );
+                    synchFieldLogical( mv, fld, proxyName, trait, core, hardField, j + 3 );
+                }
+            } else {
+                for ( FieldDefinition fld : trait.getFieldsDefinitions() ) {
+                    if ( fld.getInitExpr() != null ) {
+                        synchField( mv, fld, proxyName );
+                    }
                 }
             }
+
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 0 );
             mv.visitEnd();
@@ -1193,10 +1389,15 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitLdcInsn( fld.getInitExpr() );
+        if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+            mv.visitFieldInsn( GETSTATIC, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ), "TYPE", Type.getDescriptor( Class.class ) );
+        } else {
+            mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( fld.getTypeName() ) ) );
+        }
         mv.visitMethodInsn( INVOKESTATIC,
                             Type.getInternalName( MVEL.class ),
                             "eval",
-                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( String.class ) } ) );
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( String.class ), Type.getType( Class.class ) } ) );
         if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
             mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ) );
             mv.visitMethodInsn( INVOKEVIRTUAL,
@@ -1214,4 +1415,155 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             mv.visitLabel( l0 );
         }
     }
+
+
+
+    protected void synchFieldLogical( MethodVisitor mv, FieldDefinition fld, String proxyName, ClassDefinition trait, ClassDefinition core, boolean hardField, int j ) {
+
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxyName ), "object", Type.getDescriptor( core.getDefinedClass() ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+        mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+        mv.visitVarInsn( ASTORE, 2 );
+        mv.visitVarInsn( ALOAD, 2 );
+        // fld Name
+        mv.visitLdcInsn( fld.resolveAlias() );
+        // this
+        mv.visitVarInsn( ALOAD, 0 );
+        // init expr
+        if ( fld.getInitExpr() != null ) {
+            mv.visitLdcInsn( fld.getInitExpr() );
+        } else {
+            mv.visitInsn( ACONST_NULL );
+        }
+        // fld type
+        if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+//                mv.visitFieldInsn( GETSTATIC, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ), "TYPE", Type.getDescriptor( Class.class ) );
+            mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( fld.getTypeName() ) ) ) );
+        } else {
+            mv.visitLdcInsn( Type.getType( Type.getDescriptor( fld.getType() ) ) );
+        }
+        mv.visitVarInsn( ILOAD, 1 );
+        mv.visitMethodInsn( INVOKEINTERFACE,
+                            Type.getInternalName( TraitFieldTMS.class ),
+                            "donField",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] {
+                                    Type.getType( String.class ), Type.getType( TraitType.class ), Type.getType( String.class ), Type.getType( Class.class ), Type.BOOLEAN_TYPE
+                            } ) );
+
+        mv.visitVarInsn( ASTORE, j );
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitVarInsn( ALOAD, j );
+
+        if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+            Label l0 = new Label();
+            mv.visitJumpInsn( IFNULL, l0 );
+            mv.visitVarInsn( ALOAD, j );
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ) );
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                                BuildUtils.getInternalType( BuildUtils.box( fld.getTypeName() ) ),
+                                BuildUtils.numericMorph( BuildUtils.box( fld.getTypeName() ) ),
+                                Type.getMethodDescriptor( Type.getType( fld.getType() ), new Type[] {} ) );
+            Label l1 = new Label();
+            mv.visitJumpInsn( GOTO, l1 );
+            mv.visitLabel( l0 );
+            mv.visitInsn( BuildUtils.zero( fld.getTypeName() ) );
+            mv.visitLabel( l1 );
+        } else {
+            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fld.getType() ) );
+        }
+
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            BuildUtils.getInternalType( proxyName ),
+                            BuildUtils.setterName( fld.getName(), fld.getTypeName() ),
+                            "(" + BuildUtils.getTypeDescriptor( fld.getTypeName() ) + ")" + Type.getDescriptor( void.class ) );
+    }
+
+
+
+
+    protected void shedField( MethodVisitor mv, FieldDefinition fld, String proxyName, ClassDefinition trait, ClassDefinition core, boolean hardField, int j ) {
+        FieldDefinition coreField = core.getFieldByAlias( fld.resolveAlias() );
+
+        mv.visitVarInsn( ALOAD, 0 );
+        mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxyName ), "object", Type.getDescriptor( core.getDefinedClass() ) );
+        mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
+        mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( TraitableBean.class ), "_getFieldTMS", Type.getMethodDescriptor( Type.getType( TraitFieldTMS.class ), new Type[] {} ) );
+
+        mv.visitVarInsn( ASTORE, 1 );
+        mv.visitVarInsn( ALOAD, 1 );
+        // fld Name
+        mv.visitLdcInsn( fld.resolveAlias() );
+        // this
+        mv.visitVarInsn( ALOAD, 0 );
+        // fld type
+        if ( BuildUtils.isPrimitive( fld.getTypeName() ) ) {
+            mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( fld.getTypeName() ) ) ) );
+        } else {
+            mv.visitLdcInsn( Type.getType( Type.getDescriptor( fld.getType() ) ) );
+        }
+
+        if ( hardField ) {
+            if ( BuildUtils.isPrimitive( coreField.getTypeName() ) ) {
+                mv.visitLdcInsn( Type.getType( BuildUtils.getTypeDescriptor( BuildUtils.box( coreField.getTypeName() ) ) ) );
+            } else {
+                mv.visitLdcInsn( Type.getType( Type.getDescriptor( coreField.getType() ) ) );
+            }
+        } else {
+            mv.visitLdcInsn( Type.getType( Type.getDescriptor( Object.class ) ) );
+        }
+
+
+        mv.visitMethodInsn( INVOKEINTERFACE,
+                            Type.getInternalName( TraitFieldTMS.class ),
+                            "shedField",
+                            Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] {
+                                    Type.getType( String.class ), Type.getType( TraitType.class ), Type.getType( Class.class ), Type.getType( Class.class )
+                            } ) );
+
+        mv.visitVarInsn( ASTORE, j );
+
+        if ( hardField ) {
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxyName ), "object", Type.getDescriptor( core.getDefinedClass() ) );
+
+            mv.visitVarInsn( ALOAD, j );
+            if ( BuildUtils.isPrimitive( coreField.getTypeName() ) ) {
+                Label l0 = new Label();
+                mv.visitJumpInsn( IFNULL, l0 );
+                mv.visitVarInsn( ALOAD, j );
+                mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( BuildUtils.box( coreField.getTypeName() ) ) );
+                mv.visitMethodInsn( INVOKEVIRTUAL,
+                                    BuildUtils.getInternalType( BuildUtils.box( coreField.getTypeName() ) ),
+                                    BuildUtils.numericMorph( BuildUtils.box( coreField.getTypeName() ) ),
+                                    Type.getMethodDescriptor( Type.getType( coreField.getType() ), new Type[] {} ) );
+                Label l1 = new Label();
+                mv.visitJumpInsn( GOTO, l1 );
+                mv.visitLabel( l0 );
+                mv.visitInsn( BuildUtils.zero( coreField.getTypeName() ) );
+                mv.visitLabel( l1 );
+            } else {
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( coreField.getType() ) );
+            }
+
+            mv.visitMethodInsn( INVOKEVIRTUAL,
+                                Type.getInternalName( core.getDefinedClass() ),
+                                BuildUtils.setterName( coreField.getName(), coreField.getTypeName() ),
+                                "(" + BuildUtils.getTypeDescriptor( coreField.getTypeName() ) + ")" + Type.getDescriptor( void.class ) );
+        } else {
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxyName ), "map", Type.getDescriptor( Map.class ) );
+
+            mv.visitLdcInsn( fld.resolveAlias() );
+            mv.visitVarInsn( ALOAD, j );
+
+            mv.visitMethodInsn( INVOKEINTERFACE,
+                                Type.getInternalName( Map.class ),
+                                "put",
+                                Type.getMethodDescriptor( Type.getType( Object.class ), new Type[] { Type.getType( Object.class ), Type.getType( Object.class ) } ) );
+        }
+    }
+
+
+
 }

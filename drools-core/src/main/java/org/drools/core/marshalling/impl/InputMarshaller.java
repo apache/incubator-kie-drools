@@ -149,6 +149,16 @@ public class InputMarshaller {
                 entryPoint = context.wm.getEntryPoints().get( entryPointId );
             }
         }
+
+        EntryPointId confEP;
+        if ( entryPoint != null ) {
+            confEP = ((NamedEntryPoint) entryPoint).getEntryPoint();
+        } else {
+            confEP = context.wm.getEntryPoint();
+        }
+        ObjectTypeConf typeConf = context.wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( confEP, object );
+
+
         InternalFactHandle handle = null;
         switch (type) {
             case 0: {
@@ -156,7 +166,8 @@ public class InputMarshaller {
                 handle = new DefaultFactHandle( id,
                                                 object,
                                                 recency,
-                                                entryPoint );
+                                                entryPoint,
+                                                typeConf != null && typeConf.isTrait() );
                 break;
 
             }
@@ -167,7 +178,7 @@ public class InputMarshaller {
                 break;
             }
             case 2: {
-                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint );
+                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint, typeConf != null && typeConf.isTrait() );
                 ( (EventFactHandle) handle ).setExpired( expired );
                 ( (EventFactHandle) handle ).setActivationsCount( activationsCount );
                 break;

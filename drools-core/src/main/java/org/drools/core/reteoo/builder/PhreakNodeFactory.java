@@ -17,10 +17,12 @@
 package org.drools.core.reteoo.builder;
 
 
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
@@ -44,6 +46,7 @@ import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
+import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -80,7 +83,11 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
 
     public ObjectTypeNode buildObjectTypeNode( int id, EntryPointNode objectSource, ObjectType objectType, BuildContext context ) {
         if ( objectType.getValueType().equals( ValueType.TRAIT_TYPE ) ) {
-            return new TraitObjectTypeNode( id, objectSource, objectType, context );
+            if ( TraitProxy.class.isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() ) ) {
+                return new TraitProxyObjectTypeNode( id, objectSource, objectType, context );
+            } else {
+                return new TraitObjectTypeNode( id, objectSource, objectType, context );
+            }
         } else {
             return new ObjectTypeNode( id, objectSource, objectType, context );
         }

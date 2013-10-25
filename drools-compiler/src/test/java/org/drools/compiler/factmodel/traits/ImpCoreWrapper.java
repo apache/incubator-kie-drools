@@ -19,6 +19,7 @@ package org.drools.compiler.factmodel.traits;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 
@@ -35,7 +36,7 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
 
     public Map<String, Object> _getDynamicProperties() {
         if ( __$$dynamic_properties_map$$ == null ) {
-            __$$dynamic_properties_map$$ = new TraitTypeMap( new HashMap<String, Thing>() );
+             __$$dynamic_properties_map$$ = new TraitTypeMap( new HashMap<String, Thing>() );
         }
         return __$$dynamic_properties_map$$;
     }
@@ -60,6 +61,9 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         return ((TraitTypeMap) __$$dynamic_traits_map$$).getCurrentTypeCode();
     }
 
+
+
+
     public void _setTraitMap(Map map) {
         this.__$$dynamic_traits_map$$ = map;
     }
@@ -72,7 +76,11 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         return _getTraitMap().containsKey( type );
     }
 
-    public Collection <Thing<Imp>> removeTrait(String type) {
+    public boolean hasTraits() {
+        return __$$dynamic_traits_map$$ != null && ! __$$dynamic_traits_map$$.isEmpty();
+    }
+
+    public Collection<Thing<Imp>> removeTrait(String type) {
         return ((TraitTypeMap)_getTraitMap()).removeCascade( type );
     }
 
@@ -92,13 +100,17 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
         ((TraitTypeMap) __$$dynamic_traits_map$$).setBottomCode( code );
     }
 
+    public TraitFieldTMS _getFieldTMS() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public BitSet getBottomTypeCode() {
         return ((TraitTypeMap) __$$dynamic_traits_map$$).getBottomCode();
     }
 
-// public Map getTraits() {
-// return __$$dynamic_traits_set$$;
-// }
+//    public Map getTraits() {
+//        return __$$dynamic_traits_set$$;
+//    }
 
 
 
@@ -110,7 +122,7 @@ public class ImpCoreWrapper extends Imp implements CoreWrapper<Imp>, TraitableBe
 
 
     public Map<String, Object> getFields() {
-        return null; //To change body of implemented methods use File | Settings | File Templates.
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Imp getCore() {
