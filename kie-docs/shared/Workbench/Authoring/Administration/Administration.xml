@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../../" xml:id="wb.Administration"
+<section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
+         xml:base="../../../" xml:id="wb.Administration" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-
   <title>Administration</title>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/Workbench/Authoring/Administration/organizationalUnitManager.png"/>
-    </imageobject>
-  </mediaobject>
+  <section xml:id="wb.OrganizationalUnit">
+    <title>Organizational unit</title>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/Workbench/Authoring/Administration/repositoriesEditor.png"/>
-    </imageobject>
-  </mediaobject>
+    <para>Organization units are useful to model departments and divisions.</para>
 
+    <para>An organization unit can hold multiple repositories.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Workbench/Authoring/Administration/organizationalUnitManager.png"/>
+      </imageobject>
+    </mediaobject>
+  </section>
+
+  <section xml:id="wb.VFSRepository">
+    <title>VFS repository</title>
+
+    <para>A VFS repository is a Virtual File System repository. By default a VFS is a Git repository.</para>
+
+    <para>A repository can hold multiple projects and belongs to 1 organization unit.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Workbench/Authoring/Administration/repositoriesEditor.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>A new repository can be created from scratch or cloned from an existing repository.</para>
+  </section>
 </section>
