@@ -10,13 +10,13 @@
 
   <mediaobject>
     <imageobject>
-      <imagedata fileref="images/Authoring/Administration/organizationalUnitManager.png"/>
+      <imagedata fileref="images/Workbench/Authoring/Administration/organizationalUnitManager.png"/>
     </imageobject>
   </mediaobject>
 
   <mediaobject>
     <imageobject>
-      <imagedata fileref="images/Authoring/Administration/repositoriesEditor.png"/>
+      <imagedata fileref="images/Workbench/Authoring/Administration/repositoriesEditor.png"/>
     </imageobject>
   </mediaobject>
 

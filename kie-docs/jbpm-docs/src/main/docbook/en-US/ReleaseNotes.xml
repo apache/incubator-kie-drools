@@ -8,8 +8,8 @@
 
   <xi:include href="ReleaseNotes/Release.6.0.0.Final.xml" />
 
-  <xi:include href="../../../../../shared/KIE/ReleaseNotes/Release.6.0.0.Final.xml" />
+  <xi:include href="../../../../../shared/KIE/ReleaseNotes/ReleaseNotesKIE.6.0.0.Final.xml" />
 
-  <xi:include href="../../../../../shared/Workbench/ReleaseNotes/Release.6.0.0.Final.xml" />
+  <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.0.0.Final.xml" />
 
 </chapter>

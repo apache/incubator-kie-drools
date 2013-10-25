@@ -8,7 +8,24 @@
 
   <title>General</title>
 
-  <xi:include href="LogInAndLogOut.xml"/>
-  <xi:include href="Home.xml"/>
+  <section xml:id="wb.LogInAndLogOut">
+    <title>Log in and log out</title>
+
+    <para>todo</para>
+
+  </section>
+
+  <section xml:id="wb.Home">
+    <title>Home</title>
+
+    <para>todo</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Workbench/General/home.png"/>
+      </imageobject>
+    </mediaobject>
+
+  </section>
 
 </section>
