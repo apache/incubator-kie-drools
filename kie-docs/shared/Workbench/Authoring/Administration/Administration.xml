@@ -7,6 +7,18 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Administration</title>
 
+  <section xml:id="wb.administrationOverview">
+    <title>Administration overview</title>
+
+    <para>A workbench is structured with Organization Units, VFS repositories and projects:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Workbench/Authoring/Administration/workbenchStructureOverview.png"/>
+      </imageobject>
+    </mediaobject>
+  </section>
+
   <section xml:id="wb.OrganizationalUnit">
     <title>Organizational unit</title>
 
