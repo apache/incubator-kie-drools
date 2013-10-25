@@ -1449,4 +1449,50 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertNotNull( ((DefaultFactHandle) handle).getEqualityKey() );
         session.dispose();
     }
+
+
+
+    @Test
+    public void testRestateJustified() {
+        String droolsSource =
+                "package org.drools.tms.test; \n" +
+
+                "declare Foo id : int @key end \n\n" +
+
+                "rule Zero \n" +
+                "when \n" +
+                " $s : String( this == \"go\" ) \n" +
+                "then \n" +
+                " insertLogical( new Foo(1) ); \n" +
+                "end \n" +
+
+                "rule Restate \n" +
+                "when \n" +
+                " $s : String( this == \"go2\" ) \n" +
+                " $f : Foo( id == 1 ) \n" +
+                "then \n" +
+                " insert( $f ); \n" +
+                "end \n" ;
+
+        /////////////////////////////////////
+
+
+        StatefulKnowledgeSession session = loadKnowledgeBaseFromString( droolsSource ).newStatefulKnowledgeSession();
+
+        session.fireAllRules();
+        FactHandle handle = session.insert( "go" );
+        session.fireAllRules();
+
+        FactHandle handle2 = session.insert( "go2" );
+        session.fireAllRules();
+
+        session.delete( handle );
+        session.delete( handle2 );
+        session.fireAllRules();
+
+        assertEquals( 1, session.getObjects().size() );
+        session.dispose();
+    }
+
 }
+
