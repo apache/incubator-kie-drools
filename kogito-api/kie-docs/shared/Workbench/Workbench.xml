@@ -8,6 +8,7 @@
 
   <title>Workbench</title>
 
+  <xi:include href="Installation/Installation.xml"/>
   <xi:include href="General/General.xml"/>
   <xi:include href="Authoring/Authoring.xml"/>
 
