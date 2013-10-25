@@ -39,4 +39,7 @@
   <xi:include href="LanguageReference.xml"/>
   <xi:include href="ComplexEventProcessing.xml"/>
   
+
+  <xi:include href="../../../../../shared/Workbench/Workbench.xml" />
+
 </book>
