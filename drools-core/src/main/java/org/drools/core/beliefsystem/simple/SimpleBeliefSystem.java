@@ -2,6 +2,7 @@ package org.drools.core.beliefsystem.simple;
 
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
@@ -68,7 +69,7 @@ public class SimpleBeliefSystem
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
         
-        if ( beliefSet.isEmpty() &&
+        if ( beliefSet.isEmpty() && bfh.getEqualityKey().getStatus() != EqualityKey.STATED &&
              !((context.getType() == PropagationContext.DELETION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
              &&
              context.getFactHandle() == bfh) ) {
