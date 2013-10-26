@@ -36,6 +36,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -3631,9 +3632,51 @@ public class Misc2Test extends CommonTestMethodBase {
                      "import org.drools.compiler.Person; \n" +
                      "" +
                      "rule \"Rule1\" \n" +
+                     "@Eager(true) \n" +
                      "salience 1 \n" +
                      "lock-on-active true\n" +
-                     "no-loop \n" +
+                     "when\n" +
+                     "  $p: Person()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  modify( $p ) { setAge( 44 ); }\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "@Eager(true) \n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person() \n" +
+                     "  String() from $p.getName() \n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" + $p ); " +
+                     "  modify ( $p ) { setName( \"john\" ); } \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ks.fireAllRules();
+
+        Person p = new Person( "mark", 76 );
+        ks.insert( p );
+        ks.fireAllRules();
+
+        assertEquals( 44, p.getAge() );
+        assertEquals( "john", p.getName() );
+    }
+
+    @Test
+    @Ignore( "lock-on-active with modifies is not working in lazy mode" )
+    public void testLockOnActiveWithModifyNoEager() {
+        // DROOLS-280
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.Person; \n" +
+                     "" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "lock-on-active true\n" +
                      "when\n" +
                      "  $p: Person()\n" +
                      "then\n" +
