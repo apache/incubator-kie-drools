@@ -2416,7 +2416,7 @@ public class Misc2Test extends CommonTestMethodBase {
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         assertTrue( kb.hasErrors() );
     }
-    
+
     @Test
     public void testNamedConsequence() {
         List<String> firedRules = new ArrayList<String>();
@@ -2468,14 +2468,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "            setX(1)\n" +
                 "        };\n" +
                 "end";
-        
+
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.setGlobal("fired", firedRules);
         ksession.insert(new Foo());
         ksession.insert(new Foo2(1));
         ksession.fireAllRules();
-        
+
         assertEquals(1, firedRules.size());
     }
 
@@ -2849,8 +2849,8 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testLockOnActive() {
         String drl = "" +
                      "package org.drools.test; \n" +
-                     "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
-                     "import org.drools.compiler.integrationtests.Misc2Test.TradeHeader;\n" +
+                     "import org.drools.reteoo.integrationtests.Misc2Test.TradeBooking;\n" +
+                     "import org.drools.reteoo.integrationtests.Misc2Test.TradeHeader;\n" +
                      "rule \"Rule1\" \n" +
                      "salience 1 \n" +
                      "when\n" +
