@@ -1453,7 +1453,7 @@ public class RuleModelDRLPersistenceImpl
         Map<String, AnnotationDescr> annotations = ruleDescr.getAnnotations();
         if ( annotations != null ) {
             for ( AnnotationDescr annotation : annotations.values() ) {
-                model.addMetadata( new RuleMetadata( annotation.getName(), annotation.getValue().toString() ) );
+                model.addMetadata( new RuleMetadata( annotation.getName(), annotation.getValuesAsString() ) );
             }
         }
 
