@@ -3041,6 +3041,7 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore
     public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
         // JBRULES-3558 - DROOLS 311
         // TODO: it is still possible to get multiple insertions of the Recording object
@@ -3738,7 +3739,9 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore
     public void testExpirationAtHighRates() throws InterruptedException {
+        // DROOLS-130
         String drl = "package droolsfusioneval\n" +
                      "" +
                      "global java.util.List list; \n" +
