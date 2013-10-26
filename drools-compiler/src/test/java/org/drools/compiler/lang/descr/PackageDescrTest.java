@@ -1,13 +1,23 @@
 package org.drools.compiler.lang.descr;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.lang.api.DescrFactory;
+import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.test.Person;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class PackageDescrTest {
 
@@ -26,7 +36,7 @@ public class PackageDescrTest {
         
         desc.addRule( rule );
         
-        List pkgAts = desc.getAttributes();
+        List<AttributeDescr> pkgAts = desc.getAttributes();
         assertEquals("bar", ((AttributeDescr)pkgAts.get( 0 )).getValue());
         assertEquals("default", ((AttributeDescr)pkgAts.get( 1 )).getValue());
         
@@ -36,5 +46,29 @@ public class PackageDescrTest {
         assertEquals("default", ((AttributeDescr)ruleAts.get( "foo2" )).getValue());
         
     }
+    
+	@Test
+	public void testSerialization() throws IOException, ClassNotFoundException {
+		PackageDescrBuilder builder = DescrFactory.newPackage().name("foo");
+		String className = Person.class.getName();
+		builder.newImport().target(className).end();
+		PackageDescr descr = builder.getDescr();
+
+		ImportDescr importDescr = new ImportDescr(className);
+		ImportDescr badImportDescr = new ImportDescr(null);
+
+		assertTrue(descr.getImports().contains(importDescr));
+
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutput out = new ObjectOutputStream(baos);
+		descr.writeExternal(out);
+
+		ObjectInput in = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+		PackageDescr newDescr = new PackageDescr();
+		newDescr.readExternal(in);
+
+		assertFalse(newDescr.getImports().contains(badImportDescr));
+		assertTrue(newDescr.getImports().contains(importDescr));
+	}
     
 }
