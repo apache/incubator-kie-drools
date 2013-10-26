@@ -207,12 +207,12 @@ public class RuleBuilder {
         buildEnabled( context );
         
         AnnotationDescr ann = ruleDescr.getAnnotation( "activationListener" );
-        if ( ann != null && !StringUtils.isEmpty( (String) ann.getValue() ) ) {
-            rule.setActivationListener( MVEL.evalToString( (String) ann.getValue() ) );
+        if ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) {
+            rule.setActivationListener( MVEL.evalToString( ann.getSingleValue() ) );
         }
 
         ann = ruleDescr.getAnnotation( "Eager" );
-        if ( ann != null && !StringUtils.isEmpty( (String) ann.getValue() ) ) {
+        if ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) {
             rule.setEager( true );
         }
 
