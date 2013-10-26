@@ -436,7 +436,7 @@ public class PatternBuilder
             }
 
             for ( Constraint constr : pattern.getConstraints() ) {
-                if ( constr instanceof EvaluatorConstraint ) {
+                if ( constr instanceof EvaluatorConstraint && ((EvaluatorConstraint) constr).isSelf() ) {
                     EvaluatorConstraint ec = ((EvaluatorConstraint) constr );
                     if ( ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.ISA || ec.getEvaluator().getOperator() == IsAEvaluatorDefinition.NOT_ISA ) {
                         listenedProperties.add( TraitableBean.TRAITSET_FIELD_NAME );
