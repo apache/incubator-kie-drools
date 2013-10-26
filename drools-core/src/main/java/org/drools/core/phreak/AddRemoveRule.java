@@ -99,6 +99,9 @@ public class AddRemoveRule {
                     }
                 } else {
                     SegmentMemory sm = pathMems.get(0).getSegmentMemories()[s];
+                    if (sm == null) {
+                        continue; // Segments are initialised lazily, so the SM may not yet exist yet, and thus no processing needed
+                    }
                     initNewSegment(splitStartLeftTupleSource, wm, sm);
                     correctSegmentBeforeSplitOnAdd(wm, newPmem, 0, pathMems.get(0), sm);
                 }
