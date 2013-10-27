@@ -267,7 +267,7 @@ public class RuleNetworkEvaluator {
                             log.trace("{} Skip Segment {}", indent(offset), smemIndex-1);
                         }
                         if ( smem.isEmpty() ) {
-                            SegmentUtilities.createChildSegments( wm, smem, ((LeftTupleSource)node).getSinkPropagator() );
+                            SegmentUtilities.createChildSegments( wm, smem, ((LeftTupleSource)smem.getTipNode()).getSinkPropagator() );
                         }
                         smem = smems[i];
                         bit = 1;
