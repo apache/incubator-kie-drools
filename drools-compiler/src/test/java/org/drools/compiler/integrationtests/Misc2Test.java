@@ -3878,4 +3878,68 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, pd.getConstraint().getDescrs().size() );
     }
 
+
+    @Test
+    public void testManyAccumulatesWithSubnetworks() {
+        String drl = "package org.drools.compiler.tests; \n" +
+                     "" +
+                     "declare FunctionResult\n" +
+                     "    father  : Applied\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Field\n" +
+                     "    applied : Applied\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Applied\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Seed\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    Applied app = new Applied();\n" +
+                     "    Field fld = new Field();\n" +
+                     "\n" +
+                     "    insert( app );\n" +
+                     "    insert( fld );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"complexSubNetworks\"\n" +
+                     "when\n" +
+                     "    $fld : Field( $app : applied )\n" +
+                     "    $a : Applied( this == $app )\n" +
+                     "    accumulate (\n" +
+                     "        $res : FunctionResult( father == $a ),\n" +
+                     "        $args : collectList( $res )\n" +
+                     "    )\n" +
+                     "    accumulate (\n" +
+                     "        $res : FunctionResult( father == $a ),\n" +
+                     "        $deps : collectList( $res )\n" +
+                     "    )\n" +
+                     "    accumulate (\n" +
+                     "        $x : String()\n" +
+                     "        and\n" +
+                     "        not String( this == $x ),\n" +
+                     "        $exprFieldList : collectList( $x )\n" +
+                     "    )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int num = ksession.fireAllRules();
+        // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
+        assertEquals( 1, num );
+
+    }
+
+
 }
