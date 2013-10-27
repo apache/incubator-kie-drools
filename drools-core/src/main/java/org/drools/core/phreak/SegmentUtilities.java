@@ -422,6 +422,14 @@ public class SegmentUtilities {
                                 restoreSegmentFromPrototype(wm, (LeftTupleSource) node);
                             }
                         }
+                    } else if ( ( pmem.getAllLinkedMaskTest() & ( 1L << pmem.getSegmentMemories().length ) ) == 0 ) {
+                        // must eagerly initialize child segment memories
+                        ObjectSink[] nodes = ((RightInputAdapterNode) sink).getSinkPropagator().getSinks();
+                        for ( ObjectSink node : nodes ) {
+                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
+                                createSegmentMemory( (LeftTupleSource) node, wm );
+                            }
+                        }
                     }
                 }
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
