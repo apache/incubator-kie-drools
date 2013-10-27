@@ -49,7 +49,7 @@
 
     <example>
       <title>Example <indexterm>
-          <primary>DSL</primary>b
+          <primary>DSL</primary>
         </indexterm>DSL mapping</title>
 
       <programlisting>[when]Something is {colour}=Something(colour=="{colour}")</programlisting>
@@ -221,8 +221,8 @@ There is a person with name of "Bob" and Person is at least 30 years old and liv
 [when][]is greater than=&gt;
 [when][]is equal to===
 [when][]equals===
-[when][]There is a Cheese with=Cheese()</programlisting>
-[when][]- {field:\w*} {operator} {value:\d*}={field} {operator} {value} 
+[when][]There is a Cheese with=Cheese()
+[when][]- {field:\w*} {operator} {value:\d*}={field} {operator} {value}</programlisting> 
 
     <para>Given these DSL definitions, you can write rules with conditions
     such as:</para>

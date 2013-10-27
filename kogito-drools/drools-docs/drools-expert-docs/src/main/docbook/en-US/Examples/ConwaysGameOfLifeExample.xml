@@ -14,10 +14,10 @@
 <emphasis role="bold">Rules file:</emphasis> conway-ruleflow.drl conway-agendagroup.drl
 <emphasis role="bold">Objective:</emphasis> Demonstrates 'accumulate', 'collect' and 'from'</programlisting>
 
-    <para>Conway's Game Of Life, described in <ulink
-    url="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">http://en.wikipedia.org/wiki/Conway's_Game_of_Life</ulink> and in
-    <ulink
-    url="http://www.math.com/students/wonders/life/life.html">http://www.math.com/students/wonders/life/life.html</ulink>,
+    <para>Conway's Game Of Life, described in <link
+    xlink:href="http://en.wikipedia.org/wiki/Conway's_Game_of_Life">http://en.wikipedia.org/wiki/Conway's_Game_of_Life</link> and in
+    <link
+    xlink:href="http://www.math.com/students/wonders/life/life.html">http://www.math.com/students/wonders/life/life.html</link>,
     is a famous cellular automaton conceived in the early 1970's by the
     mathematician John Conway. While the system is well known as "Conway's
     Game Of Life", it really isn't a game at all. Conway's system is more like

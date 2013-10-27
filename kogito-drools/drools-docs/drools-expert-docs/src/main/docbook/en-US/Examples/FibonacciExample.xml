@@ -14,8 +14,8 @@
 <emphasis role="bold">Objective:</emphasis> Demonstrates Recursion,
   the CE <literal>not</literal> and cross product matching</screen>
 
-    <para>The Fibonacci Numbers (see <ulink url="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</ulink>)
-    discovered by Leonardo of Pisa (see <ulink url="http://en.wikipedia.org/wiki/Fibonacci">http://en.wikipedia.org/wiki/Fibonacci</ulink>) is a sequence 
+    <para>The Fibonacci Numbers (see <link xlink:href="http://en.wikipedia.org/wiki/Fibonacci_number">http://en.wikipedia.org/wiki/Fibonacci_number</link>)
+      discovered by Leonardo of Pisa (see <link xlink:href="http://en.wikipedia.org/wiki/Fibonacci">http://en.wikipedia.org/wiki/Fibonacci</link>) is a sequence 
     that starts with 0 and 1. The next Fibonacci number is obtained by adding
     the two preceding Fibonacci numbers. The Fibonacci sequence begins with
     0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597,

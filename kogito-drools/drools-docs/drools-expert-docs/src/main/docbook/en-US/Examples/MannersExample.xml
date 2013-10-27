@@ -82,8 +82,8 @@
         Its behavior, however, is now well known and many engines
         optimize for this, thus negating its usefulness as a benchmark 
         which is why Waltz is becoming more favorable. These five
-        benchmarks are also published at the University of Texas <ulink
-        url="http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/">http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/</ulink>.</para>
+        benchmarks are also published at the University of Texas <link
+        xlink:href="http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/">http://www.cs.utexas.edu/ftp/pub/ops5-benchmark-suite/</link>.</para>
       </section>
 
       <section>
