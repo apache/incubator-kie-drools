@@ -31,6 +31,8 @@ import org.drools.builder.KnowledgeBuilderResult;
 import org.drools.builder.ResourceType;
 import org.drools.builder.ResultSeverity;
 import org.drools.common.DefaultFactHandle;
+import org.drools.compiler.DrlParser;
+import org.drools.compiler.DroolsParserException;
 import org.drools.conflict.SalienceConflictResolver;
 import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
@@ -52,6 +54,9 @@ import org.drools.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.drools.impl.KnowledgeBaseImpl;
 import org.drools.io.ResourceFactory;
 import org.drools.io.impl.ByteArrayResource;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
+import org.drools.lang.descr.RuleDescr;
 import org.drools.marshalling.Marshaller;
 import org.drools.marshalling.MarshallerFactory;
 import org.drools.reteoo.LeftTuple;
@@ -2683,4 +2688,20 @@ public class Misc2Test extends CommonTestMethodBase {
 
     }
 
+
+    @Test
+    public void testEvalConstraintWithMvelOperator( ) {
+        String drl = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
+                     + "Foo( eval( field soundslike \"water\" ) )" + " then " + "end";
+        DrlParser drlParser = new DrlParser();
+        PackageDescr packageDescr;
+        try {
+            packageDescr = drlParser.parse( true, drl);
+        } catch ( DroolsParserException e ) {
+            throw new RuntimeException( e );
+        }
+        RuleDescr r = packageDescr.getRules().get( 0 );
+        PatternDescr pd = (PatternDescr) r.getLhs().getDescrs().get( 0 );
+        assertEquals( 1, pd.getConstraint().getDescrs().size() );
+    }
 }
