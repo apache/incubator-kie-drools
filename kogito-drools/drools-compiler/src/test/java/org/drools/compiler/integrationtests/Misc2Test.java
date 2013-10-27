@@ -3942,4 +3942,61 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testLinkRiaNodesWithSubSubNetworks() {
+        String drl = "package org.drools.compiler.tests; \n" +
+                     "" +
+                     "import java.util.*; \n" +
+                     "" +
+                     "global List list; \n" +
+                     "" +
+                     "declare MyNode\n" +
+                     "end\n" +
+                     "" +
+                     "rule Init\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( new MyNode() );\n" +
+                     "    insert( new MyNode() );\n" +
+                     "end\n" +
+                     "" +
+                     "" +
+                     "rule \"Init tree nodes\"\n" +
+                     "salience -10\n" +
+                     "when\n" +
+                     "    accumulate (\n" +
+                     "                 MyNode(),\n" +
+                     "                 $x : count( 1 )\n" +
+                     "               )\n" +
+                     "    accumulate (\n" +
+                     "                 $n : MyNode()\n" +
+                     "                 and\n" +
+                     "                 accumulate (\n" +
+                     "                    $val : Double( ) from Arrays.asList( 1.0, 2.0, 3.0 ),\n" +
+                     "                    $rc : count( $val );\n" +
+                     "                    $rc == 3 \n" +
+                     "                 ),\n" +
+                     "                 $y : count( $n )\n" +
+                     "               )\n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "  list.add( $z ); \n" +
+                     "  System.out.println( $x ); \n" +
+                     "  System.out.println( $y ); \n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 2, 2 ), list );
+
+    }
+
+
 }
