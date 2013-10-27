@@ -14,8 +14,8 @@
 
         <itemizedlist>
           <listitem>
-            <para><ulink
-            url="http://www.jcp.org/en/jsr/detail?id=94">http://www.jcp.org/en/jsr/detail?id=94</ulink></para>
+            <para><link
+            xlink:href="http://www.jcp.org/en/jsr/detail?id=94">http://www.jcp.org/en/jsr/detail?id=94</link></para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -25,8 +25,8 @@
 
         <itemizedlist>
           <listitem>
-            <para><ulink
-            url="http://www.javarules.org/api_doc/api/index.html">http://www.javarules.org/api_doc/api/index.html</ulink></para>
+            <para><link
+              xlink:href="http://www.javarules.org/api_doc/api/index.html">http://www.javarules.org/api_doc/api/index.html</link></para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -38,8 +38,8 @@
 
         <itemizedlist>
           <listitem>
-            <para><ulink
-            url="http://www.theserverside.com/articles/article.tss?l=Drools">http://www.theserverside.com/articles/article.tss?l=Drools</ulink></para>
+            <para><link
+              xlink:href="http://www.theserverside.com/articles/article.tss?l=Drools">http://www.theserverside.com/articles/article.tss?l=Drools</link></para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -51,8 +51,8 @@
 
         <itemizedlist>
           <listitem>
-            <para><ulink
-            url="http://java.sun.com/developer/technicalArticles/J2SE/JavaRule.html">http://java.sun.com/developer/technicalArticles/J2SE/JavaRule.html</ulink></para>
+            <para><link
+              xlink:href="http://java.sun.com/developer/technicalArticles/J2SE/JavaRule.html">http://java.sun.com/developer/technicalArticles/J2SE/JavaRule.html</link></para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -63,8 +63,8 @@
 
         <itemizedlist>
           <listitem>
-            <para><ulink
-            url="http://www.theserverside.com/articles/article.tss?l=Jess">http://www.theserverside.com/articles/article.tss?l=Jess</ulink></para>
+            <para><link
+              xlink:href="http://www.theserverside.com/articles/article.tss?l=Jess">http://www.theserverside.com/articles/article.tss?l=Jess</link></para>
           </listitem>
         </itemizedlist>
       </listitem>
