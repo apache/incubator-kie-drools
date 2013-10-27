@@ -22,14 +22,15 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.conflict.SalienceConflictResolver;
-import org.drools.core.event.ActivationCancelledEvent;
-import org.drools.core.event.ActivationCreatedEvent;
-import org.drools.core.event.AfterActivationFiredEvent;
-import org.drools.core.event.BeforeActivationFiredEvent;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.FileManager;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -3860,5 +3861,21 @@ public class Misc2Test extends CommonTestMethodBase {
 
     }
 
+
+    @Test
+    public void testEvalConstraintWithMvelOperator( ) {
+        String drl = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
+                     + "Foo( eval( field soundslike \"water\" ) )" + " then " + "end";
+        DrlParser drlParser = new DrlParser();
+        PackageDescr packageDescr;
+        try {
+            packageDescr = drlParser.parse( true, drl);
+        } catch ( DroolsParserException e ) {
+            throw new RuntimeException( e );
+        }
+        RuleDescr r = packageDescr.getRules().get( 0 );
+        PatternDescr pd = (PatternDescr) r.getLhs().getDescrs().get( 0 );
+        assertEquals( 1, pd.getConstraint().getDescrs().size() );
+    }
 
 }
