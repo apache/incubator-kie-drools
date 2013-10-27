@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:id="KIEOverviewSection"
+<chapter version="5.0" xml:id="KIEChapter"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xml:base="./Overview/" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Overview</title>
+  <title>KIE</title>
   
-  <xi:include href="Introduction.xml" />
-  <xi:include href="Anatomy.xml" />
-  <xi:include href="LifeCycles.xml" />
+  <xi:include href="BuildDeployUtilizeAndRun.xml" />
+  <xi:include href="Overview.xml" />
   
-</section>
+</chapter>
