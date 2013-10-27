@@ -924,6 +924,12 @@
       not work with <literal>cacheType</literal> <literal>JUST_IN_TIME</literal> and <literal>it only works with
       selectionOrder</literal> <literal>PROBABILISTIC</literal>.</para>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/probabilisticSelection.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that's that selection
       will be selected:</para>
 
@@ -979,11 +985,11 @@
     <section>
       <title>Which move types might be missing in my implementation?</title>
 
-      <para>To determine which move types might be missing in your implementation, run a
-      <link linkend="benchmarkingAndTweaking">Benchmarker</link> <emphasis>for a
-      short amount of time</emphasis> and <link linkend="writingTheOutputSolutionOfTheBenchmarkRuns">configure it to
-      write the best solutions to disk</link>. Take a look at such a best solution: it will likely be a local optima.
-      Try to figure out if there's a move that could get out of that local optima faster.</para>
+      <para>To determine which move types might be missing in your implementation, run a <link
+      linkend="benchmarkingAndTweaking">Benchmarker</link> <emphasis>for a short amount of time</emphasis> and <link
+      linkend="writingTheOutputSolutionOfTheBenchmarkRuns">configure it to write the best solutions to disk</link>. Take
+      a look at such a best solution: it will likely be a local optima. Try to figure out if there's a move that could
+      get out of that local optima faster.</para>
 
       <para>If you find one, implement that course-grained move, mix it with the existing moves and benchmark it against
       the previous configurations to see if you want to keep it.</para>
