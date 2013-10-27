@@ -133,17 +133,24 @@ public class AnnotationDescr extends BaseDescr {
     }
 
     public String getValuesAsString() {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for ( String key : values.keySet() ) {
-            if ( ! first ) {
-                sb.append( "," );
-            }
-            sb.append( key ).append( "=" ).append( values.get( key ) );
-            if ( first ) {
-                first = false;
-            }
+        switch ( values.size() )  {
+            case 0 : return "";
+            case 1 : return getSingleValue();
+            default:
+                StringBuilder sb = new StringBuilder();
+
+                boolean first = true;
+                for ( String key : values.keySet() ) {
+                    if ( ! first ) {
+                        sb.append( "," );
+                    }
+                    sb.append( key ).append( "=" ).append( values.get( key ) );
+                    if ( first ) {
+                        first = false;
+                    }
+                }
+                return sb.toString();
+
         }
-        return sb.toString();
     }
 }
