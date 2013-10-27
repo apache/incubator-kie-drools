@@ -45,7 +45,7 @@ public class MatchesEvaluatorsDefinition implements EvaluatorDefinition {
     { init(); }
 
     static void init() {
-        if ( Operator.determineOperator( matchesOp, false ) == null ) {
+        if ( SUPPORTED_IDS == null ) {
             MATCHES = Operator.addOperatorToRegistry( matchesOp, false );
             NOT_MATCHES = Operator.addOperatorToRegistry( matchesOp, true );
             SUPPORTED_IDS = new String[] { matchesOp };
