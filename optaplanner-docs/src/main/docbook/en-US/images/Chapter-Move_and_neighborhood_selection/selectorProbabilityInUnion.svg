@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  ~ Copyright 2013 JBoss Inc
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="800"
+   height="600"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="selectorProbabilityInUnion.svg"
+   inkscape:export-filename="selectorProbabilityInUnion.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective3633"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3633-0"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3633-4"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3633-6"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3702"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3740"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3775"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3775-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3775-4"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3775-75"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3896"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3896-4"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3927"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3927-3"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3927-8"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4002"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4002-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4002-2"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4077"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4077-4"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4077-46"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4152"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4152-7"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4152-0"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4227"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4227-1"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective4227-3"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2987"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3018"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3049"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.315"
+     inkscape:cx="398.3071"
+     inkscape:cy="265.7172"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     width="800px"
+     borderlayer="true"
+     gridtolerance="10"
+     inkscape:window-width="1680"
+     inkscape:window-height="991"
+     inkscape:window-x="1680"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:snap-grids="true"
+     inkscape:snap-bbox="false"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       empspacing="10"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="10px"
+       spacingy="10px"
+       dotted="true"
+       type="xygrid"
+       id="grid2845" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Base"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-452.36218)">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4302"
+       style="font-size:36px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="translate(-20,262.36198)"><flowRegion
+         id="flowRegion4304"><rect
+           id="rect4306"
+           width="739.99988"
+           height="50.000027"
+           x="50"
+           y="220.0002"
+           style="font-size:36px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
+         id="flowPara4308">Selector probability in union</flowPara></flowRoot>    <flowRoot
+       transform="translate(-20,372.36182)"
+       xml:space="preserve"
+       id="flowRoot4302-6"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"><flowRegion
+         id="flowRegion4304-7"><rect
+           id="rect4306-3"
+           width="739.99994"
+           height="40.000046"
+           x="50"
+           y="150.00014"
+           style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
+         id="flowPara4308-6">A cached Selector can favor some selections over others.</flowPara></flowRoot>    <g
+       id="g3709"
+       transform="translate(0,19.999997)" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4157"
+       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+         id="flowRegion4159"><rect
+           id="rect4161"
+           width="10.955056"
+           height="72.471909"
+           x="16.011236"
+           y="-53.932568" /></flowRegion><flowPara
+         id="flowPara4163" /></flowRoot>    <path
+       style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="M 35,752.36218 C 40,663.4733 180,674.5844 190,657.91774 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
+       id="path4524"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <path
+       style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:0.99999988px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 35,622.36218 c 5,-70 325,-44.54545 355,-63.63637 l -10,0 20,-6.36363 20,6.36363 -10,0 c 30,19.09092 350,-6.36363 355,63.63637"
+       id="path4528"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <rect
+       style="fill:#729fcf;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect2851-41-5"
+       width="739"
+       height="29"
+       x="30.5"
+       y="622.86218"
+       rx="4.9999981"
+       ry="5" />
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-90.39408,501.72152)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3154-5-4"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3156-3-7"><rect
+           style="font-size:14.48488903px"
+           y="72.811111"
+           x="72.662285"
+           height="18.106148"
+           width="446.61749"
+           id="rect3158-8-9" /></flowRegion><flowPara
+         id="flowPara3160-8-8">unionMoveSelector</flowPara></flowRoot>    <rect
+       ry="5"
+       rx="4.9999981"
+       y="752.86218"
+       x="30.5"
+       height="29"
+       width="339"
+       id="rect3455"
+       style="fill:#729fcf;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3457"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,631.72153)"><flowRegion
+         id="flowRegion3459"><rect
+           id="rect3461"
+           width="205.20259"
+           height="18.106127"
+           x="187.33434"
+           y="72.811104"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3463">changeMoveSelector</flowPara></flowRoot>    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,546.7226)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3620"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3622"><rect
+           style="font-size:14.48488903px"
+           y="72.810585"
+           x="193.36971"
+           height="54.318336"
+           width="193.13185"
+           id="rect3624" /></flowRegion><flowPara
+         id="flowPara3671"
+         style="fill:#000000;fill-opacity:1">8 moves</flowPara><flowPara
+         style="font-size:10.86366653px;fill:#000000;fill-opacity:1"
+         id="flowPara4070">A0, A1, B0, B1, C0, C1, D0, D1</flowPara><flowPara
+         id="flowPara3166"><flowSpan
+   style="fill:#555753"
+   id="flowSpan3215">P(</flowSpan>A0<flowSpan
+   style="fill:#555753"
+   id="flowSpan3186">)=</flowSpan><flowSpan
+   style="font-size:14.48488903px"
+   id="flowSpan4064">1/8, .</flowSpan>..</flowPara></flowRoot>    <rect
+       style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3467"
+       width="339"
+       height="29"
+       x="430.5"
+       y="752.86218"
+       rx="4.9999986"
+       ry="5" />
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,99.60592,631.72153)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3469"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3471"><rect
+           style="font-size:14.48488903px"
+           y="72.811104"
+           x="199.40508"
+           height="18.106113"
+           width="205.20259"
+           id="rect3473" /></flowRegion><flowPara
+         id="flowPara3475">swapMoveSelector</flowPara></flowRoot>    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path3273"
+       d="m 435,752.36218 c 5,-88.88888 145,-77.77778 155,-94.44444 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
+       style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3277"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,119.60592,546.7226)"><flowRegion
+         id="flowRegion3279"><rect
+           id="rect3281"
+           width="193.13185"
+           height="54.318329"
+           x="193.36971"
+           y="72.810585"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3283">6 moves</flowPara><flowPara
+         id="flowPara4056"
+         style="font-size:10.86366653px">AB, AC, AD, BC, BD, CD</flowPara><flowPara
+         id="flowPara3303"><flowSpan
+   id="flowSpan3295"
+   style="fill:#555753">P(</flowSpan>AB<flowSpan
+   id="flowSpan3297"
+   style="fill:#555753">)=</flowSpan><flowSpan
+   style="font-size:14.48488903px"
+   id="flowSpan4068">1/6, ...</flowSpan></flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3403"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,626.7226)"><flowRegion
+         id="flowRegion3405"><rect
+           id="rect3407"
+           width="434.54663"
+           height="36.212227"
+           x="193.36971"
+           y="-35.826088"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara3429"
+         style="font-size:10.86366653px;fill:#000000;fill-opacity:1">A0, A1, B0, B1, C0, C1, D0, D1, AB, AC, AD, BC, BD, CD</flowPara><flowPara
+         id="flowPara4256"><flowSpan
+   style="fill:#555753"
+   id="flowSpan4258">P(</flowSpan>A0<flowSpan
+   id="flowSpan3413"
+   style="fill:#555753">)=</flowSpan><flowSpan
+   style="font-size:14.48488903px"
+   id="flowSpan4060"><flowSpan
+   style="font-weight:bold"
+   id="flowSpan4378">1/16</flowSpan>, ..</flowSpan>., <flowSpan
+   style="fill:#555753"
+   id="flowSpan3443">P(</flowSpan>AB<flowSpan
+   style="fill:#555753"
+   id="flowSpan3453">)=</flowSpan><flowSpan
+   style="font-weight:bold"
+   id="flowSpan4380">1/12</flowSpan>, ...</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Serif;-inkscape-font-specification:Serif"
+       x="561.97717"
+       y="195.43726"
+       id="text3439"
+       sodipodi:linespacing="125%"
+       transform="translate(0,452.36218)"><tspan
+         sodipodi:role="line"
+         id="tspan3441" /></text>
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,325.60575,689.45622)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot3455"
+       xml:space="preserve"><flowRegion
+         id="flowRegion3457"><rect
+           style="font-size:14.48488903px;text-align:start;text-anchor:start"
+           y="-108.25053"
+           x="187.33434"
+           height="24.141476"
+           width="30.176846"
+           id="rect3459" /></flowRegion><flowPara
+         id="flowPara3490"><flowSpan
+   style="text-align:start;text-anchor:start;fill:#555753"
+   id="flowSpan3463">P(</flowSpan>x<flowSpan
+   style="text-align:start;text-anchor:start;fill:#555753"
+   id="flowSpan3465">)</flowSpan></flowPara><flowPara
+         id="flowPara3558" /></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3560"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#555753;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,329.60535,681.72261)"><flowRegion
+         id="flowRegion3562"><rect
+           id="rect3564"
+           width="78.459816"
+           height="48.282967"
+           x="217.51118"
+           y="-108.25053"
+           style="font-size:14.48488903px;text-align:start;text-anchor:start;fill:#555753" /></flowRegion><flowPara
+         id="flowPara3566"
+         style="font-size:12.0707407px;font-style:italic;fill:#555753;-inkscape-font-specification:Arial Italic">probability</flowPara><flowPara
+         id="flowPara3572"
+         style="font-size:12.0707407px;font-style:italic;fill:#555753;-inkscape-font-specification:Arial Italic">to select x</flowPara></flowRoot>    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,631.72153)"
+       style="font-size:10.86366653px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot4382"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4384"><rect
+           style="font-size:10.86366653px;text-align:center;text-anchor:middle;fill:#ce5c00"
+           y="12.457397"
+           x="289.93564"
+           height="36.212223"
+           width="241.41481"
+           id="rect4386" /></flowRegion><flowPara
+         id="flowPara4388">1/2       probabilityWeight       1/2</flowPara><flowPara
+         id="flowPara4390">(default)</flowPara></flowRoot>    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path4392"
+       d="M 35,992.36218 C 40,903.4733 180,914.5844 190,897.91774 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
+       style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <path
+       sodipodi:nodetypes="ccccccc"
+       inkscape:connector-curvature="0"
+       id="path4394"
+       d="m 35,862.36218 c 5,-70 325,-44.54545 355,-63.63637 l -10,0 20,-6.36363 20,6.36363 -10,0 c 30,19.09092 350,-6.36363 355,63.63637"
+       style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:0.99999988px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <rect
+       ry="5"
+       rx="4.9999981"
+       y="862.86218"
+       x="30.5"
+       height="29"
+       width="739"
+       id="rect4396"
+       style="fill:#729fcf;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4398"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-90.39408,741.72152)"><flowRegion
+         id="flowRegion4400"><rect
+           id="rect4402"
+           width="446.61749"
+           height="18.106148"
+           x="72.662285"
+           y="72.811111"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara4404">unionMoveSelector</flowPara></flowRoot>    <rect
+       style="fill:#729fcf;stroke:#000000;stroke-width:0.99999994;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect4406"
+       width="339"
+       height="29"
+       x="30.5"
+       y="992.86218"
+       rx="4.9999981"
+       ry="5" />
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,871.72153)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot4408"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4410"><rect
+           style="font-size:14.48488903px"
+           y="72.811104"
+           x="187.33434"
+           height="18.106127"
+           width="205.20259"
+           id="rect4412" /></flowRegion><flowPara
+         id="flowPara4414">changeMoveSelector</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4416"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,786.7226)"><flowRegion
+         id="flowRegion4418"><rect
+           id="rect4420"
+           width="193.13185"
+           height="54.318336"
+           x="193.36971"
+           y="72.810585"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         style="fill:#000000;fill-opacity:1"
+         id="flowPara4422">8 moves</flowPara><flowPara
+         id="flowPara4424"
+         style="font-size:10.86366653px;fill:#000000;fill-opacity:1">A0, A1, B0, B1, C0, C1, D0, D1</flowPara><flowPara
+         id="flowPara4426"><flowSpan
+   id="flowSpan4428"
+   style="fill:#555753">P(</flowSpan>A0<flowSpan
+   id="flowSpan4430"
+   style="fill:#555753">)=</flowSpan><flowSpan
+   id="flowSpan4432"
+   style="font-size:14.48488903px">1/8, .</flowSpan>..</flowPara></flowRoot>    <rect
+       ry="5"
+       rx="4.9999986"
+       y="992.86218"
+       x="430.5"
+       height="29"
+       width="339"
+       id="rect4434"
+       style="fill:#729fcf;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4436"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,99.60592,871.72153)"><flowRegion
+         id="flowRegion4438"><rect
+           id="rect4440"
+           width="205.20259"
+           height="18.106113"
+           x="199.40508"
+           y="72.811104"
+           style="font-size:14.48488903px" /></flowRegion><flowPara
+         id="flowPara4442">swapMoveSelector</flowPara></flowRoot>    <path
+       style="opacity:0.4;color:#000000;fill:#729fcf;stroke:#204a87;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="m 435,992.36218 c 5,-88.88888 145,-77.77778 155,-94.44444 l -10,0 20,-5.55556 20,5.55556 -10,0 c 10,16.66666 150,5.55556 155,94.44444"
+       id="path4444"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccc" />
+    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,119.60592,786.7226)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot4446"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4448"><rect
+           style="font-size:14.48488903px"
+           y="72.810585"
+           x="193.36971"
+           height="54.318329"
+           width="193.13185"
+           id="rect4450" /></flowRegion><flowPara
+         id="flowPara4452">6 moves</flowPara><flowPara
+         style="font-size:10.86366653px"
+         id="flowPara4454">AB, AC, AD, BC, BD, CD</flowPara><flowPara
+         id="flowPara4456"><flowSpan
+   style="fill:#555753"
+   id="flowSpan4458">P(</flowSpan>AB<flowSpan
+   style="fill:#555753"
+   id="flowSpan4460">)=</flowSpan><flowSpan
+   id="flowSpan4462"
+   style="font-size:14.48488903px">1/6, ...</flowSpan></flowPara></flowRoot>    <flowRoot
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,866.7226)"
+       style="font-size:14.48488903px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       id="flowRoot4464"
+       xml:space="preserve"><flowRegion
+         id="flowRegion4466"><rect
+           style="font-size:14.48488903px"
+           y="-35.826088"
+           x="193.36971"
+           height="36.212227"
+           width="434.54663"
+           id="rect4468" /></flowRegion><flowPara
+         style="font-size:10.86366653px;fill:#000000;fill-opacity:1"
+         id="flowPara4470">A0, A1, B0, B1, C0, C1, D0, D1, AB, AC, AD, BC, BD, CD</flowPara><flowPara
+         id="flowPara4472"><flowSpan
+   id="flowSpan4474"
+   style="fill:#555753">P(</flowSpan>A0<flowSpan
+   style="fill:#555753"
+   id="flowSpan4476">)=</flowSpan><flowSpan
+   id="flowSpan4478"
+   style="font-size:14.48488903px"><flowSpan
+   id="flowSpan4480"
+   style="font-weight:bold">1/14</flowSpan>, ..</flowSpan>., <flowSpan
+   id="flowSpan4482"
+   style="fill:#555753">P(</flowSpan>AB<flowSpan
+   id="flowSpan4484"
+   style="fill:#555753">)=</flowSpan><flowSpan
+   id="flowSpan4486"
+   style="font-weight:bold">1/14</flowSpan>, ...</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4488"
+       style="font-size:10.86366653px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#ce5c00;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       transform="matrix(1.6568991,0,0,1.6568991,-280.39408,871.72153)"><flowRegion
+         id="flowRegion4490"><rect
+           id="rect4492"
+           width="241.41481"
+           height="36.212223"
+           x="289.93564"
+           y="12.457397"
+           style="font-size:10.86366653px;text-align:center;text-anchor:middle;fill:#ce5c00" /></flowRegion><flowPara
+         id="flowPara4496">8/14       probabilityWeight       6/14</flowPara></flowRoot>  </g>
+</svg>

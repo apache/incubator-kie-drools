@@ -373,9 +373,17 @@
 
       <para>The <literal>selectorProbabilityWeightFactory</literal> determines in <literal>selectionOrder</literal>
       <literal>RANDOM</literal> how often a child MoveSelector is selected to supply the next Move. By default, each
-      child <literal>MoveSelector</literal> has the same chance of being selected. Change the fixedProbabilityWeight of
-      such a child to select it more often. For example, the <literal>unionMoveSelector</literal> can return a
-      <literal>SwapMove</literal> twice as often as a <literal>ChangeMove</literal>:</para>
+      child <literal>MoveSelector</literal> has the same chance of being selected.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Move_and_neighborhood_selection/selectorProbabilityInUnion.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>Change the fixedProbabilityWeight of such a child to select it more often. For example, the
+      <literal>unionMoveSelector</literal> can return a <literal>SwapMove</literal> twice as often as a
+      <literal>ChangeMove</literal>:</para>
 
       <programlisting language="xml">    &lt;unionMoveSelector&gt;
       &lt;changeMoveSelector&gt;
