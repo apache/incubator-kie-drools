@@ -46,7 +46,7 @@ public class SoundslikeEvaluatorsDefinition implements EvaluatorDefinition {
     { init(); }
 
     static void init() {
-        if ( Operator.determineOperator( soundsLikeOp, false ) == null ) {
+        if ( SUPPORTED_IDS == null ) {
             SOUNDSLIKE = Operator.addOperatorToRegistry( soundsLikeOp, false );
             NOT_SOUNDSLIKE = Operator.addOperatorToRegistry( soundsLikeOp, true );
             SUPPORTED_IDS = new String[] { soundsLikeOp };
