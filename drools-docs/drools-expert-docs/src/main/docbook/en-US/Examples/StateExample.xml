@@ -271,7 +271,7 @@ session.insert( fact, dynamic );
       <para>When using <code>PropertyChangeListener</code> objects, each
       setter must implement a little extra code for the notification. Here
       is the setter for <code>state</code> in the class
-      <code>org.drools.examples</code>:</para>:
+      <code>org.drools.examples</code>:</para>
   
       <example>
         <title>Setter Example with PropertyChangeSupport</title>

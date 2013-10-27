@@ -7,7 +7,7 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title id="sec.query.title">Query</title>
+  <title xml:id="sec.query.title">Query</title>
 
   <figure>
     <title>query</title>

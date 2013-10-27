@@ -162,10 +162,10 @@ InputStream templateStream =
     this.getClass().getResourceAsStream( "template.drl" );
 String drl = converter.compile( objs, templateStream );</programlisting>
 
-        The resulting string contains the expanded rules text. You could
+<para>        The resulting string contains the expanded rules text. You could
         write it to a file and proceed as usual, but it's also possible to
         feed this to a <code>KnowledgeBuilder</code> and continue with the
-        resulting Knowledge Packages.
+        resulting Knowledge Packages.</para>
 
         <programlisting language="java">
 KnowledgeBase kieBaseModel = KnowledgeBaseFactory.newKnowledgeBase();
