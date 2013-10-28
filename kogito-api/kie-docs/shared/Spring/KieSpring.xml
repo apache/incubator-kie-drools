@@ -1,0 +1,1076 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter id="ch.kie.spring" version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Integration with Spring</title>
+
+  <section>
+    <title>Important Changes for Drools 6.0</title>
+
+    <para>Drools Spring integration has undergone a complete makeover inline
+    with the changes for Drools 6.0. The following are some of the major
+    changes</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The recommended prefix for the Drools Spring has changed from
+        'drools:' to 'kie:'</para>
+      </listitem>
+
+      <listitem>
+        <para>New Top Level Tags in 6.0</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>kie:kmodule</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>The following tags are no longer valid as top level tags.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>kie:kbase - A child of the <emphasis>kie:kmodule</emphasis>
+            tag.</para>
+          </listitem>
+
+          <listitem>
+            <para>kie:ksession - A child of the <emphasis>kie:kbase</emphasis>
+            tag.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Removed Tags from previous versions Drools 5.x</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>drools:resources</para>
+          </listitem>
+
+          <listitem>
+            <para>drools:resource</para>
+          </listitem>
+
+          <listitem>
+            <para>drools:grid</para>
+          </listitem>
+
+          <listitem>
+            <para>drools:grid-node</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Integration with Drools Expert</title>
+
+    <para>In this section we will explain the <emphasis>kie</emphasis>
+    namespace.</para>
+
+    <section>
+      <title>KieModule</title>
+
+      <para>The <emphasis>&lt;kie:kmodule&gt;</emphasis> defines a collection
+      of KieBase and associated KieSession's. The <emphasis>kmodule</emphasis>
+      tag has one MANDATORY parameter 'id'.</para>
+
+      <table>
+        <tgroup align="left" cols="3" colsep="1" rowsep="1">
+          <thead>
+            <row>
+              <entry align="center">Attribute</entry>
+
+              <entry align="center">Description</entry>
+
+              <entry align="center">Required</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>id</entry>
+
+              <entry>Bean's <emphasis>id</emphasis> is the name to be
+              referenced from other beans. Standard Spring ID semantics
+              apply.</entry>
+
+              <entry>Yes</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <para>A <emphasis>kmodule</emphasis> tag can contain only the following
+      tags as children.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>kie:kbase</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Refer to the documentation of kmodule.xml in the Drools Expert
+      documentation for detailed explanation of the need for kmodule.</para>
+    </section>
+
+    <section>
+      <title>KieBase</title>
+
+      <section>
+        <title>&lt;kie:kbase&gt;'s parameters as attributes:</title>
+
+        <table>
+          <tgroup align="left" cols="3" colsep="1" rowsep="1">
+            <thead>
+              <row>
+                <entry align="center">Attribute</entry>
+
+                <entry align="center">Description</entry>
+
+                <entry align="center">Required</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>name</entry>
+
+                <entry>Name of the KieBase</entry>
+
+                <entry>Yes</entry>
+              </row>
+
+              <row>
+                <entry>packages</entry>
+
+                <entry>Comma separated list of resource packages to be
+                included in this kbase</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>includes</entry>
+
+                <entry>kbase names to be included. All resources from the
+                corresponding kbase are included in this kbase.</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>default</entry>
+
+                <entry>Default kbase</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>default</entry>
+
+                <entry>Boolean (TRUE/FALSE). Default kbase, if not provided,
+                it is assumed to be FALSE</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>scope</entry>
+
+                <entry>.</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>eventProcessingMode</entry>
+
+                <entry>Event Processing Mode. Valid options are STREAM,
+                CLOUD</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>equalsBehavior</entry>
+
+                <entry>Valid options are IDENTITY, EQUALITY</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>declarativeAgenda</entry>
+
+                <entry>Valid options are enabled, disabled, true,
+                false</entry>
+
+                <entry>No</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </section>
+
+      <section>
+        <title>A <emphasis>kbase</emphasis> tag can contain only the following
+        tags as children.</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>kie:ksession</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>&lt;kie:kbase&gt;'s definition example</title>
+
+        <para>A kmodule can contain multiple (1..n) kbase elements.</para>
+
+        <example>
+          <title>kbase definition example</title>
+
+          <programlisting language="xml">&lt;kie:kmodule id="sample_module"&gt;
+   &lt;kie:kbase name="kbase1" packages="org.drools.spring.sample"&gt;
+     ...
+   &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+        </example>
+      </section>
+    </section>
+
+    <section>
+      <title>IMPORTANT NOTE</title>
+
+      <para>For proper initialization of the kmodule objects (kbase/ksession),
+      it is mandatory for a bean of type
+      <code>org.kie.spring.KModuleBeanFactoryPostProcessor</code> be
+      defined.</para>
+
+      <example>
+        <title>kie-spring post processorbean definition</title>
+
+        <programlisting language="xml">&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+      </example>
+
+      <note>Without the
+      org.kie.spring.KModuleBeanFactoryPostProcessor bean
+      definition, the kie-spring integration will not work.</note>
+    </section>
+
+    <section>
+      <title>KieSessions</title>
+
+      <para>&lt;kie:ksession&gt; element defines KieSessions. The same tag is
+      used to define both Stateful
+      (<emphasis>org.kie.api.runtime.KieSession</emphasis>) and Stateless
+      (<emphasis>org.kie.api.runtime.StatelessKieSession</emphasis>)
+      sessions.</para>
+
+      <section>
+        <title>&lt;kie:ksession&gt;'s parameters as attributes:</title>
+
+        <table>
+          <tgroup align="left" cols="3" colsep="1" rowsep="1">
+            <thead>
+              <row>
+                <entry align="center">Attribute</entry>
+
+                <entry align="center">Description</entry>
+
+                <entry align="center">Required</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>name</entry>
+
+                <entry>ksession's name.</entry>
+
+                <entry>Yes</entry>
+              </row>
+
+              <row>
+                <entry>type</entry>
+
+                <entry>is the session <emphasis>stateful</emphasis> or
+                <emphasis>stateless?</emphasis>. If this attribute is empty or
+                missing, the session is assumed to be of type
+                Stateful.</entry>
+
+                <entry>No</entry>
+              </row>
+
+              <row>
+                <entry>default</entry>
+
+                <entry>Is this the default session?</entry>
+
+                <entry>no</entry>
+              </row>
+
+              <row>
+                <entry>scope</entry>
+
+                <entry>.</entry>
+
+                <entry>no</entry>
+              </row>
+
+              <row>
+                <entry>clockType</entry>
+
+                <entry>REALTIME or PSEUDO</entry>
+
+                <entry>no</entry>
+              </row>
+
+              <row>
+                <entry>listeners-ref</entry>
+
+                <entry>Specifies the reference to the event listeners group
+                (see <link linkend="kie-grouping-listeners">'Defining a Group
+                of listeners'</link> section below).</entry>
+
+                <entry>no</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <example>
+          <title>ksession definition example</title>
+
+          <programlisting language="xml">&lt;kie:kmodule id="sample-kmodule"&gt;
+  &lt;kie:kbase name="drl_kiesample3" packages="drl_kiesample3"&gt;
+    &lt;kie:ksession name="ksession1" type="stateless"/&gt;
+    &lt;kie:ksession name="ksession2"/&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+        </example>
+      </section>
+    </section>
+
+    <section>
+      <title>Event Listeners</title>
+
+      <para>Drools supports adding 3 types of listeners to KieSessions -
+      <emphasis>AgendaListener</emphasis>,
+      <emphasis>WorkingMemoryListener</emphasis>,
+      <emphasis>ProcessEventListener</emphasis></para>
+
+      <para>The kie-spring module allows you to configure these listeners to
+      KieSessions using XML tags. These tags have identical names as the
+      actual listener interfaces i.e., &lt;kie:agendaEventListener....&gt;,
+      &lt;kie:workingMemoryEventListener....&gt; and
+      &lt;kie:processEventListener....&gt;.</para>
+
+      <para>kie-spring provides features to define the listeners as standalone
+      (individual) listeners and also to define them as a group.</para>
+
+      <section>
+        <title>Defining Stand alone Listeners:</title>
+
+        <section>
+          <title>Attributes:</title>
+
+          <table>
+            <tgroup align="left" cols="3" colsep="1" rowsep="1">
+              <thead>
+                <row>
+                  <entry align="center">Attribute</entry>
+
+                  <entry align="center">Required</entry>
+
+                  <entry align="center">Description</entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry>ref</entry>
+
+                  <entry>No</entry>
+
+                  <entry>A reference to another declared bean.</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+
+          <example>
+            <title>Listener configuration example - using a bean:ref.</title>
+
+            <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
+&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
+
+&lt;kie:kmodule id="listeners_kmodule"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ksession2"&gt;
+      &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
+      &lt;kie:processEventListener ref="mock-process-listener"/&gt;
+      &lt;kie:workingMemoryEventListener ref="mock-wm-listener"/&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>Nested Elements:</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>bean</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>class = String</para>
+                </listitem>
+
+                <listitem>
+                  <para>name = String (optional)</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+
+          <example>
+            <title>Listener configuration example - using nested bean.</title>
+
+            <programlisting language="xml">&lt;kie:kmodule id="listeners_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+   &lt;kie:ksession name="ksession1"&gt;
+	  &lt;kie:agendaEventListener&gt;
+      &lt;bean class="mocks.MockAgendaEventListener"/&gt;
+      &lt;/kie:agendaEventListener&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>Empty Tag : Declaration with no 'ref' and without a nested
+          bean</title>
+
+          <para>When a listener is defined without a reference to a
+          implementing bean and does not contain a nested bean,
+          <emphasis>&lt;drools:workingMemoryEventListener/&gt;</emphasis> the
+          underlying implementation adds the Debug version of the listener
+          defined in the API.</para>
+
+          <para>The debug listeners print the corresponding Event toString
+          message to <emphasis>System.err. </emphasis></para>
+
+          <example>
+            <title>Listener configuration example - defaulting to the debug
+            versions provided by the Knowledge-API .</title>
+
+            <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
+&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
+
+&lt;kie:kmodule id="listeners_module"&gt;
+ &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ksession2"&gt;
+      &lt;kie:agendaEventListener /&gt; 
+      &lt;kie:processEventListener /&gt;
+      &lt;kie:workingMemoryEventListener /&gt;
+    &lt;/kie:ksession&gt;
+ &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>Mix and Match of different declaration styles</title>
+
+          <para>The drools-spring module allows you to mix and match the
+          different declarative styles within the same KnowledgeSession. The
+          below sample provides more clarity.</para>
+
+          <example>
+            <title>Listener configuration example - mix and match of
+            'ref'/nested-bean/empty styles.</title>
+
+            <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
+&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
+
+&lt;kie:kmodule id="listeners_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ksession1"&gt;
+      &lt;kie:agendaEventListener&gt;
+          &lt;bean class="org.kie.spring.mocks.MockAgendaEventListener"/&gt;
+      &lt;/kie:agendaEventListener&gt;
+    &lt;/kie:ksession&gt;
+    &lt;kie:ksession name="ksession2"&gt;
+      &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
+      &lt;kie:processEventListener ref="mock-process-listener"/&gt;
+      &lt;kie:workingMemoryEventListener ref="mock-wm-listener"/&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+          </example>
+        </section>
+
+        <section>
+          <title>Defining multiple listeners of the same type</title>
+
+          <para>It is also valid to define multiple beans of the same event
+          listener types for a KnowledgeSession.</para>
+
+          <example>
+            <title>Listener configuration example - multiple listeners of the
+            same type.</title>
+
+            <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
+
+&lt;kie:kmodule id="listeners_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ksession1"&gt;
+      &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
+      &lt;kie:agendaEventListener&gt;
+          &lt;bean class="org.kie.spring.mocks.MockAgendaEventListener"/&gt;
+      &lt;/kie:agendaEventListener&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+          </example>
+        </section>
+      </section>
+
+      <section id="kie-grouping-listeners">
+        <title>Defining a Group of listeners:</title>
+
+        <para>drools-spring allows for grouping of listeners. This is
+        particularly useful when you define a set of listeners and want to
+        attach them to multiple sessions. The grouping feature is also very
+        useful, when we define a set of listeners for 'testing' and then want
+        to switch them for 'production' use.</para>
+
+        <section>
+          <title>Attributes:</title>
+
+          <table>
+            <tgroup align="left" cols="3" colsep="1" rowsep="1">
+              <thead>
+                <row>
+                  <entry align="center">Attribute</entry>
+
+                  <entry align="center">Required</entry>
+
+                  <entry align="center">Description</entry>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry>ID</entry>
+
+                  <entry>yes</entry>
+
+                  <entry>Unique identifier</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </section>
+
+        <section>
+          <title>Nested Elements:</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>drools:agendaEventListener...</para>
+            </listitem>
+
+            <listitem>
+              <para>drools:workingMemoryEventListener...</para>
+            </listitem>
+
+            <listitem>
+              <para>drools:processEventListener...</para>
+            </listitem>
+          </itemizedlist>
+
+          <note>The above mentioned child elements can be declared in any
+          order. Only one declaration of each type is allowed in a
+          group.</note>
+        </section>
+
+        <section>
+          <title>Example:</title>
+
+          <example>
+            <title>Group of listeners - example</title>
+
+            <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
+&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
+
+&lt;kie:kmodule id="listeners_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="statelessWithGroupedListeners" type="stateless" 
+             listeners-ref="debugListeners"/&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+  &lt;kie:eventListeners id="debugListeners"&gt;
+  &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
+  &lt;kie:processEventListener ref="mock-process-listener"/&gt;
+  &lt;kie:workingMemoryEventListener ref="mock-wm-listener"/&gt;
+&lt;/kie:eventListeners&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+          </example>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Loggers</title>
+
+      <para>Drools supports adding 2 types of loggers to KieSessions -
+      <emphasis>ConsoleLogger</emphasis>,
+      <emphasis>FileLogger.</emphasis></para>
+
+      <para>The kie-spring module allows you to configure these loggers to
+      KieSessions using XML tags. These tags have identical names as the
+      actual logger interfaces i.e., &lt;kie:consoleLogger....&gt; and
+      &lt;kie:fileLogger....&gt;.</para>
+
+      <section>
+        <title>Defining a console logger:</title>
+
+        <para>A console logger can be attached to a KieSession by using the
+        <emphasis>&lt;kie:consoleLogger/&gt;</emphasis> tag. This tag has no
+        attributes and must be present directly under a
+        &lt;kie:ksession....&gt; element.</para>
+
+        <example>
+          <title>Defining a console logger - example</title>
+
+          <programlisting language="xml">&lt;kie:kmodule id="loggers_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ConsoleLogger-statefulSession" type="stateful"&gt;
+      &lt;kie:consoleLogger/&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+        </example>
+      </section>
+
+      <section>
+        <title>Defining a file logger:</title>
+
+        <para>A file logger can be attached to a KieSession by using the
+        <emphasis>&lt;kie:fileLogger/&gt;</emphasis> tag. This tag has the
+        following attributes and must be present directly under a
+        &lt;kie:ksession....&gt; element.</para>
+
+        <table>
+          <tgroup align="left" cols="3" colsep="1" rowsep="1">
+            <thead>
+              <row>
+                <entry align="center">Attribute</entry>
+
+                <entry align="center">Required</entry>
+
+                <entry align="center">Description</entry>
+              </row>
+            </thead>
+
+            <tbody>
+              <row>
+                <entry>ID</entry>
+
+                <entry>yes</entry>
+
+                <entry>Unique identifier</entry>
+              </row>
+
+              <row>
+                <entry>file</entry>
+
+                <entry>yes</entry>
+
+                <entry>Path to the actual file on the disk</entry>
+              </row>
+
+              <row>
+                <entry>threaded</entry>
+
+                <entry>no</entry>
+
+                <entry>Defaults to false. Valid values are 'true'or
+                'false'</entry>
+              </row>
+
+              <row>
+                <entry>interval</entry>
+
+                <entry>no</entry>
+
+                <entry>Integer. Specifies the interval for flushing the
+                contents from memory to the disk.</entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+
+        <example>
+          <title>Defining a file logger - example</title>
+
+          <programlisting language="xml">&lt;kie:kmodule id="loggers_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ConsoleLogger-statefulSession" type="stateful"&gt;
+      &lt;kie:fileLogger id="fl_logger" file="#{ systemProperties['java.io.tmpdir'] }/log1"/&gt;
+      &lt;kie:fileLogger id="tfl_logger" file="#{ systemProperties['java.io.tmpdir'] }/log2" 
+                          threaded="true" interval="5"/&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+        </example>
+
+        <section>
+          <title>Closing a FileLogger</title>
+
+          <para>To prevent leaks, it is advised to close the
+          <emphasis>&lt;kie:fileLogger ...&gt; </emphasis>
+          programatically.</para>
+
+          <programlisting language="java">LoggerAdaptor adaptor = (LoggerAdaptor) context.getBean("fl_logger");
+adaptor.close();</programlisting>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Defining Batch Commands</title>
+
+      <para>A <emphasis>&lt;kie:batch&gt;</emphasis> element can be used to
+      define a set of batch commands for a given ksession.This tag has no
+      attributes and must be present directly under a &lt;kie:ksession....&gt;
+      element. The commands supported are</para>
+
+      <figure>
+        <title>Initialization Batch Commands</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>insert-object</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>ref = String (optional)</para>
+              </listitem>
+
+              <listitem>
+                <para>Anonymous bean</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>set-global</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>identifier = String (required)</para>
+              </listitem>
+            </itemizedlist>
+
+            <itemizedlist>
+              <listitem>
+                <para>reg = String (optiona)</para>
+              </listitem>
+
+              <listitem>
+                <para>Anonymous bean</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>fire-all-rules</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>max : n</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>fire-until-halt</para>
+          </listitem>
+
+          <listitem>
+            <para>start-process</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>parameter</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>identifier = String (required)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>ref = String (optional)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Anonymous bean</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>signal-event</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>ref = String (optional)</para>
+              </listitem>
+
+              <listitem>
+                <para>event-type = String (required)</para>
+              </listitem>
+
+              <listitem>
+                <para>process-instance-id =n (optional)</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </figure>
+
+      <example>
+        <title>Batch commands - example</title>
+
+        <programlisting language="xml">&lt;kie:kmodule id="batch_commands_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="ksessionForCommands" type="stateful"&gt;
+      &lt;kie:batch&gt;
+        &lt;kie:insert-object ref="person2"/&gt;
+        &lt;kie:set-global identifier="persons" ref="personsList"/&gt;
+        &lt;kie:fire-all-rules max="10"/&gt;
+      &lt;/kie:batch&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
+      </example>
+    </section>
+
+    <section>
+      <title>Persistence</title>
+
+      <figure>
+        <title>Persistence Configuration Options</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>jpa-persistence</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>transaction-manager</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>ref = String</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+
+              <listitem>
+                <para>entity-manager-factory</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>ref = String</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </figure>
+
+      <example>
+        <title>ksession JPA configuration example</title>
+
+        <programlisting language="xml">&lt;kie:kstore id="kstore" /&gt; &lt;!-- provides KnowledgeStoreService implementation --&gt;
+
+&lt;bean id="myEmf" 
+       class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"&gt;
+   &lt;property name="dataSource" ref="ds" /&gt;
+   &lt;property name="persistenceUnitName" 
+       value="org.drools.persistence.jpa.local" /&gt;
+&lt;/bean&gt;
+
+&lt;bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager"&gt;
+   &lt;property name="entityManagerFactory" ref="myEmf" /&gt;
+&lt;/bean&gt;
+
+&lt;kie:kmodule id="persistence_module"&gt;
+  &lt;kie:kbase name="drl_kiesample" packages="drl_kiesample"&gt;
+    &lt;kie:ksession name="jpaSingleSessionCommandService"&gt;
+      &lt;kie:configuration&gt;
+         &lt;kie:jpa-persistence&gt;
+           &lt;kie:transaction-manager ref="txManager"/&gt;
+           &lt;kie:entity-manager-factory ref="myEmf"/&gt;
+         &lt;/kie:jpa-persistence&gt;
+      &lt;/kie:configuration&gt;
+    &lt;/kie:ksession&gt;
+  &lt;/kie:kbase&gt;
+&lt;/kie:kmodule&gt;
+
+&lt;bean id="kiePostProcessor" 
+          class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;
+</programlisting>
+      </example>
+    </section>
+  </section>
+
+  <section>
+    <title>Integration with jBPM Human Task</title>
+
+    <para>This chapter describes the infrastructure used when configuring a
+    human task server with Spring as well as a little bit about the
+    infrastructure used when doing this.</para>
+
+    <section>
+      <title>How to configure Spring with jBPM Human task</title>
+
+      <para>The jBPM human task server can be configured to use Spring
+      persistence. <xref linkend="kie-spring-human-task-example"/> is an
+      example of this which uses local transactions and Spring's thread-safe
+      EntityManager proxy.</para>
+
+      <para>The following diagram shows the dependency graph used in <xref
+      linkend="kie-spring-human-task-example"/>.</para>
+
+      <figure>
+        <title>Spring Human Task integration injection dependencies</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/ht-spring-deps.png"
+                       format="PNG" scalefit="1" width="100%"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>A <code>TaskService</code> instance is dependent on two other bean
+      types: a drools <code>SystemEventListener</code> bean as well as a
+      <code>TaskSessionSpringFactoryImpl</code> bean. The
+      <code>TaskSessionSpringFactoryImpl</code> bean is howerver
+      <emphasis>not</emphasis> injected into the <code>TaskService</code> bean
+      because this would cause a circular dependency. To solve this problem,
+      when the <code>TaskService</code> bean is injected into the
+      <code>TaskSessionSpringFactoryImpl</code> bean, the setter method used
+      secretly injects the <code>TaskSessionSpringFactoryImpl</code> instance
+      back into the <code>TaskService</code> bean and initializes the
+      <code>TaskService</code> bean as well.</para>
+
+      <para>The <code>TaskSessionSpringFactoryImpl</code> bean is responsible
+      for creating all the internal instances in human task that deal with
+      transactions and persistence context management. Besides a
+      <code>TaskService</code> instance, this bean also requires a transaction
+      manager and a persistence context to be injected. Specifically, it
+      requires an instance of a <code>HumanTaskSpringTransactionManager</code>
+      bean (as a transaction manager) and an instance of a
+      <code>SharedEntityManagerBean</code> bean (as a persistence context
+      instance).</para>
+
+      <para>We also use some of the standard Spring beans in order to
+      configure persistence: there's a bean to hold the
+      <code>EntityManagerFactory</code> instance as well as the
+      <code>SharedEntityManagerBean</code> instance. The
+      <code>SharedEntityManagerBean</code> provides a shared, thread-safe
+      proxy for the actual <code>EntityManager</code>.</para>
+
+      <para>The <code>HumanTaskSpringTransactionManager</code> bean serves as
+      a wrapper around the Spring transaction manager, in this case the
+      <code>JpaTransactionManager</code>. An instance of a
+      <code>JpaTransactionManager</code> bean is also instantiated because of
+      this.</para>
+
+      <example xml:id="kie-spring-human-task-example">
+        <title>Configuring Human Task with Spring</title>
+
+        <programlisting language="xml"><xi:include
+            href="Spring/extras/spring-human-task.xml" parse="text"/></programlisting>
+      </example>
+
+      <para>When using the <code>SharedEntityManagerBean</code> instance, it's
+      important to configure the Spring transaction manager to use nested
+      transactions. This is because the <code>SharedEntityManagerBean</code>
+      is a <emphasis>transactional</emphasis> persistence context and will
+      close the persistence context after every operation. However, the human
+      task server needs to be able to access (persisted) entities after
+      operations. Nested transactions allow us to still have access to
+      entities that otherwise would have been detached and are no longer
+      accessible, especially when using an ORM framework that uses
+      lazy-initialization of entities.</para>
+
+      <para>Also, while the <code>TaskSessionSpringFactoryImpl</code> bean
+      takes an <quote>useJTA</quote> parameter, at the moment, JTA
+      transactions with Spring have not yet been fully tested.</para>
+    </section>
+  </section>
+</chapter>
