@@ -48,12 +48,10 @@ public class PropertySpecificUtil {
             }
 
             int pos = settableProperties.indexOf(propertyName);
-            // at this point the property is valid (a getter exists).
-            // The corresponding setter may not, but the property might be @modified anyway
-            // so we ignore properties that are not settable rather than throwing an exception
-            if (pos >= 0) {
-                mask = BitMaskUtil.set(mask, pos);
+            if (pos < 0) {
+                throw new RuntimeException("Unknown property: " + propertyName);
             }
+            mask = BitMaskUtil.set(mask, pos);
         }
         return mask;
     }
