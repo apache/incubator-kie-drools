@@ -3980,7 +3980,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "               )\n" +
                      "then\n" +
                      "  list.add( $x ); \n" +
-                     "  list.add( $z ); \n" +
+                     "  list.add( $y ); \n" +
                      "  System.out.println( $x ); \n" +
                      "  System.out.println( $y ); \n" +
                      "end\n";
@@ -3989,12 +3989,14 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        List list = new ArrayList(  );
+        List<Long> list = new ArrayList<Long>();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        assertEquals( Arrays.asList( 2, 2 ), list );
+        assertEquals( 2, list.size() );
+        assertEquals( 2, list.get(0).intValue() );
+        assertEquals( 2, list.get(1).intValue() );
 
     }
 
