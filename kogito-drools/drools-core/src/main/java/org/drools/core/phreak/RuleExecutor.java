@@ -2,6 +2,7 @@ package org.drools.core.phreak;
 
 import java.util.Comparator;
 
+import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -463,7 +464,8 @@ public class RuleExecutor {
     }
 
     private void updateSalience(int currentSalience) {
-        int newSalience = queue.peek().getSalience();
+        // the queue may be emtpy if no more matches are left, so reset it to default salience 0
+        int newSalience = queue.isEmpty() ? SalienceInteger.DEFAULT_SALIENCE.getValue() : queue.peek().getSalience();
         if (currentSalience != newSalience) {
             // salience changed, so the RuleAgendaItem needs to be removed and re-added, for sorting
             ruleAgendaItem.remove();
