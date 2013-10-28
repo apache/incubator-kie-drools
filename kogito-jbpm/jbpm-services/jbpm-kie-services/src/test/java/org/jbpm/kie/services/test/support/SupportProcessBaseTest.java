@@ -17,7 +17,10 @@ package org.jbpm.kie.services.test.support;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,16 +28,20 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.KnowledgeAdminDataService;
-import org.jbpm.kie.services.api.Vfs;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
-import org.jbpm.kie.services.impl.VFSDeploymentUnit;
-import org.jbpm.shared.services.api.FileException;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -42,12 +49,13 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.scanner.MavenRepository;
 
 
 public abstract class SupportProcessBaseTest extends AbstractBaseTest {
 
     @Inject
-    @Vfs
+    @Kjar
     protected DeploymentService deploymentService;
     @Inject
     protected BPMN2DataService bpmn2Service;
@@ -56,8 +64,30 @@ public abstract class SupportProcessBaseTest extends AbstractBaseTest {
     
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     
+    @Before
+    public void prepare() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/support/support.bpmn");
+        
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+    }
+    
     @After
     public void cleanup() {
+        TestUtil.cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
             for (DeploymentUnit unit : units) {
                 deploymentService.undeploy(unit);
@@ -69,8 +99,8 @@ public abstract class SupportProcessBaseTest extends AbstractBaseTest {
  
 
     @Test
-    public void testSupportProcess() throws FileException {
-        DeploymentUnit deploymentUnitSupport = new VFSDeploymentUnit("support", "", "processes/support");        
+    public void testSupportProcess()  {
+    	DeploymentUnit deploymentUnitSupport = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);       
         deploymentService.deploy(deploymentUnitSupport);
         units.add(deploymentUnitSupport);
 

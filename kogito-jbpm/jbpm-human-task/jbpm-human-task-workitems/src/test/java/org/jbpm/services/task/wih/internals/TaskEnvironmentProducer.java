@@ -7,13 +7,10 @@ package org.jbpm.services.task.wih.internals;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -24,10 +21,6 @@ import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
-
-import static org.uberfire.io.FileSystemType.Bootstrap.*;
 
 /**
  *
@@ -36,9 +29,6 @@ public class TaskEnvironmentProducer {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskEnvironmentProducer.class);
   
-    private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
-
-    private IOService ioService = new IOServiceNio2WrapperImpl();
     private EntityManagerFactory emf;
 
     
@@ -74,27 +64,6 @@ public class TaskEnvironmentProducer {
         }
     }
 
-   
-    
-    @Produces
-    @Named("ioStrategy")
-    public IOService prepareFileSystem() {
-
-        try {
-            final String userName = "guvnorngtestuser1";
-            final String password = "test1234";
-            final URI fsURI = URI.create( "git://jbpm-playground" );
-
-            final Map<String, Object> env = new HashMap<String, Object>();
-            env.put( "username", userName );
-            env.put( "password", password );
-            env.put( "origin", ORIGIN_URL );
-            ioService.newFileSystem( fsURI, env, BOOTSTRAP_INSTANCE );
-        } catch ( Exception e ) {
-            logger.error("Error during file system preparation", e);
-        }
-        return ioService;
-    }
     
     private class EmInvocationHandler implements InvocationHandler {
 

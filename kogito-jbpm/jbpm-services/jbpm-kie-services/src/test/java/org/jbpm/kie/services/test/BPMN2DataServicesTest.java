@@ -17,7 +17,10 @@ package org.jbpm.kie.services.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,22 +29,28 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
-import org.jbpm.kie.services.api.Vfs;
-import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
-import org.jbpm.kie.services.impl.VFSDeploymentUnit;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.kie.services.api.DeploymentService;
+import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.Kjar;
+import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.scanner.MavenRepository;
 
 /**
  *
@@ -109,15 +118,43 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
 
     }
     @Inject
-    @Vfs
+    @Kjar
     private DeploymentService deploymentService;
     @Inject
     private BPMN2DataService bpmn2Service;
 
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     
+    @Before
+    public void prepare() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/hr/hiring.bpmn2");
+        processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/signal.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
+        processes.add("repo/processes/general/callactivity.bpmn");
+        
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+    }
+
+    
     @After
     public void cleanup() {
+    	TestUtil.cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
             for (DeploymentUnit unit : units) {
                 deploymentService.undeploy(unit);
@@ -131,7 +168,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
       
         assertNotNull(deploymentService);
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/general");
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -165,7 +202,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
       
         assertNotNull(deploymentService);
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/hr");
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -202,7 +239,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
       
         assertNotNull(deploymentService);
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/general");
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);

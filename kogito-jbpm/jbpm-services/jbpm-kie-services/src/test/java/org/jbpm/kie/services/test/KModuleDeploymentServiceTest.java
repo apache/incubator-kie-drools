@@ -37,20 +37,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-import org.kie.api.builder.model.KieSessionModel;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
@@ -130,12 +120,11 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
     
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     
-    private static final String ARTIFACT_ID = "test-module";
-    private static final String GROUP_ID = "org.jbpm.test";
-    private static final String VERSION = "1.0.0-SNAPSHOT";
+    
     
     @Before
     public void prepare() {
+    	logger.debug("Preparing kjar");
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
         List<String> processes = new ArrayList<String>();
@@ -342,73 +331,5 @@ public class KModuleDeploymentServiceTest extends AbstractBaseTest {
         
     }
     
-    protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
-        String pom =
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
-                "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
-                "  <modelVersion>4.0.0</modelVersion>\n" +
-                "\n" +
-                "  <groupId>" + releaseId.getGroupId() + "</groupId>\n" +
-                "  <artifactId>" + releaseId.getArtifactId() + "</artifactId>\n" +
-                "  <version>" + releaseId.getVersion() + "</version>\n" +
-                "\n";
-        if (dependencies != null && dependencies.length > 0) {
-            pom += "<dependencies>\n";
-            for (ReleaseId dep : dependencies) {
-                pom += "<dependency>\n";
-                pom += "  <groupId>" + dep.getGroupId() + "</groupId>\n";
-                pom += "  <artifactId>" + dep.getArtifactId() + "</artifactId>\n";
-                pom += "  <version>" + dep.getVersion() + "</version>\n";
-                pom += "</dependency>\n";
-            }
-            pom += "</dependencies>\n";
-        }
-        pom += "</project>";
-        return pom;
-    }
-   
-   protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources ) {
-     
-        
-        KieFileSystem kfs = createKieFileSystemWithKProject(ks);
-        kfs.writePomXML( getPom(releaseId) );
-
-        
-        for (String resource : resources) {
-            kfs.write("src/main/resources/KBase-test/" + resource, ResourceFactory.newClassPathResource(resource));
-        }
-        
-        kfs.write("src/main/resources/forms/DefaultProcess.ftl", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.ftl"));
-        
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        if (!kieBuilder.buildAll().getResults().getMessages().isEmpty()) {
-            for (Message message : kieBuilder.buildAll().getResults().getMessages()) {
-                logger.error("Error Message: ({}) {}", message.getPath(), message.getText());
-            }
-            throw new RuntimeException(
-                    "There are errors builing the package, please check your knowledge assets!");
-        }
-        
-        return ( InternalKieModule ) kieBuilder.getKieModule();
-    }
-
     
-
-    protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
-        KieModuleModel kproj = ks.newKieModuleModel();
-
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase-test").setDefault(true).addPackage("*")
-                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
-
-    
-        kieBaseModel1.newKieSessionModel("ksession-test").setDefault(true)
-                .setType(KieSessionModel.KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get("realtime") )
-                .newWorkItemHandlerModel("Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()");
-        KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.writeKModuleXML(kproj.toXML());
-        return kfs;
-    }
 }

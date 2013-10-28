@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
@@ -50,6 +51,7 @@ import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.task.model.Status;
@@ -69,10 +71,9 @@ import org.kie.internal.task.api.model.NotificationType;
 import org.kie.internal.task.api.model.Reassignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.services.cdi.Startup;
 
 @Transactional
-@Startup
+@BootOnLoad
 @Singleton
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     

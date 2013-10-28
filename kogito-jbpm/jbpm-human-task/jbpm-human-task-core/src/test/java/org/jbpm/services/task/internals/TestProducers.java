@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -16,8 +15,6 @@ import javax.persistence.PersistenceUnit;
 
 import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
 /**
  *
@@ -25,7 +22,6 @@ import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 public class TestProducers {
 
     private EntityManagerFactory emf;
-    private final IOService ioService = new IOServiceNio2WrapperImpl();
 
     @Inject
     @Selectable
@@ -66,11 +62,4 @@ public class TestProducers {
 
         }
     }
-
-    @Produces
-    @Named("ioStrategy")
-    public IOService createIOService() {
-        return ioService;
-    }
-
 }

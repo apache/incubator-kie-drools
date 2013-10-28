@@ -18,12 +18,14 @@ package org.jbpm.executor.impl;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.Executor;
@@ -32,14 +34,13 @@ import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.executor.api.RequestInfo;
 import org.kie.internal.executor.api.STATUS;
-import org.uberfire.commons.services.cdi.Startup;
 
 /**
  * Entry point of the executor component. Application should always talk
  * via this service to ensure all internals are properly initialized
  *
  */
-@Startup
+@BootOnLoad
 @ApplicationScoped
 @Transactional
 public class ExecutorServiceImpl implements ExecutorService {

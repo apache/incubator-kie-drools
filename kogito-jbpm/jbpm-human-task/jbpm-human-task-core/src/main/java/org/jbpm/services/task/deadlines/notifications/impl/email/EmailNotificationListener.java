@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
 import javax.enterprise.context.ApplicationScoped;
@@ -45,6 +46,7 @@ import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.LanguageImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -57,10 +59,9 @@ import org.kie.internal.task.api.model.NotificationEvent;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.services.cdi.Startup;
 
 @ApplicationScoped
-@Startup
+@BootOnLoad
 public class EmailNotificationListener implements NotificationListener {
     
     private static final Logger logger = LoggerFactory.getLogger(EmailNotificationListener.class);

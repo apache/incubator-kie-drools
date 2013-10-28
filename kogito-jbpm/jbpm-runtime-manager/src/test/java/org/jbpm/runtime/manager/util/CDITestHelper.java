@@ -10,7 +10,6 @@ import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -28,8 +27,6 @@ import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
 @ApplicationScoped
 public class CDITestHelper {
@@ -80,12 +77,6 @@ public class CDITestHelper {
         } catch (Exception e) {
 
         }
-    }
-    
-    @Produces
-    @Named("ioStrategy")
-    public IOService createIOService(){
-        return new IOServiceNio2WrapperImpl();
     }
     
     @Produces

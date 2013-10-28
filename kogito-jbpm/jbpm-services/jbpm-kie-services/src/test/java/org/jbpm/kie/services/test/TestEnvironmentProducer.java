@@ -8,11 +8,11 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Properties;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.naming.InitialContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -29,19 +29,12 @@ import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.uberfire.io.IOService;
-import org.uberfire.io.impl.IOServiceNio2WrapperImpl;
 
 /**
  *
  */
 @ApplicationScoped
 public class TestEnvironmentProducer {
-
-    private static final String ORIGIN_URL      = "https://github.com/guvnorngtestuser1/jbpm-console-ng-playground.git";
-
-    private IOService ioService = new IOServiceNio2WrapperImpl();
-    
     
     private EntityManagerFactory emf;
     
@@ -99,13 +92,7 @@ public class TestEnvironmentProducer {
 
         }
     }
-    
-    @Produces
-    @Named("ioStrategy")
-    public IOService prepareFileSystem() {
 
-        return ioService;
-    }
     
     private class EmInvocationHandler implements InvocationHandler {
 

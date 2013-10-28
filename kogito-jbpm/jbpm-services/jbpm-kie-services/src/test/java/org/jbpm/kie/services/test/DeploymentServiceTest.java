@@ -3,8 +3,10 @@ package org.jbpm.kie.services.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,29 +15,34 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
-import org.jbpm.kie.services.api.RuntimeDataService;
-import org.jbpm.kie.services.api.Vfs;
-import org.jbpm.kie.services.impl.VFSDeploymentUnit;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.kie.services.api.DeployedUnit;
+import org.jbpm.kie.services.api.DeploymentService;
+import org.jbpm.kie.services.api.DeploymentUnit;
+import org.jbpm.kie.services.api.Kjar;
+import org.jbpm.kie.services.api.RuntimeDataService;
+import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.runtime.manager.context.EmptyContext;
+import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
 public class DeploymentServiceTest extends AbstractBaseTest {
@@ -101,13 +108,55 @@ public class DeploymentServiceTest extends AbstractBaseTest {
     }
     
     @Inject
-    @Vfs
+    @Kjar
     private DeploymentService deploymentService;
     
     @Inject
     private RuntimeDataService runtimeDataService;
     
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
+    
+    @Before
+    public void prepare() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/signal.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
+        processes.add("repo/processes/general/callactivity.bpmn");
+        
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+        
+        ReleaseId releaseIdSupport = ks.newReleaseId(GROUP_ID, "support", VERSION);
+        List<String> processesSupport = new ArrayList<String>();
+        processesSupport.add("repo/processes/support/support.bpmn");
+        
+        InternalKieModule kJar2 = createKieJar(ks, releaseIdSupport, processesSupport);
+        File pom2 = new File("target/kmodule2", "pom.xml");
+        pom2.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom2);
+            fs.write(getPom(releaseIdSupport).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+
+        repository.deployArtifact(releaseIdSupport, kJar2, pom2);
+    }
     
     @After
     public void cleanup() {
@@ -125,7 +174,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         
         assertNotNull(deploymentService);
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/general");
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -134,8 +183,6 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployed);
         assertNotNull(deployed.getDeploymentUnit());
         assertNotNull(deployed.getRuntimeManager());
-        assertNotNull(deployed.getDeployedAssetLocation("customtask"));
-        assertTrue(deployed.getDeployedAssetLocation("customtask").endsWith("repo/processes/general/customtask.bpmn"));
         
         assertNotNull(runtimeDataService);
         Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
@@ -172,7 +219,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         
         assertNotNull(deploymentService);
         // deploy first unit
-        DeploymentUnit deploymentUnitGeneral = new VFSDeploymentUnit("general", "", "processes/general");        
+        DeploymentUnit deploymentUnitGeneral = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         deploymentService.deploy(deploymentUnitGeneral);
         units.add(deploymentUnitGeneral);
         
@@ -180,7 +227,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(managerGeneral);
         
         // deploy second unit
-        DeploymentUnit deploymentUnitSupport = new VFSDeploymentUnit("support", "", "processes/support");        
+        DeploymentUnit deploymentUnitSupport = new KModuleDeploymentUnit(GROUP_ID, "support", VERSION);        
         deploymentService.deploy(deploymentUnitSupport);
         units.add(deploymentUnitSupport);
         
@@ -188,8 +235,6 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployedGeneral);
         assertNotNull(deployedGeneral.getDeploymentUnit());
         assertNotNull(deployedGeneral.getRuntimeManager());
-        assertNotNull(deployedGeneral.getDeployedAssetLocation("customtask"));
-        assertTrue(deployedGeneral.getDeployedAssetLocation("customtask").endsWith("repo/processes/general/customtask.bpmn"));
         
         RuntimeManager managerSupport = deploymentService.getRuntimeManager(deploymentUnitSupport.getIdentifier());
         assertNotNull(managerSupport);
@@ -198,8 +243,6 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployedSupport);
         assertNotNull(deployedSupport.getDeploymentUnit());
         assertNotNull(deployedSupport.getRuntimeManager());
-        assertNotNull(deployedSupport.getDeployedAssetLocation("support.process"));
-        assertTrue(deployedSupport.getDeployedAssetLocation("support.process").endsWith("repo/processes/support/support.bpmn"));
         
         // execute process that is bundled in first deployment unit
         RuntimeEngine engine = managerGeneral.getRuntimeEngine(EmptyContext.get());
@@ -231,7 +274,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
             
         assertNotNull(deploymentService);
         
-        DeploymentUnit deploymentUnit = new VFSDeploymentUnit("general", "", "processes/general");        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);       
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc 
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.shared.services.api;
 
-public class FileException extends Exception {
+package org.jbpm.shared.services.cdi;
 
-    private static final long serialVersionUID = 8612783913087556595L;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-    public FileException() {
-        super();
-    }
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
-    public FileException(String message, Throwable cause) {
-        super(message, cause);
-    }
+/**
+ * Annotation that instructs the CDI container to bootstrap (invoke its <code>@PostConstuct</code>)
+ * method on CDI container startup.
+ */
+@Retention(RUNTIME)
+@Target({ TYPE })
+public @interface BootOnLoad {
 
-    public FileException(String message) {
-        super(message);
-    }
-
-    public FileException(Throwable cause) {
-        super(cause);
-    }
 }
