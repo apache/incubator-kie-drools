@@ -27,10 +27,9 @@ import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedDesignationSwapMove;
 
-public class BedDesignationSwapMoveFactory implements MoveListFactory {
+public class BedDesignationSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
-    public List<Move> createMoveList(Solution solution) {
-        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
+    public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         List<BedDesignation> bedDesignationList = patientAdmissionSchedule.getBedDesignationList();
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<BedDesignation> leftIt = bedDesignationList.listIterator(); leftIt.hasNext();) {

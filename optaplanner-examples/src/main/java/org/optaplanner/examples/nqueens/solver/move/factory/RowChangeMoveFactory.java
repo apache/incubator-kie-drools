@@ -27,10 +27,9 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.examples.nqueens.solver.move.RowChangeMove;
 
-public class RowChangeMoveFactory implements MoveListFactory {
+public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
 
-    public List<Move> createMoveList(Solution solution) {
-        NQueens nQueens = (NQueens) solution;
+    public List<Move> createMoveList(NQueens nQueens) {
         List<Move> moveList = new ArrayList<Move>();
         for (Queen queen : nQueens.getQueenList()) {
             for (Row toRow : nQueens.getRowList()) {

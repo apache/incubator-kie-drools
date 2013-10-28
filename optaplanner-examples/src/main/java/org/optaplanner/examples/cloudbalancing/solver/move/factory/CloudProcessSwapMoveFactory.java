@@ -27,10 +27,9 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.solver.move.CloudProcessSwapMove;
 
-public class CloudProcessSwapMoveFactory implements MoveListFactory {
+public class CloudProcessSwapMoveFactory implements MoveListFactory<CloudBalance> {
 
-    public List<Move> createMoveList(Solution solution) {
-        CloudBalance cloudBalance = (CloudBalance) solution;
+    public List<Move> createMoveList(CloudBalance cloudBalance) {
         List<CloudProcess> cloudProcessList = cloudBalance.getProcessList();
         List<Move> moveList = new ArrayList<Move>();
         for (ListIterator<CloudProcess> leftIt = cloudProcessList.listIterator(); leftIt.hasNext();) {

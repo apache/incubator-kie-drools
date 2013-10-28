@@ -28,12 +28,11 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.solver.move.EmployeeChangeMove;
 
-public class EmployeeChangeMoveFactory implements MoveListFactory {
+public class EmployeeChangeMoveFactory implements MoveListFactory<NurseRoster> {
 
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
-    public List<Move> createMoveList(Solution solution) {
-        NurseRoster nurseRoster = (NurseRoster) solution;
+    public List<Move> createMoveList(NurseRoster nurseRoster) {
         List<Move> moveList = new ArrayList<Move>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {

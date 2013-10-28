@@ -29,12 +29,11 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.solver.move.ShiftAssignmentSwapMove;
 
-public class ShiftAssignmentSwapMoveFactory implements MoveListFactory {
+public class ShiftAssignmentSwapMoveFactory implements MoveListFactory<NurseRoster> {
 
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
-    public List<Move> createMoveList(Solution solution) {
-        NurseRoster nurseRoster = (NurseRoster) solution;
+    public List<Move> createMoveList(NurseRoster nurseRoster) {
         // Filter out every immovable ShiftAssignment
         List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(
                 nurseRoster.getShiftAssignmentList());

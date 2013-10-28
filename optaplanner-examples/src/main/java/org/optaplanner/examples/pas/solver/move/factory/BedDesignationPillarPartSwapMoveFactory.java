@@ -36,11 +36,9 @@ import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
-public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory {
+public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
-    public List<Move> createMoveList(Solution solution) {
-        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
-
+    public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         Map<Bed, List<BedDesignation>> bedToBedDesignationList = new HashMap<Bed, List<BedDesignation>>(
                 patientAdmissionSchedule.getBedList().size());
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {

@@ -27,10 +27,9 @@ import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Room;
 import org.optaplanner.examples.examination.solver.move.RoomChangeMove;
 
-public class RoomChangeMoveFactory implements MoveListFactory {
+public class RoomChangeMoveFactory implements MoveListFactory<Examination> {
 
-    public List<Move> createMoveList(Solution solution) {
-        Examination examination = (Examination) solution;
+    public List<Move> createMoveList(Examination examination) {
         List<Room> roomList = examination.getRoomList();
         List<Move> moveList = new ArrayList<Move>();
         for (Exam exam : examination.getExamList()) {

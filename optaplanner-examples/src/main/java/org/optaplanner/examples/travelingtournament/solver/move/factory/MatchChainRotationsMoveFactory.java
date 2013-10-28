@@ -33,10 +33,9 @@ import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import org.optaplanner.examples.travelingtournament.solver.move.MatchChainRotationsMove;
 
-public class MatchChainRotationsMoveFactory implements MoveListFactory {
+public class MatchChainRotationsMoveFactory implements MoveListFactory<TravelingTournament> {
 
-    public List<Move> createMoveList(Solution solution) {
-        TravelingTournament travelingTournament = (TravelingTournament) solution;
+    public List<Move> createMoveList(TravelingTournament travelingTournament) {
         List<Move> moveList = new ArrayList<Move>();
         RotationMovesFactory rotationMovesFactory = new RotationMovesFactory(travelingTournament);
         rotationMovesFactory.addDayRotation(moveList);

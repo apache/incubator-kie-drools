@@ -1192,18 +1192,17 @@
       <para>The easiest way to generate custom moves is by implementing the interface
       <literal>MoveListFactory</literal>:</para>
 
-      <programlisting language="java">public interface MoveListFactory {
+      <programlisting language="java">public interface MoveListFactory&lt;S extends Solution&gt; {
 
-    List&lt;Move&gt; createMoveList(Solution solution);
+    List&lt;Move&gt; createMoveList(S solution);
 
 }</programlisting>
 
       <para>For example:</para>
 
-      <programlisting language="java">public class RowChangeMoveFactory implements MoveListFactory {
+      <programlisting language="java">public class RowChangeMoveFactory implements MoveListFactory&lt;NQueens&gt; {
 
-    public List&lt;Move&gt; createMoveList(Solution solution) {
-        NQueens nQueens = (NQueens) solution;
+    public List&lt;Move&gt; createMoveList(NQueens nQueens) {
         List&lt;Move&gt; moveList = new ArrayList&lt;Move&gt;();
         for (Queen queen : nQueens.getQueenList()) {
             for (Row toRow : nQueens.getRowList()) {

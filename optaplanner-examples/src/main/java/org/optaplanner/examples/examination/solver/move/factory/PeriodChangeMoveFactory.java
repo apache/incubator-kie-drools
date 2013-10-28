@@ -27,10 +27,9 @@ import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.Period;
 import org.optaplanner.examples.examination.solver.move.PeriodChangeMove;
 
-public class PeriodChangeMoveFactory implements MoveListFactory {
+public class PeriodChangeMoveFactory implements MoveListFactory<Examination> {
 
-    public List<Move> createMoveList(Solution solution) {
-        Examination examination = (Examination) solution;
+    public List<Move> createMoveList(Examination examination) {
         List<Period> periodList = examination.getPeriodList();
         List<Move> moveList = new ArrayList<Move>();
         for (Exam exam : examination.getExamList()) {

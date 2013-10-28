@@ -3685,3 +3685,23 @@ From 6.0.0.CR5 to 6.0.0.Final
 
 [MINOR] The hospital bed planning (PAS) example's score function has severally changed.
 It now has more hard constraints and demonstrates overconstrained planning (with a nullable variable).
+
+[MAJOR] The interface MoveListFactory now has a generic type (which extends Solution)
+that is used as the parameter in the createMoveList() method.
+Before in *.java:
+    public class RowChangeMoveFactory implements MoveListFactory {
+
+        public List<Move> createMoveList(Solution solution) {
+            NQueens nQueens = (NQueens) solution;
+            ...
+        }
+
+    }
+After in *.java:
+    public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
+
+        public List<Move> createMoveList(NQueens nQueens) {
+            ...
+        }
+
+    }
