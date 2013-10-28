@@ -12,7 +12,7 @@
     <title>KIE Anatomy</title>
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/KIE/Overview/kie.png"/>
+        <imagedata fileref="images/kie/Overview/kie.png"/>
       </imageobject>
     </mediaobject>
   </figure>

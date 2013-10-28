@@ -6,7 +6,8 @@
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>KIE</title>
   
-  <xi:include href="BuildDeployUtilizeAndRun.xml" />
+  
   <xi:include href="Overview.xml" />
+  <xi:include href="BuildDeployUtilizeAndRun.xml" />
   
 </chapter>
