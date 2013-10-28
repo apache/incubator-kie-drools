@@ -34,7 +34,8 @@
     </mediaobject>
   </preface>
   <xi:include href="ReleaseNotes.xml"/>
-  <xi:include href="../../../../../shared/kie/KIE.xml"/>
+  <xi:include href="../../../../../shared/KIE/KIE.xml"/>
+  <xi:include href="ApiReference.xml"/>
   <xi:include href="LanguageReference.xml"/>
   <xi:include href="ComplexEventProcessing.xml"/>
   <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>

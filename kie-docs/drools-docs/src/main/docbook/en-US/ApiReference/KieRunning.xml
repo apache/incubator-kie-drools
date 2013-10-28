@@ -16,7 +16,7 @@
 
     <para>The <code>KieBase</code> is a repository of all the
     application's knowledge definitions. It will contain rules, processes,
-    functions, and type models. The KieBase itself does not contain
+    functions, and type models. The <code>KieBase</code> itself does not contain
     data; instead, sessions are created from the <code>KieBase</code>
     into which data can be inserted and from which process instances may be
     started. The <code>KieBase</code> can be obtained from the <code>KieContainer</code>
@@ -40,7 +40,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KieSession.png"
+          <imagedata fileref="images/ApiReference/KieSession.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -84,7 +84,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/EntryPoint.png"/>
+            <imagedata fileref="images/ApiReference/EntryPoint.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -193,7 +193,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/RuleRuntime.png"
+            <imagedata fileref="images/ApiReference/RuleRuntime.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -218,7 +218,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-User_Guide/QueryResults.png"
+              <imagedata fileref="images/ApiReference/QueryResults.png"
                          format=""/>
             </imageobject>
           </mediaobject>
@@ -229,7 +229,7 @@ workingMemory.update( stiltonHandle, stilton );              </programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-User_Guide/QueryResultsRow.png"
+              <imagedata fileref="images/ApiReference/QueryResultsRow.png"
                          format=""/>
             </imageobject>
           </mediaobject>
@@ -311,7 +311,7 @@ query.dispose() // calling dispose to terminate the live query</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/KieRuntime.png"
+            <imagedata fileref="images/ApiReference/KieRuntime.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -361,7 +361,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/StatefulRuleSession.png"
+            <imagedata fileref="images/ApiReference/StatefulRuleSession.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -376,7 +376,7 @@ ksession.setGlobal("list", list);           </programlisting>
           <mediaobject>
             <imageobject>
               <imagedata align="center"
-                         fileref="images/Chapter-User_Guide/AgendaFilter.png"
+                         fileref="images/ApiReference/AgendaFilter.png"
                          format="PNG"/>
             </imageobject>
           </mediaobject>
@@ -384,7 +384,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
         <para><code>AgendaFilter</code> objects are optional implementations
         of the filter interface which are used to allow or deny the firing of
-        an activation. What you filter on is entirely up to the
+        a match. What you filter on is entirely up to the
         implementation. Drools 4.0 used to supply some out of the box filters,
         which have not be exposed in drools 5.0 knowledge-api, but they are
         simple to implement and the Drools 4.0 code base can be referred
@@ -406,9 +406,9 @@ ksession.setGlobal("list", list);           </programlisting>
     <para>The Agenda is a <emphasis>Rete</emphasis> feature. During actions on
     the <code>WorkingMemory</code>, rules may become fully matched and
     eligible for execution; a single Working Memory Action can result in
-    multiple eligible rules. When a rule is fully matched an Activation is
+    multiple eligible rules. When a rule is fully matched a Match is
     created, referencing the rule and the matched facts, and placed onto the
-    Agenda. The Agenda controls the execution order of these Activations using
+    Agenda. The Agenda controls the execution order of these Matches using
     a Conflict Resolution strategy.</para>
 
     <para>The engine cycles repeatedly through two phases:</para>
@@ -450,7 +450,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/Agenda.png" format=""/>
+          <imagedata fileref="images/ApiReference/Agenda.png" format=""/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -496,15 +496,15 @@ ksession.setGlobal("list", list);           </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/AgendaGroup.png"
+            <imagedata fileref="images/ApiReference/AgendaGroup.png"
                        format=""/>
           </imageobject>
         </mediaobject>
       </figure>
 
-      <para>Agenda groups are a way to partition rules (activations, actually)
+      <para>Agenda groups are a way to partition rules (matches, actually)
       on the agenda. At any one time, only one group has "focus" which means
-      that activations for rules in that group only will take effect. You can
+      that matches for rules in that group only will take effect. You can
       also have rules with "auto focus" which means that the focus is taken
       for its agenda group when that rule's conditions are true.</para>
 
@@ -535,7 +535,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/ActivationGroup.png"
+            <imagedata fileref="images/ApiReference/ActivationGroup.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -559,7 +559,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-User_Guide/RuleFlowGroup.png"
+            <imagedata fileref="images/ApiReference/RuleFlowGroup.png"
                        format=""/>
           </imageobject>
         </mediaobject>
@@ -570,7 +570,7 @@ ksession.setGlobal("list", list);           </programlisting>
       group is activate. The group itself can only become active when the
       elaboration of the ruleflow diagram reaches the node representing the
       group. Here too, the <code>clear()</code> method can be called at any
-      time to cancels all activations still remaining on the Agenda.</para>
+      time to cancels all matches still remaining on the Agenda.</para>
 
       <programlisting language="java">ksession.getAgenda().getRuleFlowGroup( "Group C" ).clear();</programlisting>
     </section>
@@ -595,7 +595,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KieRuntimeEventManager.png"
+          <imagedata fileref="images/ApiReference/KieRuntimeEventManager.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -610,21 +610,21 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/WorkingMemoryEventManager.png"
+          <imagedata fileref="images/ApiReference/WorkingMemoryEventManager.png"
                      format=""/>
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>The following code snippet shows how a simple agenda listener is
-    declared and attached to a session. It will print activations after they
+    declared and attached to a session. It will print matches after they
     have fired.</para>
 
     <example>
       <title>Adding an AgendaEventListener</title>
 
       <programlisting language="java">ksession.addEventListener( new DefaultAgendaEventListener() {
-   public void afterMatchFired(AfterActivationFiredEvent event) {
+   public void afterMatchFired(AfterMatchFiredEvent event) {
        super.afterMatchFired( event );
        System.out.println( event );
    }
@@ -651,7 +651,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KieRuntimeEvent.png"
+          <imagedata fileref="images/ApiReference/KieRuntimeEvent.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -661,19 +661,19 @@ ksession.setGlobal("list", list);           </programlisting>
 
     <itemizedlist>
       <listitem>
-        <para>ActivationCreatedEvent</para>
+        <para>MatchCreatedEvent</para>
       </listitem>
 
       <listitem>
-        <para>ActivationCancelledEvent</para>
+        <para>MatchCancelledEvent</para>
       </listitem>
 
       <listitem>
-        <para>BeforeActivationFiredEvent</para>
+        <para>BeforeMatchFiredEvent</para>
       </listitem>
 
       <listitem>
-        <para>AfterActivationFiredEvent</para>
+        <para>AfterMatchFiredEvent</para>
       </listitem>
 
       <listitem>
@@ -689,7 +689,7 @@ ksession.setGlobal("list", list);           </programlisting>
       </listitem>
 
       <listitem>
-        <para>ObjectRetractedEvent</para>
+        <para>ObjectDeletedEvent</para>
       </listitem>
 
       <listitem>
@@ -727,7 +727,7 @@ ksession.setGlobal("list", list);           </programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KieLoggers.png"
+          <imagedata fileref="images/ApiReference/KieLoggers.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -767,7 +767,7 @@ logger.close();</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/StatelessKieSession.png"
+          <imagedata fileref="images/ApiReference/StatelessKieSession.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -781,7 +781,7 @@ logger.close();</programlisting>
       <title>Simple StatelessKieSession execution with a Collection</title>
 
       <programlisting language="java">StatelessKieSession ksession = kbase.newStatelessKieSession();
-    ksession.execute( collection );</programlisting>
+ksession.execute( collection );</programlisting>
     </example>
 
     <para>If this was done as a single Command it would be as follows:</para>
@@ -888,7 +888,7 @@ results.getValue( "Get People" );</programlisting>
 
         <listitem>
           <para>Create an elements, one element for each possible rule
-          activation; element position indicates firing order.</para>
+          match; element position indicates firing order.</para>
         </listitem>
 
         <listitem>
@@ -909,13 +909,13 @@ results.getValue( "Get People" );</programlisting>
         </listitem>
 
         <listitem>
-          <para>All resulting Activations should be placed in the elements, based
+          <para>All resulting Matches should be placed in the elements, based
           upon the determined sequence number of the Rule. Record the first
           and last populated elements, to reduce the iteration range.</para>
         </listitem>
 
         <listitem>
-          <para>Iterate the elements of Activations, executing populated element
+          <para>Iterate the elements of Matches, executing populated element
           in turn.</para>
         </listitem>
 
@@ -948,16 +948,16 @@ results.getValue( "Get People" );</programlisting>
       <para>There is no longer an Agenda, with a priority queue to schedule
       the Tuples; instead, there is simply an elements for the number of rules.
       The sequence number of the <code>RuleTerminalNode</code> indicates the
-      element within the elements where to place the Activation. Once all Command
+      element within the elements where to place the Match. Once all Command
       objects have finished we can iterate our elements, checking each element in
-      turn, and firing the Activations if they exist. To improve performance,
+      turn, and firing the Matches if they exist. To improve performance,
       we remember the first and the last populated cell in the elements. The
       network is constructed, with each <code>RuleTerminalNode</code> being
       given a sequence number based on a salience number and its order of
       being added to the network.</para>
 
       <para>Typically the right-input node memories are Hash Maps, for fast
-      object retraction; here, as we know there will be no object retractions,
+      object deletion; here, as we know there will be no object deletions,
       we can use a list when the values of the object are not indexed. For
       larger numbers of objects indexed Hash Maps provide a performance
       increase; if we know an object type has only a few instances, indexing
@@ -1005,7 +1005,7 @@ results.getValue( "Get People" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/CommandExecutor.png"
+          <imagedata fileref="images/ApiReference/CommandExecutor.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -1016,7 +1016,7 @@ results.getValue( "Get People" );</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/ExecutionResults.png"
+          <imagedata fileref="images/ApiReference/ExecutionResults.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -1450,7 +1450,7 @@ QueryResults qresults = ( QueryResults ) bresults.getValue( "cheeses" );
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/Chapter-User_Guide/KieMarshallers.png"
+          <imagedata fileref="images/ApiReference/KieMarshallers.png"
                      format=""/>
         </imageobject>
       </mediaobject>
@@ -1539,7 +1539,7 @@ baos.close();
     <para>Note that the acceptance checking order is in the natural order of
     the supplied elements.</para>
 
-    <para>Also note that if you are using scheduled activations (i.e. some
+    <para>Also note that if you are using scheduled matches (i.e. some
     of your rules use timers or calendars) they are marshallable only if,
     before you use it, you configure your KieSession to use a
     trackable timer job factory manager as it follows:</para>
@@ -1595,7 +1595,7 @@ ut.commit();
     Stateful Knowledge Session you'll need the id, as shown below:</para>
 
     <example>
-      <title>Loading a StatefulKnowledgeSession</title>
+      <title>Loading a KieSession</title>
 
       <programlisting language="java">StatefulKnowledgeSession ksession =
   JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
@@ -1611,10 +1611,8 @@ ut.commit();
       <programlisting language="xml">&lt;persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA"&gt;
    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
    &lt;jta-data-source&gt;jdbc/BitronixJTADataSource&lt;/jta-data-source&gt;
-   &lt;class&gt;org.drools.persistence.session.SessionInfo&lt;/class&gt;
-   &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
-   &lt;class&gt;org.drools.persistence.processinstance.ProcessInstanceEventInfo&lt;/class&gt;
-   &lt;class&gt;org.drools.persistence.processinstance.WorkItemInfo&lt;/class&gt;
+   &lt;class&gt;org.drools.persistence.info.SessionInfo&lt;/class&gt;
+   &lt;class&gt;org.drools.persistence.info.WorkItemInfo&lt;/class&gt;
    &lt;properties&gt;
          &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
          &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
