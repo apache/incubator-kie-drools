@@ -12,12 +12,23 @@
   <artifactId>named-kiesession</artifactId>
   <name>Drools API examples - Named KieSession</name>
 
+  <packaging>kjar</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
-
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
