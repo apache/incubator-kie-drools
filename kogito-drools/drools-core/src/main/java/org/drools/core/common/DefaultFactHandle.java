@@ -599,8 +599,8 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     private void createFromExternalFormat( String externalFormat ) {
         String[] elements = externalFormat.split( ":" );
-        if (elements.length != 7) {
-            throw new IllegalArgumentException( "externalFormat did not have enough elements" );
+        if (elements.length < 6) {
+            throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
         }
 
         this.id = Integer.parseInt( elements[1] );
@@ -611,7 +611,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                                                                                                        : new DisconnectedWorkingMemoryEntryPoint(
                                                                                                                                                   elements[5].trim() );
         this.disconnected = true;
-        this.traitType = TraitTypeEnum.valueOf( elements[6] );
+        this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
     }
 
 
