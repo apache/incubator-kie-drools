@@ -76,7 +76,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
     </figure>
 
     <para>In this way all the java sources and the Kie resources are compiled and deployed into
-    the KieContainer which makes it's contents available for use at runtime.</para>
+    the KieContainer which makes its contents available for use at runtime.</para>
   </section>
 
   <section xml:id="theKmoduleXmlFile">
@@ -286,6 +286,11 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
       </tgroup>
     </table>
 
+    <para>As outlined in the former kmodule.xml sample, it is also possible to declaratively
+    create on each <code>KieSession</code> a file (or a console) logger, one or more
+    <code>WorkItemHandler</code>s and some listeners that can be of 3 different types:
+    workingMemoryEventListener, agendaEventListener and processEventListener</para>
+
     <para>Having defined a kmodule.xml like the one in the former sample, it is now possible
     to simply retrieve the KieBases and KieSessions from the KieContainer using their names.</para>
 
@@ -327,7 +332,7 @@ KieSession kieSession1 = kContainer.newKieSession(); // returns KSession2_1</pro
 
       <programlisting language="java">KieServices kieServices = KieServices.Factory.get();
 ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "myartifact", "1.0" );
-KieContainer KieContainer = kieServices.newKieContainer( releaseId );</programlisting>
+KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programlisting>
     </example>
   </section>
 
@@ -524,10 +529,9 @@ assertEquals( 0, kieBuilder.getResults().getMessages( Message.Level.ERROR ).size
       <title>Setting the severity using properties</title>
 
       <programlisting>// sets the severity of rule updates
-        drools.kbuilder.severity.duplicateRule = &lt;INFO|WARNING|ERROR&gt;
-        // sets the severity of function updates
-        drools.kbuilder.severity.duplicateFunction = &lt;INFO|WARNING|ERROR&gt;
-      </programlisting>
+drools.kbuilder.severity.duplicateRule = &lt;INFO|WARNING|ERROR&gt;
+// sets the severity of function updates
+drools.kbuilder.severity.duplicateFunction = &lt;INFO|WARNING|ERROR&gt;</programlisting>
     </example>
   </section>
 </section>

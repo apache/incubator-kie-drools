@@ -7,7 +7,7 @@
   <title>API Reference</title>
 
   <xi:include href="KieBuilding.xml" />
-  <xi:include href="Deploying.xml" />
+  <xi:include href="KieDeploying.xml" />
   <xi:include href="KieRunning.xml" />
 
 </chapter>
