@@ -38,4 +38,5 @@
   <xi:include href="LanguageReference.xml"/>
   <xi:include href="ComplexEventProcessing.xml"/>
   <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
+  <xi:include href="../../../../../shared/Spring/KieSpring.xml"/>
 </book>
