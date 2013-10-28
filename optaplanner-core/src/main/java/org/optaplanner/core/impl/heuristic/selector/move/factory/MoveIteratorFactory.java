@@ -47,7 +47,7 @@ public interface MoveIteratorFactory {
      * @throws UnsupportedOperationException if only {@link #createRandomMoveIterator(ScoreDirector, Random)} is
      * supported
      */
-    Iterator<? extends Move> createOriginalMoveIterator(ScoreDirector scoreDirector);
+    Iterator<Move> createOriginalMoveIterator(ScoreDirector scoreDirector);
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.
@@ -58,6 +58,6 @@ public interface MoveIteratorFactory {
      * @return never null, an {@link Iterator} that is allowed (or even presumed) to be never ending
      * @throws UnsupportedOperationException if only {@link #createOriginalMoveIterator(ScoreDirector)} is supported
      */
-    Iterator<? extends Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom);
+    Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom);
 
 }
