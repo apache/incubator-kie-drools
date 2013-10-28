@@ -1238,4 +1238,8 @@ public class DefaultAgenda
     public ActivationsFilter getActivationsFilter() {
         return this.activationsFilter;
     }
+
+    public KnowledgeHelper getKnowledgeHelper() {
+        return knowledgeHelper;
+    }
 }

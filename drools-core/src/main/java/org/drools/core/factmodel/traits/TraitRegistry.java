@@ -24,8 +24,13 @@ import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.kie.api.definition.type.FactField;
 
-import java.io.*;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -39,12 +44,13 @@ public class TraitRegistry implements Externalizable {
 
     private int codeSize = 0;
 
-    private Map<String, Long> masks;
+    private Map<String, BitSet> masks;
 
     private HierarchyEncoder<String> hierarchy = new HierarchyEncoderImpl<String>();
 
 
     public TraitRegistry() {
+
         init();
     }
 
@@ -60,16 +66,23 @@ public class TraitRegistry implements Externalizable {
         ClassDefinition individualDef = new ClassDefinition();
         individualDef.setClassName( Entity.class.getName() );
         individualDef.setDefinedClass( Entity.class );
-        individualDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
+        individualDef.setInterfaces( new String[]{ Serializable.class.getName(), TraitableBean.class.getName() } );
         individualDef.setTraitable( true );
         addTraitable( individualDef );
 
         ClassDefinition mapcoreDef = new ClassDefinition();
         mapcoreDef.setClassName( MapCore.class.getName() );
         mapcoreDef.setDefinedClass( MapCore.class );
-        mapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName() } );
+        mapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName(), CoreWrapper.class.getName() } );
         mapcoreDef.setTraitable( true );
         addTraitable( mapcoreDef );
+
+        ClassDefinition logicalMapcoreDef = new ClassDefinition();
+        logicalMapcoreDef.setClassName( LogicalMapCore.class.getName() );
+        logicalMapcoreDef.setDefinedClass( LogicalMapCore.class );
+        logicalMapcoreDef.setInterfaces( new String[] { Serializable.class.getName(), TraitableBean.class.getName(), CoreWrapper.class.getName() } );
+        logicalMapcoreDef.setTraitable( true, true );
+        addTraitable( logicalMapcoreDef );
     }
 
     public void merge( TraitRegistry other ) {
@@ -88,7 +101,7 @@ public class TraitRegistry implements Externalizable {
         }
 
         if ( masks == null ) {
-            masks = new HashMap<String, Long>();
+            masks = new HashMap<String, BitSet>();
         }
         if ( other.masks != null ) {
             this.masks.putAll( other.masks );
@@ -168,16 +181,16 @@ public class TraitRegistry implements Externalizable {
 
 
 
-    public static boolean isSoftField( FieldDefinition field, int index, long mask ) {
-        return (mask & (1 << index)) == 0;
+    public static boolean isSoftField( FieldDefinition field, int index, BitSet mask ) {
+        return ! mask.get( index );
     }
 
-    public long getFieldMask( String trait, String traitable ) {
+    public BitSet getFieldMask( String trait, String traitable ) {
         if ( masks == null ) {
-            masks = new HashMap<String, Long>();
+            masks = new HashMap<String, BitSet>();
         }
         String key = trait + traitable;
-        Long mask = masks.get( key );
+        BitSet mask = masks.get( key );
 
         if ( mask == null ) {
             mask = bind( trait, traitable );
@@ -187,7 +200,7 @@ public class TraitRegistry implements Externalizable {
         return mask;
     }
 
-    private Long bind( String trait, String traitable ) throws UnsupportedOperationException {
+    private BitSet bind( String trait, String traitable ) throws UnsupportedOperationException {
         ClassDefinition traitDef = getTrait( trait );
         if ( traitDef == null ) {
             throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " : not a trait " );
@@ -198,19 +211,21 @@ public class TraitRegistry implements Externalizable {
         }
 
         int j = 0;
-        long bitmask = 0;
+        BitSet bitmask = new BitSet( traitDef.getFields().size() );
         for ( FactField field : traitDef.getFields() ) {
-            FieldDefinition fdef = (FieldDefinition) field;
-            boolean isAliased = fdef.hasAlias();
-            String alias = ((FieldDefinition) field).resolveAlias( traitableDef );
+            String alias = ((FieldDefinition) field).resolveAlias();
 
-            FieldDefinition concreteField = traitableDef.getField( alias );
-            Class concreteType = concreteField != null ? concreteField.getType() : null;
-            Class virtualType = field.getType();
+            FieldDefinition concreteField = traitableDef.getFieldByAlias( alias );
 
-            if ( ( concreteType != null && concreteType.isAssignableFrom( virtualType ) )
-                || ( traits.containsKey( virtualType.getName() ) && ( (FieldDefinition) field ).hasAlias() ) ) {
-                bitmask |= 1 << j;
+            if ( concreteField != null ) {
+                if ( ! traitableDef.isFullTraiting() && ! concreteField.getType().isAssignableFrom( field.getType() ) ) {
+                    throw new UnsupportedOperationException( " Unable to apply trait " + trait + " to class " + traitable + " :" +
+                                                             " trait field " + field.getName() + ":" + ( (FieldDefinition) field ).getTypeName() + " is incompatible with" +
+                                                             " concrete hard field " + concreteField.getName() + ":" + concreteField.getTypeName() + ". Consider enabling logical traiting" +
+                                                             " mode using @Traitable( logical = true )" );
+                }
+
+                bitmask.set( j );
             }
             j++;
         }
@@ -230,13 +245,17 @@ public class TraitRegistry implements Externalizable {
     public void readExternal(ObjectInput objectInput) throws IOException, ClassNotFoundException {
         traits = (Map<String, ClassDefinition>) objectInput.readObject();
         traitables = (Map<String, ClassDefinition>) objectInput.readObject();
-        masks = (Map<String, Long>) objectInput.readObject();
+        masks = (Map<String, BitSet>) objectInput.readObject();
         hierarchy = (HierarchyEncoderImpl) objectInput.readObject();
         codeSize = objectInput.readInt();
         init();
     }
 
+
     public HierarchyEncoder getHierarchy() {
         return hierarchy;
     }
+
+
+
 }

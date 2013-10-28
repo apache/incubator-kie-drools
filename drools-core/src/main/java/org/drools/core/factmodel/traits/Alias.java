@@ -27,6 +27,6 @@ import java.lang.annotation.Target;
 @Target( value = ElementType.FIELD )
 public @interface Alias {
 
-    String value() default "";
+    String value();
 
 }

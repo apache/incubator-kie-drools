@@ -1,6 +1,6 @@
 package org.drools.compiler.anothertest;
 
-import org.drools.compiler.test.Person;
+import org.drools.compiler.ext.test.Person;
 
 declare ABean
     field : String

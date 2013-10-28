@@ -1,13 +1,13 @@
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.StockTickEvent;
-import org.drools.core.ClockType;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.compiler.Sensor;
 import org.drools.compiler.StockTick;
+import org.drools.compiler.StockTickEvent;
 import org.drools.compiler.StockTickInterface;
+import org.drools.core.ClockType;
+import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
@@ -15,7 +15,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -26,6 +25,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
+import org.drools.core.util.DroolsStreamUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,33 +34,33 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.time.SessionClock;
 import org.mockito.ArgumentCaptor;
 
 import java.io.File;
@@ -72,6 +72,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -3040,8 +3041,9 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
+    @Ignore
     public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
-        // JBRULES-3558
+        // JBRULES-3558 - DROOLS 311
         // TODO: it is still possible to get multiple insertions of the Recording object
         // if you set the @expires of Motion to 1ms, maybe because the event expires too soon
         String drl = "package org.drools;\n" +
@@ -3694,6 +3696,681 @@ public class CepEspTest extends CommonTestMethodBase {
         entryPoint.insert(new TestEvent("three"));
         QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
         assertEquals(1, results.size());
+
+        ksession.dispose();
+    }
+
+
+
+    public static class ProbeEvent {
+        private int value = 1;
+        public int getValue() { return value; }
+        public ProbeEvent(int value) { this.value = value; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ProbeEvent that = (ProbeEvent) o;
+
+            if (value != that.value) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return "ProbeEvent{" +
+                   "value=" + value +
+                   '}';
+        }
+    }
+    public static class ProbeCounter {
+        private long total = 0;
+        public void setTotal(long total) { this.total = total; }
+        public long getTotal() { return total; }
+        public void addValue () { total += 1; }
+    }
+
+    @Test
+    @Ignore
+    public void testExpirationAtHighRates() throws InterruptedException {
+        // DROOLS-130
+        String drl = "package droolsfusioneval\n" +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "import org.drools.compiler.integrationtests.CepEspTest.ProbeEvent;\n" +
+                     "import org.drools.compiler.integrationtests.CepEspTest.ProbeCounter;\n" +
+                     "\n" +
+                     "declare ProbeEvent\n" +
+                     "    @role (event)\n" +
+                     "    @expires(1ms)\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Probe rule\"\n" +
+                     "when\n" +
+                     "    $pe : ProbeEvent () from entry-point ep01\n" +
+                     "    $pc : ProbeCounter ()\n" +
+                     "then\n" +
+                     "   list.add( $pe.getValue() ); \n" +
+                     "    $pc.addValue ();\n" +
+                     "end";
+
+        KieBaseConfiguration kbconfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconfig.setOption (EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbconfig);
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder ();
+        kbuilder.add (ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+        if (kbuilder.hasErrors()) {
+            System.err.println (kbuilder.getErrors().toString());
+        }
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        final StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList( );
+        session.setGlobal( "list", list );
+        EntryPoint ep01 = session.getEntryPoint("ep01");
+
+
+        new Thread () {
+            public void run () {
+                session.fireUntilHalt();
+            }
+        }.start ();
+
+        int eventLimit = 5000;
+
+        ProbeCounter pc = new ProbeCounter ();
+        long myTotal = 0;
+
+        try {
+            FactHandle pch = session.insert(pc);
+            for ( int i = 0; i < eventLimit; i++ ) {
+                ep01.insert ( new ProbeEvent ( i ) );
+                myTotal++;
+            }
+
+            Thread.sleep( 2500 );
+        } catch ( Throwable t ) {
+            fail( t.getMessage() );
+        }
+
+        assertEquals( eventLimit, myTotal );
+        assertEquals( eventLimit, list.size() );
+        assertEquals( 0, session.getEntryPoint( "ep01" ).getObjects().size() );
+    }
+
+
+    @Test
+    public void AfterOperatorInCEPQueryTest() {
+
+        String drl = "package org.drools;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "    @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeNineSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 9s] $event) from entry-point EventStream\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeNineteenSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 19s] $event) from entry-point EventStream\n" +
+                     "end\n" +
+                     "\n" +
+                     "query EventsBeforeHundredSeconds\n" +
+                     "   $event : StockTick() from entry-point EStream\n" +
+                     "   $result : StockTick ( this after [0s, 100s] $event) from entry-point EventStream\n" +
+                     "end\n";
+
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf,  drl );
+
+        KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksconf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, ksconf);
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+        EntryPoint ePoint = ksession.getEntryPoint( "EStream" );
+        EntryPoint entryPoint = ksession.getEntryPoint( "EventStream" );
+
+
+        ePoint.insert(new StockTick(0L, "zero", 0.0, 0));
+
+        entryPoint.insert(new StockTick(1L, "one", 0.0, 0));
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        entryPoint.insert(new StockTick(2L, "two",0.0,  0));
+
+        clock.advanceTime( 10, TimeUnit.SECONDS );
+
+        entryPoint.insert(new StockTick(3L, "three", 0.0, 0));
+
+        QueryResults results = ksession.getQueryResults("EventsBeforeNineSeconds");
+
+        assertEquals( 1, results.size());
+
+        results = ksession.getQueryResults("EventsBeforeNineteenSeconds");
+
+        assertEquals( 2, results.size() );
+
+        results = ksession.getQueryResults("EventsBeforeHundredSeconds");
+
+        assertEquals( 3, results.size() );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testFromWithEvents() {
+        String drl = "\n" +
+                     "\n" +
+                     "package org.drools.test\n" +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "declare MyEvent\n" +
+                     "@role(event)\n" +
+                     "@timestamp( stamp )\n" +
+                     "id : int\n" +
+                     "stamp : long\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare MyBean\n" +
+                     "id : int\n" +
+                     "event : MyEvent\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Init\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "MyEvent ev = new MyEvent( 1, 1000 );\n" +
+                     "MyBean bin = new MyBean( 99, ev );\n" +
+                     "MyEvent ev2 = new MyEvent( 2, 2000 );\n" +
+                     "\n" +
+                     "drools.getWorkingMemory().getWorkingMemoryEntryPoint( \"X\" ).insert( ev2 );\n" +
+                     "insert( bin );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Check\"\n" +
+                     "when\n" +
+                     "$e2 : MyEvent( id == 2 ) from entry-point \"X\" \n" +
+                     "$b1 : MyBean( id == 99, $ev : event )\n" +
+                     "MyEvent( this before $e2 ) from $ev\n" +
+                     "then\n" +
+                     "System.out.println( \"Success\" );\n" +
+                     "list.add( 1 ); \n" +
+                     "end\n";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList( 1 );
+        ks.setGlobal( "list", list );
+        ks.fireAllRules();
+        assertEquals( Arrays.asList( 1 ), list );
+
+    }
+
+    @Test
+    public void testDeserializationWithTrackableTimerJob() throws InterruptedException {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "  @role( event )\n" +
+                     "  @expires( 1s )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"One\"\n" +
+                     "when\n" +
+                     "  StockTick( $id : seq, company == \"AAA\" ) over window:time( 1s )\n" +
+                     "then\n" +
+                     "  list.add( $id ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Two\"\n" +
+                     "when\n" +
+                     "  StockTick( $id : seq, company == \"BBB\" ) \n" +
+                     "then\n" +
+                     "  System.out.println( $id ); \n" +
+                     "  list.add( $id );\n" +
+                     "end";
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( RuleEngineOption.PHREAK );
+
+        KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( kbconf, drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession( knowledgeSessionConfiguration, null );
+
+        ks.insert( new StockTick( 2, "BBB", 1.0, 0 ) );
+        Thread.sleep( 1100 );
+
+        try {
+            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        ks.insert( new StockTick( 3, "BBB", 1.0, 0 ) );
+        ks.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( 2L, 3L ), list );
+
+
+    }
+
+
+    @Test
+    public void testWindowExpireActionDeserialization() throws InterruptedException {
+        String drl = "package org.drools.test;\n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "declare StockTick\n" +
+                     "  @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"One\"\n" +
+                     "when\n" +
+                     "  StockTick( $id : seq, company == \"BBB\" ) over window:time( 1s )\n" +
+                     "then\n" +
+                     "  list.add( $id );\n" +
+                     "end\n" +
+                     "\n" +
+                     "";
+        final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbconf.setOption( EventProcessingOption.STREAM );
+        kbconf.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kb = loadKnowledgeBaseFromString( kbconf, drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession( );
+
+        ks.insert( new StockTick( 2, "BBB", 1.0, 0 ) );
+        Thread.sleep( 1500 );
+
+        try {
+            ks = SerializationHelper.getSerialisedStatefulKnowledgeSession( ks, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        ks.insert( new StockTick( 3, "BBB", 1.0, 0 ) );
+        ks.fireAllRules();
+
+        System.out.print( list );
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( 3L ), list );
+
+
+    }
+
+    @Test
+    public void testDuplicateFiring1() throws InterruptedException {
+
+        String drl = "package org.test;\n" +
+                     "import org.drools.compiler.StockTick;\n " +
+                     "" +
+                     "global java.util.List list \n" +
+                     "" +
+                     "declare StockTick @role(event) end \n" +
+                     "" +
+                     "rule \"slidingTimeCount\"\n" +
+                     "when\n" +
+                     "  accumulate ( $e: StockTick() over window:time(300ms) from entry-point SensorEventStream, " +
+                     "              $n : count( $e );" +
+                     "              $n > 0 )\n" +
+                     "then\n" +
+                     "  list.add( $n ); \n" +
+                     "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
+                     "end" +
+                     "" +
+                     "\n" +
+                     "rule \"timerRuleAfterAllEvents\"\n" +
+                     "        timer ( int: 2s )\n" +
+                     "when\n" +
+                     "        $room : String( )\n" +
+                     "then\n" +
+                     "  list.add( -1 ); \n" +
+                     "  System.out.println(\"2sec after room was modified\");\n" +
+                     "end " +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        // Check the builder for errors
+        if (kbuilder.hasErrors()) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        //configure knowledge base
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //init session clock
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get("realtime") );
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(sessionConfig, null);
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        //entry point for sensor events
+        EntryPoint sensorEventStream = ksession.getEntryPoint( "SensorEventStream" );
+
+        ksession.insert( "Go" );
+        System.out.println("1. fireAllRules()");
+
+        //insert events
+        for(int i=2;i<8;i++){
+            StockTick event = new StockTick( (i-1), "XXX", 1.0, 0 );
+            sensorEventStream.insert( event );
+
+            System.out.println(i + ". fireAllRules()");
+            ksession.fireAllRules();
+
+            Thread.sleep(105);
+        }
+
+        //let thread sleep for another 1m to see if dereffered rules fire (timers, (not) after rules)
+        Thread.sleep(100*40*1);
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 1L, 2L, 3L, 3L, 3L, 3L, -1 ), list );
+
+        ksession.dispose();
+    }
+
+    @Test
+    public void testDuplicateFiring2() throws InterruptedException {
+
+        String drl = "package org.test;\n" +
+                     "import org.drools.compiler.StockTick;\n " +
+                     "" +
+                     "global java.util.List list \n" +
+                     "" +
+                     "declare StockTick @role(event) end \n" +
+                     "" +
+                     "rule Tick when $s : StockTick() then System.out.println( $s ); end \n" +
+                     "" +
+                     "rule \"slidingTimeCount\"\n" +
+                     "when\n" +
+                     "\t$n: Number ( intValue > 0 ) from accumulate ( $e: StockTick() over window:time(3s), count($e))\n" +
+                     "then\n" +
+                     "  list.add( $n ); \n" +
+                     "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
+                     "end" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add(ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+
+        // Check the builder for errors
+        if (kbuilder.hasErrors()) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        //configure knowledge base
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.CLOUD );
+        baseConfig.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        //init session clock
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get("pseudo") );
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(sessionConfig, null);
+        SessionPseudoClock clock = ksession.getSessionClock();
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+
+        //insert events
+        for(int i=1;i<3;i++){
+            StockTick event = new StockTick( (i-1), "XXX", 1.0, 0 );
+            clock.advanceTime( 1001, TimeUnit.MILLISECONDS );
+            ksession.insert( event );
+
+            System.out.println(i + ". rule invocation");
+            ksession.fireAllRules();
+        }
+
+        clock.advanceTime( 3001, TimeUnit.MILLISECONDS );
+        StockTick event = new StockTick( 3, "XXX", 1.0, 0 );
+        System.out.println("3. rule invocation");
+        ksession.insert( event );
+        ksession.fireAllRules();
+
+        clock.advanceTime( 3001, TimeUnit.MILLISECONDS );
+        StockTick event2 = new StockTick( 3, "XXX", 1.0, 0 );
+        System.out.println("4. rule invocation");
+        ksession.insert( event2 );
+        ksession.fireAllRules();
+
+        ksession.dispose();
+
+        assertEquals( Arrays.asList( 1L, 2L, 1L, 1L ), list );
+    }
+
+
+    @Test
+    public void testPastEventExipration() throws InterruptedException {
+        //DROOLS-257
+        String drl = "package org.test;\n" +
+                     "import org.drools.compiler.StockTick;\n " +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare StockTick @role(event) @timestamp( time ) @expires( 200ms ) end \n" +
+                     "" +
+                     "rule \"slidingTimeCount\"\n" +
+                     "when\n" +
+                     "  accumulate ( $e: StockTick() over window:length(10), $n : count($e) )\n" +
+                     "then\n" +
+                     "  list.add( $n ); \n" +
+                     "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
+                     "end" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( RuleEngineOption.PHREAK );
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get("realtime") );
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        ArrayList list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        long now = new Date().getTime();
+
+        StockTick event1 = new StockTick( 1, "XXX", 1.0, now );
+        StockTick event2 = new StockTick( 2, "XXX", 1.0, now + 240 );
+        StockTick event3 = new StockTick( 2, "XXX", 1.0, now + 380 );
+        StockTick event4 = new StockTick( 2, "XXX", 1.0, now + 500 );
+
+        ksession.insert( event1 );
+        ksession.insert( event2 );
+        ksession.insert( event3 );
+        ksession.insert( event4 );
+
+        Thread.sleep( 220 );
+
+        ksession.fireAllRules();
+
+        Thread.sleep( 400 );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 3L, 1L ), list );
+    }
+
+
+    public static class MyEvent {
+        private long timestamp;
+        public MyEvent( long timestamp ) { this.timestamp = timestamp; }
+        public long getTimestamp() { return timestamp; }
+        public void setTimestamp( long timestamp ) { this.timestamp = timestamp; }
+        public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
+    }
+
+    @Test
+    public void testEventStreamWithEPsAndDefaultPseudo() throws InterruptedException {
+        //DROOLS-286
+        String drl = "\n" +
+                     "import java.util.*;\n" +
+                     "import org.drools.compiler.integrationtests.CepEspTest.MyEvent; \n" +
+                     "" +
+                     "declare MyEvent\n" +
+                     "    @role(event)\n" +
+                     "    @timestamp(timestamp)\n" +
+                     "end\n" +
+                     "\n" +
+                     "" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "rule \"over 0.3s\"\n" +
+                     "salience 1 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(300ms))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 0.3s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 1s\"\n" +
+                     "salience 2 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(1s))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 1s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 3s\"\n" +
+                     "salience 3 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(3s))\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 3s --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 0.3s ep\"\n" +
+                     "salience 4 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(300ms) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 0.3s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 1s ep\"\n" +
+                     "salience 5 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(1s) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 1s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"over 3s ep\"\n" +
+                     "salience 6 \n" +
+                     "    when\n" +
+                     "        $list: List() from collect(MyEvent() over window:time(3s) from entry-point \"stream\")\n" +
+                     "    then\n" +
+                     "        System.out.println(\"Rule: with in 3s use ep --> \" + $list);\n" +
+                     "        list.add( $list.size() ); \n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        //init stateful knowledge session
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession( sessionConfig, null );
+        SessionPseudoClock clock = ksession.getSessionClock();
+
+        ArrayList list = new ArrayList( );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        list.clear();
+
+        for ( int j = 0; j < 5; j++ ) {
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            ksession.insert( new MyEvent( clock.getCurrentTime() ) );
+            ksession.getEntryPoint( "stream" ).insert( new MyEvent( clock.getCurrentTime() ) );
+            clock.advanceTime( 500, TimeUnit.MILLISECONDS );
+            ksession.fireAllRules();
+
+            System.out.println( list );
+            switch ( j ) {
+                case 0 : assertEquals( Arrays.asList( 1, 1, 0, 1, 1, 0 ), list );
+                    break;
+                case 1 : assertEquals( Arrays.asList( 2, 1, 0, 2, 1, 0 ), list );
+                    break;
+                case 2 :
+                case 3 :
+                case 4 : assertEquals( Arrays.asList( 3, 1, 0, 3, 1, 0 ), list );
+                    break;
+                default: fail();
+            }
+            list.clear();
+
+            System.out.println( "-------------- SLEEP ------------" );
+        }
 
         ksession.dispose();
     }

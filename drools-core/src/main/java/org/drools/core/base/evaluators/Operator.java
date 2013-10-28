@@ -50,7 +50,7 @@ public class Operator
                                                                                          false );
     public static final Operator               GREATER_OR_EQUAL = addOperatorToRegistry( ">=",
                                                                                          false );
-    
+
     // Some operators are supported by the runtime and no longer require Drools specific implementations,
     // so we are adding them directly to the cache:
     public static final Operator  CONTAINS      = Operator.addOperatorToRegistry( "contains",

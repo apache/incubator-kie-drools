@@ -61,8 +61,6 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
-
-        rebuildTable();
         id = (String) in.readObject();
     }
 
@@ -70,28 +68,6 @@ public class TripleStore extends AbstractHashTable implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeObject(id);
-    }
-
-
-    private void rebuildTable() {
-        // After a deserialization, the triples are still indexed and placed in slots according
-        // to the OLD subject hashcode, which has changed...
-        // TODO is there a better way to do this?
-        Triple[] tabs = new Triple[size];
-        int k = 0;
-        for ( int j = 0; j < table.length; j++ ) {
-            Triple t = (Triple) table[ j ];
-            while ( t != null ) {
-                tabs[ k++ ] = t;
-                t = (Triple) t.getNext();
-            }
-        }
-
-        table = new Entry[size];
-        size = 0;
-        for ( int j = 0 ; j < tabs.length; j++ ) {
-            put( tabs[ j ], false );
-        }
     }
 
     public String getId() {

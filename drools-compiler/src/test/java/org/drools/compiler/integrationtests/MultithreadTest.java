@@ -37,12 +37,19 @@ import org.drools.compiler.StockTick;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -137,25 +144,33 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 15000)
+    @Test(timeout = 1000000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
+                     "global java.util.List list; \n" +
+                     "import org.drools.compiler.StockTick; \n" +
+                     "" +
                      "declare StockTick @role(event) end\n" +
+                     "" +
                      "rule R\n" +
-                     " duration(1s)" +
                      "when\n" +
-                     " accumulate( $st : StockTick() over window:time(2s)\n" +
+                     " accumulate( $st : StockTick() over window:time(400ms)\n" +
                      "             from entry-point X,\n" +
                      "             $c : count(1) )" +
                      "then\n" +
-                     "    //System.out.println( $c );\n" +
-                     "end";
+                     "   list.add( $c ); \n" +
+                     "end \n";
+
+        final List<Exception> errors = new ArrayList<Exception>(  );
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kbconf, str);
+        kbconf.setOption( RuleEngineOption.PHREAK );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, str );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        final EntryPoint ep = ksession.getEntryPoint("X");
+        final EntryPoint ep = ksession.getEntryPoint( "X" );
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -165,7 +180,7 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
-        final int RUN_TIME = 10000; // runs for 10 seconds
+        final int RUN_TIME = 5000; // runs for 10 seconds
         final int THREAD_NR = 2;
 
         CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
@@ -175,6 +190,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                     ksession.fireUntilHalt();
                     return true;
                 } catch (Exception e) {
+                    errors.add( e );
                     e.printStackTrace();
                     return false;
                 }
@@ -185,13 +201,16 @@ public class MultithreadTest extends CommonTestMethodBase {
             ecs.submit(new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     try {
+                        final String s = Thread.currentThread().getName();
                         long endTS = System.currentTimeMillis() + RUN_TIME;
+                        int j = 0;
                         while( System.currentTimeMillis() < endTS) {
-                            ep.insert(new StockTick());
+                            ep.insert( new StockTick( j++, s, 0.0, 0 ) );
                             Thread.sleep(1);
                         }
                         return true;
                     } catch (Exception e) {
+                        errors.add( e );
                         e.printStackTrace();
                         return false;
                     }
@@ -204,17 +223,23 @@ public class MultithreadTest extends CommonTestMethodBase {
             try {
                 success = ecs.take().get() && success;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                errors.add( e );
             }
         }
         ksession.halt();
         try {
             success = ecs.take().get() && success;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            errors.add( e );
         }
 
-        assertTrue(success);
+        for ( Exception e : errors ) {
+            e.printStackTrace();
+        }
+        assertTrue( errors.isEmpty() );
+        assertTrue( success );
+
+        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 200 );
         ksession.dispose();
     }
 
@@ -463,6 +488,68 @@ public class MultithreadTest extends CommonTestMethodBase {
         public Throwable getError() {
             return error;
         }
+    }
+
+
+
+    @Test( timeout = 5000 )
+    public void testConcurrentQueries() {
+        // DROOLS-175
+        StringBuilder drl = new StringBuilder(  );
+        drl.append( "package org.drools.test;\n" +
+                    "" +
+                    "query foo( ) \n" +
+                    "   Object() from new Object() \n" +
+                    "end\n" +
+                    "" +
+                    "rule XYZ when then end \n"
+        );
+
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.toString().getBytes() ), ResourceType.DRL );
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setDaemon(true);
+                return t;
+            }
+        });
+
+        final int THREAD_NR = 5;
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (int i = 0; i < THREAD_NR; i++) {
+            ecs.submit(new Callable<Boolean>() {
+                public Boolean call() throws Exception {
+                    boolean succ = false;
+                    try {
+                        QueryResults res = ksession.getQueryResults( "foo", Variable.v );
+                        succ = (res.size() == 1);
+                        return succ;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return succ;
+                    }
+                }
+            });
+        }
+
+        boolean success = true;
+        for (int i = 0; i < THREAD_NR; i++) {
+            try {
+                success = ecs.take().get() && success;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        assertTrue(success);
+        ksession.dispose();
     }
 
     // FIXME

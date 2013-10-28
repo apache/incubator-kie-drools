@@ -17,7 +17,9 @@
 package org.drools.compiler.factmodel.traits;
 
 import org.drools.core.factmodel.traits.TraitProxy;
+import org.drools.core.factmodel.traits.TraitableBean;
 
+import java.util.BitSet;
 import java.util.Map;
 
 public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithBehaviour<K> {
@@ -39,6 +41,8 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
         fields = new StudentProxyWrapper2( obj, m );
 
         somethingImpl = new SomethingImpl<K>( this );
+
+        setTypeCode( new BitSet(  ) );
     }
 
 
@@ -67,7 +71,7 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
     }
 
     @Override
-    public Object getObject() {
+    public TraitableBean getObject() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

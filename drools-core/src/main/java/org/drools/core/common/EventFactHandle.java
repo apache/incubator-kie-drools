@@ -54,11 +54,22 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                            final long recency,
                            final long timestamp,
                            final long duration,
-                           final EntryPoint wmEntryPoint) {
+                           final EntryPoint wmEntryPoint ) {
+        this( id, object, recency, timestamp, duration, wmEntryPoint, false );
+    }
+
+    public EventFactHandle(final int id,
+                           final Object object,
+                           final long recency,
+                           final long timestamp,
+                           final long duration,
+                           final EntryPoint wmEntryPoint,
+                           final boolean isTraitOrTraitable ) {
         super( id,
                object,
                recency,
-               wmEntryPoint );
+               wmEntryPoint,
+               isTraitOrTraitable );
         this.startTimestamp = timestamp;
         this.duration = duration;
     }
@@ -171,7 +182,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                                                       getRecency(),
                                                       getStartTimestamp(),
                                                       getDuration(),
-                                                      getEntryPoint() );
+                                                      getEntryPoint(),
+                                                      isTraitOrTraitable() );
         clone.setActivationsCount( getActivationsCount() );
         clone.setExpired( isExpired() );
         clone.setEntryPoint( getEntryPoint() );
@@ -190,7 +202,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                                                      getRecency(),
                                                      getStartTimestamp(),
                                                      getDuration(),
-                                                     getEntryPoint() );
+                                                     getEntryPoint(),
+                                                     isTraitOrTraitable() );
         clone.setActivationsCount( getActivationsCount() );
         clone.setExpired( isExpired() );
         clone.setEntryPoint( getEntryPoint() );

@@ -16,11 +16,17 @@
 
 package org.drools.compiler.integrationtests;
 
+import junit.framework.Assert;
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.DefaultFactHandle;
@@ -31,6 +37,7 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.runtime.rule.impl.AgendaImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -40,14 +47,27 @@ import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.definition.type.Modifies;
@@ -72,9 +92,11 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -3220,4 +3242,821 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue( list.contains( "+" ) );
         assertTrue( list.contains( "-" ) );
     }
+
+
+    @Test
+    public void testFactLeak() throws InterruptedException {
+        //DROOLS-131
+        String drl = "package org.drools.test; \n" +
+                     "global java.util.List list; \n" +
+                     "" +
+                     "" +
+                     "rule Intx when\n" +
+                     "  $x : Integer() from entry-point \"x\" \n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "end";
+        int N = 1100;
+
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        final StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+
+        new Thread () {
+            public void run () {
+                ks.fireUntilHalt();
+            }
+        }.start ();
+
+        for ( int j = 0; j < N; j++ ) {
+            ks.getEntryPoint( "x" ).insert( new Integer( j ) );
+        }
+
+        Thread.sleep( 1000 );
+        ks.halt();
+
+        assertEquals( N, list.size() );
+    }
+
+    @Test
+    public void testFactStealing() throws Exception {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.compiler.Person; \n " +
+                     "global java.util.List list; \n" +
+                     "\n" +
+                     "\n" +
+                     "rule Sleep \n " +
+                     "salience 1000 \n" +
+                     "when then \n" +
+                     "  System.out.println( Thread.currentThread().getName() + \"Zlip\" ); \n" +
+                     "  Thread.sleep( 100 ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule FireAtWill\n" +
+                     "when  \n" +
+                     "  $p : Person( $n : name ) \n" +
+                     "then \n" +
+                     "  System.out.println( Thread.currentThread().getName() + \" Ill continue later \" ); \n" +
+                     "  Thread.sleep( 100 ); \n" +
+                     "  System.out.println( Thread.currentThread().getName() + \" Hello >> \" + $n );\n" +
+                     "  list.add( $n ); \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule ImDone\n" +
+                     "timer( expr:0 )\n" +
+                     "when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "  System.out.println( Thread.currentThread().getName() + \"Take out \" + $p ); \n" +
+                     "  retract( $p );\n" +
+                     "  System.out.println( Thread.currentThread().getName() + \"Taken out \" + $p ); \n" +
+                     "  if ( list.isEmpty() ) { list.add( $p.getName() ); } \n" +
+                     "end\n" +
+                     "\n"
+                ;
+        KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( knowledgeBuilder.hasErrors() ) {
+            fail( knowledgeBuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( knowledgeBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( new Person( "mark", 67 ) );
+        knowledgeSession.fireAllRules();
+
+        Thread.sleep( 500 );
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "mark" ) );
+    }
+
+
+
+    public static class SQLTimestamped {
+        private Timestamp start;
+
+        public Timestamp getStart() {
+            return start;
+        }
+
+        public void setStart( Timestamp start ) {
+            this.start = start;
+        }
+
+        public SQLTimestamped() {
+            start = new Timestamp( new Date().getTime() );
+        }
+    }
+
+    @Test
+    public void testEventWithSQLTimestamp() throws InterruptedException {
+        // DROOLS-10
+        String str =
+                "import org.drools.compiler.integrationtests.Misc2Test.SQLTimestamped;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare SQLTimestamped @role(event) @timestamp(start) end \n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $s1 : SQLTimestamped() \n" +
+                "   $s2 : SQLTimestamped( this != $s1, this after $s1 ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ArrayList list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new SQLTimestamped() );
+        Thread.sleep( 100 );
+        ksession.insert( new SQLTimestamped() );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( "ok" ), list );
+    }
+
+
+    public static class Foo3 {
+        public boolean getX() { return true; }
+        public String isX() { return "x"; }
+        public boolean isY() { return true; }
+        public String getZ() { return "ok"; }
+        public boolean isZ() { return true; }
+    }
+
+    @Test
+    public void testIsGetClash() {
+        // DROOLS-18
+        String str =
+                "import org.drools.compiler.integrationtests.Misc2Test.Foo3;\n" +
+                "" +
+                "global java.util.List list;" +
+                "\n" +
+                "" +
+                "rule \"Init\" when\n" +
+                "   $x : Foo3( x == true, y == true, z == \"ok\", isZ() == true ) \n" +
+                "then\n" +
+                "   list.add( \"ok\" ); \n" +
+                "end\n" +
+                "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        assertEquals( 2, kbuilder.getResults( ResultSeverity.WARNING ).size() );
+        for ( KnowledgeBuilderResult res : kbuilder.getResults( ResultSeverity.WARNING ) ) {
+            System.out.println( res.getMessage() );
+        }
+    }
+
+
+    @Test
+    public void testCollectAccumulate() {
+        // DROOLS-173
+        String drl = "import java.util.ArrayList\n" +
+                     "\n" +
+                     "global java.util.Map map; \n" +
+                     "" +
+                     " declare Item\n" +
+                     "     code: int\n" +
+                     "     price: int\n" +
+                     "     present: boolean\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"Init\"\n" +
+                     " when\n" +
+                     " then\n" +
+                     "     insert(new Item(1,40,false));\n" +
+                     "     insert(new Item(2,40,false));\n" +
+                     "     insert(new Item(3,40,false));\n" +
+                     "     insert(new Item(4,40,false));\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"CollectAndAccumulateRule\"\n" +
+                     " when\n" +
+                     "     //At least two items that aren't presents\n" +
+                     "     objList: ArrayList(size>=2) from collect( Item(present==false))\n" +
+                     "     //Total price bigger than 100\n" +
+                     "     price: Number(intValue>=100) from accumulate( Item($w:price, present==false), sum($w))\n" +
+                     " then\n" +
+                     "\n" +
+                     "     System.out.println(\"Sum: \"+price);\n" +
+                     "     System.out.println(\"Items size: \"+objList.size());\n" +
+                     " " +
+                     "      map.put( objList.size(), price ); \n" +
+                     "     \n" +
+                     "     //Look for the minor price item\n" +
+                     "     Item min = null;\n" +
+                     "     for(Object obj: objList){\n" +
+                     "         if (min!=null){\n" +
+                     "             min = (min.getPrice()>((Item)obj).getPrice())?(Item)obj:min;\n" +
+                     "         }\n" +
+                     "         else {\n" +
+                     "             min = (Item)obj;\n" +
+                     "         }\n" +
+                     "     }\n" +
+                     "     \n" +
+                     "     //And make it a present\n" +
+                     "     if (min!=null){\n" +
+                     "         modify(min){setPresent(true)};\n" +
+                     "     }\n" +
+                     " end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        Map map = new HashMap(  );
+        ksession.setGlobal( "map", map );
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, map.size() );
+        assertEquals( 160.0, map.get( 4 ) );
+        assertEquals( 120.0, map.get( 3 ) );
+
+    }
+
+    public static interface TradeBooking {
+        public TradeHeader getTrade();
+    }
+
+    public static interface TradeHeader {
+        public void setAction( String s );
+        public String getAction();
+    }
+
+    public static class TradeHeaderImpl implements TradeHeader {
+        private String action;
+
+        public String getAction() {
+            return action;
+        }
+
+        public void setAction( String action ) {
+            this.action = action;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            TradeHeaderImpl that = (TradeHeaderImpl) o;
+
+            if ( action != null ? !action.equals( that.action ) : that.action != null ) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return action != null ? action.hashCode() : 0;
+        }
+    }
+
+    public static class TradeBookingImpl implements TradeBooking {
+        private TradeHeader header;
+
+        public TradeBookingImpl( TradeHeader h ) {
+            this.header = h;
+        }
+
+        public TradeHeader getTrade() {
+            return header;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+
+            TradeBookingImpl that = (TradeBookingImpl) o;
+
+            if ( header != null ? !header.equals( that.header ) : that.header != null ) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return header != null ? header.hashCode() : 0;
+        }
+    }
+
+
+
+    @Test
+    public void testLockOnActive() {
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.TradeHeader;\n" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "when\n" +
+                     "  $booking: TradeBooking()\n" +
+                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
+                     "  not String()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  $trade.setAction(\"New\");\n" +
+                     "  modify($booking) {}\n" +
+                     "  insert (\"run\");\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $booking: TradeBooking( )\n" +
+                     "  $trade: Object( ) from $booking.getTrade()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" ); \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        ks.addEventListener( new AgendaEventListener() {
+            int step = 0;
+
+            public void matchCreated( MatchCreatedEvent event ) {}
+
+            public void matchCancelled( MatchCancelledEvent event ) {
+                switch ( step ) {
+                    case 0 : assertEquals( "Rule2", event.getMatch().getRule().getName() );
+                        step++;
+                        break;
+                    case 1 : assertEquals( "Rule1", event.getMatch().getRule().getName() );
+                        step++;
+                        break;
+                    default: fail( "More cancelled activations than expected" );
+                }
+            }
+
+            public void beforeMatchFired( BeforeMatchFiredEvent event ) {}
+
+            public void afterMatchFired( AfterMatchFiredEvent event ) {
+                assertEquals( "Rule1", event.getMatch().getRule().getName() );
+            }
+            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {}
+            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {}
+            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
+            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
+        } );
+        ks.fireAllRules();
+
+        TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
+
+        ks.insert( tb );
+        assertEquals( 1, ks.fireAllRules() );
+    }
+
+
+    @Test
+    public void testLockOnActiveWithModify() {
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.Person; \n" +
+                     "" +
+                     "rule \"Rule1\" \n" +
+                     "@Eager(true) \n" +
+                     "salience 1 \n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  modify( $p ) { setAge( 44 ); }\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "@Eager(true) \n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person() \n" +
+                     "  String() from $p.getName() \n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" + $p ); " +
+                     "  modify ( $p ) { setName( \"john\" ); } \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ks.fireAllRules();
+
+        Person p = new Person( "mark", 76 );
+        ks.insert( p );
+        ks.fireAllRules();
+
+        assertEquals( 44, p.getAge() );
+        assertEquals( "john", p.getName() );
+    }
+
+    @Test
+    @Ignore( "lock-on-active with modifies is not working in lazy mode" )
+    public void testLockOnActiveWithModifyNoEager() {
+        // DROOLS-280
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.Person; \n" +
+                     "" +
+                     "rule \"Rule1\" \n" +
+                     "salience 1 \n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person()\n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule1\" ); \n" +
+                     "  modify( $p ) { setAge( 44 ); }\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "lock-on-active true\n" +
+                     "when\n" +
+                     "  $p: Person() \n" +
+                     "  String() from $p.getName() \n" +
+                     "then\n" +
+                     "  System.out.println( \"Rule2\" + $p ); " +
+                     "  modify ( $p ) { setName( \"john\" ); } \n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+        ks.addEventListener( new DebugAgendaEventListener(  ) );
+
+        ks.fireAllRules();
+
+        Person p = new Person( "mark", 76 );
+        ks.insert( p );
+        ks.fireAllRules();
+
+        assertEquals( 44, p.getAge() );
+        assertEquals( "john", p.getName() );
+    }
+
+    @Test
+    public void testPrimitiveGlobals() {
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "\n" +
+                     "global int foo;\n" +
+                     "\n" +
+                     "";
+        KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        System.out.println( kb.getErrors() );
+        assertTrue( kb.hasErrors() );
+    }
+
+    @Test
+    public void testClashingRules() {
+        //DROOLS-287
+        String drl = "package org.drools.test; \n" +
+                     "" +
+                     "rule \"Rule_>_all\"" +
+                     "when then end \n" +
+                     "" +
+                     "rule \"Rule_<_all\"" +
+                     "when then end \n" +
+                     "";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+
+    }
+
+    @Test
+    public void testDontFailOnDuplicatedRuleWithDeclaredTypeError() {
+        String rule1 =
+                "rule \"Some Rule\"\n" +
+                "when\n" +
+                "   $s: String()\n" +
+                "then\n" +
+                "end";
+
+        String rule2 =
+                "declare DClass\n" +
+                "  prop : String\n" +
+                "end\n" +
+                "rule \"Some Rule\"\n" +
+                "when\n" +
+                "   $d: DClass()\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource(rule2.getBytes()), ResourceType.DRL );
+
+
+        //the default behavior of kbuilder is not to fail because of duplicated
+        //rules.
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        //We must have 1 INFO result.
+        KnowledgeBuilderResults infos = kbuilder.getResults( ResultSeverity.INFO);
+        Assert.assertNotNull( infos );
+        Assert.assertEquals(1, infos.size());
+
+    }
+
+
+
+    @Test
+    public void testBindingComplexExpression() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo \n" +
+                     "  a : int \n" +
+                     "  b : int \n" +
+                     "end \n" +
+                     "" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "" +
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  $c := Integer() from new Integer( 4 ) \n" +
+                     "  Foo(  $a : a + b == 7 && a == 3 && $b : b > 0, $c := b - a == 1 ) \n" +
+                     "then\n" +
+                     "  list.add( $a );\n" +
+                     "  list.add( $b );\n" +
+                     "  list.add( $c );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbConf.setOption( LanguageLevelOption.DRL6 );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertTrue( ! list.isEmpty() );
+        assertEquals( 3, list.size() );
+        assertEquals( 3, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 4, list.get( 2 ) );
+
+    }
+
+
+    @Test
+    public void testBindingComplexExpressionWithDRL5() {
+        // DROOLS-43
+        String drl = "package org.drools.test;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare Foo \n" +
+                     "  a : int \n" +
+                     "  b : int \n" +
+                     "end \n" +
+                     "" +
+                     "rule Init when then insert( new Foo( 3, 4 ) ); end \n" +
+                     "" +
+                     "rule \"Expr\"\n" +
+                     "when\n" +
+                     "  $c := Integer() from new Integer( 4 ) \n" +
+                     "  Foo(  $a : a + b == 7 && a == 3 && $b : b > 0, $c := b - a == 1 ) \n" +
+                     "then\n" +
+                     "  list.add( $a );\n" +
+                     "  list.add( $b );\n" +
+                     "  list.add( $c );\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        kbConf.setOption( LanguageLevelOption.DRL5 );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertTrue( ! list.isEmpty() );
+        assertEquals( 3, list.size() );
+        assertEquals( 3, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 4, list.get( 2 ) );
+
+    }
+
+
+    @Test
+    public void testEvalConstraintWithMvelOperator( ) {
+        String drl = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
+                     + "Foo( eval( field soundslike \"water\" ) )" + " then " + "end";
+        DrlParser drlParser = new DrlParser();
+        PackageDescr packageDescr;
+        try {
+            packageDescr = drlParser.parse( true, drl);
+        } catch ( DroolsParserException e ) {
+            throw new RuntimeException( e );
+        }
+        RuleDescr r = packageDescr.getRules().get( 0 );
+        PatternDescr pd = (PatternDescr) r.getLhs().getDescrs().get( 0 );
+        assertEquals( 1, pd.getConstraint().getDescrs().size() );
+    }
+
+
+    @Test
+    public void testManyAccumulatesWithSubnetworks() {
+        String drl = "package org.drools.compiler.tests; \n" +
+                     "" +
+                     "declare FunctionResult\n" +
+                     "    father  : Applied\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Field\n" +
+                     "    applied : Applied\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare Applied\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Seed\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    Applied app = new Applied();\n" +
+                     "    Field fld = new Field();\n" +
+                     "\n" +
+                     "    insert( app );\n" +
+                     "    insert( fld );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"complexSubNetworks\"\n" +
+                     "when\n" +
+                     "    $fld : Field( $app : applied )\n" +
+                     "    $a : Applied( this == $app )\n" +
+                     "    accumulate (\n" +
+                     "        $res : FunctionResult( father == $a ),\n" +
+                     "        $args : collectList( $res )\n" +
+                     "    )\n" +
+                     "    accumulate (\n" +
+                     "        $res : FunctionResult( father == $a ),\n" +
+                     "        $deps : collectList( $res )\n" +
+                     "    )\n" +
+                     "    accumulate (\n" +
+                     "        $x : String()\n" +
+                     "        and\n" +
+                     "        not String( this == $x ),\n" +
+                     "        $exprFieldList : collectList( $x )\n" +
+                     "    )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        int num = ksession.fireAllRules();
+        // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
+        assertEquals( 1, num );
+
+    }
+
+
+    @Test
+    public void testLinkRiaNodesWithSubSubNetworks() {
+        String drl = "package org.drools.compiler.tests; \n" +
+                     "" +
+                     "import java.util.*; \n" +
+                     "" +
+                     "global List list; \n" +
+                     "" +
+                     "declare MyNode\n" +
+                     "end\n" +
+                     "" +
+                     "rule Init\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( new MyNode() );\n" +
+                     "    insert( new MyNode() );\n" +
+                     "end\n" +
+                     "" +
+                     "" +
+                     "rule \"Init tree nodes\"\n" +
+                     "salience -10\n" +
+                     "when\n" +
+                     "    accumulate (\n" +
+                     "                 MyNode(),\n" +
+                     "                 $x : count( 1 )\n" +
+                     "               )\n" +
+                     "    accumulate (\n" +
+                     "                 $n : MyNode()\n" +
+                     "                 and\n" +
+                     "                 accumulate (\n" +
+                     "                    $val : Double( ) from Arrays.asList( 1.0, 2.0, 3.0 ),\n" +
+                     "                    $rc : count( $val );\n" +
+                     "                    $rc == 3 \n" +
+                     "                 ),\n" +
+                     "                 $y : count( $n )\n" +
+                     "               )\n" +
+                     "then\n" +
+                     "  list.add( $x ); \n" +
+                     "  list.add( $z ); \n" +
+                     "  System.out.println( $x ); \n" +
+                     "  System.out.println( $y ); \n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( Arrays.asList( 2, 2 ), list );
+
+    }
+
+
+
+    @Test
+    public void testDynamicSalienceUpdate() {
+        String drl = "package org.drools.compiler.tests; \n" +
+                     "" +
+                     "import java.util.*; \n" +
+                     "" +
+                     "global List list; \n" +
+                     "" +
+                     "declare Foo value : long end \n" +
+                     "" +
+                     "rule Nop \n" +
+                     " salience( $l ) \n" +
+                     "when\n" +
+                     "  Foo( $l : value ) \n" +
+                     "then\n" +
+                     "  System.out.println( \"Never Foo \" + $l ); " +
+                     "  list.add( $l ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule Insert \n" +
+                     " salience 100 \n" +
+                     "when \n" +
+                     "  $l : Long() \n" +
+                     "then \n" +
+                     "  System.out.println( \"Insert Foo \" + $l ); " +
+                     "  insertLogical( new Foo( $l ) ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule Clean \n" +
+                     " salience 50 \n" +
+                     "when \n" +
+                     "  $s : String() \n" +
+                     "  $l : Long() \n" +
+                     "then \n" +
+                     "  System.out.println( \"Retract \" + $l ); " +
+                     "  retract( $l ); \n" +
+                     "end \n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1L );
+        ksession.insert( 2L );
+        ksession.insert( "go" );
+
+        ksession.fireAllRules();
+
+        assertTrue( list.isEmpty() );
+        ksession.dispose();
+    }
+
+
+
+
+
 }

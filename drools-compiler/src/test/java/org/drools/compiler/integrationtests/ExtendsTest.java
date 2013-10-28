@@ -22,11 +22,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import junit.framework.Assert;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.lang.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
@@ -36,6 +38,8 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.definition.type.FactType;
+import org.kie.internal.builder.KnowledgeBuilderResults;
+import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
@@ -194,13 +198,13 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-
+    @Test
      public void testExtendsAcrossFiles() throws Exception {
         StatefulKnowledgeSession ksession = genSession(new String[] {"test_Ext1.drl","test_Ext2.drl","test_Ext3.drl","test_Ext4.drl"} ,0);
 
-        FactType person = ksession.getKieBase().getFactType("org.drools.compiler.test","Person");
+        FactType person = ksession.getKieBase().getFactType("org.drools.compiler.ext.test","Person");
             assertNotNull(person);
-        FactType student = ksession.getKieBase().getFactType("org.drools.compiler.test","Student");
+        FactType student = ksession.getKieBase().getFactType("org.drools.compiler.ext.test","Student");
             assertNotNull(student);
 
         FactType worker = ksession.getKieBase().getFactType("org.drools.compiler.anothertest","Worker");
@@ -222,7 +226,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
 
 
-
+    @Test
      public void testFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler", "MyBean3");
@@ -251,7 +255,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     }
 
 
-
+    @Test
     public void testBoxedFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxBean");
@@ -275,7 +279,7 @@ public class ExtendsTest extends CommonTestMethodBase {
     }
 
 
-
+    @Test
     public void testExpressionFieldInit() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtFieldInit.drl");
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
@@ -320,7 +324,7 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     }
 
-
+    @Test
     public void testHierarchy() throws Exception {
         StatefulKnowledgeSession ksession = genSession("test_ExtHierarchy.drl");
         ksession.setGlobal("list",new LinkedList());
@@ -970,5 +974,87 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertEquals( "field3", sw.getFields().get(4).getName() );
         assertEquals( "mfield1", sw.getFields().get(5).getName() );
     }
+
+    public static interface A {}
+
+    public static interface B extends A {}
+
+    public static interface C extends B {}
+
+    public static class X implements C {
+        private int x = 1;
+        public int getX() { return x; }
+    }
+
+
+    @Test
+    public void testDeclareInheritance() throws Exception {
+        String s1 = "package org.drools;\n" +
+                    "import org.drools.compiler.integrationtests.ExtendsTest.*;\n" +
+                    "\n" +
+                    "declare A \n" +
+                    " @role( event )" +
+                    " @typesafe( false )\n" +
+                    "end\n" +
+                    "" +
+                    "declare C @role( event ) @typesafe( false ) end \n" +
+                    "" +
+                    "rule R \n" +
+                    "when " +
+                    "   $x : C( this.x == 1 ) \n" +
+                    "then\n" +
+                    "   System.out.println( $x ); \n" +
+                    "end\n" +
+                    "";
+
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertFalse( kBuilder.hasErrors() );
+
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
+        knowledgeBase.addKnowledgePackages( kBuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession knowledgeSession = knowledgeBase.newStatefulKnowledgeSession();
+        FactHandle h = knowledgeSession.insert( new X() );
+
+        assertTrue( ( (InternalFactHandle) h ).isEvent() );
+
+    }
+
+    @Test
+    public void testDeclareExtendsMissingDeclareForParent() {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.compiler.Person; \n" +
+                     "declare Student extends Person end \n" +
+                     "";
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertTrue( kBuilder.hasErrors() );
+        assertEquals( 1, kBuilder.getErrors().size() );
+    }
+
+
+
+    @Test
+    public void testDeclareExtendsMissingDeclareForParentOuterPackaga() {
+        String drl = "package org.drools.test; \n" +
+                     "import org.drools.compiler.integrationtests.ExtendsTest.X; \n" +
+                     "declare Student extends X end \n" +
+                     "";
+        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
+        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kBuilder.hasErrors() ) {
+            System.err.println( kBuilder.getErrors() );
+        }
+        assertTrue( kBuilder.hasErrors() );
+        assertEquals( 1, kBuilder.getErrors().size() );
+    }
+
 }
 

@@ -25,6 +25,7 @@ import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.DroolsWarning;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -47,6 +48,7 @@ public class PackageBuildContext {
 
     // errors found when building the current context
     private List<DroolsError>           errors;
+    private List<DroolsWarning>         warnings;
 
     // list of generated methods
     private List<String>                methods;
@@ -93,6 +95,7 @@ public class PackageBuildContext {
         this.invokerLookups = new HashMap();
         this.descrLookups = new HashMap();
         this.errors = new ArrayList<DroolsError>();
+        this.warnings = new ArrayList<DroolsWarning>();
 
         this.dialectRegistry = dialectRegistry;
 
@@ -147,6 +150,14 @@ public class PackageBuildContext {
 
     public void addError(DroolsError error) {
         errors.add(error);
+    }
+
+    public List<DroolsWarning> getWarnings() {
+        return warnings;
+    }
+
+    public void addWarning( DroolsWarning warning ) {
+        this.warnings.add( warning );
     }
 
     /**

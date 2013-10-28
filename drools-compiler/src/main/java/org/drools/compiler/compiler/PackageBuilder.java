@@ -773,9 +773,17 @@ public class PackageBuilder
                                    ResourceConfiguration configuration) throws Exception {
         PMMLCompiler compiler = getPMMLCompiler();
         if ( compiler != null ) {
-            this.resource = resource;
-            addPackage( pmmlModelToPackageDescr( compiler, resource ) );
-            this.resource = null;
+            if ( compiler.getResults().isEmpty() ) {
+                this.resource = resource;
+                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
+                if ( descr != null ) {
+                    addPackage( descr );
+                }
+                this.resource = null;
+            } else {
+                this.results.addAll( compiler.getResults() );
+            }
+            compiler.clearResults();
         } else {
             addPackageForExternalType( resource, type, configuration );
         }
@@ -786,6 +794,11 @@ public class PackageBuilder
                                                            IOException {
         String theory = compiler.compile( resource.getInputStream(),
                                           getPackageRegistry() );
+
+        if ( ! compiler.getResults().isEmpty() ) {
+            this.results.addAll( compiler.getResults() );
+            return null;
+        }
 
         DrlParser parser = new DrlParser( configuration.getLanguageLevel() );
         PackageDescr pkg = parser.parse( resource, new StringReader( theory ) );
@@ -1539,12 +1552,16 @@ public class PackageBuilder
 
             try {
                 Class< ? > clazz = pkgRegistry.getTypeResolver().resolveType( className );
+                if ( clazz.isPrimitive() ) {
+                    this.results.add( new GlobalError( global, " Primitive types are not allowed in globals : " + className ) );
+                    return;
+                }
                 pkgRegistry.getPackage().addGlobal( identifier,
                                                     clazz );
                 this.globals.put( identifier,
                                   clazz );
             } catch ( final ClassNotFoundException e ) {
-                this.results.add( new GlobalError( global ) );
+                this.results.add( new GlobalError( global, e.getMessage() ) );
                 e.printStackTrace();
             }
         }
@@ -2041,7 +2058,7 @@ public class PackageBuilder
                 ClassDefinition classDef = superTypeDeclaration.getTypeClassDef();
                 // inherit fields
                 for ( FactField fld : classDef.getFields() ) {
-                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld );
+                    TypeFieldDescr inheritedFlDescr = buildInheritedFieldDescrFromDefinition( fld, typeDescr );
                     fieldMap.put( inheritedFlDescr.getFieldName(),
                                   inheritedFlDescr );
                 }
@@ -2136,7 +2153,7 @@ public class PackageBuilder
         return true;
     }
 
-    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition(FactField fld) {
+    protected TypeFieldDescr buildInheritedFieldDescrFromDefinition( FactField fld, TypeDeclarationDescr typeDescr ) {
         PatternDescr fldType = new PatternDescr();
         TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
         inheritedFldDescr.setFieldName( fld.getName() );
@@ -2146,9 +2163,24 @@ public class PackageBuilder
             inheritedFldDescr.getAnnotations().put( TypeDeclaration.ATTR_KEY,
                                                     new AnnotationDescr( TypeDeclaration.ATTR_KEY ) );
         }
-        inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
-        inheritedFldDescr.setInherited( true );
-        inheritedFldDescr.setInitExpr( ((FieldDefinition) fld).getInitExpr() );
+            inheritedFldDescr.setIndex( ( (FieldDefinition) fld ).getDeclIndex() );
+            inheritedFldDescr.setInherited( true );
+
+            String initExprOverride = ( (FieldDefinition) fld ).getInitExpr();
+            int overrideCount = 0;
+            // only @aliasing local fields may override defaults.
+            for ( TypeFieldDescr localField : typeDescr.getFields().values() ) {
+                AnnotationDescr ann = localField.getAnnotation( "Alias" );
+                if ( ann != null && fld.getName().equals( ann.getSingleValue().replaceAll( "\"", "" ) ) && localField.getInitExpr() != null ) {
+                    overrideCount++;
+                    initExprOverride = localField.getInitExpr();
+                }
+            }
+            if ( overrideCount > 1 ) {
+                // however, only one is allowed
+                initExprOverride = null;
+            }
+            inheritedFldDescr.setInitExpr( initExprOverride );
         return inheritedFldDescr;
     }
 
@@ -2300,6 +2332,10 @@ public class PackageBuilder
             registerGeneratedType( typeDescr );
         }
 
+        if ( hasErrors() ) {
+            return Collections.emptyList();
+        }
+
         for ( AbstractClassTypeDeclarationDescr typeDescr : sortedTypeDescriptors ) {
 
             if ( !typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
@@ -2340,9 +2376,13 @@ public class PackageBuilder
                 PackageRegistry sup = pkgRegistryMap.get( typeDescr.getSuperTypeNamespace() );
                 if ( sup != null ) {
                     parent = sup.getPackage().getTypeDeclaration( typeDescr.getSuperTypeName() );
-                    if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
-                        // trying to find a definition
-                        parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                    if ( parent == null ) {
+                        this.results.add( new TypeDeclarationError( typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared" ) );
+                    } else {
+                        if ( parent.getNature() == TypeDeclaration.Nature.DECLARATION && ruleBase != null ) {
+                            // trying to find a definition
+                            parent = ruleBase.getPackagesMap().get( typeDescr.getSuperTypeNamespace() ).getTypeDeclaration( typeDescr.getSuperTypeName() );
+                        }
                     }
                 }
             }
@@ -2391,14 +2431,15 @@ public class PackageBuilder
 
                 // the type declaration is generated in any case (to be used by subclasses, if any)
                 // the actual class will be generated only if needed
+                if ( ! hasErrors() ) {
+                    generateDeclaredBean( typeDescr,
+                                          type,
+                                          pkgRegistry,
+                                          unresolvedTypes );
 
-                generateDeclaredBean( typeDescr,
-                                      type,
-                                      pkgRegistry,
-                                      unresolvedTypes );
-
-                Class< ? > clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
-                type.setTypeClass( clazz );
+                    Class< ? > clazz = pkgRegistry.getTypeResolver().resolveType( typeDescr.getType().getFullName() );
+                    type.setTypeClass( clazz );
+                }
 
             } catch ( final ClassNotFoundException e ) {
                 this.results.add( new TypeDeclarationError( typeDescr,
@@ -2725,7 +2766,8 @@ public class PackageBuilder
             }
         }
 
-        boolean traitable = typeDescr.getAnnotation( Traitable.class.getSimpleName() ) != null;
+        AnnotationDescr traitableAnn = typeDescr.getAnnotation( Traitable.class.getSimpleName() );
+        boolean traitable = traitableAnn != null;
 
         String[] fullSuperTypes = new String[typeDescr.getSuperTypes().size() + 1];
         int j = 0;
@@ -2757,9 +2799,11 @@ public class PackageBuilder
             case CLASS :
             default :
                 def = new ClassDefinition( fullName,
-                                           fullSuperTypes[0],
-                                           interfaces );
-                def.setTraitable( traitable );
+                        				   fullSuperTypes[0],
+                        				   interfaces );
+                def.setTraitable( traitable, traitableAnn != null &&
+                                             traitableAnn.getValue( "logical" ) != null &&
+                                             Boolean.valueOf( traitableAnn.getValue( "logical" ) ) );
         }
 
         for ( String annotationName : typeDescr.getAnnotationNames() ) {
@@ -3238,6 +3282,7 @@ public class PackageBuilder
         ruleBuilder.build( context );
 
         this.results.addAll( context.getErrors() );
+        this.results.addAll( context.getWarnings() );
 
         context.getRule().setResource( ruleDescr.getResource() );
 
@@ -3885,13 +3930,63 @@ public class PackageBuilder
         }
     }
 
-    public void registerBuildResource(final Resource resource) {
-        buildResources.push( new ArrayList<Resource>() {
-            {
-                add( resource );
+    private ChangeSet parseChangeSet( Resource resource ) throws IOException, SAXException {
+        XmlChangeSetReader reader = new XmlChangeSetReader( this.configuration.getSemanticModules() );
+        if (resource instanceof ClassPathResource) {
+            reader.setClassLoader( ( (ClassPathResource) resource ).getClassLoader(),
+                                   ( (ClassPathResource) resource ).getClazz() );
+        } else {
+            reader.setClassLoader( this.configuration.getClassLoader(),
+                                   null );
+        }
+        Reader resourceReader = null;
+
+        try {
+            resourceReader = resource.getReader();
+            ChangeSet changeSet = reader.read( resourceReader );
+            return changeSet;
+        } finally {
+            if (resourceReader != null) {
+                resourceReader.close();
             }
-        } );
+        }
     }
+
+    public void registerBuildResource( final Resource resource, ResourceType type ) {
+        InternalResource ires = (InternalResource) resource;
+        if ( ires.getResourceType() == null ) {
+            ires.setResourceType( type );
+        } else if ( ires.getResourceType() != type ) {
+            this.results.add( new ResourceTypeDeclarationWarning( resource, ires.getResourceType(), type ) );
+        }
+        if ( ResourceType.CHANGE_SET == type ) {
+            try {
+                ChangeSet changeSet = parseChangeSet( resource );
+                List<Resource> resources = new ArrayList<Resource>(  );
+                resources.add( resource );
+                for ( Resource addedRes : changeSet.getResourcesAdded() ) {
+                    resources.add( addedRes );
+                }
+                for ( Resource modifiedRes : changeSet.getResourcesModified() ) {
+                    resources.add( modifiedRes );
+                }
+                for ( Resource removedRes : changeSet.getResourcesRemoved() ) {
+                    resources.add( removedRes );
+                }
+                buildResources.push( resources );
+            } catch ( Exception e ) {
+                results.add( new DroolsError() {
+                    public String getMessage() {
+                        return "Unable to register changeset resource " + resource;
+                    }
+                    public int[] getLines() { return new int[ 0 ]; }
+                } );
+            }
+        } else {
+            buildResources.push( Arrays.asList( resource ) );
+        }
+    }
+
 
     public void registerBuildResources(List<Resource> resources) {
         buildResources.push( resources );
