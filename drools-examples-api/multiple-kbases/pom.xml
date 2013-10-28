@@ -12,6 +12,8 @@
   <artifactId>multiple-kbases</artifactId>
   <name>Drools API examples - Multiple KieBases</name>
 
+  <packaging>kjar</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
@@ -19,4 +21,14 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
