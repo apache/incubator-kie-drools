@@ -2,8 +2,8 @@ package org.drools.workbench.models.guided.dtable.shared.model.adaptors;
 
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
+import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
-import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Adaptor to use RuleModel class in GuidedDecisionTable
