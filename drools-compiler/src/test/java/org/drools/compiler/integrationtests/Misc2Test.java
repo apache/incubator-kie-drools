@@ -3999,4 +3999,64 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
 
+
+    @Test
+    public void testDynamicSalienceUpdate() {
+        String drl = "package org.drools.compiler.tests; \n" +
+                     "" +
+                     "import java.util.*; \n" +
+                     "" +
+                     "global List list; \n" +
+                     "" +
+                     "declare Foo value : long end \n" +
+                     "" +
+                     "rule Nop \n" +
+                     " salience( $l ) \n" +
+                     "when\n" +
+                     "  Foo( $l : value ) \n" +
+                     "then\n" +
+                     "  System.out.println( \"Never Foo \" + $l ); " +
+                     "  list.add( $l ); \n" +
+                     "end\n" +
+                     "" +
+                     "rule Insert \n" +
+                     " salience 100 \n" +
+                     "when \n" +
+                     "  $l : Long() \n" +
+                     "then \n" +
+                     "  System.out.println( \"Insert Foo \" + $l ); " +
+                     "  insertLogical( new Foo( $l ) ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule Clean \n" +
+                     " salience 50 \n" +
+                     "when \n" +
+                     "  $s : String() \n" +
+                     "  $l : Long() \n" +
+                     "then \n" +
+                     "  System.out.println( \"Retract \" + $l ); " +
+                     "  retract( $l ); \n" +
+                     "end \n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1L );
+        ksession.insert( 2L );
+        ksession.insert( "go" );
+
+        ksession.fireAllRules();
+
+        assertTrue( list.isEmpty() );
+        ksession.dispose();
+    }
+
+
+
+
+
 }
