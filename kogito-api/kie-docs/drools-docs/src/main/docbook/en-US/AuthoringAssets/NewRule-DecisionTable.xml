@@ -17,7 +17,7 @@
   <section>
     <title>Types of decision table</title>
 
-    <para>There are broadly two different types of decision table, both of which are supported in Guvnor:-</para>
+    <para>There are broadly two different types of decision table, both of which are supported in Drools Workbench:-</para>
 
     <itemizedlist>
       <listitem>
@@ -35,7 +35,7 @@
       <para>An Extended Entry decision table is one for which the column definitions, or stubs, specify Pattern, Field
       and operator but not value. The values, or states, are themselves held in the body of the decision table. It is
       normal, but not essential, for the range of possible values to be restricted by limiting entry to values from a
-      list. Guvnor supports use of Java enumerations, Guvnor enumerations or decision table "optional value lists" to
+      list. Drools Workbench supports use of Java enumerations, Drools Workbench enumerations or decision table "optional value lists" to
       restrict value entry.</para>
 
       <figure>

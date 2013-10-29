@@ -11,7 +11,7 @@
 
   <para>The DSL editor allows DSL Sentences to be authored. The reader should
   take time to explore DSL features in the Drools Expert documentation; as the
-  syntax in Guvnor's DSL Editor is identical. The normal syntax is extended to
+  syntax in Drools Workbench's DSL Editor is identical. The normal syntax is extended to
   provide "hints" to control how the DSL variable is rendered and validated
   within the user-interface.</para>
 
@@ -32,8 +32,8 @@
       <para>This will render an enumeration in place of the DSL variable when
       the DSL Sentence is used in the guided editor.
       &lt;factType.fieldName&gt; binds the enumeration to the model Fact and
-      Field enumeration definition. This could be either a "Guvnor
-      enumeration" (i.e. defined as a Knowledge Base "Enumeration") or a Java
+      Field enumeration definition. This could be either a "Drools Workbench
+      enumeration" (i.e. defined within the Workbench) or a Java
       enumeration (i.e. defined in a model POJO JAR file).</para>
     </listitem>
 
