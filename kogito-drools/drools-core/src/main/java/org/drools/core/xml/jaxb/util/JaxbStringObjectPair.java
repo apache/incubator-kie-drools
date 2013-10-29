@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name="list")
 public class JaxbStringObjectPair {
 
     @XmlAttribute(name = "key")
