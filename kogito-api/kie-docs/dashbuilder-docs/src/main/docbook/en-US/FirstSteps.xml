@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xml:id="chap-dashbuilder-first_steps"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+    <title>Creating your first dashboard</title>
+
+    <para>The purpose of this chapter is NOT to provide a full detailed
+        explanation of the tooling, but to guide you through the key steps to get
+        your first dashboards created. The following section will provide basic
+        information about how to configure the system to retrieve information from
+        existing databases or files, create new indicators and manage different
+        dashboards.
+    </para>
+
+    <para>For this guide, it's assumed the simple installation has been done,
+        with the standard set of examples and user and role configuration. It's
+        important to notice this configuration <emphasis role="bold">MUST NOT be
+            used in production</emphasis>, since it provides default security
+        credentials.
+    </para>
+
+    <note>
+        <para>Please, read the previous chapters to figure out how to get the
+            application up and running
+        </para>
+    </note>
+
+    <para>The procedure to create a brand new dashboard is pretty simple as we
+        will see in the following sections. That procedure is composed of 3 main
+        stages:
+    </para>
+
+    <para/>
+
+    <orderedlist>
+        <listitem>
+            <para>Get the data we want to manipulate.</para>
+        </listitem>
+
+        <listitem>
+            <para>Create key performance indicators on top of such data.</para>
+        </listitem>
+
+        <listitem>
+            <para>Create a new dashboard and drag&amp;drop the new KPIs on
+                it.
+            </para>
+        </listitem>
+    </orderedlist>
+
+    <xi:include href="DataProviders/CreateDataProvider.xml"/>
+    <xi:include href="KPIs/CreateKPI.xml"/>
+    <xi:include href="Dashboards/ComposeDashboard.xml"/>
+</chapter>

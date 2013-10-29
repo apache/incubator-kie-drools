@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-security-panel_permissions" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Panel permissions</title>
+
+  <para>Below is a screenshot of the permission management screen for a
+    given panel:
+  </para>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata align="center" fileref="images/Security/PanelPermissions.png"
+                 valign="top"/>
+    </imageobject>
+  </mediaobject>
+
+  <para>The list of allowed actions are:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Visualize</emphasis>: make the panel
+        visible.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Edit</emphasis>: change the panel
+        properties.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Edit permissions</emphasis>: ability to
+        grant/deny permissions for this panel.
+      </para>
+    </listitem>
+  </itemizedlist>
+
+</section>

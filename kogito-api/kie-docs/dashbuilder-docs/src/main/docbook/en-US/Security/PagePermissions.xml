@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-security-page_permissions" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Page permissions</title>
+
+  <para>Below is a screenshot of the permission management screen for a
+    given page:
+  </para>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata align="center" fileref="images/Security/PagePermissions.png"
+                 valign="top"/>
+    </imageobject>
+  </mediaobject>
+
+  <para>The list of allowed actions are:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Visualize</emphasis>: make the page
+        visible.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Edit</emphasis>: change the page
+        properties.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Clear</emphasis>: Ability to delete the
+        page.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Edit permissions</emphasis>: ability to
+        grant/deny permissions for this page.
+      </para>
+    </listitem>
+  </itemizedlist>
+
+</section>
