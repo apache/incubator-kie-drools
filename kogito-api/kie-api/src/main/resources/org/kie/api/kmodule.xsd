@@ -44,6 +44,7 @@
       <xsd:attribute name="default" type="xsd:boolean" />
       <xsd:attribute name="scope" type="xsd:string" />
 			<xsd:attribute name="clockType" type="clockTypeEnum" />
+      <xsd:attribute name="beliefSystem" type="beliefSystemEnum" />
 		</xsd:complexType>
 	</xsd:element>
 
@@ -142,5 +143,13 @@
 			<xsd:enumeration value="pseudo" />
 		</xsd:restriction>
 	</xsd:simpleType>
+
+  <xsd:simpleType name="beliefSystemEnum">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="simple" />
+      <xsd:enumeration value="jtms" />
+      <xsd:enumeration value="defeasible" />
+    </xsd:restriction>
+  </xsd:simpleType>
 
 </xsd:schema>

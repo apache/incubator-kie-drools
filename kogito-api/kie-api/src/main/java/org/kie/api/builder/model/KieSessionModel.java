@@ -16,6 +16,7 @@
 
 package org.kie.api.builder.model;
 
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.util.List;
@@ -47,9 +48,19 @@ public interface KieSessionModel {
     ClockTypeOption getClockType();
 
     /**
-     * Sets the EqualityBehavior for this KieSessionModel. Default is realtime
+     * Sets the ClockType for this KieSessionModel. Default is realtime
      */
     KieSessionModel setClockType(ClockTypeOption clockType);
+
+    /**
+     * Returns the BeliefSystemType of this KieSessionModel
+     */
+    BeliefSystemTypeOption getBeliefSystem();
+
+    /**
+     * Sets the BeliefSystem for this KieSessionModel. Default is simple
+     */
+    KieSessionModel setBeliefSystem(BeliefSystemTypeOption beliefSystem);
 
     /**
      * Creates a new ListenerModel of the given type (i.e. the name of the class implementing it)

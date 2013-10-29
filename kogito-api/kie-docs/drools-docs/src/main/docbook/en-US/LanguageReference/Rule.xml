@@ -347,6 +347,36 @@ end</programlisting>
     not happen until the next execution of a timer-controlled rule.
     Disposing a session puts an end to all timer activity.</para>
 
+    <para>Conversely when the rule engine runs in passive mode (i.e.: using fireAllRules
+    instead of fireUntilHalt) by default it doesn't fire consequences of timed rules
+    unless fireAllRules isn't invoked again. However it is possible to change this
+    default behavior by configuring the KieSession with a <code>TimedRuleExectionOption</code>
+    as shown in the following example.</para>
+
+    <example>
+      <title>Configuring a KieSession to automatically execute timed rules</title>
+
+      <programlisting language="java">KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+ksconf.setOption( TimedRuleExectionOption.YES );
+KSession ksession = kbase.newKieSession(ksconf, null);</programlisting>
+    </example>
+
+    <para>It is also possible to have a finer grained control on the timed rules that have to be
+    automatically executed. To do this it is necessary to set a <code>FILTERED</code>
+    <code>TimedRuleExectionOption</code> that allows to define a callback to filter those
+    rules, as done in the next example.</para>
+
+    <example>
+      <title>Configuring a filter to choose which timed rules should be automatically executed</title>
+
+      <programlisting language="java">KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+conf.setOption( new TimedRuleExectionOption.FILTERED(new TimedRuleExecutionFilter() {
+    public boolean accept(Rule[] rules) {
+        return rules[0].getName().equals("MyRule");
+    }
+}) );</programlisting>
+    </example>
+
     <para>For what regards interval timers it is also possible to define both the delay
     and interval as an expression instead of a fixed value. To do that it is necessary to
     use an expression timer (indicated by "expr:") as in the following example:</para>

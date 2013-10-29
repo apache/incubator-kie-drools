@@ -131,7 +131,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
         xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
   &lt;kbase name="KBase1" default="true" eventProcessingMode="cloud" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg1"&gt;
     &lt;ksession name="KSession2_1" type="stateful" default="true/"&gt;
-    &lt;ksession name="KSession2_1" type="stateless" default="false/"&gt;
+    &lt;ksession name="KSession2_1" type="stateless" default="false/" beliefSystem="jtms"&gt;
   &lt;/kbase&gt;
   &lt;kbase name="KBase2" default="false" eventProcessingMode="stream" equalsBehavior="equality" declarativeAgenda="enabled" packages="org.domain.pkg2, org.domain.pkg3" includes="KBase1"&gt;
     &lt;ksession name="KSession2_1" type="stateful" default="false" clockType="realtime"&gt;
@@ -281,6 +281,13 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
             <entry>Defines if events timestamps are determined by the system clock or by
             a psuedo clock controlled by the application. This clock is specially useful for
             unit testing temporal rules.</entry>
+          </row>
+
+          <row>
+            <entry>beliefSystem</entry>
+            <entry>simple</entry>
+            <entry>simple, jtms, defeasible</entry>
+            <entry>Defines the type of belief system used by the KieSession.</entry>
           </row>
         </tbody>
       </tgroup>
