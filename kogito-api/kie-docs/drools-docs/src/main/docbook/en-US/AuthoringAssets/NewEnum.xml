@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xml:base="../" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Data enumerations (drop down list configurations)</title>
+
+  <para>Data enumerations are an optional asset type that technical folk can
+  configure to provide drop down lists for the guided editor. These are stored
+  and edited just like any other asset, and apply to the package that they
+  belong to.</para>
+
+  <para>The contents of an enum config are a mapping of Fact.field to a list
+  of values to be used in a drop down. That list can either be literal, or use
+  a utility class (which you put on the classpath) to load a list of strings.
+  The strings are either a value to be shown on a drop down, or a mapping from
+  the code value (what ends up used in the rule) and a display value (see the
+  example below, using the '=').</para>
+
+  <figure>
+    <title>Data enumeration</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/AuthoringAssets/EnumConfig.png" format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>In the above diagram - the "MM" indicates a value that will be used in
+  the rule, yet "Mini Mal" will be displayed in the GUI.</para>
+
+  <para>Getting data lists from external data sources: It is possible to have
+  the Guvnor call a piece of code which will load a list of Strings. To do
+  this, you will need a bit of code that returns a <code>java.util.List</code>
+  (of String's) to be on the classpath of the Guvnor. Instead of specifying a
+  list of values in the Guvnor itself - the code can return the list of
+  Strings (you can use the "=" inside the strings if you want to use a
+  different display value to the rule value, as normal). For example, in the
+  'Person.age' line above, you could change it to:</para>
+
+  <programlisting> 'Person.age' : (new com.yourco.DataHelper()).getListOfAges()</programlisting>
+
+  <para>This assumes you have a class called "DataHelper" which has a method
+  "getListOfAges()" which returns a List of strings (and is on the classpath).
+  You can of course mix these "dynamic" enumerations with fixed lists. You
+  could for example load from a database using JDBC. The data enumerations are
+  loaded the first time you use the guided editor in a session. If you have
+  any guided editor sessions open - you will need to close and then open the
+  rule to see the change. To check the enumeration is loaded - if you go to
+  the Package configuration screen, you can "save and validate" the package -
+  this will check it and provide any error feedback.</para>
+
+  <section>
+    <title>Advanced enumeration concepts</title>
+
+    <para>There are a few other advanced things you can do with data
+    enumerations.</para>
+
+    <para>Drop down lists that depend on field values: Lets imagine a simple
+    fact model, we have a class called Vehicle, which has 2 fields:
+    "engineType" and "fuelType". We want to have a choice for the "engineType"
+    of "Petrol" or "Diesel". Now, obviously the choice type for fuel must be
+    dependent on the engine type (so for Petrol we have ULP and PULP, and for
+    Diesel we have BIO and NORMAL). We can express this dependency in an
+    enumeration as:</para>
+
+    <programlisting>'Vehicle.engineType' : ['Petrol', 'Diesel']
+'Vehicle.fuelType[engineType=Petrol]' : ['ULP', 'PULP' ]
+'Vehicle.fuelType[engineType=Diesel]' : ['BIO', 'NORMAL' ]</programlisting>
+
+    <para>This shows how it is possible to make the choices dependent on other
+    field values. Note that once you pick the engineType, the choice list for
+    the fuelType will be determined.</para>
+
+    <para>Loading enums programmatically: In some cases, people may want to
+    load their enumeration data entirely from external data source (such as a
+    relational database). To do this, you can implement a class that returns a
+    Map. The key of the map is a string (which is the Fact.field name as shown
+    above), and the value is a <code>java.util.List</code> of Strings.</para>
+
+    <programlisting language="Java">public class SampleDataSource2 {
+
+  public Map&lt;String&gt;, List&lt;String&gt; loadData() {
+    Map data = new HashMap();
+
+    List d = new ArrayList();
+    d.add("value1");
+    d.add("value2");
+    data.put("Fact.field", d);
+
+    return data;
+ }
+
+}</programlisting>
+
+    <para>And in the enumeration in the BRMS, you put:</para>
+
+    <programlisting language="Java">=(new SampleDataSource2()).loadData()</programlisting>
+
+    <para>The "=" tells it to load the data by executing your code.</para>
+
+    <para>Mode advanced enumerations: In the above cases, the values in the
+    lists are calculated up front. This is fine for relatively static data, or
+    small amounts of data. Imagine a scenario where you have lists of
+    countries, each country has a list of states, each state has a list of
+    localities, each locality has a list of streets and so on... You can see
+    how this is a lot of data, and it can not be loaded up. The lists should
+    be loaded dependent on what country was selected etc...</para>
+
+    <para>Well the above can be addressed in the following fashion:</para>
+
+    <programlisting>'Fact.field[dependentField1, dependentField2]' : '(new com.yourco.DataHelper()).getListOfAges("@{dependentField1}", "@{dependentField2}")'</programlisting>
+
+    <para>Similar to above, but note that we have just specified what fields
+    are needed, and also on the right of the ":" there are quotes around the
+    expression. This expression will then be evaluated, only when needed,
+    substituting the values from the fields specified. This means you can use
+    the field values from the GUI to drive a database query, and drill down
+    into data etc. When the drop down is loaded, or the rule loaded, it will
+    refresh the list based on the fields. 'dependentField1' and
+    'dependentField2' are names of fields on the 'Fact' type - these are used
+    to calculate the list of values which will be shown in a drop down if
+    values for the "field".</para>
+  </section>
+</section>

@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xml:base="../" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Guided decision tables (web based)</title>
+
+  <para>The guided decision table feature allows decision tables to be edited in place on the web. This works similar to
+  the guided editor by introspecting what facts and fields are available to guide the creation of a decision table. Rule
+  attributes, meta-data, conditions and actions can be defined in a tabular format thus facilitating rapid entry of
+  large sets of related rules. Web-based decision table rules are compiled into DRL like all other rule assets.</para>
+
+  <section>
+    <title>Types of decision table</title>
+
+    <para>There are broadly two different types of decision table, both of which are supported in Guvnor:-</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Extended Entry</para>
+      </listitem>
+
+      <listitem>
+        <para>Limited Entry</para>
+      </listitem>
+    </itemizedlist>
+
+    <section>
+      <title>Extended Entry</title>
+
+      <para>An Extended Entry decision table is one for which the column definitions, or stubs, specify Pattern, Field
+      and operator but not value. The values, or states, are themselves held in the body of the decision table. It is
+      normal, but not essential, for the range of possible values to be restricted by limiting entry to values from a
+      list. Guvnor supports use of Java enumerations, Guvnor enumerations or decision table "optional value lists" to
+      restrict value entry.</para>
+
+      <figure>
+        <title>Extended Entry Decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/AuthoringAssets/dtable-complete1.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Limited Entry</title>
+
+      <para>A Limited Entry decision table is one for which the column definitions specify value in addition to Pattern,
+      Field and operator. The decision table states, held in the body of the table, are boolean where a positive value
+      (a checked tick-box) has the effect of meaning the column should apply, or be matched. A negative value (a cleared
+      tick-box) means the column does not apply.</para>
+
+      <figure>
+        <title>Limited Entry Decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/AuthoringAssets/dtable-complete2.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+
+  <section>
+    <title>Main components\concepts</title>
+
+    <para>The guided decision table is split into two main sections:-</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>The upper section allows table columns to be defined representing rule attributes, meta-data, conditions
+        and actions.</para>
+      </listitem>
+
+      <listitem>
+        <para>The lower section contains the actual table itself; where individual rows define separate rules.</para>
+      </listitem>
+    </itemizedlist>
+
+    <figure>
+      <title>Main components</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/AuthoringAssets/dtable-sections.png"
+            format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section>
+      <title>Navigation</title>
+
+      <para>Cells can be selected in a variety of ways:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Firstly individual cells can be double-clicked and a pop-up editor corresponding to the underlying
+          data-type will appear. Groups of cells in the same column can be selected by either clicking in the first and
+          dragging the mouse pointer or clicking in the first and clicking the extent of the required range with the
+          shift key pressed.</para>
+        </listitem>
+
+        <listitem>
+          <para>Secondly the keyboard cursor keys can be used to navigate around the table. Pressing the enter key will
+          pop-up the corresponding editor. Ranges can be selected by pressing the shift key whilst extending the range
+          with the cursor keys.</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Columns can be resized by hovering over the corresponding divider in the table header. The mouse cursor will
+      change and then the column width dragged either narrower or wider.</para>
+    </section>
+
+    <section>
+      <title>Cell merging</title>
+
+      <para>The icon in the top left of the decision table toggles cell merging on and off. When cells are merged those
+      in the same column with identical values are merged into a single cell. This simplifies changing the value of
+      multiple cells that shared the same original value. When cells are merged they also gain an icon in the top-left
+      of the cell that allows rows spanning the merged cell to be grouped.</para>
+
+      <figure>
+        <title>Cell merging</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/AuthoringAssets/dtable-merged.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Cell grouping</title>
+
+      <para>Cells that have been merged can be further collapsed into a single row. Clicking the [+\-] icon in the top
+      left of a merged cell collapses the corresponding rows into a single entry. Cells in other columns spanning the
+      collapsed rows that have identical values are shown unchanged. Cells in other columns spanning the collapsed rows
+      that have different values are highlighted and the first value displayed.</para>
+
+      <figure>
+        <title>Cell grouping</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/AuthoringAssets/dtable-grouped.png"
+              format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>When the value of a grouped cell is altered all cells that have been collapsed also have their values
+      updated.</para>
+    </section>
+
+    <section>
+      <title>Operation of "otherwise"</title>
+
+      <para>Condition columns defined with literal values that use either the equality (==) or inequality (!=) operators
+      can take advantage of a special decision table cell value of "otherwise". This special value allows a rule to be
+      defined that matches on all values not explicitly defined in all other rules defined in the table. This is best
+      illustrated with an example:-</para>
+
+      <programlisting>when
+  Cheese( name not in ("Cheddar", "Edam", "Brie") )
+  ...
+then
+  ...
+end</programlisting>
+
+      <programlisting>when
+  Cheese( name in ("Cheddar", "Edam", "Brie") )
+  ...
+then
+  ...
+end</programlisting>
+    </section>
+
+    <section>
+      <title>Re-arranging columns</title>
+
+      <para>Whole patterns and individual conditions can be re-arranged by dragging and dropping them in the
+      configuration section of the screen. This allows constraints to be re-ordered to maximise performance of the
+      resulting rules, by placing generalised constraints before more specific. Action columns can also be re-arranged
+      by dragging and dropping them.</para>
+
+      <figure>
+        <title>Re-arranging Condition patterns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+              fileref="images/AuthoringAssets/dtable-rearranging-patterns.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Re-arranging columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+              fileref="images/AuthoringAssets/dtable-rearranging-columns.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+
+  <section>
+    <title>Defining a web based decision table</title>
+
+    <section>
+      <title>Manual creation</title>
+
+      <para>When a new empty decision table has been created you need to define columns for Facts, their constraints and
+      corresponding actions.</para>
+
+      <section>
+        <title>Column configuration</title>
+
+        <para>Expand the "Decision table" element and you will see three further sections for "Conditions", "Actions"
+        and "Options". Expanding either the "Conditions" or "Actions" sections reveals the "New column" icon. This can
+        be used to add new column definitions to the corresponding section. Existing columns can be removed by clicking
+        the "-" icon beside each column name, or edited by clicking the "pencil" icon also beside each column name. The
+        "Options" section functions slightly differently however the principle is the same: clicking the "Add
+        Attribute/Metadata" icon allows columns for table attributes to be defined (such as "salience", "no-loop" etc)
+        or metadata added.</para>
+
+        <figure>
+          <title>Column configuration</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-column-config.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <section>
+          <title>Utility columns</title>
+
+          <para>All decision table contain two utility columns containing rule number and rule description.</para>
+        </section>
+
+        <section>
+          <title>Adding columns</title>
+
+          <para>To add a column click on the "New column" icon.</para>
+
+          <para>You are presented with the following column type selection popup.</para>
+
+          <figure>
+            <title>Column type popup</title>
+
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center"
+                  fileref="images/AuthoringAssets/dtable-column-type-popup.png" format="PNG"/>
+              </imageobject>
+            </mediaobject>
+          </figure>
+
+          <para>By default the column type popup only shows the following simple types:-</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Add a new Metadata\Attribute column</para>
+            </listitem>
+
+            <listitem>
+              <para>Add a simple Condition</para>
+            </listitem>
+
+            <listitem>
+              <para>Set the value of a field</para>
+            </listitem>
+
+            <listitem>
+              <para>Set the value of a field on a new fact</para>
+            </listitem>
+
+            <listitem>
+              <para>Retract an existing fact</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Clicking on "Include advanced options" adds the following additional "advanced" column types for more
+          advanced use cases:-</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Add a Condition BRL fragment</para>
+            </listitem>
+
+            <listitem>
+              <para>Execute a Work Item</para>
+            </listitem>
+
+            <listitem>
+              <para>Set the value of a field with a Work Item parameter</para>
+            </listitem>
+
+            <listitem>
+              <para>Set the value of a field on a new Fact with a Work Item parameter</para>
+            </listitem>
+
+            <listitem>
+              <para>Add an Action BRL fragment</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Simple column types</title>
+
+          <section>
+            <title>Metadata</title>
+
+            <para>Zero or more meta-data columns can be defined, each represents the normal meta-data annotation on DRL
+            rules.</para>
+          </section>
+
+          <section>
+            <title>Attributes</title>
+
+            <para>Zero or more attribute columns representing any of the DRL rule attributes (e.g. salience, timer,
+            enabled etc) can be added. An additional pseudo attribute is provide in the guided decision table editor to
+            "negate" a rule. Use of this attribute allows complete rules to be negated. For example the following simple
+            rule can be negated as also shown.</para>
+
+            <programlisting>when
+  $c : Cheese( name == "Cheddar" )
+then
+  ...
+end</programlisting>
+
+            <programlisting>when
+  not Cheese( name == "Cheddar" )
+then
+  ...
+end</programlisting>
+          </section>
+
+          <section>
+            <title>Simple Condition</title>
+
+            <para>Conditions represent constraints on Fact Patterns defined in the left-hand side, or "when" portion, of
+            a rule. To define a condition column you must first select or define a Fact Pattern bound to a model class.
+            You can choose to negate the pattern. Once this has been completed you can define field constraints. If two
+            or more columns are defined using the same fact pattern binding the field constraints become composite field
+            constraints on the same pattern. If you define multiple bindings for a single model class each binding
+            becomes a separate model class in the left-hand side of the rule.</para>
+
+            <para>When you edit or create a new column, you will be given a choice of the type of constraint:-</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Literal : The value in the cell will be compared with the field using the operator.</para>
+              </listitem>
+
+              <listitem>
+                <para>Formula: The expression in the cell will be evaluated and then compared with the field.</para>
+              </listitem>
+
+              <listitem>
+                <para>Predicate : No field is needed, the expression will be evaluated to true or false.</para>
+              </listitem>
+            </itemizedlist>
+
+            <figure>
+              <title>Simple Condition popup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-condition-popup.png" format="PNG"
+                  />
+                </imageobject>
+              </mediaobject>
+            </figure>
+          </section>
+
+          <section>
+            <title>Set the value of a field</title>
+
+            <para>An Action to set the value of a field on previously bound fact. You have the option to notify the Rule
+            Engine of the modified values which could lead to other rules being re-activated.</para>
+
+            <figure>
+              <title>Set the value of a field popup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-setField-popup.png" format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+          </section>
+
+          <section>
+            <title>Set the value of a field on a new fact</title>
+
+            <para>An Action to insert a new Fact into the Rule Engine Working Memory and set the a value of one of the
+            new Facts' fields. You can choose to have the new Fact "logically inserted" meaning it will be automatically
+            retracted should the conditions leading to the action being invoked cease to be true. Please refer to the
+            Drools Expert documentation for details on Truth Maintenance and Logical insertions.</para>
+
+            <figure>
+              <title>Set the value of a field on a new fact popup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-insertField-popup.png"
+                    format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+          </section>
+
+          <section>
+            <title>Retract an existing fact</title>
+
+            <para>An Action to retract a bound Fact.</para>
+
+            <figure>
+              <title>Retract an existing fact popup</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-retractFact-popup.png"
+                    format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+          </section>
+        </section>
+
+        <section>
+          <title>Advanced column types</title>
+
+          <section>
+            <title>Condition BRL fragments</title>
+
+            <para>A construct that allows a BRL fragment to be used in the left-hand side of a rule. A BRL fragment is
+            authored using the Guided Rule Editor and hence all features available in that editor can be used to define
+            a decision table column; such as "from", "collect" and "accumulate" etc. When using the embedded Guided Rule
+            Editor field values defined as "Template Keys" will form columns in the decision table. Facts and Fact's
+            fields bound in the BRL fragment can be referenced by the simpler column types and vice-versa.</para>
+
+            <para>In the following example two Template Keys have been defined and hence two columns appear in the
+            decision table.</para>
+
+            <figure>
+              <title>Defining a Condition with BRL</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-condition-brl1-popup.png"
+                    format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>The resulting decision table</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-condition-brl2-popup.png"
+                    format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+          </section>
+
+          <section>
+            <title>Execute a Work Item</title>
+
+            <para>An Action invoking a jBPM Work Item Handler setting it's input parameters to bound Facts\Facts fields
+            values.</para>
+          </section>
+
+          <section>
+            <title>Set the value of a field with a Work Item parameter</title>
+
+            <para>An Action setting the value of a Fact's field to that of a jBPM Work Item Handlers result
+            parameter.</para>
+          </section>
+
+          <section>
+            <title>Set the value of a field on a new Fact with a Work Item parameter</title>
+
+            <para>An Action setting the value of a new Fact's field to that of a jBOM Work Item Handlers result
+            parameter.</para>
+          </section>
+
+          <section>
+            <title>Action BRL fragment</title>
+
+            <para>A construct that allows a BRL fragment to be used in the right-hand side of a rule. A BRL fragment is
+            authored using the Guided Rule Editor and hence all features available in that editor can be used to define
+            a decision table column. When using the embedded Guided Rule Editor field values defined as "Template Keys"
+            will form columns in the decision table. Facts bound in the BRL fragment can be referenced by the simpler
+            column types and vice-versa.</para>
+
+            <para>In the following example two Template Keys have been defined and hence two columns appear in the
+            decision table.</para>
+
+            <figure>
+              <title>Defining an Action with BRL</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-action-brl1-popup.png"
+                    format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+
+            <figure>
+              <title>The resulting decision table</title>
+
+              <mediaobject>
+                <imageobject>
+                  <imagedata align="center"
+                    fileref="images/AuthoringAssets/dtable-column-action-brl2-popup.png"
+                    format="PNG"/>
+                </imageobject>
+              </mediaobject>
+            </figure>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Using a Wizard</title>
+
+      <para>A Wizard can also be used to assist with defining the decision table columns.</para>
+
+      <para>The wizard can be chosen when first electing to create a new rule. The wizard provides a number of pages to
+      define the table:-</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Summary</para>
+        </listitem>
+
+        <listitem>
+          <para>Add Fact Patterns</para>
+        </listitem>
+
+        <listitem>
+          <para>Add Constraints</para>
+        </listitem>
+
+        <listitem>
+          <para>Add Actions to update facts</para>
+        </listitem>
+
+        <listitem>
+          <para>Add Actions to insert facts</para>
+        </listitem>
+
+        <listitem>
+          <para>Columns to expand</para>
+        </listitem>
+      </itemizedlist>
+
+      <section>
+        <title>Selecting the wizard</title>
+
+        <para>The "New Wizard" dialog shows a "Use wizard" checkbox when the asset type is set to "Decision Table (Web -
+        guided editor)".</para>
+
+        <figure>
+          <title>Selecting the wizard</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard1.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Summary page</title>
+
+        <para>the summary page shows a few basic details about the decision table and allows the asset name to be
+        changed.</para>
+
+        <figure>
+          <title>Summary page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard2.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Add Fact Patterns page</title>
+
+        <para>This page allows Fact types to be defined that will form the "When" columns of the rules. Fact types that
+        are available in your model will be shown in the left-hand listbox. Select a Fact type and use the "&gt;&gt;"
+        button to add it to your list of chosen facts on the right-hand listbox. Removal is a similar process: the Fact
+        that is no longer required can be selected in the right-hand listbox and the "&lt;&lt;" button used to remove
+        it. All Fact types need to be bound to a variable. Incomplete Fact types will be highlighted and a warning
+        message displayed. You will be unable to finish your definition until all warnings have been resolved.</para>
+
+        <figure>
+          <title>Add Fact Patterns page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard3a.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Example of an incomplete Fact definition</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard3b.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Add Constraints page</title>
+
+        <para>This page allows field constraints on the Fact types you have chosen to use in the decision table to be
+        defined. Fact types chosen on the previous Wizard page are listed in the right-hand listbox. Selecting a Fact
+        type by clicking on it will result in a list of available fields being shown in the middle listbox together with
+        an option to create a predicate that do not require a specific field. Fields can be added to the pattern's
+        constraints by clicking on the field and then the "&gt;&gt;" button. Fields can be removed from the pattern
+        definition by clicking on the Condition in the right-hand listbox and then the "&lt;&lt;" button. All fields
+        need to have a column header and operator. Incomplete fields will be highlighted and a warning message
+        displayed. You will be unable to finish your definition until all warnings have been resolved.</para>
+
+        <figure>
+          <title>Add Constraints page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard4.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Add Actions to update facts page</title>
+
+        <para>Fact types that have been defined can be updated in the consequence, or action, part of a rule. This page
+        allows such actions to be defined. Fact types added to the decision table definition are listed in the left-hand
+        listbox. Selecting a Fact type by clicking on it will result in a list of available fields being shown in the
+        middle listbox. Fields that need to be updated by the rule can be added by selecting an available field and
+        pressing the "&gt;&gt;" button. Fields can be removed similarly by clicking on a chosen field and then the
+        "&lt;&lt;" button. All actions require a column header. Any incomplete actions will be highlighted and a warning
+        message displayed. You will be unable to finish your definition until all warnings have been resolved.</para>
+
+        <figure>
+          <title>Add Actions to update facts page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard5.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Add Actions to insert facts page</title>
+
+        <para>Actions can also be defined to insert new Facts into the Rule Engine. A list of Fact types available in
+        your model are listed in the left-hand listbox. Select those you wish to include in your decision table
+        definition by clicking on them and pressing the "&gt;&gt;" button between the left most listbox and that titled
+        "Chosen patterns". Removal is a similar process whereby a chosen pattern can be selected and removed by pressing
+        the "&lt;&lt;" button. Selection of a chosen pattern presents the user with a list of available fields. Fields
+        that need to have values set by the action can be added by selecting them and pressing the "&gt;&gt;" button
+        between the "Available fields" and "Chosen fields" listbox. Removal is a similar process as already described.
+        New Facts need to be bound to a variable and have a column heading specified. Incomplete Facts and\or fields
+        will be highlighted and a warning message displayed. You will be unable to finish your definition until all
+        warnings have been resolved.</para>
+
+        <figure>
+          <title>Add Actions to insert facts page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard6.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+
+      <section>
+        <title>Columns to expand page</title>
+
+        <para>This page controls how the decision table, based upon Conditions defined on the prior pages, will be
+        created. Condition columns defined with an optional list of permitted values can be used to create rows in the
+        decision table. Where a number of Condition columns have been defined with lists of permitted values the
+        resulting table will contain a row for every combination of values; i.e. the decision table will be in expanded
+        form. By default all Condition columns defined with value lists will be included in the expansion however you
+        are able to select a sub-set of columns if so required. This can be accomplished by unticking the "Fully expand"
+        checkbox and adding columns to the right-hand listbox. If no expansion is required untick the "Fully expand"
+        checkbox and ensure zero columns are added to the right-hand listbox.</para>
+
+        <figure>
+          <title>Columns to expand page</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard7a.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Example of a Condition column with optional values defined</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard7b.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Example of a decision table generated with expanded columns</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard7c.png"
+                format="PNG"/>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Rule definition</title>
+
+    <para>This section allows individual rules to be defined using the columns defined earlier.</para>
+
+    <para>Rows can be appended to the end of the table by selecting the "Add Row" button. Rows can also be inserted by
+    clicking the "+" icon beside an existing row. The "-" icon can be used to delete rows.</para>
+
+    <figure>
+      <title>Rule definition</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/AuthoringAssets/dtable-body.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section>
+    <title>Audit Log</title>
+
+    <para>An audit log has been added to the web-guided Decision Table editor to track additions, deletions and
+    modifications.</para>
+
+    <para>By default the audit log is not configured to record any events, however, users can easily select the events
+    in which they are interested.</para>
+
+    <para>The audit log is persisted whenever the asset is checked in.</para>
+
+    <figure>
+      <title>An empty audit log</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/AuthoringAssets/audit-log1.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Once the capture of events has been enabled all susbsequent operations are recorded. Users are able to perform
+    the following:-</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Record an explanatory note beside each event.</para>
+      </listitem>
+
+      <listitem>
+        <para>Delete an event from the log. Event details remain in the underlying repository.</para>
+      </listitem>
+    </itemizedlist>
+
+    <figure>
+      <title>Example of audit events</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/AuthoringAssets/audit-log2.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+</section>
