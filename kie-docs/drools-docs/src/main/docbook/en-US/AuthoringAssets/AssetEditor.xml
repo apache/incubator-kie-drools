@@ -9,7 +9,7 @@
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>The Asset Editor</title>
 
-  <para>The Asset Editor is the principle component of Guvnor's
+  <para>The Asset Editor is the principle component of Drools Workbench's
   User-Interface. It consists of two tabs:-</para>
 
   <itemizedlist>

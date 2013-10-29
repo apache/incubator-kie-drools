@@ -34,11 +34,11 @@
   <para>In the above diagram - the "MM" indicates a value that will be used in
   the rule, yet "Mini Mal" will be displayed in the GUI.</para>
 
-  <para>Getting data lists from external data sources: It is possible to have
-  the Guvnor call a piece of code which will load a list of Strings. To do
+  <para>Getting data lists from external data sources: It is possible to have 
+    Drools Workbench call a piece of code which will load a list of Strings. To do
   this, you will need a bit of code that returns a <code>java.util.List</code>
-  (of String's) to be on the classpath of the Guvnor. Instead of specifying a
-  list of values in the Guvnor itself - the code can return the list of
+    (of String's) to be on the classpath of Drools Workbench. Instead of specifying a
+    list of values in Drools Workbench itself - the code can return the list of
   Strings (you can use the "=" inside the strings if you want to use a
   different display value to the rule value, as normal). For example, in the
   'Person.age' line above, you could change it to:</para>

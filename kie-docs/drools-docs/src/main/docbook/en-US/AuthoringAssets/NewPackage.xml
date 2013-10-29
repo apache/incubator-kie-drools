@@ -15,13 +15,13 @@
   copied over and over if needed. Package configuration is most definitely a
   technical task that requires the appropriate expertise.</para>
 
-  <para>All assets live in "packages" in the Guvnor - a package is like a
+  <para>All assets live in "packages" in Drools Workbench - a package is like a
   folder (it also serves as a "namespace"). A home folder for rule assets to
   live in. Rules in particular need to know what the fact model is, what the
   namespace is etc.</para>
 
   <para>So while rules (and assets in general) can appear in any number of
-  categories, they only live in one package. If you think of the Guvnor as a
+    categories, they only live in one package. If you think of Drools Workbench as a
   file system, then each package is a folder, and the assets live in that
   folder - as one big happy list of files. When you create a deployment
   snapshot of a package, you are effectively copying all the assets in that
@@ -62,7 +62,7 @@
 
     <para>It is also possible to create a package by importing an existing DRL
     file. When you choose to create a new package, you can choose an option to
-    upload a <filename>.drl</filename> file. The Guvnor will then attempt to
+    upload a <filename>.drl</filename> file. Drools Workbench will then attempt to
     understand that DRL, break create a package for you. The rules in it will
     be stored as individual assets (but still as DRL text content). Note that
     to actually build the package, you will need to upload an appropriate

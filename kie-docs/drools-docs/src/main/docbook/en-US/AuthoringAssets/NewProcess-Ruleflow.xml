@@ -12,9 +12,9 @@
 
     <para>Rule flows: Rule flows allow you to visually describe the steps
     taken - so not all rules are evaluated at once, but there is a flow of
-    logic. Rule flows are not covered in this chapter on the Guvnor, but you
+    logic. Rule flows are not covered in this chapter on Drools Workbench, but you
     can use the IDE to graphically draw ruleflows, and upload the
-    <filename>.rfm</filename> file to the Guvnor.</para>
+     <filename>.rfm</filename> file to Drools Workbench.</para>
 
     <para>Similar to spreadsheets, you upload/download ruleflow files (the
     eclipse IDE has a graphical editor for them). The details of Rule Flows

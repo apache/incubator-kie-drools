@@ -18,7 +18,7 @@
   continue to be used.</para>
 
   <para>Rule Templates can often be used as an alternative for Decision Tables
-  in Drools Guvnor.</para>
+    in Drools Workbench.</para>
 
   <section>
     <title>Creating a rule template</title>
@@ -96,7 +96,7 @@
 
     <para>When you have completed the definition of your rule template you
     need to enter the data that will be used to interpolate the "Template Key"
-    place-holders. Drools Guvnor provides the facility to enter data in a
+    place-holders. Drools Workbench provides the facility to enter data in a
     flexible grid within the guided editor screen. The grid editor can be
     launched by pressing the "Load Template Data" button on the guided editor
     screen.</para>
