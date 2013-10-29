@@ -14,6 +14,7 @@ import org.kie.api.builder.model.WorkItemHandlerModel;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.util.List;
@@ -42,7 +43,8 @@ public class KieModuleModelTest {
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
                 .setType(KieSessionType.STATEFUL)
-                .setClockType( ClockTypeOption.get("realtime") )
+                .setClockType(ClockTypeOption.get("realtime"))
+                .setBeliefSystem(BeliefSystemTypeOption.get("jtms"))
                 .setFileLogger("drools.log", 10, true)
                 .setDefault(true);
 
@@ -89,6 +91,7 @@ public class KieModuleModelTest {
         assertSame(kieBaseModelXML, ((KieSessionModelImpl)kieSessionModelXML).getKieBaseModel());
         assertEquals(KieSessionType.STATEFUL, kieSessionModelXML.getType());
         assertEquals(ClockTypeOption.get("realtime"), kieSessionModelXML.getClockType());
+        assertEquals(BeliefSystemTypeOption.get("jtms"), kieSessionModelXML.getBeliefSystem());
 
         FileLoggerModel fileLogger = kieSessionModelXML.getFileLogger();
         assertEquals("drools.log", fileLogger.getFile());

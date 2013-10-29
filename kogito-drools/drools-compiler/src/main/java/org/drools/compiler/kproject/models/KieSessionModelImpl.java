@@ -4,12 +4,14 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.drools.core.BeliefSystemType;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.builder.model.WorkItemHandlerModel;
+import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.util.ArrayList;
@@ -21,8 +23,11 @@ public class KieSessionModelImpl
     private String                           name;
 
     private KieSessionType                   type =  KieSessionType.STATEFUL;
+
     private ClockTypeOption                  clockType = ClockTypeOption.get( "realtime" );
-    
+
+    private BeliefSystemTypeOption           beliefSystem = BeliefSystemTypeOption.get(BeliefSystemType.SIMPLE.toString());
+
     private String                           scope = "javax.enterprise.context.ApplicationScoped";
 
     private KieBaseModelImpl                 kBase;
@@ -102,7 +107,16 @@ public class KieSessionModelImpl
         this.clockType = clockType;
         return this;
     }
-    
+
+    public BeliefSystemTypeOption getBeliefSystem() {
+        return beliefSystem;
+    }
+
+    public KieSessionModel setBeliefSystem(BeliefSystemTypeOption beliefSystem) {
+        this.beliefSystem = beliefSystem;
+        return this;
+    }
+
     @Override
     public KieSessionModel setScope(String scope) {
         this.scope = scope;
@@ -194,6 +208,9 @@ public class KieSessionModelImpl
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
+            if ( kSession.getBeliefSystem() != null ) {
+                writer.addAttribute( "beliefSystem", kSession.getBeliefSystem().getBelieSystemType().toLowerCase() );
+            }
             if (kSession.getScope() != null) {
                 writer.addAttribute("scope", kSession.getScope() );
             }
@@ -240,6 +257,11 @@ public class KieSessionModelImpl
             String clockType = reader.getAttribute("clockType");
             if (clockType != null) {
                 kSession.setClockType(ClockTypeOption.get(clockType));
+            }
+
+            String beliefSystem = reader.getAttribute( "beliefSystem" );
+            if ( beliefSystem != null ) {
+                kSession.setBeliefSystem( BeliefSystemTypeOption.get( beliefSystem ) );
             }
 
             String scope = reader.getAttribute("scope");
