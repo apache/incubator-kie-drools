@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xml:id="chap-dashbuilder-security"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Managing security</title>
+
+  <xi:include href="Security/Overview.xml"/>
+
+  <para>Let's see next how to define custom authorization policies to
+    grant/deny access to a workspaces, pages or panels instances per
+    role.
+  </para>
+
+  <xi:include href="Security/WorkspacePermissions.xml"/>
+  <xi:include href="Security/PagePermissions.xml"/>
+  <xi:include href="Security/PanelPermissions.xml"/>
+  <xi:include href="Security/HomePages.xml"/>
+
+
+  <para>To wrap up, it's worth to mention that thanks to the permission system we can build a workspace structure with
+    several pages, menus and panels
+    and start defining what pages and panels within a page will be visible for each role. We can also define special
+    kind of users and give
+    them restricted access to certain tooling features or even restricted access to a page subset. The chances here
+    are infinite.
+  </para>
+
+</chapter>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-security-overview" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+
+  <title>Overview</title>
+
+  <para>When we talk about security we refer to the ability to define
+    authorization policies in order to grant or deny users access to a given
+    resource. Therefore, we first have to define who are the target users and
+    what are the resources we want to protect. As resources we have the
+    following:
+  </para>
+
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Workspace</emphasis>: A set of pages with a
+        shared look and feel. It may contain one or more dashboards.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Page</emphasis>: A combination of panels
+        spread all over the screen and tidy up according to a given layout. A
+        dashboard is basically a page used for monitoring a set of
+        indicators.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para><emphasis role="bold">Panel</emphasis>: A reusable and
+        configurable graphical component ready to be embedded and used. f.i: a
+        KPI panel, a tree menu panel or an HTML panel.
+      </para>
+    </listitem>
+  </itemizedlist>
+
+  <para>As of users, the application doesn't own a user repository. Users are
+    managed outside the application. This means the login itself is delegated to
+    the application server. After login, the application
+    server pass to the application both the id of the user and the roles he/she has.
+    The full list of available roles are defined into the application's <emphasis>WEB-INF/web.xml </emphasis>file.
+  </para>
+
+</section>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-introduction-whatisit" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+    <title>What is Dashbuilder?</title>
+
+    <para>Dashbuilder is a full featured web application which allows
+        non-technical users to visually create business dashboards. Dashboard data
+        can be extracted from heterogeneous sources of information such as JDBC
+        databases or regular text files.
+    </para>
+
+    <para>Some ready-to-use sample dashboards are provided for demo and
+        learning purposes.
+    </para>
+
+    <orderedlist>
+        <listitem>
+            <para>Key features:</para>
+
+            <itemizedlist spacing="compact">
+                <listitem>
+                    <para>Visual configuration of dashboards (Drag'n'drop).</para>
+                </listitem>
+
+                <listitem>
+                    <para>Graphical representation of KPIs (Key Performance
+                        Indicators).
+                    </para>
+                </listitem>
+
+                <listitem>
+                    <para>Configuration of interactive report tables.</para>
+                </listitem>
+
+                <listitem>
+                    <para>Data export to Excel and CSV format.</para>
+                </listitem>
+
+                <listitem>
+                    <para>Filtering and search, both in-memory or SQL based.</para>
+                </listitem>
+
+                <listitem>
+                    <para>Data extraction from external systems, through different
+                        protocols.
+                    </para>
+                </listitem>
+
+                <listitem>
+                    <para>Granular access control for different user profiles.</para>
+                </listitem>
+
+                <listitem>
+                    <para>Look'n'feel customization tools.</para>
+                </listitem>
+
+                <listitem>
+                    <para>Pluggable chart library architecture.</para>
+                </listitem>
+
+                <listitem>
+                    <para>Chart libraries provided: NVD3 &amp; OFC2.</para>
+                </listitem>
+            </itemizedlist>
+        </listitem>
+
+        <listitem>
+            <para>Target users:</para>
+
+            <itemizedlist spacing="compact">
+                <listitem>
+                    <para>Managers / Business owners. Consumer of dashboards and
+                        reports.
+                    </para>
+                </listitem>
+
+                <listitem>
+                    <para>IT / System architects. Connectivity and data
+                        extraction.
+                    </para>
+                </listitem>
+
+                <listitem>
+                    <para>Analysts. Dashboard composition &amp; configuration.</para>
+                </listitem>
+            </itemizedlist>
+        </listitem>
+
+        <listitem>
+            <para>Distribution:</para>
+
+            <itemizedlist spacing="compact">
+                <listitem>
+                    <para>Independent application to deploy in WAR format.</para>
+                    <para>You can get detailed information about how to build the different binary distributions here:
+                        <link href="https://github.com/droolsjbpm/dashboard-builder/tree/master/builder">
+                            https://github.com/droolsjbpm/dashboard-builder/tree/master/builder
+                        </link>
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </listitem>
+
+    </orderedlist>
+</section>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section xml:id="sect-dashbuilder-security-home_pages" xml:base=".." version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+
+  <title>Home pages</title>
+
+  <para>The home page is the page the user will be redirected after
+    initializing its session. In order to get the appropriate home page for
+    the user the security subsystem carries out the following tasks:
+  </para>
+
+  <orderedlist>
+    <listitem>
+      <para>Just after login the security subsystem get the roles of the
+        users and evaluates what workspaces the user is allowed to enter
+        ('<emphasis>Access</emphasis>' action granted)
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>Once the list of workspace is calculated then the system selects
+        the workspace identified as default (see workspace properties), if any
+        then get the first in the list.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>The home page settings are read for the target role and
+        workspace. The system evaluates if the specified home page is visible
+        for the user ('<emphasis>View</emphasis>' action granted). If not then
+        the system takes the first visible page from the full list of pages in
+        the workspace. The following screenshot shows the home page
+        configuration screen.
+      </para>
+    </listitem>
+  </orderedlist>
+
+  <mediaobject>
+    <imageobject>
+      <imagedata align="center" fileref="images/Security/HomePages.png"
+                 valign="top"/>
+    </imageobject>
+  </mediaobject>
+
+</section>
