@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:id="sect-datamodeler-firstSteps"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>First steps to create a data model</title>
+
+  <para>By default, a data model is always constrained to the context of a
+    project. For the purpose of this tutorial, we will assume that a correctly
+    configured project already exists.
+  </para>
+
+  <para>To start the creation of a data model inside a project, take the
+    following steps:
+  </para>
+
+  <orderedlist>
+    <listitem>
+      <para>From the home panel, select the authoring perspective</para>
+
+      <figure>
+        <title>Go to authoring perspective</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/authoring.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+    </listitem>
+
+    <listitem>
+      <para>If not open already, start the Project Explorer panel</para>
+
+      <figure>
+        <title>Open project explorer panel</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/explorer.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+    </listitem>
+
+    <listitem>
+      <para>From Project Explorer panel (the "Business" tab), select the
+        organizational unit, repository, and the project the data model has to
+        be created for. For this tutorial's example, the values "Tutorial",
+        "Examples", and "Purchases" were respectively chosen
+      </para>
+
+      <figure>
+        <title>Choose project</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/explorer2.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+    </listitem>
+
+    <listitem>
+      <para>Open the Data Modeller tool by clicking on the "Tools"
+        authoring-menu entry, and selecting the "Data Modeller" option from the
+        drop-down menu
+      </para>
+
+      <figure>
+        <title>Open data modeller</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/tools.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+    </listitem>
+  </orderedlist>
+
+  <para>This will start up the Data Modeller tool, which has the following
+    general aspect:
+  </para>
+
+  <figure>
+    <title>Data modeller overview</title>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/DataModeler/general.jpg"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <para/>
+
+  <para>The Data Modeller panel is divided into the following sections:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>The leftmost "model browser" section, which shows a list of
+        already existing data entities (if any are present, as in this example's
+        case). Above the list the project's name and a button for new object
+        creation are shown. Note that as soon as any changes are applied to the
+        project, an '*' will be appended to the project's name to notify the
+        user of the existence of non-persisted changes.
+      </para>
+
+      <figure>
+        <title>The data model browser</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/modelbrowser.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+    </listitem>
+
+    <listitem>
+      <para>The central section consists of three distinct parts:</para>
+
+      <para>At the top, the "bread crumb widget": this is a navigational aid,
+        which allows navigating back and forth through the data model, when
+        accessing properties that themselves are model entities. The bread crumb
+        trail shown in the image indicates that the object browser is currently
+        visualizing the properties of an entity called "Purchase Order Line",
+        which we accessed through another entity ("Purchase Order"), where it is
+        defined as a field.
+      </para>
+
+      <figure>
+        <title>The bread crumb</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/breadcrumb.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para>the section beneath the bread crumb widget, is dedicated to the
+        creation of new fields.
+      </para>
+
+      <figure>
+        <title>New field creation</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/newattrib.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+
+      <para>the bottom section comprises the Entity's "field browser",
+        which displays a list of the currently selected data object's (in the
+        model browser) fields.
+      </para>
+
+      <figure>
+        <title>The entity field browser</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/attribbrowser.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+
+      <para/>
+    </listitem>
+
+    <listitem>
+      <para>The "entity / field property editor". This is the rightmost
+        section of the Data Modeller screen which visualizes a tabbed pane. The
+        Data object tab allows the user to edit the properties of the currently
+        selected entity in the model browser, whilst the Field tab enables
+        edition of the properties of any of the currently selected object's
+        fields.
+      </para>
+
+      <figure>
+        <title>The entity/field property editor</title>
+
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/DataModeler/propeditor.jpg"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
+    </listitem>
+  </itemizedlist>
+
+  <para/>
+</section>
