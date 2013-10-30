@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
 import org.kie.api.cdi.KBase;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -76,7 +76,7 @@ public class CDITest {
         KieBase kBase;
 
         public void test(Environment env) {
-            KieSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kBase, null, env);
+            KieSession ksession = KieServices.Factory.get().getStoreServices().newKieSession(kBase, null, env);
 
             List<?> list = new ArrayList<Object>();
 
