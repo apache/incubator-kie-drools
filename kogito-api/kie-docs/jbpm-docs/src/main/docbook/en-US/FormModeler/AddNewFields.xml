@@ -17,6 +17,7 @@
 
   <para>Let's see what has been created automatically for this purchase order form.</para>
   <figure>
+    <title>Form properties have been added by default, but are not still configured</title>
     <screenshot>
       <mediaobject>
         <imageobject>
@@ -25,64 +26,59 @@
       </mediaobject>
     </screenshot>
   </figure>
-  <note>
-    <para>
-      All the properties have been added by default, but are not still configured.
-    </para>
-  </note>
-  <note>
-    <para>
-      <itemizedlist>
-        <listitem>
-          <para>Add fields by origin: this tab allows you to add fields to the form based on the data origins defined.
-            These fields will have the correct configuration on the "Input binding expression" and "Output binding expression" properties so whe the
-            form is submitted the fields values will be stored in the corresponding Data Origin.
-            <figure>
-              <title>Add field by origin</title>
-              <screenshot>
-                <mediaobject>
-                  <imageobject>
-                    <imagedata fileref="images/FormModeler/17_add_fields_origin.png"/>
-                  </imageobject>
-                </mediaobject>
-              </screenshot>
-            </figure>
-          </para>
-        </listitem>
-        <listitem>
-          <para>Add fields by type: this tab allows you to freely add fields to the form from the Field Types palette on the Form Modeler.
-            This fields won't be storing it's value on any Data Origin until they have a correct configuration on the "Input binding expression" and "Output binding expression" properties.
-            <figure>
-              <title>Add field by type</title>
-              <screenshot>
-                <mediaobject>
-                  <imageobject>
-                    <imagedata fileref="images/FormModeler/17_add_fields_type.png"/>
-                  </imageobject>
-                </mediaobject>
-              </screenshot>
-            </figure>
-            To see a complete list of the available field types go to
-            <link linkend="fieldTypes">Field types section</link>.
-          </para>
-        </listitem>
-      </itemizedlist>
-    </para>
-    <para>
-      Notice the data model 'po' of type 'org.jbpm.examples.purchases.PurchaseOrder' is composed of three properties.
-      <itemizedlist>
-        <listitem>
-          <para>Simple : property of type text (description). We will adjust the view settings.</para>
-        </listitem>
-        <listitem>
-          <para>Complex: property of type object (header).</para>
-        </listitem>
-        <listitem>
-          <para>Complex: property of type array of objects (lines)</para>
-        </listitem>
-      </itemizedlist>
-    </para>
-  </note>
+
+  <para>
+    <itemizedlist>
+      <listitem>
+        <para>Add fields by origin: this tab allows you to add fields to the form based on the data origins defined.
+          These fields will have the correct configuration on the "Input binding expression" and "Output binding expression" properties so whe the
+          form is submitted the fields values will be stored in the corresponding Data Origin.
+          <figure>
+            <title>Add field by origin</title>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/FormModeler/17_add_fields_origin.png"/>
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+        </para>
+      </listitem>
+      <listitem>
+        <para>Add fields by type: this tab allows you to freely add fields to the form from the Field Types palette on the Form Modeler.
+          This fields won't be storing it's value on any Data Origin until they have a correct configuration on the "Input binding expression" and "Output binding expression" properties.
+          <figure>
+            <title>Add field by type</title>
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/FormModeler/17_add_fields_type.png"/>
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+          To see a complete list of the available field types go to
+          <link linkend="sect-formmodeler-fieldTypes">Field types section</link>.
+        </para>
+      </listitem>
+    </itemizedlist>
+  </para>
+  <para>
+    Notice the data model 'po' of type 'org.jbpm.examples.purchases.PurchaseOrder' is composed of three properties.
+    <itemizedlist>
+      <listitem>
+        <para>Simple : property of type text (description). We will adjust the view settings.</para>
+      </listitem>
+      <listitem>
+        <para>Complex: property of type object (header).</para>
+      </listitem>
+      <listitem>
+        <para>Complex: property of type array of objects (lines)</para>
+      </listitem>
+    </itemizedlist>
+  </para>
+
   <para>
     Now all these properties had to be configured.
   </para>
