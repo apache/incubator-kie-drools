@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base=".." xml:id="sect-formmodeler-specificProp"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns2="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Specific field properties</title>
+
+  <para>Let's explain the specific properties of each field type:</para>
+
+  <itemizedlist>
+    <listitem>
+      <para>Short Text (java.lang.String)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Compatible field type: Long text, E-mail, Rich text</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Show html: indicates whether the contents of the field
+                  is interpreted as html in show mode.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. to enter expressions that will be evaluated to
+                  set the field value. These expressions are descrived in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in
+                  <link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Pattern. Allow introduce an expression to specify the
+                  validation of the field. In case that the field value
+                  introduced hasn’t match the expression, and error is thrown
+                  and the error message has to be shown.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Long Text (java.lang.String)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Compatible field type: Long text, E-mail, Rich text</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Height: The number or rows to show at text area.</para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. to enter expressions that will be evaluated to
+                  set the field value. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in
+                  <link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Pattern. Allow introduce an expression to specify the
+                  validation of the field. In case that the field value
+                  introduced hasn’t match the expression, and error is thrown
+                  and the error message has to be shown.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Float (java.lang.Float)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. to enter expressions that will be evaluated to
+                  set the field value. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in
+                  <link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Pattern. Allow introduce an expression to specify how
+                  the Float value has to be displayed. The pattern allowed is
+                  show in section pattern in
+                  <link xlink:href="http://docs.oracle.com/javase/6/docs/api/java/text/DecimalFormat.html">
+                    http://docs.oracle.com/javase/6/docs/api/java/text/DecimalFormat.html
+                  </link>
+                </para>
+
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Decimal (java.lang.Double)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. Used to enter expressions that will be
+                  evaluated to set the field value. These expressions are
+                  described in<link linkend="FormulasExpression">Formula &amp;
+                    expression section</link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Pattern. Allow introduce an expression to specify how
+                  the Double value has to be displayed. The pattern allowed is
+                  show in section pattern in
+                  <link xlink:href="http://docs.oracle.com/javase/6/docs/api/java/text/DecimalFormat.html">
+                    http://docs.oracle.com/javase/6/docs/api/java/text/DecimalFormat.html
+                  </link>
+                </para>
+
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>BigDecimal (java.math.BigDecimal)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. Used to enter expressions that will be
+                  evaluated to set the field value. These expressions are
+                  described in<link linkend="FormulasExpression">Formula &amp;
+                    expression section</link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Pattern. Allow introduce an expression to specify how
+                  the BigDecimal value has to be displayed. The pattern allowed
+                  is show in section pattern in
+                  <link xlink:href="http://docs.oracle.com/javase/6/docs/api/java/text/DecimalFormat.html">
+                    http://docs.oracle.com/javase/6/docs/api/java/text/DecimalFormat.html
+                  </link>
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Big integer (java.math.BigInteger)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. Used to enter expressions that will be
+                  evaluated to set the field value. These expressions are
+                  described in<link linkend="FormulasExpression">Formula &amp;
+                    expression section</link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Short (java.lang.Short)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. Used to enter expressions that will be
+                  evaluated to set the field value. These expressions are
+                  described in<link linkend="FormulasExpression">Formula &amp;
+                    expression section</link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Integer (java.lang.Integer)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. Used to enter expressions that will be
+                  evaluated to set the field value. These expressions are
+                  described in<link linkend="FormulasExpression">Formula &amp;
+                    expression section</link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Long Integer (java.lang.Long)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. Used to enter expressions that will be
+                  evaluated to set the field value. These expressions are
+                  described in<link linkend="FormulasExpression">Formula &amp;
+                    expression section</link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Range value. A range formula allows you to let you
+                  specify the values that the user can select from an specific
+                  field. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>E-mail (java.lang.String)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Compatible field type: Short text, Long text, Rich text</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Checkbox (java.lang.Boolean)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Rich text: (java.lang.String)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Compatible field type: Short text, Long text, E-mail</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>MaxLength: Maximum number of characters allowed.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Height: The number or rows to show at text area.</para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Timestamp (java.util.Date)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Compatible field type: Short date</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. to enter expressions that will be evaluated to
+                  set the field value. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Short date (java.util.Date)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Compatible field type: Timestamp</para>
+        </listitem>
+
+        <listitem>
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Size: input text length.</para>
+              </listitem>
+
+              <listitem>
+                <para>Required: Indicates if it’s mandatory to fill this
+                  field.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Formula. to enter expressions that will be evaluated to
+                  set the field value. These expressions are described in<link
+                      linkend="FormulasExpression">Formula &amp; expression section
+                  </link>.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Default Value formula. Expression to set the field
+                  default value.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Simple subform (Object)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>For more details see section<link
+              linkend="subformSimple">Simple Object (Subform field
+            Type)</link>.
+          </para>
+
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Default form. Show the list of available forms to select
+                  what one will be displayed to show the object.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+
+    <listitem>
+      <para>Multiple subform (Multiple Object)</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>For more details see section<link
+              linkend="multipleSubform">Arrays of objects.( Multiple subform field
+            Type)</link>.
+          </para>
+
+          <para>Specific properties
+            <itemizedlist>
+              <listitem>
+                <para>Default form. Show the list of available forms to select
+                  what one will be displayed to show the object when no other
+                  form is configured with an specific purpose.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Preview form. If a form is specified, it will be used to
+                  show the item details
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Table form. If a form is specified, it will be used to
+                  show the table columns when the item list is showed
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>New item text. Text to show at New Item button</para>
+              </listitem>
+
+              <listitem>
+                <para>Add item text. Text to show at Add Item button</para>
+              </listitem>
+
+              <listitem>
+                <para>Cancel text. Text to show at Cancel button</para>
+              </listitem>
+
+              <listitem>
+                <para>Allow remove Items. If this check is selected, the form
+                  allow remove items in table view.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Allow edit items. If this check is selected, the form
+                  allow edit items in table view.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Allow preview items. If this check is selected, the form
+                  allow preview items in table view.
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Hide creation button. Check to not show the creation
+                  button
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Expanded. If is checked, when a new item is being added,
+                  the field display the table with the existing items and the
+                  creation form at same time
+                </para>
+              </listitem>
+
+              <listitem>
+                <para>Allow data enter in table mode. Allow modify data in
+                  table view directly.
+                </para>
+              </listitem>
+            </itemizedlist>
+          </para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+  </itemizedlist>
+</section>

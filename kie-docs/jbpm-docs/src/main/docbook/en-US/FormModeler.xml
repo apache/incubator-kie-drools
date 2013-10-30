@@ -1,9 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter version="5.0" xml:id="jBPMFormModeler"
+<chapter version="5.0" xml:base="./" xml:id="chap-formmodeler"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="Overview/" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
   <title>Form Modeler</title>
 
+  <para>
+    This chapter intends to describe in a simple ways all the steps required to create a process with human tasks, generate and modify the forms for these tasks and execute them.
+    It will provide initial guidance to perform all initial steps, but it will not provide a full description of all available features.</para>
+  <para>
+    Given that forms are going to be used in tasks, it's possible to generate forms automatically from process variables and task definitions. These forms can be later be modified by using the form editor.
+    In runtime, forms will receive data from process variables, display it to the user and capture his input, and then finally updating process variables again with the new values.
+  </para>
+  <para>
+    The following example will show all the steps to follow to create a form for the 'Create order' task in the process below.
+  </para>
+
+  <figure>
+    <title>Process example</title>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/FormModeler/1_img_process.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <para>
+    This form must look like the following in execution:
+  </para>
+  <figure>
+    <title>Process example</title>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/FormModeler/2_execution.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <xi:include href="FormModeler/ConfigureProcess.xml" />
+  <xi:include href="FormModeler/GeneratingForms.xml" />
+  <xi:include href="FormModeler/EditForms.xml" />
+  <xi:include href="FormModeler/ExecutingForms.xml" />
 </chapter>
+
