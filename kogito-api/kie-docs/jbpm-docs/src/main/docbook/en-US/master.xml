@@ -46,6 +46,7 @@
   <xi:include href="Designer.xml"/>
   <xi:include href="DataModeler.xml"/>
   <xi:include href="FormModeler.xml"/>
+  <xi:include href="RuntimeManagement.xml"/>
   <xi:include href="Console.xml"/>
   <xi:include href="BAM.xml"/>
   <xi:include href="RemoteAPI.xml"/>

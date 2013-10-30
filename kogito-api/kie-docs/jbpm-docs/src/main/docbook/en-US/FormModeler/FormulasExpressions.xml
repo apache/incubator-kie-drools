@@ -144,7 +144,7 @@
         <programlisting>="<b>" + {sum(po_lines/line_total)} + "</b>"
         </programlisting>
         we are using the XPATH function sum() that is going to sumarize the totals of all the lines. So after creating
-        some Lines the form will look like this
+        some Lines the form will look like this:
       </para>
       <figure>
         <screenshot>
@@ -183,9 +183,9 @@
         </screenshot>
       </figure>
       <para>As you can see that field is being shown as a select box and it has a range formula that
-        specifies the values like this
+        specifies the values like this:
         <programlisting language="shell">{approve,Approve order;reject,Reject order;modifications,Request Modifications}</programlisting>
-        this expression is defining 3 duos of value/”text to show” separated with the character ‘,’
+        This expression is defining 3 duos of value/”text to show” separated with the character ‘,’
         and each of this duos is separated from each other other with the ‘;’ character. So due
         this formula the resulting select box will show:
       </para>

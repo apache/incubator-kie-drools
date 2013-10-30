@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base=".." xml:id="sect-formmodeler-customFieldTypesConfiguration"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns2="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Configuring and using Custom Field Types</title>
+
+  <para>
+    Now let's see how to use and configure and use a Custom Field type. Following the example on the previous chapter, we have created a File Input type and
+    we have it already installed on our application. So now we are going to create a new form and add a Short Text property and turn it into a File Input and
+    edit the field properties changing the Field Type from
+    <emphasis>Short text</emphasis>
+    to<emphasis>Custom field</emphasis>.
+    <figure>
+      <title>Changing a field type to<emphasis>Custom field</emphasis></title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/36_custom_field_types_changing_type.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </para>
+  <para>
+    After changing the field type a new set of properties will appear:
+    <figure>
+      <title>Custom field properties configuration form</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/37_custom_field_type_properties.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <para>
+      <table frame="all">
+        <title>Custom field properties</title>
+        <tgroup align="left" cols="2" colsep="1" rowsep="1">
+          <thead>
+            <row>
+              <entry>Property</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>Field type</entry>
+              <entry>Can change the field type to other compatible field types</entry>
+            </row>
+            <row>
+              <entry>Field Name</entry>
+              <entry>Will be used as identifier in formulas calculation</entry>
+            </row>
+            <row>
+              <entry>Label</entry>
+              <entry>The text that will be shown as field label</entry>
+            </row>
+            <row>
+              <entry>Custom field</entry>
+              <entry>A list containing all the Custom Field Types available on the platform</entry>
+            </row>
+            <row>
+              <entry>First parameter</entry>
+              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+            </row>
+            <row>
+              <entry>Second parameter</entry>
+              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+            </row>
+            <row>
+              <entry>Third parameter</entry>
+              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+            </row>
+            <row>
+              <entry>Fourth parameter</entry>
+              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+            </row>
+            <row>
+              <entry>Fifth parameter</entry>
+              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+            </row>
+            <row>
+              <entry>Required</entry>
+              <entry>Indicates if it’s mandatory to fill this field.</entry>
+            </row>
+            <row>
+              <entry>Read Only</entry>
+              <entry>When this check is on, the field will be used only for read</entry>
+            </row>
+            <row>
+              <entry>Input binding expression</entry>
+              <entry>This expression defines the link between field and process task input variable.
+                It will be used in runtime to set the field value with that task input variable data.
+              </entry>
+            </row>
+            <row>
+              <entry>Output binding expression</entry>
+              <entry>This expression defines the link between field and process task output variable.
+                It will be used in runtime to set that task output variable.
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </para>
+  </para>
+  <para>
+    So opening the Custom field select box we'll be able to select the
+    <emphasis>File Input</emphasis>
+    from the available custom types:
+    <figure>
+      <title>Available custom types</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/38_custom_field_type_select_field.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+
+    <para>After selecting the
+      <emphasis>File Input</emphasis>
+      type on the list and saving the field properties the form will look like:
+    </para>
+    <figure>
+      <title>Custom type display in a form</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/39_custom_field_type_input_file.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </para>
+  <para>
+    If we build a simple process and configure a
+    <emphasis>Short text</emphasis>
+    to be shown as the sample<emphasis>File Input</emphasis>, if we build the project
+    on runtime the field will behave uploading the choosen files to the server and allowing the user to download it like this:
+    <figure>
+      <title>Choosing the file to upload</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/40_custom_field_type_example_running.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <figure>
+      <title>File uploaded, showing the download link</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/41_custom_field_type_example_running_2.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+    <para>
+      If we take a look at what's the process variable value, we'll see that is storing a String with the file path stored in server.
+    </para>
+    <figure>
+      <title>Process variable storing custom type results</title>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/FormModeler/42_custom_field_type_process_value.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
+  </para>
+
+</section>
