@@ -337,6 +337,9 @@ public class KieBuilderImpl
     }
 
     void copySourceToTarget(String fileName) {
+        if ( !fileName.startsWith(RESOURCES_ROOT) ) {
+            return;
+        }
         byte[] bytes = srcMfs.getBytes( fileName );
         fileName = fileName.substring( RESOURCES_ROOT.length() - 1 );
         if ( bytes != null ) {
