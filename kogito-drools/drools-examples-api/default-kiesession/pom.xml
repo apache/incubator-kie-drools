@@ -6,13 +6,11 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-examples-api</artifactId>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>default-kiesession</artifactId>
   <name>Drools API examples - Default KieSession</name>
-
-  <packaging>kjar</packaging>
 
   <dependencies>
     <dependency>
@@ -21,14 +19,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.drools</groupId>
-        <artifactId>drools-maven-plugin</artifactId>
-        <version>${project.version}</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
 </project>

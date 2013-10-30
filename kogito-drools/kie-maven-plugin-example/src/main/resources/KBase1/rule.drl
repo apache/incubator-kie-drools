@@ -1,0 +1,6 @@
+package org.kie.test
+rule R1 when
+   $fieldA : FactA( $fieldB : fieldB )
+   FactB( this == $fieldB, fieldA == $fieldA )
+then
+end
