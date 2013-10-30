@@ -308,6 +308,7 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
             registerTxSync();
             return txOwner;
         }
+        registerTxSync();
         return false;
     }
 
@@ -590,7 +591,11 @@ public class JbpmServicesPersistenceManagerImpl implements JbpmServicesPersisten
         LocalEntityMangerHolder holder = noScopeEmLocal.get();
         if (holder != null && !holder.isRegistered()) {
             logger.debug("Registering transaction sync for local (no scoped) entity manager");
-            ttxm.registerTXSynchronization(new TransactionSynchronization() {
+            JbpmServicesTransactionManager txManager = ttxm;
+            if (txManager == null) {
+            	txManager = new JbpmJTATransactionManager();
+            }
+            txManager.registerTXSynchronization(new TransactionSynchronization() {
                 
                 @Override
                 public void beforeCompletion() {                        
