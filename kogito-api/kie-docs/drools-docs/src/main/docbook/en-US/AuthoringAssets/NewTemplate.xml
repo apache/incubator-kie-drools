@@ -23,33 +23,8 @@
   <section>
     <title>Creating a rule template</title>
 
-    <para>To create a template for a rule simply select the "New Rule
-    Template" from the Knowledge Bases "Create New" popup menu. The create
-    "New Rule Template" asset popup window will appear from which the normal
-    asset attributes can be defined; such as name, category and
-    description.</para>
-
-    <figure>
-      <title>Create a template</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/template-rule1.png" format="PNG"
-          />
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <figure>
-      <title>Create "New Rule Template" popup</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/template-rule2.png" format="PNG"
-          />
-        </imageobject>
-      </mediaobject>
-    </figure>
+    <para>To create a template for a rule simply select the "Guided Rule
+    Template" from the "New Item" menu.</para>
   </section>
 
   <section>
@@ -68,7 +43,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/template-rule3.png" format="PNG"
+          <imagedata align="center" fileref="images/AuthoringAssets/guided-template1.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
@@ -84,7 +59,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/template-rule4.png" format="PNG"
+          <imagedata align="center" fileref="images/AuthoringAssets/guided-template2.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
@@ -97,9 +72,7 @@
     <para>When you have completed the definition of your rule template you
     need to enter the data that will be used to interpolate the "Template Key"
     place-holders. Drools Workbench provides the facility to enter data in a
-    flexible grid within the guided editor screen. The grid editor can be
-    launched by pressing the "Load Template Data" button on the guided editor
-    screen.</para>
+    flexible grid within the guided editor screen. The data entry section is located on the Data tab within the editor.</para>
 
     <para>The rule template data grid is very flexible; with different pop-up
     editors for the underlying fields' data-types. Columns can be resized and
@@ -119,7 +92,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/template-rule5.png" format="PNG"
+          <imagedata align="center" fileref="images/AuthoringAssets/guided-template3.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
@@ -140,7 +113,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/template-rule5-merged.png"
+            <imagedata align="center" fileref="images/AuthoringAssets/guided-template4.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -162,7 +135,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/template-rule5-grouped.png"
+            <imagedata align="center" fileref="images/AuthoringAssets/guided-template5.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -187,7 +160,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/template-rule6.png" format="PNG"
+          <imagedata align="center" fileref="images/AuthoringAssets/guided-template6.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
