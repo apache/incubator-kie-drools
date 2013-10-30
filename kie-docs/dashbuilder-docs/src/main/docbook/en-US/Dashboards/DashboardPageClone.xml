@@ -19,11 +19,16 @@
     want to duplicate and those we want to keep as is (to reuse).
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Dashboards/PageCloneWizard.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Wizard for page cloning</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Dashboards/PageCloneWizard.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Once finished, press the '<emphasis>Duplicate page</emphasis>'
     button and a brand new page will be created with the same name as the

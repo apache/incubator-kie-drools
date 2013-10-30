@@ -12,12 +12,16 @@
     given panel:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Security/PanelPermissions.png"
-                 valign="top"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Panel permissions configuration screen</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Security/PanelPermissions.png" valign="top"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>The list of allowed actions are:</para>
 

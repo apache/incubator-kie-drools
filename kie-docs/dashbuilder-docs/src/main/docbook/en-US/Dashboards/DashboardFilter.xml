@@ -20,11 +20,16 @@
     will be displayed:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Dashboards/DataFilterPanelEdition.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Filter panel configuration</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Dashboards/DataFilterPanelEdition.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>This is a filter configuration panel where we can set the filter
     behaviour. Let's focus first on the middle bottom part of the screen: the
@@ -45,11 +50,16 @@
       demo</emphasis>'.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Dashboards/SalesDashboardFilter.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Filter panel of the sales dashboard example</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Dashboards/SalesDashboardFilter.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>As you can see the form is composed by all the visible properties
     selected. For each property the system reads its configuration by asking

@@ -69,11 +69,16 @@
     '<emphasis>Save</emphasis>'.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/CSVProviderCreateForm.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>CSV data provider creation form</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/CSVProviderCreateForm.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Next, a screen is shown with all the fields found after parsing the
     file, giving us the option to change the name of each field. For numeric
@@ -83,19 +88,29 @@
     reference code of a product item.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/DataProviderPropertiesTable.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Data provider properties configuration panel</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/DataProviderPropertiesTable.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>After this last step, you can save and finish the creation of your new
     data provider.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/DataProviderTableNewItem.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>New data provider instance has been created</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/DataProviderTableNewItem.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 </section>

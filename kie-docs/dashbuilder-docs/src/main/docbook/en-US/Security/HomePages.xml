@@ -40,11 +40,15 @@
     </listitem>
   </orderedlist>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Security/HomePages.png"
-                 valign="top"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Home page per role configuration screen</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Security/HomePages.png" valign="top"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
 </section>

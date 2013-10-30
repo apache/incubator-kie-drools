@@ -12,12 +12,16 @@
     given workspace:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Security/WorkspacePermissions.png"
-                 valign="top"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Workspace permissions configuration screen</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Security/WorkspacePermissions.png" valign="top"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>The list of allowed actions are:</para>
 

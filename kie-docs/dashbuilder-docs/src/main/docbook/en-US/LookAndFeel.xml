@@ -9,133 +9,138 @@
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
 
-    <title>Customizing look'n'feel</title>
+  <title>Customizing look'n'feel</title>
 
-    <para>There exist three types of graphic resources.</para>
+  <para>There exist three types of graphic resources.</para>
 
-    <itemizedlist>
-        <listitem>
-            <para><emphasis role="bold">Skin</emphasis>: CSS style sheet, images and
-                action icons that serve to change the overall look and feel of the
-                workspace.
-            </para>
-        </listitem>
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Skin</emphasis>: CSS style sheet, images and
+        action icons that serve to change the overall look and feel of the
+        workspace.
+      </para>
+    </listitem>
 
-        <listitem>
-            <para><emphasis role="bold">Layout</emphasis>: JSP page template
-                composed by predefined regions, where each region is intended to hold a
-                panel.
-            </para>
-        </listitem>
+    <listitem>
+      <para><emphasis role="bold">Layout</emphasis>: JSP page template
+        composed by predefined regions, where each region is intended to hold a
+        panel.
+      </para>
+    </listitem>
 
-        <listitem>
-            <para><emphasis role="bold">Envelope</emphasis>: JSP page template
-                which defines the content that will wrap the whole page.
-            </para>
-        </listitem>
-    </itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Envelope</emphasis>: JSP page template
+        which defines the content that will wrap the whole page.
+      </para>
+    </listitem>
+  </itemizedlist>
 
-    <para>You can handle all these components from the administration console,
-        under the node '<emphasis>Graphic resources</emphasis>' and create/modify
-        them in order to fully customize the look and feel of your dashboards.
-    </para>
+  <para>You can handle all these components from the administration console,
+    under the node '<emphasis>Graphic resources</emphasis>' and create/modify
+    them in order to fully customize the look and feel of your dashboards.
+  </para>
 
-    <mediaobject>
+  <figure>
+    <title>Graphic resources administration</title>
+    <screenshot>
+      <mediaobject>
         <imageobject>
-            <imagedata align="center" fileref="images/LookAndFeel/GraphicComponents.png"/>
+          <imagedata align="center" fileref="images/LookAndFeel/GraphicComponents.png"/>
         </imageobject>
-    </mediaobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
-    <para>Each graphic resource is packaged in a file. Zip file which content
-        varies depending on the type of component. Nonetheless, the structure of the
-        management screen is the same regardless of the type of the resource being
-        handled. As we can see on the screen, the upload form is composed by two
-        fields:
-    </para>
+  <para>Each graphic resource is packaged in a file. Zip file which content
+    varies depending on the type of component. Nonetheless, the structure of the
+    management screen is the same regardless of the type of the resource being
+    handled. As we can see on the screen, the upload form is composed by two
+    fields:
+  </para>
 
-    <itemizedlist>
-        <listitem>
-            <para><emphasis role="bold">ID</emphasis>: a unique identifier.
-                If you just want to update existing resource you just have to copy its id.
-            </para>
-        </listitem>
+  <itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">ID</emphasis>: a unique identifier.
+        If you just want to update existing resource you just have to copy its id.
+      </para>
+    </listitem>
 
-        <listitem>
-            <para><emphasis role="bold">Zip file</emphasis>: file coming from the
-                user local file system containing the definition of the component and
-                its resources.
-            </para>
-        </listitem>
-    </itemizedlist>
+    <listitem>
+      <para><emphasis role="bold">Zip file</emphasis>: file coming from the
+        user local file system containing the definition of the component and
+        its resources.
+      </para>
+    </listitem>
+  </itemizedlist>
 
-    <para>Each zip comes with a definition file which name varies depending on
-        the type:<emphasis>envelope.properties</emphasis>,
-        <emphasis>skin.properties</emphasis>
-        or
-        <emphasis>layout.properties</emphasis>. This property file
-        have two distinct parts:
-    </para>
+  <para>Each zip comes with a definition file which name varies depending on
+    the type:<emphasis>envelope.properties</emphasis>,
+    <emphasis>skin.properties</emphasis>
+    or
+    <emphasis>layout.properties</emphasis>. This property file
+    have two distinct parts:
+  </para>
 
-    <itemizedlist>
-        <listitem>
-            <para>Name of the item in different languages, to which is added a line
-                in the following format:
-            </para>
+  <itemizedlist>
+    <listitem>
+      <para>Name of the item in different languages, to which is added a line
+        in the following format:
+      </para>
 
-            <para>name.&lt;idiom abbreviation(es, en, ca)&gt; = Name of the resource
-                in that language
-            </para>
-        </listitem>
+      <para>name.&lt;idiom abbreviation(es, en, ca)&gt; = Name of the resource
+        in that language
+      </para>
+    </listitem>
 
-        <listitem>
-            <para>List of static resources associated with the component:</para>
+    <listitem>
+      <para>List of static resources associated with the component:</para>
 
-            <para>resource.&lt;resource_id&gt;= Path relative to the zip
-                file.
-            </para>
-        </listitem>
-    </itemizedlist>
+      <para>resource.&lt;resource_id&gt;= Path relative to the zip
+        file.
+      </para>
+    </listitem>
+  </itemizedlist>
 
-    <example>
-        <title>Example of a
-            <emphasis>skin.properties</emphasis>
-            descriptor
-        </title>
+  <example>
+    <title>Example of a
+      <emphasis>skin.properties</emphasis>
+      descriptor
+    </title>
 
-        <programlisting>
-            # Name
-            name.en=Default skin
-            name.es=Skin por defecto
+    <programlisting>
+      # Name
+      name.en=Default skin
+      name.es=Skin por defecto
 
-            # CSS
-            resource.CSS=styles/default.css
+      # CSS
+      resource.CSS=styles/default.css
 
-            # Icons
-            resource.BULLET=images/bullet.gif
-            resource.CLOSE=images/close.gif
-            resource.DOWN=images/down.gif
-            resource.EDIT_MODE=images/edit_mode.gif
-            resource.HEADER_BG=images/header_bg.gif
-            resource.HEADER_LEFT=images/header_left.gif
-            resource.HEADER_RIGHT=images/header_right.gif
-            resource.ICO_HELP=images/ayuda.gif
-            resource.LEFT=images/left.gif
-            resource.MAXIMIZE=images/maximice.gif
-            resource.MINIMIZE=images/minimice.gif
-            resource.PROPERTIES=images/properties.gif
-            resource.REFRESH=images/refresh.gif
-            resource.RESOURCES_MODE=images/resources_mode.gif
-            resource.RESTORE=images/restore.gif
-            resource.RIGHT=images/right.gif
-            resource.SHOW=images/show.gif
-            resource.UP=images/up.gif
-        </programlisting>
-    </example>
+      # Icons
+      resource.BULLET=images/bullet.gif
+      resource.CLOSE=images/close.gif
+      resource.DOWN=images/down.gif
+      resource.EDIT_MODE=images/edit_mode.gif
+      resource.HEADER_BG=images/header_bg.gif
+      resource.HEADER_LEFT=images/header_left.gif
+      resource.HEADER_RIGHT=images/header_right.gif
+      resource.ICO_HELP=images/ayuda.gif
+      resource.LEFT=images/left.gif
+      resource.MAXIMIZE=images/maximice.gif
+      resource.MINIMIZE=images/minimice.gif
+      resource.PROPERTIES=images/properties.gif
+      resource.REFRESH=images/refresh.gif
+      resource.RESOURCES_MODE=images/resources_mode.gif
+      resource.RESTORE=images/restore.gif
+      resource.RIGHT=images/right.gif
+      resource.SHOW=images/show.gif
+      resource.UP=images/up.gif
+    </programlisting>
+  </example>
 
-    <para>The easiest way to create a brand new skin, envelope or page layout is
-        to download an existing one, unzip/modify it and finally upload the new zip
-        as a new resource. The management of graphic resources can be carried out by
-        a graphical designer who shall not require the presence of a technician to
-        do their job.
-    </para>
+  <para>The easiest way to create a brand new skin, envelope or page layout is
+    to download an existing one, unzip/modify it and finally upload the new zip
+    as a new resource. The management of graphic resources can be carried out by
+    a graphical designer who shall not require the presence of a technician to
+    do their job.
+  </para>
 </chapter>

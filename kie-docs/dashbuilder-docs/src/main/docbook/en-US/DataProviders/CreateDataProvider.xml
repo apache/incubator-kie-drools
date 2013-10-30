@@ -25,11 +25,16 @@
     as we're going to see next.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/DataProviderTable.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Data providers table</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/DataProviderTable.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <xi:include href="DataProviders/CSVProvider.xml"/>
   <xi:include href="DataProviders/SQLProvider.xml"/>
