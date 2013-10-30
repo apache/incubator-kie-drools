@@ -142,18 +142,8 @@
             <classifier>javadoc</classifier>
         </dependency>
         <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>droolsjbpm-introduction-docs</artifactId>
-            <type>jdocbook</type>
-        </dependency>
-        <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-expert-docs</artifactId>
-            <type>jdocbook</type>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-fusion-docs</artifactId>
+            <artifactId>drools-docs</artifactId>
             <type>jdocbook</type>
         </dependency>
     </dependencies>
