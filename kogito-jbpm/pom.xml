@@ -129,7 +129,6 @@
         </property>
       </activation>
       <modules>
-        <module>jbpm-docs</module>
         <module>jbpm-distribution</module>
       </modules>
     </profile>
