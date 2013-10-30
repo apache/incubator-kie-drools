@@ -43,7 +43,7 @@
       possible for the engine to manage the lifecycle of the events
       automatically. In other words, one an event is inserted into the working
       memory, it is possible for the engine to find out when an event can no
-      longer match other facts and automatically retract it, releasing its
+      longer match other facts and automatically delete it, releasing its
       associated resources.</para>
     </listitem>
 

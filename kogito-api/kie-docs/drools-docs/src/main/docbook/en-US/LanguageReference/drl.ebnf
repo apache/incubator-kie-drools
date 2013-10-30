@@ -144,13 +144,15 @@ parameters ::= "(" (conditionalExpr ("," conditionalExpr)* )? ")"
 
 rhs ::= "then" rhsStatement* "end"
 
-rhsStatement ::= javaStatement | mvelStatement | modifyStatement | updateStatement | retractStatement
+rhsStatement ::= javaStatement | mvelStatement | modifyStatement | updateStatement | retractStatement | deleteStatement
 
 modifyStatement ::= "modify" parExpression "{" ( expression ( "," expression )* )? "}"
 
 updateStatement ::= "update" "(" expression ")"
 
 retractStatement ::= "retract" "(" expression ")"
+
+deleteStatement ::= "delete" "(" expression ")"
 
 annotation ::= "@" ID (elementValuePairs | chunk )?
 

@@ -47,7 +47,7 @@
   <para>Since there is no ordering requirement on events, it is not possible
   for the engine to determine when events can no longer match and as so, there
   is no automatic life-cycle management for events. I.e., the application must
-  explicitly retract events when they are no longer necessary, in the same way
+  explicitly delete events when they are no longer necessary, in the same way
   the application does with regular facts.</para>
 
   <para>Cloud mode is the default execution mode for Drools, but in any case,

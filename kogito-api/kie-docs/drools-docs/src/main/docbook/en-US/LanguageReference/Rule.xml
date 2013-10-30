@@ -2591,7 +2591,7 @@ end</programlisting>
               matches the source pattern. The objective of this code block is
               to undo any calculation done in the <emphasis>&lt;action
               code&gt;</emphasis> block, so that the engine can do decremental
-              calculation when a source object is modified or retracted,
+              calculation when a source object is modified or deleted,
               hugely improving performance of these operations.</para>
             </listitem>
 
@@ -2653,7 +2653,7 @@ end</programlisting>
           <para>As mentioned before, the <emphasis>reverse code</emphasis> is
           optional, but it is strongly recommended that the user writes it in
           order to benefit from the <emphasis>improved performance on update
-          and retract</emphasis>.</para>
+          and delete</emphasis>.</para>
 
           <para>The <literal>accumulate</literal> CE can be used to execute
           any action on source objects. The following example instantiates and
@@ -3374,7 +3374,7 @@ eval( isValid( p1, p2 ) )</programlisting>
       should also be kept small, thus keeping it declarative and readable. If
       you find you need imperative and/or conditional code in the RHS, then
       maybe you should be breaking that rule down into multiple rules. The
-      main purpose of the RHS is to insert, retractor modify working memory
+      main purpose of the RHS is to insert, delete or modify working memory
       data. To assist with that there are a few convenience methods you can
       use to modify working memory; without having to first reference a
       working memory instance.</para>
@@ -3400,10 +3400,10 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <para><literal>insertLogical(new</literal>
       <emphasis>Something</emphasis><literal>());</literal> is similar to
-      insert, but the object will be automatically retracted when there are no
+      insert, but the object will be automatically deleted when there are no
       more facts to support the truth of the currently firing rule.</para>
 
-      <para><literal>retract(</literal><emphasis>handle</emphasis><literal>);</literal>
+      <para><literal>delete(</literal><emphasis>handle</emphasis><literal>);</literal>
       removes an object from Working Memory.</para>
 
       <para>These convenience methods are basically macros that provide short
@@ -3423,7 +3423,7 @@ eval( isValid( p1, p2 ) )</programlisting>
 
         <listitem>
           <para>Methods <code>insert(Object o)</code>, <code>update(Object
-          o)</code> and <code>retract(Object o)</code> can be called on
+          o)</code> and <code>delete(Object o)</code> can be called on
           <code>drools</code> as well, but due to their frequent use they can
           be called without the object reference.</para>
         </listitem>
