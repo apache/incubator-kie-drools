@@ -17,8 +17,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
     </dependency>
-
   </dependencies>
-
 
 </project>

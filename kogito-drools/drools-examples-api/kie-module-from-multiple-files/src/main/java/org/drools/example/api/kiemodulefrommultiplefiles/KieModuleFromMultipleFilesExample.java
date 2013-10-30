@@ -15,11 +15,10 @@ public class KieModuleFromMultipleFilesExample {
 
     public void go(PrintStream out) {
         KieServices ks = KieServices.Factory.get();
-
         KieRepository kr = ks.getRepository();
 
-        Resource ex1Res = ks.getResources().newFileSystemResource(getFile("named-kiesession"));
-        Resource ex2Res = ks.getResources().newFileSystemResource(getFile("kiebase-inclusion"));
+        Resource ex1Res = ks.getResources().newFileSystemResource(getFile("kiebase-inclusion"));
+        Resource ex2Res = ks.getResources().newFileSystemResource(getFile("named-kiesession"));
 
         KieModule kModule = kr.addKieModule(ex1Res, ex2Res);
         KieContainer kContainer = ks.newKieContainer(kModule.getReleaseId());
@@ -52,7 +51,7 @@ public class KieModuleFromMultipleFilesExample {
     }
 
     public static File getFile(String exampleName) {
-        File folder = new File("drools-examples-api").getAbsoluteFile();
+        File folder = new File( KieModuleFromMultipleFilesExample.class.getProtectionDomain().getCodeSource().getLocation().getPath() );
         File exampleFolder = null;
         while (folder != null) {
             exampleFolder = new File(folder,
