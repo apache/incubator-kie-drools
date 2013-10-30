@@ -1558,16 +1558,17 @@ KSession ksession = kbase.newKieSession(ksconf, null);</programlisting>
     <title>Persistence and Transactions</title>
 
     <para>Longterm out of the box persistence with Java Persistence API (JPA)
-    is possible with Drools. You will need to have some implementation of the
-    Java Transaction API (JTA) installed. For development purposes we
-    recommend the Bitronix Transaction Manager, as it's simple to set up and
+    is possible with Drools. It is necessary to have some implementation of the
+    Java Transaction API (JTA) installed. For development purposes
+    the Bitronix Transaction Manager is suggested, as it's simple to set up and
     works embedded, but for production use JBoss Transactions is
     recommended.</para>
 
     <example>
       <title>Simple example using transactions</title>
 
-      <programlisting language="java">Environment env = KieServices.Factory.get().newEnvironment();
+      <programlisting language="java">KieServices kieServices = KieServices.Factory.get();
+Environment env = kieServices.newEnvironment();
 env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
          Persistence.createEntityManagerFactory( "emf-name" ) );
 env.set( EnvironmentName.TRANSACTION_MANAGER,
@@ -1575,7 +1576,7 @@ env.set( EnvironmentName.TRANSACTION_MANAGER,
 
 // KnowledgeSessionConfiguration may be null, and a default will be used
 KieSession ksession =
-  JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        kieServices.getStoreServices().newKieSession( kbase, null, env );
 int sessionId = ksession.getId();
 
 UserTransaction ut =
@@ -1584,22 +1585,20 @@ ut.begin();
 ksession.insert( data1 );
 ksession.insert( data2 );
 ksession.startProcess( "process1" );
-ut.commit();
-</programlisting>
+ut.commit();</programlisting>
     </example>
 
     <para>To use a JPA, the Environment must be set with both the
     <code>EntityManagerFactory</code> and the <code>TransactionManager</code>.
-    If rollback occurs the ksession state is also rolled back, so you can
+    If rollback occurs the ksession state is also rolled back, so it is possible
     continue to use it after a rollback. To load a previously persisted
-    Stateful Knowledge Session you'll need the id, as shown below:</para>
+    KieSession you'll need the id, as shown below:</para>
 
     <example>
       <title>Loading a KieSession</title>
 
-      <programlisting language="java">StatefulKnowledgeSession ksession =
-  JPAKnowledgeService.loadStatefulKnowledgeSession( sessionId, kbase, null, env );
-</programlisting>
+      <programlisting language="java">KieSession ksession =
+        kieServices.getStoreServices().loadKieSession( sessionId, kbase, null, env );</programlisting>
     </example>
 
     <para>To enable persistence several classes must be added to your
