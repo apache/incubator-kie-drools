@@ -48,8 +48,8 @@
 
               <listitem>
                 <para>Formula. to enter expressions that will be evaluated to
-                  set the field value. These expressions are descrived in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  set the field value. These expressions are descrived in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -59,7 +59,7 @@
                   specify the values that the user can select from an specific
                   field. These expressions are described in
                   <link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>
                 </para>
               </listitem>
@@ -114,8 +114,8 @@
 
               <listitem>
                 <para>Formula. to enter expressions that will be evaluated to
-                  set the field value. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  set the field value. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -125,7 +125,7 @@
                   specify the values that the user can select from an specific
                   field. These expressions are described in
                   <link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>
                 </para>
               </listitem>
@@ -172,8 +172,8 @@
 
               <listitem>
                 <para>Formula. to enter expressions that will be evaluated to
-                  set the field value. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  set the field value. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -183,7 +183,7 @@
                   specify the values that the user can select from an specific
                   field. These expressions are described in
                   <link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>
                 </para>
               </listitem>
@@ -234,7 +234,7 @@
               <listitem>
                 <para>Formula. Used to enter expressions that will be
                   evaluated to set the field value. These expressions are
-                  described in<link linkend="FormulasExpression">Formula &amp;
+                  described in <link linkend="sect-formmodeler-FormulasExpression">Formula &amp;
                     expression section</link>.
                 </para>
               </listitem>
@@ -242,8 +242,8 @@
               <listitem>
                 <para>Range value. A range formula allows you to let you
                   specify the values that the user can select from an specific
-                  field. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  field. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -294,7 +294,7 @@
               <listitem>
                 <para>Formula. Used to enter expressions that will be
                   evaluated to set the field value. These expressions are
-                  described in<link linkend="FormulasExpression">Formula &amp;
+                  described in <link linkend="sect-formmodeler-FormulasExpression">Formula &amp;
                     expression section</link>.
                 </para>
               </listitem>
@@ -302,8 +302,8 @@
               <listitem>
                 <para>Range value. A range formula allows you to let you
                   specify the values that the user can select from an specific
-                  field. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  field. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -353,7 +353,7 @@
               <listitem>
                 <para>Formula. Used to enter expressions that will be
                   evaluated to set the field value. These expressions are
-                  described in<link linkend="FormulasExpression">Formula &amp;
+                  described in <link linkend="sect-formmodeler-FormulasExpression">Formula &amp;
                     expression section</link>.
                 </para>
               </listitem>
@@ -361,8 +361,8 @@
               <listitem>
                 <para>Range value. A range formula allows you to let you
                   specify the values that the user can select from an specific
-                  field. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  field. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -402,7 +402,7 @@
               <listitem>
                 <para>Formula. Used to enter expressions that will be
                   evaluated to set the field value. These expressions are
-                  described in<link linkend="FormulasExpression">Formula &amp;
+                  described in <link linkend="sect-formmodeler-FormulasExpression">Formula &amp;
                     expression section</link>.
                 </para>
               </listitem>
@@ -410,8 +410,8 @@
               <listitem>
                 <para>Range value. A range formula allows you to let you
                   specify the values that the user can select from an specific
-                  field. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  field. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -451,7 +451,7 @@
               <listitem>
                 <para>Formula. Used to enter expressions that will be
                   evaluated to set the field value. These expressions are
-                  described in<link linkend="FormulasExpression">Formula &amp;
+                  described in <link linkend="sect-formmodeler-FormulasExpression">Formula &amp;
                     expression section</link>.
                 </para>
               </listitem>
@@ -459,8 +459,8 @@
               <listitem>
                 <para>Range value. A range formula allows you to let you
                   specify the values that the user can select from an specific
-                  field. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  field. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -500,7 +500,7 @@
               <listitem>
                 <para>Formula. Used to enter expressions that will be
                   evaluated to set the field value. These expressions are
-                  described in<link linkend="FormulasExpression">Formula &amp;
+                  described in <link linkend="sect-formmodeler-FormulasExpression">Formula &amp;
                     expression section</link>.
                 </para>
               </listitem>
@@ -508,8 +508,8 @@
               <listitem>
                 <para>Range value. A range formula allows you to let you
                   specify the values that the user can select from an specific
-                  field. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  field. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -648,8 +648,8 @@
 
               <listitem>
                 <para>Formula. to enter expressions that will be evaluated to
-                  set the field value. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  set the field value. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -688,8 +688,8 @@
 
               <listitem>
                 <para>Formula. to enter expressions that will be evaluated to
-                  set the field value. These expressions are described in<link
-                      linkend="FormulasExpression">Formula &amp; expression section
+                  set the field value. These expressions are described in <link
+                      linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>
               </listitem>
@@ -711,7 +711,7 @@
       <itemizedlist>
         <listitem>
           <para>For more details see section<link
-              linkend="subformSimple">Simple Object (Subform field
+              linkend="sect-formmodeler-subformSimple">Simple Object (Subform field
             Type)</link>.
           </para>
 
@@ -734,7 +734,7 @@
       <itemizedlist>
         <listitem>
           <para>For more details see section<link
-              linkend="multipleSubform">Arrays of objects.( Multiple subform field
+              linkend="sect-formmodeler-multipleSubform">Arrays of objects.( Multiple subform field
             Type)</link>.
           </para>
 
