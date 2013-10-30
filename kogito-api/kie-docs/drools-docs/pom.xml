@@ -4,11 +4,12 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
+    <groupId>org.kie</groupId>
     <artifactId>kie-docs</artifactId>
     <version>6.1.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.drools</groupId>
   <artifactId>drools-docs</artifactId>
   <packaging>jdocbook</packaging>
 

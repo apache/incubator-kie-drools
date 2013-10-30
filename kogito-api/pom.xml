@@ -58,7 +58,7 @@
         </property>
       </activation>
       <modules>
-        <module>droolsjbpm-introduction-docs</module>
+        <module>kie-docs</module>
       </modules>
     </profile>
   </profiles>
