@@ -24,5 +24,18 @@
       </imageobject>
     </mediaobject>
   </figure>
+  
+  <section>
+    <title>Validation</title>
+    <para>It is not always desirable to save a file in order to determine whether it is in a valid state.</para>
+    <para>All of the file editors provide the ability to validate the content before it is saved.</para>
+    <para>Clicking on the 'Validate' button shows validation errors, if any.</para>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Workbench/workbench-validation.png"
+          format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </section>
     
 </section>
