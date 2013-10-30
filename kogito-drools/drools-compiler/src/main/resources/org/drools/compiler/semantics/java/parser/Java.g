@@ -740,7 +740,7 @@ statement
     | 'break' Identifier? ';'
     | 'continue' Identifier? ';'
     // adding support to drools modify block
-    | modifyStatement | updateStatement | retractStatement | insertStatement
+    | modifyStatement | updateStatement | retractStatement | deleteStatement | insertStatement
     | ';'
     | statementExpression ';'
     | Identifier ':' statement
@@ -953,6 +953,18 @@ retractStatement
     c = ')'
         {	
         JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.RETRACT );
+        d.setStart( ((CommonToken)$s).getStartIndex() );
+        this.addBlockDescr( d );
+        d.setEnd( ((CommonToken)$c).getStopIndex() );
+    }
+    ;
+
+deleteStatement
+    : s='delete' '('
+    expression
+    c = ')'
+        {
+        JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.DELETE );
         d.setStart( ((CommonToken)$s).getStartIndex() );
         this.addBlockDescr( d );
         d.setEnd( ((CommonToken)$c).getStopIndex() );
@@ -1215,7 +1227,7 @@ primary
     ;
 
 methodName
-    : Identifier | 'insert' | 'update' | 'modify' | 'retract'
+    : Identifier | 'insert' | 'update' | 'modify' | 'retract' | 'delete'
     ;
 
 identifierSuffix

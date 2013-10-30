@@ -1193,7 +1193,7 @@ import static org.mockito.Mockito.verify;
          list = new ArrayList();
          session.setGlobal( "list",
                             list );
-         session.retract( handle );
+         session.delete( handle );
          final Cheese mycheese2 = new Cheese( "notcheddar",
                                               4 );
          org.kie.api.runtime.rule.FactHandle handle2 = session.insert( mycheese2 );
@@ -1208,7 +1208,7 @@ import static org.mockito.Mockito.verify;
          list = new ArrayList();
          session.setGlobal( "list",
                             list );
-         session.retract( handle2 );
+         session.delete( handle2 );
          final Cheese mycheese3 = new Cheese( "stilton",
                                               6 );
          org.kie.api.runtime.rule.FactHandle handle3 = session.insert( mycheese3 );
@@ -1223,7 +1223,7 @@ import static org.mockito.Mockito.verify;
          list = new ArrayList();
          session.setGlobal( "list",
                             list );
-         session.retract( handle3 );
+         session.delete( handle3 );
          final Cheese mycheese4 = new Cheese( "notstilton",
                                               6 );
          org.kie.api.runtime.rule.FactHandle handle4 = session.insert( mycheese4 );
@@ -1235,7 +1235,7 @@ import static org.mockito.Mockito.verify;
          list = new ArrayList();
          session.setGlobal( "list",
                             list );
-         session.retract( handle4 );
+         session.delete( handle4 );
          final Cheese mycheese5 = new Cheese( "stilton",
                                               7 );
          org.kie.api.runtime.rule.FactHandle handle5 = session.insert( mycheese5 );
@@ -1689,7 +1689,7 @@ import static org.mockito.Mockito.verify;
          assertEquals( 1,
                        list.size() );
 
-         session.retract( h );
+         session.delete( h );
          session.fireAllRules();
 
          // still just one
@@ -3024,7 +3024,7 @@ import static org.mockito.Mockito.verify;
          assertSame( stiltonHandle,
                      ouc.getValue().getFactHandle() );
 
-         wm.retract( stiltonHandle );
+         wm.delete( stiltonHandle );
          ArgumentCaptor<ObjectDeletedEvent> orc = ArgumentCaptor.forClass( ObjectDeletedEvent.class );
          verify( wmel ).objectDeleted(orc.capture());
          assertSame( stiltonHandle,
@@ -6344,8 +6344,8 @@ import static org.mockito.Mockito.verify;
          drl += "$person:Person()\n";
          drl += "$pet:Pet()\n";
          drl += "then\n";
-         drl += "    retract($person) // some comment\n";
-         drl += "    retract($pet) // another comment\n";
+         drl += "    delete($person) // some comment\n";
+         drl += "    delete($pet) // another comment\n";
          drl += "end\n";
 
          KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
@@ -8262,8 +8262,8 @@ import static org.mockito.Mockito.verify;
                       "    Integer( this == 2 ) from $args.length\n" +
                       "    $s3 : String( this == $args[$args.length - $args.length  + 1] )\n" +
                       "then\n" +
-                      "    retract( $s1 );  \n" +
-                      "    retract( $s2 );  \n" +
+                      "    delete( $s1 );  \n" +
+                      "    delete( $s2 );  \n" +
                       "    list.add( $s1 ); \n" +
                       "    list.add( $s2 ); \n" +
 
@@ -8425,7 +8425,7 @@ import static org.mockito.Mockito.verify;
                        "   $f: Object(class != FactB.class)\n" +
                        "then\n" +
                        "   if( ! ($f instanceof InitialFactImpl) ){\n" +
-                       "     retract( $f );\n" +
+                       "     delete( $f );\n" +
                        "   }\n" +
                        "end";
 
@@ -8602,7 +8602,7 @@ import static org.mockito.Mockito.verify;
                       "when\n" +
                       "   InterfaceA( $b : b )\n" +
                       "then\n" +
-                      "   retract( $b );\n" +
+                      "   delete( $b );\n" +
                       "end\n";
 
          KnowledgeBase kbase = loadKnowledgeBaseFromString( str );

@@ -455,18 +455,25 @@ public class DefaultKnowledgeHelper
     }
 
     public void retract(Object object) {
-        retract( getFactHandle( object ) );
+        delete( getFactHandle( object ) );
     }
 
     public void retract(final FactHandle handle) {
+        delete( handle );
+    }
+
+    public void delete(Object object) {
+        delete( getFactHandle( object ) );
+    }
+
+    public void delete(final FactHandle handle) {
         Object o = ((InternalFactHandle) handle).getObject();
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
-                                                                                                   this.activation.getRule(),
-                                                                                                   this.activation );
+                                                                                                  this.activation.getRule(),
+                                                                                                  this.activation );
         if ( this.identityMap != null ) {
             this.getIdentityMap().remove( o );
         }
-
     }
 
     public Rule getRule() {

@@ -8,7 +8,7 @@ when
     $c: Cheese( )
 then
     results.add( $c );
-    retract( $c );
+    delete( $c );
     $p.setStatus( "full" );
     update( $p );
 end

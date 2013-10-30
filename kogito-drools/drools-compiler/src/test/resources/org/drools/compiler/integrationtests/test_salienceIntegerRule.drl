@@ -20,7 +20,7 @@ rule "Salience rule 3"
         person: Person( )
     then
         list.add( "Rule 3" );
-        retract(person);
+        delete(person);
 end  
 
 // this rule shall fire second, since rule 4 has higher salience but this is LIFO before rule 3

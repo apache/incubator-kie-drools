@@ -98,10 +98,20 @@ public interface KnowledgeHelper
 
     void modify( Object newObject ) ;
 
+    /**
+     * @deprecated Use delete
+     */
     void retract(FactHandle handle) ;
-    
+
+    /**
+     * @deprecated Use delete
+     */
     void retract(Object handle) ;
-    
+
+    void delete(FactHandle handle) ;
+
+    void delete(Object handle) ;
+
     public Object get(Declaration declaration);
 
     /**

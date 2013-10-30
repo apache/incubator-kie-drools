@@ -7,5 +7,5 @@ when
     listener : WorkingMemoryEventListener();
 then
     drools.getKieRuntime().removeEventListener(listener);
-    retract(listener);
+    delete(listener);
 end

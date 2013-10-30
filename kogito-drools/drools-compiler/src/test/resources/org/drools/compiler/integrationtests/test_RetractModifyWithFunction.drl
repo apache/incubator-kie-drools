@@ -24,7 +24,7 @@ when
     $c1 : Cheese( type == "stilton" )
     $c2 : Cheese( type == "muzzarella" )
 then
-    // stuff before the retract( getMin( $c1, $c2 ) );
-    retract( getMin( $c1, $c2 ) );
-    // stuff before the retract( getMin( $c1, $c2 ) );
+    // stuff before the delete( getMin( $c1, $c2 ) );
+    delete( getMin( $c1, $c2 ) );
+    // stuff before the delete( getMin( $c1, $c2 ) );
 end

@@ -17,6 +17,6 @@ rule "factBWithRetract"
         c : FactC(f1==s)
     then
         c.setF3(f);
-        retract(b);
+        delete(b);
         update(c);
 end

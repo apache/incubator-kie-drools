@@ -438,7 +438,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, res.size());
         res.clear();
 
-        ksession.retract(fact1);
+        ksession.delete(fact1);
 
         FactHandle fact2 = ksession.insert(new Person("Mario", 48));
         try {
@@ -446,7 +446,7 @@ public class Misc2Test extends CommonTestMethodBase {
             ksession.fireAllRules();
             fail("should throw an Exception");
         } catch (Exception e) { }
-        ksession.retract(fact2);
+        ksession.delete(fact2);
 
         assertEquals(0, res.size());
 
@@ -455,7 +455,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ((AgendaImpl)ksession.getAgenda()).activateRuleFlowGroup("test");
         ksession.fireAllRules();
         assertEquals(1, res.size());
-        ksession.retract(fact3);
+        ksession.delete(fact3);
 
         ksession.dispose();
 
@@ -571,7 +571,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   not Number(intValue < $number.intValue)\n" +
                 "then\n" +
                 "   list.add($number);\n" +
-                "   retract($number);\n" +
+                "   delete($number);\n" +
                 "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
@@ -603,7 +603,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   not Number(intValue > $number.intValue)\n" +
                 "then\n" +
                 "   list.add($number);\n" +
-                "   retract($number);\n" +
+                "   delete($number);\n" +
                 "end";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
@@ -2164,7 +2164,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "            l.add(\"pippo\");\n" +
                 "        }\n" +
                 "    } );" +
-                "    retract( \"x\" );\n" +
+                "    delete( \"x\" );\n" +
                 "end\n";
 
         KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
@@ -2246,7 +2246,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "when\n" +
                 "  $s : String(this == \"intervalRule\")\n" +
                 "then\n" +
-                "  retract($s);\n" +
+                "  delete($s);\n" +
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
@@ -2760,7 +2760,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "		modify(e) {\n" +
                 "			setJob(j)\n" +
                 "		}\n" +
-                "		retract(p);\n" +
+                "		delete(p);\n" +
                 "		System.out.printf(\"Promoted %s to %s%n\", n, j);\n" +
                 "end\n";
         
@@ -3192,7 +3192,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "\n" +
                      "declare Foo val : String end \n" +
                      "" +
-                     "rule Init when $s : String() then retract( $s ); insert( new Foo( $s ) ); end \n" +
+                     "rule Init when $s : String() then delete( $s ); insert( new Foo( $s ) ); end \n" +
                      "" +
                      "rule \"Check Pos\"\n" +
                      "when\n" +
@@ -3309,7 +3309,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  $p : Person()\n" +
                      "then\n" +
                      "  System.out.println( Thread.currentThread().getName() + \"Take out \" + $p ); \n" +
-                     "  retract( $p );\n" +
+                     "  delete( $p );\n" +
                      "  System.out.println( Thread.currentThread().getName() + \"Taken out \" + $p ); \n" +
                      "  if ( list.isEmpty() ) { list.add( $p.getName() ); } \n" +
                      "end\n" +
@@ -4036,8 +4036,8 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  $s : String() \n" +
                      "  $l : Long() \n" +
                      "then \n" +
-                     "  System.out.println( \"Retract \" + $l ); " +
-                     "  retract( $l ); \n" +
+                     "  System.out.println( \"delete \" + $l ); " +
+                     "  delete( $l ); \n" +
                      "end \n";
 
         KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();

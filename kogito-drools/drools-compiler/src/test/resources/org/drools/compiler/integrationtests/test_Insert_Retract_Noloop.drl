@@ -8,7 +8,7 @@ rule "test1"
     when
         cheese : Cheese();
     then
-        retract(cheese);
+        delete(cheese);
         insert(cheese);
 end
 
@@ -19,7 +19,7 @@ rule "test2"
     when
         cheese : Cheese();
     then
-        retract(cheese);
+        delete(cheese);
 end
 
 

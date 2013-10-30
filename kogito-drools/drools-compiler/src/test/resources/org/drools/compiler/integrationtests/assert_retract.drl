@@ -28,7 +28,7 @@ rule "third"
         p : Person(status == "final")
     then
         list.add("third");
-        retract(p);
+        delete(p);
 end
 
 rule "fourth"

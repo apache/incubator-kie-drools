@@ -8,6 +8,6 @@ rule "test jira jbrules 2055"
         $p : Person( likes == $type )
     then
         results.add( $type );
-        retract( $c );
+        delete( $c );
         modify( $p ) { setLikes( "brie" ) }
 end
