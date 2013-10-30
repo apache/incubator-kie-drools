@@ -55,7 +55,7 @@ rule "clean-up-1"
         s : Short()
         not Float()
     then
-        retract(s);
+        delete(s);
         System.out.println( kcontext.getRule().getName() );
 end
 
@@ -64,6 +64,6 @@ rule "clean-up-2"
         c : CheeseEqual(type == (gb), price == 5)
         not Float()
     then
-        retract(c);
+        delete(c);
         System.out.println( kcontext.getRule().getName() );
 end

@@ -101,5 +101,5 @@ rule "Rule 5: status changed event - set resource status to desired value"
         System.out.println ("RULE 5  \"CHANGE STATUS\" FIRED           : Change status from resource " + $stChEv.getParentId() + " from " + $stChEv.getParamOldValue() + " to " + $stChEv.getParamNewValue() + " (" + Tools.formattedDate($stChEv.getEndTime()) +")");
         $stat.switchCurrentValue($stChEv.getParamOldValue(), $stChEv.getParamNewValue(), $stChEv.getEndTime());
         update ($stat);
-        retract ($stChEv);
+        delete ($stChEv);
 end

@@ -36,7 +36,7 @@ rule 'Try it again'
     then
         app.setApproved( false );
         app.setExplanation( "Only AB" );
-        retract( app );
+        delete( app );
 
 end
 

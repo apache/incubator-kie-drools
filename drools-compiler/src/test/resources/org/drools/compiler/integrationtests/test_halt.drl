@@ -8,7 +8,7 @@ when
 then
     results.add( $old );
     insert( new Integer( $val + 1 ) );
-    retract( $old );
+    delete( $old );
 end
 
 rule "stop"

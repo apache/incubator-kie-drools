@@ -276,6 +276,10 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
+    public void delete(FactHandle handle) {
+        // TODO Auto-generated method stub
+    }
+
     public void update(Object newObject) {
         // TODO Auto-generated method stub
     }
@@ -285,6 +289,10 @@ public class SequentialKnowledgeHelper
     }
 
     public void retract(Object handle) {
+        // TODO Auto-generated method stub
+    }
+
+    public void delete(Object handle) {
         // TODO Auto-generated method stub
     }
 

@@ -11,7 +11,7 @@ rule delayed
     then
         list.add( cheese );
         insert(new Cheese("stilton", 42));
-        retract(cheese);
+        delete(cheese);
 end
 
 rule after_delayed
