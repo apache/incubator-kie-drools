@@ -9,5 +9,6 @@
 
      <xi:include href="Introduction.xml"/>
      <xi:include href="ChangingLayout.xml"/>
+   <xi:include href="ProblemsPanel.xml"/>
      
 </chapter>

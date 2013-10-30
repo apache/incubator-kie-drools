@@ -36,6 +36,13 @@
         <para>This provides the user will real-time feedback about errors in the active
           Project.</para>
       </listitem>
+      <listitem>
+        <para>Empty space</para>
+        <para>This empty space will contain an editor for assets selected from the Project
+          Explorer.</para>
+        <para>Other screens will also occupy this space by default; such as the Project
+          Editor.</para>
+      </listitem>
     </itemizedlist></para>
 
   
