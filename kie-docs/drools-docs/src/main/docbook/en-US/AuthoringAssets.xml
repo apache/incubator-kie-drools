@@ -7,7 +7,6 @@
        xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Authoring Assets</title>
 
-  <xi:include href="AssetEditor.xml" />
   <xi:include href="NewPackage.xml" />
   <xi:include href="NewRule-BRL.xml" />
   <xi:include href="NewRule-DSL.xml" />
