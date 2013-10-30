@@ -53,7 +53,7 @@
         </listitem>
 
         <listitem>
-          <para>Retract an existing fact - Allows removing facts between executions.</para>
+          <para>Delete an existing fact - Allows removing facts between executions.</para>
         </listitem>
  
         <listitem>

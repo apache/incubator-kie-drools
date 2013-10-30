@@ -481,7 +481,7 @@
         </listitem>
 
         <listitem>
-          <para>Retract a fact from the Engine's Working Memory.</para>
+          <para>Delete a fact from the Engine's Working Memory.</para>
         </listitem>
 
         <listitem>

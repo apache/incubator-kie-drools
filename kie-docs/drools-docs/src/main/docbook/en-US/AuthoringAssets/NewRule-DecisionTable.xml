@@ -295,7 +295,7 @@ end</programlisting>
             </listitem>
 
             <listitem>
-              <para>Retract an existing fact</para>
+              <para>Delete an existing fact</para>
             </listitem>
           </itemizedlist>
 
@@ -418,7 +418,7 @@ end</programlisting>
 
             <para>An Action to insert a new Fact into the Rule Engine Working Memory and set the a value of one of the
             new Facts' fields. You can choose to have the new Fact "logically inserted" meaning it will be automatically
-            retracted should the conditions leading to the action being invoked cease to be true. Please refer to the
+            deleted should the conditions leading to the action being invoked cease to be true. Please refer to the
             Drools Expert documentation for details on Truth Maintenance and Logical insertions.</para>
 
             <figure>
@@ -435,17 +435,17 @@ end</programlisting>
           </section>
 
           <section>
-            <title>Retract an existing fact</title>
+            <title>Delete an existing fact</title>
 
-            <para>An Action to retract a bound Fact.</para>
+            <para>An Action to delete a bound Fact.</para>
 
             <figure>
-              <title>Retract an existing fact popup</title>
+              <title>Delete an existing fact popup</title>
 
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-retractFact-popup.png"
+                    fileref="images/AuthoringAssets/dtable-column-deleteFact-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
