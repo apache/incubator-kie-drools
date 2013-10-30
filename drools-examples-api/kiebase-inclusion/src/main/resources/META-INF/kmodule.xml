@@ -2,7 +2,7 @@
 <kmodule
         xmlns="http://jboss.org/kie/6.0.0/kmodule">
 
-    <kbase name="kiebaseinclusion" includes="namedkiesession">
+    <kbase name="kbase2" includes="kbase1">
         <ksession name="ksession2"/>
     </kbase>
 
