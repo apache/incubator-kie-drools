@@ -8,7 +8,7 @@ no-loop true
         c: Cheese( type == $type );
     then
         c.setPrice( 30 );
-        retract(a);
+        delete(a);
         update(c);
 end
 

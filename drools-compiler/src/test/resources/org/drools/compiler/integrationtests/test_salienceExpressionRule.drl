@@ -20,7 +20,7 @@ rule "Salience rule 2"
         p : Person( name == "bob" )
     then
         list.add( "Rule 2" );
-        retract( p );
+        delete( p );
 end    
 
 // this rule shall fire first since it has the higher salience
@@ -30,6 +30,6 @@ rule "Salience rule 3"
         p : Person( name == "mic")
     then
         list.add( "Rule 3" );
-        retract( p );
+        delete( p );
 end    
 

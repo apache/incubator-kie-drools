@@ -19,6 +19,6 @@ when
     $st : StockTick( company == "ACME", price > 100 ) from entry-point "stream1"
 then
     results.add( Double.valueOf( $st.getPrice() ) );
-    retract( $st );
+    delete( $st );
 end
 

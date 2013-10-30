@@ -10,7 +10,7 @@ rule "Target Retract"
       $tgt1 : Target( $label1 : label, $time : time )
       Target( label == $label1, time > $time )
     then
-      retract( $tgt1 );
+      delete( $tgt1 );
 end
 
 rule "Close Assert"
@@ -40,7 +40,7 @@ rule "Close Retract"
       $cls : Close( $label : label, $label2 : label2, $time : time )
       Close( label == $label, label2 == $label2, time > $time )
     then
-      retract( $cls );
+      delete( $cls );
 end
 
 rule "Approach Begin"
@@ -59,7 +59,7 @@ rule "Approach Begin"
       a.bearing = $bearing;
       a.bearing2 = $bearing2;
       insert( a );
-      retract( $cls1 );
+      delete( $cls1 );
 end
 
 rule "Approach Continue"

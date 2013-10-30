@@ -8,7 +8,7 @@ when
 then
     results.add( $old );
     insert( new Integer( $val + 1 ) );
-    retract( $old );
+    delete( $old );
 end
 
 rule "stop"
@@ -16,6 +16,6 @@ rule "stop"
 when
     $old : Number( intValue == 20 )
 then
-    retract( $old );
+    delete( $old );
     drools.halt();
 end

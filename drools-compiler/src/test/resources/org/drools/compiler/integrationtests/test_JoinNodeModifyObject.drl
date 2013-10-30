@@ -42,7 +42,7 @@ salience 10
         not IndexedNumber(index < $idx);
     then
         orderedNumbers.add(n);
-        retract(n);
+        delete(n);
 end
 
 function void swap(IndexedNumber n1, IndexedNumber n2) {

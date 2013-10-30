@@ -70,6 +70,13 @@ public class KnowledgeHelperFixer {
                         }
                     } );
 
+        macros.put( "delete",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.delete";
+                        }
+                    } );
+
         macros.put( "don",
                     new Macro() {
                         public String doMacro() {

@@ -10,7 +10,7 @@ when
     $p: Person( status == "hungry" )
     $c: Cheese( )
 then
-    retract( $c );
+    delete( $c );
     modify( $p ) { 
         setStatus( "full" ), 
         setAge( $p.getAge() + 1 ) 
