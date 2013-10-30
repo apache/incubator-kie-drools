@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:id="sect-datamodeler-propertyRelationships"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Properties &amp; relationships</title>
+
+  <para>Once the data entity has been created, it now has to be completed by
+    adding user-defined properties to its definition. This can be achieved by
+    providing the required information in the "Create new field" section (see
+    fig. "New field creation"), and clicking on the "Create" button when
+    finished. The following fields can (or must) be filled out:
+  </para>
+
+  <itemizedlist>
+    <listitem>
+      <para>The field's internal identifier (mandatory). The value of this
+        field must be unique per data entity, i.e. if the proposed identifier
+        already exists within current entity, an error message will be
+        displayed.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>A label (optional): as with the entity definition, the user can
+        define a user-friendly label for the data entity field which is
+        about to be created. This has no further implications on how fields
+        from objects of this entity will be treated. If a label is defined, then
+        this is how the field will be displayed throughout the data modeller
+        tool.
+      </para>
+    </listitem>
+
+    <listitem>
+      <para>A field type (mandatory): each entity field needs to be
+        assigned with a type.
+      </para>
+
+      <para>This type can be either of the following:</para>
+
+      <para/>
+
+      <orderedlist>
+        <listitem>
+          <para>A 'primitive' type: these include most of the object
+            equivalents of the standard Java primitive types, such as Boolean,
+            Short, Float, etc, as well as String, Date, BigDecimal and
+            BigInteger.
+          </para>
+
+          <figure>
+            <title>Primitive field types</title>
+
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/DataModeler/types_primitive.jpg"/>
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para/>
+
+          <para/>
+        </listitem>
+
+        <listitem>
+          <para>An 'entity' type: any user defined entity automatically
+            becomes a candidate to be defined as a field type of another
+            entity, thus enabling the creation of relationships between
+            entities. As can be observed in the above figure, our recently
+            defined 'Tutorial Example Entity' already appears in the types list
+            and can be used as a field type, even for a field of
+            itself. An entity type field can be created either in 'single'
+            or in 'multiple' form, the latter implying that the field will
+            be defined as a collection of this type, which will be indicated by
+            the extension '[0..N]' in the type drop-down or in the entity
+            fields table (as can be seen for the 'Lines' field of the
+            'Purchase Order' entity, for example).
+          </para>
+
+          <figure>
+            <title>Entity field types</title>
+
+            <screenshot>
+              <mediaobject>
+                <imageobject>
+                  <imagedata fileref="images/DataModeler/types_entity.jpg"/>
+                </imageobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
+
+          <para/>
+
+          <para/>
+        </listitem>
+      </orderedlist>
+    </listitem>
+  </itemizedlist>
+
+  <para>When finished introducing the initial information for a new field,
+    clicking the 'Create' button will add the newly created field to the end
+    of the entity's fields table below:
+  </para>
+
+  <figure>
+    <title>New field has been created</title>
+
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/DataModeler/new_attribute_table.jpg"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
+
+  <para/>
+
+  <para>The new field will also automatically be selected in the entity's
+    field list, and its properties will be shown in the Field tab of the
+    Property editor. The latter facilitates completion of some additional
+    properties of the new field by the user (see below).
+  </para>
+
+  <para>At any time, any field (without restrictions) can be deleted from
+    an entity definition by clicking on the corresponding 'x' icon in the
+    entity's fields table.
+  </para>
+
+  <para/>
+</section>
