@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.internal.task.api;
+package org.kie.api.task;
 
 import java.util.List;
 
-
-public interface UserGroupCallback extends org.kie.api.task.UserGroupCallback {
+public interface UserGroupCallback {
 	/**
 	 * Resolves existence of user id.
 	 * @param userId	the user id assigned to the task
