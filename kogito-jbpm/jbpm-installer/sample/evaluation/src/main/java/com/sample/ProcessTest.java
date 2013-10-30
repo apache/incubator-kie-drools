@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.test.JbpmJUnitTestCase;
+import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
@@ -16,13 +18,16 @@ import org.kie.api.task.model.TaskSummary;
 /**
  * This is a sample test of the evaluation process.
  */
-public class ProcessTest extends JbpmJUnitTestCase {
+public class ProcessTest extends JbpmJUnitBaseTestCase {
 
 	@Test
 	public void testEvaluationProcess() {
-		KieSession ksession = createKnowledgeSession("Evaluation.bpmn");
+		
+		RuntimeManager manager = createRuntimeManager("Evaluation.bpmn");
+		RuntimeEngine engine = manager.getRuntimeEngine(null);
+		KieSession ksession = engine.getKieSession();
 		KieRuntimeLogger log = KieServices.Factory.get().getLoggers().newThreadedFileLogger(ksession, "test", 1000);
-		TaskService taskService = getTaskService();
+		TaskService taskService = engine.getTaskService();
 		
 		// start a new process instance
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -67,11 +72,13 @@ public class ProcessTest extends JbpmJUnitTestCase {
 		assertProcessInstanceCompleted(processInstance.getId(), ksession);
 		System.out.println("Process instance completed");
 		log.close();
+		
+		manager.disposeRuntimeEngine(engine);
+		manager.close();
 	}
 
 	public ProcessTest() {
-		super(true);
-		setPersistence(true);
+		super(true, true);
 	}
 	
 }
