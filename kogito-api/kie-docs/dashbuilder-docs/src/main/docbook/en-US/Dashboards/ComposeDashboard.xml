@@ -53,11 +53,16 @@
 
   <para>A form will be shown to fill in some parameters:</para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Dashboards/PageCreationForm.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Page creation form</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Dashboards/PageCreationForm.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <itemizedlist>
     <listitem>
@@ -91,11 +96,16 @@
     </listitem>
   </itemizedlist>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/Dashboards/PageAdminTreeNewItem.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>New page item into the page tree administration screen</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Dashboards/PageAdminTreeNewItem.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Most of these properties will be discussed in the chapter about
     '<emphasis>Customing look'n'feel</emphasis>'. After creating the page, you
@@ -103,11 +113,16 @@
     can see it in the combo list in the administration toolbar:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/Dashboards/NewBlankEmptyPage.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Brand new empty page</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Dashboards/NewBlankEmptyPage.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>If you want this page to be shown in the left menu, you can click on
     'Edit content' and then add the newly created page to the list of options
@@ -147,11 +162,16 @@
     be able to create dashboards that look like the following one:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/Dashboards/FullDashboardPanels.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Panel composition for a typical dashboard</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Dashboards/FullDashboardPanels.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>As you can see, a dashboard is usually composed by one or more
     instances of the following panel types:

@@ -19,11 +19,16 @@
     <emphasis>Sales Dashboard</emphasis>:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/KPIs/SalesDashboard.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Sales dashboard example</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/KPIs/SalesDashboard.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para/>
 
@@ -32,11 +37,16 @@
     assume the page already exists and we only want to add an indicator.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/KPIs/PageWithEmptyRegion.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Page layout with en empty region on the center</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/KPIs/PageWithEmptyRegion.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Indicators are a special type of panels, which are the widgets that
     can be placed within the page. To add a panel or indicator just click on the
@@ -52,11 +62,16 @@
     This will make a popup be shown with all the available panels:
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/KPIs/PanelSelectorPopup.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Panel instance selector</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/KPIs/PanelSelectorPopup.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>To add a new '<emphasis>Key Performance Indicator</emphasis>', click
     on<emphasis>Dashboard &gt; Key Perfomance Indicator</emphasis>. Drag the
@@ -65,11 +80,16 @@
     mouse over them, then simply drop the panel.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/KPIs/DragAndDropPanelToRegion.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Drag and drop of a panel instance into an empty region</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/KPIs/DragAndDropPanelToRegion.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Once dropped, the first step is to select the
     <emphasis>Data
@@ -80,11 +100,16 @@
     can start creating a new indicator.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/KPIs/KPIPanelDataProviderSelector.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>KPI creation - Data provider selector</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/KPIs/KPIPanelDataProviderSelector.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Now, you must see the chart edition panel. It's an intuitive
     environment which helps you configure different type of charts and
@@ -94,11 +119,16 @@
   <table align="center" border="0" floatstyle="">
     <tr>
       <td>
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center" fileref="images/KPIs/KPIPanelEditionPopup.png"/>
-          </imageobject>
-        </mediaobject>
+        <figure>
+          <title>KPI configuration panel</title>
+          <screenshot>
+            <mediaobject>
+              <imageobject>
+                <imagedata align="center" fileref="images/KPIs/KPIPanelEditionPopup.png"/>
+              </imageobject>
+            </mediaobject>
+          </screenshot>
+        </figure>
       </td>
 
       <td valign="top">
@@ -170,11 +200,16 @@
     option.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/KPIs/PanelMenuOptionEditContent.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Panel administration menu - Edit content option</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/KPIs/PanelMenuOptionEditContent.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>The system provides you with 3 types of chart displayers: <emphasis
       role="bold">bar</emphasis>,

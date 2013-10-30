@@ -69,11 +69,16 @@
                 sample dashboards as well as some administrative tools.
             </para>
 
-            <mediaobject>
+          <figure>
+            <title>Login screen</title>
+            <screenshot>
+              <mediaobject>
                 <imageobject>
-                    <imagedata align="center" fileref="images/Introduction/LoginScreen.png"/>
+                  <imagedata align="center" fileref="images/Introduction/LoginScreen.png"/>
                 </imageobject>
-            </mediaobject>
+              </mediaobject>
+            </screenshot>
+          </figure>
 
             <para>The following users are available by default:</para>
 

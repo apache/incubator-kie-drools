@@ -19,11 +19,16 @@
     the SQL query that will retrieve the data.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/SQLProviderCreationForm.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>New SQL data provider form</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/SQLProviderCreationForm.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>In this form you have the ability to select the data source where the
     data comes from. By default the local data source is selected but you can
@@ -32,17 +37,27 @@
     and from there you can create a new data source connection.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/DataProviders/DataSourcesTable.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>Data sources management panel</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/DataProviders/DataSourcesTable.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="images/DataProviders/DataSourceCreationForm.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>New data source creation form</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/DataProviders/DataSourceCreationForm.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Let's get back to the creation of our SQL data provider. Once the data
     source has been selected and the query is typed in, you can click on the
@@ -50,21 +65,31 @@
     message.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/SQLProviderQueryField.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>SQL query input filed</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/SQLProviderQueryField.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>After that, you can rename the name of the properties to provide a
     more user friendly name.
   </para>
 
-  <mediaobject>
-    <imageobject>
-      <imagedata align="center" fileref="images/DataProviders/SQLProviderColumnsTable.png"/>
-    </imageobject>
-  </mediaobject>
+  <figure>
+    <title>SQL provider columns configuration panel</title>
+    <screenshot>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/DataProviders/SQLProviderColumnsTable.png"/>
+        </imageobject>
+      </mediaobject>
+    </screenshot>
+  </figure>
 
   <para>Finally, just click the '<emphasis>Save</emphasis>' button to confirm
     the creation of the data provider:
