@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base=".." xml:id="sect-formmodeler-FormLayout"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns2="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Customizing form layout</title>
+
+  <para>
+    When you need an extra customization level and have more control over the html that is displayed.
+    The form modeler provides the ability to edit the html directly.
+  </para>
+  <para>
+    To use this functionality, the user have to specify that in the ‘Form properties’ tab,
+    'Custom form layout' option and save.
+  </para>
+  <para>
+    Now the form is displayed with the custom html. To access this html editing we click on the icon 'Edit'
+  </para>
+  <para>
+    The html editor is displayed, the html code will define how the form has to be shown.
+    In this editor the user can directly create the html i locate the fields and labels with
+    the syntax described below:
+  </para>
+  <para>$field{fieldName} for field identified fieldName</para>
+  <para>$label{fieldName} for field identified fieldName label</para>
+  <para>These expressions will be replaced by the field or label rendering when the form will be shown.</para>
+  <para>Form modeler also provides two ways to help in the form html creation.</para>
+  <itemizedlist>
+    <listitem>
+      <para>'Insert form elements'</para>
+      <para>Two select: one for the fields and another for the labels. Clicking on that, the field
+        or label text is added to html. These selects only show the form fields haven’t been added yet.
+      </para>
+    </listitem>
+    <listitem>
+      <para>'Generate template based on'</para>
+      <para>This functionality generates the html using all fields (default, alignment fields or Not aligned)
+        depending on the selected value and overwrite the html.
+      </para>
+    </listitem>
+
+  </itemizedlist>
+
+</section>
