@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing.HillC
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.latesimulatedannealing.LateSimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.SolutionTabuAcceptor;
@@ -70,6 +71,8 @@ public class AcceptorConfig {
     protected Double greatDelugeWaterRisingRate = null;
 
     protected Integer lateAcceptanceSize = null;
+
+    protected Integer stepCountingHillClimbingSize = null;
 
     protected Integer lateSimulatedAnnealingSize = null;
 
@@ -233,6 +236,14 @@ public class AcceptorConfig {
         this.lateAcceptanceSize = lateAcceptanceSize;
     }
 
+    public Integer getStepCountingHillClimbingSize() {
+        return stepCountingHillClimbingSize;
+    }
+
+    public void setStepCountingHillClimbingSize(Integer stepCountingHillClimbingSize) {
+        this.stepCountingHillClimbingSize = stepCountingHillClimbingSize;
+    }
+
     public Integer getLateSimulatedAnnealingSize() {
         return lateSimulatedAnnealingSize;
     }
@@ -386,6 +397,13 @@ public class AcceptorConfig {
             acceptor.setLateAcceptanceSize((lateAcceptanceSize == null) ? 1000 : lateAcceptanceSize);
             acceptorList.add(acceptor);
         }
+        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.STEP_COUNTING_HILL_CLIMBING))
+                || stepCountingHillClimbingSize != null) {
+            StepCountingHillClimbingAcceptor acceptor = new StepCountingHillClimbingAcceptor();
+            acceptor.setStepCountingHillClimbingSize(
+                    (stepCountingHillClimbingSize == null) ? 1000 : stepCountingHillClimbingSize);
+            acceptorList.add(acceptor);
+        }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_SIMULATED_ANNEALING))
                 || lateSimulatedAnnealingSize != null) {
             LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
@@ -453,6 +471,8 @@ public class AcceptorConfig {
                 inheritedConfig.getGreatDelugeWaterRisingRate());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
+        stepCountingHillClimbingSize = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingSize,
+                inheritedConfig.getStepCountingHillClimbingSize());
         lateSimulatedAnnealingSize = ConfigUtils.inheritOverwritableProperty(lateSimulatedAnnealingSize,
                 inheritedConfig.getLateSimulatedAnnealingSize());
     }
@@ -467,6 +487,7 @@ public class AcceptorConfig {
         SIMULATED_ANNEALING,
         GREAT_DELUGE,
         LATE_ACCEPTANCE,
+        STEP_COUNTING_HILL_CLIMBING,
         LATE_SIMULATED_ANNEALING,
     }
 

@@ -207,8 +207,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
         <para>Unlike the n queens problem, real world problems require the use of <literal>acceptedCountLimit</literal>.
         Start from an <literal>acceptedCountLimit</literal> that takes a step in less then 2 seconds. <link
-        linkend="logging">Turn on INFO logging</link> to see the step times. Use the
-        <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak the value.</para>
+        linkend="logging">Turn on INFO logging</link> to see the step times. Use the <link
+        linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak the value.</para>
 
         <important>
           <para>With a low <literal>acceptedCountLimit</literal> it is recommended to avoid using
@@ -427,7 +427,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
 
       <para>If you pick a too small tabu size, your solver can still get stuck in a local optimum. On the other hand,
       with the exception of solution tabu, if you pick a too large tabu size, your solver can get stuck by bouncing of
-      the walls. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to fine tweak your configuration.</para>
+      the walls. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to fine tweak your
+      configuration.</para>
     </section>
   </section>
 
@@ -459,7 +460,8 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       Climbing, only accepting improving moves.</para>
 
       <para>Start with a <literal>simulatedAnnealingStartingTemperature</literal> set to the maximum score delta a
-      single move can cause. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak the value.</para>
+      single move can cause. Use the <link linkend="benchmarkingAndTweaking">Benchmarker</link> to tweak the
+      value.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     ...
@@ -543,6 +545,45 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
   &lt;/localSearch&gt;</programlisting>
 
       <para>Late Acceptance should use a low <literal>acceptedCountLimit</literal>.</para>
+    </section>
+  </section>
+
+  <section xml:id="stepCountingHillClimbing">
+    <title>Step counting hill climbing</title>
+
+    <section>
+      <title>Algorithm description</title>
+
+      <para>Step Counting Hill Climbing also evaluates only a few moves per step. For a number of steps, it keeps the
+      step score as a threshold. A move is accepted if does not decrease the score, or if it leads to a score that is at
+      least the threshold score.</para>
+
+      <para>Scientific paper: <link xlink:href="https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf"><emphasis>An
+      initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems</emphasis> by Yuri
+      Bykov, Sanja Petrovic (2013)</link></para>
+    </section>
+
+    <section>
+      <title>Configuration</title>
+
+      <para>Step Counting Hill Climbing accepts any move that has a score which is higher than a threshold score. Every
+      number of steps (specified by <literal>stepCountingHillClimbingSize</literal>), the threshold score is set to the
+      step score.</para>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    ...
+    &lt;acceptor&gt;
+      &lt;stepCountingHillClimbingSize&gt;400&lt;/stepCountingHillClimbingSize&gt;
+    &lt;/acceptor&gt;
+    &lt;forager&gt;
+      &lt;acceptedCountLimit&gt;1&lt;/acceptedCountLimit&gt;
+    &lt;/forager&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <para>You can even combine it with a tabu acceptor at the same time, similar as shown in <link
+      linkend="lateAcceptance">the Late Acceptance section</link>.</para>
+
+      <para>Step Counting Hill Climbing should use a low <literal>acceptedCountLimit</literal>.</para>
     </section>
   </section>
 
