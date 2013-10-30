@@ -16,7 +16,7 @@
   </para>
   <para>
     <table frame="all">
-      <tgroup align="left" cols="4" colsep="1" rowsep="1">
+      <tgroup align="left" cols="2" colsep="1" rowsep="1">
         <tbody>
           <row>
             <entry>Field type</entry>

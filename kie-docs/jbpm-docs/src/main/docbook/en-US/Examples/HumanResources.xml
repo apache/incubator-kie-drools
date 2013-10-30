@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:id="jBPMExamplesHR"
+       xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+       xml:base="../" xmlns="http://docbook.org/ns/docbook"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+       xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+       <title>Human Resources Example</title>
+
+       <para> Let’s imagine for a second that you work for a Software company that works with
+              several projects and from time to time the company wants to hire new developers. So,
+              which employees, Departments and Systems are required to Hire a new Developer in your
+              company? Trying to answering these questions will help you to define your business
+              process. The following figure, represents how does this process works for Acme Inc. We
+              can clearly see that three Departments are involved: Human Resources, IT and
+              Accounting teams are involved. Inside our company we have Katy from the Human
+              Resources Team, Jack on the IT team and John from the Accounting team involved. Notice
+              that there are other people inside each team, but we will be using Katy, Jack and John
+              to demonstrate how to execute the business process. </para>
+       <mediaobject>
+              <imageobject>
+                     <imagedata align="center" format="PNG" role=""
+                            fileref="images/Chapter-Tutorial/human-resources-high-level.png"
+                            width="600" />
+              </imageobject>
+       </mediaobject>
+       <para> Notice that there are 6 activities defined inside this business process, 4 of them are
+              User Tasks, which means that will be handled by people. The other two are Service
+              Tasks, which means an interaction with another system will be required. </para>
+       <para> The process diagram is self explanatory, but just in case and to avoid confusions this
+              is what is supposed to happen for each instance of the process that is started a
+              particular candidate: </para>
+
+       <itemizedlist>
+              <listitem><para>
+                     The Human Resources Team perform the initial interview to the candidate to
+                     see if he/she fits the profile that the company is looking for.</para>
+              </listitem>
+              <listitem><para>
+                     The IT Department perform a technical interview to evaluate the candidate
+                     skills and experience.</para>
+              </listitem>
+              <listitem><para>
+                     Based on output of the Human Resources and IT teams, the accounting team
+                     create a Job Proposal which includes the yearly salary for the candidate. The
+                     proposal is created based on the output of both of the interviews (Human
+                     Resources and Technical).</para>
+              </listitem>
+              <listitem><para>
+                     As soon as the proposal has being created it is automatically sent to the
+                     candidate via email.</para>
+              </listitem>
+              <listitem><para>
+                     If the candidate accept the proposal, a new meeting is created with someone
+                     from the Human Resource team to sign the contract.</para>
+              </listitem>
+              <listitem><para>
+                     If everything goes well, as soon as the process is notified that the
+                     candidate was hired, the system will automatically post a tweet about the new
+                     Hire using the twitter service connector.</para>
+              </listitem>
+       </itemizedlist>
+
+       <para> As you can see Jack, John and Katy will be performing the tasks for this example
+              instance of the business process, but any person inside the company that have those
+              Roles will be able to claim and interact with those tasks. </para>
+
+       <section>
+              <title>The KIE Project: human-resources</title>
+              <para> Let's take a look at the Project content in the Authoring Perspective: </para>
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-project-editor.png"
+                                   width="600" />
+                     </imageobject>
+              </mediaobject>
+              <para>As you can see it contains the <emphasis role="bold">hiring.bpmn2</emphasis>
+                     process and a set of forms for each human task. You can explore these knowledge
+                     assets by clicking on them. You will notice that different editors will open
+                     for different types of assets. If you click on the Business Process file you
+                     will be able to edit the process definition using the Process Designer:</para>
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-hiring-bpmn.png"
+                                   width="600" />
+                     </imageobject>
+              </mediaobject>
+              <para>Feel free to inspect the forms as well. Notice that the Form Modeller will be
+                     opened and there you can edit the forms to fit your requirements.</para>
+
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-hr-interview-form.png"
+                                   width="700" />
+                     </imageobject>
+              </mediaobject>
+       </section>
+       <section>
+              <title>Building the Human Resources Example</title>
+              <para>In order to build the Project so it gets available in the Process Definitions
+                     List you need to go to the Authoring Perspective and open the Project Editor
+                     panel: </para>
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-go-to-project-editor.png"
+                                   width="400" />
+                     </imageobject>
+              </mediaobject>
+
+              <para>Once you open the Project Editor, you will see on the top right corner of the
+                     panel the button called Build &amp; Deploy. This button will allow you to
+                     create a new Jar artifact that will be deployed to the Runtime environment as a
+                     new Deployment Unit. </para>
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-build-and-deploy.png"
+                                   width="700" />
+                     </imageobject>
+              </mediaobject>
+              <para>Once you get the visual notification that the project was built and deployed
+                     successfully you can go to the Deployments screen to verify that your artifact
+                     is there. In order to do that go to the top level menu called Deploy ->
+                     Deployments</para>
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-go-to-deployments.png"
+                                   width="200" />
+                     </imageobject>
+              </mediaobject>
+              <para>In the Deployments screen you will find all the deployed units. By default when
+                     you Build &amp; Deploy a project from the Project Editor, it will be
+                     automatically deployed using the default configurations. That is Singleton
+                     Strategy, the default KIE Base and the default KIE Session will be used. </para>
+              <para>If you want a more advanced deployment, that is selecting a different strategy
+                     or using non defaults KIE Base or KIE Session you will be able to undeploy and
+                     re-deploy your artifacts using their GAV and selecting non default
+                     options.</para>
+
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-deployment-screen.png"
+                                   width="700"/>
+                     </imageobject>
+              </mediaobject>
+
+              <para> Once your artifact that contains the process definition is deployed, the
+                     Process Definition will be available under Process Management -> Process
+                     Definitions. </para>
+
+       </section>
+       <section>
+              <title>Create a new Process Instance</title>
+              <para>In order to create new Process Instances you need to go to Process Management ->
+                     Process Definitions.</para>
+
+              <para>Here you will find all the available process definitions in the runtime
+                     environment. If you want to add new process definitions look at the previous
+                     sections where it is explained how to build and deploy KIE Projects.</para>
+
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-process-definitions.png"
+                                   width="700"/>
+                     </imageobject>
+              </mediaobject>
+              <para>You can start process instances using any of the two options highlated in the
+                     previous screen.</para>
+              <para>In order to create a new process instance most of the processes will require you
+                     to fill in some information and for that a form will be displayed. For this
+                     specific use case the name of the candidate that we are interviewing is
+                     required:</para>
+
+              <mediaobject>
+                     <imageobject>
+                            <imagedata align="center" format="PNG" role=""
+                                   fileref="images/Chapter-Tutorial/human-resources-new-instance-form.png"
+                                   width="400" />
+                     </imageobject>
+              </mediaobject>
+              <para> If we hit the big Start button, the new process instance will be created and
+                     the first task of the process will be create for the Human Resources Team.
+                     Depending on the assigned roles of the user that you are using to create the
+                     process instance you will be able to see the created task or not. In order to
+                     see the first task of the process we will need to logout tot he application and
+                     log in as someone from the Human Resources team. </para>
+              <para>After starting the process you can go to the Task -> Tasks section to interact
+                     with the created human tasks. Notice that in order to see the tasks in the task
+                     lists you will need to belong to some specific user Groups. For example the HR
+                     Interview task will be visitable for any member of the HR group, the Tech
+                     Interview will be visible by any member of the IT Group. </para>
+       </section>
+
+</section>

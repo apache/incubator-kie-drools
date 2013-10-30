@@ -73,7 +73,7 @@
     <listitem>
       <para>Configure the fields. After creating the basic form structure, we can use a formula to
         calculate automatically the total field. This formulas and expressions are described in
-        <link linkend="FormulasExpression">Formula &amp; expression section</link>.
+        <link linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section</link>.
 
         <figure>
           <title>Configuring formulas</title>

@@ -13,5 +13,6 @@
   <xi:include href="DataModeler/AddtionalOptions.xml" />
   <xi:include href="DataModeler/GenerateCode.xml" />
   <xi:include href="DataModeler/ExternalModels.xml" />
+  <xi:include href="DataModeler/ExternalChanges.xml" />
 
 </chapter>
