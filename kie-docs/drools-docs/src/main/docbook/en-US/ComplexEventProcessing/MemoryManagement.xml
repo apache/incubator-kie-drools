@@ -14,7 +14,7 @@
 
   <para>One of the benefits of running the engine in STREAM mode is that the
   engine can detect when an event can no longer match any rule due to its
-  temporal constraints. When that happens, the engine can safely retract the
+  temporal constraints. When that happens, the engine can safely delete the
   event from the session without side effects and release any resources used
   by that event.</para>
 

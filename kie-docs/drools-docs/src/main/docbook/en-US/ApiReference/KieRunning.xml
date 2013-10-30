@@ -113,7 +113,7 @@
         This <code>FactHandle</code> is the token used to represent your
         inserted object within the <code>WorkingMemory</code>. It is also used
         for interactions with the <code>WorkingMemory</code> when you wish to
-        retract or modify an object.</para>
+        delete or modify an object.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
@@ -137,23 +137,23 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
       </section>
 
       <section>
-        <title>Retraction</title>
+        <title>Deletion</title>
 
-        <para>Retraction is the removal of a fact from Working Memory, which
+        <para>Deletion is the removal of a fact from Working Memory, which
         means that it will no longer track and match that fact, and any rules
         that are activated and dependent on that fact will be cancelled. Note
         that it is possible to have rules that depend on the nonexistence of a
-        fact, in which case retracting a fact may cause a rule to activate.
-        (See the <code>not</code> and <code>exists</code> keywords.) Retraction
+        fact, in which case deleting a fact may cause a rule to activate.
+        (See the <code>not</code> and <code>exists</code> keywords.) Deletion
         may be done using the <code>FactHandle</code> that was returned by the
         insert call. On the right hand side of a rule the
-        <literal>retract</literal> statement is used, which works with a simple
+        <literal>delete</literal> statement is used, which works with a simple
         object reference.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );
 ....
-ksession.retract( stiltonHandle );            </programlisting>
+ksession.delete( stiltonHandle );            </programlisting>
       </section>
 
       <section>

@@ -811,7 +811,7 @@ end</programlisting>
     )
     </programlisting>
 
-    <para>The second is the use of the shed keyword, which causes the retraction of the proxy corresponding to the given argument type:</para>
+    <para>The second is the use of the shed keyword, which causes the deletion of the proxy corresponding to the given argument type:</para>
 
     <programlisting>then
     Thing t = shed( $x, GoldenCustomer.class )</programlisting>
