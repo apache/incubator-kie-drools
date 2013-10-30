@@ -35,7 +35,7 @@
   </preface>
   <xi:include href="ReleaseNotes.xml"/>
   <xi:include href="../../../../../shared/KIE/KIE.xml"/>
-  <xi:include href="ApiReference.xml"/>
+  <xi:include href="../../../../../shared/ApiReference/ApiReference.xml"/>
   <xi:include href="LanguageReference.xml"/>
   <xi:include href="ComplexEventProcessing.xml"/>
   <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
