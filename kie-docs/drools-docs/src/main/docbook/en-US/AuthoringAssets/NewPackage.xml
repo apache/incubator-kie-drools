@@ -23,19 +23,16 @@
   <para>So while rules (and assets in general) can appear in any number of
     categories, they only live in one package. If you think of Drools Workbench as a
   file system, then each package is a folder, and the assets live in that
-  folder - as one big happy list of files. When you create a deployment
-  snapshot of a package, you are effectively copying all the assets in that
-  "folder" into another special "folder".</para>
+  folder - as one big happy list of files.</para>
 
-  <para>To create an empty package select "New Package" from the "Create new"
-  (asset) menu.</para>
+  <para>To create an empty package select "Package" from the "New item" menu.</para>
 
   <figure>
     <title>New Package</title>
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/AuthoringAssets/NewPackage1.png" format="PNG"/>
+        <imagedata align="center" fileref="images/Workbench/newItemMenu.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -43,39 +40,29 @@
   <section>
     <title>Empty package</title>
 
-    <para>An empty package can be created by simply specifying a name and
-    optional description.</para>
+    <para>An empty package can be created by simply specifying a name.</para>
 
     <figure>
       <title>New empty Package</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/NewPackage2.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/newItem-package.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
-  </section>
 
-  <section>
-    <title>Importing DRL packages</title>
-
-    <para>It is also possible to create a package by importing an existing DRL
-    file. When you choose to create a new package, you can choose an option to
-    upload a <filename>.drl</filename> file. Drools Workbench will then attempt to
-    understand that DRL, break create a package for you. The rules in it will
-    be stored as individual assets (but still as DRL text content). Note that
-    to actually build the package, you will need to upload an appropriate
-    model (as a JAR) to validate against, as a separate step.</para>
-
+    <para>Once the Package has been created it will appear in the Project Explorer.</para>
+    
     <figure>
-      <title>Importing DRL packages</title>
-
+      <title>Project Explorer showing new Package</title>
+      
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/NewPackage3.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/newItem-package-project-explorer.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
   </section>
+
 </section>
