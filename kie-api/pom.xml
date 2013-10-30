@@ -66,7 +66,7 @@
             </group>
           </groups>
           <!--
-            yWorks UML Doclet (AKA ydoc) is used for the UML diagrams in drools-expert-docs.
+            yWorks UML Doclet (AKA ydoc) is used for the UML diagrams in drools-docs.
             To use it:
             - Download version 3.0.2 or higher from http://www.yworks.com/en/products_ydoc.html#download
             - Install it to for example /home/gdesmet/opt/other/yworks-uml-doclet
