@@ -22,9 +22,9 @@ import javax.enterprise.inject.Produces;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;

@@ -17,7 +17,6 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -35,16 +34,17 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             
         };
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
@@ -142,7 +143,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             
         };
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-TimerStart2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
@@ -173,7 +175,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
         };
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("timer-rules.drl"), ResourceType.DRL)
                 .schedulerService(globalScheduler)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
@@ -212,7 +215,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         properties.setProperty("john", "HR");
         UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
 
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycleWithHT.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
@@ -281,7 +285,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR");
         UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycleWithHT2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
@@ -337,7 +342,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     @Test
     public void testInterediateTiemrWithGlobalTestServiceRollback() throws Exception {
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .get();
@@ -382,7 +388,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR");
         UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycleWithHT2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .userGroupCallback(userGroupCallback)
@@ -438,7 +445,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR");
         UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("HumanTaskWithBoundaryTimer.bpmn"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .userGroupCallback(userGroupCallback)
@@ -484,7 +492,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
 
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("HumanTaskWithDeadlines.bpmn"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .get();

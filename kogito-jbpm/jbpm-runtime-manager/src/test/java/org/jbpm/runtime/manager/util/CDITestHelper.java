@@ -17,16 +17,16 @@ import javax.persistence.Persistence;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
-import org.kie.internal.task.api.UserGroupCallback;
 
 @ApplicationScoped
 public class CDITestHelper {
@@ -41,7 +41,8 @@ public class CDITestHelper {
     @PerProcessInstance
     public RuntimeEnvironment produceEnvironment(EntityManagerFactory emf) {
         
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .entityManagerFactory(emf)
                 .userGroupCallback(getUserGroupCallback())
                 .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))

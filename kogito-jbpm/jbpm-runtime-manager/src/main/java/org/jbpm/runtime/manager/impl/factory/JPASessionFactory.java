@@ -19,8 +19,8 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 
 /**

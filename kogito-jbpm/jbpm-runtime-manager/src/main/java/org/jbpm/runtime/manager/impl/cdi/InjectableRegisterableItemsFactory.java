@@ -50,11 +50,11 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.executor.api.ExecutorService;
-import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

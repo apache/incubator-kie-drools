@@ -24,10 +24,10 @@ import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

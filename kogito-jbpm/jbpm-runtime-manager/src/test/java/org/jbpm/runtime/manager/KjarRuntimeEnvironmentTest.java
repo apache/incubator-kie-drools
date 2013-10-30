@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -33,14 +32,15 @@ import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.scanner.MavenRepository;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -97,7 +97,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     public void testCustomTaskFromKjar() {
     	KieServices ks = KieServices.Factory.get();
           
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -120,7 +121,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     public void testScriptTaskFromKjar() {
     	KieServices ks = KieServices.Factory.get();
           
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -142,8 +144,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     public void testScriptTaskFromKjarUsingNamedKbaseKsession() {
     	KieServices ks = KieServices.Factory.get();
           
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.
-    			getDefault(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION), "defaultKieBase", "defaultKieSession")
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION), "defaultKieBase", "defaultKieSession")
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -165,7 +167,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     public void testUserTaskFromKjar() {
     	KieServices ks = KieServices.Factory.get();
           
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION))
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -198,7 +201,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     @Test
     public void testScriptTaskFromKjarByName() {
     	
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault(GROUP_ID, ARTIFACT_ID, VERSION)
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(GROUP_ID, ARTIFACT_ID, VERSION)
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -219,8 +223,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     @Test
     public void testScriptTaskFromKjarByNameNamedKbaseKsession() {
     	
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder
-    			.getDefault(GROUP_ID, ARTIFACT_ID, VERSION, "defaultKieBase", "defaultKieSession")
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder(GROUP_ID, ARTIFACT_ID, VERSION, "defaultKieBase", "defaultKieSession")
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -241,7 +245,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     @Test
     public void testScriptTaskFromClasspathContainer() {
 
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getClasspathKmoduleDefault()
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newClasspathKmoduleDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .get();
         
@@ -262,7 +267,8 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
     @Test
     public void testScriptTaskFromClasspathContainerNamedKbaseKsession() {
 
-    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getClasspathKmoduleDefault("defaultKieBase", "defaultKieSession")
+    	RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newClasspathKmoduleDefaultBuilder("defaultKieBase", "defaultKieSession")
                 .userGroupCallback(userGroupCallback)
                 .get();
         

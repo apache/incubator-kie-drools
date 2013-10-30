@@ -15,7 +15,6 @@ import javax.transaction.UserTransaction;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -25,14 +24,15 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -61,7 +61,8 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testCreationOfSession() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getEmpty()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newEmptyBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -103,7 +104,8 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testCreationOfSessionWithPeristence() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -146,7 +148,8 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
     @Test
     public void testCreationOfSessionWithinTransaction() throws Exception {
         System.setProperty("jbpm.tm.jndi.lookup", "java:comp/UserTransaction");
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -181,7 +184,8 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testExecuteReusableSubprocess() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
@@ -232,7 +236,8 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();

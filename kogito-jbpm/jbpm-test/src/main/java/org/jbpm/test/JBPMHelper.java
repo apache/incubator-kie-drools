@@ -10,18 +10,18 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.h2.tools.Server;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -132,13 +132,15 @@ public final class JBPMHelper {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory(properties.getProperty("persistence.persistenceunit.name", "org.jbpm.persistence.jpa"), map);
             
             
-            builder = RuntimeEnvironmentBuilder.getDefault()
+            builder = RuntimeEnvironmentBuilder.Factory.get()
+        			.newDefaultBuilder()
                 .entityManagerFactory(emf)                
                 .addEnvironmentEntry(EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
 
 
         } else {            
-            builder = RuntimeEnvironmentBuilder.getDefaultInMemory();
+            builder = RuntimeEnvironmentBuilder.Factory.get()
+        			.newDefaultInMemoryBuilder();
         }
         builder.knowledgeBase(kbase);
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(builder.get());

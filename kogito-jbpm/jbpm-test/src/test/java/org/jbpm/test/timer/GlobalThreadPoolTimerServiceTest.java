@@ -9,9 +9,9 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 
 @RunWith(Parameterized.class)
 public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest {

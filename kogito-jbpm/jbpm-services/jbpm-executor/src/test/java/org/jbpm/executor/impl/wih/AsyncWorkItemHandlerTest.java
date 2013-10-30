@@ -35,7 +35,6 @@ import org.jbpm.executor.impl.ExecutorRunnable;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.runtime.RuntimeManagerRegistry;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
@@ -48,18 +47,19 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorAdminService;
+import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
-import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -93,7 +93,7 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
     @Test
     public void testRunProcessWithAsyncHandler() throws Exception {
 
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
@@ -130,7 +130,7 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
     @Test
     public void testRunProcessWithAsyncHandlerWithAbort() throws Exception {
 
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new DefaultRegisterableItemsFactory() {

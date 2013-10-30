@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.junit.After;
 import org.junit.Before;
@@ -18,11 +17,12 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
@@ -125,12 +125,14 @@ public class MultipleTimerServicesTest extends TimerBaseTest {
             
         };
         
-        environmentM1 = RuntimeEnvironmentBuilder.getDefault()
+        environmentM1 = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listenerM1))
                 .get();
 
-        environmentM2 = RuntimeEnvironmentBuilder.getDefault()
+        environmentM2 = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listenerM2))
                 .get();

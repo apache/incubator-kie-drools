@@ -19,7 +19,6 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.impl.model.GroupImpl;
@@ -31,14 +30,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.InternalTaskService;
@@ -86,7 +86,8 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
 	
     @Test
     public void testSessionPerProcessInstance() throws Exception {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycleWithHT.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)

@@ -21,14 +21,15 @@ import javax.persistence.PersistenceUnit;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.shared.services.cdi.Selectable;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerRequest;
 import org.kie.internal.runtime.manager.cdi.qualifier.Singleton;
 import org.kie.internal.task.api.UserGroupCallback;
+
 
 /**
  *
@@ -66,7 +67,7 @@ public class TestEnvironmentProducer {
     @PerProcessInstance
     public RuntimeEnvironment produceEnvironment(EntityManagerFactory emf) {
         Properties properties= new Properties();
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .entityManagerFactory(emf).userGroupCallback( new JBossUserGroupCallbackImpl(properties))
                 .get();
         return environment;

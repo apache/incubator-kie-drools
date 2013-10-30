@@ -35,9 +35,9 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.Mapper;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
@@ -75,7 +75,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         super(environment, identifier);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
-        this.mapper = environment.getMapper();
+        this.mapper = ((org.kie.internal.runtime.manager.RuntimeEnvironment)environment).getMapper();
         activeManagers.add(identifier);
     }
     

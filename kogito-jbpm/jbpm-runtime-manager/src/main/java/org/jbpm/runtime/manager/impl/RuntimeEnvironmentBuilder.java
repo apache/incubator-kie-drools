@@ -30,10 +30,11 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.manager.RegisterableItemsFactory;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilderFactory;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.runtime.manager.Mapper;
-import org.kie.internal.runtime.manager.RegisterableItemsFactory;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.scanner.MavenRepository;
 
 /**
@@ -52,7 +53,7 @@ import org.kie.scanner.MavenRepository;
  * </ul>  
  *
  */
-public class RuntimeEnvironmentBuilder {
+public class RuntimeEnvironmentBuilder implements RuntimeEnvironmentBuilderFactory, org.kie.api.runtime.manager.RuntimeEnvironmentBuilder{
 	
 	private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
 	
@@ -259,8 +260,11 @@ public class RuntimeEnvironmentBuilder {
         return this;
     }
     
-    public RuntimeEnvironmentBuilder entityManagerFactory(EntityManagerFactory emf) {
-        this.runtimeEnvironment.setEmf(emf);
+    public RuntimeEnvironmentBuilder entityManagerFactory(Object emf) {
+    	if (!(emf instanceof EntityManagerFactory)) {
+    		throw new IllegalArgumentException("Argument is not of type EntityManagerFactory");
+    	}
+        this.runtimeEnvironment.setEmf((EntityManagerFactory) emf);
         
         return this;
     }
@@ -311,9 +315,11 @@ public class RuntimeEnvironmentBuilder {
         return this.runtimeEnvironment;
     }
 
-    public RuntimeEnvironmentBuilder schedulerService(GlobalSchedulerService globalScheduler) {
-        
-        this.runtimeEnvironment.setSchedulerService(globalScheduler);
+    public RuntimeEnvironmentBuilder schedulerService(Object globalScheduler) {
+        if (!(globalScheduler instanceof GlobalSchedulerService)) {
+        	throw new IllegalArgumentException("Argument is not of type GlobalSchedulerService");
+        }
+        this.runtimeEnvironment.setSchedulerService((GlobalSchedulerService) globalScheduler);
         return this;
     }
     
@@ -321,4 +327,49 @@ public class RuntimeEnvironmentBuilder {
         this.runtimeEnvironment.setClassLoader(cl);        
         return this;
     }
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newEmptyBuilder() {
+		return RuntimeEnvironmentBuilder.getEmpty();
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newDefaultBuilder() {
+		return RuntimeEnvironmentBuilder.getDefault();
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newDefaultInMemoryBuilder() {
+		return RuntimeEnvironmentBuilder.getDefaultInMemory();
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newDefaultBuilder(String groupId, String artifactId, String version) {
+		return RuntimeEnvironmentBuilder.getDefault(groupId, artifactId, version);
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newDefaultBuilder(String groupId, String artifactId, String version, String kbaseName, String ksessionName) {
+		return RuntimeEnvironmentBuilder.getDefault(groupId, artifactId, version, kbaseName, ksessionName);
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newDefaultBuilder(ReleaseId releaseId) {
+		return RuntimeEnvironmentBuilder.getDefault(releaseId);
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newDefaultBuilder(ReleaseId releaseId, String kbaseName, String ksessionName) {
+		return RuntimeEnvironmentBuilder.getDefault(releaseId, kbaseName, ksessionName);
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newClasspathKmoduleDefaultBuilder() {
+		return RuntimeEnvironmentBuilder.getClasspathKmoduleDefault();
+	}
+
+	@Override
+	public org.kie.api.runtime.manager.RuntimeEnvironmentBuilder newClasspathKmoduleDefaultBuilder(String kbaseName, String ksessionName) {
+		return RuntimeEnvironmentBuilder.getClasspathKmoduleDefault(kbaseName, ksessionName);
+	}
 }

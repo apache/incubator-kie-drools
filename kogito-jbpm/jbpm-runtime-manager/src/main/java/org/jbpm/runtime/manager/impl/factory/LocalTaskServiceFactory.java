@@ -21,8 +21,8 @@ import org.jboss.solder.core.Veto;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.task.TaskService;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 /**

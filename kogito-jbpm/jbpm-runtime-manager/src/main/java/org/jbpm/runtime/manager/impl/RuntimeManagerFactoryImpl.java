@@ -28,9 +28,9 @@ import org.jbpm.runtime.manager.impl.factory.InMemorySessionFactory;
 import org.jbpm.runtime.manager.impl.factory.JPASessionFactory;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.TransactionAwareSchedulerServiceInterceptor;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 

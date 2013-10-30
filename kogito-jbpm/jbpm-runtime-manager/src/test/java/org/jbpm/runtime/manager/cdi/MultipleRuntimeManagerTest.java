@@ -30,13 +30,13 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
@@ -123,7 +123,8 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
     public void testAllManagersManager() {
         assertNotNull(managerFactory);
         
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -134,7 +135,8 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
         testProcessStartOnManager(manager, EmptyContext.get());
         manager.close();
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -145,7 +147,8 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
         testProcessStartOnManager(manager, EmptyContext.get());
         manager.close();
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)

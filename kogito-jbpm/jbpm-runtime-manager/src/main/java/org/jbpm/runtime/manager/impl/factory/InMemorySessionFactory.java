@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 

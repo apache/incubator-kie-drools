@@ -22,7 +22,7 @@ import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.DelegateSchedulerServiceInterceptor;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
 
 /**
  * Transaction aware scheduler service interceptor that will delay actual scheduling of the

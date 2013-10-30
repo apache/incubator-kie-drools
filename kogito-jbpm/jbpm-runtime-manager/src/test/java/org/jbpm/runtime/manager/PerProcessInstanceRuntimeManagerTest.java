@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,7 +14,6 @@ import javax.transaction.UserTransaction;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -25,19 +23,20 @@ import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.kie.internal.task.api.UserGroupCallback;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -63,7 +62,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testCreationOfSession() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefaultInMemory()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultInMemoryBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -113,7 +113,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testCreationOfSessionWithPersistence() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -177,7 +178,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testCreationOfSessionWithPersistenceByCorrelationKey() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -245,7 +247,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testExecuteCompleteWorkItemOnInvalidSessionWithPersistence() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -303,7 +306,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testExecuteReusableSubprocess() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivity.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CallActivitySubProcess.bpmn2"), ResourceType.BPMN2)
@@ -359,7 +363,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testStartTwoProcessIntancesOnSameSession() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
@@ -395,7 +400,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -417,7 +423,8 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
     
     @Test
     public void testCreationOfSessionWithEmptyContext() {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefaultInMemory()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultInMemoryBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)

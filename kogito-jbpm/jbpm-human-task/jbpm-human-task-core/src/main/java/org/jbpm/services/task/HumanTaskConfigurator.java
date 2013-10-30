@@ -30,7 +30,6 @@ import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
 import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
 import org.jbpm.services.task.identity.UserGroupTaskInstanceServiceDecorator;
 import org.jbpm.services.task.identity.UserGroupTaskQueryServiceDecorator;
-import org.jbpm.services.task.impl.ThrowableInteranlTaskService;
 import org.jbpm.services.task.impl.TaskAdminServiceImpl;
 import org.jbpm.services.task.impl.TaskContentServiceImpl;
 import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
@@ -38,6 +37,7 @@ import org.jbpm.services.task.impl.TaskIdentityServiceImpl;
 import org.jbpm.services.task.impl.TaskInstanceServiceImpl;
 import org.jbpm.services.task.impl.TaskQueryServiceImpl;
 import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
+import org.jbpm.services.task.impl.ThrowableInteranlTaskService;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.services.task.rule.RuleContextProvider;
@@ -50,6 +50,7 @@ import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
 import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.TaskAdminService;
@@ -58,7 +59,6 @@ import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.UserGroupCallback;
 
 /**
  * Task service configurator that provides fluent API approach to building <code>TaskService</code>

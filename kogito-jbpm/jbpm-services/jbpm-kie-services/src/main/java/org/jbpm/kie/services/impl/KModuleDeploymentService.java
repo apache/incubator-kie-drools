@@ -24,13 +24,13 @@ import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
 import org.jbpm.kie.services.impl.model.ProcessDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +131,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         auditEventBuilder.setDeploymentUnitId(unit.getIdentifier());
         auditLogger.setBuilder(auditEventBuilder);
 
-        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .entityManagerFactory(getEmf())
                 .knowledgeBase(kbase)
                 .classLoader(kieContainer.getClassLoader());

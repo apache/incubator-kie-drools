@@ -36,7 +36,6 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
@@ -47,7 +46,10 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -57,8 +59,6 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -288,14 +288,17 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         
         RuntimeEnvironmentBuilder builder = null;
         if (!setupDataSource){
-            builder = RuntimeEnvironmentBuilder.getEmpty()
+            builder = RuntimeEnvironmentBuilder.Factory.get()
+        			.newEmptyBuilder()
             .addConfiguration("drools.processSignalManagerFactory", DefaultSignalManagerFactory.class.getName())
             .addConfiguration("drools.processInstanceManagerFactory", DefaultProcessInstanceManagerFactory.class.getName());
         } else if (sessionPersistence) {
-            builder = RuntimeEnvironmentBuilder.getDefault()
+            builder = RuntimeEnvironmentBuilder.Factory.get()
+        			.newDefaultBuilder()
             .entityManagerFactory(emf);
         } else {
-            builder = RuntimeEnvironmentBuilder.getDefaultInMemory();       
+            builder = RuntimeEnvironmentBuilder.Factory.get()
+        			.newDefaultInMemoryBuilder();       
         }
         builder.userGroupCallback(new JBossUserGroupCallbackImpl("classpath:/usergroups.properties"));
         

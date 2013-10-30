@@ -39,7 +39,6 @@ import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
 import org.jbpm.kie.services.test.TestIdentityProvider;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -53,24 +52,24 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
 
 /**
  *
@@ -176,7 +175,7 @@ public class HumanResourcesHiringTest extends AbstractBaseTest {
         auditEventBuilder.setIdentityProvider(new TestIdentityProvider());
         auditEventBuilder.setDeploymentUnitId(id);
         auditLogger.setBuilder(auditEventBuilder);
-        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .entityManagerFactory(emf)
                 .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, auditLogger));
 

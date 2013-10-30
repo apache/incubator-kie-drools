@@ -10,8 +10,6 @@ import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
-import org.jbpm.test.timer.TimerBaseTest.TestRegisterableItemsFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -26,11 +24,12 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 @RunWith(Parameterized.class)
@@ -99,7 +98,8 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
             
         };
         
-        environment = RuntimeEnvironmentBuilder.getDefault()
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-TimerStart2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
@@ -129,7 +129,8 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     @Test 
     @Ignore
     public void testAbortGlobalTestService() throws Exception {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .addConfiguration("drools.timerService", "org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate")
                 .get();
@@ -177,7 +178,8 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     @Test
     @Ignore
     public void testContinueGlobalTestService() throws Exception {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventTimerCycle2.bpmn2"), ResourceType.BPMN2)
                 .addConfiguration("drools.timerService", "org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate")
                 .get();

@@ -21,7 +21,6 @@ import org.hibernate.StaleObjectStateException;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
@@ -37,19 +36,18 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeEnvironment;
+import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
-import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -105,7 +103,8 @@ public class SessionTest extends AbstractBaseTest {
 	@Ignore
 	public void testSingletonSessionMemory() throws Exception {
 		for (int i = 0; i < 1000; i++) {
-		    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+		    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+	    			.newDefaultBuilder()
 	                .userGroupCallback(userGroupCallback)
 	                .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
 	                .get();
@@ -123,7 +122,8 @@ public class SessionTest extends AbstractBaseTest {
 	
 	@Test
 	public void testSingletonSession() throws Exception {
-	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -167,7 +167,8 @@ public class SessionTest extends AbstractBaseTest {
 	
 	@Test
 	public void testNewSession() throws Exception {
-	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -211,7 +212,8 @@ public class SessionTest extends AbstractBaseTest {
 	
     @Test
     public void testSessionPerProcessInstance() throws Exception {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -255,7 +257,8 @@ public class SessionTest extends AbstractBaseTest {
     
     @Test
     public void testNewSessionSuccess() throws Exception {
-        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -327,7 +330,8 @@ public class SessionTest extends AbstractBaseTest {
 	
 	@Test
 	public void testNewSessionFail() throws Exception {
-	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sample.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -399,7 +403,8 @@ public class SessionTest extends AbstractBaseTest {
 	
 	@Test
 	public void testNewSessionFailBefore() throws Exception {
-	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sampleFailBefore.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -432,7 +437,8 @@ public class SessionTest extends AbstractBaseTest {
 	
 	@Test
 	public void testNewSessionFailAfter() throws Exception {
-	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sampleFailAfter.bpmn"), ResourceType.BPMN2)
                 .get();
@@ -483,7 +489,8 @@ public class SessionTest extends AbstractBaseTest {
 	
 	@Test
 	public void testNewSessionFailAfter2() throws Exception {
-	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.getDefault()
+	    RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("sampleFailAfter.bpmn"), ResourceType.BPMN2)
                 .get();
