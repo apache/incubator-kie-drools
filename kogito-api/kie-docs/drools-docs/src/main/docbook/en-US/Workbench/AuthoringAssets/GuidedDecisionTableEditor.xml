@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0"
+<section version="5.0" xml:id="drools.GuidedDecisionTableEditor"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xml:base="../" xmlns="http://docbook.org/ns/docbook"
+  xml:base="../../" xmlns="http://docbook.org/ns/docbook"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -14,7 +14,7 @@
   attributes, meta-data, conditions and actions can be defined in a tabular format thus facilitating rapid entry of
   large sets of related rules. Web-based decision table rules are compiled into DRL like all other rule assets.</para>
 
-  <section>
+  <section xml:id="drools.GuidedDecisionTableEditorTypesOfDecisionTable">
     <title>Types of decision table</title>
 
     <para>There are broadly two different types of decision table, both of which are supported in Drools Workbench:-</para>
@@ -29,7 +29,7 @@
       </listitem>
     </itemizedlist>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorExtendedEntryDecisionTable">
       <title>Extended Entry</title>
 
       <para>An Extended Entry decision table is one for which the column definitions, or stubs, specify Pattern, Field
@@ -43,14 +43,14 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/dtable-complete1.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-complete1.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorLimitedEntryDecisionTable">
       <title>Limited Entry</title>
 
       <para>A Limited Entry decision table is one for which the column definitions specify value in addition to Pattern,
@@ -63,7 +63,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/dtable-complete2.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-complete2.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -71,7 +71,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedDecisionTableEditorConcepts">
     <title>Main components\concepts</title>
 
     <para>The guided decision table is split into two main sections:-</para>
@@ -92,13 +92,13 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/dtable-sections.png"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-sections.png"
             format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorNavigation">
       <title>Navigation</title>
 
       <para>Cells can be selected in a variety of ways:-</para>
@@ -122,7 +122,7 @@
       change and then the column width dragged either narrower or wider.</para>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorCellMerging">
       <title>Cell merging</title>
 
       <para>The icon in the top left of the decision table toggles cell merging on and off. When cells are merged those
@@ -135,14 +135,14 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/dtable-merged.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-merged.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorCellGrouping">
       <title>Cell grouping</title>
 
       <para>Cells that have been merged can be further collapsed into a single row. Clicking the [+\-] icon in the top
@@ -155,7 +155,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/dtable-grouped.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-grouped.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -165,7 +165,7 @@
       updated.</para>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorOtherwiseOperation">
       <title>Operation of "otherwise"</title>
 
       <para>Condition columns defined with literal values that use either the equality (==) or inequality (!=) operators
@@ -188,7 +188,7 @@ then
 end</programlisting>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorRearrangeColumns">
       <title>Re-arranging columns</title>
 
       <para>Whole patterns and individual conditions can be re-arranged by dragging and dropping them in the
@@ -202,7 +202,7 @@ end</programlisting>
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-              fileref="images/AuthoringAssets/dtable-rearranging-patterns.png" format="PNG"/>
+              fileref="images/Workbench/AuthoringAssets/dtable-rearranging-patterns.png" format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -213,23 +213,23 @@ end</programlisting>
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-              fileref="images/AuthoringAssets/dtable-rearranging-columns.png" format="PNG"/>
+              fileref="images/Workbench/AuthoringAssets/dtable-rearranging-columns.png" format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedDecisionTableEditorDefining">
     <title>Defining a web based decision table</title>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorDefiningManually">
       <title>Manual creation</title>
 
       <para>When a new empty decision table has been created you need to define columns for Facts, their constraints and
       corresponding actions.</para>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorDefiningManuallyColumns">
         <title>Column configuration</title>
 
         <para>Expand the "Decision table" element and you will see three further sections for "Conditions", "Actions"
@@ -245,19 +245,19 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-column-config.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-column-config.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
 
-        <section>
+        <section xml:id="drools.GuidedDecisionTableEditorDefinitionUtilityColumns">
           <title>Utility columns</title>
 
           <para>All decision table contain two utility columns containing rule number and rule description.</para>
         </section>
 
-        <section>
+        <section xml:id="drools.GuidedDecisionTableEditorAddingColumns">
           <title>Adding columns</title>
 
           <para>To add a column click on the "New column" icon.</para>
@@ -270,7 +270,7 @@ end</programlisting>
             <mediaobject>
               <imageobject>
                 <imagedata align="center"
-                  fileref="images/AuthoringAssets/dtable-column-type-popup.png" format="PNG"/>
+                  fileref="images/Workbench/AuthoringAssets/dtable-column-type-popup.png" format="PNG"/>
               </imageobject>
             </mediaobject>
           </figure>
@@ -325,17 +325,17 @@ end</programlisting>
           </itemizedlist>
         </section>
 
-        <section>
+        <section xml:id="drools.GuidedDecisionTableEditorSimpleColumns">
           <title>Simple column types</title>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorMetaDataColumns">
             <title>Metadata</title>
 
             <para>Zero or more meta-data columns can be defined, each represents the normal meta-data annotation on DRL
             rules.</para>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorAttributeColumns">
             <title>Attributes</title>
 
             <para>Zero or more attribute columns representing any of the DRL rule attributes (e.g. salience, timer,
@@ -356,7 +356,7 @@ then
 end</programlisting>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorSimpleCondition">
             <title>Simple Condition</title>
 
             <para>Conditions represent constraints on Fact Patterns defined in the left-hand side, or "when" portion, of
@@ -388,14 +388,14 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-condition-popup.png" format="PNG"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-condition-popup.png" format="PNG"
                   />
                 </imageobject>
               </mediaobject>
             </figure>
           </section>
 
-          <section>
+          <section xml:id="drools.DecisionTableSetField">
             <title>Set the value of a field</title>
 
             <para>An Action to set the value of a field on previously bound fact. You have the option to notify the Rule
@@ -407,13 +407,13 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-setField-popup.png" format="PNG"/>
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-setField-popup.png" format="PNG"/>
                 </imageobject>
               </mediaobject>
             </figure>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorSetFieldOnNewFact">
             <title>Set the value of a field on a new fact</title>
 
             <para>An Action to insert a new Fact into the Rule Engine Working Memory and set the a value of one of the
@@ -427,14 +427,14 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-insertField-popup.png"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-insertField-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
             </figure>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorDeleteFact">
             <title>Delete an existing fact</title>
 
             <para>An Action to delete a bound Fact.</para>
@@ -445,7 +445,7 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-deleteFact-popup.png"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-deleteFact-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
@@ -453,10 +453,10 @@ end</programlisting>
           </section>
         </section>
 
-        <section>
+        <section xml:id="drools.GuidedDecisionTableEditorAdvancedColumns">
           <title>Advanced column types</title>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorConditionBRL">
             <title>Condition BRL fragments</title>
 
             <para>A construct that allows a BRL fragment to be used in the left-hand side of a rule. A BRL fragment is
@@ -474,7 +474,7 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-condition-brl1-popup.png"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-condition-brl1-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
@@ -486,35 +486,35 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-condition-brl2-popup.png"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-condition-brl2-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
             </figure>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorExecuteWorkItem">
             <title>Execute a Work Item</title>
 
             <para>An Action invoking a jBPM Work Item Handler setting it's input parameters to bound Facts\Facts fields
             values.</para>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorSetWorkItemParameter">
             <title>Set the value of a field with a Work Item parameter</title>
 
             <para>An Action setting the value of a Fact's field to that of a jBPM Work Item Handlers result
             parameter.</para>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorSetFactFromWorkItemParameter">
             <title>Set the value of a field on a new Fact with a Work Item parameter</title>
 
             <para>An Action setting the value of a new Fact's field to that of a jBOM Work Item Handlers result
             parameter.</para>
           </section>
 
-          <section>
+          <section xml:id="drools.GuidedDecisionTableEditorActionBRL">
             <title>Action BRL fragment</title>
 
             <para>A construct that allows a BRL fragment to be used in the right-hand side of a rule. A BRL fragment is
@@ -532,7 +532,7 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-action-brl1-popup.png"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-action-brl1-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
@@ -544,7 +544,7 @@ end</programlisting>
               <mediaobject>
                 <imageobject>
                   <imagedata align="center"
-                    fileref="images/AuthoringAssets/dtable-column-action-brl2-popup.png"
+                    fileref="images/Workbench/AuthoringAssets/dtable-column-action-brl2-popup.png"
                     format="PNG"/>
                 </imageobject>
               </mediaobject>
@@ -554,7 +554,7 @@ end</programlisting>
       </section>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedDecisionTableEditorWizard">
       <title>Using a Wizard</title>
 
       <para>A Wizard can also be used to assist with defining the decision table columns.</para>
@@ -588,7 +588,7 @@ end</programlisting>
         </listitem>
       </itemizedlist>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorSelectingWizard">
         <title>Selecting the wizard</title>
 
         <para>The "New Wizard" dialog shows a "Use wizard" checkbox when the asset type is set to "Decision Table (Web -
@@ -599,14 +599,14 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard1.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard1.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
       </section>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorWizardSummaryPage">
         <title>Summary page</title>
 
         <para>the summary page shows a few basic details about the decision table and allows the asset name to be
@@ -617,14 +617,14 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard2.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard2.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
       </section>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorWizardFactPatternsPage">
         <title>Add Fact Patterns page</title>
 
         <para>This page allows Fact types to be defined that will form the "When" columns of the rules. Fact types that
@@ -639,7 +639,7 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard3a.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard3a.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
@@ -650,14 +650,14 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard3b.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard3b.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
       </section>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorWizardAddConstraintPage">
         <title>Add Constraints page</title>
 
         <para>This page allows field constraints on the Fact types you have chosen to use in the decision table to be
@@ -674,14 +674,14 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard4.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard4.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
       </section>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorWizardUpdateFactsPage">
         <title>Add Actions to update facts page</title>
 
         <para>Fact types that have been defined can be updated in the consequence, or action, part of a rule. This page
@@ -697,14 +697,14 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard5.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard5.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
       </section>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorWizardInsertFactsPage">
         <title>Add Actions to insert facts page</title>
 
         <para>Actions can also be defined to insert new Facts into the Rule Engine. A list of Fact types available in
@@ -723,14 +723,14 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard6.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard6.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
         </figure>
       </section>
 
-      <section>
+      <section xml:id="drools.GuidedDecisionTableEditorWizardExpandColumnsPage">
         <title>Columns to expand page</title>
 
         <para>This page controls how the decision table, based upon Conditions defined on the prior pages, will be
@@ -747,7 +747,7 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard7a.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard7a.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
@@ -758,7 +758,7 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard7b.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard7b.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
@@ -769,7 +769,7 @@ end</programlisting>
 
           <mediaobject>
             <imageobject>
-              <imagedata align="center" fileref="images/AuthoringAssets/dtable-wizard7c.png"
+              <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-wizard7c.png"
                 format="PNG"/>
             </imageobject>
           </mediaobject>
@@ -778,7 +778,7 @@ end</programlisting>
     </section>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedDecisionTableEditorRuleDefinitions">
     <title>Rule definition</title>
 
     <para>This section allows individual rules to be defined using the columns defined earlier.</para>
@@ -791,13 +791,13 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/dtable-body.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/dtable-body.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedDecisionTableEditorAuditLog">
     <title>Audit Log</title>
 
     <para>An audit log has been added to the web-guided Decision Table editor to track additions, deletions and
@@ -813,7 +813,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/audit-log1.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/audit-log1.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -836,7 +836,7 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/audit-log2.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/audit-log2.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
