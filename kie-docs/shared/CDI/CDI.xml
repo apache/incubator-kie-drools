@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0" xml:id="CDIChapter"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xml:base="./" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:ns="http://docbook.org/ns/docbook">
+  <title>CDI</title>
+  <section>
+    <title>Introduction</title>
+    <para><link xlink:href="http://www.cdi-spec.org">CDI</link>, Contexts and  Dependency Injection,
+      is java specification that provides declarative controls and strucutres to an application. KIE
+      can use it to automatically instantiate and bind things, without the need to use the
+      programmatic api. </para>
+  </section>
+  <section>
+    <title>Annotations</title>
+    <para>@KContainer, @KBaser and @KSession all support an optional 'name' attribute. CDI typically
+      does "getOrCreate" when it injects, all injections receive the same instance for the same set
+      of annotations. the 'name' annotation forces a unique instance for each name, although all
+      intsance for that name will be identity equals.</para>
+    <section>
+      <title>@KRealaseId</title>
+      <para>Used to bind an instance to a specific version of a KieModule. If kie-ci is on the
+        classpath this will resolve dependencies automatically, downloading from remote
+        repositories.</para>
+    </section>
+    <section>
+      <title>@KContainer</title>
+      <para>@KContainer is optional as it can be detected and added by the use of @Inject and
+        variable type inferrence.</para>
+      <figure>
+        <title>Injects Classpath KieContainer</title>
+        <programlisting language="JAVA">@Inject
+private KieContainer kContainer;</programlisting>
+      </figure>
+      <figure>
+        <title>Injects KieContianer for Dyanmic KieModule</title>
+        <programlisting language="JAVA">@Inject
+@KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieContainer kContainer;</programlisting>
+      </figure>
+      <para/>
+      <figure>
+        <title>Injects named KieContianer for Dyanmic KieModule</title>
+        <programlisting language="JAVA">@Inject
+@KContainer(name = "kc1")
+@KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
+private KieContainer kContainer;</programlisting>
+      </figure>
+      <para>xxxx</para>
+    </section>
+    <section>
+      <title>@KBase</title>
+      <para>@KBase is optional as it can be detected and added by the use of @Inject and variable
+        type inferrence.</para>
+      <figure>
+        <title>Injects the Default KieBase from the Classpath KieContainer</title>
+        <programlisting language="JAVA">@Inject
+private KieBase kbase;</programlisting>
+      </figure>
+      <figure>
+        <title>Injects the Default KieBase from a Dynamic KieModule</title>
+        <programlisting language="JAVA">@Inject
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")   
+private KieBase kbase;</programlisting>
+      </figure>
+      <figure>
+        <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+        <programlisting language="JAVA">@Inject
+@KBase("jar1.KBase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+private KieBase kbase1v10;
+
+@Inject
+@KBase("jar1.KBase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+private KieBase kbase1v10;</programlisting>
+      </figure>
+      <figure>
+        <title>Use 'name' attribute to force new Instance for 'jar1.KBase1' KieBase</title>
+        <programlisting language="JAVA">@Inject
+@KBase(value="jar1.KBase1", name="kb1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieBase kbase1kb1;
+
+@Inject  
+@KBase(value="jar1.KBase1", name="kb2")    
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieBase kbase1kb1;</programlisting>
+      </figure>
+      <para/>
+    </section>
+    <section>
+      <title>@KSession for KieSession</title>
+      <para>@KSession is optional as it can be detected and added by the use of @Inject and variable
+        type inferrence.</para>
+      <figure>
+        <title>Injects the Default KieSession from the Classpath KieContainer</title>
+        <programlisting language="JAVA">@Inject
+private KieSession ksession;</programlisting>
+      </figure>
+      <figure>
+        <title>Injects the Default KieSession from a Dynamic KieModule</title>
+        <programlisting language="JAVA">@Inject
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")   
+private KieSession ksession;</programlisting>
+      </figure>
+      <figure>
+        <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+        <programlisting language="JAVA">@Inject
+@KBase("jar1.KBase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+private KieSession ksessionv10;
+
+@Inject
+@KBase("jar1.KBase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+private KieSession ksessionv11;</programlisting>
+      </figure>
+      <figure>
+        <title>Use 'name' attribute to force new Instance for 'jar1.KBase1' KieSession</title>
+        <programlisting language="JAVA">@Inject
+@KBase(value="jar1.KBase1", name="ks1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksession1ks1
+
+@Inject  
+@KBase(value="jar1.KBase1", name="ks2")    
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private KieSession ksession1ks2</programlisting>
+      </figure>
+    </section>
+    <section>
+      <title>@KSession for StatelessKieSession</title>
+      <para>@KSession is optional as it can be detected and added by the use of @Inject and variable
+        type inferrence.</para>
+      <figure>
+        <title>Injects the Default StatelessKieSession from the Classpath KieContainer</title>
+        <programlisting language="JAVA">@Inject
+private StatelessKieSession ksession;</programlisting>
+      </figure>
+      <figure>
+        <title>Injects the Default StatelessKieSession from a Dynamic KieModule</title>
+        <programlisting language="JAVA">@Inject
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")   
+private StatelessKieSession ksession;</programlisting>
+      </figure>
+      <figure>
+        <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+        <programlisting language="JAVA">@Inject
+@KBase("jar1.KBase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+private StatelessKieSession ksessionv10;
+
+@Inject
+@KBase("jar1.KBase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+private StatelessKieSession ksessionv11;</programlisting>
+      </figure>
+      <figure>
+        <title>Use 'name' attribute to force new Instance for 'jar1.KBase1'
+          StatelessKieSession</title>
+        <programlisting language="JAVA">@Inject
+@KBase(value="jar1.KBase1", name="ks1")
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private StatelessKieSession ksession1ks1
+
+@Inject  
+@KBase(value="jar1.KBase1", name="ks2")    
+@KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
+private StatelessKieSession ksession1ks2</programlisting>
+      </figure>
+    </section>
+  </section>
+</chapter>
