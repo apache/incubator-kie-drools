@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * A column that sets a field on a new fact.
  */
@@ -24,7 +26,28 @@ public class LimitedEntryActionInsertFactCol52 extends ActionInsertFactCol52
 
     private static final long serialVersionUID = 510l;
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_VALUE = "value";
+
     private DTCellValue52 value;
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        LimitedEntryActionInsertFactCol52 other = (LimitedEntryActionInsertFactCol52) otherColumn;
+
+        // Field: default value.
+        if ( !isEqualOrNull( this.getValue(),
+                other.getValue() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE, this.getValueAsString(), other.getValueAsString()));
+        }
+
+        return result;
+    }
 
     public DTCellValue52 getValue() {
         return value;
@@ -32,6 +55,11 @@ public class LimitedEntryActionInsertFactCol52 extends ActionInsertFactCol52
 
     public void setValue( DTCellValue52 value ) {
         this.value = value;
+    }
+
+    public String getValueAsString() {
+        if (value != null) return value.getValueAsString();
+        return "";
     }
 
 }

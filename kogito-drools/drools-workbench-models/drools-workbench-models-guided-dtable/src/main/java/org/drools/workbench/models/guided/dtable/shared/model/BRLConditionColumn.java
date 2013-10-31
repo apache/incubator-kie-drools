@@ -33,6 +33,35 @@ public class BRLConditionColumn extends ConditionCol52
 
     private List<BRLConditionVariableColumn> childColumns = new ArrayList<BRLConditionVariableColumn>();
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_DEFINITION = "definition";
+
+    public static final String FIELD_CHILD_COLUMNS = "childColumns";
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        BRLConditionColumn other = (BRLConditionColumn) otherColumn;
+
+        // Field: definition.
+        if ( !isEqualOrNull( this.getDefinition(),
+                other.getDefinition() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_DEFINITION, this.getDefinition(), other.getDefinition()));
+        }
+
+        // Field: childColumns.
+        if ( !isEqualOrNull( this.getChildColumns(),
+                other.getChildColumns() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_CHILD_COLUMNS, this.getChildColumns(), other.getChildColumns()));
+        }
+
+        return result;
+    }
+
     public List<IPattern> getDefinition() {
         return this.definition;
     }

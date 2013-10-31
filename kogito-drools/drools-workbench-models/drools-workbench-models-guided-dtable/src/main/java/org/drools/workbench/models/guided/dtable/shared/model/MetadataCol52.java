@@ -15,6 +15,9 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a rule metadata - eg @foo(bar) etc.
  */
@@ -22,12 +25,33 @@ public class MetadataCol52 extends DTColumnConfig52 {
 
     private String metadata;
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_METADATA = "metadata";
+
     public String getMetadata() {
         return metadata;
     }
 
     public void setMetadata( String metadata ) {
         this.metadata = metadata;
+    }
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        MetadataCol52 other = (MetadataCol52) otherColumn;
+
+        // Field: metadata.
+        if ( !isEqualOrNull( this.getMetadata(),
+                other.getMetadata() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_METADATA, this.getMetadata(), other.getMetadata()));
+        }
+
+        return result;
     }
 
 }

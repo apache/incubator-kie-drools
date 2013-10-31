@@ -26,7 +26,7 @@ import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
  */
 public class Pattern52
         implements CompositeColumn<ConditionCol52>,
-                   HasCEPWindow {
+                   HasCEPWindow, DiffColumn {
 
     // The type of the fact - class - eg Driver, Purchase, Cheese etc.
     private String factType;
@@ -47,8 +47,63 @@ public class Pattern52
     //Entry-point name
     private String entryPointName;
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_FACT_TYPE = "factType";
+
+    public static final String FIELD_BOUND_NAME = "boundName";
+
+    public static final String FIELD_IS_NEGATED = "isNegated";
+
+    public static final String FIELD_WINDOW = "window";
+
+    public static final String FIELD_ENTRY_POINT_NAME = "entryPointName";
+
+
     public Pattern52() {
         this.conditions = new ArrayList<ConditionCol52>();
+    }
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = new ArrayList<BaseColumnFieldDiff>();
+        Pattern52 other = (Pattern52) otherColumn;
+
+
+
+        // Field: factType.
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getFactType(),
+                other.getFactType()) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+        }
+
+        // Field: boundName.
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getBoundName(),
+                other.getBoundName()) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_BOUND_NAME, this.getBoundName(), other.getBoundName()));
+        }
+
+        // Field: isNegated.
+        if ( this.isNegated() != other.isNegated() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_IS_NEGATED, this.isNegated(), other.isNegated()));
+        }
+
+        // Field: window.
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getWindow(),
+                other.getWindow()) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_WINDOW, this.getWindow(), other.getWindow()));
+        }
+
+        // Field: entryPointName.
+        if ( !BaseColumnFieldDiffImpl.isEqualOrNull(this.getEntryPointName(),
+                other.getEntryPointName()) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_ENTRY_POINT_NAME, this.getEntryPointName(), other.getEntryPointName()));
+        }
+
+        return result;
     }
 
     public String getFactType() {

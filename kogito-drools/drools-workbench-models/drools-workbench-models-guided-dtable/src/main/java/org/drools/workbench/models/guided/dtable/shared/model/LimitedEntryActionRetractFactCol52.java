@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * A column representing the retraction of a Fact on a Limited Entry decision
  * table. The Value will be the String identifier of the Fact Pattern being
@@ -26,7 +28,28 @@ public class LimitedEntryActionRetractFactCol52 extends ActionRetractFactCol52
 
     private static final long serialVersionUID = 510l;
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_VALUE = "value";
+
     private DTCellValue52 value;
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        LimitedEntryActionRetractFactCol52 other = (LimitedEntryActionRetractFactCol52) otherColumn;
+
+        // Field: default value.
+        if ( !isEqualOrNull( this.getValue(),
+                other.getValue() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE, this.getValueAsString(), other.getValueAsString()));
+        }
+
+        return result;
+    }
 
     public DTCellValue52 getValue() {
         return value;
@@ -34,6 +57,11 @@ public class LimitedEntryActionRetractFactCol52 extends ActionRetractFactCol52
 
     public void setValue( DTCellValue52 value ) {
         this.value = value;
+    }
+
+    public String getValueAsString() {
+        if (value != null) return value.getValueAsString();
+        return "";
     }
 
 }

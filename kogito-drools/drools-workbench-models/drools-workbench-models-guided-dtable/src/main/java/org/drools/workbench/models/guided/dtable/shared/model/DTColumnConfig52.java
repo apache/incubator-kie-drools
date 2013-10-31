@@ -15,10 +15,25 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DTColumnConfig52
-        implements BaseColumn {
+        implements BaseColumn, DiffColumn {
 
     private static final long serialVersionUID = 510l;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_DEFAULT_VALUE = "defaultValue";
+
+    public static final String FIELD_HIDE_COLUMN = "hideColumn";
+
+    public static final String FIELD_WIDTH = "width";
+
+    public static final String FIELD_HEADER = "header";
+
 
     // Legacy Default Values were String however since 5.4 they are stored in a DTCellValue52 object
     public String defaultValue;
@@ -39,6 +54,12 @@ public class DTColumnConfig52
         return typedDefaultValue;
     }
 
+    public String getDefaultValueAsString() {
+        String result = "";
+        if (typedDefaultValue != null) result = typedDefaultValue.getValueAsString();
+        return result;
+    }
+
     public int getWidth() {
         return width;
     }
@@ -49,6 +70,44 @@ public class DTColumnConfig52
 
     public void setDefaultValue( DTCellValue52 defaultValue ) {
         this.typedDefaultValue = defaultValue;
+    }
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = new ArrayList<BaseColumnFieldDiff>();
+        DTColumnConfig52 other = (DTColumnConfig52) otherColumn;
+
+        // Field: hide column.
+        if ( this.isHideColumn() != other.isHideColumn() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_HIDE_COLUMN, this.isHideColumn(), other.isHideColumn()));
+        }
+
+        // Field: default value.
+        if ( !isEqualOrNull( this.getDefaultValue(),
+                other.getDefaultValue() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_DEFAULT_VALUE, this.getDefaultValueAsString(), other.getDefaultValueAsString()));
+        }
+
+        // Field: width.
+        if ( this.getWidth() != other.getWidth() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_WIDTH, this.getWidth(), other.getWidth()));
+        }
+
+        // Field: header.
+        if ( !isEqualOrNull( this.getHeader(),
+                other.getHeader() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_HEADER, this.getHeader(), other.getHeader()));
+        }
+
+        return result;
+    }
+
+    // Check whether two Objects are equal or both null
+    public static boolean isEqualOrNull( Object s1,
+                                         Object s2 ) {
+        return BaseColumnFieldDiffImpl.isEqualOrNull(s1, s2);
     }
 
     public void setHideColumn( boolean hideColumn ) {

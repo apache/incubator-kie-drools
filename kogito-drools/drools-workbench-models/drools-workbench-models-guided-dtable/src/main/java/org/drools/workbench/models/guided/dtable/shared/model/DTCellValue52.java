@@ -443,4 +443,16 @@ public class DTCellValue52 {
         return true;
     }
 
+    /**
+     * BZ-996944: To display the changed value into audit logging.
+     * @return The value as a String.
+     */
+    public String getValueAsString() {
+        if (valueBoolean != null) return valueBoolean.toString();
+        if (valueDate != null) return valueDate.toString();
+        if (valueNumeric != null) return valueNumeric.toString();
+        if (valueString != null) return valueString;
+        return "";
+    }
+
 }
