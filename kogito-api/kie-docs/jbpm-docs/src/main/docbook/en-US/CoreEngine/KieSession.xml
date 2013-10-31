@@ -5,25 +5,332 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>KieSession</title>
+    <para>Once you've loaded your knowledge base, you should create a session to 
+    interact with the engine.  This session can then be used to start new processes,
+    signal events, etc.  The following code snippet shows how easy it is to create
+    a session based on the previously created knowledge base, and to start a process (by id).</para>
+
+<programlisting language="java">
+KieSession ksession = kbase.newKieSession();
+ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
+</programlisting>
   
   <section>
     <title>ProcessRuntime</title>
+<para>The <code>ProcessRuntime</code> interface defines all the session methods
+    for interacting with processes, as shown below.</para>
 
+<programlisting language="java">
+  /**
+	 * Start a new process instance.  The process (definition) that should
+	 * be used is referenced by the given process id.
+	 * 
+	 * @param processId  The id of the process that should be started
+	 * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+	 */
+    ProcessInstance startProcess(String processId);
+
+    /**
+	 * Start a new process instance.  The process (definition) that should
+	 * be used is referenced by the given process id.  Parameters can be passed
+	 * to the process instance (as name-value pairs), and these will be set
+	 * as variables of the process instance. 
+     * 
+	 * @param processId  the id of the process that should be started
+     * @param parameters  the process variables that should be set when starting the process instance 
+	 * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+     */
+    ProcessInstance startProcess(String processId,
+                                 Map&lt;String, Object&gt; parameters);
+
+    /**
+     * Signals the engine that an event has occurred. The type parameter defines
+     * which type of event and the event parameter can contain additional information
+     * related to the event.  All process instances that are listening to this type
+     * of (external) event will be notified.  For performance reasons, this type of event
+     * signaling should only be used if one process instance should be able to notify
+     * other process instances. For internal event within one process instance, use the
+     * signalEvent method that also include the processInstanceId of the process instance
+     * in question. 
+     * 
+     * @param type the type of event
+     * @param event the data associated with this event
+     */
+    void signalEvent(String type,
+                     Object event);
+
+    /**
+     * Signals the process instance that an event has occurred. The type parameter defines
+     * which type of event and the event parameter can contain additional information
+     * related to the event.  All node instances inside the given process instance that
+     * are listening to this type of (internal) event will be notified.  Note that the event
+     * will only be processed inside the given process instance.  All other process instances
+     * waiting for this type of event will not be notified.
+     * 
+     * @param type the type of event
+     * @param event the data associated with this event
+     * @param processInstanceId the id of the process instance that should be signaled
+     */
+    void signalEvent(String type,
+                     Object event,
+                     long processInstanceId);
+
+    /**
+     * Returns a collection of currently active process instances.  Note that only process
+     * instances that are currently loaded and active inside the engine will be returned.
+     * When using persistence, it is likely not all running process instances will be loaded
+     * as their state will be stored persistently.  It is recommended not to use this
+     * method to collect information about the state of your process instances but to use
+     * a history log for that purpose.
+     * 
+     * @return a collection of process instances currently active in the session
+     */
+    Collection&lt;ProcessInstance&gt; getProcessInstances();
+
+    /**
+     * Returns the process instance with the given id.  Note that only active process instances
+     * will be returned.  If a process instance has been completed already, this method will return
+     * null.
+     * 
+     * @param id the id of the process instance
+     * @return the process instance with the given id or null if it cannot be found
+     */
+    ProcessInstance getProcessInstance(long processInstanceId);
+
+    /**
+     * Aborts the process instance with the given id.  If the process instance has been completed
+     * (or aborted), or the process instance cannot be found, this method will throw an
+     * IllegalArgumentException.
+     * 
+     * @param id the id of the process instance
+     */
+    void abortProcessInstance(long processInstanceId);
+
+    /**
+     * Returns the WorkItemManager related to this session.  This can be used to
+     * register new WorkItemHandlers or to complete (or abort) WorkItems.
+     * 
+     * @return the WorkItemManager related to this session
+     */
+    WorkItemManager getWorkItemManager();
+</programlisting>
   </section>
     
   <section>
     <title>Event Listeners</title>
 
+    <para>The session provides methods for registering and removing listeners.
+    A <code>ProcessEventListener</code> can be used to listen to process-related events,
+    like starting or completing a process, entering and leaving a node, etc.  Below,
+    the different methods of the <code>ProcessEventListener</code> class are shown.
+    An event object provides access to related information, like the process instance
+    and node instance linked to the event.  You can use this API to register your own
+    event listeners.</para>
+
+<programlisting language="java">public interface ProcessEventListener {
+
+  void beforeProcessStarted( ProcessStartedEvent event );
+  void afterProcessStarted( ProcessStartedEvent event );
+  void beforeProcessCompleted( ProcessCompletedEvent event );
+  void afterProcessCompleted( ProcessCompletedEvent event );
+  void beforeNodeTriggered( ProcessNodeTriggeredEvent event );
+  void afterNodeTriggered( ProcessNodeTriggeredEvent event );
+  void beforeNodeLeft( ProcessNodeLeftEvent event );
+  void afterNodeLeft( ProcessNodeLeftEvent event );
+  void beforeVariableChanged(ProcessVariableChangedEvent event);
+  void afterVariableChanged(ProcessVariableChangedEvent event);
+
+}</programlisting>
+
+    <para>A note about before and after events: these events typically act like a stack,
+    which means that any events that occur as a direct result of the previous event, will
+    occur between the before and the after of that event.  For example, if a subsequent node
+    is triggered as result of leaving a node, the node triggered events will occur inbetween
+    the beforeNodeLeftEvent and the afterNodeLeftEvent of the node that is left (as the
+    triggering of the second node is a direct result of leaving the first node).  Doing
+    that allows us to derive cause relationships between events more easily.  Similarly,
+    all node triggered and node left events that are the direct result of starting a process
+    will occur between the beforeProcessStarted and afterProcessStarted events.  In
+    general, if you just want to be notified when a particular event occurs, you should
+    be looking at the before events only (as they occur immediately before the event actually
+    occurs). When only looking at the after events, one might get the impression that the
+    events are fired in the wrong order, but because the after events are triggered as a 
+    stack (after events will only fire when all events that were triggered as a result
+    of this event have already fired).  After events should only be used if you want to make
+    sure that all processing related to this has ended (for example, when you want to be
+    notified when starting of a particular process instance has ended.</para>
+    
+    <para>Also note that not all nodes always generate node triggered and/or node left events.
+    Depending on the type of node, some nodes might only generate node left events, others might
+    only generate node triggered events.  Catching intermediate events for example are not
+    generating triggered events (they are only generating left events, as they are not really
+    triggered by another node, rather activated from outside).  Similarly, throwing
+    intermediate events are not generating left events (they are only generating 
+    triggered events, as they are not really left, as they have no outgoing connection).</para>
+
+    <para>jBPM out-of-the-box provides a listener that can be used to create an audit log (either
+    to the console or the a file on the file system).  This audit log contains all the different events
+    that occurred at runtime so it's easy to figure out what happened. Note that these loggers should
+    only be used for debugging purposes.  The following logger implementations
+    are supported by default:</para>
+    <orderedlist>
+      <listitem><para>Console logger: This logger writes out all the events to the console.</para></listitem>
+
+      <listitem><para>File logger: This logger writes out all the events to a file using an
+      XML representation.  This log file might then be used in the IDE to generate
+      a tree-based visualization of the events that occurred during execution.</para></listitem>
+
+      <listitem><para>Threaded file logger: Because a file logger writes the events to disk only
+      when closing the logger or when the number of events in the logger reaches a predefined
+      level, it cannot be used when debugging processes at runtime.  A threaded file logger
+      writes the events to a file after a specified time interval, making it possible to use
+      the logger to visualize the progress in realtime, while debugging processes.
+      </para></listitem>
+    </orderedlist>
+
+    <para>The <code>KnowledgeRuntimeLoggerFactory</code> lets you add a logger to
+    your session, as shown below.  When creating a console logger, the knowledge session
+    for which the logger needs to be created must be passed as an argument. The file
+    logger also requires the name of the log file to be created, and the threaded file
+    logger requires the interval (in milliseconds) after which the events should be saved.
+    You should always close the logger at the end of your application.</para>
+
+<programlisting language="java">
+  KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "test" );
+  // add invocations to the process engine here,
+  // e.g. ksession.startProcess(processId);
+  ...
+  logger.close();</programlisting>
+
+    <para>The log file that is created by the file-based loggers contains an XML-based
+    overview of all the events that occurred at runtime.  It can be opened in Eclipse, 
+    using the Audit View in the Drools Eclipse plugin, where the events are visualized
+    as a tree. Events that occur
+    between the before and after event are shown as children of that event.  The
+    following screenshot shows a simple example, where a process is started,
+    resulting in the activation of the Start node, an Action node and an End node,
+    after which the process was completed. </para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="PNG" role="" 
+                   fileref="images/Chapter-4-API/AuditView.png"/>
+       </imageobject>
+    </mediaobject>
   </section>
     
   <section>
     <title>Correlation Keys</title>
 
+    <para>Common requriement when working with processes is ability to assign given process instance
+    sort of business identifier that can be later on referenced without knowing the actual (generated) id
+    of the process instance. To provide such capabilities jBPM allows to use CorrelationKey that is composed
+    of CorrelationProperties. CorrelationKey can have either single property describing it (which is in most cases)
+    but it can be represented as multi valued properties set.</para>
+    <para>Correlation capabilities are provided as part of interface
+    <programlisting>CorrelationAwareProcessRuntime</programlisting> that exposes following methods:
+    </para>
+    <programlisting language="java">
+      /**
+      * Start a new process instance.  The process (definition) that should
+      * be used is referenced by the given process id.  Parameters can be passed
+      * to the process instance (as name-value pairs), and these will be set
+      * as variables of the process instance.
+      *
+      * @param processId  the id of the process that should be started
+      * @param correlationKey custom correlation key that can be used to identify process instance
+      * @param parameters  the process variables that should be set when starting the process instance
+      * @return the <code>ProcessInstance</code> that represents the instance of the process that was started
+      */
+      ProcessInstance startProcess(String processId, CorrelationKey correlationKey, Map&lt;String, Object&gt; parameters);
+
+      /**
+      * Creates a new process instance (but does not yet start it).  The process
+      * (definition) that should be used is referenced by the given process id.
+      * Parameters can be passed to the process instance (as name-value pairs),
+      * and these will be set as variables of the process instance.  You should only
+      * use this method if you need a reference to the process instance before actually
+      * starting it.  Otherwise, use startProcess.
+      *
+      * @param processId  the id of the process that should be started
+      * @param correlationKey custom correlation key that can be used to identify process instance
+      * @param parameters  the process variables that should be set when creating the process instance
+      * @return the <code>ProcessInstance</code> that represents the instance of the process that was created (but not yet started)
+      */
+      ProcessInstance createProcessInstance(String processId, CorrelationKey correlationKey, Map&lt;String, Object&gt; parameters);
+
+      /**
+      * Returns the process instance with the given correlationKey.  Note that only active process instances
+      * will be returned.  If a process instance has been completed already, this method will return
+      * <code>null</code>.
+      *
+      * @param correlationKey the custom correlation key assigned when process instance was created
+      * @return the process instance with the given id or <code>null</code> if it cannot be found
+      */
+      ProcessInstance getProcessInstance(CorrelationKey correlationKey);
+    </programlisting>
+    <para>Correlation is usually used with long running processes and thus require persistence to be enabled
+    to be able to permanently store correlation information.</para>
   </section>
-    
+  
   <section>
     <title>Threads</title>
+  <para>In the following text, we will refer to two types of "multi-threading": 
+    <emphasis>logical</emphasis> and <emphasis>technical</emphasis>. 
+    <emphasis>Technical multi-threading</emphasis> is what happens when multiple 
+    threads or processes are started on a computer, for example by a Java or 
+    C program. <emphasis>Logical multi-threading</emphasis> is what we see in 
+    a BPM process after the process reaches a parallel gateway, for 
+    example. From a functional standpoint, the original process will then split 
+    into two processes that are executed in a parallel fashion.</para>
 
+    <para>Of course, the jBPM engine supports logical multi-threading: for example, 
+    processes that include a parallel gateway. We've chosen to implement logical 
+    multi-threading using one thread: a jBPM process that includes logical multi-threading 
+    will only be executed in one technical thread. The main reason for doing 
+    this is that multiple (technical) threads need to be be able to communicate 
+    state information with each other if they are working on the same process. 
+    This requirement brings with it a number of complications. While it might 
+    seem that multi-threading would bring performance benefits with it, the extra 
+    logic needed to make sure the different threads work together well means 
+    that this is not guaranteed. There is also the extra overhead incurred because 
+    we need to avoid race conditions and deadlocks.</para> 
+   
+    <para>In general, the jBPM engine executes actions in serial. For example, 
+    when the engine encounters a script task in a process, it will synchronously 
+    execute that script and wait for it to complete before continuing execution.  
+    Similarly, if a process encounters a parallel gateway, it will sequentially 
+    trigger each of the outgoing branches, one after the other. This is possible 
+    since execution is almost always instantaneous, meaning that it is extremely 
+    fast and produces almost no overhead. As a result, the user will usually 
+    not even notice this.  Similarly, action scripts in a process are also synchronously
+    executed, and the engine will wait for them to finish before continuing the 
+    process. For example, doing a <code>Thread.sleep(...)</code> as part of 
+    a script will not make the engine continue execution elsewhere but will 
+    block the engine thread during that period.</para>
+    
+    <para>The same principle applies to service tasks. When a service task is 
+    reached in a process, the engine will also invoke the handler of this service 
+    synchronously.  The engine will wait for the <code>completeWorkItem(...)</code> 
+    method to return before continuing execution. It is important that your 
+    service handler executes your service asynchronously if its execution is 
+    not instantaneous.</para>
+    
+    <para>An example of this would be a service task that invokes an external 
+    service.  Since the delay in invoking this service remotely and waiting for 
+    the results might be too long, it might be a good idea to invoke this service 
+    asynchronously. This means that the handler will only invoke the service 
+    and will notify the engine later when the results are available.  In the 
+    mean time, the process engine then continues execution of the process.  
+    </para>
+    
+    <para>Human tasks are a typical example of a service that needs to be invoked 
+    asynchronously, as we don't want the engine to wait until a human actor 
+    has responded to the request. The human task handler will only create a new task 
+    (on the task list of the assigned actor) when the human task node is triggered. 
+    The engine will then be able to continue execution on the rest of the process 
+    (if necessary) and the handler will notify the engine asynchronously when 
+    the user has completed the task.</para>
   </section>
 
 </section>
