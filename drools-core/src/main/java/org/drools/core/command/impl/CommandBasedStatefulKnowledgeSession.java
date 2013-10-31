@@ -54,6 +54,7 @@ import org.drools.core.command.runtime.rule.GetFactHandleCommand;
 import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
+import org.drools.core.command.runtime.rule.GetRuleRuntimeEventListenersCommand;
 import org.drools.core.command.runtime.rule.GetWorkingMemoryEventListenersCommand;
 import org.drools.core.command.runtime.rule.HaltCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
@@ -63,7 +64,7 @@ import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.rule.EntryPointId;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
@@ -413,8 +414,15 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                                                    object ) );
     }
 
+    /**
+     * @deprecated
+     */
     public void addEventListener(WorkingMemoryEventListener listener) {
-        commandService.execute( new AddEventListenerCommand( listener ) );
+        removeEventListener((RuleRuntimeEventListener) listener);
+    }
+
+    public void addEventListener(RuleRuntimeEventListener listener) {
+        commandService.execute(new AddEventListenerCommand(listener));
     }
 
     public void addEventListener(AgendaEventListener listener) {
@@ -429,7 +437,18 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         return commandService.execute( new GetWorkingMemoryEventListenersCommand() );
     }
 
+    public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
+        return commandService.execute( new GetRuleRuntimeEventListenersCommand() );
+    }
+
+    /**
+     * @deprecated
+     */
     public void removeEventListener(WorkingMemoryEventListener listener) {
+        removeEventListener((RuleRuntimeEventListener) listener);
+    }
+
+    public void removeEventListener(RuleRuntimeEventListener listener) {
         commandService.execute( new RemoveEventListenerCommand( listener ) );
     }
 

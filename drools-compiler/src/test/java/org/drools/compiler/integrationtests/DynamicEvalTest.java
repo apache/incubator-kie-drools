@@ -2,6 +2,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.junit.Test;
+import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.After;
@@ -9,7 +10,6 @@ import org.junit.Before;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.event.rule.DebugWorkingMemoryEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -93,7 +93,7 @@ public class DynamicEvalTest {
 
         loadPackages( ResourceFactory.newByteArrayResource( test.getBytes() ), ResourceType.DRL );
         ((KnowledgeBaseImpl)session.getKieBase()).addKnowledgePackages(kbuilder.getKnowledgePackages());
-        session.addEventListener( new DebugWorkingMemoryEventListener( ) );
+        session.addEventListener( new DebugRuleRuntimeEventListener( ) );
 
         int fired = session.fireAllRules(); // 1
         System.out.println(fired);
@@ -140,7 +140,7 @@ public class DynamicEvalTest {
 
         loadPackages( ResourceFactory.newByteArrayResource( test.getBytes() ), ResourceType.DRL );
         ((KnowledgeBaseImpl)session.getKieBase()).addKnowledgePackages(kbuilder.getKnowledgePackages());
-        session.addEventListener( new DebugWorkingMemoryEventListener( ) );
+        session.addEventListener( new DebugRuleRuntimeEventListener( ) );
 
         session.insert( "go" );
         session.insert( 5 );

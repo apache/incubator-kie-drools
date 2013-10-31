@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class ObjectDeletedEventImpl extends WorkingMemoryEventImpl implements ObjectDeletedEvent {
+public class ObjectDeletedEventImpl extends RuleRuntimeEventImpl implements ObjectDeletedEvent {
     private FactHandle factHandle;
     private Object oldbOject;
     

@@ -74,13 +74,13 @@ import org.drools.core.runtime.rule.impl.AgendaImpl;
 import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimerService;
-import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -149,29 +149,51 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return session.getWorkingMemoryEntryPoints();
     }
 
-    public void addEventListener(WorkingMemoryEventListener listener) {
-        WorkingMemoryEventListenerWrapper wrapper = new WorkingMemoryEventListenerWrapper( listener );
+    public void addEventListener(RuleRuntimeEventListener listener) {
+        RuleRuntimeEventListenerWrapper wrapper = new RuleRuntimeEventListenerWrapper( listener );
         this.session.addEventListener( wrapper );
     }
 
-    public void removeEventListener(WorkingMemoryEventListener listener) {
-        WorkingMemoryEventListenerWrapper wrapper;
-        if ( listener != null && !(listener instanceof WorkingMemoryEventListenerWrapper) ) {
-            wrapper = new WorkingMemoryEventListenerWrapper( listener );
+    /**
+     * @deprecated
+     */
+    public void addEventListener(WorkingMemoryEventListener listener) {
+        addEventListener((RuleRuntimeEventListener) listener);
+    }
+
+    public void removeEventListener(RuleRuntimeEventListener listener) {
+        RuleRuntimeEventListenerWrapper wrapper;
+        if ( listener != null && !(listener instanceof RuleRuntimeEventListenerWrapper) ) {
+            wrapper = new RuleRuntimeEventListenerWrapper( listener );
         } else {
-            wrapper = (WorkingMemoryEventListenerWrapper) listener;
+            wrapper = (RuleRuntimeEventListenerWrapper) listener;
         }
         this.session.removeEventListener( wrapper );
     }
 
+    /**
+     * @deprecated
+     */
+    public void removeEventListener(WorkingMemoryEventListener listener) {
+        removeEventListener((RuleRuntimeEventListener) listener);
+    }
+
+    /**
+     * @deprecated
+     */
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        // TODO incompatible with the javadoc of the implemented method which states "Returns all event listeners"
-        List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
+        Collection<WorkingMemoryEventListener> workingMemoryEventListeners = new ArrayList<WorkingMemoryEventListener>();
+        workingMemoryEventListeners.addAll(getRuleRuntimeEventListeners());
+        return workingMemoryEventListeners;
+    }
+
+    public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
+        List<RuleRuntimeEventListener> listeners = new ArrayList<RuleRuntimeEventListener>();
         for ( Object listener : this.session.getWorkingMemoryEventListeners() ) {
-            if ( listener instanceof WorkingMemoryEventListenerWrapper ) {
-                listeners.add( ((WorkingMemoryEventListenerWrapper) listener).unWrap() );
-            } else if (listener instanceof WorkingMemoryEventListener) {
-                listeners.add( (WorkingMemoryEventListener) listener );
+            if ( listener instanceof RuleRuntimeEventListenerWrapper) {
+                listeners.add(((RuleRuntimeEventListenerWrapper) listener).unWrap());
+            } else if (listener instanceof RuleRuntimeEventListener) {
+                listeners.add( (RuleRuntimeEventListener) listener );
             }
         }
         return Collections.unmodifiableCollection( listeners );
@@ -586,12 +608,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public static class WorkingMemoryEventListenerWrapper
+    public static class RuleRuntimeEventListenerWrapper
             implements
             org.drools.core.event.WorkingMemoryEventListener {
-        private final WorkingMemoryEventListener listener;
+        private final RuleRuntimeEventListener listener;
 
-        public WorkingMemoryEventListenerWrapper(WorkingMemoryEventListener listener) {
+        public RuleRuntimeEventListenerWrapper(RuleRuntimeEventListener listener) {
             this.listener = listener;
         }
 
@@ -607,7 +629,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             listener.objectUpdated( new ObjectUpdatedEventImpl( event ) );
         }
 
-        public WorkingMemoryEventListener unWrap() {
+        public RuleRuntimeEventListener unWrap() {
             return listener;
         }
 
@@ -635,8 +657,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             if ( listener == null || obj == null ) {
                 return obj == listener;
             }
-            if ( obj instanceof WorkingMemoryEventListenerWrapper ) {
-                return this.listener.equals( ((WorkingMemoryEventListenerWrapper) obj).unWrap() );
+            if ( obj instanceof RuleRuntimeEventListenerWrapper) {
+                return this.listener.equals(((RuleRuntimeEventListenerWrapper) obj).unWrap());
             }
             return this.listener.equals( obj );
         }
