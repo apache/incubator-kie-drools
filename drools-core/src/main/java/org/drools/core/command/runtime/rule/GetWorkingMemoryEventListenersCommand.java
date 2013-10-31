@@ -24,6 +24,9 @@ import org.kie.internal.command.Context;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieSession;
 
+/**
+ * @deprecated This will be removed in drools 6.1
+ */
 public class GetWorkingMemoryEventListenersCommand
     implements
     GenericCommand<Collection<WorkingMemoryEventListener>> {

@@ -22,11 +22,11 @@ import java.util.Set;
 import org.drools.examples.sudoku.swing.AbstractSudokuGridModel;
 import org.drools.examples.sudoku.swing.SudokuGridEvent;
 import org.drools.examples.sudoku.swing.SudokuGridModel;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -316,7 +316,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         return sb.toString();
     }
     
-    class SudokuWorkingMemoryListener implements WorkingMemoryEventListener {
+    class SudokuWorkingMemoryListener implements RuleRuntimeEventListener {
 
         public void objectInserted(ObjectInsertedEvent ev) {
             if (ev.getObject() instanceof Counter) {

@@ -24,7 +24,7 @@ import org.drools.core.FactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 
-public class ObjectInsertedEventImpl extends WorkingMemoryEventImpl
+public class ObjectInsertedEventImpl extends RuleRuntimeEventImpl
     implements
     ObjectInsertedEvent {
     private FactHandle  factHandle;

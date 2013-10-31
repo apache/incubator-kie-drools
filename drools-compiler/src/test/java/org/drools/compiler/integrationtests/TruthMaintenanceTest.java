@@ -40,6 +40,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Package;
 import org.junit.Test;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -49,7 +50,6 @@ import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -1015,7 +1015,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         kbase = SerializationHelper.serializeObject(kbase);
 
         final StatefulKnowledgeSession session = createKnowledgeSession(kbase);
-        WorkingMemoryEventListener wmel = mock( WorkingMemoryEventListener.class );
+        RuleRuntimeEventListener wmel = mock( RuleRuntimeEventListener.class );
         session.addEventListener( wmel );
         
         Person bob = new Person( "bob" );

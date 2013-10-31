@@ -38,7 +38,6 @@ import org.drools.compiler.StockTick;
 import org.drools.compiler.StockTickInterface;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.event.DebugAgendaEventListener;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -47,8 +46,8 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -59,7 +58,6 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
@@ -450,7 +448,7 @@ public class StreamsTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
                 null);
 
-        WorkingMemoryEventListener wml = mock(WorkingMemoryEventListener.class);
+        RuleRuntimeEventListener wml = mock(RuleRuntimeEventListener.class);
         ksession.addEventListener(wml);
 
         PseudoClockScheduler clock = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();
@@ -497,7 +495,7 @@ public class StreamsTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession(ksessionConfig,
                                                                               null);
 
-        WorkingMemoryEventListener wml = mock(WorkingMemoryEventListener.class);
+        RuleRuntimeEventListener wml = mock(RuleRuntimeEventListener.class);
         ksession.addEventListener(wml);
         AgendaEventListener ael = mock(AgendaEventListener.class);
         ksession.addEventListener(ael);

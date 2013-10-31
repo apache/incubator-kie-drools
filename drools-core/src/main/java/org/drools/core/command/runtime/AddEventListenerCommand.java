@@ -18,22 +18,22 @@ package org.drools.core.command.runtime;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.command.Context;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieSession;
 
 public class AddEventListenerCommand
     implements
     GenericCommand<Object> {
 
-    private WorkingMemoryEventListener workingMemoryEventlistener = null;
+    private RuleRuntimeEventListener   ruleRuntimeEventlistener = null;
     private AgendaEventListener        agendaEventlistener        = null;
     private ProcessEventListener       processEventListener       = null;
 
-    public AddEventListenerCommand(WorkingMemoryEventListener listener) {
-        this.workingMemoryEventlistener = listener;
+    public AddEventListenerCommand(RuleRuntimeEventListener listener) {
+        this.ruleRuntimeEventlistener = listener;
     }
 
     public AddEventListenerCommand(AgendaEventListener listener) {
@@ -48,8 +48,8 @@ public class AddEventListenerCommand
     public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
-        if ( workingMemoryEventlistener != null ) {
-            ksession.addEventListener( workingMemoryEventlistener );
+        if ( ruleRuntimeEventlistener != null ) {
+            ksession.addEventListener( ruleRuntimeEventlistener );
         } else if ( agendaEventlistener != null ) {
             ksession.addEventListener( agendaEventlistener );
         } else {
@@ -59,8 +59,8 @@ public class AddEventListenerCommand
     }
 
     public String toString() {
-        if ( workingMemoryEventlistener != null ) {
-            return "session.addEventListener( " + workingMemoryEventlistener + " );";
+        if ( ruleRuntimeEventlistener != null ) {
+            return "session.addEventListener( " + ruleRuntimeEventlistener + " );";
         } else if ( agendaEventlistener != null ) {
             return "session.addEventListener( " + agendaEventlistener + " );";
         }  else  if ( processEventListener != null ) {

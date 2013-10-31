@@ -52,7 +52,7 @@ import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -4418,7 +4418,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         final ArrayList list = new ArrayList();
 
-        ksession.addEventListener( new WorkingMemoryEventListener() {
+        ksession.addEventListener( new RuleRuntimeEventListener() {
             public void objectInserted( ObjectInsertedEvent objectInsertedEvent ) { }
             public void objectUpdated( ObjectUpdatedEvent objectUpdatedEvent ) { }
             public void objectDeleted( ObjectDeletedEvent event ) {
@@ -4476,7 +4476,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    public static class CountingWorkingMemoryEventListener implements WorkingMemoryEventListener {
+    public static class CountingWorkingMemoryEventListener implements RuleRuntimeEventListener {
 
         private int inserts = 0;
         private int updates = 0;

@@ -4,7 +4,6 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
-import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.StatelessSession;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -15,6 +14,7 @@ import org.drools.core.util.IoUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -34,7 +34,6 @@ import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
@@ -193,7 +192,7 @@ public class SequentialTest extends CommonTestMethodBase {
 
         });
         
-        ksession.addEventListener( new WorkingMemoryEventListener() {
+        ksession.addEventListener( new RuleRuntimeEventListener() {
 
             public void objectInserted(ObjectInsertedEvent event) {
                 assertNotNull( event.getKieRuntime() );
