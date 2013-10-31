@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0"
+<section version="5.0" xml:id="drools.GuidedRuleTemplateEditor"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xml:base="../" xmlns="http://docbook.org/ns/docbook"
+  xml:base="../../" xmlns="http://docbook.org/ns/docbook"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -20,14 +20,14 @@
   <para>Rule Templates can often be used as an alternative for Decision Tables
     in Drools Workbench.</para>
 
-  <section>
+  <section xml:id="drools.GuidedRuleTemplateEditorCreating">
     <title>Creating a rule template</title>
 
     <para>To create a template for a rule simply select the "Guided Rule
     Template" from the "New Item" menu.</para>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleTemplateEditorDefining">
     <title>Define the template</title>
 
     <para>Once a rule template has been created the editor is displayed. The
@@ -43,7 +43,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/guided-template1.png" format="PNG"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-template1.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
@@ -59,14 +59,14 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/guided-template2.png" format="PNG"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-template2.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
     </figure>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleTemplateEditorDefiningData">
     <title>Defining the template data</title>
 
     <para>When you have completed the definition of your rule template you
@@ -92,13 +92,13 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/guided-template3.png" format="PNG"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-template3.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
     </figure>
 
-    <section>
+    <section xml:id="drools.GuidedRuleTemplateEditorCellMerging">
       <title>Cell merging</title>
 
       <para>The icon in the top left of the grid toggles cell merging on and
@@ -113,14 +113,14 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/guided-template4.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-template4.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedRuleTemplateEditorCellGrouping">
       <title>Cell grouping</title>
 
       <para>Cells that have been merged can be further collapsed into a single
@@ -135,7 +135,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/guided-template5.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-template5.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -146,7 +146,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleTemplateEditorGeneratedDRL">
     <title>Generated DRL</title>
 
     <para>Whilst not necessary, rule authors can view the DRL that will be
@@ -160,7 +160,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/guided-template6.png" format="PNG"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-template6.png" format="PNG"
           />
         </imageobject>
       </mediaobject>

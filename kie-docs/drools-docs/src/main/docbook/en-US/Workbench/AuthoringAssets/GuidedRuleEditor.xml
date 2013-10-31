@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0"
+<section version="5.0" xml:id="drools.GuidedRuleEditor"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xml:base="../" xmlns="http://docbook.org/ns/docbook"
+  xml:base="../../" xmlns="http://docbook.org/ns/docbook"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -20,7 +20,7 @@
     <para>To use the Guided Rule Editor, someone will need to have you package configured before hand.</para>
   </note>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorParts">
     <title>Parts of the Guided Rule Editor</title>
 
     <para>The Guided Rule Editor is composed of three main sections.</para>
@@ -33,7 +33,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/GuidedEditor-overview.png"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/GuidedEditor-overview.png"
             format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -54,7 +54,7 @@
       </itemizedlist></para>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorLHS">
     <title>The "WHEN" (left-hand side) of a Rule</title>
 
     <para>B : This shows a pattern which is declaring that the rule is looking for a "LoanApplication" fact (the fields
@@ -209,7 +209,7 @@
         <para>Facts annotated as Events can also have CEP sliding windows defined.</para>
       </note></para>
 
-    <section>
+    <section xml:id="drools.GuidedRuleEditorAddingPatterns">
       <title>Adding Patterns</title>
 
       <para>When clicking on the + button of the WHEN section, a new popup will appear letting you to add a new Pattern
@@ -229,14 +229,14 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/GuidedLHSPatterns.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/GuidedLHSPatterns.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
 
-    <section>
+    <section xml:id="drools.GuidedRuleEditorAddingConstraints">
       <title>Adding constraints</title>
 
       <para>The below dialog is what you will get when you want to add constraints to a fact. In the top half are the
@@ -251,7 +251,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/AuthoringAssets/GuidedLHSConstraints.png"
+            <imagedata align="center" fileref="images/Workbench/AuthoringAssets/GuidedLHSConstraints.png"
               format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -259,7 +259,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorRHS">
     <title>The "THEN" (right-hand side) of a Rule</title>
 
     <para>H : This shows an "action" of the rule, the Right Hand Side of a rule consists in a list of actions. In this
@@ -498,7 +498,7 @@
       </itemizedlist></para>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorOptionalAttributes">
     <title>Optional attributes</title>
 
     <para>The attributes section of a rule provides the means to define metadata and attributes (such as "salience",
@@ -508,7 +508,7 @@
     section.</para>
 
     <para>Click on the "-" icon beside each metadata or attribute to remove it.</para>
-    <section>
+    <section xml:id="drools.GuidedRuleEditorOptionalAttributesSalience">
 		<title>Salience</title>
 		<para>
 			Each rule has a salience value which is an integer value that defaults to zero. The salience value 
@@ -519,7 +519,7 @@
 
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorToolbar">
     <title>Pattern/Action toolbar</title>
 
     <para>G : Next to each Pattern or Action you will find a toolbar containing 3 buttons.</para>
@@ -530,7 +530,7 @@
     <para>The remaining arrow icons allow you to move the current Pattern/Action up or down.</para>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorEnumerations">
     <title>User driven drop down lists</title>
 
     <figure>
@@ -538,7 +538,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/EnumDropDown.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/EnumDropDown.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -555,7 +555,7 @@
     section on "Enumerations" for more information.</para>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorDSL">
     <title>Augmenting with DSL sentences</title>
 
     <para>If the package the rule is part of has a DSL configuration, when when you add conditions or actions, then it
@@ -572,13 +572,13 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/GuidedDSL.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/GuidedDSL.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
   </section>
 
-  <section>
+  <section xml:id="drools.GuidedRuleEditorComplexExample">
     <title>A more complex example:</title>
 
     <figure>
@@ -586,7 +586,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/AuthoringAssets/GuidedComplex.png" format="PNG"
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/GuidedComplex.png" format="PNG"
           />
         </imageobject>
       </mediaobject>
