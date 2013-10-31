@@ -2,7 +2,7 @@ package org.kie.api.event.rule;
 
 import java.util.Collection;
 
-public interface RuleRuntimeEventManager extends WorkingMemoryEventManager {
+public interface RuleRuntimeEventManager {
     /**
      * Add an event listener.
      *

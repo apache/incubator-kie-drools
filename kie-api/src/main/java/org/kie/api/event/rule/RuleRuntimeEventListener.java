@@ -1,6 +1,6 @@
 package org.kie.api.event.rule;
 
-public interface RuleRuntimeEventListener extends WorkingMemoryEventListener {
+public interface RuleRuntimeEventListener {
     void objectInserted(ObjectInsertedEvent event);
 
     void objectUpdated(ObjectUpdatedEvent event);
