@@ -67,7 +67,6 @@
     <title>Drools Workbench</title>
     <partintro><para>Part Intro</para></partintro>
   <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
-  <xi:include href="Workbench.xml"/>
   <xi:include href="AuthoringAssets.xml"/>
   </part>
     

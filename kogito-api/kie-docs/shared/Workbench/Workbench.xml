@@ -9,7 +9,9 @@
   <title>Workbench</title>
 
   <xi:include href="Installation/Installation.xml"/>
-  <xi:include href="General/General.xml"/>
-  <xi:include href="Authoring/Authoring.xml"/>
+       <xi:include href="Configuration/Configuration.xml"/>
+       <xi:include href="General/Introduction.xml"/>
+       <xi:include href="General/ChangingLayout.xml"/>
+       <xi:include href="Authoring/Authoring.xml"/>
 
 </chapter>

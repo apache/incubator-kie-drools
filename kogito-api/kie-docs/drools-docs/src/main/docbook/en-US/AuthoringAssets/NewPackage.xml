@@ -32,7 +32,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Workbench/newItemMenu.png" format="PNG"/>
+        <imagedata align="center" fileref="images/AuthoringAssets/newItemMenu.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -47,7 +47,7 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Workbench/newItem-package.png" format="PNG"/>
+          <imagedata align="center" fileref="images/AuthoringAssets/newItem-package.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -59,7 +59,7 @@
       
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Workbench/newItem-package-project-explorer.png" format="PNG"/>
+          <imagedata align="center" fileref="images/AuthoringAssets/newItem-package-project-explorer.png" format="PNG"/>
         </imageobject>
       </mediaobject>
     </figure>

@@ -10,5 +10,6 @@
 
   <xi:include href="Administration/Administration.xml"/>
   <xi:include href="AssetRepository/AssetRepository.xml"/>
-
+       <xi:include href="Validation/Validation.xml"/>
+       
 </section>
