@@ -4,33 +4,22 @@
   xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>New and Noteworthy in KIE API 6.0.0</title>
+  <title>New and Noteworthy in Integration 6.0.0</title>
   <section>
-    <title>New KIE name</title>
-    <para>xxxxx</para>
-  </section>
-  <section>
-    <title>Configuration and convention based projects</title>
+    <title>CDI</title>
     <para>xxxx</para>
   </section>
   <section>
-    <title>KieBase Inheretence</title>
+    <title>Spring</title>
     <para>xxxx</para>
   </section>
   <section>
-    <title>Maven aligned projects and modules</title>
+    <title>Aries</title>
     <para>xxxx</para>
   </section>
   <section>
-    <title>Maven based deployment</title>
-    <para>xxxx</para>
-  </section>
-  <section>
-    <title>KieScanner</title>
-    <para>xxxx</para>
-  </section>
-  <section>
-    <title>Hierarchical ClassLoader</title>
-    <para>xxxx</para>
+    <title>OSGi Ready</title>
+    <para>All modules have been refactored to avoid package splitting, which was a problem in 5.x.
+      Testing has been moved to PAX.</para>
   </section>
 </section>
