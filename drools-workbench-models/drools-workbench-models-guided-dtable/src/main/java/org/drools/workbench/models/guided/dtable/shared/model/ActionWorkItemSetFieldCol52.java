@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * An Action to set an existing Fact's field value with the value of a Work Item
  * Definition's result parameter
@@ -23,11 +25,50 @@ public class ActionWorkItemSetFieldCol52 extends ActionSetFieldCol52 {
 
     private static final long serialVersionUID = 540l;
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_WORK_ITEM_NAME = "workItemName";
+
+    public static final String FIELD_WORK_ITEM_RESULT_PARAM_NAME = "workItemResultParameterName";
+
+    public static final String FIELD_PARAMETER_CLASSNAME = "parameterClassName";
+
     private String workItemName;
 
     private String workItemResultParameterName;
 
     private String parameterClassName;
+
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        ActionWorkItemSetFieldCol52 other = (ActionWorkItemSetFieldCol52) otherColumn;
+
+        // Field: workItemName.
+        if ( !isEqualOrNull( this.getWorkItemName(),
+                other.getWorkItemName() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_WORK_ITEM_NAME, this.getWorkItemName(), other.getWorkItemName()));
+        }
+
+        // Field: workItemResultParameterName.
+        if ( !isEqualOrNull( this.getWorkItemResultParameterName(),
+                other.getWorkItemResultParameterName() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_WORK_ITEM_RESULT_PARAM_NAME, this.getWorkItemResultParameterName(), other.getWorkItemResultParameterName()));
+        }
+
+        // Field: parameterClassName.
+        if ( !isEqualOrNull( this.getParameterClassName(),
+                other.getParameterClassName() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_PARAMETER_CLASSNAME, this.getParameterClassName(), other.getParameterClassName()));
+        }
+
+        return result;
+    }
+
 
     public String getWorkItemName() {
         return workItemName;

@@ -17,6 +17,8 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 
+import java.util.List;
+
 /**
  * A column representing the execution of a Work Item.
  */
@@ -25,6 +27,27 @@ public class ActionWorkItemCol52 extends ActionCol52 {
     private static final long serialVersionUID = 540l;
 
     private PortableWorkDefinition workItemDefinition;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_WORKITEM_DEFINITION = "workItemDefinition";
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        ActionWorkItemCol52 other = (ActionWorkItemCol52) otherColumn;
+
+        // Field: default value.
+        if ( !isEqualOrNull( this.getWorkItemDefinition(),
+                other.getWorkItemDefinition() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_WORKITEM_DEFINITION, this.getWorkItemDefinition(), other.getWorkItemDefinition()));
+        }
+
+        return result;
+    }
 
     public PortableWorkDefinition getWorkItemDefinition() {
         return workItemDefinition;

@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * A column representing a single BRL fragment variable
  */
@@ -28,6 +30,17 @@ public class BRLActionVariableColumn extends ActionCol52
     private String fieldType;
     private String factType;
     private String factField;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_VAR_NAME = "varName";
+
+    public static final String FIELD_FIELD_TYPE = "fieldType";
+
+    public static final String FIELD_FACT_TYPE = "factType";
+
+    public static final String FIELD_FACT_FIELD = "factField";
 
     public BRLActionVariableColumn() {
     }
@@ -46,6 +59,40 @@ public class BRLActionVariableColumn extends ActionCol52
         this.fieldType = fieldType;
         this.factType = factType;
         this.factField = factField;
+    }
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        BRLActionVariableColumn other = (BRLActionVariableColumn) otherColumn;
+
+        // Field: varName.
+        if ( !isEqualOrNull( this.getVarName(),
+                other.getVarName() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VAR_NAME, this.getVarName(), other.getVarName()));
+        }
+
+        // Field: fieldType.
+        if ( !isEqualOrNull( this.getFieldType(),
+                other.getFieldType() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FIELD_TYPE, this.getFieldType(), other.getFieldType()));
+        }
+
+        // Field: factType.
+        if ( !isEqualOrNull( this.getFactType(),
+                other.getFactType() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+        }
+
+        // Field: factField.
+        if ( !isEqualOrNull( this.getFactField(),
+                other.getFactField() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_FIELD, this.getFactField(), other.getFactField()));
+        }
+
+        return result;
     }
 
     public String getVarName() {

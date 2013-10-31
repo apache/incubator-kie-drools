@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * This is a rule attribute - eg salience, no-loop etc.
  */
@@ -28,6 +30,42 @@ public class AttributeCol52 extends DTColumnConfig52 {
 
     // To use the row number as number for the salience attribute.
     private boolean useRowNumber = false;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_ATTRIBUTE = "attribute";
+
+    public static final String FIELD_REVERSE_ORDER = "reverseOrder";
+
+    public static final String FIELD_USE_ROW_NUMBER = "useRowNumber";
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        AttributeCol52 other = (AttributeCol52) otherColumn;
+
+
+        // Field: attribute.
+        if ( !isEqualOrNull( this.getAttribute(),
+                other.getAttribute() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_ATTRIBUTE, this.getAttribute(), other.getAttribute()));
+        }
+
+        // Field: reverseOrder.
+        if ( this.isReverseOrder() != other.isReverseOrder() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_REVERSE_ORDER, this.isReverseOrder(), other.isReverseOrder()));
+        }
+
+        // Field: useRowNumber.
+        if ( this.isUseRowNumber() != other.isUseRowNumber() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_USE_ROW_NUMBER, this.isUseRowNumber(), other.isUseRowNumber()));
+        }
+
+        return result;
+    }
 
     public String getAttribute() {
         return attribute;
