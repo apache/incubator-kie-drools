@@ -36,6 +36,5 @@
   <xi:include href="Install.xml" />
   <xi:include href="Getting_Involved.xml" />
   <xi:include href="ReleaseNotes.xml" />
-  <xi:include href="Compatibility_matrix.xml" />
 
 </book>

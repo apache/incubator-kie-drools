@@ -39,6 +39,7 @@
     <title>Welcome</title> <!-- Maybe move some of the KIE intro here, combined with my old previous intro -->
     <partintro><para>Part Intro</para></partintro>
     <xi:include href="ReleaseNotes.xml"/>
+    <xi:include href="../../../../../shared/ReleaseInformation/CompatibilityMatrix.xml"/>
   </part>
   
   <part>
@@ -70,8 +71,8 @@
   <part>
     <title>Drools Workbench</title>
     <partintro><para>Part Intro</para></partintro>
-  <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
-  <xi:include href="Workbench/AuthoringAssets.xml"/>
+    <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
+    <xi:include href="Workbench/AuthoringAssets.xml"/>
   </part>
     
 </book>
