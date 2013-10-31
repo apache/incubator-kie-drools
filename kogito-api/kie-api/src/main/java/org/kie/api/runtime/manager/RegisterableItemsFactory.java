@@ -66,7 +66,7 @@ public interface RegisterableItemsFactory {
     List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime);
     
     /**
-	 * Returns new instances of <code>WorkingMemoryEventListener</code> that will be registered on <code>RuntimeEngine</code>
+	 * Returns new instances of <code>RuleRuntimeEventListener</code> that will be registered on <code>RuntimeEngine</code>
 	 * @param runtime provides <code>RuntimeEngine</code> in case listeners need to make use of it internally
 	 * @return list of listeners to be registered - in case of no listeners empty list shall be returned.
 	 */

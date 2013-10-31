@@ -387,7 +387,7 @@
       <para>The kie-spring module allows you to configure these listeners to
       KieSessions using XML tags. These tags have identical names as the
       actual listener interfaces i.e., &lt;kie:agendaEventListener....&gt;,
-      &lt;kie:workingMemoryEventListener....&gt; and
+      &lt;kie:ruleRuntimeEventListener....&gt; and
       &lt;kie:processEventListener....&gt;.</para>
 
       <para>kie-spring provides features to define the listeners as standalone
@@ -427,7 +427,7 @@
             <title>Listener configuration example - using a bean:ref.</title>
 
             <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
-&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-rr-listener" class="mocks.MockRuleRuntimeEventListener"/&gt;
 &lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
 
 &lt;kie:kmodule id="listeners_kmodule"&gt;
@@ -435,7 +435,7 @@
     &lt;kie:ksession name="ksession2"&gt;
       &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
       &lt;kie:processEventListener ref="mock-process-listener"/&gt;
-      &lt;kie:workingMemoryEventListener ref="mock-wm-listener"/&gt;
+      &lt;kie:ruleRuntimeEventListener ref="mock-rr-listener"/&gt;
     &lt;/kie:ksession&gt;
   &lt;/kie:kbase&gt;
 &lt;/kie:kmodule&gt;
@@ -488,7 +488,7 @@
 
           <para>When a listener is defined without a reference to a
           implementing bean and does not contain a nested bean,
-          <emphasis>&lt;drools:workingMemoryEventListener/&gt;</emphasis> the
+          <emphasis>&lt;drools:ruleRuntimeEventListener/&gt;</emphasis> the
           underlying implementation adds the Debug version of the listener
           defined in the API.</para>
 
@@ -500,7 +500,7 @@
             versions provided by the Knowledge-API .</title>
 
             <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
-&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-rr-listener" class="mocks.MockRuleRuntimeEventListener"/&gt;
 &lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
 
 &lt;kie:kmodule id="listeners_module"&gt;
@@ -508,7 +508,7 @@
     &lt;kie:ksession name="ksession2"&gt;
       &lt;kie:agendaEventListener /&gt; 
       &lt;kie:processEventListener /&gt;
-      &lt;kie:workingMemoryEventListener /&gt;
+      &lt;kie:ruleRuntimeEventListener /&gt;
     &lt;/kie:ksession&gt;
  &lt;/kie:kbase&gt;
 &lt;/kie:kmodule&gt;
@@ -530,7 +530,7 @@
             'ref'/nested-bean/empty styles.</title>
 
             <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
-&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-rr-listener" class="mocks.MockRuleRuntimeEventListener"/&gt;
 &lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
 
 &lt;kie:kmodule id="listeners_module"&gt;
@@ -543,7 +543,7 @@
     &lt;kie:ksession name="ksession2"&gt;
       &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
       &lt;kie:processEventListener ref="mock-process-listener"/&gt;
-      &lt;kie:workingMemoryEventListener ref="mock-wm-listener"/&gt;
+      &lt;kie:ruleRuntimeEventListener ref="mock-rr-listener"/&gt;
     &lt;/kie:ksession&gt;
   &lt;/kie:kbase&gt;
 &lt;/kie:kmodule&gt;
@@ -628,7 +628,7 @@
             </listitem>
 
             <listitem>
-              <para>drools:workingMemoryEventListener...</para>
+              <para>drools:ruleRuntimeEventListener...</para>
             </listitem>
 
             <listitem>
@@ -648,7 +648,7 @@
             <title>Group of listeners - example</title>
 
             <programlisting language="xml">&lt;bean id="mock-agenda-listener" class="mocks.MockAgendaEventListener"/&gt;
-&lt;bean id="mock-wm-listener" class="mocks.MockWorkingMemoryEventListener"/&gt;
+&lt;bean id="mock-rr-listener" class="mocks.MockRuleRuntimeEventListener"/&gt;
 &lt;bean id="mock-process-listener" class="mocks.MockProcessEventListener"/&gt;
 
 &lt;kie:kmodule id="listeners_module"&gt;
@@ -661,7 +661,7 @@
   &lt;kie:eventListeners id="debugListeners"&gt;
   &lt;kie:agendaEventListener ref="mock-agenda-listener"/&gt;
   &lt;kie:processEventListener ref="mock-process-listener"/&gt;
-  &lt;kie:workingMemoryEventListener ref="mock-wm-listener"/&gt;
+  &lt;kie:ruleRuntimeEventListener ref="mock-rr-listener"/&gt;
 &lt;/kie:eventListeners&gt;
 
 &lt;bean id="kiePostProcessor" 

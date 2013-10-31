@@ -25,7 +25,7 @@ public interface ListenerModel {
 
     public enum Kind {
         AGENDA_EVENT_LISTENER("agendaEventListener"),
-        WORKING_MEMORY_EVENT_LISTENER("workingMemoryEventListener"),
+        RULE_RUNTIME_EVENT_LISTENER("ruleRuntimeEventListener"),
         PROCESS_EVENT_LISTENER("processEventListener");
 
         private final String name;

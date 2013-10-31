@@ -67,7 +67,7 @@
 	<xsd:element name="listeners">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="workingMemoryEventListener" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="ruleRuntimeEventListener" minOccurs="0" maxOccurs="unbounded" />
 				<xsd:element ref="agendaEventListener" minOccurs="0" maxOccurs="unbounded" />
 				<xsd:element ref="processEventListener" minOccurs="0" maxOccurs="unbounded" />
 			</xsd:sequence>
@@ -89,7 +89,7 @@
 		</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="workingMemoryEventListener">
+	<xsd:element name="ruleRuntimeEventListener">
 		<xsd:complexType>
 			<xsd:attribute name="type" use="required" type="xsd:string" />
 		</xsd:complexType>

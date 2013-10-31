@@ -38,8 +38,8 @@
         <ksession name="ksession8" type="stateful"  clockType="realtime">
             <fileLogger name="logger2" file="...." threaded="true" interval="50" />
             <listeners>
-                <workingMemoryEventListener type="type1"/>
-                <workingMemoryEventListener type="type2"/>
+                <ruleRuntimeEventListener type="type1"/>
+                <ruleRuntimeEventListener type="type2"/>
             </listeners>
         </ksession>   
     </kbase>  
@@ -53,9 +53,9 @@
                 <workItemHandler name="name3" type="type4"/>
             </workItemHandlers>            
             <listeners>
-                <workingMemoryEventListener type="type1"/>
-                <workingMemoryEventListener type="type3"/>
-                <workingMemoryEventListener type="type4"/>
+                <ruleRuntimeEventListener type="type1"/>
+                <ruleRuntimeEventListener type="type3"/>
+                <ruleRuntimeEventListener type="type4"/>
                 <agendaEventListener type="type2"/>
                 <agendaEventListener type="type4"/>
                 <processEventListener type="type4"/>
