@@ -37,7 +37,11 @@ public class JaxbContent extends AbstractJaxbTaskObject<Content> implements Cont
     
     @SuppressWarnings("unchecked")
     public JaxbContent(Content content) { 
-        super(Content.class);
+        initialize(content);
+    }
+    
+    public void initialize(Content content) { 
+        this.realClass = Content.class;
         if( content == null ) { 
             return; 
         }
