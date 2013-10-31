@@ -5,5 +5,71 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Process Fluent API</title>
-    
+
+      <para>While it is recommended to define processes using the graphical editor or
+      the underlying XML (to shield yourself from internal APIs), it is also possible
+      to define a process using the Process API directly. The most important process
+      model elements are defined in the packages <code>org.jbpm.workflow.core</code> and
+      <code>org.jbpm.workflow.core.node</code>.  A "fluent API" is provided that
+      allows you to easily construct processes in a readable manner using factories.
+      At the end, you can validate the process that you were constructing manually.
+      </para>
+      
+      <section>
+        <title>Example</title>
+
+      <para>This is a simple example of a basic process with a script task only:</para>
+      <programlisting language="java">
+RuleFlowProcessFactory factory =
+    RuleFlowProcessFactory.createProcess("org.jbpm.HelloWorld");
+factory
+    // Header
+    .name("HelloWorldProcess")
+    .version("1.0")
+    .packageName("org.jbpm")
+    // Nodes
+    .startNode(1).name("Start").done()
+    .actionNode(2).name("Action")
+        .action("java", "System.out.println(\"Hello World\");").done()
+    .endNode(3).name("End").done()
+    // Connections
+    .connection(1, 2)
+    .connection(2, 3);
+RuleFlowProcess process = factory.validate().getProcess();
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+kbuilder.add(ResourceFactory.newByteArrayResource(
+    XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes()), ResourceType.BPMN2);
+KnowledgeBase kbase = kbuilder.newKnowledgeBase();
+StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ksession.startProcess("org.jbpm.HelloWorld");</programlisting>
+        
+      <para>You can see that we start by calling the static <code>createProcess()</code>
+      method from the <code>RuleFlowProcessFactory</code> class.  This method creates
+      a new process with the given id and returns the <code>RuleFlowProcessFactory</code>
+      that can be used to create the process.  A typical process consists of three parts.
+      The header part comprises global elements like the name of the process, imports,
+      variables,  etc.  The nodes section contains all the different nodes that are part of the
+      process. The connections section finally links these nodes to each other
+      to create a flow chart.</para>
+
+      <para>In this example, the header contains the name and the version of the
+      process and the package name. After that, you can start adding nodes to the
+      current process. If you have auto-completion you can see that you have
+      different methods to create each of the supported node types at your disposal.</para>
+
+      <para>When you start adding nodes to the process, in this example by calling
+      the <code>startNode()</code>, <code>actionNode()</code> and <code>endNode()</code>
+      methods, you can see that these methods return a specific <code>NodeFactory</code>,
+      that allows you to set the properties of that node.  Once you have finished
+      configuring that specific node, the <code>done()</code> method returns you to the
+      current <code>RuleFlowProcessFactory</code> so you can add more nodes, if necessary.</para>
+
+      <para>When you are finished adding nodes, you must connect them by creating
+      connections between them.  This can be done by calling the  method
+      <code>connection</code>, which will link previously created nodes.</para>
+
+      <para>Finally, you can validate the generated process by calling the
+      <code>validate()</code> method and retrieve the created
+      <code>RuleFlowProcess</code> object.</para>  
+</section>  
 </section>

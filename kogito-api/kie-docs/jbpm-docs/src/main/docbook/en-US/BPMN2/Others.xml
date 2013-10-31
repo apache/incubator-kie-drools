@@ -8,22 +8,255 @@
   
   <section>
     <title>Variables</title>
+<para>While the flow chart focuses on specifying the control flow of the
+    process, it is usually also necessary to look at the process from a data
+    perspective.  Throughout the execution of a process, data can be retrieved,
+    stored, passed on and used.</para>
 
+    <para>For storing runtime data, during the execution of the process,
+    process variables can be used.  A variable is defined by a name and a data type.
+    This could be a basic data type, such as boolean, int, or String, or any kind of
+    Object subclass (it must implement Serializable interface).  Variables can be
+    defined inside a variable <emphasis>scope</emphasis>.  The top-level
+    scope is the variable scope of the process itself.  Subscopes can be
+    defined using a Sub-Process.  Variables that are defined in a subscope
+    are only accessible for nodes within that scope.</para>
+
+    <para>Whenever a variable is accessed, the process will search for the
+    appropriate variable scope that defines the variable.  Nesting of variable
+    scopes is allowed. A node will always search for a variable in its parent
+    container.  If the variable cannot be found, it will look in that one's
+    parent container, and so on, until the process instance itself is reached.
+    If the variable cannot be found, a read access yields null, and a write
+    access produces an error message, with the process continuing its
+    execution.</para>
+
+    <para>Variables can be used in various ways:</para>
+      <itemizedlist>
+        <listitem><para>Process-level variables can be set when starting a process
+        by providing a map of parameters to the invocation of the
+        <code>startProcess</code> method.  These parameters will be set as
+        variables on the process scope.</para>
+        </listitem>
+        <listitem><para>Script actions can access variables directly, simply by using the
+        name of the variable as a local parameter in their script.  For example, if the process
+        defines a variable of type "org.jbpm.Person" in the process, a script in the process
+        could access this directly:</para>
+        <programlisting language="java">
+// call method on the process variable "person"
+person.setAge(10);
+        </programlisting>
+        <para>Changing the value of a variable in a script can be done through the knowledge context:</para>
+          <programlisting language="java">kcontext.setVariable(variableName, value);</programlisting>
+        </listitem>
+        <listitem><para>Service tasks (and reusable sub-processes) can pass the value of process
+        variables to the outside world (or another process instance) by mapping the variable
+        to an outgoing parameter.  For example, the parameter mapping of a service task could define
+        that the value of the process variable x should be mapped to a task parameter y right
+        before the service is being invoked.  You can also inject the value of process variable
+        into a hard-coded parameter String using
+        <emphasis><code>#{expression}</code></emphasis>.  For example, the description of a human
+        task could be defined as <code>You need to contact person #{person.getName()}</code> (where
+        person is a process variable), which will replace this expression by the actual name of the
+        person when the service needs to be invoked.  Similarly results of a service (or reusable
+        sub-process) can also be copied back to a variable using a result mapping.</para>
+        </listitem>
+        <listitem><para>Various other nodes can also access data. Event nodes for
+        example can store the data associated to the event in a variable, etc. 
+        Check the properties of the different node types for more information.</para>
+        </listitem>
+        <listitem><para>Process variables can be accessed also from the Java code of your application. It is
+        done by casting of <code>ProcessInstance</code> to <code>WorkflowProcessInstance</code>.
+        See the following example:</para>
+        <programlisting language="java">
+variable = ((WorkflowProcessInstance) processInstance).getVariable("variableName");
+        </programlisting>
+        <para>To list all the process variables see the following code snippet:</para>
+        <programlisting language="java">
+org.jbpm.process.instance.ProcessInstance processInstance = ...;
+VariableScopeInstance variableScope = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+Map&lt;String, Object&gt; variables = variableScope.getVariables();
+        </programlisting>
+        <para>Note that when you use persistence then you have to use a command based
+        approach to get all process variables:</para>
+        <programlisting language="java">
+Map&lt;String, Object&gt; variables = ksession.execute(new GenericCommand&lt;Map&lt;String, Object&gt;&gt;() {
+    public Map&lt;String, Object&gt; execute(Context context) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getStatefulKnowledgesession();
+        org.jbpm.process.instance.ProcessInstance processInstance = (org.jbpm.process.instance.ProcessInstance) ksession.getProcessInstance(piId);
+        VariableScopeInstance variableScope = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        Map&lt;String, Object&gt; variables = variableScope.getVariables();
+        return variables;
+    }
+});</programlisting>
+        </listitem>
+      </itemizedlist>
+
+    <para>Finally, processes (and rules) all have access to globals, i.e.
+    globally defined variables and data in the Knowledge Session.  Globals are directly
+    accessible in actions just like variables.  Globals need to be defined as part of the
+    process before they can be used.  You can for example define globals by clicking the
+    globals button when specifying an action script in the Eclipse action property
+    editor.  You can also set the value of a global from the outside using 
+    <code>ksession.setGlobal(name, value)</code> or from inside process scripts using 
+    <code>kcontext.getKnowledgeRuntime().setGlobal(name,value);</code>.</para>
   </section>
     
   <section>
     <title>Scripts</title>
+<para>Action scripts can be used in different ways:
+      <itemizedlist>
+        <listitem>Within a Script Task,</listitem>
+        <listitem>As entry or exit actions, with a number of nodes.</listitem>
+      </itemizedlist>
+    </para>
 
+    <para>Actions have access to globals and the variables that are defined
+    for the process and the predefined variable <code>kcontext</code>.  This
+    variable is of type
+    <code>org.kie.api.runtime.process.ProcessContext</code> and can be used for
+    several tasks:</para>
+      <itemizedlist>
+        <listitem><para>Getting the current node instance (if applicable).  The node
+        instance could be queried for data, such as its name and type.  You can
+        also cancel the current node instance.</para>
+        <programlisting language="java">NodeInstance node = kcontext.getNodeInstance();
+String name = node.getNodeName();</programlisting>
+        </listitem>
+        <listitem><para>Getting the current process instance.  A process instance
+        can be queried for data (name, id, processId, etc.), aborted or
+        signaled an internal event.</para>
+        <programlisting language="java">ProcessInstance proc = kcontext.getProcessInstance();
+proc.signalEvent( type, eventObject );</programlisting>
+        </listitem>
+        <listitem><para>Getting or setting the value of variables.</para></listitem>
+        <listitem><para>Accessing the Knowledge Runtime allows you do things
+        like starting a process, signaling (external) events, inserting data,
+        etc.</para></listitem>
+      </itemizedlist>
+
+    <para>jBPM currently supports two dialects, Java and MVEL.
+    Java actions should be valid Java code.  MVEL actions can use the business
+    scripting language MVEL to express the action.  MVEL accepts any valid Java
+    code but additionally provides support for nested accesses of parameters
+    (e.g., <code>person.name</code> instead of <code>person.getName()</code>),
+    and many other scripting improvements.  Thus, MVEL expressions are more
+    convenient for the business user. For example, an action that prints out
+    the name of the person in the "requester" variable of the process would
+    look like this:</para>
+
+    <programlisting>// Java dialect
+System.out.println( person.getName() );
+
+//  MVEL dialect
+System.out.println( person.name );
+    </programlisting>
   </section>
     
   <section>
     <title>Constraints</title>
+<para>Constraints can be used in various locations in your processes,
+    for example in a diverging gateway.  jBPM supports two types of constraints:</para>
+      <itemizedlist>
+        <listitem><para><emphasis>Code constraints</emphasis> are boolean expressions,
+        evaluated directly whenever they are reached. We currently support two
+        dialects for expressing these code constraints: Java and MVEL.
+        Both Java and MVEL code constraints have direct access
+        to the globals and variables defined in the process.  Here is an example
+        of a valid Java code constraint, <code>person</code> being a variable
+        in the process:</para>
+          <programlisting language="java">return person.getAge() > 20;</programlisting>
+        <para>A similar example of a valid MVEL code constraint is:</para>
+          <programlisting>
+return person.age > 20;</programlisting>
+        </listitem>
+        <listitem><para><emphasis>Rule constraints</emphasis> are equals to normal
+        Drools rule conditions.  They use the Drools Rule Language syntax to
+        express possibly complex constraints.  These rules can, like any other
+        rule, refer to data in the Working Memory.  They can also refer to
+        globals directly.  Here is an example of a valid rule constraint:</para>
+          <programlisting
+>Person( age > 20 )</programlisting>
+        <para>This tests for a person older than 20 being in the Working
+        Memory.</para></listitem>
+      </itemizedlist>
 
+    <para>Rule constraints do not have direct access to variables defined
+    inside the process.  It is however possible to refer to the current process
+    instance inside a rule constraint, by adding the process instance to the
+    Working Memory and matching for the process instance in your rule
+    constraint.  We have added special logic to make sure that a variable
+    <code>processInstance</code> of type <code>WorkflowProcessInstance</code>
+    will only match to the current process instance and not to other process
+    instances in the Working Memory.  Note that you are however responsible
+    yourself to insert the process instance into the session and, possibly,
+    to update it, for example, using Java code or an on-entry or on-exit or
+    explicit action in your process. The following example of a rule
+    constraint will search for a person with the same name as the value
+    stored in the variable "name" of the process:</para>
+
+    <programlisting>processInstance : WorkflowProcessInstance()
+Person( name == ( processInstance.getVariable("name") ) )
+# add more constraints here ...</programlisting>	
   </section>
     
   <section>
     <title>Timers</title>
+<para>Timers wait for a predefined amount of time, before triggering, once
+    or repeatedly.  They can be used to trigger
+    certain logic after a certain period, or to repeat some action at regular
+    intervals.</para>
 
+    <section>
+      <title>Configure timer with delay and period</title>
+      <para>A Timer node is set up with a delay and a period.  The delay specifies
+      the amount of time to wait after node activation before
+      triggering the timer the first time.  The period defines the time between
+      subsequent trigger activations. A period of 0 results in a one-shot timer.</para>
+
+      <para>The (period and delay) expression should be of the form
+      [#d][#h][#m][#s][#[ms]].  You can specify the amount of days,
+      hours, minutes, seconds and milliseconds (which is the default if you don't
+      specify anything).  For example, the expression "1h" will wait one hour
+      before triggering the timer (again).</para>
+
+    </section>
+
+    <section>
+      <title>Configure timer ISO-8601 date format</title>
+      <para>since version 6 timers can be configured with valid <ulink url="http://en.wikipedia.org/wiki/ISO_8601">
+      ISO8601</ulink> date format that supports both one shot timers and repeatable timers. Timers can be defined
+      as data dn time representation, time duration or repeating intervals</para>
+      <itemizedlist>
+        <listitem>Date - 2013-12-24T20:00:00.000+02:00 - fires exactly at Christmas Eve at 8PM</listitem>
+        <listitem>Duration - PT1S - fires once after 1 second</listitem>
+        <listitem>Repeatable intervals - R/PT1S - fires every second, no limit, alternatively R5/PT1S will fire 5 times every second</listitem>
+      </itemizedlist>
+
+    </section>
+
+    <section>
+      <title>Configure timer with process variables</title>
+      In addition to two configuration otpions above timers can be specified using process variable that can consists
+      of string representation of ether delay and period or ISO8601 date format. By specifying #{variable} engine will
+      dynamically extract process variable and use it as timer expression.
+    </section>
+
+    <para>The timer service is responsible for making sure that timers get
+    triggered at the appropriate times.  Timers can also be cancelled, meaning
+    that the timer will no longer be triggered.</para>
+
+    <para>Timers can be used in two ways inside a process:</para>
+      <itemizedlist>
+        <listitem><para>A Timer Event may be added to the process flow. Its activation
+        starts the timer, and when it triggers, once or repeatedly, it activates the
+        Timer node's successor. Subsequently, the outgoing connection of a
+        timer with a positive period is triggered multiple times. Cancelling a
+        Timer node also cancels the associated timer, after which no more triggers
+        will occur.</para></listitem>
+        <listitem><para>Timers can be associated with a Sub-Process or tasks as a boundary event.
+        </para></listitem>
+      </itemizedlist>
   </section>
     
 </section>
