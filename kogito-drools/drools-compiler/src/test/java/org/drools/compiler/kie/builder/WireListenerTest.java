@@ -50,7 +50,7 @@ public class WireListenerTest {
 
         KieSessionModel ksession1 = kproj.newKieBaseModel("KBase1").newKieSessionModel("KSession1").setDefault(true);
 
-        ksession1.newListenerModel(RecordingWorkingMemoryEventListener.class.getName(), ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER);
+        ksession1.newListenerModel(RecordingWorkingMemoryEventListener.class.getName(), ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER);
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML())

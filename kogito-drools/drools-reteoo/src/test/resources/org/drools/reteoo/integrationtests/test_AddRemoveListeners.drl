@@ -1,10 +1,10 @@
 package org.drools.compiler
 
-import org.kie.api.event.rule.WorkingMemoryEventListener
+import org.kie.api.event.rule.RuleRuntimeEventListener
 
 rule "remove listener"
 when
-    listener : WorkingMemoryEventListener();
+    listener : RuleRuntimeEventListener();
 then
     drools.getKieRuntime().removeEventListener(listener);
     retract(listener);
