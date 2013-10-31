@@ -140,7 +140,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
         &lt;workItemHandler name="name" type="org.domain.WorkItemHandler"/&gt;
       &lt;/workItemHandlers&gt;
       &lt;listeners&gt;
-        &lt;workingMemoryEventListener type="org.domain.WMEListener"/&gt;
+        &lt;ruleRuntimeEventListener type="org.domain.RuleRuntimeListener"/&gt;
         &lt;agendaEventListener type="org.domain.FirstAgendaListener"/&gt;
         &lt;agendaEventListener type="org.domain.SecondAgendaListener"/&gt;
         &lt;processEventListener type="org.domain.ProcessListener"/&gt;
@@ -296,7 +296,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
     <para>As outlined in the former kmodule.xml sample, it is also possible to declaratively
     create on each <code>KieSession</code> a file (or a console) logger, one or more
     <code>WorkItemHandler</code>s and some listeners that can be of 3 different types:
-    workingMemoryEventListener, agendaEventListener and processEventListener</para>
+    ruleRuntimeEventListener, agendaEventListener and processEventListener</para>
 
     <para>Having defined a kmodule.xml like the one in the former sample, it is now possible
     to simply retrieve the KieBases and KieSessions from the KieContainer using their names.</para>

@@ -521,15 +521,15 @@ query.dispose() // calling dispose to terminate the live query</programlisting>
 });     </programlisting>
     </example>
 
-    <para>Drools also provides <code>DebugWorkingMemoryEventListener</code>
+    <para>Drools also provides <code>DebugRuleRuntimeEventListener</code>
     and <code>DebugAgendaEventListener</code> which implement each method with
     a debug print statement. To print all Working Memory events, you add a
     listener like this:</para>
 
     <example>
-      <title>Adding a DebugWorkingMemoryEventListener</title>
+      <title>Adding a DebugRuleRuntimeEventListener</title>
 
-      <programlisting language="java">ksession.addEventListener( new DebugWorkingMemoryEventListener() );     </programlisting>
+      <programlisting language="java">ksession.addEventListener( new DebugRuleRuntimeEventListener() );     </programlisting>
     </example>
 
     <para>The events currently supported are:</para>
