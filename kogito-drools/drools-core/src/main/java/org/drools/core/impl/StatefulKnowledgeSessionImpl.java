@@ -75,7 +75,6 @@ import org.drools.core.runtime.rule.impl.NativeQueryResults;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimerService;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
@@ -154,13 +153,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.session.addEventListener( wrapper );
     }
 
-    /**
-     * @deprecated
-     */
-    public void addEventListener(WorkingMemoryEventListener listener) {
-        addEventListener((RuleRuntimeEventListener) listener);
-    }
-
     public void removeEventListener(RuleRuntimeEventListener listener) {
         RuleRuntimeEventListenerWrapper wrapper;
         if ( listener != null && !(listener instanceof RuleRuntimeEventListenerWrapper) ) {
@@ -169,22 +161,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             wrapper = (RuleRuntimeEventListenerWrapper) listener;
         }
         this.session.removeEventListener( wrapper );
-    }
-
-    /**
-     * @deprecated
-     */
-    public void removeEventListener(WorkingMemoryEventListener listener) {
-        removeEventListener((RuleRuntimeEventListener) listener);
-    }
-
-    /**
-     * @deprecated
-     */
-    public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        Collection<WorkingMemoryEventListener> workingMemoryEventListeners = new ArrayList<WorkingMemoryEventListener>();
-        workingMemoryEventListeners.addAll(getRuleRuntimeEventListeners());
-        return workingMemoryEventListeners;
     }
 
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
