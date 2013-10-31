@@ -15,9 +15,24 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 public class ActionSetFieldCol52 extends ActionCol52 {
 
     private static final long serialVersionUID = 510l;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_BOUND_NAME = "boundName";
+
+    public static final String FIELD_FACT_FIELD = "factField";
+
+    public static final String FIELD_TYPE = "type";
+
+    public static final String FIELD_VALUE_LIST = "valueList";
+
+    public static final String FIELD_UPDATE = "update";
 
     /**
      * The bound name of the variable to be effected. If the same name appears
@@ -47,6 +62,47 @@ public class ActionSetFieldCol52 extends ActionCol52 {
      * inferencing mode.
      */
     private boolean update = false;
+
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        ActionSetFieldCol52 other = (ActionSetFieldCol52) otherColumn;
+
+        // Field: bound name..
+        if ( !isEqualOrNull( this.getBoundName(),
+                other.getBoundName() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_BOUND_NAME, this.getBoundName(), other.getBoundName()));
+        }
+
+        // Field: factField..
+        if ( !isEqualOrNull( this.getFactField(),
+                other.getFactField() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_FIELD, this.getFactField(), other.getFactField()));
+        }
+
+        // Field: type..
+        if ( !isEqualOrNull( this.getType(),
+                other.getType() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_TYPE, this.getType(), other.getType()));
+        }
+
+        // Field: valueList..
+        if ( !isEqualOrNull( this.getValueList(),
+                other.getValueList() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE_LIST, this.getValueList(), other.getValueList()));
+        }
+
+        // Field: update..
+        if ( this.isUpdate() != other.isUpdate()) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_UPDATE, this.isUpdate(), other.isUpdate()));
+        }
+
+        return result;
+    }
+
 
     public void setValueList( String valueList ) {
         this.valueList = valueList;

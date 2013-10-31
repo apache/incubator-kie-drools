@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * A column representing a single BRL fragment variable
  */
@@ -26,6 +28,13 @@ public class BRLConditionVariableColumn extends ConditionCol52
 
     private String varName;
     private String factType;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_VAR_NAME = "varName";
+
+    public static final String FIELD_FACT_TYPE = "factType";
 
     public BRLConditionVariableColumn() {
     }
@@ -44,6 +53,28 @@ public class BRLConditionVariableColumn extends ConditionCol52
         this.factType = factType;
         super.setFactField( factField );
         super.setFieldType( fieldType );
+    }
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        BRLConditionVariableColumn other = (BRLConditionVariableColumn) otherColumn;
+
+        // Field: varName.
+        if ( !isEqualOrNull( this.getVarName(),
+                other.getVarName() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VAR_NAME, this.getVarName(), other.getVarName()));
+        }
+
+        // Field: factType.
+        if ( !isEqualOrNull( this.getFactType(),
+                other.getFactType() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_TYPE, this.getFactType(), other.getFactType()));
+        }
+
+        return result;
     }
 
     public String getVarName() {

@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.shared.model;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -58,6 +59,66 @@ public class ConditionCol52 extends DTColumnConfig52
 
     //Binding for the field
     private String binding;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_FACT_FIELD = "factField";
+
+    public static final String FIELD_FIELD_TYPE = "fieldType";
+
+    public static final String FIELD_OPERATOR = "operator";
+
+    public static final String FIELD_VALUE_LIST = "valueList";
+
+    public static final String FIELD_BINDING = "binding";
+
+    public static final String FIELD_CONSTRAINT_VALUE_TYPE= "constraintValueType";
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        ConditionCol52 other = (ConditionCol52) otherColumn;
+
+        // Field: factField.
+        if ( !isEqualOrNull( this.getFactField(),
+                other.getFactField() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FACT_FIELD, this.getFactField(), other.getFactField()));
+        }
+
+        // Field: fieldType.
+        if ( !isEqualOrNull( this.getFieldType(),
+                other.getFieldType() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_FIELD_TYPE, this.getFieldType(), other.getFieldType()));
+        }
+
+        // Field: operator.
+        if ( !isEqualOrNull( this.getOperator(),
+                other.getOperator() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_OPERATOR, this.getOperator(), other.getOperator()));
+        }
+
+        // Field: valueList.
+        if ( !isEqualOrNull( this.getValueList(),
+                other.getValueList() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE_LIST, this.getValueList(), other.getValueList()));
+        }
+
+        // Field: binding.
+        if ( !isEqualOrNull( this.getBinding(),
+                other.getBinding() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_BINDING, this.getBinding(), other.getBinding()));
+        }
+
+        // Field: binding.
+        if ( this.getConstraintValueType() != other.getConstraintValueType() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_CONSTRAINT_VALUE_TYPE, this.getConstraintValueType(), other.getConstraintValueType()));
+        }
+
+        return result;
+    }
 
     public void setConstraintValueType( int constraintValueType ) {
         this.constraintValueType = constraintValueType;

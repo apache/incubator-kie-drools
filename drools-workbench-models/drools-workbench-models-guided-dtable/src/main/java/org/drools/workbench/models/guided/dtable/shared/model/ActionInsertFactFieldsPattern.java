@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * A Fact Pattern used by the ActionInsertFactFieldsPage Wizard page adding
  * a flag indicating whether the Pattern is inserted Logically or not
@@ -23,6 +25,26 @@ package org.drools.workbench.models.guided.dtable.shared.model;
 public class ActionInsertFactFieldsPattern extends Pattern52 {
 
     private boolean isInsertedLogically;
+
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_IS_INSERTED_LOGICALLY = "isInsertedLogically";
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        ActionInsertFactFieldsPattern other = (ActionInsertFactFieldsPattern) otherColumn;
+
+        // Field: isInsertedLogically.
+        if ( this.isInsertedLogically() != other.isInsertedLogically() ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_IS_INSERTED_LOGICALLY, this.isInsertedLogically(), other.isInsertedLogically()));
+        }
+
+        return result;
+    }
 
     public boolean isInsertedLogically() {
         return isInsertedLogically;

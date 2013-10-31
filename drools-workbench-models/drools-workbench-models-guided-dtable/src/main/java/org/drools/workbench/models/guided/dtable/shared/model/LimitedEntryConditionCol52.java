@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.List;
+
 /**
  * This is the config for a condition column that supports Limited Entry, hence
  * it has a value. Typically many of them have their constraints added.
@@ -27,12 +29,38 @@ public class LimitedEntryConditionCol52 extends ConditionCol52
 
     private DTCellValue52 value;
 
+    /**
+     * Available fields for this type of column.
+     */
+    public static final String FIELD_VALUE = "value";
+
+    @Override
+    public List<BaseColumnFieldDiff> diff(BaseColumn otherColumn) {
+        if (otherColumn == null) return null;
+
+        List<BaseColumnFieldDiff> result = super.diff(otherColumn);
+        LimitedEntryConditionCol52 other = (LimitedEntryConditionCol52) otherColumn;
+
+        // Field: default value.
+        if ( !isEqualOrNull( this.getValue(),
+                other.getValue() ) ) {
+            result.add(new BaseColumnFieldDiffImpl(FIELD_VALUE, this.getValueAsString(), other.getValueAsString()));
+        }
+
+        return result;
+    }
+
     public DTCellValue52 getValue() {
         return value;
     }
 
     public void setValue( DTCellValue52 value ) {
         this.value = value;
+    }
+
+    public String getValueAsString() {
+        if (value != null) return value.getValueAsString();
+        return "";
     }
 
 }
