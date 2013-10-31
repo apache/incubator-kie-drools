@@ -587,9 +587,9 @@ ksession.setGlobal("list", list);           </programlisting>
 
     <para>The <code>KieRuntimeEventManager</code> interface is
     implemented by the <code>KieRuntime</code> which provides two
-    interfaces, <code>WorkingMemoryEventManager</code> and
+    interfaces, <code>RuleRuntimeEventManager</code> and
     <code>ProcessEventManager</code>. We will only cover the
-    <code>WorkingMemoryEventManager</code> here.</para>
+    <code>RuleRuntimeEventManager</code> here.</para>
 
     <figure>
       <title>KieRuntimeEventManager</title>
@@ -602,16 +602,16 @@ ksession.setGlobal("list", list);           </programlisting>
       </mediaobject>
     </figure>
 
-    <para>The <code>WorkingMemoryEventManager</code> allows for listeners to
+    <para>The <code>RuleRuntimeEventManager</code> allows for listeners to
     be added and removed, so that events for the working memory and the agenda
     can be listened to.</para>
 
     <figure>
-      <title>WorkingMemoryEventManager</title>
+      <title>RuleRuntimeEventManager</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/ApiReference/WorkingMemoryEventManager.png"
+          <imagedata fileref="images/ApiReference/RuleRuntimeEventManager.png"
                      format=""/>
         </imageobject>
       </mediaobject>
