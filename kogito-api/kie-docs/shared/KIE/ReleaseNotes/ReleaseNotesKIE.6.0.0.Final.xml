@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xml:base="../../" xml:id="kie.ReleaseNotesKIE.6.0.0"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
-
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>New and Noteworthy in KIE API 6.0.0</title>
-
-  <section><title>New KIE name</title><para>xxxxx</para>
+  <section>
+    <title>New KIE name</title>
+    <para>xxxxx</para>
   </section>
-
-  <section><title>Configuration and convention based projects</title><para>xxxx</para>
+  <section>
+    <title>Configuration and convention based projects</title>
+    <para>xxxx</para>
   </section>
-
-  <section><title>KieBase Inheretence</title><para>xxxx</para>
+  <section>
+    <title>KieBase Inheretence</title>
+    <para>xxxx</para>
   </section>
-
-  <section><title>Maven aligned projects and modules</title><para>xxxx</para>
+  <section>
+    <title>Maven aligned projects and modules</title>
+    <para>xxxx</para>
   </section>
-  
-  <section><title>Maven based deployment</title><para>xxxx</para>
+  <section>
+    <title>Maven based deployment</title>
+    <para>xxxx</para>
   </section>
-
-  <section><title>KieScanner</title><para>xxxx</para>
+  <section>
+    <title>KieScanner</title>
+    <para>xxxx</para>
   </section>
-
-  <section><title>Hierarchical ClassLoader</title><para>xxxx</para>
+  <section>
+    <title>Hierarchical ClassLoader</title>
+    <para>xxxx</para>
   </section>
-
-  <section><title>OSGi Ready</title><para>All modules have been refactored to avoid package splitting, which was a problem in 5.x.
+  <?oxy_comment_start author="mdproctor" timestamp="20131031T083156+0000" comment="CDO, Spring, Aries and OSGi will probably move to the Integation part. But leaving here for now, as reminders."?>
+  <section>
+    <?oxy_comment_end?>
+    <title>CDI</title>
+    <para>xxxx</para>
+  </section>
+  <section>
+    <title>Spring</title>
+    <para>xxxx</para>
+  </section>
+  <section>
+    <title>Aries</title>
+    <para>xxxx</para>
+  </section>
+  <section>
+    <title>OSGi Ready</title>
+    <para>All modules have been refactored to avoid package splitting, which was a problem in 5.x.
       Testing has been moved to PAX.</para>
   </section>
-
 </section>
