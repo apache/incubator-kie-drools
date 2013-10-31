@@ -1,58 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd" 
-  xml:base="./../../" xml:id="KIEBuildSection" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns2="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Introduction</title>
-  <para>6.0 introduces a new configuration and convention approach to building knowledge bases,
-    instead of the using the programmatic builder approach in 5.x. Atlhough a builder is still
-    available for fall back on, as it's used for the tooling integration.</para>
-  <para>Building now uses Maven, and aligns with Maven practices. A KIE projcet or module is simply
-    a Maven java project or module; with an additional meta data file META-INF/kmodule.xml. The
-    kmodule.xml file is the descriptor that selects resources to knowledge bases and configures
-    those knowledge bases and sessions. There is also alternative xml support via Spring and OSGi
-    BluePrints.</para>
-  <para>While standard Maven can  build and package KIE resources, it will not provide validation at
-    build time. There is a Maven plugin which is recommend to use to get build time validation. The
-    plugin also pre-genenerates many classes, making the runtime loading faster too.</para>
-  <para>The example project layout and maven pom descriptor is illustarted in the screenshot</para>
-  <figure>
-    <title>Example project layout and maven pom</title>
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/kie/BuildDeployUtilizeAndRun/defaultkiesession.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-  </figure>
-  <para>KIE uses defaults to minimise the amount of configuration. With an empty kmodule.xml being
-    the simplest configuration. There must always be a kmodule.xml file, even if empty, as it's used
-    for discover of the jar and it's contents.</para>
-  <para>Maven can either 'mvn install' to deploy a KieModule to the local machine, where all other
-    applications on the local machine use it. Or it can 'mvn 'deploy' to push the KieModule to a
-    remote Maven repository. Building the Application wil pull in the KieModule, popualting it's
-    local Maven repository, as it does so.</para>
-  <figure>
-    <title>Example project layout and maven pom</title>
-    <screenshot>
-      <mediaobject>
-        <imageobject>
-          <imagedata fileref="images/kie/BuildDeployUtilizeAndRun/maven.png"/>
-        </imageobject>
-      </mediaobject>
-    </screenshot>
-  </figure>
-  <para>Jars can be deployed in one of two ways. Either added to the classpath, like any other jar
-    in a Maven dependency listing, or they can be dynamically loaded at runtime. KIE will scan the
-    classpath to find all the jars with a kmodule.xml in it. Each found jar is represented by the
-    KieModule interface. The term Classpath KieModules and dynamic KieModule is used to refer to the
-    two loading approaches. While dynamic modules supports side by side versioning, classpath
-    modules do not. Further once module is on the classpath, no other version may be loaded
-    dynamically.</para>
-  <para/>
+<section version="5.0" xml:base="./../../" xml:id="KIEExamplesSection" 
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd" 
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns2="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Build,  Deploy and Utilize Examples</title>
   <para>The best way to learn the new build system is by example. The source project
     "drools-examples-api" contains a number of examples, and can be found at github:</para>
   <para><link xlink:href="https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api"
       >https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api</link></para>
+  <para>Each example is described below, the order starts with the simplest and most default working
+    it's way up to more complex use cases.</para>
+  <para>The Deploy use cases here all involve <code>mvn install</code>. Remote deployment of jars in
+    Maven is well covered is Maven literature. Utilize refers to the initial act loading the
+    resources and providing access to the KIE runtimes. Where as Run refers to the act of
+    interacting with those runtimes.</para>
   
   <section> <title>Default KieSession</title>
     <itemizedlist>
