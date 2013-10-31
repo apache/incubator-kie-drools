@@ -1,15 +1,146 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xml:base="../../../" xml:id="wb.ProjectExplorer"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xmlns="http://docbook.org/ns/docbook"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
-  xmlns:ns="http://docbook.org/ns/docbook">
-  
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
   <title>Project Explorer</title>
-  <para>todo</para>
-  
-    
+  <para>The Project Explorer provides the ability to browse diffeent Organizational Units,
+    Repositories, Projects and their files.</para>
+  <section xml:id="wb.ProjectExplorerEmpty">
+    <title>Initial view</title>
+    <para>The initial view could be empty when first opened.</para>
+    <figure>
+      <title>An empty initial view</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Empty.png"
+          />
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>The user may have to select an Organizational Unit, Repository and Project from the
+      drop-down boxes.</para>
+
+    <figure>
+      <title>Selecting a repository</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata
+            fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Selecting-Repository.png"
+          />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The default configuration hides Package details from view.</para>
+    <para>In order to reveal packages click on the icon as indicated in the following
+      screen-shot.</para>
+
+    <figure>
+      <title>Showing packages</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata
+            fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Show-Packages.png"
+          />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>After a suitable combination of Organizational Unit, Repository, Project and Package have
+      been selected the Project Explorer will show the contents. The exact combination of selections
+      depends wholey on the structures defined within the Workbench installation and projects. Each
+      section contains groups of related files.</para>
+    <figure>
+      <title>Expanded asset group</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata
+            fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Expanded.png"
+          />
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section xml:id="wb.ProjectExplorerSwitchingView">
+    <title>Different views</title>
+    <para>Project Explorer supports multiple views.<itemizedlist>
+        <listitem>
+          <para>Business View</para>
+          <para>A simplified view of the underlying project structure. Certain system files are
+            hidden from view.</para>
+        </listitem>
+        <listitem>
+          <para>Technical View</para>
+          <para>A complete view of the underlying project structure including all files; either
+            user-defined or system generated.</para>
+        </listitem>
+      </itemizedlist></para>
+    <para>Views can be selected by clicking on the icon within the Project Explorer, as shown
+      below.</para>
+    <para>Both Business View and Technical Views can be further refined by seleting either
+      "Breadcrumbs" or "Tree".</para>
+    <figure>
+      <title>Switching view</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata
+            fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Switching-View.png"
+          />
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section xml:id="wb.ProjectExplorerBusinessView">
+      <title>Business View examples</title>
+      <figure>
+        <title>Business View - Tree</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata
+              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Tree.png"
+            />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>Business View - Breadcrumbs</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata
+              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Breadcrumbs.png"
+            />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section xml:id="wb.ProjectExplorerTechnicalView">
+      <title>Technical View examples</title>
+      <figure>
+        <title>Technical View - Tree</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata
+              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Technical-Tree.png"
+            />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>Technical View - Breadcrumbs</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata
+              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Technical-Breadcrumbs.png"
+            />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+
 </section>
