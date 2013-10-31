@@ -7,9 +7,9 @@
        xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
        <title>Human Resources Example</title>
 
-       <para> Let’s imagine for a second that you work for a Software company that works with
-              several projects and from time to time the company wants to hire new developers. So,
-              which employees, Departments and Systems are required to Hire a new Developer in your
+       <para>Let’s imagine for a second that you work for a Software company that works with several
+              projects and from time to time the company wants to hire new developers. So, which
+              employees, Departments and Systems are required to Hire a new Developer in your
               company? Trying to answering these questions will help you to define your business
               process. The following figure, represents how does this process works for Acme Inc. We
               can clearly see that three Departments are involved: Human Resources, IT and
@@ -20,8 +20,7 @@
        <mediaobject>
               <imageobject>
                      <imagedata align="center" format="PNG" role=""
-                            fileref="images/Chapter-Tutorial/human-resources-high-level.png"
-                            width="600" />
+                            fileref="images/Examples/human-resources-high-level.png" width="700"/>
               </imageobject>
        </mediaobject>
        <para> Notice that there are 6 activities defined inside this business process, 4 of them are
@@ -71,8 +70,8 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-project-editor.png"
-                                   width="600" />
+                                   fileref="images/Examples/human-resources-project-editor.png"
+                                   width="700"/>
                      </imageobject>
               </mediaobject>
               <para>As you can see it contains the <emphasis role="bold">hiring.bpmn2</emphasis>
@@ -83,8 +82,8 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-hiring-bpmn.png"
-                                   width="600" />
+                                   fileref="images/Examples/human-resources-hiring-bpmn.png"
+                                   width="700"/>
                      </imageobject>
               </mediaobject>
               <para>Feel free to inspect the forms as well. Notice that the Form Modeller will be
@@ -93,7 +92,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-hr-interview-form.png"
+                                   fileref="images/Examples/human-resources-hr-interview-form.png"
                                    width="700" />
                      </imageobject>
               </mediaobject>
@@ -106,7 +105,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-go-to-project-editor.png"
+                                   fileref="images/Examples/human-resources-go-to-project-editor.png"
                                    width="400" />
                      </imageobject>
               </mediaobject>
@@ -118,7 +117,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-build-and-deploy.png"
+                                   fileref="images/Examples/human-resources-build-and-deploy.png"
                                    width="700" />
                      </imageobject>
               </mediaobject>
@@ -129,7 +128,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-go-to-deployments.png"
+                                   fileref="images/Examples/human-resources-go-to-deployments.png"
                                    width="200" />
                      </imageobject>
               </mediaobject>
@@ -145,7 +144,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-deployment-screen.png"
+                                   fileref="images/Examples/human-resources-deployment-screen.png"
                                    width="700"/>
                      </imageobject>
               </mediaobject>
@@ -167,7 +166,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-process-definitions.png"
+                                   fileref="images/Examples/human-resources-process-definitions.png"
                                    width="700"/>
                      </imageobject>
               </mediaobject>
@@ -181,7 +180,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tutorial/human-resources-new-instance-form.png"
+                                   fileref="images/Examples/human-resources-new-instance-form.png"
                                    width="400" />
                      </imageobject>
               </mediaobject>

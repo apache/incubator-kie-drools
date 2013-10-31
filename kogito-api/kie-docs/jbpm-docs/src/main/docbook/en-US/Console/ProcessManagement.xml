@@ -28,7 +28,7 @@
          <mediaobject>
                 <imageobject>
                        <imagedata align="center" format="PNG" role="" 
-                              fileref="images/Chapter-Runtime/process-management.png"/>
+                              fileref="images/Console/process-management.png"/>
                 </imageobject>
          </mediaobject>
          
@@ -44,11 +44,12 @@
                               Look at the Deployments section for more information about how to check all the deployment units available. </para>
                        
                        <mediaobject>
-                              <imageobject>
-                                     <imagedata align="center" format="PNG" role="" 
-                                            fileref="images/Chapter-Runtime/process-definitions-list.png" width="400" />
-                              </imageobject>
-                       </mediaobject>
+                            <imageobject>
+                                   <imagedata align="center" format="PNG" role=""
+                                          fileref="images/Console/process-definitions-list.png"
+                                          width="700"/>
+                            </imageobject>
+                     </mediaobject>
                        
                        <para>You can click in the list rows to access to the details of the process definition. </para>
                        
@@ -62,11 +63,12 @@
                        </para>
                        
                        <mediaobject>
-                              <imageobject>
-                                     <imagedata align="center" format="PNG" role="" 
-                                            fileref="images/Chapter-Runtime/process-definitions-details.png" width="400" />
-                              </imageobject>
-                       </mediaobject>
+                            <imageobject>
+                                   <imagedata align="center" format="PNG" role=""
+                                          fileref="images/Console/process-definitions-details.png"
+                                          width="700"/>
+                            </imageobject>
+                     </mediaobject>
                        <para>Notice that you can View the Process Model (Read Only mode) using the Options Menu in the top bar. You can also
                               look at all the process instances for the selected process definition goint to Options -> View Process Instances.
                        </para>
@@ -79,7 +81,7 @@
                        <mediaobject>
                               <imageobject>
                                      <imagedata align="center" format="PNG" role="" 
-                                            fileref="images/Chapter-Runtime/process-definitions-new-instance.png"  width="400" />
+                                            fileref="images/Console/process-definitions-new-instance.png"  width="400" />
                                      
                               </imageobject>
                        </mediaobject>
