@@ -57,7 +57,6 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.ExecutionResults;
@@ -243,13 +242,6 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         registerRuleRuntimeEventListener(new RuleRuntimeEventListenerPlaceholder(), listener);
     }
 
-    /**
-     * @deprecated
-     */
-    public void addEventListener(WorkingMemoryEventListener listener) {
-        addEventListener((RuleRuntimeEventListener) listener);
-    }
-
     public void addEventListener(RuleRuntimeEventListener listener) {
         registerRuleRuntimeEventListener(listener, new StatefulKnowledgeSessionImpl.RuleRuntimeEventListenerWrapper(listener));
     }
@@ -261,27 +253,11 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         this.mappedWorkingMemoryListeners.put( listener, wrapper );
     }
 
-    /**
-     * @deprecated
-     */
-    public void removeEventListener(WorkingMemoryEventListener listener) {
-        removeEventListener((RuleRuntimeEventListener) listener);
-    }
-
     public void removeEventListener(RuleRuntimeEventListener listener) {
         if ( this.mappedWorkingMemoryListeners != null ) {
             org.drools.core.event.WorkingMemoryEventListener wrapper = this.mappedWorkingMemoryListeners.remove( listener );
             this.workingMemoryEventSupport.removeEventListener( wrapper );
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        Collection<WorkingMemoryEventListener> workingMemoryEventListeners = new ArrayList<WorkingMemoryEventListener>();
-        workingMemoryEventListeners.addAll(getRuleRuntimeEventListeners());
-        return workingMemoryEventListeners;
     }
 
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {

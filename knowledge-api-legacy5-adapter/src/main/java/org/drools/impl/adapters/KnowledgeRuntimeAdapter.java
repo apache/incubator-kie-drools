@@ -22,6 +22,7 @@ import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.ViewChangedEventListener;
 import org.drools.runtime.rule.WorkingMemoryEntryPoint;
 import org.drools.time.SessionClock;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -38,7 +39,7 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
 
     public final KnowledgeRuntime delegate;
 
-    private final Map<WorkingMemoryEventListener, org.kie.api.event.rule.WorkingMemoryEventListener> wimListeners = new HashMap<WorkingMemoryEventListener, org.kie.api.event.rule.WorkingMemoryEventListener>();
+    private final Map<WorkingMemoryEventListener, RuleRuntimeEventListener> wimListeners = new HashMap<WorkingMemoryEventListener, RuleRuntimeEventListener>();
     private final Map<ProcessEventListener, org.kie.api.event.process.ProcessEventListener> processListeners = new HashMap<ProcessEventListener, org.kie.api.event.process.ProcessEventListener>();
 
     public KnowledgeRuntimeAdapter(KnowledgeRuntime delegate) {
@@ -236,7 +237,7 @@ public class KnowledgeRuntimeAdapter implements org.drools.runtime.KnowledgeRunt
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
-        org.kie.api.event.rule.WorkingMemoryEventListener adapted = new WorkingMemoryEventListenerAdapter(listener);
+        RuleRuntimeEventListener adapted = new WorkingMemoryEventListenerAdapter(listener);
         wimListeners.put(listener, adapted);
         delegate.addEventListener(adapted);
     }

@@ -55,7 +55,6 @@ import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.GetRuleRuntimeEventListenersCommand;
-import org.drools.core.command.runtime.rule.GetWorkingMemoryEventListenersCommand;
 import org.drools.core.command.runtime.rule.HaltCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
@@ -69,7 +68,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.api.runtime.Calendars;
@@ -414,13 +412,6 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                                                    object ) );
     }
 
-    /**
-     * @deprecated
-     */
-    public void addEventListener(WorkingMemoryEventListener listener) {
-        removeEventListener((RuleRuntimeEventListener) listener);
-    }
-
     public void addEventListener(RuleRuntimeEventListener listener) {
         commandService.execute(new AddEventListenerCommand(listener));
     }
@@ -433,19 +424,8 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         return commandService.execute( new GetAgendaEventListenersCommand() );
     }
 
-    public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-        return commandService.execute( new GetWorkingMemoryEventListenersCommand() );
-    }
-
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
         return commandService.execute( new GetRuleRuntimeEventListenersCommand() );
-    }
-
-    /**
-     * @deprecated
-     */
-    public void removeEventListener(WorkingMemoryEventListener listener) {
-        removeEventListener((RuleRuntimeEventListener) listener);
     }
 
     public void removeEventListener(RuleRuntimeEventListener listener) {

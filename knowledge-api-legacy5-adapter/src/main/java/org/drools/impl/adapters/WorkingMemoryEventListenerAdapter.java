@@ -8,7 +8,7 @@ import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 
-public class WorkingMemoryEventListenerAdapter implements org.kie.api.event.rule.WorkingMemoryEventListener {
+public class WorkingMemoryEventListenerAdapter implements org.kie.api.event.rule.RuleRuntimeEventListener {
 
     private final WorkingMemoryEventListener delegate;
 
