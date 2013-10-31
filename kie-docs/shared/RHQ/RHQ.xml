@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter xml:id="RHQChapter"
+         version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="./" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>JMX monitoring with RHQ/JON</title>
+
+  <section>
+    <title>Introduction</title>
+    
+    <para>The Drools engine supports runtime monitoring through JMX standard
+      MBeans. These MBeans expose configuration and metrics data, from live
+      knowledge bases and sessions, to internal details like rule execution times.
+      Any JMX compatible console can be used to access that data. This chapter
+      details how to use RHQ/JON to do it, but similar steps can be used for any
+      other console.</para>
+    
+    <section>
+      <title>Enabling JMX monitoring in a Drools application</title>
+      
+      <para>To enable JMX monitoring in a Drools application, it is necessary to
+        enable remote monitoring in the JVM. There are several tutorials on how to
+        do that in the internet, but we recommend that you check the documentation
+        of your specific JVM. Using the Oracle/Sun JVM, it can be as simple as
+        running the engine with a few command line system properties.</para>
+      
+      <para>For instance, to enable remote monitoring on port 19988 with
+        disabled authentication (should be only used for tests/demos, as in
+        production authentication should be enabled), just run the application
+        with the following command line parameters:</para>
+      
+      <programlisting language="xml"> -Dcom.sun.management.jmxremote.port=19988 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false
+</programlisting>
+      
+      <para>The second step is to enable the Drools MBeans. As any Drools
+        configuration, that can be done by setting a system property, or adding
+        the property to a configuration file, or using the API.</para>
+      
+      <para>To enable it in the command line, use:</para>
+      
+      <programlisting language="xml"> -Ddrools.mbeans=enabled</programlisting>
+      
+      <para>To enable id using the API, use:</para>
+      
+      <programlisting language="xml"> KnowledgeBaseConfiguration conf = ... 
+ conf.setOption( MBeansOption.ENABLED );</programlisting>
+    </section>
+    
+    <section>
+      <title>Installing and running the RHQ/JON plugin</title>
+      
+      <para>The following sequence of steps can be used to configure JON to
+        monitor a Drools application:</para>
+      
+      <orderedlist>
+        <listitem>
+          <para>Download the JON server and agent.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Download Drools plugin included in the "Drools and jBPM tools"
+            bundle (http://www.jboss.org/drools/downloads.html).</para>
+        </listitem>
+        
+        <listitem>
+          <para>Install server, agent, and the plugin. </para>
+        </listitem>
+        
+        <listitem>
+          <para>Check that the server is running, agent is running and plugin is
+            installed.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Execute the drools application [see details in the previous
+            section].</para>
+        </listitem>
+        
+        <listitem>
+          <para>On the agent console, type "discovery" command for the agent to
+            find the drools application, which it will find on port 19988. </para>
+        </listitem>
+        
+        <listitem>
+          <para>On JON console, click on auto-discovery queue.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Select the JMX Server process that is showing there, running on
+            port 19988.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Click import.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Click on Resources-&gt;servers.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Click on the JMX Server.</para>
+        </listitem>
+        
+        <listitem>
+          <para>Under JMXServer on the left hand side, you have Drools
+            Service.</para>
+        </listitem>
+      </orderedlist>
+    </section>
+  </section>
+  
+
+</chapter>

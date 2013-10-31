@@ -8,13 +8,34 @@
 
   <title>What is New and Noteworthy in Drools 6.0.0</title>
 
-  <section xml:id="releaseNotes_6.0.0_Drools">
-    <title>Drools</title>
-
-    <section>
-      <title>Foo</title>
-
-      <para>bar</para>
-    </section>
+  <section>
+    <title>Phreak</title>
+    <para>bar</para>
   </section>
+
+
+  <section>
+    <title>Timers</title>
+    <para>bar</para>
+  </section>
+
+  <section>
+    <title>RuleFowGroup and AgendaGroups are merged</title>
+    <para>bar</para>
+  </section>
+
+  <section>
+    <title>Pluggable Belief System</title>
+    <para>bar</para>
+  </section>
+  
+  <section>
+    <title>JTMS</title>
+    <para>bar</para>
+  </section>
+
+  <section>
+    <title>Defeasible</title>
+    <para>bar</para>
+  </section>  
 </section>

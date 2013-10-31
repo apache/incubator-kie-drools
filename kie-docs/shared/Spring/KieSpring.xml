@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<chapter id="ch.kie.spring" version="5.0"
+<chapter xml:id="ch.kie.spring" version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          xml:base="../" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -80,12 +80,14 @@
 
     <section>
       <title>KieModule</title>
+      <para>
+      </para>
 
       <para>The <emphasis>&lt;kie:kmodule&gt;</emphasis> defines a collection
       of KieBase and associated KieSession's. The <emphasis>kmodule</emphasis>
       tag has one MANDATORY parameter 'id'.</para>
 
-      <table>
+      <table> <title>Sample</title>      
         <tgroup align="left" cols="3" colsep="1" rowsep="1">
           <thead>
             <row>
@@ -130,7 +132,7 @@
       <section>
         <title>&lt;kie:kbase&gt;'s parameters as attributes:</title>
 
-        <table>
+        <table><title>Sample</title>
           <tgroup align="left" cols="3" colsep="1" rowsep="1">
             <thead>
               <row>
@@ -269,10 +271,12 @@
         <programlisting language="xml">&lt;bean id="kiePostProcessor" 
           class="org.kie.spring.KModuleBeanFactoryPostProcessor"/&gt;</programlisting>
       </example>
+      
+      
 
-      <note>Without the
+      <note><para>Without the
       org.kie.spring.KModuleBeanFactoryPostProcessor bean
-      definition, the kie-spring integration will not work.</note>
+      definition, the kie-spring integration will not work.</para></note>
     </section>
 
     <section>
@@ -287,7 +291,7 @@
       <section>
         <title>&lt;kie:ksession&gt;'s parameters as attributes:</title>
 
-        <table>
+        <table><title>Sample</title>
           <tgroup align="left" cols="3" colsep="1" rowsep="1">
             <thead>
               <row>
@@ -395,7 +399,7 @@
         <section>
           <title>Attributes:</title>
 
-          <table>
+          <table><title>Sample</title>
             <tgroup align="left" cols="3" colsep="1" rowsep="1">
               <thead>
                 <row>
@@ -578,7 +582,7 @@
         </section>
       </section>
 
-      <section id="kie-grouping-listeners">
+      <section xml:id="kie-grouping-listeners">
         <title>Defining a Group of listeners:</title>
 
         <para>drools-spring allows for grouping of listeners. This is
@@ -590,7 +594,7 @@
         <section>
           <title>Attributes:</title>
 
-          <table>
+          <table><title>Sample</title>
             <tgroup align="left" cols="3" colsep="1" rowsep="1">
               <thead>
                 <row>
@@ -632,9 +636,9 @@
             </listitem>
           </itemizedlist>
 
-          <note>The above mentioned child elements can be declared in any
+          <note><para>The above mentioned child elements can be declared in any
           order. Only one declaration of each type is allowed in a
-          group.</note>
+          group.</para></note>
         </section>
 
         <section>
@@ -711,7 +715,7 @@
         following attributes and must be present directly under a
         &lt;kie:ksession....&gt; element.</para>
 
-        <table>
+        <table><title>Sample</title>
           <tgroup align="left" cols="3" colsep="1" rowsep="1">
             <thead>
               <row>
@@ -824,13 +828,9 @@ adaptor.close();</programlisting>
               <listitem>
                 <para>identifier = String (required)</para>
               </listitem>
-            </itemizedlist>
-
-            <itemizedlist>
               <listitem>
-                <para>reg = String (optiona)</para>
+                <para>reg = String (optional)</para>
               </listitem>
-
               <listitem>
                 <para>Anonymous bean</para>
               </listitem>
@@ -1009,8 +1009,8 @@ adaptor.close();</programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/ht-spring-deps.png"
-                       format="PNG" scalefit="1" width="100%"/>
+            <imagedata align="center" fileref="images/Spring/ht-spring-deps.png" format="PNG"
+              scalefit="1" width="100%"/>
           </imageobject>
         </mediaobject>
       </figure>
