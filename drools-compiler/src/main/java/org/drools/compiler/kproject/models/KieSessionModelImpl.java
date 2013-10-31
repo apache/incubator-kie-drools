@@ -233,7 +233,7 @@ public class KieSessionModelImpl
 
             if (!kSession.getListenerModels().isEmpty()) {
                 writer.startNode("listeners");
-                for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)) {
+                for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER)) {
                     writeObject(writer, context, listener.getKind().toString(), listener);
                 }
                 for (ListenerModel listener : kSession.getListenerModels(ListenerModel.Kind.AGENDA_EVENT_LISTENER)) {
