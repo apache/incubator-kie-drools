@@ -59,13 +59,11 @@
     <section>
       <title>EntryPoint</title>
 
-      <para>The <code>EntryPoint</code> provides the methods
-      around inserting, updating and retrieving facts. The term "entry point"
-      is related to the fact that we have multiple partitions in a Working
-      Memory and you can choose which one you are inserting into, although
-      this use case is aimed at event processing and covered in more detail in
-      the Fusion manual. Most rule based applications will work with the
-      default entry point alone.</para>
+      <para>The <code>EntryPoint</code> provides the methods around inserting, updating and deleting
+        facts. The term "entry point" is related to the fact that we have multiple partitions in a
+        Working Memory and you can choose which one you are inserting into. The use of multiple
+        entry points is more common in event processing use cases, but they can be used by pure rule
+        applications as well. </para>
 
       <para>The <code>KieRuntime</code> interface provides the main
       interaction with the engine. It is available in rule consequences and
@@ -90,37 +88,37 @@
       </figure>
 
       <section>
-        <title>Insertion</title>
+        <title>Insert</title>
 
-        <para>Insertion is the act of telling the <code>WorkingMemory</code>
-        about a fact, which you do by <code>ksession.insert(yourObject)</code>,
-        for example. When a fact is inserted it is not immediately examined for
-        matches against the rules. This means that <emphasis>all</emphasis> of
-        the work for deciding about firing or not firing a rule is done lazily
-        when <code>fireAllRules()</code> is invoked. Expert systems typically use the term
-        <emphasis>assert</emphasis> or <emphasis>assertion</emphasis> to refer
-        to facts made available to the system. However, due to "assert" being
-        a keyword in most languages, we have decided to use the
-        <literal>insert</literal> keyword; however, expect to hear the two terms
-        used interchangeably.</para>
+        <para>In order for a fact to be evaluated against the rules in a <code>KieBase</code>, it
+          has to be inserted into the session. This is done by calling the method
+            <code>insert(yourObject)</code>. When a fact is inserted into the session, some of its
+          properties might be immediately evaluated (eager evaluation) and some might be deferred
+          for later evaluation (lazy evaluation). The exact behaviour depends on the rules engine
+          algorithm being used. </para>
+        
+        <note><para>Expert systems typically use the term <emphasis>assert</emphasis> or
+              <emphasis>assertion</emphasis> to refer to facts made available to the system.
+            However, due to "assert" being a keyword in most languages, we have decided to use the
+              <literal>insert</literal> keyword; In this manual, the two terms are used
+            interchangeably.</para></note>
+        
 
         <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
         However, when the rules are executed, they can assert new objects
         thus causing new work to be needed. laune: No, it should be elsewhere.
       -->
 
-        <para>When an Object is inserted it returns a <code>FactHandle</code>.
-        This <code>FactHandle</code> is the token used to represent your
-        inserted object within the <code>WorkingMemory</code>. It is also used
-        for interactions with the <code>WorkingMemory</code> when you wish to
-        delete or modify an object.</para>
+        <para>When an Object is inserted into the session it returns a <code>FactHandle</code>. This
+            <code>FactHandle</code> is the token used to represent the inserted object within the
+            <code>WorkingMemory</code>. It is also used for interactions with the
+            <code>WorkingMemory</code> when you wish to delete or modify an object.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
 
-        <para>As mentioned in the KieBase section, a Working Memory may
-        operate in two assertion modes, i.e., equality or identity, with
-        identity being the default.</para>
+        <para>As mentioned in the KieBase section, a Working Memory may operate in two assertion
+          modes: either equality or identity. Identity is the default.</para>
 
         <para><emphasis>Identity</emphasis> means that the Working Memory uses
         an <code>IdentityHashMap</code> to store all asserted objects. New
@@ -129,26 +127,29 @@ FactHandle stiltonHandle = ksession.insert( stilton );      </programlisting>
         returns the original fact handle, i.e., it ignores repeated insertions
         for the same object.</para>
 
-        <para><emphasis>Equality</emphasis> means that the Working Memory uses
-        a <code>HashMap</code> to store all asserted objects. An object instance
-        assertion will only return a new <code>FactHandle</code> if the inserted
-        object is not equal (according to its <code>equal</code> method) to an
-        already existing fact.</para>
+        <para><emphasis>Equality</emphasis> means that the Working Memory uses a
+            <code>HashMap</code> to store all asserted objects. An object instance assertion will
+          only return a new <code>FactHandle</code> if the inserted object is not equal (according
+          to its <code>equal()/hashcode()</code> methods) to an already existing fact.</para>
       </section>
 
       <section>
-        <title>Deletion</title>
+        <title>Delete</title>
 
-        <para>Deletion is the removal of a fact from Working Memory, which
-        means that it will no longer track and match that fact, and any rules
-        that are activated and dependent on that fact will be cancelled. Note
-        that it is possible to have rules that depend on the nonexistence of a
-        fact, in which case deleting a fact may cause a rule to activate.
-        (See the <code>not</code> and <code>exists</code> keywords.) Deletion
-        may be done using the <code>FactHandle</code> that was returned by the
-        insert call. On the right hand side of a rule the
-        <literal>delete</literal> statement is used, which works with a simple
-        object reference.</para>
+        <para>In order to remove a fact from the session, the method <code>delete()</code> is used.
+          When a fact is deleted,  any matches that are active and depend on that fact will be
+          cancelled. Note that it is possible to have rules that depend on the nonexistence of a
+          fact, in which case deleting a fact may cause a rule to activate. (See the
+            <code>not</code> and <code>exists</code> keywords). </para>
+        <note><para>Expert systems typically use the term <emphasis>retract</emphasis> or
+              <emphasis>retraction</emphasis> to refer to the operation of removing facts from the
+            Working Memory. Drools prefers the keyword <literal>delete</literal> for symmetry with
+            the keyword <code>insert</code>; Drools also supports the keyword <code>retract</code>,
+            but it was deprecated in favor of <code>delete</code>. In this manual, the two terms are
+            used interchangeably.</para></note>
+        <para>An object can be deleted using the <code>FactHandle</code> that was returned by the
+          insert call. On the right hand side of a rule the <literal>delete()</literal> statement is
+          used, which works with a simple object reference.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = ksession.insert( stilton );
