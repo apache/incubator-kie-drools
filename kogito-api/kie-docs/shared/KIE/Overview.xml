@@ -6,8 +6,8 @@
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Overview</title>
   
-  <xi:include href="Introduction.xml" />
-  <xi:include href="Anatomy.xml" />
-  <xi:include href="LifeCycles.xml" />
+  <xi:include href="KIEIntroduction.xml" />
+  <xi:include href="KIEAnatomy.xml" />
+  <xi:include href="KIELifeCycles.xml" />
   
 </section>

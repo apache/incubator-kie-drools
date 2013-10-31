@@ -115,7 +115,7 @@
     </para>
     <section>
       <title>Creating Characterstics</title>
-      Every scorecard must have at least one characteristic
+      <para>Every scorecard must have at least one characteristic</para>
       <figure>
         <title>New Characteristic</title>
         <mediaobject>

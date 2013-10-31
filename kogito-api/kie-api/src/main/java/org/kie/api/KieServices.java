@@ -73,12 +73,12 @@ public interface KieServices {
      * Returns KieLoggers, a factory for KieRuntimeLogger
      */
     KieLoggers getLoggers();
-    
+
     /**
      * Returns KieStoreServices
      */
     KieStoreServices getStoreServices();
-    
+
     /**
      * Returns KieContainer for the classpath, this a global singleton
      */
@@ -156,7 +156,7 @@ public interface KieServices {
         private static KieServices INSTANCE;
 
         static {
-            try {                
+            try {
                 INSTANCE = ( KieServices ) Class.forName( "org.drools.compiler.kie.builder.impl.KieServicesImpl" ).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Unable to instance KieServices", e);

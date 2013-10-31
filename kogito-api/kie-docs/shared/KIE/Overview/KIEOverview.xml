@@ -68,7 +68,6 @@
       editors, bpm2 designer, human tasks. The Drools workbench is called Drools-WB. KIE-WB is the
       uber workbench that combined all the Guvnor, Drools and jBPM plugins. The jBPM-WB is ghosted
       out, as it doesn't actually exist, being made redundant by KIE-WB.</para>
-    <para/>
   </section>
   <section>
     <title>KIE Aspects and Lifecycle Terminology</title>
