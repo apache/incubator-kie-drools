@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
 
@@ -70,5 +70,5 @@ public interface RegisterableItemsFactory {
 	 * @param runtime provides <code>RuntimeEngine</code> in case listeners need to make use of it internally
 	 * @return list of listeners to be registered - in case of no listeners empty list shall be returned.
 	 */
-    List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime);
+    List<RuleRuntimeEventListener> getRuleRuntimeEventListeners(RuntimeEngine runtime);
 }

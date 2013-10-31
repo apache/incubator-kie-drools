@@ -1,4 +1,6 @@
 package org.kie.api.event.rule;
 
-public interface RuleRuntimeEvent extends WorkingMemoryEvent {
+import org.kie.api.event.KieRuntimeEvent;
+
+public interface RuleRuntimeEvent extends KieRuntimeEvent {
 }
