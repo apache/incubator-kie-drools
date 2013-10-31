@@ -13,6 +13,11 @@
        <programlisting>
         ./standalone.sh –server-config=standalone-full.xml
       </programlisting>
+      <para>Also notice that the repostiries that you clone inside the KIE Workbench will be kept inside the .niogit/ directory.
+      This directory will be placed in the same directory where you start the JBoss Application Server process, which means
+      that if you run the ./standalone.sh script from the &lt;jboss-as&gt;/bin/ directory, the .niogit directory will be located in:
+      &lt;jboss-as&gt;/bin/.niogit/. This is important if you want to clone the internal bare repositories to add, modify or remove files locally. </para>
+  
        
 
 </section>

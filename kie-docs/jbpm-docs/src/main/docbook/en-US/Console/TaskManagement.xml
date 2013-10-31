@@ -11,8 +11,11 @@
 
        <para>This chapter introduces the Task Management screens and the its integration with the
               Form Modeller component to allow users to work on their assigned tasks. You can find
-              the source code of these screens here:
-              https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-human-tasks </para>
+              the source code of these screens here: <link
+                     xlink:href="https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-human-tasks"
+                     >https://github.com/droolsjbpm/jbpm-console-ng/tree/master/jbpm-console-ng-human-tasks
+              </link> .  At the end of this section you will find a technical description about how
+              to customize these views. </para>
 
        <section>
               <title>Task List</title>
@@ -20,12 +23,12 @@
                      list where tasks assigned to him/her will be displayed. Each user will be able
                      to create its own personal tasks or work on tasks that were create as a result
                      of a business process execution.</para>
-              <para>You can access to the Task List under the Work main menu:</para>
+              <para>You can access to the Task List under the <emphasis role="bold">Work</emphasis>
+                     main menu:</para>
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tasks/work.png" width="400" 
-                            />
+                                   fileref="images/Console/work.png"/>
                      </imageobject>
               </mediaobject>
 
@@ -33,21 +36,55 @@
                      <title>Task List (Personal and Group Tasks)</title>
                      <para>Pending tasks can be displayed using different methafors depending on
                             what the user is interested on. We are currently providing two different
-                            views explained in the sections below: Grid and Calendar View. </para>
+                            views explained in the sections below: <emphasis role="bold"
+                                   >Grid</emphasis> and <emphasis role="bold">Calendar</emphasis>
+                            View. </para>
                      <section>
                             <title>Task List (Grid View)</title>
                             <para>If you are interested in having a tabular view of all the pending
-                                   tasks for a specific person or group you can use the Grid View.
-                                   The list will show all the pending tasks ordered by the columns
-                                   presented. You can change the default ordering clicking on the
-                                   column header. </para>
+                                   tasks for a specific person or group you can use the <emphasis
+                                          role="bold">Grid</emphasis> View. The list will show all
+                                   the pending tasks ordered by the columns presented. You can
+                                   change the default ordering clicking on the column header.  In
+                                   future version more advanced filters will be provided and the
+                                   search mechanism will be improved to look for task internal data.
+                                   This view offer a more traditional BPM Task List view. </para>
                             <mediaobject>
                                    <imageobject>
                                           <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Chapter-Tasks/task-list-grid.png"
-                                                 width="400" />
+                                                 fileref="images/Console/task-list-grid.png"
+                                                 width="700"/>
                                    </imageobject>
                             </mediaobject>
+                            <para>With this current version you can filter based on the tasks
+                                   status:</para>
+                            <para>
+                                   <itemizedlist>
+                                          <listitem>
+                                                 <para>Active: all the Active tasks that user can
+                                                  work on. That means Personal and Group
+                                                  Tasks.</para>
+                                          </listitem>
+                                          <listitem>
+                                                 <para>Personal: all the personal tasks that already
+                                                  belong to the user. </para>
+                                          </listitem>
+                                          <listitem>
+                                                 <para>Group: all the group tasks that needs to be
+                                                  claimed by the user in order to start working on
+                                                  them.</para>
+                                          </listitem>
+                                          <listitem>
+                                                 <para>All: show all the tasks no matter the status.
+                                                  It will show completed tasks as well with the
+                                                  exception of completed tasks that belongs to a
+                                                  process that is already finished. In such cases
+                                                  the tasks are cleaned up after the process is
+                                                  completed and for that reason they will not be
+                                                  displayed.</para>
+                                          </listitem>
+                                   </itemizedlist>
+                            </para>
                      </section>
                      <section>
                             <title>Task List (Calendar View)</title>
@@ -65,8 +102,8 @@
                             <mediaobject>
                                    <imageobject>
                                           <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Chapter-Tasks/task-list-calendar-day.png"
-                                                 width="400" />
+                                                 fileref="images/Console/task-list-calendar-day.png"
+                                                 width="700"/>
                                    </imageobject>
                             </mediaobject>
 
@@ -78,8 +115,8 @@
                             <mediaobject>
                                    <imageobject>
                                           <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Chapter-Tasks/task-list-calendar-week.png"
-                                                 width="400"/>
+                                                 fileref="images/Console/task-list-calendar-week.png"
+                                                 width="700"/>
                                    </imageobject>
                             </mediaobject>
 
@@ -91,8 +128,8 @@
                             <mediaobject>
                                    <imageobject>
                                           <imagedata align="center" format="PNG" role=""
-                                                 fileref="images/Chapter-Tasks/task-list-calendar-month.png"
-                                                 width="400" />
+                                                 fileref="images/Console/task-list-calendar-month.png"
+                                                 width="700"/>
                                    </imageobject>
                             </mediaobject>
 
@@ -108,8 +145,8 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Chapter-Tasks/task-list-grid-and-details.png"
-                                          width="400" />
+                                          fileref="images/Console/task-list-grid-and-details.png"
+                                          width="700"/>
                             </imageobject>
                      </mediaobject>
 
@@ -120,7 +157,7 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Chapter-Tasks/task-details-process-context-full.png"
+                                          fileref="images/Console/task-details-process-context-full.png"
                                           width="400" />
                             </imageobject>
                      </mediaobject>
@@ -131,7 +168,7 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Chapter-Tasks/task-log.png" width="400"
+                                          fileref="images/Console/task-log.png" width="400"
                                          />
                             </imageobject>
                      </mediaobject>
@@ -151,7 +188,7 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Chapter-Tasks/task-form.png" width="400"
+                                          fileref="images/Console/task-form.png" width="400"
                                           />
                             </imageobject>
                      </mediaobject>
@@ -163,7 +200,7 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Chapter-Tasks/task-assignments.png"
+                                          fileref="images/Console/task-assignments.png"
                                           width="400"/>
                             </imageobject>
                      </mediaobject>
@@ -178,7 +215,7 @@
                      <mediaobject>
                             <imageobject>
                                    <imagedata align="center" format="PNG" role=""
-                                          fileref="images/Chapter-Tasks/task-comments.png"
+                                          fileref="images/Console/task-comments.png"
                                           width="400"/>
                             </imageobject>
                      </mediaobject>
@@ -195,7 +232,7 @@
               <mediaobject>
                      <imageobject>
                             <imagedata align="center" format="PNG" role=""
-                                   fileref="images/Chapter-Tasks/task-new-task.png" width="400"
+                                   fileref="images/Console/task-new-task.png" width="400"
                                    />
                      </imageobject>
               </mediaobject>
