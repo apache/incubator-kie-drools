@@ -21,7 +21,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public interface ObjectInsertedEvent
     extends
-    WorkingMemoryEvent {
+    RuleRuntimeEvent {
     FactHandle getFactHandle();
 
     Object getObject();

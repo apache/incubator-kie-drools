@@ -19,6 +19,10 @@ package org.kie.api.event.rule;
 import org.kie.api.event.KieRuntimeEvent;
 import org.kie.api.runtime.rule.PropagationContext;
 
+/**
+ * @deprecated This will be removed in drools 6.1
+ * Use <code>RuleRuntimeEvent</code>
+ */
 public interface WorkingMemoryEvent
     extends
     KieRuntimeEvent {

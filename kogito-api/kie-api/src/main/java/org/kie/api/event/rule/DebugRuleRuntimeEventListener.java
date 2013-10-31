@@ -16,24 +16,32 @@
 
 package org.kie.api.event.rule;
 
-/**
- * @deprecated This will be removed in drools 6.1
- * Use <code>DefaultRuleRuntimeEventListener</code>
- */
-public class DefaultWorkingMemoryEventListener
+import java.io.PrintStream;
+
+public class DebugRuleRuntimeEventListener
     implements
-    WorkingMemoryEventListener {
+    RuleRuntimeEventListener {
+
+    private PrintStream stream;
+
+    public DebugRuleRuntimeEventListener() {
+        this.stream =  System.err;
+    }
+
+    public DebugRuleRuntimeEventListener(PrintStream stream) {
+        this.stream = stream;
+    }       
 
     public void objectInserted(ObjectInsertedEvent event) {
-        // intentionally left blank
+        stream.println( event );
     }
 
     public void objectDeleted(ObjectDeletedEvent event) {
-        // intentionally left blank
+        stream.println( event );
     }
 
     public void objectUpdated(ObjectUpdatedEvent event) {
-        // intentionally left blank
+        stream.println( event );
     }
 
 }
