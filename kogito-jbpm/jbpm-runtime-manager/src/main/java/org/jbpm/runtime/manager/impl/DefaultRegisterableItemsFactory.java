@@ -32,7 +32,7 @@ import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -95,11 +95,11 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     }
 
     @Override
-    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
-        List<WorkingMemoryEventListener> defaultListeners = new ArrayList<WorkingMemoryEventListener>();
+    public List<RuleRuntimeEventListener> getRuleRuntimeEventListeners(RuntimeEngine runtime) {
+        List<RuleRuntimeEventListener> defaultListeners = new ArrayList<RuleRuntimeEventListener>();
         
         // add any custom listeners
-        defaultListeners.addAll(super.getWorkingMemoryEventListeners(runtime));
+        defaultListeners.addAll(super.getRuleRuntimeEventListeners(runtime));
         return defaultListeners;
     }
 

@@ -20,7 +20,7 @@ import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
@@ -331,7 +331,7 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 		throw new UnsupportedOperationException();
 	}
 
-	public void addEventListener(WorkingMemoryEventListener listener) {
+	public void addEventListener(RuleRuntimeEventListener listener) {
 		// Do nothing
 	}
 
@@ -343,11 +343,11 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 		return new ArrayList<AgendaEventListener>();
 	}
 
-	public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
-		return new ArrayList<WorkingMemoryEventListener>();
+	public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
+		return new ArrayList<RuleRuntimeEventListener>();
 	}
 
-	public void removeEventListener(WorkingMemoryEventListener listener) {
+	public void removeEventListener(RuleRuntimeEventListener listener) {
 		// Do nothing
 	}
 

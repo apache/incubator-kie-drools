@@ -48,7 +48,7 @@ import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -102,7 +102,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private Instance<EventListenerProducer<AgendaEventListener>> agendaListenerProducer;
     @Inject
     @WorkingMemory
-    private Instance<EventListenerProducer<WorkingMemoryEventListener>> wmListenerProducer;    
+    private Instance<EventListenerProducer<RuleRuntimeEventListener>> wmListenerProducer;
     @Inject
     private Instance<ExecutorService> executorService;
     
@@ -193,10 +193,10 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     }
     
     @Override
-    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
-        List<WorkingMemoryEventListener> defaultListeners = new ArrayList<WorkingMemoryEventListener>();
+    public List<RuleRuntimeEventListener> getRuleRuntimeEventListeners(RuntimeEngine runtime) {
+        List<RuleRuntimeEventListener> defaultListeners = new ArrayList<RuleRuntimeEventListener>();
         try {
-            for (EventListenerProducer<WorkingMemoryEventListener> producer : wmListenerProducer) {
+            for (EventListenerProducer<RuleRuntimeEventListener> producer : wmListenerProducer) {
                 defaultListeners.addAll(producer.getEventListeners(((RuntimeEngineImpl)runtime).getManager().getIdentifier(), getParametersMap(runtime)));
             }
         } catch (Exception e) {

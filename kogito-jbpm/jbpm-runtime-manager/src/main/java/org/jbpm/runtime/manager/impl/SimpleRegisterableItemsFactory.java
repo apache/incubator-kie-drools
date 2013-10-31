@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -55,7 +55,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     private Map<String, Class<? extends WorkItemHandler>> workItemHandlersClasses = new ConcurrentHashMap<String, Class<? extends WorkItemHandler>>();
     private List<Class<? extends ProcessEventListener>> processListeners = new CopyOnWriteArrayList<Class<? extends ProcessEventListener>>();
     private List<Class<? extends AgendaEventListener>> agendListeners = new CopyOnWriteArrayList<Class<? extends AgendaEventListener>>();
-    private List<Class<? extends WorkingMemoryEventListener>> workingMemoryListeners = new CopyOnWriteArrayList<Class<? extends WorkingMemoryEventListener>>();
+    private List<Class<? extends RuleRuntimeEventListener>> workingMemoryListeners = new CopyOnWriteArrayList<Class<? extends RuleRuntimeEventListener>>();
     
     @Override
     public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
@@ -95,10 +95,10 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
     }
 
     @Override
-    public List<WorkingMemoryEventListener> getWorkingMemoryEventListeners(RuntimeEngine runtime) {
-        List<WorkingMemoryEventListener> listeners = new ArrayList<WorkingMemoryEventListener>();
-        for (Class<? extends WorkingMemoryEventListener> clazz : workingMemoryListeners) {
-            WorkingMemoryEventListener wmListener = createInstance(clazz, runtime.getKieSession());
+    public List<RuleRuntimeEventListener> getRuleRuntimeEventListeners(RuntimeEngine runtime) {
+        List<RuleRuntimeEventListener> listeners = new ArrayList<RuleRuntimeEventListener>();
+        for (Class<? extends RuleRuntimeEventListener> clazz : workingMemoryListeners) {
+            RuleRuntimeEventListener wmListener = createInstance(clazz, runtime.getKieSession());
             if (wmListener != null) {
                 listeners.add(wmListener);
             }
@@ -118,7 +118,7 @@ public class SimpleRegisterableItemsFactory implements RegisterableItemsFactory 
         this.agendListeners.add(clazz);
     }
     
-    public void addWorkingMemoryListener(Class<? extends WorkingMemoryEventListener> clazz) {
+    public void addWorkingMemoryListener(Class<? extends RuleRuntimeEventListener> clazz) {
         this.workingMemoryListeners.add(clazz);
     }
     

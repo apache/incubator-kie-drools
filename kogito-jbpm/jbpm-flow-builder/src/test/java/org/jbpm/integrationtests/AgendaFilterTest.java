@@ -295,7 +295,7 @@ public class AgendaFilterTest extends AbstractBaseTest {
 
         ksession.getAgendaEventListeners();
         ksession.getProcessEventListeners();
-        ksession.getWorkingMemoryEventListeners();
+        ksession.getRuleRuntimeEventListeners();
 
         ksession.dispose();
     }

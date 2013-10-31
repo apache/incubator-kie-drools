@@ -30,7 +30,7 @@ import org.jbpm.runtime.manager.api.SchedulerProvider;
 import org.jbpm.runtime.manager.impl.tx.ExtendedJTATransactionManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -89,8 +89,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
             runtime.getKieSession().addEventListener(listener);
         }
         
-        List<WorkingMemoryEventListener> wmListeners = factory.getWorkingMemoryEventListeners(runtime);
-        for (WorkingMemoryEventListener listener : wmListeners) {
+        List<RuleRuntimeEventListener> wmListeners = factory.getRuleRuntimeEventListeners(runtime);
+        for (RuleRuntimeEventListener listener : wmListeners) {
             runtime.getKieSession().addEventListener(listener);
         }
     }
