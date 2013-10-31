@@ -5,5 +5,11 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Prerequisites</title>
-    
+<para>This script assumes you have Java JDK 1.6+ (set as JAVA_HOME), and Ant 1.7+ installed.  If you don't,
+    use the following links to download and install them:</para>
+
+    <para>Java: <link
+  xlink:href="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</link></para>
+    <para>Ant: <link
+  xlink:href="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindownload.cgi</link></para>    
 </section>

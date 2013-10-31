@@ -5,5 +5,48 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Overview</title>
-      
+        <figure>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/Chapter-1-Overview/Overview.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    
+    <para>This figure gives an overview of the different components of the jBPM project.  jBPM can
+    integrate with a lot of other services (and we've shown a few using grey boxes on the figure),
+    but here we focus on the components that are part of the jBPM project itself.
+      <itemizedlist>
+        <listitem>The process engine is the core of the project and is required if you want to
+        execute business processes (all other components are optional, as indicated by the dashed
+        border).  Your application services typically invoke the core engine (to start processes or to
+        signal events) whenever necessary.
+          <itemizedlist>
+             <listitem>An optional core service is the history log; this will log all information
+        about the current and previous state of all your process instances.</listitem>
+             <listitem>Another optional core service is the human task service that will take care of
+        the human task life cycle if human actors participate in the process.</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Two types of graphical editors are supported for defining your business processes:
+          <itemizedlist>
+            <listitem>The Eclipse plugin is an extension to the Eclipse IDE, targeted towards developers,
+            and allows you to create business processes using drag and drop, advanced debugging, etc.</listitem>
+            <listitem>The web-based designer allows business users to manage business processes in
+            a web-based environment.  A web-based form builder also allows you to create, generate or
+            edit forms related to those processes (to start the process or to complete one of the
+            user tasks).</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>The Guvnor repository is an optional component that can be used to store all your
+        business processes.  It supports collaboration, versioning, etc.  There is integration
+        with both the Eclipse plugin and web-based designer, supporting round-tripping between
+        the different tools.</listitem>
+        <listitem>The web-based management console allows business users to manage
+        their runtime (manage business processes like start new processes, inspect running instances, etc.),
+        to manage their task list and to perform Business Activity Monitoring (BAM) and see reports.</listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>Each of the components are described in more detail below.</para>
 </section>

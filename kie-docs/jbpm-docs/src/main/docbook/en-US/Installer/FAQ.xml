@@ -5,5 +5,25 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Frequently Asked Questions</title>
-    
+<para>Some common issues are explained below.</para>
+
+    <para>Q: What if the installer complains it cannot download component X?</para>
+    <para>A: Are you connected to the internet? Do you have a firewall turned on? Do you require a proxy?  It might be possible that one of the locations we're downloading the components from is temporarily offline.  Try downloading the components manually (possibly from alternate locations) and put them in the jbpm-installer/lib folder.</para>
+
+    <para>Q: What if the installer complains it cannot extract / unzip a certain jar/war/zip?</para>
+    <para>A: If your download failed while downloading a component, it is possible that the installer is trying to use an incomplete file.  Try deleting the component in question from the jbpm-installer/lib folder and reinstall, so it will be downloaded again.</para>
+
+    <para>Q: What if I have been changing my installation (and it no longer works) and I want to start over again with a clean installation?</para>
+    <para>A: You can use ant clean.demo to remove all the installed components, so you end up with a fresh installation again.</para>
+
+    <para>Q: I sometimes see exceptions when trying to stop or restart certain services, what should I do?</para>
+    <para>A: If you see errors during shutdown, are you sure the services were still running?  If you see exceptions during restart, are you sure the service you started earlier was successfully shutdown?  Maybe try killing the services manually if necessary.</para>
+
+    <para>Q: Something seems to be going wrong when running Eclipse but I have no idea what.  What can I do?</para>
+    <para>A: Always check the consoles for output like error messages or stack traces.  You can also check the Eclipse Error Log for exceptions.  Try adding an audit logger to your session to figure out what's happening at runtime, or try debugging your application.</para>
+
+    <para>Q: Something seems to be going wrong when running the a web-based application like the jbpm-console.  What can I do?</para>
+    <para>A: You can check the server log for possible exceptions: jbpm-installer/jboss-as-{version}/standalone/log/server.log (for JBoss AS7) or jbpm-installer/jboss-as-{version}/server/default/log/server.log (for earlier versions).</para>
+
+    <para>For all other questions, try contacting the jBPM community as described in the Getting Started chapter.</para>    
 </section>

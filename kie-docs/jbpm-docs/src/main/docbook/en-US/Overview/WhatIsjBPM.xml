@@ -5,5 +5,67 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>What is jBPM?</title>
+    <para>jBPM is a flexible Business Process Management (BPM) Suite.  It is light-weight,
+    fully open-source (distributed under Apache license) and written in Java.  It allows
+    you to model, execute, and monitor business processes throughout their life cycle.</para>
     
+    <para>A business process allows you to model your business goals by describing the steps
+    that need to be executed to achieve those goals, and the order of those goals are depicted
+    using a flow chart. This process greatly improves the visibility and agility of your business logic.  
+    jBPM focuses on executable business processes, which are business processes that contain enough detail
+    so they can actually be executed on a BPM engine.  Executable business processes bridge
+    the gap between business users and developers as they are higher-level and use 
+    domain-specific concepts that are understood by business users but can also be executed
+    directly.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="PNG" role="" fileref="images/Chapter-1-Overview/Process.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>The core of jBPM is a light-weight, extensible workflow engine written
+    in pure Java that allows you to execute business processes using the latest
+    BPMN 2.0 specification.  It can run in any Java environment, embedded in your
+    application or as a service.</para>
+
+    <para>On top of the core engine, a lot of features and tools are offered to 
+    support business processes throughout their entire life cycle:
+      <itemizedlist>
+        <listitem>Eclipse-based and web-based editor to support the graphical 
+        creation of your business processes (drag and drop).</listitem>
+        <listitem>Pluggable persistence and transactions based on JPA / JTA.</listitem>
+        <listitem>Pluggable human task service based on WS-HumanTask for including 
+        tasks that need to be performed by human actors.</listitem>
+        <listitem>Complete BPM life cycle management web console that allows:
+          <itemizedlist>
+            <listitem>Model - author your processes, rules, forms and other assets </listitem>
+            <listitem>Execute - build and deploy packages to runtime engine</listitem>
+            <listitem>Work - work on assigned task, manage process instances, etc</listitem>
+            <listitem>Monitor - keep track of the execution using Business Activity Monitoring capabilities</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>Integration with Maven, Spring, OSGi, etc.</listitem>
+      </itemizedlist>
+    </para>
+
+    <para>BPM creates the bridge between business analysts, developers and end users 
+    by offering process management features and tools in a way that both business 
+    users and developers like.  Domain-specific nodes can be plugged into the 
+    palette, making the processes more easily understood by business users.</para>
+
+    <para>jBPM supports adaptive and dynamic processes that require flexibility to 
+    model complex, real-life situations that cannot easily be described using a rigid 
+    process.  We bring control back to the end users by allowing them to control which 
+    parts of the process should be executed; this allows dynamic deviation from the process.</para>
+
+    <para>jBPM is not just an isolated process engine.  Complex business logic can
+    be modeled as a combination of business processes with business rules and complex
+    event processing.  jBPM can be combined with the Drools project to support one unified
+    environment that integrates these paradigms where you model your business logic as a 
+    combination of processes, rules and events.</para>
+
+    <para>Apart from the core engine itself, there are quite a few additional (optional)
+    components that you can use, like an Eclipse-based or web-based designer and a 
+    management console.</para>
 </section>

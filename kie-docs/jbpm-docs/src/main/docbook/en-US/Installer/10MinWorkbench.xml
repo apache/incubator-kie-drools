@@ -5,5 +5,71 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>10-Minute Tutorial using the Workbench</title>
-    
+<para>Open up the process management console:</para>
+    <para><link
+  xlink:href="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</link></para>
+
+    <para>Log in, using krisv / krisv as username / password.
+      The <link
+  xlink:href="http://people.redhat.com/kverlaen/jBPM6-console.swf">following screencast</link> gives an
+      overview of how to manage your process instances. It shows you:
+      <itemizedlist>
+        <listitem>How to start a new process</listitem>
+        <listitem>How to look up the current status of a running process instance</listitem>
+        <listitem>How to look up your tasks</listitem>
+        <listitem>How to complete a task</listitem>
+        <listitem>How to generate reports to monitor your process execution</listitem>
+      </itemizedlist>
+    </para>
+
+    <link
+  xlink:href="http://people.redhat.com/kverlaen/jBPM6-console.swf">
+      <figure>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastConsole.jpg" format="JPG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </link>
+
+    <para>
+      <itemizedlist>
+        <listitem>To manage your process definitions and instances, click on the "Process Management" menu option
+          at the top menu bar an select one of available options depending on you interest:
+          <itemizedlist>
+            <listitem>Process Definitions - lists all available process definitions</listitem>
+            <listitem>Process Instances - lists all active process instances (allows to show completed,
+              aborted as well by changing filter criteria)</listitem>
+          </itemizedlist>
+          </listitem>
+
+        <listitem>Process definitions panel allow you to start a new process instance by clicking on the "Play" button.
+          You will see a process form where you need to fill in the
+          necessary information to start the process.  In this case, you need to fill in your username "krisv" and a
+          reason for the request, after which you can complete the form and close the window. After process form
+          window is closed process instance details panel will be shown. From there you can access additional details:
+          <itemizedlist>
+            <listitem>Process model - to visualize current state of the process</listitem>
+            <listitem>Process variables - to see current values of process variables</listitem>
+          </itemizedlist>
+          The process instance that you just started is first requiring a self-evaluation of the user and is waiting until
+          the user has completed this task.</listitem>
+
+        <listitem>To see the tasks that have been assigned to you, choose the "Tasks" menu option on the top bar and select
+          "Task List" (you may need to click refresh to update your task view).  The personal tasks table
+          should show a "Performance Evaluation" task for you.  You can complete this task by selecting it and
+          clicking the "View" button.  This will open the task form for performance evaluations.  You can fill
+          in the necessary data and then complete the form and close the window.  After completing the task, you
+          could check the "Process Instances" once more to check the progress of your process instance.  You
+          should be able to see that the process is now waiting for your HR manager and project manager to also
+          perform an evaluation.  You could log in as "john" / "john" and "mary" / "mary" to complete these
+          tasks.</listitem>
+
+        <listitem>After starting and/or completing a few process instances and human tasks, you can generate a report of
+          what has happened so far.  Under "Dashboards", select "Process &amp; Task Dashboard".  By default, you will
+          see predefined set of charts that allow to directly spot what is going on in the system. Charts can be
+        customized as well which will be described in following chapters.</listitem>
+      </itemizedlist>
+    </para>    
 </section>

@@ -5,5 +5,18 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Process Designer</title>
-    
+     <para>The web-based designer allows you to model your business processes in a web-based
+          environment.  It is targeted towards business users and offers a graphical editor
+          for viewing and editing your business processes (using drag and drop), similar to the
+          Eclipse plugin.  It supports round-tripping between the Eclipse editor and the
+          web-based designer.</para>
+
+        <figure>
+          <title>Web-based designer for creating BPMN2 processes</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-1-Overview/Designer.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 </section>

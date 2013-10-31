@@ -5,5 +5,38 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>10-Minute Tutorial using Eclipse</title>
+<para>The <link
+  xlink:href="http://people.redhat.com/kverlaen/jBPM6-EclipseGitIntegration.swf">following
+    screencast</link> gives an overview of how to integrate Web Console and Eclipse. It shows you:
+      <itemizedlist>
+        <listitem>How to create new project inside web console</listitem>
+        <listitem>How to create new process inside web console</listitem>
+        <listitem>How to import an existing project into your workspace</listitem>
+        <listitem>How to apply changes in Eclipse</listitem>
+        <listitem>How to push back changes done in Eclipse to Web Console</listitem>
+      </itemizedlist>
+    </para>
     
+    <link
+  xlink:href="http://people.redhat.com/kverlaen/jBPM6-EclipseGitIntegration.swf">
+      <figure>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastEclipse.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </link>
+
+    <para>You could also create a new project using the jBPM project wizard.  This sample project
+    contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.
+    Simply select "File - New - jBPM Project" (if you cannot see that (because you're not in the jBPM
+    perspective) you can do "File - New ... - Project ..." and under the "jBPM" category, select 
+    "jBPM project" and click "Next").  Give the project a name and click "Finish".  You should see a new project
+    containing a "sample.bpmn" process and a "com.sample.ProcessMain" Java class and a "com.sample.ProcessTest"
+    JUnit test class.  You can open the BPMN2 process by double-clicking it.  To execute the process,
+    right-click on ProcessMain.java and select "Run As - Java Application".  You should see a 
+    "Hello World" statement in the output console.  To execute the test, right-click on ProcessTest.java
+    and select "Run As - JUnit Test".  You should also see a "Hello World" statement in the output console,
+    and the JUnit test completion in the JUnit view.</para>    
 </section>

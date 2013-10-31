@@ -5,5 +5,29 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Eclipse Plugin</title>
-
+ <para>The Eclipse editor is a plugin to the Eclipse IDE and allows you to integrate your 
+    business processes in your development environment.  It is targeted towards developers and
+    has some wizards to get started, a graphical editor for creating your business processes
+    (using drag and drop) and a lot of advanced testing and debugging capabilities.</para>
+      
+      <figure>
+        <title>Eclipse editor for creating BPMN2 processes</title>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/Chapter-1-Overview/EclipseFlow.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    
+    <para>It includes the following features:
+      <itemizedlist>
+        <listitem>Wizard for creating a new jBPM project</listitem>
+        <listitem>A graphical editor for BPMN 2.0 processes</listitem>
+        <listitem>The ability to plug in your own domain-specific nodes</listitem>
+        <listitem>Validation</listitem>
+        <listitem>Runtime support (so you can select which version of jBPM you would like to use)</listitem>
+        <listitem>Graphical debugging to see all running process instances of a selected session,
+        to visualize the current state of one specific process instance, etc.</listitem>
+      </itemizedlist>
+    </para>
 </section>
