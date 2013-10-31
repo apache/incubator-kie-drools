@@ -19,6 +19,10 @@ package org.kie.api.event.rule;
 
 import java.util.EventListener;
 
+/**
+ * @deprecated This will be removed in drools 6.1
+ * Use <code>RuleRuntimeEventListener</code>
+ */
 public interface WorkingMemoryEventListener
     extends
     EventListener {

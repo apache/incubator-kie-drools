@@ -16,13 +16,9 @@
 
 package org.kie.api.event.rule;
 
-/**
- * @deprecated This will be removed in drools 6.1
- * Use <code>DefaultRuleRuntimeEventListener</code>
- */
-public class DefaultWorkingMemoryEventListener
+public class DefaultRuleRuntimeEventListener
     implements
-    WorkingMemoryEventListener {
+    RuleRuntimeEventListener {
 
     public void objectInserted(ObjectInsertedEvent event) {
         // intentionally left blank

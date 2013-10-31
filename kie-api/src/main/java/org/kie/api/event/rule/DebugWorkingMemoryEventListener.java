@@ -18,6 +18,10 @@ package org.kie.api.event.rule;
 
 import java.io.PrintStream;
 
+/**
+ * @deprecated This will be removed in drools 6.1
+ * Use <code>DebugRuleRuntimeEventListener</code>
+ */
 public class DebugWorkingMemoryEventListener
     implements
     WorkingMemoryEventListener {

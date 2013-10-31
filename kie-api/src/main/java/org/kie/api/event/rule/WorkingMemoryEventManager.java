@@ -18,6 +18,10 @@ package org.kie.api.event.rule;
 
 import java.util.Collection;
 
+/**
+ * @deprecated This will be removed in drools 6.1
+ * Use <code>RuleRuntimeEventManager</code>
+ */
 public interface WorkingMemoryEventManager {
 
     /**
