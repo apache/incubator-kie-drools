@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -34,19 +34,19 @@ import static org.junit.Assert.*;
 
 import org.drools.core.test.model.Cheese;
 
-public class WorkingMemoryEventSupportTest {
+public class RuleRuntimeEventSupportTest {
     @Test
     public void testIsSerializable() {
         assertTrue( Serializable.class.isAssignableFrom( WorkingMemoryEventSupport.class ) );
     }
 
     @Test
-    public void testWorkingMemoryEventListener() {
+    public void testRuleRuntimeEventListener() {
         final KnowledgeBase rb = KnowledgeBaseFactory.newKnowledgeBase();
         final StatefulKnowledgeSession wm = rb.newStatefulKnowledgeSession();
 
         final List wmList = new ArrayList();
-        final WorkingMemoryEventListener workingMemoryListener = new WorkingMemoryEventListener() {
+        final RuleRuntimeEventListener workingMemoryListener = new RuleRuntimeEventListener() {
             public void objectInserted(ObjectInsertedEvent event) {
                 wmList.add( event );
             }
@@ -62,7 +62,7 @@ public class WorkingMemoryEventSupportTest {
         };
 
         wm.addEventListener( workingMemoryListener );
-        assertEquals(1, wm.getWorkingMemoryEventListeners().size() );
+        assertEquals(1, wm.getRuleRuntimeEventListeners().size() );
 
         final Cheese stilton = new Cheese( "stilton",
                                            15 );

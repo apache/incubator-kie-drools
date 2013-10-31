@@ -18,25 +18,25 @@ package org.drools.core.command.runtime;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.command.Context;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.KieSession;
 
 public class RemoveEventListenerCommand
     implements
     GenericCommand<Object> {
 
-    private WorkingMemoryEventListener workingMemoryEventListener = null;
+    private RuleRuntimeEventListener   ruleRuntimeEventlistener = null;
     private AgendaEventListener        agendaEventListener        = null;
     private ProcessEventListener       processEventListener       = null;
     
     public RemoveEventListenerCommand() {
     }
 
-    public RemoveEventListenerCommand(WorkingMemoryEventListener listener) {
-        this.workingMemoryEventListener = listener;
+    public RemoveEventListenerCommand(RuleRuntimeEventListener listener) {
+        this.ruleRuntimeEventlistener = listener;
     }
 
     public RemoveEventListenerCommand(AgendaEventListener listener) {
@@ -49,8 +49,8 @@ public class RemoveEventListenerCommand
 
     public Object execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        if ( workingMemoryEventListener != null ) {
-            ksession.removeEventListener( workingMemoryEventListener );
+        if ( ruleRuntimeEventlistener != null ) {
+            ksession.removeEventListener( ruleRuntimeEventlistener );
         } else if ( agendaEventListener != null ) {
             ksession.removeEventListener( agendaEventListener );
         } else {
@@ -60,8 +60,8 @@ public class RemoveEventListenerCommand
     }
 
     public String toString() {
-        if ( workingMemoryEventListener != null ) {
-            return "session.removeEventListener( " + workingMemoryEventListener + " );";
+        if ( ruleRuntimeEventlistener != null ) {
+            return "session.removeEventListener( " + ruleRuntimeEventlistener + " );";
         } else if ( agendaEventListener != null ) {
             return "session.removeEventListener( " + agendaEventListener + " );";
         } else {

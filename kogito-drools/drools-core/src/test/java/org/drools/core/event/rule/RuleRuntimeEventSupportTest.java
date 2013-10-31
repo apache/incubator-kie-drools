@@ -22,18 +22,18 @@ import java.util.List;
 import org.drools.core.test.model.Cheese;
 
 import org.junit.Test;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.*;
 
-public class WorkingMemoryEventSupportTest {
+public class RuleRuntimeEventSupportTest {
 
     @Test
     public void testAddRuleRuntimeEventListener() {
@@ -41,7 +41,7 @@ public class WorkingMemoryEventSupportTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         final List wmList = new ArrayList();
-        final WorkingMemoryEventListener eventListener = new WorkingMemoryEventListener() {
+        final RuleRuntimeEventListener eventListener = new RuleRuntimeEventListener() {
 
             public void objectInserted(ObjectInsertedEvent event) {
                 wmList.add( event );
@@ -90,7 +90,7 @@ public class WorkingMemoryEventSupportTest {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         final List wmList = new ArrayList();
-        final WorkingMemoryEventListener eventListener = new WorkingMemoryEventListener() {
+        final RuleRuntimeEventListener eventListener = new RuleRuntimeEventListener() {
 
             public void objectInserted(ObjectInsertedEvent event) {
                 wmList.add( event );

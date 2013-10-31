@@ -105,6 +105,7 @@ import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -1396,7 +1397,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_FactBindings.drl" ) );
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
-        org.kie.api.event.rule.WorkingMemoryEventListener wmel = mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
+        RuleRuntimeEventListener wmel = mock( RuleRuntimeEventListener.class );
         ksession.addEventListener( wmel );
 
         final Person bigCheese = new Person( "big cheese" );
@@ -3007,7 +3008,7 @@ public class MiscTest extends CommonTestMethodBase {
         KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_EventModel.drl" ) );
         StatefulKnowledgeSession wm = createKnowledgeSession( kbase );
 
-        org.kie.api.event.rule.WorkingMemoryEventListener wmel = mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
+        RuleRuntimeEventListener wmel = mock( RuleRuntimeEventListener.class );
         wm.addEventListener( wmel );
 
         final Cheese stilton = new Cheese( "stilton",
@@ -6104,7 +6105,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // creating listener as a jmock proxy
-        final org.kie.api.event.rule.WorkingMemoryEventListener wmeListener = mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
+        final RuleRuntimeEventListener wmeListener = mock( RuleRuntimeEventListener.class );
 
         ksession.addEventListener( wmeListener );
 
@@ -6355,7 +6356,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // create working memory mock listener
-        org.kie.api.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
+        RuleRuntimeEventListener wml = Mockito.mock( RuleRuntimeEventListener.class );
 
         ksession.addEventListener( wml );
 
@@ -6434,7 +6435,7 @@ public class MiscTest extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
 
         // create working memory mock listener
-        org.kie.api.event.rule.WorkingMemoryEventListener wml = Mockito.mock( org.kie.api.event.rule.WorkingMemoryEventListener.class );
+        RuleRuntimeEventListener wml = Mockito.mock( RuleRuntimeEventListener.class );
         org.kie.api.event.rule.AgendaEventListener ael = Mockito.mock( org.kie.api.event.rule.AgendaEventListener.class );
 
         ksession.addEventListener( wml );

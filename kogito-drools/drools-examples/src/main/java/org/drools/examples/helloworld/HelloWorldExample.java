@@ -16,13 +16,13 @@
 
 package org.drools.examples.helloworld;
 
+import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.event.rule.DebugAgendaEventListener;
-import org.kie.api.event.rule.DebugWorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -65,7 +65,7 @@ public class HelloWorldExample {
                             new ArrayList<Object>() );
 
         ksession.addEventListener( new DebugAgendaEventListener() );
-        ksession.addEventListener( new DebugWorkingMemoryEventListener() );
+        ksession.addEventListener( new DebugRuleRuntimeEventListener() );
 
         // setup the audit logging
         // Remove comment to use FileLogger

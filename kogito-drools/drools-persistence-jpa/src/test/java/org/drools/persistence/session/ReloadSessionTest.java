@@ -40,12 +40,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.kie.api.event.rule.DefaultRuleRuntimeEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.event.rule.DefaultWorkingMemoryEventListener;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.io.ResourceType;
@@ -181,14 +181,14 @@ public class ReloadSessionTest {
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
 
         ksession.addEventListener(new DefaultAgendaEventListener());
-        ksession.addEventListener(new DefaultWorkingMemoryEventListener());
+        ksession.addEventListener(new DefaultRuleRuntimeEventListener());
 
-        assertEquals(1, ksession.getWorkingMemoryEventListeners().size());
+        assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
         assertEquals(1, ksession.getAgendaEventListeners().size());
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(ksession.getId(), kbase, null, env);
 
-        assertEquals(1, ksession.getWorkingMemoryEventListeners().size());
+        assertEquals(1, ksession.getRuleRuntimeEventListeners().size());
         assertEquals(1, ksession.getAgendaEventListeners().size());
     }
 }

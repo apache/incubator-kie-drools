@@ -16,6 +16,7 @@
 
 package org.drools.core.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,17 +33,12 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.common.AbstractWorkingMemory;
-import org.drools.core.common.AbstractWorkingMemory.WorkingMemoryReteAssertAction;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.AgendaEventListenerWrapper;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryEventListenerWrapper;
-import org.drools.core.reteoo.InitialFactImpl;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.kie.api.KieBase;
@@ -60,6 +56,7 @@ import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.event.rule.WorkingMemoryEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
@@ -82,7 +79,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     private Map<String, Channel> channels       = new HashMap<String, Channel>();
 
     /** The event mapping */
-    public Map<WorkingMemoryEventListener, org.drools.core.event.WorkingMemoryEventListener> mappedWorkingMemoryListeners;
+    public Map<RuleRuntimeEventListener, org.drools.core.event.WorkingMemoryEventListener>   mappedWorkingMemoryListeners;
     public Map<AgendaEventListener, org.drools.core.event.AgendaEventListener>               mappedAgendaListeners;
     public Set<ProcessEventListener>                                                         cachedProcessEventListener;
 
@@ -243,30 +240,53 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void addWorkingMemoryEventListener(org.drools.core.event.WorkingMemoryEventListener listener) {
-        registerWorkingMemoryEventListener( new WorkingMemoryEventListenerPlaceholder(), listener );
+        registerRuleRuntimeEventListener(new RuleRuntimeEventListenerPlaceholder(), listener);
     }
 
+    /**
+     * @deprecated
+     */
     public void addEventListener(WorkingMemoryEventListener listener) {
-        registerWorkingMemoryEventListener(listener, new WorkingMemoryEventListenerWrapper( listener ));
+        addEventListener((RuleRuntimeEventListener) listener);
     }
 
-    private void registerWorkingMemoryEventListener(WorkingMemoryEventListener listener, org.drools.core.event.WorkingMemoryEventListener wrapper) {
+    public void addEventListener(RuleRuntimeEventListener listener) {
+        registerRuleRuntimeEventListener(listener, new StatefulKnowledgeSessionImpl.RuleRuntimeEventListenerWrapper(listener));
+    }
+
+    private void registerRuleRuntimeEventListener(RuleRuntimeEventListener listener, org.drools.core.event.WorkingMemoryEventListener wrapper) {
         if ( this.mappedWorkingMemoryListeners == null ) {
-            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, org.drools.core.event.WorkingMemoryEventListener>();
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<RuleRuntimeEventListener, org.drools.core.event.WorkingMemoryEventListener>();
         }
         this.mappedWorkingMemoryListeners.put( listener, wrapper );
     }
 
+    /**
+     * @deprecated
+     */
     public void removeEventListener(WorkingMemoryEventListener listener) {
+        removeEventListener((RuleRuntimeEventListener) listener);
+    }
+
+    public void removeEventListener(RuleRuntimeEventListener listener) {
         if ( this.mappedWorkingMemoryListeners != null ) {
             org.drools.core.event.WorkingMemoryEventListener wrapper = this.mappedWorkingMemoryListeners.remove( listener );
             this.workingMemoryEventSupport.removeEventListener( wrapper );
         }
     }
 
+    /**
+     * @deprecated
+     */
     public Collection<WorkingMemoryEventListener> getWorkingMemoryEventListeners() {
+        Collection<WorkingMemoryEventListener> workingMemoryEventListeners = new ArrayList<WorkingMemoryEventListener>();
+        workingMemoryEventListeners.addAll(getRuleRuntimeEventListeners());
+        return workingMemoryEventListeners;
+    }
+
+    public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
         if ( this.mappedWorkingMemoryListeners == null ) {
-            this.mappedWorkingMemoryListeners = new IdentityHashMap<WorkingMemoryEventListener, org.drools.core.event.WorkingMemoryEventListener>();
+            this.mappedWorkingMemoryListeners = new IdentityHashMap<RuleRuntimeEventListener, org.drools.core.event.WorkingMemoryEventListener>();
         }
 
         return Collections.unmodifiableCollection( this.mappedWorkingMemoryListeners.keySet() );
@@ -442,7 +462,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
     }
 
-    private static class WorkingMemoryEventListenerPlaceholder implements WorkingMemoryEventListener {
+    private static class RuleRuntimeEventListenerPlaceholder implements RuleRuntimeEventListener {
 
         @Override
         public void objectInserted(ObjectInsertedEvent event) { }

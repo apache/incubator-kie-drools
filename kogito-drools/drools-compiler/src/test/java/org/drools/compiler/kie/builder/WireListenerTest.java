@@ -11,7 +11,7 @@ import org.kie.api.builder.model.ListenerModel;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.WorkingMemoryEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -82,7 +82,7 @@ public class WireListenerTest {
                 "end\n";
     }
 
-    public static class RecordingWorkingMemoryEventListener implements WorkingMemoryEventListener {
+    public static class RecordingWorkingMemoryEventListener implements RuleRuntimeEventListener {
 
         @Override
         public void objectInserted(ObjectInsertedEvent event) {

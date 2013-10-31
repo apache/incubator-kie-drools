@@ -16,7 +16,7 @@
 
 package org.drools.core.event.rule.impl;
 
-import org.kie.api.event.rule.WorkingMemoryEvent;
+import org.kie.api.event.rule.RuleRuntimeEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.api.runtime.rule.PropagationContext;
 
@@ -25,16 +25,16 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class WorkingMemoryEventImpl implements WorkingMemoryEvent, Externalizable {
+public class RuleRuntimeEventImpl implements RuleRuntimeEvent, Externalizable {
     private KnowledgeRuntime kruntime;
     
     private PropagationContext propagationContext;
     
-    public WorkingMemoryEventImpl() {
+    public RuleRuntimeEventImpl() {
         
     }
                                       
-    public WorkingMemoryEventImpl(KnowledgeRuntime kruntime, PropagationContext propagationContext) {
+    public RuleRuntimeEventImpl(KnowledgeRuntime kruntime, PropagationContext propagationContext) {
         this.kruntime = kruntime;
         this.propagationContext = propagationContext;
     }
