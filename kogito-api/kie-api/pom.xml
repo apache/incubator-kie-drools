@@ -80,9 +80,9 @@
             - cd .../droolsjbpm
             - droolsjbpm-build-bootstrap/script/docs/copy-ydoc-output.sh
           -->
-          <!--<doclet>ydoc.doclets.YStandard</doclet>-->
-          <!--<docletPath>~/opt/other/yworks-uml-doclet/lib/ydoc.jar:~/opt/other/yworks-uml-doclet/lib/styleed.jar:~/opt/other/yworks-uml-doclet/resources</docletPath>-->
-          <!--<additionalparam>-umlautogen</additionalparam>-->
+          <!--doclet>ydoc.doclets.YStandard</doclet>
+          <docletPath>/opt/yworks-uml-doclet-3.0_02-jdk1.5/lib/ydoc.jar:/opt/yworks-uml-doclet-3.0_02-jdk1.5/lib/styleed.jar:/opt/yworks-uml-doclet-3.0_02-jdk1.5/resources</docletPath>
+          <additionalparam>-umlautogen</additionalparam-->
         </configuration>
       </plugin>
     </plugins>
