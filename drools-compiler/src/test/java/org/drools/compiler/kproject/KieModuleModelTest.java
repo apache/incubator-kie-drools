@@ -50,7 +50,7 @@ public class KieModuleModelTest {
 
         ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);
 
-        ksession1.newListenerModel("org.domain.SecondInterface", ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER)
+        ksession1.newListenerModel("org.domain.SecondInterface", ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER)
                 .newQualifierModel("MyQualfier2");
 
         ksession1.newListenerModel("org.domain.ThirdInterface", ListenerModel.Kind.PROCESS_EVENT_LISTENER)
@@ -104,7 +104,7 @@ public class KieModuleModelTest {
 
         ListenerModel listener2 = listeners.get(0);
         assertEquals("org.domain.SecondInterface", listener2.getType());
-        assertEquals(ListenerModel.Kind.WORKING_MEMORY_EVENT_LISTENER, listener2.getKind());
+        assertEquals(ListenerModel.Kind.RULE_RUNTIME_EVENT_LISTENER, listener2.getKind());
         // QualifierModel qualifier2 = listener2.getQualifierModel();
         // assertEquals("MyQualfier2", qualifier2.getType());
 

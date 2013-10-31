@@ -47,7 +47,7 @@ public class CDIHelper {
                 case AGENDA_EVENT_LISTENER:
                     kSession.addEventListener((AgendaEventListener)listener);
                     break;
-                case WORKING_MEMORY_EVENT_LISTENER:
+                case RULE_RUNTIME_EVENT_LISTENER:
                     kSession.addEventListener((RuleRuntimeEventListener)listener);
                     break;
                 case PROCESS_EVENT_LISTENER:
