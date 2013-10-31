@@ -5,5 +5,119 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Gateways</title>
+    <section>
+      <title>Diverging gateway</title>
+      
+      <figure>
+        <title>Diverging gateway</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/DivergingGateway.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Allows you to create branches
+        in your process.  A Diverging Gateway should have one incoming connection and two or
+        more outgoing connections.  There are three types of gateway nodes currently
+        supported:
+          <itemizedlist>
+           <listitem>
+            <para>AND or parallel means that the control flow will continue in all outgoing
+            connections simultaneously.</para>
+           </listitem>
+           <listitem>
+             <para>XOR or exclusive means that exactly one of the outgoing connections will
+             be chosen.  The decision is made by evaluating the constraints
+             that are linked to each of the outgoing connections.  The
+             constraint with the <emphasis>lowest</emphasis> priority number that
+             evaluates to true is selected.  Constraints can be
+             specified using different dialects.  Note that you should always make sure
+             that at least one  of the outgoing connections will evaluate to true
+             at runtime (the engine will throw an exception at runtime if it
+             cannot find at  least one outgoing connection).</para>
+           </listitem>
+           <listitem>
+             <para>OR or inclusive means that all outgoing connections whose condition evaluates
+             to true are selected.  Conditions are similar to the exclusive gateway, except
+             that no priorities are taken into account.  Note that you should
+             make sure that at least one of the outgoing connections will evaluate
+             to true at runtime because the engine will throw an exception at
+             runtime if it cannot determine an outgoing connection.
+             </para>
+           </listitem>
+          </itemizedlist>
+        It contains the following properties:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Type</emphasis>: The type of the split node, i.e., AND,
+            XOR or OR (see above).</para>
+          </listitem>
+          <listitem><para><emphasis>Constraints</emphasis>: The constraints linked
+            to each of the outgoing connections (in case of an exclusive or inclusive gateway).</para>
+          </listitem>
+        </itemizedlist>
+    </section>
+        
+    <section>
+      <title>Converging gateway</title>
+      
+      <figure>
+        <title>Converging gateway</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ConvergingGateway.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+          <para>Allows you to synchronize
+          multiple branches.  A Converging Gateway should have two or more incoming connections
+          and one outgoing connection.  There are three types of splits currently supported:
+          <itemizedlist>
+           <listitem>
+            <para>AND or parallel means that is will wait until <emphasis>all</emphasis> incoming
+            branches are completed before continuing.
+            </para>
+           </listitem>
+           <listitem>
+             <para>XOR or exclusive means that it continues as soon as <emphasis>one</emphasis> of its
+             incoming branches has been completed.  If it is triggered from more than one
+             incoming connection, it will trigger the next node for each of those triggers.</para>
+           </listitem>
+            <listitem>
+              <para>OR or inclusive means that it continues as soon as <emphasis>all direct active paths</emphasis>
+              of its incoming branches has been completed. This is complex merge behaviour that is described
+              in BPMN2 specification but in most cases it means that OR join will wait for all active flows
+              that started in OR split. Some advanced cases (including other gateways in between or repeatable timers)
+              will be causing different "direct active path" calculation. </para>
+            </listitem>
+          </itemizedlist>
+        It contains the following properties:
+        </para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Type</emphasis>: The type of the Join node, i.e. AND, OR or XOR.</para>
+          </listitem>
+        </itemizedlist>
+        
+    </section>
     
 </section>

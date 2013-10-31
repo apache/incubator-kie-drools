@@ -5,5 +5,442 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Activities</title>
+   <section>
+      <title>Script task</title>
+      
+      <figure>
+        <title>Script task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ScriptTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents a script that
+        should be executed in this process.  A Script Task should have one incoming
+        connection and one outgoing connection.  The associated action specifies what
+        should be executed, the dialect used for coding the action (i.e., Java or MVEL),
+        and the actual action code.  This code can access any variables and globals.
+        There is also a predefined variable <code>kcontext</code> that references the
+        <code>ProcessContext</code> object (which can,
+        for example, be used to access the current <code>ProcessInstance</code> or
+        <code>NodeInstance</code>, and to get and set variables, or get access to the
+        ksession using <code>kcontext.getKnowledgeRuntime()</code>). When a Script Task
+        is reached in the process, it will execute the action and then continue with the
+        next node.  It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Action</emphasis>: The action script associated with this 
+            action node.</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>Note that you can write any valid Java code inside a script node.  This
+        basically allows you to do anything inside such a script node.  There are some
+        caveats however:
+          <itemizedlist>
+            <listitem>When trying to create a higher-level business process, that should
+            also be understood by business users, it is probably wise to avoid low-level
+            implementation details inside the process, including inside these script tasks.
+            A Script Task could still be used to quickly manipulate variables etc. but
+            other concepts like a Service Task could be used to model more complex
+            behaviour in a higher-level manner.</listitem>
+            <listitem>Scripts should be immediate.  They are using the engine thread
+            to execute the script.  Scripts that could take some time to execute should
+            probably be modeled as an asynchronous Service Task.</listitem>
+            <listitem>You should try to avoid contacting external services through a
+            script node.  Not only does this usually violate the first two caveats, it
+            is also interacting with external services without the knowledge of the engine,
+            which can be problematic, especially when using persistence and transactions.
+            In general, it is probably wiser to model communication with an external
+            service using a service task.</listitem>
+            <listitem>Scripts should not throw exceptions.  Runtime exceptions should
+            be caught and for example managed inside the script or transformed into
+            signals or errors that can then be handled inside the process.</listitem>
+          </itemizedlist>
+        </para>
     
+    </section>
+    
+    <section>
+      <title>Service task</title>
+      
+      <figure>
+        <title>Service task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ServiceTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents an (abstract)
+        unit of work that should be executed in this process.  All work that is
+        executed outside the process engine should be represented (in a declarative
+        way) using a Service Task.  Different types of services are predefined, e.g.,
+        sending an email, logging a message, etc.  Users can define domain-specific
+        services or work items, using a unique name and by defining
+        the parameters (input) and results (output) that are associated with this
+        type of work.  Check the chapter on domain-specific processes for a
+        detailed explanation and illustrative examples of how to define and use
+        work items in your processes.  When a Service Task is reached in the
+        process, the associated work is executed.  A Service Task should
+        have one incoming connection and one outgoing connection.</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the
+            value of process variables to parameters of the work item.  Upon
+            creation of the work item, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value
+            of result parameters of the work item to a process variable.  Each
+            type of work can define result parameters that will (potentially)
+            be returned after the work item has been completed.  A result
+            mapping can be used to copy the value of the given result parameter
+            to the given variable in this process.  For example, the "FileFinder"
+            work item returns a list of files that match the given search
+            criteria within the result parameter <code>Files</code>.  This list
+            of files can then be bound to a process variable for use within the
+            process.  Upon completion of the work item, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Additional parameters</emphasis>: Each type of work
+            item can define additional parameters that are relevant for that
+            type of work.  For example, the "Email" work item defines additional
+            parameters such as <code>From</code>, <code>To</code>, <code>Subject</code>
+            and <code>Body</code>.  The user can either provide values for these
+            parameters directly, or define a
+            parameter mapping that will copy the value of the given variable
+            in this process to the given parameter; if both are specified, the
+            mapping will have precedence.  Parameters of type <code>String</code> can use
+            <emphasis><code>#{expression}</code></emphasis> to embed a value in the
+            string.  The value will be retrieved when creating the work item, and the
+            substitution expression will be replaced by the result of calling
+            <code>toString()</code> on the variable.  The expression could
+            simply be the name of a variable (in which case it resolves
+            to the value of the variable), but more advanced MVEL expressions
+            are possible as well, e.g., <code>#{person.name.firstname}</code>.</para>
+          </listitem>
+        </itemizedlist>
+    
+    </section>
+    
+    <section>
+      <title>User task</title>
+      
+      <figure>
+        <title>User task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/UserTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Processes can also
+        involve tasks that need to be executed by human actors.  A User Task
+        represents an atomic task to be executed by a human actor.  It
+        should have one incoming connection and one outgoing connection.
+        User Tasks can be used in combination with Swimlanes to assign multiple
+        human tasks to similar actors. Refer to the chapter on human tasks
+        for more details.  A User Task is actually nothing more than a specific
+        type of service node (of type "Human Task").  A User Task contains
+        the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>TaskName</emphasis>: The name of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Priority</emphasis>: An integer indicating the priority
+            of the human task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Comment</emphasis>: A comment associated with the human
+            task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ActorId</emphasis>: The actor id that is responsible for
+             executing the human task.  A list of actor id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>GroupId</emphasis>: The group id that is responsible for
+             executing the human task.  A list of group id's can be specified using
+             a comma (',') as separator.</para>
+          </listitem>
+          <listitem>
+             <para><emphasis>Skippable</emphasis>: Specifies whether the human task
+             can be skipped, i.e., whether the actor may decide not to execute the
+             task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Content</emphasis>: The data associated with this task.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Swimlane</emphasis>: The swimlane this human task node
+            is part of.  Swimlanes make it easy to assign multiple human tasks to
+            the same actor.  See the human tasks chapter for more detail on how to
+            use swimlanes.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On entry and on exit actions</emphasis>: Action scripts
+            that are executed upon entry and exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter mapping</emphasis>: Allows copying the value
+            of process variables to parameters of the human task.  Upon creation of
+            the human tasks, the values will be copied.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Result mapping</emphasis>: Allows copying the value 
+            of result parameters of the human task to a process variable.  Upon
+            completion of the human task, the values will be copied.  A human task
+            has a result variable "Result" that contains
+            the data returned by the human actor.  The variable "ActorId" contains
+            the id of the actor that actually executed the task.</para>
+          </listitem>
+        </itemizedlist>
+        
+        <para>A user task should define the type of task that needs to be executed
+        (using properties like TaskName, Comment, etc.) and who needs to perform it
+        (using either actorId or groupId).  Note that if there is data related to
+        this specific process instance that the end user needs when performing the
+        task, this data should be passed as the content of the task.  The task for
+        example does not have access to process variables.  Check out the chapter on
+        human tasks to get more detail on how to pass data between human tasks and
+        the process instance.</para>
+    </section>
+      
+    <section>
+      <title>Reusable sub-process</title>
+    
+      <figure>
+        <title>Reusable sub-process - Call activity</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/ReusableSubProcess.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>Represents the invocation
+        of another process from within this process.  A sub-process node should
+        have one incoming connection and one outgoing connection.  When a Reusable Sub-Process
+        node is reached in the process, the engine will start the process with the
+        given id.  It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para></listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>ProcessId</emphasis>: The id of the process that should
+            be executed.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Wait for completion</emphasis> (by default true): If this property is true,
+            this sub-process node will only continue if the child process that was started
+            has terminated its execution (completed or aborted); otherwise it will 
+            continue immediately after starting the subprocess (so it will not wait for
+            its completion).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Independent</emphasis> (by default true): If this property is true, the
+            child process is started as an independent process, which means that the
+            child process will not be terminated if this parent process is completed (or
+            this sub-process node is cancelled for some other reason);
+            otherwise the active sub-process will be cancelled on termination of the parent
+            process (or cancellation of the sub-process node).  Note that you can only set
+            independent to "false" only when "Wait for completion" is set to true.
+            </para>
+          </listitem>
+          <listitem>
+            <para><emphasis>On-entry and on-exit actions</emphasis>: Actions that are 
+            executed upon entry or exit of this node, respectively.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Parameter in/out mapping</emphasis>: A sub-process node can
+            also define in- and out-mappings for variables.  The variables
+            given in the "in" mapping will be used as parameters (with the associated 
+            parameter name) when starting the process. The variables of the child process
+            that are defined for the "out" mappings will be copied to the variables of this
+            process when the child process has been completed.  Note that you can use
+             "out" mappings only when "Wait for completion" is set to true.</para>
+          </listitem>
+        </itemizedlist>
+    </section>
+      
+    <section>
+      <title>Business rule task</title>
+      
+      <figure>
+        <title>Business rule task</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/BusinessRuleTask.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Business Rule Task Represents a set of rules that need to be 
+        evaluated.  The rules are evaluated when the node is reached.  A Rule 
+        Task should have one incoming connection and one outgoing connection.  
+        Rules are defined in separate files using the Drools rule format.  Rules 
+        can become part of a specific ruleflow group using the <literal>ruleflow-group</literal> 
+        attribute in the header of the rule.</para>
+
+        <para>When a Rule Task is reached in the process, the engine will start 
+        executing rules that are part of the corresponding ruleflow-group (if any).  
+        Execution will automatically continue to the next node if there are 
+        no more active rules in this ruleflow group. As a result, during the 
+        execution of a ruleflow group, new activations belonging to the currently active
+        ruleflow group can be added to the Agenda due to changes made to the facts by
+        the other rules. Note that the process will immediately continue with the
+        next node if it encounters a ruleflow group where there are no active rules
+        at that time.</para>
+        
+        <para>If the ruleflow group was already active, the ruleflow group
+        will remain active and execution will only continue if all active rules of the
+        ruleflow group has been completed. It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique within
+            one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>RuleFlowGroup</emphasis>: The name of the ruleflow group
+            that represents the set of rules of this RuleFlowGroup node.</para>
+          </listitem>
+        </itemizedlist>
+        
+    </section>
+    
+    <section>
+      <title>Embedded sub-process</title>
+      
+      <figure>
+        <title>Embedded sub-process</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/EmbeddedSubProcess.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Sub-Process is 
+        a node that can contain other nodes so that it acts as a node container.
+        This allows not only the embedding of a part of the process within such
+        a sub-process node, but also the definition of additional variables that
+        are accessible for all nodes inside this container. A sub-process should
+        have one incoming connection and one
+        outgoing connection. It should also contain one start node that defines
+        where to start (inside the Sub-Process) when you reach the sub-process.
+        It should also contain one or more end events.  Note that, if you use a
+        terminating event node inside a sub-process, you are terminating just that
+        sub-process. A sub-process ends when there are no more active nodes inside
+        the sub-process.
+        It contains the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which is unique
+            within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Variables</emphasis>: Additional variables can be
+            defined to store data during the execution of this node. See section
+            <quote><link linkend='sec.data' endterm="sec.data.title"/></quote>
+            for details.</para>
+          </listitem>
+        </itemizedlist>
+    
+    </section>
+    
+    <section>
+      <title>Multi-instance sub-process</title>
+      
+      <figure>
+        <title>Multi-instance sub-process</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" width="100%"
+                       fileref="images/Chapter-5-CoreEngine/MultipleInstances.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+        <para>A Multiple Instance sub-process is a
+        special kind of sub-process that allows you to execute the contained
+        process segment multiple times, once for each element in a collection.  A 
+        multiple instance sub-process should have one incoming connection and one
+        outgoing connection. It waits until the embedded process fragment is completed
+        for each of the elements in the given collection before continuing.  It contains
+        the following properties:</para>
+        <itemizedlist>
+          <listitem>
+            <para><emphasis>Id</emphasis>: The id of the node (which
+            is unique within one node container).</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>Name</emphasis>: The display name of the node.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>CollectionExpression</emphasis>: The name of a
+            variable that represents the collection of elements that should
+            be iterated over.  The collection variable should be an array or
+            of type <code>java.util.Collection</code>.  If the collection
+            expression evaluates to null or an empty collection, the multiple
+            instances sub-process will be completed immediately and follow its
+            outgoing connection.</para>
+          </listitem>
+          <listitem>
+            <para><emphasis>VariableName</emphasis>: The name of the variable
+            to contain the current element from the collection.  This
+            gives nodes within the composite node access to the selected
+            element.</para>
+          </listitem>
+        </itemizedlist>
+    
+    </section>
+        
 </section>
