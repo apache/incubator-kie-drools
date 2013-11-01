@@ -1827,14 +1827,18 @@ public class RuleModelDRLPersistenceImpl
                                         Map<String, String> boundParams,
                                         PackageDataModelOracle dmo ) {
         String type = pattern.getObjectType();
-        FactPattern factPattern = new FactPattern( type );
+        FactPattern factPattern = new FactPattern( getSimpleFactType( type,
+                                                                      dmo ) );
         if ( pattern.getIdentifier() != null ) {
             String identifier = pattern.getIdentifier();
             factPattern.setBoundName( identifier );
             boundParams.put( identifier, type );
         }
 
-        parseConstraint( factPattern, pattern.getConstraint(), boundParams, dmo );
+        parseConstraint( factPattern,
+                         pattern.getConstraint(),
+                         boundParams,
+                         dmo );
 
         for ( BehaviorDescr behavior : pattern.getBehaviors() ) {
             if ( behavior.getText().equals( "window" ) ) {
@@ -2414,6 +2418,16 @@ public class RuleModelDRLPersistenceImpl
         return splittedExpr;
     }
 
+    private static String getSimpleFactType( String className,
+                                             PackageDataModelOracle dmo ) {
+        for ( String type : dmo.getProjectModelFields().keySet() ) {
+            if ( type.equals( className ) ) {
+                return type.substring( type.lastIndexOf( "." ) + 1 );
+            }
+        }
+        return className;
+    }
+
     private interface Expr {
 
         FieldConstraint asFieldConstraint( FactPattern factPattern );
@@ -2453,12 +2467,20 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
 
-            return createFieldConstraint( factPattern, fieldName, value, operator, fieldName.contains( "." ) );
+            return createFieldConstraint( factPattern,
+                                          fieldName,
+                                          value,
+                                          operator,
+                                          fieldName.contains( "." ) );
         }
 
         private SingleFieldConstraint createNullCheckFieldConstraint( FactPattern factPattern,
                                                                       String fieldName ) {
-            return createFieldConstraint( factPattern, fieldName, null, null, true );
+            return createFieldConstraint( factPattern,
+                                          fieldName,
+                                          null,
+                                          null,
+                                          true );
         }
 
         private SingleFieldConstraint createFieldConstraint( FactPattern factPattern,
@@ -2474,8 +2496,13 @@ public class RuleModelDRLPersistenceImpl
             }
 
             SingleFieldConstraint fieldConstraint = isExpression ?
-                    createExpressionBuilderConstraint( factPattern, fieldName, operator, value ) :
-                    createSingleFieldConstraint( fieldName, operator, value );
+                    createExpressionBuilderConstraint( factPattern,
+                                                       fieldName,
+                                                       operator,
+                                                       value ) :
+                    createSingleFieldConstraint( fieldName,
+                                                 operator,
+                                                 value );
 
             if ( operatorParams != null ) {
                 int i = 0;
@@ -2503,7 +2530,10 @@ public class RuleModelDRLPersistenceImpl
             //int dotPos = fieldName.lastIndexOf('.');
             //SingleFieldConstraint con = createSingleFieldConstraint(dotPos > 0 ? fieldName.substring(dotPos+1) : fieldName, operator, value);
 
-            SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern, fieldName, operator, value );
+            SingleFieldConstraint con = createSingleFieldConstraintEBLeftSide( factPattern,
+                                                                               fieldName,
+                                                                               operator,
+                                                                               value );
 
             for ( FieldConstraint fieldConstraint : factPattern.getFieldConstraints() ) {
                 if ( fieldConstraint instanceof SingleFieldConstraint ) {
@@ -2543,9 +2573,12 @@ public class RuleModelDRLPersistenceImpl
 
             fieldName = setFieldBindingOnContraint( fieldName, con );
             String classType = getFQFactType( factPattern.getFactType() );
-            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern, classType ) );
+            con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( factPattern,
+                                                                               classType ) );
 
-            String type = setOperatorAndValueOnConstraint( operator, value, con );
+            String type = setOperatorAndValueOnConstraint( operator,
+                                                           value,
+                                                           con );
 
             parseExpression( classType, fieldName, type, con.getExpressionLeftSide() );
 
@@ -2570,19 +2603,38 @@ public class RuleModelDRLPersistenceImpl
             for ( int i = 0; i < splits.length - 1; i++ ) {
                 String expressionPart = splits[ i ].trim();
                 if ( "this".equals( expressionPart ) ) {
-                    expression.appendPart( new ExpressionField( expressionPart, factType, DataType.TYPE_THIS ) );
+                    expression.appendPart( new ExpressionField( expressionPart,
+                                                                getSimpleFactType( factType,
+                                                                                   dmo ),
+                                                                DataType.TYPE_THIS ) );
                 } else if ( isBoundParam ) {
-                    expression.appendPart( new ExpressionVariable( expressionPart, factType, factType ) );
+                    ModelField currentFact = findFact( modelFields,
+                                                       factType );
+                    expression.appendPart( new ExpressionVariable( expressionPart,
+                                                                   getSimpleFactType( currentFact.getClassName(),
+                                                                                      dmo ),
+                                                                   getSimpleFactType( currentFact.getType(),
+                                                                                      dmo ) ) );
                     isBoundParam = false;
                 } else {
-                    ModelField currentField = findField( typeFields, expressionPart );
-                    expression.appendPart( new ExpressionField( expressionPart, currentField.getType(), currentField.getClassName() ) );
-                    typeFields = modelFields.get( currentField.getType() );
+                    ModelField currentField = findField( typeFields,
+                                                         expressionPart );
+                    expression.appendPart( new ExpressionField( expressionPart,
+                                                                getSimpleFactType( currentField.getClassName(),
+                                                                                   dmo ),
+                                                                getSimpleFactType( currentField.getType(),
+                                                                                   dmo ) ) );
+                    typeFields = modelFields.get( currentField.getClassName() );
                 }
             }
             String expressionPart = splits[ splits.length - 1 ].trim();
-            ModelField currentField = findField( typeFields, expressionPart );
-            expression.appendPart( new ExpressionField( expressionPart, currentField.getType(), currentField.getClassName() ) );
+            ModelField currentField = findField( typeFields,
+                                                 expressionPart );
+            expression.appendPart( new ExpressionField( expressionPart,
+                                                        getSimpleFactType( currentField.getClassName(),
+                                                                           dmo ),
+                                                        getSimpleFactType( currentField.getType(),
+                                                                           dmo ) ) );
             return expression;
         }
 
@@ -2593,6 +2645,20 @@ public class RuleModelDRLPersistenceImpl
                 }
             }
             return factType;
+        }
+
+        private ModelField findFact( Map<String, ModelField[]> modelFields,
+                                     String factType ) {
+            final ModelField[] typeFields = modelFields.get( factType );
+            if ( typeFields == null ) {
+                return null;
+            }
+            for ( ModelField typeField : typeFields ) {
+                if ( typeField.getType().equals( DataType.TYPE_THIS ) ) {
+                    return typeField;
+                }
+            }
+            return null;
         }
 
         private ModelField findField( ModelField[] typeFields,

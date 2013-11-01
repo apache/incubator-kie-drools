@@ -19,6 +19,7 @@ package org.drools.workbench.models.commons.backend.rule;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -75,11 +76,16 @@ import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceTest {
 
+    private PackageDataModelOracle dmo;
+    private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
+
     private RuleModelPersistence ruleModelPersistence;
 
     @Before
     public void setUp() throws Exception {
         ruleModelPersistence = RuleModelDRLPersistenceImpl.getInstance();
+        dmo = mock( PackageDataModelOracle.class );
+        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
     }
 
     @Test
@@ -455,7 +461,7 @@ public class RuleModelDRLPersistenceTest {
 
         String dslFile = "[then]Send an email to {administrator}=sendMailTo({administrator});";
 
-        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl, null, null, dslFile );
+        RuleModel unmarshalledModel = ruleModelPersistence.unmarshalUsingDSL( drl, null, dmo, dslFile );
 
         IAction[] actions = unmarshalledModel.rhs;
         DSLSentence dslSentence = (DSLSentence) actions[ actions.length - 1 ];
@@ -3467,7 +3473,7 @@ public class RuleModelDRLPersistenceTest {
                         "list.add( $a );\n" +
                         "end\n";
 
-        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ), null );
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl, Arrays.asList( global ), dmo );
 
         assertNotNull( m );
         assertEqualsIgnoreWhitespace( drl, RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
