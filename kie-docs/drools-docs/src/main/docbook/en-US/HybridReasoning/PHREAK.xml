@@ -83,7 +83,7 @@
     <title>PHREAK 3 Layered memory system</title>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/LayeredMemory.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/LayeredMemory.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -93,7 +93,7 @@
     <title>Example1: Single rule, no sharing</title>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/segment1.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/segment1.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -112,7 +112,7 @@
     <title>Example 2: Two rules, with sharing</title>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/segment2.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/segment2.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -123,7 +123,7 @@
     <title>Example 3: Three rules, with sharing</title>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/segment3.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/segment3.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -136,7 +136,7 @@
     <title>Example 4 : Single rule, with subnetwork and no sharing</title>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/segment4.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/segment4.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -146,7 +146,7 @@
     <title>Example 5: Two rules, one with a subnetwork and sharing</title>
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/segment5.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/segment5.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
