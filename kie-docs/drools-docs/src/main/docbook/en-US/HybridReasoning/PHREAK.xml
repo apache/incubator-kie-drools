@@ -14,24 +14,21 @@
     PHREAK is an evolution of the RETE algorithm, it is no longer classified as a RETE implementation. In the same way
     that once an animal evolves beyond a certain point and key characteristics are changed, the animal becomes
     classified as new species. There are two key RETE characteristics that strongly identify any derivative strains,
-    regardless of optimizations. That it is an eager, data oriented algorithm. Where all work is doing during the
-    insert, update or delete actions; eagerly produce all partial matches for all rules. PHREAK in contrast is
-    characterised as a lazy, goal oriented algorithm; where partial matching is aggressively delayed. </para>
+    regardless of optimizations. That it is an eager, data oriented algorithm. Where all work is doing done the insert,
+    update or delete actions; eagerly producing all partial matches for all rules. PHREAK in contrast is characterised
+    as a lazy, goal oriented algorithm; where partial matching is aggressively delayed. </para>
   <para>This eagerness of RETE can lead to a lot of churn in large systems, and much wasted work. Where wasted work is
     classified as matching efforts that do not result in a rule firing.</para>
   <para>PHREAK was heavily inspired by a number of algorithms; including (but not limited to) LEAPS, RETE/UL and
-    Collection-Oriented Match. PHREAK has all enhancements listed in the ReteOO, in addition it adds the following set
-    of enhancements, which are explained in more detail in the following paragraphs.</para>
-  <para>Lazy rule evaluation</para>
-  <para>Set oriented propagations<itemizedlist>
+    Collection-Oriented Match. PHREAK has all enhancements listed in the ReteOO section. In addition it adds the
+    following set of enhancements, which are explained in more detail in the following paragraphs.</para>
+  <para>
+    <itemizedlist>
       <listitem>
         <para>Three layers of contextual memory; Node, Segment and Rule memories.</para>
       </listitem>
       <listitem>
         <para>Rule, segment and node based linking.</para>
-      </listitem>
-      <listitem>
-        <para>Stack based evaluations, with pause and resume.</para>
       </listitem>
       <listitem>
         <para>Lazy (delayed) rule evaluation.</para>
@@ -42,17 +39,22 @@
       <listitem>
         <para>Set oriented propagations.</para>
       </listitem>
-    </itemizedlist></para>
+      <listitem>
+        <para>Stack based evaluations, with pause and resume.</para>
+      </listitem>
+    </itemizedlist>
+  </para>
   <para>When the PHREAK engine is started all rules are said to be unlinked, no rule evaluation can happen while rules
-    are unlinked. The insert, update and deletes actions are queued before entering the beta network. A simple heuristic
-    is to select the rule to evaluate that is most likely to result in rule firings, and thus delay the evaluation and
-    firing of the other rules. Only once a rule has all right inputs populated will the rule be considered linked in,
-    although no work is yet done. Instead a goal is created, that represents the rule, and placed into a priority queue;
-    which is ordered by salience. Each queue itself is associated with an AgendaGroup. Only the active AgendaGroup will
-    inspect it's queue, popping the goal for the rule with the highest salience and submitting it for evaluation. So the
-    work done shifts from the insert, update, delete phase to the fireAllRules phase. Only the rule for which the goal
-    was created is evaluated, other potential rule evaluations from those facts are delayed. While individual rules are
-    evaluated, node sharing is still achieved through the process of segmentation, which is explained later.</para>
+    are unlinked. The insert, update and deletes actions are queued before entering the beta network. A simple
+    heuristic, based on the rule most likely to result in firings, is used to select the next rule for evaluation; this
+    delays the evaluation and firing of the other rules. Only once a rule has all right inputs populated will the rule
+    be considered linked in, although no work is yet done. Instead a goal is created, that represents the rule, and
+    placed into a priority queue; which is ordered by salience. Each queue itself is associated with an AgendaGroup.
+    Only the active AgendaGroup will inspect it's queue, popping the goal for the rule with the highest salience and
+    submitting it for evaluation. So the work done shifts from the insert, update, delete phase to the fireAllRules
+    phase. Only the rule for which the goal was created is evaluated, other potential rule evaluations from those facts
+    are delayed. While individual rules are evaluated, node sharing is still achieved through the process of
+    segmentation, which is explained later.</para>
   <para>Each successful join attempt in RETE produces a tuple (or token, or partial match) that will be propagated to
     the child nodes. For this reason it is characterised as a tuple oriented algorithm. For each child node that it
     reaches it will attempt to join with the other side of the node, again each successful join attempt will be
@@ -69,14 +71,18 @@
   <para>The Linking and Unlinking uses a layered bit mask system, based on a network segmentation. When the rule network
     is built segments are created for nodes that are shared by the same set of rules. A rule itself is made up from a
     path of segments, although if there is no sharing that will be a single segment. A bit-mask offset is assigned to
-    each node in the segment. Also another bit mask (the layering) is assignment to each segment in the rule's path.
-    When there is at least one input (data propagation) the node's bit is set on. When each node has it's bit set to on
-    the segment's bit is also set to on. Conversely if any not bit is set to off, the segment is then also set to off.
-    If each segment in the rule's path is set to on, the rule is said to be linked in and a goal is created to schedule
-    the rule for evaluation.</para>
-  <para>This is a fairly simple heuristic, using at least one items of data per node. Future work would attempt to delay
-    the linking even further; using techniques such as arc consistency to determine that no matching will rule in rule
-    instance firings.</para>
+    each node in the segment. Also another bit mask (the layering) is assigned to each segment in the rule's path. When
+    there is at least one input (data propagation) the node's bit is set to on. When each node has it's bit set to on
+    the segment's bit is also set to on. Conversely if any node's bit is set to off, the segment is then also set to
+    off. If each segment in the rule's path is set to on, the rule is said to be linked in and a goal is created to
+    schedule the rule for evaluation. The same bit-mask technique is used to also track dirty node, segments and rules;
+    this allows for a rule already link in to be scheduled for evaluation if it's considered dirty since it was last
+    evaluated.</para>
+  <para>While the incremental rule evaluation always starts from the root node, the dirty bit masks are used to allow
+    nodes and segments that are not dirty to be skipped.</para>
+  <para>Using the existence of at at least one items of data per node, is a fairly basic heuristic. Future work would
+    attempt to delay the linking even further; using techniques such as arc consistency to determine whether or not
+    matching will result in rule instance firings.</para>
   <para>Where as RETE has just a singe unit of memory, the node memory, PHREAK has 3 levels of memory. This allows for
     much more contextual understanding during evaluation of a Rule.</para>
   <figure xmlns:ns="http://docbook.org/ns/docbook">
@@ -88,7 +94,7 @@
     </mediaobject>
   </figure>
   <para>Example 1 shows a single rule, with three patterns; A, B and C. It forms a single segment, with bits 1, 2 and 4
-    for the nodes.</para>
+    for the nodes. The single segment has a bit offset of 1.</para>
   <figure xmlns:ns="http://docbook.org/ns/docbook">
     <title>Example1: Single rule, no sharing</title>
     <mediaobject>
@@ -105,9 +111,9 @@
     and a goal created to schedule the rule for later evaluation and firing.</para>
   <para>When a rule is evaluated it is the segments that allow the results of matching to be shared. Each segment has a
     staging memory to queue all insert, update and deletes for that segment. If R1 was to evaluated it would process A
-    and result in a set of tuples. The algorithm detects that there is a segmentation split and will create peers tuples
-    for each insert, update and delete in the set and add them to R2's staging memory. Those tuples will be merged with
-    any existing merged tuples and wait for R2 to eventually be evaluated.</para>
+    and result in a set of tuples. The algorithm detects that there is a segmentation split and will create peered
+    tuples for each insert, update and delete in the set and add them to R2's staging memory. Those tuples will be
+    merged with any existing staged tuples and wait for R2 to eventually be evaluated.</para>
   <figure xmlns:ns="http://docbook.org/ns/docbook">
     <title>Example 2: Two rules, with sharing</title>
     <mediaobject>
@@ -116,9 +122,9 @@
       </imageobject>
     </mediaobject>
   </figure>
-  <para>Example 3 add a third rule and demonstrates what happens when A and B are shared. Only the bits for the segments
-    are shown this time, demonstrating that R4 has 3 segments, R3 has 3 segments and R1 has 2 segments. A and B and
-    shared by R1, R3 and R4. While D is shared by R3 and R4.</para>
+  <para>Example 3 adds a third rule and demonstrates what happens when A and B are shared. Only the bits for the
+    segments are shown this time. Demonstrating that R4 has 3 segments, R3 has 3 segments and R1 has 2 segments. A and B
+    are shared by R1, R3 and R4. While D is shared by R3 and R4.</para>
   <figure xmlns:ns="http://docbook.org/ns/docbook">
     <title>Example 3: Three rules, with sharing</title>
     <mediaobject>
@@ -130,8 +136,8 @@
   <para>Sub-networks are formed when a Not, Exists or Accumulate node contain more than one element. In Example 4 "B
     not( C )" forms the sub network, note that "not(C)" is a single element and does not require a sub network and is
     merged inside of the Not node.</para>
-  <para>The sub network gets it's own segment. R1 still has a path of two segments. The sub network forms another
-    "inner" path. When the sub network is linked in, it will link in the outer segment.</para>
+  <para>The sub network gets its own segment. R1 still has a path of two segments. The sub network forms another "inner"
+    path. When the sub network is linked in, it will link in the outer segment.</para>
   <figure xmlns:ns="http://docbook.org/ns/docbook">
     <title>Example 4 : Single rule, with sub-network and no sharing</title>
     <mediaobject>
@@ -164,7 +170,7 @@
   <para>The same stack system can be used for efficient backward chaining. When a rule evaluation reaches a query node
     it again pauses the current evaluation, by placing it on the stack. The query is then evaluated which produces a
     result set, which is saved in a memory location for the resumed StackEntry to pick up and propagate to the child
-    node. If the query itself called other queries the process would repeat, with the current query being pause and a
+    node. If the query itself called other queries the process would repeat, with the current query being paused and a
     new evaluation setup for the current query node.</para>
   <para> </para>
 

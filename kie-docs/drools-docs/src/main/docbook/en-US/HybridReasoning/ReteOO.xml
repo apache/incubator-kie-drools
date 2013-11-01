@@ -76,4 +76,9 @@
           maintenance approach.</para>
       </listitem>
     </itemizedlist></para>
+  <para>Dynamic Rules<itemizedlist>
+      <listitem>
+        <para>Rules can be added and removed at runtime, while the engine is still populated with data.</para>
+      </listitem>
+    </itemizedlist></para>
 </section>
