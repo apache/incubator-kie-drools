@@ -263,7 +263,7 @@ then
       <mediaobject>
         <imageobject>
           <imagedata align="center" contentdepth="300px" contentwidth="540px"
-                     fileref="images/Chapter-Rule_Engine/rule-engine-inkscape.png"
+            fileref="images/HybridReasoning/rule-engine-inkscape.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -289,7 +289,7 @@ then
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Chapter-Rule_Engine/Forward_Chaining.png"
+            fileref="images/HybridReasoning/Forward_Chaining.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -309,7 +309,7 @@ then
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Chapter-Rule_Engine/Backward_Chaining.png"
+            fileref="images/HybridReasoning/Backward_Chaining.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -359,7 +359,7 @@ then
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Chapter-Introduction/expertsytem_history.png"
+            fileref="images/HybridReasoning/expertsytem_history.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -431,7 +431,7 @@ then
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Chapter-Introduction/book_recommendations.png"
+            fileref="images/HybridReasoning/book_recommendations.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>
@@ -540,7 +540,7 @@ then
       <mediaobject>
         <imageobject>
           <imagedata align="center"
-                     fileref="images/Chapter-Introduction/drools_book_recommendations.png"
+                     fileref="images/HybridReasoning/drools_book_recommendations.png"
                      format="PNG"/>
         </imageobject>
       </mediaobject>

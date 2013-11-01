@@ -29,7 +29,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" contentdepth="244" contentwidth="392" fileref="images/Theory/Rete_Nodes.png" format=""
+        <imagedata align="center" contentdepth="244" contentwidth="392" fileref="images/HybridReasoning/Rete_Nodes.png" format=""
         />
       </imageobject>
     </mediaobject>
@@ -56,7 +56,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/Object_Type_Nodes.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/Object_Type_Nodes.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -78,7 +78,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/Alpha_Nodes.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/Alpha_Nodes.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -113,7 +113,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/Join_Node.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/Join_Node.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -159,7 +159,7 @@ end</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata align="center" fileref="images/Theory/Node_Sharing.png" format="PNG"/>
+        <imagedata align="center" fileref="images/HybridReasoning/Node_Sharing.png" format="PNG"/>
       </imageobject>
     </mediaobject>
   </figure>
