@@ -23,8 +23,6 @@ import org.kie.api.runtime.KieSession;
 public class FibonacciExample {
 
     public static void main(final String[] args) {
-
-
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         System.out.println(kc.verify().getMessages().toString());
         KieSession ksession = kc.newKieSession("FibonacciKS");
@@ -32,13 +30,10 @@ public class FibonacciExample {
 //        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci.log");
 
         ksession.insert( new Fibonacci( 10 ) );
-
         ksession.fireAllRules();
 
 //        logger.close();
-
         ksession.dispose(); // Stateful rule session must always be disposed when finished
-
     }
 
     public static class Fibonacci {
