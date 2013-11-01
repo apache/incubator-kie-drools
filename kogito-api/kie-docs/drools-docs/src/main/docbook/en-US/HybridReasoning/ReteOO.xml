@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:id="ReteOOSection"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" 
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude">
+  <title>ReteOO Algorithm</title>
+
+  <para>The <emphasis>ReteOO</emphasis> was developed throughout the 3, 4 and 5 series releases. It takes the Rete
+    algorithm and applies well known enhanceemnts, all of which are covered by existing academic literature:</para>
+  <para>Node sharing<itemizedlist>
+      <listitem>
+        <para>Sharing is applied to both the alpha and beta network. The beta network sharing is always from the root
+          pattern.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Alpha indexing<itemizedlist>
+      <listitem>
+        <para>Alpha Nodes with many children use a hash lookup mechanism, to avoid testing each result.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Beta indexing<itemizedlist>
+      <listitem>
+        <para>Join, Not and Exist nodes indexing their memories using a hash. This reduces the join attempts for equal
+          checks. Recently range indexing was added to Not and Exists.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Tree based graphs<itemizedlist>
+      <listitem>
+        <para>Join matches did not contain any references to their parent or children matches. Deletions would have to
+          recalculate all join matches again, which incovles recreating all those join match objects, to be able to find
+          the parts of the network where the tuples should be deleted. This is called symmetrical propagation. A tree
+          graph provides parent and children references, so a deletion is just a matter of following those references.
+          This is asymmetrical propagation. The result is faster and less impact on the GC, and more robust because
+          changes in values will not cause memory leaks if they happen without the engine being notified.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Modify-in-place<itemizedlist>
+      <listitem>
+        <para>Traditional RETE implements a modify as a delete + insert. This causes all join tuples to be GC'd, many of
+          which are recreated again as part of the insert. Modify-in-place instead propagates as a single pass, every
+          node is inspected </para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Property reactive<itemizedlist>
+      <listitem>
+        <para>Also called "new triger condition". Allows more fine grained reactivity to updates. A Pattern can react to
+          changes to specific properies and ignore others. This alleviats problems of recursion and also helps with
+          performance.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Subnetworks<itemizedlist>
+      <listitem>
+        <para>Not, Exists and Accumulate can each have nested conditional elements, which forms sub networks.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Backward Chaining<itemizedlist>
+      <listitem>
+        <para>Prolog style derivation trees for backward chaining are supported. The implementation is stack based, so
+          does not have method recursion issues for large graphs.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Lazy Truth Maintenance<itemizedlist>
+      <listitem>
+        <para>Truth maintenance has a runtime cost, which is incurred whether TMS is used or not. Lazy TMS only turns it
+          on, on first use. Further it's only turned on for that object type, so other object types do not incur the
+          runtime cost.</para>
+      </listitem>
+    </itemizedlist></para>
+  <para>Heap based agenda<itemizedlist>
+      <listitem>
+        <para>The agenda uses a binary heap queue to sort rule matches by salience, rather than any linear search or
+          maintenance approach.</para>
+      </listitem>
+    </itemizedlist></para>
+</section>

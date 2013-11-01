@@ -44,7 +44,8 @@
   
   <part>
     <title>KIE</title>
-    <partintro><para>Part Intro</para></partintro>
+    <partintro><para>KIE is the shared core for Drools and jBPM.It provides a unified methodology and programming model for building, 
+      deploying and utilizing resources.</para></partintro>
       
     <xi:include href="../../../../../shared/KIE/KIE.xml"/>
   </part>
@@ -52,14 +53,15 @@
   
   <part>
     <title>Drools Runtime and Language</title>
-    <partintro><para>Part Intro</para></partintro>
-  <xi:include href="LanguageReference.xml"/>
-  <xi:include href="ComplexEventProcessing.xml"/>
+    <partintro><para>Drools is a powerful Hybrid Reasoning System. </para></partintro>
+    <xi:include href="HybridReasoning.xml"/>
+    <xi:include href="LanguageReference.xml"/>
+    <xi:include href="ComplexEventProcessing.xml"/>
   </part>
   
   <part>
     <title>Drools Integration</title>
-    <partintro><para>Part Intro</para></partintro>
+    <partintro><para>Integration Documentation</para></partintro>
     <xi:include href="../../../../../shared/Commands/Commands.xml"/>
     <xi:include href="../../../../../shared/CDI/CDI.xml"/>    
     <xi:include href="../../../../../shared/Spring/KieSpring.xml"/>
@@ -70,14 +72,14 @@
   
   <part>
     <title>Drools Workbench</title>
-    <partintro><para>Part Intro</para></partintro>
-    <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
-    <xi:include href="Workbench/AuthoringAssets.xml"/>
+    <partintro><para>The Drools workbench is built with the UberFire framework and uses the Guvnor plugin. Drools provides an additional rich set of plugins for rule authoring metophres.</para></partintro>
+  <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
+  <xi:include href="Workbench/AuthoringAssets.xml"/>
   </part>
     
   <part>
     <title>Drools Examples</title>
-    <partintro><para>Part Intro</para></partintro>
+    <partintro><para>Examples to help you learn Drools</para></partintro>
     <xi:include href="Examples.xml"/>
   </part>
   
