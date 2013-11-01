@@ -176,4 +176,36 @@ private StatelessKieSession ksession1ks2</programlisting>
       </figure>
     </section>
   </section>
+  <section>
+    <title>API Example Comparison</title>
+    <para>CDI can inject instances into fields, or even pass them as arguments. In this example field injection is
+      used.</para>
+    <figure>
+      <title>CDI example for a named KieSession</title>
+      <programlisting language="JAVA">@Inject
+@KSession("ksession1")
+KieSession kSession;
+
+public void go(PrintStream out) {
+    kSession.setGlobal("out", out);
+    kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
+    kSession.fireAllRules();
+}</programlisting>
+    </figure>
+    <para>This is less code and more declarative than the api approach.</para>  
+    
+    <figure>
+      <title>API equivalent example for a named KieSession</title>
+      <programlisting language="JAVA">public void go(PrintStream out) {
+    KieServices ks = KieServices.Factory.get();
+    KieContainer kContainer = ks.getKieClasspathContainer();
+
+    KieSession kSession = kContainer.newKieSession("ksession1");
+    kSession.setGlobal("out", out);
+    kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
+    kSession.fireAllRules();
+}</programlisting>
+    </figure>     
+
+  </section>
 </chapter>
