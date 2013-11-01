@@ -5,5 +5,350 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Audit Log</title>
+<para>In many cases it will be useful (if not necessary) to store information
+    <emphasis>about</emphasis> the execution of process instances, so that 
+    this information can be used afterwards. For example, sometimes we 
+    want to verify which actions have been executed for a particular process 
+    instance, or in general, we want to be able to monitor and analyze 
+    the efficiency of a particular process.</para>
     
+    <para>However, storing history information in the runtime database 
+    can result in the database rapidly increasing in size, not to mention 
+    the fact that monitoring and analysis queries might influence the performance 
+    of your runtime engine. This is why process execution history information 
+    can be stored separately.</para>
+
+    <para>This history log of execution information is created based on 
+    events that the process engine generates during execution. This is
+    possible because the jBPM runtime engine provides a generic mechanism 
+    to listen to events. The necessary information can easily be extracted 
+    from these events and then persisted to a database. Filters can also be 
+    used to limit the scope of the logged information.</para>
+
+    <section>
+      <title>The jBPM Audit data model</title>
+
+      <para>The jbpm-audit module contains an event listener that stores
+      process-related information in a database using JPA.
+      The data model itself contains three entities, one for process instance 
+      information, one for node instance information, and one for (process) 
+      variable instance information.</para>
+     
+      <!-- width && scalefit for pdf's -->
+      <figure>
+        <title>jBPM Audit data model</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-7-Persistence/bam_schema.png" format="PNG"
+                       align="center" width="100%" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+ 
+      <para>The <code>ProcessInstanceLog</code> table contains the basic
+      log information about a process instance.</para>
+
+      <table>
+        <title>ProcessInstanceLog</title>
+        <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>id</code></entry>
+            <entry>The primary key and id of the log entity</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>duration</code></entry>
+            <entry>Actual duration of this process instance since its start date</entry>
+          </row>
+          <row>
+            <entry><code>end_date</code></entry>
+            <entry>When applicable, the end date of the process instance</entry>
+          </row>
+          <row>
+            <entry><code>externalId</code></entry>
+            <entry>Optional external identifier used to correlate to some elements - e.g. deployment id</entry>
+          </row>
+          <row>
+            <entry><code>user_identity</code></entry>
+            <entry>Optional identifier of the user who started the process instance</entry>
+          </row>
+          <row>
+            <entry><code>outcome</code></entry>
+            <entry>The outcome of the process instance, for instance error code in case
+              of process instance was finished with error event</entry>
+          </row>
+          <row>
+            <entry><code>parentProcessInstanceId</code></entry>
+            <entry>The process instance id of the parent process instance if any</entry>
+          </row>
+          <row>
+            <entry><code>processid</code></entry>
+            <entry>The id of the process</entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The process instance id</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>processname</code></entry>
+            <entry>The name of the process</entry>
+          </row>
+          <row>
+            <entry><code>processversion</code></entry>
+            <entry>The version of the process</entry>
+          </row>
+          <row>
+            <entry><code>start_date</code></entry>
+            <entry>The start date of the process instance</entry>
+          </row>
+          <row>
+            <entry><code>status</code></entry>
+            <entry>The status of process instance that maps to process instance state</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+
+      <para>The <code>NodeInstanceLog</code> table contains more information about which 
+      nodes were actually executed inside each process instance. Whenever a node instance 
+      is entered from one of its incoming connections or is exited through one of its outgoing
+      connections, that information is stored in this table.</para>
+
+      <table>
+        <title>NodeInstanceLog</title>
+        <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>id</code></entry>
+            <entry>The primary key and id of the log entity</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>connection</code></entry>
+            <entry>Actual identifier of the sequence flow that led to this node instance</entry>
+          </row>
+          <row>
+            <entry><code>log_date</code></entry>
+            <entry>The date of the event</entry>
+          </row>
+          <row>
+            <entry><code>externalId</code></entry>
+            <entry>Optional external identifier used to correlate to some elements - e.g. deployment id</entry>
+          </row>
+          <row>
+            <entry><code>nodeid</code></entry>
+            <entry>The node id of the corresponding node in the process definition</entry>
+          </row>
+          <row>
+            <entry><code>nodeinstanceid</code></entry>
+            <entry>The node instance id</entry>
+          </row>
+          <row>
+            <entry><code>nodename</code></entry>
+            <entry>The name of the node</entry>
+          </row>
+          <row>
+            <entry><code>nodetype</code></entry>
+            <entry>The type of the node</entry>
+          </row>
+          <row>
+            <entry><code>processid</code></entry>
+            <entry>The id of the process that the process instance is executing</entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The process instance id</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>type</code></entry>
+            <entry>The type of the event (0 = enter, 1 = exit)</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>workItemId</code></entry>
+            <entry>Optional - only for certain node types - The identifier of work item</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+
+      <para>The <code>VariableInstanceLog</code> table contains information about changes 
+      in variable instances. The default is to only generate log entries when (after) a variable
+      changes. It's also possible to log entries before the variable (value) changes.</para>
+
+      <table>
+        <title>VariableInstanceLog</title>
+        <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>id</code></entry>
+            <entry>The primary key and id of the log entity</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>externalId</code></entry>
+            <entry>Optional external identifier used to correlate to some elements - e.g. deployment id</entry>
+          </row>
+          <row>
+            <entry><code>log_date</code></entry>
+            <entry>The date of the event</entry>
+          </row>
+          <row>
+            <entry><code>processid</code></entry>
+            <entry>The id of the process that the process instance is executing</entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The process instance id</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>oldvalue</code></entry>
+            <entry>The previous value of the variable at the time that the log is made</entry>
+          </row>
+          <row>
+            <entry><code>value</code></entry>
+            <entry>The value of the variable at the time that the log is made</entry>
+          </row>
+          <row>
+            <entry><code>variableid</code></entry>
+            <entry>The variable id in the process definition</entry> 
+          </row>
+          <row>
+            <entry><code>variableinstanceid</code></entry>
+            <entry>The id of the variable instance</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+        
+    </section>
+
+    <section>
+      <title>Storing Process Events in a Database</title>
+
+      <para>To log process history information in a database like this, you
+      need to register the logger on your session like
+      this:</para>
+
+      <programlisting language="java">
+EntityManagerFactory emf = ...;
+StatefulKnowledgeSession ksession = ...;
+AbstractAuditLogger auditLogger = AuditLoggerFactory.newJPAInstance(emf);
+ksession.addProcessEventListener(auditLogger);
+
+// invoke methods one your session here
+
+      </programlisting>
+
+      <para>To specify the database where the information should be stored,
+      modify the file <filename>persistence.xml</filename> file to include
+      the audit log classes as well (ProcessInstanceLog, NodeInstanceLog and
+      VariableInstanceLog), as shown below.</para>
+      
+    <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;
+
+
+&lt;persistence
+  version="2.0"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd
+  http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+  xmlns="http://java.sun.com/xml/ns/persistence"
+  xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance&gt;
+
+  &lt;persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA"&gt;
+    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
+    &lt;jta-data-source&gt;jdbc/jbpm-ds&lt;/jta-data-source&gt;
+    &lt;mapping-file&gt;META-INF/JBPMorm.xml&lt;/mapping-file&gt;
+    &lt;class&gt;org.drools.persistence.info.SessionInfo&lt;/class&gt;
+    &lt;class&gt;org.jbpm.persistence.processinstance.ProcessInstanceInfo&lt;/class&gt;
+    &lt;class&gt;org.drools.persistence.info.WorkItemInfo&lt;/class&gt;
+    &lt;class&gt;org.jbpm.persistence.correlation.CorrelationKeyInfo&lt;/class&gt;
+    &lt;class&gt;org.jbpm.persistence.correlation.CorrelationPropertyInfo&lt;/class&gt;
+    &lt;class&gt;org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo&lt;/class&gt;
+
+    &lt;class&gt;org.jbpm.process.audit.ProcessInstanceLog&lt;/class&gt;
+    &lt;class&gt;org.jbpm.process.audit.NodeInstanceLog&lt;/class&gt;
+    &lt;class&gt;org.jbpm.process.audit.VariableInstanceLog&lt;/class&gt;
+
+    &lt;properties&gt;
+      &lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;
+      &lt;property name="hibernate.max_fetch_depth" value="3"/&gt;
+      &lt;property name="hibernate.hbm2ddl.auto" value="update"/&gt;
+      &lt;property name="hibernate.show_sql" value="true"/&gt;
+      &lt;property name="hibernate.transaction.jta.platform"
+      value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform"/&gt;
+    &lt;/properties&gt;
+  &lt;/persistence-unit&gt;
+&lt;/persistence&gt;
+    </programlisting>
+
+      <para>All this information can easily be queried and used in a lot of
+      different use cases, ranging from creating a history log for one
+      specific process instance to analyzing the performance of all instances
+      of a specific process.</para>
+      
+      <para>This audit log should only be considered a default implementation.
+      We don't know what information you need to store for analysis afterwards,
+      and for performance reasons it is recommended to only store the relevant
+      data.  Depending on your use cases, you might define your own data model
+      for storing the information you need, and use the process event listeners
+      to extract that information.</para>
+    </section>
+
+    <section>
+      <title>Storing Process Events in a JMS queue for further processing</title>
+
+      <para>
+        Process events are stored in data base synchronously and within the same transaction as actual process instance
+        execution. That obviously takes some time especially in highly loaded systems and might have some impact on
+        data base when both history log and runtime data are kept in the same data base.
+        To provide alternative option for storing process events a JMS based logger has been provided. It allows to be
+        configured to submit messages to JMS queue instead of directly persisting them in data base. It can be configured
+        to be transactional as well to avoid issues with inconsistent data in case of process engine transaction is
+        rolled back.
+      </para>
+      <programlisting language="java">
+ConnectionFactory factory = ...;
+Queue queue = ...;
+StatefulKnowledgeSession ksession = ...;
+Map&lt;String, Object&gt; jmsProps = new HashMap&lt;String, Object&gt;();
+jmsProps.put("jbpm.audit.jms.transacted", true);
+jmsProps.put("jbpm.audit.jms.connection.factory", factory);
+jmsProps.put("jbpm.audit.jms.queue", queue);
+AbstractAuditLogger auditLogger = AuditLoggerFactory.newInstance(Type.JMS, session, jmsProps);
+ksession.addProcessEventListener(auditLogger);
+
+// invoke methods one your session here
+
+      </programlisting>
+      <para>
+        This is just one of possible ways to configure JMS audit logger, see javadocs for AuditLoggerFactory for more details.
+      </para>
+    </section>    
 </section>

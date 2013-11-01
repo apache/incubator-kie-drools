@@ -5,5 +5,118 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Transactions</title>
+   <para>The jBPM engine supports JTA transactions. It also supports local transactions 
+    <emphasis>only</emphasis> when using Spring. It does not support pure local transactions 
+    at the moment. For more information about using Spring to set up persistence, please 
+    see the Spring chapter in the Drools integration guide.</para>
+
+    <para>Whenever you do not provide transaction boundaries inside your application,
+    the engine will automatically execute each method invocation on the engine
+    in a separate transaction.  If this behavior is acceptable, you don't need to do
+    anything else.  You can, however, also specify the transaction boundaries yourself.
+    This allows you, for example, to combine multiple commands into one transaction.</para>
+
+    <para>You need to register a transaction manager at the environment before
+    using user-defined transactions.  The following sample code uses the Bitronix
+    transaction manager.  Next, we use the Java Transaction API (JTA)
+    to specify transaction boundaries, as shown below:</para>
+
+    <programlisting language="java">
+// create the entity manager factory and register it in the environment
+EntityManagerFactory emf = Persistence.createEntityManagerFactory( "org.jbpm.persistence.jpa" );
+Environment env = KnowledgeBaseFactory.newEnvironment();
+env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, emf );
+env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
+
+// create a new knowledge session that uses JPA to store the runtime state
+StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+// start the transaction
+UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
+ut.begin();
+
+// perform multiple commands inside one transaction
+ksession.insert( new Person( "John Doe" ) );
+ksession.startProcess( "MyProcess" );
+
+// commit the transaction
+ut.commit();
+    </programlisting>
+
+    <para>Note that, if you use Bitronix as the transaction manager, you should also add
+    a simple <filename>jndi.properties</filename> file in you root classpath to register the
+    Bitronix transaction manager in JNDI.  If you are using the jbpm-test module, this is
+    already included by default.  If not, create a file named <filename>jndi.properties</filename>
+    with the following content:</para>
+
+    <programlisting>
+java.naming.factory.initial=bitronix.tm.jndi.BitronixInitialContextFactory
+    </programlisting>
+
+    <para>If you would like to use a different JTA transaction manager, you can change the
+    <filename>persistence.xml</filename> file to use your own transaction manager.  For example,
+    when running inside JBoss Application Server v5.x or v7.x, you can use the JBoss transaction manager.
+    You need to change the transaction manager property in <filename>persistence.xml</filename> to:</para>
     
+    <programlisting>
+&lt;property name="hibernate.transaction.jta.platform" value="org.hibernate.transaction.JBossTransactionManagerLookup" /&gt;
+    </programlisting>
+
+      <section>
+        <title>Container managed transaction</title>
+        
+        <para>Special consideration need to be taken when embedding jBPM inside an application that
+        executes in Container Managed Transaction (CMT) mode, for instance EJB beans. This especially
+        applies to application servers that does not allow accessing UserTransaction instance from
+        JNDI when being part of container managed transaction, e.g. WebSphere Application Server.
+        Since default implementation of transaction manager in jBPM is based on UserTransaction 
+        to get transaction status which is used to decide if transaction should be started or not, 
+        in environments that prevent accessing UserTrancation it won't do its job. 
+        To secure proper execution in CMT environments a dedicated transaction manager implementation
+        is provided:</para>
+        <programlisting>org.jbpm.persistence.jta.ContainerManagedTransactionManager</programlisting>
+        
+        <para>This transaction manager expects that transaction is active and thus will always
+        return ACTIVE when invoking getStatus method. Operations like begin, commit, rollback
+        are no-op methods as transaction manager runs under managed transaction and can't affect it.
+        </para>
+        <note>
+            <para>To make sure that container is aware of any exceptions that happened during
+            process instance execution, user needs to ensure that exceptions thrown by the 
+            engine are propagated up to the container to properly rollback transaction.</para>
+        </note>
+        
+        <para>To configure this transaction manager following must be done:</para>
+        <itemizedlist>
+        <listitem>Insert transaction manager and persistence context manager into environment prior
+        to creating/loading session
+        <programlisting>
+Environment env = EnvironmentFactory.newEnvironment();
+env.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
+env.set(EnvironmentName.TRANSACTION_MANAGER, new ContainerManagedTransactionManager());
+env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, new JpaProcessPersistenceContextManager(env));
+        </programlisting>
+        </listitem>
+        <listitem>configure JPA provider (example hibernate and WebSphere)
+        <programlisting>
+&lt;property name="hibernate.transaction.factory_class" value="org.hibernate.transaction.CMTTransactionFactory"/&gt;
+&lt;property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.WebSphereExtendedJTATransactionLookup"/&gt;
+        </programlisting>
+        </listitem>
+        </itemizedlist>
+        
+        <para>With following configuration jBPM should run properly in CMT environment.</para>
+
+        <section>
+          <title>CMT dispose ksession command</title>
+          <para>
+            Usually when running within container managed transaction disposing ksession directly will cause exceptions
+            on transaction completion as there are some transaction synchronization registered by jBPM to clean up
+            the state after invocation is finished. To overcome this problem specialized command has been provided
+            <code>org.jbpm.persistence.jta.ContainerManagedTransactionDisposeCommand</code> which allows to simply
+            execute this command instead of refular <code>ksession.dispose</code> which will ensure that ksession will
+            be disposed at the transaction completion.
+          </para>
+        </section>
+      </section>    
 </section>
