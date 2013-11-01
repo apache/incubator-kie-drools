@@ -3,6 +3,7 @@ package org.jbpm.services.task.impl.model.xml;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,9 +66,18 @@ public class JaxbTask implements Task {
         this.id = task.getId();
         this.priority = task.getPriority();
         this.peopleAssignments = new JaxbPeopleAssignments(task.getPeopleAssignments());
+
+        // Done because we get a (lazy-initialized) entity back from the task service, which causes problems outside a tx
+        // .. so we "eager-initialize" all values here to avoid problems later. (Also in JaxbPeopleAssignments)
+        // Collection.toArray() == PersistenceBag.toArray(), which calls PersistenceBag.read(), initializing collection
+        // See org.hibernate.collection.internal.PersistenceBag
         this.names = task.getNames();
+        this.names.toArray();
         this.subjects = task.getSubjects();
+        this.subjects.toArray();
         this.descriptions = task.getDescriptions();
+        this.descriptions.toArray();
+        
         this.taskData = new JaxbTaskData(task.getTaskData());
         this.taskType = task.getTaskType();
     }

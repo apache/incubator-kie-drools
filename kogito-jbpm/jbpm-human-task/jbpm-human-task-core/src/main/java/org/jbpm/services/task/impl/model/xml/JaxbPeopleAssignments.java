@@ -1,5 +1,8 @@
 package org.jbpm.services.task.impl.model.xml;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +14,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jbpm.services.task.impl.model.xml.adapter.OrganizationalEntityXmlAdapter;
-import org.kie.api.task.model.Attachment;
-import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.User;
@@ -20,7 +21,7 @@ import org.kie.api.task.model.User;
 
 @XmlRootElement(name="people-assignments")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxbPeopleAssignments extends AbstractJaxbTaskObject<PeopleAssignments> implements PeopleAssignments {
+public class JaxbPeopleAssignments implements PeopleAssignments {
 
     @XmlElement(name="task-initiator")
     @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
@@ -35,11 +36,15 @@ public class JaxbPeopleAssignments extends AbstractJaxbTaskObject<PeopleAssignme
     private List<OrganizationalEntity> businessAdministrators;
 
     public JaxbPeopleAssignments() { 
-       super(PeopleAssignments.class);
+       // Default constructor for JAXB
     }
     
     public JaxbPeopleAssignments(PeopleAssignments peopleAssignments) { 
-        super(peopleAssignments, PeopleAssignments.class);
+        this.taskInitiator = peopleAssignments.getTaskInitiator();
+        this.potentialOwners = peopleAssignments.getPotentialOwners();
+        this.potentialOwners.toArray();
+        this.businessAdministrators = peopleAssignments.getBusinessAdministrators();
+        this.businessAdministrators.toArray();
     }
     
     @Override
@@ -61,6 +66,18 @@ public class JaxbPeopleAssignments extends AbstractJaxbTaskObject<PeopleAssignme
             businessAdministrators = Collections.EMPTY_LIST;
         }
         return Collections.unmodifiableList(businessAdministrators);
+    }
+
+    public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
+        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
+        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + PeopleAssignments.class.getSimpleName()
+                + " implementation.");
+    }
+
+    public void writeExternal(ObjectOutput arg0) throws IOException {
+        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
+        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + PeopleAssignments.class.getSimpleName()
+                + " implementation.");
     }
 
 }
