@@ -102,12 +102,6 @@
             However, due to "assert" being a keyword in most languages, we have decided to use the
               <literal>insert</literal> keyword; In this manual, the two terms are used
             interchangeably.</para></note>
-        
-
-        <!-- FIXME - I think we might want to add this sentence to the previous paragraph.
-        However, when the rules are executed, they can assert new objects
-        thus causing new work to be needed. laune: No, it should be elsewhere.
-      -->
 
         <para>When an Object is inserted into the session it returns a <code>FactHandle</code>. This
             <code>FactHandle</code> is the token used to represent the inserted object within the
@@ -160,20 +154,17 @@ ksession.delete( stiltonHandle );            </programlisting>
       <section>
         <title>Update</title>
 
-        <para>The Rule Engine must be notified of modified facts, so that they
-        can be reprocessed. You must use the <code>update()</code> method to
-        notify the <code>WorkingMemory</code> of changed objects for those
-        objects that are not able to notify the <code>WorkingMemory</code>
-        themselves. Notice that <code>update()</code> always takes the
-        modified object as a second parameter, which allows you to specify new
-        instances for immutable objects. On the right hand side of a rule the
-        <code>modify</code> statement is recommended, as it makes the
-        changes and notifies the engine in a single statement. Alternatively,
-        after changing a fact object's field values through calls of setter
-        methods you must invoke <code>update</code> immediately, event
-        before changing another fact, or you will cause problems with the
-        indexing within the rule engine. The modify statement avoids this
-        problem.</para>
+        <para>The Rules Engine must be notified of modified facts, so that they can be reprocessed.
+          You must use the <code>update()</code> method to notify the <code>WorkingMemory</code> of
+          changed objects for those objects that are not able to notify the
+            <code>WorkingMemory</code> themselves. Notice that <code>update()</code> always takes
+          the modified object as a second parameter, which allows you to specify new instances for
+          immutable objects. On the right hand side of a rule the <code>modify</code> statement is
+          recommended, as it makes the changes and notifies the engine in a single statement.
+          Alternatively, after changing a fact object's field values through calls of setter methods
+          you must invoke <code>update</code> immediately, event before changing another fact, or
+          you will cause problems with the indexing within the rule engine. The modify statement
+          avoids this problem.</para>
 
         <programlisting language="java">Cheese stilton = new Cheese("stilton");
 FactHandle stiltonHandle = workingMemory.insert( stilton );

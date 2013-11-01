@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+    <title>Insurance Company Risk Factor and Policy price (using BRMS)</title>
+
+    <screen><emphasis role="bold">Name:</emphasis> drools-insurance
+<emphasis role="bold">Type:</emphasis> java web application
+<emphasis role="bold">Rules file:</emphasis> exported repository from brms, repository_export.xml
+<emphasis role="bold">Objective:</emphasis> Demonstrates how to use, organize, deploy and execute a rulebase from BRMS</screen>
+
+    <section>
+      <title>BRMS editors</title>
+
+      <para>The BRMS has many GUI editors, and textual editors. This discusses a few example rules using some of the GUI features:</para>
+
+      <figure>
+        <title>Guided editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/BRMS_Guided.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above example shows the guided editor in action. This is a slightly more complex example, as a few bound variables are used. We are binding "$driver" to the Driver fact, and also binding driverId to the id field of the driver (which is then used in the SupplementalInfo fact - to join the driverId with the actual driver id). Note the use of the ruleflow-group to specify what step of the processing this rule applies to.</para>
+
+      <figure>
+        <title>DSL Editor</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/BRMS_DSL.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>The above shows the editor using a DSL. In this case the "guided editor" was used - this is not a text area, but only provides text boxes to "fill in the blanks" as specified in the DSL configuration. Note you can also use text based DSLs where there is not this restriction.</para>
+    </section>
+
+    <section>
+      <title>Introduction</title>
+
+      <para>Insurance, in law and economics, is a form of risk management primarily used to hedge against the risk of a contingent loss. Insurance is defined as the equitable transfer of the risk of a loss, from one entity to another, in exchange for a premium. Insurer, in economics, is the company that sells the insurance. Insurance rate is a factor used to determine the amount, called the premium, to be charged for a certain amount of insurance coverage. Risk management, the practice of appraising and controlling risk, has evolved as a discrete field of study and practice.</para>
+    </section>
+
+    <section>
+      <title>The insurance logic</title>
+
+      <para>If you have a poor driving record, you may need to look into high risk auto insurance. Accidents increase these rates as well. If you have a low experience for example less than 3 years as a licensed driver, insurance companies believe that the chances that you will be involved in a traffic accident are higher than someone more expert.</para>
+
+      <para>Who you are also plays a factor. Men are considered more of a risk than women. Teens are considered more of a risk than adults as well if you have some younger driver in family like your 20 years old son.</para>
+
+      <screen>rule "Young male single driver"
+ruleflow-group "risk assessment"
+when
+ $driver : Driver( genre == Driver.MALE, age &lt; 25, maritalState == Driver.SINGLE )
+then 
+ $driver.updateInsuranceFactor(1.6);
+end
+
+rule "no expert driver"
+ruleflow-group "risk assessment"
+when
+ $driver : Driver ( licenceYears &lt; 3 )
+then
+ $driver.updateInsuranceFactor(1.2);
+end
+</screen>
+
+      <para>Extra coverage over glasses, additional car and accessories, like your expansive "pimped" sound system will increase your insurance final price, not the risk factor. </para>
+
+      <screen>ruleflow-group "insurancecalcule"
+salience 20
+when
+ not Rejection()
+ $driver : Driver ( driverID : id )
+ $access : AccessoriesCoverage ( driverId == driverID)
+ $policy : Policy( approved == true )
+then
+ $policy.setInsurancePrice( $policy.getInsurancePrice() + 
+  ($access.getAlarmSystemValue() * 0.10) + 
+  ($access.getArmorValue() * 0.20) +
+  ($access.getSoundSystemValue() * 0.30 ));
+</screen>
+
+      <para>This example uses the previously explained <emphasis role="bold">RuleFlow</emphasis> feature, the following diagram gives you an overview of the insurance factor and calculate logic: As you can see, we first calculate the insurance factor, if the driver matches with some rejection condition we don't execute the group that contains the Policy price calculus, just returning and not approved policy </para>
+
+      <screen>ruleflow-group "insurancecalcule"
+salience 10
+when
+ not Rejection()
+ $driver : Driver(ifactor : insuranceFactor)
+ $policy : Policy( approved == true, bp : basePrice, ip : insurancePrice )
+then
+ $policy.setInsurancePrice((bp * ifactor) + ip);
+</screen>
+
+
+      <figure>
+        <title>The insurance rule flow</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/insurance-ruleflow.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Downloading and installing the BRMS</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Download the latest version of BRMS from http://cruisecontrol.jboss.com/cc/artifacts/jboss-rules</para>
+        </listitem>
+
+        <listitem>
+          <para>Deploy BRMS WAR file into JBoss4.2 AS or JBossWeb, other containers can be used as well possibly with some tweaking of dependencies (check this url if you using a different application server http://wiki.jboss.org/wiki/Wiki.jsp?page=JBRMSjsfdependencies).</para>
+        </listitem>
+
+        <listitem>
+          <para>Check you can access and run the BRMS.</para>
+        </listitem>
+
+        <listitem>
+          <para>Check out the demo project from the Drools subversion repository http://anonsvn.labs.jboss.com/labs/jbossrules/trunk/drools-examples/drools-insurance/</para>
+        </listitem>
+
+        <listitem>
+          <para>Import the demo business rules insurance repository file into BRMS, the compressed can be found at "files" folder in the demo project. To do this, open the "files" directory, unzip the file there locally, and then go to the "Admin" section and "Manage import/export" of the BRMS, select the file, and press "Import" - follow instructions.</para>
+        </listitem>
+
+        <listitem>
+          <para>Navigate through the BRMS web application to see how things are placed and organized and try to create some rules.</para>
+        </listitem>
+
+        <listitem>
+          <para>Go to the "Packages" feature and build the package (you should see no errors).</para>
+        </listitem>
+
+        <listitem>
+          <para>Now go to the "Deployment" feature, when you click on the package, it will show you one snapshot (which was part of the import, you can create more if you like from the previous step).</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Deploying the insurance example in your application server</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Go into your downloaded project and execute <command>mvn clean package</command></para>
+        </listitem>
+
+        <listitem>
+          <para>You should see the RuleAgent downloading the pre-compiled package from brms, if something goes wrong and all tests fails, check if the BRMS is up and running and try rebuild the package snapshot.</para>
+
+        <screen>Running org.acme.insurance.test.DriverTest
+RuleAgent(insuranceconfig) INFO (Wed Sep 18 14:11:44 BRT 2007): Configuring with newInstance=true, secondsToRefresh=30
+RuleAgent(insuranceconfig) INFO (Wed Sep 18 14:11:44 BRT 2007): Configuring package provider : URLScanner monitoring URLs:  
+                          http://localhost:8080/drools-jbrms/org.drools.brms.JBRMS/package/org.acme.insurance.base/InsuranceDemo
+
+RuleAgent(insuranceconfig) INFO (Wed Sep 18 14:11:45 BRT 2007): Applying changes to the rulebase.
+RuleAgent(insuranceconfig) INFO (Wed Sep 18 14:11:45 BRT 2007): Creating a new rulebase as per settings.
+RuleAgent(insuranceconfig) INFO (Wed Sep 18 14:11:45 BRT 2007): Adding package called org.acme.insurance.base
+
+... snip ...
+
+Insurance calculate
+Insurance Calcule: 0.0
+Driver wants non related expenses coverage: 1.05
+Driver wants glass coverage: 1.1025
+Driver wants extra assistance: 1.1576250000000001Driver wants an extra Car: 1.2155062500000002
+Driver Single Young Male Driver factor: 1.9448100000000004
+New Licenced driver 2.333772
+approve: 0.0
+Policy approved focusing insurance calcule agenda-group
+Insurance calculate
+Insurance Calcule: 0.0
+Night Vehicle Place: 1.44
+Day Vehicle Place: 1.656
+approve: 0.0
+Policy approved focusing insurance calcule agenda-group
+Insurance calculate
+Insurance extra items percent: 545.0
+Insurance Calcule: 545.0
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.028 sec
+
+Results :
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
+</screen>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Running the example from the web page</title>
+
+      <para>After running and packing you are able to deploy the war into your application server, just following the previous instructions for BRMS, then point your browser to the example url, that should be something like this http://localhost:8080/drools-insurance. Just play around the example and change some values and press the execute button, after the rules fired the result will be displayed in the bottom of the page.</para>
+
+      <figure>
+        <title>The insurance web page</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Chapter-Examples/InsuranceExample/insurance-website.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
