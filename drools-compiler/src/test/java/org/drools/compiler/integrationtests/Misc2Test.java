@@ -3668,7 +3668,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore( "lock-on-active with modifies is not working in lazy mode" )
     public void testLockOnActiveWithModifyNoEager() {
         // DROOLS-280
         String drl = "" +

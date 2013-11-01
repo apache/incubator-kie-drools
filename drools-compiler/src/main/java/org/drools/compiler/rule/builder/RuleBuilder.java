@@ -149,6 +149,7 @@ public class RuleBuilder {
     public void buildAttributes(final RuleBuildContext context) {
         final Rule rule = context.getRule();
         final RuleDescr ruleDescr = context.getRuleDescr();
+        boolean lockOnActive = false;
 
         for ( final AttributeDescr attributeDescr : ruleDescr.getAttributes().values() ) {
             final String name = attributeDescr.getName();
@@ -168,8 +169,8 @@ public class RuleBuilder {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
                 rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as AG, as they are aliased to AGs anyway
             } else if ( name.equals( "lock-on-active" ) ) {
-                rule.setLockOnActive( getBooleanValue( attributeDescr,
-                                                       true ) );
+                lockOnActive = getBooleanValue( attributeDescr, true );
+                rule.setLockOnActive( lockOnActive );
             } else if ( name.equals( DroolsSoftKeywords.DURATION ) || name.equals( DroolsSoftKeywords.TIMER ) ) {
                 String duration = attributeDescr.getValue();
                 buildTimer( rule, duration, context);
@@ -212,7 +213,7 @@ public class RuleBuilder {
         }
 
         ann = ruleDescr.getAnnotation( "Eager" );
-        if ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) {
+        if ( lockOnActive || ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) ) {
             rule.setEager( true );
         }
 
