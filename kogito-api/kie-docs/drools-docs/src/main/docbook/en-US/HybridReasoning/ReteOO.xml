@@ -9,8 +9,8 @@
          xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>ReteOO Algorithm</title>
 
-  <para>The <emphasis>ReteOO</emphasis> was developed throughout the 3, 4 and 5 series releases. It takes the Rete
-    algorithm and applies well known enhanceemnts, all of which are covered by existing academic literature:</para>
+  <para>The <emphasis>ReteOO</emphasis> was developed throughout the 3, 4 and 5 series releases. It takes the RETE
+    algorithm and applies well known enhancements, all of which are covered by existing academic literature:</para>
   <para>Node sharing<itemizedlist>
       <listitem>
         <para>Sharing is applied to both the alpha and beta network. The beta network sharing is always from the root
@@ -31,7 +31,7 @@
   <para>Tree based graphs<itemizedlist>
       <listitem>
         <para>Join matches did not contain any references to their parent or children matches. Deletions would have to
-          recalculate all join matches again, which incovles recreating all those join match objects, to be able to find
+          recalculate all join matches again, which involves recreating all those join match objects, to be able to find
           the parts of the network where the tuples should be deleted. This is called symmetrical propagation. A tree
           graph provides parent and children references, so a deletion is just a matter of following those references.
           This is asymmetrical propagation. The result is faster and less impact on the GC, and more robust because
@@ -47,12 +47,12 @@
     </itemizedlist></para>
   <para>Property reactive<itemizedlist>
       <listitem>
-        <para>Also called "new triger condition". Allows more fine grained reactivity to updates. A Pattern can react to
-          changes to specific properies and ignore others. This alleviats problems of recursion and also helps with
+        <para>Also called "new trigger condition". Allows more fine grained reactivity to updates. A Pattern can react
+          to changes to specific properties and ignore others. This alleviates problems of recursion and also helps with
           performance.</para>
       </listitem>
     </itemizedlist></para>
-  <para>Subnetworks<itemizedlist>
+  <para>Sub-networks<itemizedlist>
       <listitem>
         <para>Not, Exists and Accumulate can each have nested conditional elements, which forms sub networks.</para>
       </listitem>
