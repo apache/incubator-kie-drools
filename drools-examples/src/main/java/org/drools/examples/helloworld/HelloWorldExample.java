@@ -16,20 +16,14 @@
 
 package org.drools.examples.helloworld;
 
-import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.event.rule.DebugAgendaEventListener;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import org.kie.api.KieServices;
+import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DebugRuleRuntimeEventListener;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 /**
  * This is a sample file to launch a rule package from a rule source file.
@@ -37,53 +31,46 @@ import java.util.List;
 public class HelloWorldExample {
 
     public static final void main(final String[] args) {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory
-                .newKnowledgeBuilder();
-
-        // this will parse and compile in one step
-        kbuilder.add( ResourceFactory.newClassPathResource( "HelloWorld.drl",
-                                                            HelloWorldExample.class ),
-                      ResourceType.DRL );
-
-        // Check the builder for errors
-        if ( kbuilder.hasErrors() ) {
-            System.out.println( kbuilder.getErrors().toString() );
-            throw new RuntimeException( "Unable to compile \"HelloWorld.drl\"." );
-        }
-
-        // get the compiled packages (which are serializable)
-        final Collection<KnowledgePackage> pkgs = kbuilder
-                .getKnowledgePackages();
-
-        // add the packages to a knowledgebase (deploy the knowledge packages).
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( pkgs );
-
-        final StatefulKnowledgeSession ksession = kbase
-                .newStatefulKnowledgeSession();
+        // KieServices is the factory for all KIE services 
+        KieServices ks = KieServices.Factory.get();
+        
+        // From the kie services, a container is created from the classpath
+        KieContainer kc = ks.getKieClasspathContainer();
+        
+        // From the container, a session is created based on  
+        // its definition and configuration in the META-INF/kmodule.xml file 
+        KieSession ksession = kc.newKieSession("HelloWorldKS");
+        
+        // Once the session is created, the application can interact with it
+        // In this case it is setting a global as defined in the 
+        // org/drools/examples/helloworld/HelloWorld.drl file
         ksession.setGlobal( "list",
                             new ArrayList<Object>() );
 
+        // The application can also setup listeners
         ksession.addEventListener( new DebugAgendaEventListener() );
         ksession.addEventListener( new DebugRuleRuntimeEventListener() );
 
-        // setup the audit logging
-        // Remove comment to use FileLogger
-        // KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger( ksession, "./helloworld" );
+        // To setup a file based audit logger, uncomment the next line 
+        // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./helloworld" );
         
-        // Remove comment to use ThreadedFileLogger so audit view reflects events whilst debugging
-        // KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger( ksession, "./helloworld", 1000 );
+        // To setup a ThreadedFileLogger, so that the audit view reflects events whilst debugging,
+        // uncomment the next line
+        // KieRuntimeLogger logger = ks.getLoggers().newThreadedFileLogger( ksession, "./helloworld", 1000 );
 
+        // The application can insert facts into the session
         final Message message = new Message();
         message.setMessage( "Hello World" );
         message.setStatus( Message.HELLO );
         ksession.insert( message );
 
+        // and fire the rules
         ksession.fireAllRules();
-
+        
         // Remove comment if using logging
         // logger.close();
 
+        // and then dispose the session
         ksession.dispose();
     }
 
