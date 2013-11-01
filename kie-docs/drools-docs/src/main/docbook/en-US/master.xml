@@ -75,4 +75,10 @@
     <xi:include href="Workbench/AuthoringAssets.xml"/>
   </part>
     
+  <part>
+    <title>Drools Examples</title>
+    <partintro><para>Part Intro</para></partintro>
+    <xi:include href="Examples.xml"/>
+  </part>
+  
 </book>
