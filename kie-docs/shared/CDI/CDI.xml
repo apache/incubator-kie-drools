@@ -40,7 +40,6 @@ private KieContainer kContainer;</programlisting>
 @KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
 private KieContainer kContainer;</programlisting>
       </figure>
-      <para/>
       <figure>
         <title>Injects named KieContianer for Dyanmic KieModule</title>
         <programlisting language="JAVA">@Inject
@@ -48,12 +47,13 @@ private KieContainer kContainer;</programlisting>
 @KReleaseId(groupId = "jar1", artifactId = "art1", version = "1.1")
 private KieContainer kContainer;</programlisting>
       </figure>
-      <para>xxxx</para>
     </section>
     <section>
       <title>@KBase</title>
       <para>@KBase is optional as it can be detected and added by the use of @Inject and variable
         type inferrence.</para>
+      <para>The default argument, if given, maps to the value attribute and specifie the name of the KieBase from the
+        kmodule.xml file.</para>
       <figure>
         <title>Injects the Default KieBase from the Classpath KieContainer</title>
         <programlisting language="JAVA">@Inject
@@ -68,33 +68,34 @@ private KieBase kbase;</programlisting>
       <figure>
         <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
         <programlisting language="JAVA">@Inject
-@KBase("jar1.KBase1") 
+@KSession("kbase1") 
 @KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
 private KieBase kbase1v10;
 
 @Inject
-@KBase("jar1.KBase1") 
+@KBase("kbase1") 
 @KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
 private KieBase kbase1v10;</programlisting>
       </figure>
       <figure>
         <title>Use 'name' attribute to force new Instance for 'jar1.KBase1' KieBase</title>
         <programlisting language="JAVA">@Inject
-@KBase(value="jar1.KBase1", name="kb1")
+@KSession(value="kbase1", name="kb1")
 @KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private KieBase kbase1kb1;
 
 @Inject  
-@KBase(value="jar1.KBase1", name="kb2")    
+@KSession(value="kbase1", name="kb2")    
 @KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
-private KieBase kbase1kb1;</programlisting>
+private KieBase kbase1kb2;</programlisting>
       </figure>
-      <para/>
     </section>
     <section>
       <title>@KSession for KieSession</title>
       <para>@KSession is optional as it can be detected and added by the use of @Inject and variable
         type inferrence.</para>
+      <para>The default argument, if given, maps to the value attribute and specifie the name of the KieSession from the
+        kmodule.xml file</para>
       <figure>
         <title>Injects the Default KieSession from the Classpath KieContainer</title>
         <programlisting language="JAVA">@Inject
@@ -109,24 +110,24 @@ private KieSession ksession;</programlisting>
       <figure>
         <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
         <programlisting language="JAVA">@Inject
-@KBase("jar1.KBase1") 
+@KSession("ksession1") 
 @KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
 private KieSession ksessionv10;
 
 @Inject
-@KBase("jar1.KBase1") 
+@KSession("ksession1") 
 @KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
 private KieSession ksessionv11;</programlisting>
       </figure>
       <figure>
         <title>Use 'name' attribute to force new Instance for 'jar1.KBase1' KieSession</title>
         <programlisting language="JAVA">@Inject
-@KBase(value="jar1.KBase1", name="ks1")
+@KSession(value="ksession1", name="ks1")
 @KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private KieSession ksession1ks1
 
 @Inject  
-@KBase(value="jar1.KBase1", name="ks2")    
+@KSession(value="ksession1", name="ks2")    
 @KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private KieSession ksession1ks2</programlisting>
       </figure>
@@ -135,6 +136,8 @@ private KieSession ksession1ks2</programlisting>
       <title>@KSession for StatelessKieSession</title>
       <para>@KSession is optional as it can be detected and added by the use of @Inject and variable
         type inferrence.</para>
+      <para>The default argument, if given, maps to the value attribute and specifie the name of the KieSession from the
+        kmodule.xml file.</para>
       <figure>
         <title>Injects the Default StatelessKieSession from the Classpath KieContainer</title>
         <programlisting language="JAVA">@Inject
@@ -149,12 +152,12 @@ private StatelessKieSession ksession;</programlisting>
       <figure>
         <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
         <programlisting language="JAVA">@Inject
-@KBase("jar1.KBase1") 
+@KSession("ksession1") 
 @KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
 private StatelessKieSession ksessionv10;
 
 @Inject
-@KBase("jar1.KBase1") 
+@KSession("ksession1") 
 @KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
 private StatelessKieSession ksessionv11;</programlisting>
       </figure>
@@ -162,12 +165,12 @@ private StatelessKieSession ksessionv11;</programlisting>
         <title>Use 'name' attribute to force new Instance for 'jar1.KBase1'
           StatelessKieSession</title>
         <programlisting language="JAVA">@Inject
-@KBase(value="jar1.KBase1", name="ks1")
+@KSession(value="ksession1", name="ks1")
 @KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private StatelessKieSession ksession1ks1
 
 @Inject  
-@KBase(value="jar1.KBase1", name="ks2")    
+@KSession(value="ksession1", name="ks2")    
 @KReleaseId( groupId = "jar1", artifactId = "art1", version = "1.0")
 private StatelessKieSession ksession1ks2</programlisting>
       </figure>
