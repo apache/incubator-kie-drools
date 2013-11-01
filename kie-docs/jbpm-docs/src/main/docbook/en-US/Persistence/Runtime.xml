@@ -5,5 +5,415 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Process Instance State</title>
+ <para>jBPM allows the persistent storage of certain information. This chapter 
+  describes these different types of persistence, and how to configure them.
+  An example of the information stored is the process runtime state. Storing
+  the process runtime state is necessary in order to be able to continue execution 
+  of a process instance at any point, if something goes wrong. Also, the process 
+  definitions themselves, and the history information (logs of current and previous 
+  process states already) can also be persisted. 
+  </para>
+
+  <section>
+    <title>Runtime State</title>
+
+    <para>Whenever a process is started, a process instance is created, which
+    represents the execution of the process in that specific context.  For example,
+    when executing a process that specifies how to process a sales order, one process
+    instance is created for each sales request.  The process instance represents
+    the current execution state in that specific context, and contains all the
+    information related to that process instance.  Note that it only contains
+    the (minimal) runtime state that is needed to continue the execution of that
+    process instance at some later time, but it does not include information
+    about the history of that process instance if that information is no longer
+    needed in the process instance.</para>
+
+    <para>The runtime state of an executing process can be made persistent,
+    for example, in a database.  This allows to restore the state of
+    execution of all running processes in case of unexpected failure,
+    or to temporarily remove running instances from memory and restore
+    them at some later time.  jBPM allows you to plug in different
+    persistence strategies.  By default, if you do not configure the
+    process engine otherwise, process instances are not made persistent.</para>
     
+    <para>If you configure the engine to use persistence, it will automatically store
+    the runtime state into the database.  You do not have to trigger persistence yourself,
+    the engine will take care of this when persistence is enabled.  Whenever you invoke the
+    engine, it will make sure that any changes are stored at the end of that invocation, at
+    so-called safe points.  Whenever something goes wrong and you restore the engine from
+    the database, you also should not reload the process instances and trigger them manually
+    to resume execution, as process instances will automatically resume execution if they are
+    triggered, like for example by a timer expiring, the completion of a task that was 
+    requested by that process instance, or a signal being sent to the process instance.  The
+    engine will automatically reload process instances on demand.</para>
+    
+    <para>The runtime persistence data should in general be considered internal, meaning that you
+    probably should not try to access these database tables directly and especially not try
+    to modify these directly (as changing the runtime state of process instances without the
+    engine knowing might have unexpected side-effects).  In most cases where information about
+    the current execution state of process instances is required, the use of a history log
+    is mostly recommended (see below).  In some cases, it might still be useful to for example
+    query the internal database tables directly, but you should only do this if you know what
+    you are doing.</para>
+
+    <section>
+      <title>Binary Persistence</title>
+
+    <para>jBPM uses a binary persistence mechanism, otherwise known
+    as marshalling, which converts the state of the process instance
+    into a binary dataset. When you use persistence with jBPM, this 
+    mechanism is used to save or retrieve the process instance state 
+    from the database. The same mechanism is also applied to the 
+    session state and any work item states.</para> 
+
+    <para>When the process instance state is persisted, two things
+    happen: 
+    <itemizedlist>
+      <listitem>First, the process instance information is transformed 
+      into a binary blob. For performance reasons, a custom serialization 
+      mechanism is used and not normal Java serialization.</listitem>
+      <listitem>This blob is then stored, alongside other metadata about 
+      this process instance. This metadata includes, among other things, 
+      the process instance id, process id, and the process start date.</listitem>
+    </itemizedlist>
+    </para>
+
+    <para>Apart from the process instance state, the session itself can 
+    also store some state, such as the state of timer jobs, or the session 
+    data that any business rules would be evaluated over.
+    This session state is stored separately as a binary blob, along with 
+    the id of the session and some metadata. You can always restore session 
+    state by reloading the session with the given id.  The session id can 
+    be retrieved using <code>ksession.getId()</code>.</para>
+
+    <para>Note that the process instance binary datasets are usually 
+    relatively small, as they only contain the minimal execution state 
+    of the process instance.  For a simple process instance, this usually 
+    contains one or a few node instances, i.e., any node that is currently 
+    executing, and any existing variable values.</para>
+    
+    <para>As a result of jBPM using marshalling, the data model is both 
+    simple and small:</para>
+
+    <!-- width && scalefit for pdf's -->
+    <ulink url="images/Chapter-Persistence/jbpm_schema.png">
+      <figure>
+        <title>jBPM data model</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-7-Persistence/jbpm_schema_doc.png" format="PNG"
+                       align="center" width="100%" scalefit="1" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </ulink>
+
+    <para>The <code>sessioninfo</code> entity contains the state of the 
+    (knowledge) session in which the jBPM process instance is running.</para>
+
+    <table>
+      <title>SessionInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>id</code></entry>
+          <entry>The primary key.</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>lastmodificationdate</code></entry>
+          <entry>The last time that the entity was saved to the database</entry>
+        </row>
+        <row>
+          <entry><code>rulesbytearray</code></entry>
+          <entry>The binary dataset containing the state of the session</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>startdate</code></entry>
+          <entry>The start time of the session</entry>
+        </row>
+        <row>
+          <entry><code>optlock</code></entry>
+          <entry>The version field that serves as its optimistic lock value</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+    
+    <para>The <code>processinstanceinfo</code> entity contains the state 
+    of the jBPM process instance.</para>
+
+    <table>
+      <title>ProcessInstanceInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>instanceid</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>lastmodificationdate</code></entry>
+          <entry>The last time that the entity was saved to the database</entry>
+        </row>
+        <row>
+          <entry><code>lastreaddate</code></entry>
+          <entry>The last time that the entity was retrieved (read) from the database</entry>
+        </row>
+        <row>
+          <entry><code>processid</code></entry>
+          <entry>The name (id) of the process</entry>
+        </row>
+        <row>
+          <entry><code>processinstancebytearray</code></entry>
+          <entry>This is the binary dataset containing the state of the process instance</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>startdate</code></entry>
+          <entry>The start time of the process</entry>
+        </row>
+        <row>
+          <entry><code>state</code></entry>
+          <entry>An integer representing the state of the process instance</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>optlock</code></entry>
+          <entry>The version field that serves as its optimistic lock value</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>eventtypes</code> entity contains information
+    about events that a process instance will undergo or has undergone.</para>
+
+    <table>
+      <title>EventTypes</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>instanceid</code></entry>
+          <entry>This references the <code>processinstanceinfo</code> primary 
+          key and there is a foreign key constraint on this column.</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>eventTypes</code></entry>
+          <entry>A text field related to an event that the process has undergone.</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>workiteminfo</code> entity contains the state of a work item.</para>
+
+    <table>
+      <title>WorkItemInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+      <thead>
+        <row>
+          <entry>Field</entry>
+          <entry>Description</entry>
+          <entry>Nullable</entry>
+        </row>
+      </thead>
+      <tbody>
+        <row>
+          <entry><code>workitemid</code></entry>
+          <entry>The primary key</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>creationDate</code></entry>
+          <entry>The name of the work item</entry>
+        </row>
+        <row>
+          <entry><code>name</code></entry>
+          <entry>The name of the work item</entry>
+        </row>
+        <row>
+          <entry><code>processinstanceid</code></entry>
+          <entry>The (primary key) id of the process: there is no foreign key constraint 
+          on this field.</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>state</code></entry>
+          <entry>An integer representing the state of the work item</entry>
+          <entry>NOT NULL</entry>
+        </row>
+        <row>
+          <entry><code>optlock</code></entry>
+          <entry>The version field that serves as its optimistic lock value</entry>
+        </row>
+        <row>
+          <entry><code>workitembytearay</code></entry>
+          <entry>This is the binary dataset containing the state of the work item</entry>
+          <entry>NOT NULL</entry>
+        </row>
+      </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>CorrelationKeyInfo</code> entity contains information
+      about correlation keys assigned to given process instance - loose relationship as this
+      table is considered optional used only when correlation capabilities are required.</para>
+
+    <table>
+      <title>CorrelationKeyInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>keyid</code></entry>
+            <entry>The primary key</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>name</code></entry>
+            <entry>assigned name of the correlation key</entry>
+            <entry></entry>
+          </row>
+          <row>
+            <entry><code>processinstanceid</code></entry>
+            <entry>The id of the process instance which is assigned to this correlation key</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>optlock</code></entry>
+            <entry>The version field that serves as its optimistic lock value</entry>
+            <entry></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>CorrelationPropertyInfo</code> entity contains information
+      about correlation properties for given correlation key that is assigned to given process instance.</para>
+
+    <table>
+      <title>CorrelationPropertyInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>propertyid</code></entry>
+            <entry>The primary key</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>name</code></entry>
+            <entry>The name of the property</entry>
+            <entry></entry>
+          </row>
+          <row>
+            <entry><code>value</code></entry>
+            <entry>The value of the property</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>optlock</code></entry>
+            <entry>The version field that serves as its optimistic lock value</entry>
+            <entry></entry>
+          </row>
+          <row>
+            <entry><code>correlationKey-keyid</code></entry>
+            <entry>Foregin key to map to correlation key</entry>
+            <entry>NOT NULL</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>The <code>ContextMappingInfo</code> entity contains information
+      about contextual information mapped to ksession. This is an internal part of RuntimeManager
+    and can be considered optional when RuntimeManager is not used.</para>
+
+    <table>
+      <title>ContextMappingInfo</title>
+      <tgroup cols='3' align='left' colsep='1' rowsep='1'>
+        <thead>
+          <row>
+            <entry>Field</entry>
+            <entry>Description</entry>
+            <entry>Nullable</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><code>mappingid</code></entry>
+            <entry>The primary key</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>context_id</code></entry>
+            <entry>Identifier of the context</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>ksession?id</code></entry>
+            <entry>Identifier of the ksession mapped to this context</entry>
+            <entry>NOT NULL</entry>
+          </row>
+          <row>
+            <entry><code>optlock</code></entry>
+            <entry>The version field that serves as its optimistic lock value</entry>
+            <entry></entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    </section>
+
+    <section>
+      <title>Safe Points</title>
+
+    <para>The state of a process instance is stored at so-called "safe points"
+    during the execution of the process engine.  Whenever a process instance
+    is executing (for example when it started or continuing from a previous wait state,
+    the engine executes the process instance until no more actions can be performed (meaning
+    that the process instance either has completed (or was aborted), or that it has reached a
+    wait state in all of its parallel paths). At that point, the engine
+    has reached the next safe state, and the state of the process instance
+    (and all other process instances that might have been affected) is stored
+    persistently.</para>
+    </section>    
+    </section> 
 </section>
