@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Debugging</title>
+    
+  <para>This section describes how to debug processes using the jBPM Eclipse plugin.  This
+  means that the current state of your running processes can be inspected
+  and visualized during the execution.  Note that we currently don't
+  allow you to put breakpoints on the nodes within a process directly.
+  You can however put breakpoints inside any
+  Java code you might have (i.e. your application code that is invoking
+  the engine or invoked by the engine, listeners, etc.) or inside rules 
+  (that could be evaluated in the context of a process).  At these
+  breakpoints, you can then inspect the internal state of all your process instances.
+  </para>
+
+    <para>When debugging the application, you can use the following debug views to
+    track the execution of the process:</para>
+      <orderedlist>
+        <listitem>The process instances view, showing all running process instances (and 
+        their state).  When double-clicking a process instance, the process instance view
+        visually shows the current state of that process instance at that point in time.
+        </listitem>
+        <listitem>The audit view, showing the audit log (note that you should probably
+        use a threaded file logger if you want to session to save the audit event to the 
+        file system on regular intervals, so the audit view can be update to show the latest
+        state).</listitem>
+        <listitem>The global data view, showing the globals.</listitem>
+        <listitem>Other views related to rule execution like the working memory view 
+        (showing the contents (data) in the working memory related to rule execution), the
+        agenda view (showing all activated rules), etc.</listitem>
+      </orderedlist>
+
+    <section>
+      <title>The Process Instances View</title>
+
+      <para>The process instances view shows the currently running process instances.
+      The example shows that there is currently one running process (instance),
+      currently executing one node instance, i.e. business rule task. When double-clicking
+      a process instance, the process instance viewer will graphically show the progress
+      of the process instance.  An example where the process instance is waiting for a human
+      actor to perform a self-evaluation task is shown below.</para>
+
+      <mediaobject>
+        <imageobject>
+	    <imagedata align="center" format="PNG" role="" 
+                     fileref="images/Chapter-Testing/process-instances.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>When you double-click a process instance in the process instances view and
+      the process instance view complains that it cannot find the process, this means
+      that the plugin wasn't able to find the process definition of the selected process
+      instance in the cache of parsed process definitions.  To solve this, simply change
+      the process definition in question and save again (so it will be parsed) or rebuild
+      the project that contains the process definition in question.</para>
+
+      <mediaobject>
+        <imageobject>
+	    <imagedata align="center" format="PNG" role="" 
+                     fileref="images/EclipseJBPM/process-instance.png"/>
+        </imageobject>
+      </mediaobject>
+      
+    </section>
+
+    <section>
+      <title>The Audit View</title>
+      <para>The audit view, showing the audit log, which is a log of all events that
+      were logged from the session.  To create a logger, use the KnowledgeRuntimeLoggerFactory
+      to create a new logger and attach it to a session.  Note that you should probably
+        use a threaded file logger if you want to session to save the audit event to the 
+        file system on regular intervals, so the audit view can be update to show the latest
+        state.  When creating a threaded file logger, you can specify the name of the file
+        where the audit log should be created and the interval after which event should be 
+        saved to the file (in milliseconds).  Be sure to close the logger after usage.</para>
+        
+      <programlisting language="java">KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
+   .newThreadedFileLogger(ksession, "logdir/mylogfile", 1000);
+// do something with the session here
+logger.close();
+      </programlisting>
+      
+      <para>To open up an audit tree in the audit view, open the selected log file in the audit
+      view or simply drag the file into the audit view.  A tree-based view is generated based
+      on the audit log.  An event is shown as a subnode of another event if the child event is
+      caused by (a direct consequence of) the parent event.  An example is shown below.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" format="PNG" role="" 
+                     fileref="images/EclipseJBPM/audit.png"/>
+        </imageobject>
+      </mediaobject>
+    </section>
+
+</section>

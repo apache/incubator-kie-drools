@@ -6,4 +6,88 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Flexible Processes</title>
 
+  <para>Case management and its relation to BPM is a hot topic nowadays. There definitely
+  seems to be a growing need amongst end users for more flexible and adaptive business processes,
+  without ending up with overly complex solutions. Everyone seems to agree that using a 
+  process-centric approach only in many cases leads to complex solutions that are hard to maintain.
+  The "knowledge workers" no longer want to be locked into rigid processes but wants to have the 
+  power and flexibility to regain more control over the process themselves.</para>
+
+  <para>The term case management is often used in that context. Without trying to give a precise 
+  definition of what it might or might not mean, as this has been a hot topic for discussion, it 
+  refers to the basic idea that many applications in the real world cannot really be described 
+  completely from start to finish (including all possible paths, deviations, exceptions, etc.). 
+  Case management takes a different approach: instead of trying to model what should happen from 
+  start to finish, let's give the end user the flexibility to decide what should happen at runtime. 
+  In its most extreme form for example, case management doesn't even require any process definition 
+  at all. Whenever a new case comes in, the end user can decide what to do next based on all the 
+  case data.</para>
+
+  <para>A typical example can be found in healthcare (clinical decision support to be more precise),
+  where care plans can be used to describe how patients should be treated in specific circumstances,
+  but people like general practitioners still need to have the flexibility to add additional steps 
+  and deviate from the proposed plan, as each case is unique. And there are similar examples in 
+  claim management, helpdesk support, etc.</para>
+
+  <para>So, should we just throw away our BPM system then? No! Even at its most extreme form (where 
+  we don't model any process up front), you still need a lot of the other features a BPM system 
+  (usually) provides: there still is a clear need for audit logs, monitoring, coordinating various 
+  services, human interaction (e.g. using task forms), analysis, etc. And, more importantly, many 
+  cases are somewhere in between, or might even evolve from case management to more structured 
+  business process over time (when we for example try to extract common approaches from many cases). 
+  If we can offer flexibility as part of our processes, can't we let the users decide how and where 
+  they would like to apply it?</para>
+
+  <para>Let me give you two examples that show how you can add more and more flexibility to your 
+  processes. The first example shows a care plan that shows the tasks that should be performed when 
+  a patient has high blood pressure. While a large part of the process is still well-structured, 
+  the general practitioner can decide himself which tasks should be performed as part of the 
+  sub-process. And he also has the ability to add new tasks during that period, tasks that were not 
+  defined as part of the process, or repeat tasks multiple times, etc. The process uses an ad-hoc 
+  sub-process to model this kind of flexibility, possibly augmented with rules or event processing 
+  to help in deciding which fragments to execute.</para>
+
+  <figure>
+    <title>Healthcare: high blood pressure</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/FlexibleProcesses/Healthcare.png" format="PNG" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The second example actually goes a lot further than that. In this example, an internet provider 
+  could define how cases about internet connectivity problems will be handled by the internet provider. 
+  There are a number of actions the case worker can select from, but those are simply small process 
+  fragments. The case worker is responsible for selecting what to do next and can even add new tasks 
+  dynamically. As you can see, there is not process from start to finish anymore, but the user is 
+  responsible for selecting which process fragments to execute.</para>
+
+  <figure>
+    <title>Telecom: process fragments</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/FlexibleProcesses/Internet.png" format="PNG" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>And in its most extreme form, we even allow you to create case instances without a process 
+  definition, where what needs to be performed is selected purely at runtime. This however doesn't 
+  mean you can't figure out anymore what 's actually happening. For example, meetings can be very 
+  adhoc and dynamic, but we usually want a log of what was actually discussed. The following 
+  screenshot shows how our regular audit view can still be used in this case, and the end user 
+  could then for example get a lot more info about what actually happened by looking at the data 
+  associated with each of those steps. And maybe, over time, we can even automate part of that by 
+  using a semi-structured process.</para>
+
+  <figure>
+    <title>Audit log for dynamic case</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/FlexibleProcesses/Meeting.png" format="PNG" />
+      </imageobject>
+    </mediaobject>
+  </figure>
+  
 </chapter>

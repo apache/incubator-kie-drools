@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Service Repository</title>
+    
+  <para>A lot of these domain-specific services are generic, and can be reused by a lot of different
+  users.  Think for example about integration with Twitter, doing file system operations or sending
+  email.  Once such a domain-specific service has been created, you might want to make it available to
+  other users so they can easily import and start using it.</para>
+  
+  <para>A service repository allows you to import services by browsing the repository looking for
+  services you might need and importing these services into your workspace. These will then automatically
+  be added to your palette and you can start using them in your processes. You can also import additional
+  artefacts like for example an icon, any dependencies you might need, a default handler that will be
+  used to execute the service (although you're always free to override the default, for example for
+  testing), etc.</para>
+
+  <para>To browse the repository, open the wizard to import services, point it to the right location
+  (this could be to a directory in your file system but also a public or private URL) and select the
+  services you would like to import.  For example, in Eclipse, right-click your project that contains
+  your processes and select "Configure ... -> Import jBPM services ...".  This will open up a
+  repository browser.  In the URL field, fill in the URL of your repository (see below for the URL of
+  the public jBPM repository that hosts some common service implementations out-of-the-box), or use the
+  "..." button to browse to a folder on your file system.  Click the Get button to retrieve the
+  contents of that repository.</para>
+
+<mediaobject>
+  <imageobject>
+    <imagedata align="center" format="PNG" role="" 
+               fileref="images/DomainSpecificProcesses/ImportService.png"/>
+  </imageobject>
+</mediaobject>
+
+  <para>Select the service you would like to import and then click the Import button.  Note that
+  the Eclipse wizard allows you to define whether you would like to automatically configure the
+  service (so it shows up in the palette of your processes), whether you would also like to download
+  any dependencies that might be needed for executing the service and/or whether you would like to
+  automatically register the default handler, so make sure to mark the right checkboxes before importing
+  your service (if you are unsure what to do, leaving all check boxes marked is probably best).</para>
+
+  <para>After importing your service, (re)open your process diagram and the new service should show
+  up in your palette and you can start using it in your process.  Note that most services also include
+  documentation on how to use them (e.g. what the different input and output parameters are) when
+  you select them browsing the service repository.</para>
+  
+  <para>Click on the image below to see a screencast where we import the twitter service in a new jBPM
+  project and create a simple process with it that sends an actual tweet.  Note that you need the 
+  necessary twitter keys and secrets to be able to programatically send tweets to your twitter account.
+  How to create these is explained <ulink url="http://docs.jboss.org/jbpm/v6.0/repository/Twitter/">here</ulink>,
+  but once you have these, you can just drop them in your project using a simple configuration file.</para>
+
+    <ulink url="http://people.redhat.com/kverlaen/twitter-repository.swf">
+      <figure>
+        <mediaobject>
+          <imageobject>
+        <imagedata align="center" fileref="images/DomainSpecificProcesses/Twitter.png" format="PNG" role="" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </ulink>
+    
+<section>
+  <title>Public jBPM service repository</title>
+  
+  <para>We are building a public service repository that contains predefined services that people 
+  can use out-of-the-box if they want to:</para>
+
+  <para><ulink url="http://docs.jboss.org/jbpm/v6.0/repository/">http://docs.jboss.org/jbpm/v6.0/repository/</ulink></para>
+
+  <para>This repository contains some integrations for common services like Twitter integration or
+  file system operations that you can import.  Simply point the import wizard to this URL to start
+  browsing the repository.</para>
+  
+  <para>If you have an implementation of a common service that you would like to contribute to the
+  community, do not hesitate to contact someone from the development team.  We are always looking for
+  contributions to extend our repository.</para>
+
+</section>
+
+<section>
+  <title>Setting up your own service repository</title>
+  
+  <para>You can set up your own service repository and add your own services by creating a
+  configuration file that contains the necessary information (this is an extended version of the
+  normal work definition configuration file as described earlier in this chapter) and putting
+  the necessary files (like an icon, dependencies, documentation, etc.) in the right folders.</para>
+  
+  <para>The extended configuration file contains the normal properties (like name, parameters,
+  results and icon), with some additional ones.  For example, the following extended configuration file
+  describes the Twitter integration service (as shown in the screencast above):</para>
+
+<programlisting>
+import org.drools.core.process.core.datatype.impl.type.StringDataType;
+[
+  [
+    "name" : "Twitter",
+    "description" : "Send a twitter message",
+    "parameters" : [
+      "Message" : new StringDataType()
+    ],
+    "displayName" : "Twitter",
+    "eclipse:customEditor" : "org.drools.eclipse.flow.common.editor.editpart.work.SampleCustomEditor",
+    "icon" : "twitter.gif",
+    "category" : "Communication",
+    "defaultHandler" : "org.jbpm.process.workitem.twitter.TwitterHandler",
+    "documentation" : "index.html",
+    "dependencies" : [
+      "file:./lib/jbpm-twitter.jar",
+      "file:./lib/twitter4j-core-2.2.2.jar"
+    ]
+  ]
+]</programlisting>
+
+<para>
+  <itemizedlist>
+    <listitem>The icon property should refer to a file with the given file name in the same folder as
+    the extended configuration file (so it can be downloaded by the import wizard and used in the process
+    diagrams).  Icons should be 16x16 GIF files.</listitem>
+    <listitem>The category property defines the category this service should be placed under when
+    browsing the repository.</listitem>
+    <listitem>The defaultHandler property defines the default handler implementation (i.e. the Java
+    class that implements the <code>WorkItemHandler</code> interface and can be used to execute the
+    service).  This can automatically be registered as the handler for that service
+    when importing the service from the repository.</listitem>
+    <listitem>The documentation property defines a documentation file that describes what the service
+    does and how it works.  This property should refer to a HTML file with the given name in the same
+    folder as the extended configuration file (so it can be shown by the import wizard when browsing
+    the repository).</listitem>
+    <listitem>The dependencies property defines additional dependencies that are necessary to execute
+    this service.  This usually includes the handler implementation jar, but could also include
+    additional external dependencies.  These dependencies should also be located on the repository
+    on the given location (relative to the folder where the extended configuration file is located),
+    so they can be downloaded by the import wizard when importing the service.</listitem>
+  </itemizedlist>
+</para>
+
+  <para>The root of your repository should also contain an <filename>index.conf</filename> file that
+  references all the folders that should be processed when searching for services on the repository.
+  Each of those folders should then contain:
+  <itemizedlist>
+    <listitem>An extended configuration file with the same name as the folder (e.g.
+    <filename>Twitter.conf</filename>)</listitem> that defines the service task
+    <listitem>The icon as references in the configuration file</listitem>
+    <listitem>The documentation as references in the configuration file</listitem>
+    <listitem>The dependencies as references in the configuration file (for example in a lib folder)</listitem>
+  </itemizedlist>
+  You can create your own hierarchical structure, because if one of those folders also contains an
+  <filename>index.conf</filename> file, that will be used to scan additional sub-folders.  Note that the
+  hierarchical structure of the repository is not shown when browsing the repository using the import
+  wizard, as the category property in the configuration file is used for that.</para>
+
+</section>
+
+</section>

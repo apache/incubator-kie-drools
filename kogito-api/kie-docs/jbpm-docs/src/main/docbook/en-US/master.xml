@@ -35,13 +35,33 @@
     </mediaobject>
   </preface>
 
+  <part>
+    <title>Welcome</title>
+    <partintro><para>Introduction and getting started with jBPM</para></partintro>
+    
   <xi:include href="Overview.xml"/>
   <xi:include href="GettingStarted.xml"/>
   <xi:include href="Installer.xml"/>
+  <xi:include href="Examples.xml"/>
+  <!--xi:include href="Quickstarts.xml"/-->
+  
+  </part>
+  
+  <part>
+    <title>jBPM Core</title>
+    <partintro><para>Using the jBPM Core Engine</para></partintro>
+    
   <xi:include href="CoreEngine.xml"/>
   <xi:include href="BPMN2.xml"/>
   <xi:include href="TaskService.xml"/>
   <xi:include href="Persistence.xml"/>
+
+  </part>
+  
+  <part>
+    <title>Workbench</title>
+    <partintro><para>How to use the web-based Workbench</para></partintro>
+    
   <xi:include href="Workbench.xml"/>
   <xi:include href="Designer.xml"/>
   <xi:include href="DataModeler.xml"/>
@@ -50,13 +70,37 @@
   <xi:include href="Console.xml"/>
   <xi:include href="BAM.xml"/>
   <xi:include href="RemoteAPI.xml"/>
-  <xi:include href="Eclipse.xml"/>
+
+  </part>
+  
+  <part>
+    <title>Eclipse</title>
+    <partintro><para>How to use the Eclipse-based tooling</para></partintro>
+    
+  <xi:include href="EclipseJBPM.xml"/>
+  <xi:include href="EclipseModeler.xml"/>
+
+  </part>
+  
+  <part>
+    <title>Integration</title>
+    <partintro><para>Integrating jBPM with other technologies, frameworks, etc.</para></partintro>
+    
+  <xi:include href="Integration.xml"/>
+
+  </part>
+  
+  <part>
+    <title>Advanced Topics</title>
+    <partintro><para>Some more advanced topics</para></partintro>
+    
   <xi:include href="DomainSpecificProcesses.xml"/>
+  <xi:include href="ExceptionManagement.xml"/>
   <xi:include href="Migration.xml"/>
   <xi:include href="FlexibleProcesses.xml"/>
-  <xi:include href="Integration.xml"/>
-  <xi:include href="Examples.xml"/>
-  <!--xi:include href="Quickstarts.xml"/-->
+  
+  </part>
+  
   <xi:include href="ReleaseNotes.xml"/>
 
 </book>

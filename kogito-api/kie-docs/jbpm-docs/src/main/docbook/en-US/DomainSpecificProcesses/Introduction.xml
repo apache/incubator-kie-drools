@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Introduction</title>
+    
+<para>jBPM provides the ability to create and use domain-specific task nodes in your business 
+processes. This simplifies development when you're creating business processes that contain tasks 
+dealing with other technical systems.</para>
+
+<para>When using jBPM, we call these domain-specific task nodes "<emphasis>custom work 
+items</emphasis>" or (custom) "<emphasis>service nodes</emphasis>". There are two separate aspects 
+to creating and using custom work items: 
+  <itemizedlist>
+    <listitem>Adding a node with a custom work item to a process definition using the eclipse 
+    editor or jBPM designer.</listitem>
+    <listitem>Creating a custom <emphasis>work item handler</emphasis> that the jBPM engine will 
+    use when executing the custom work item in a running process.</listitem>
+  </itemizedlist>
+</para>
+
+<para>With regards to a BPMN2 process, custom work items are certain types of 
+<code>&lt;task&gt;</code> nodes. In most cases, custom work items are <code>&lt;task&gt;</code> 
+nodes in a BPMN2 process definition, although they can also be used with certain other task type 
+nodes such as, among others, <code>&lt;serviceTask&gt;</code> or 
+<code>&lt;sendTask&gt;</code> nodes.</para>
+
+  <tip>
+<para>When creating custom work items, it's important to separate the data associated with the 
+work item, from how the work item should be handled. In other words, separate the 
+<emphasis>what</emphasis> from the <emphasis>how</emphasis>. That means that custom work items 
+should be:
+<itemizedlist>
+    <listitem>declarative (what, not how)</listitem>
+    <listitem>high-level (no code)</listitem>
+</itemizedlist>
+On the other hand, custom work item <emphasis>handlers</emphasis>, which are java classes, 
+should be:
+<itemizedlist>
+    <listitem>procedural (how, not what)</listitem>
+    <listitem>low-level (because it's code!)</listitem>
+</itemizedlist>
+Work item handlers should almost never contain any data.</para>
+  </tip>
+
+<para>Users can thus easily define their own set of domain-specific service nodes and integrate 
+them with the process language. For example, the next figure shows an example of a 
+healtchare-related BPMN2 process. The process includes domain-specific service nodes for measuring 
+blood pressure, prescribing medication, notifying care providers and following-up on the patient.
+</para>
+
+<mediaobject>
+  <title>Healthcare: Clinical Decision Support</title>
+  <imageobject>
+    <imagedata align="center" format="PNG" role="" 
+               fileref="images/DomainSpecificProcesses/CDSSExample.png"/>
+  </imageobject>
+</mediaobject>
+
+</section>
