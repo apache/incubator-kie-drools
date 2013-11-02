@@ -54,20 +54,23 @@ public class PhreakConflictResolver
         final int s1 = existing.getSalience();
         final int s2 = adding.getSalience();
 
+        // highest goes first
         if (s1 > s2) {
             return 1;
         } else if (s1 < s2) {
             return -1;
         }
 
-        if ( existing.getRule() != adding.getRule() ) {
-            return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
-        }
+        final int l1 = existing.getRule().getLoadOrder();
+        final int l2 = adding.getRule().getLoadOrder();
 
-        if ( existing.isRuleAgendaItem()) {
-            return +1;
+        // lowest goes first
+        if (l1 < l2) {
+            return 1;
+        } else if (l1 > l2) {
+            return -1;
         } else {
-            return (int) ( existing.getActivationNumber() - adding.getActivationNumber() );
+            return 0;
         }
     }
 

@@ -85,8 +85,10 @@ public class ChangeSetBuilder {
                 
                 List<RuleDescr> orules = new ArrayList<RuleDescr>( opkg.getRules() ); // needs to be cloned
                 List<RuleDescr> crules = cpkg.getRules();
-                
+
                 for( RuleDescr crd : crules ) {
+                    pkgcs.getLoadOrder().add(new ResourceChangeSet.RuleLoadOrder(cpkg.getName(), crd.getName(), crd.getLoadOrder() ) );
+
                     // unfortunately have to iterate search for a rule with the same name
                     boolean found = false;
                     for( Iterator<RuleDescr> it = orules.iterator(); it.hasNext(); ) {

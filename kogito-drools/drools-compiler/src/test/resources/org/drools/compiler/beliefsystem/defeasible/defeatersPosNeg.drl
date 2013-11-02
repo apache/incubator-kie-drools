@@ -25,7 +25,7 @@ end
 
 rule "Defeater Rule"
 @Defeater
-@Defeats( "Defeasible Rule 2" )
+@Defeats( "Defeasible Rule 2" ) salience 6
 when
     A( 1; )
 then
@@ -40,7 +40,7 @@ end
 // X(-3) should be defeated by the respective defeater
 
 rule "Defeasible Rule"
-@Defeasible
+@Defeasible salience 7
 when
     B( 1; )
 then
@@ -48,7 +48,7 @@ then
 end
 
 rule "Defeasible Rule 2"
-@Defeasible
+@Defeasible salience 8
 when
     B( 1; )
 then
@@ -58,7 +58,7 @@ end
 // X(44) should end up in NEG when using DFL+NEG
 
 rule "Defeasible Rule 3"
-@Defeasible
+@Defeasible salience 9
 when
     B( 1; )
 then
@@ -68,7 +68,7 @@ end
 // X(35) will cause an inconsistency when using NEG
 
 rule "Defeasible Rule 4"
-@Defeasible
+@Defeasible salience 10
 when
     B( 1; )
 then

@@ -235,6 +235,12 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         // Rule 4 Shares the eval with 3
         String str = "package org.kie.test \n" +
                      "\n" +
+                     "rule rule2 salience ( Integer.parseInt('1'+$s)) when\n" +
+                     "    $s : String( this != 'xx' )\n" +
+                     "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
+                     "then\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
+                     "end\n" +
                      "rule rule0 salience ( Integer.parseInt('1'+$s) ) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
@@ -243,12 +249,6 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
-                     "end\n" +
-                     "rule rule2 salience ( Integer.parseInt('1'+$s)) when\n" +
-                     "    $s : String( this != 'xx' )\n" +
-                     "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
-                     "then\n" +
-                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "rule rule3 salience ( Integer.parseInt('1'+$s)) when\n" +
                      "    $s : String( this != 'xx' )\n" +
@@ -589,6 +589,14 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testExistsSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
+                     "rule rule3  @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "    $s1 : String( )\n" +
+                     "    exists String( this == '1' )\n" +
+                     "    eval( 1 == 1 ) \n" +
+                     "    eval( 1 == 1 ) \n" +
+                     "then\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
+                     "end\n" +
                      "rule rule1  @Eager(true)  salience 100 when\n" +
                      "    exists String( this == '1' )\n" +
                      "then\n" +
@@ -598,14 +606,6 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    $s1 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
-                     "end\n" +
-                     "rule rule3  @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
-                     "    $s1 : String( )\n" +
-                     "    exists String( this == '1' )\n" +
-                     "    eval( 1 == 1 ) \n" +
-                     "    eval( 1 == 1 ) \n" +
-                     "then\n" +
-                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "\n";
 
@@ -639,8 +639,6 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             }
         }
 
-        System.out.println( list );
-
         assertContains( new String[]{"rule1:false", "rule2:0:true", "rule2:1:true", "rule2:2:true", "rule3:2:false"},
                         list );
     }
@@ -650,6 +648,13 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         String str = "package org.kie.test \n" +
                      "global java.util.List list \n" +
                      "\n" +
+                     "rule rule3 salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "    $s1 : String( ) from list  \n" +
+                     "    eval( 1 == 1 ) \n" +
+                     "    eval( 1 == 1 ) \n" +
+                     "then\n" +
+                     "    kcontext.getKieRuntime().halt();\n" +
+                     "end\n" +
                      "rule rule1 salience ( Integer.parseInt( $s1+'1' ) )  when\n" +
                      "    $s1 : String( this == '1' )  from list\n" +
                      "then\n" +
@@ -658,13 +663,6 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "    $s1 : String( )  from list \n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
-                     "end\n" +
-                     "rule rule3 salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
-                     "    $s1 : String( ) from list  \n" +
-                     "    eval( 1 == 1 ) \n" +
-                     "    eval( 1 == 1 ) \n" +
-                     "then\n" +
-                     "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
                      "\n";
 
@@ -696,8 +694,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
         }
 
-        assertContains( new String[]{"rule1:1:true", "rule2:0:true", "rule2:1:true", "rule2:2:true", "rule3:0:true", "rule3:1:true", "rule3:2:false"},
-                        list );
+        assertContains(new String[]{"rule1:1:true", "rule2:0:true", "rule2:1:true", "rule2:2:true", "rule3:0:true", "rule3:1:true", "rule3:2:false"},
+                       list);
     }
 
     @Test

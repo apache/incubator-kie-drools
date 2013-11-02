@@ -13,12 +13,16 @@ import java.util.Map.Entry;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.rule.*;
+import org.drools.core.rule.Package;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -143,7 +147,17 @@ public class KieContainerImpl
                             }
                         }
                     }
+
+                    KieBase kBase = kBaseEntry.getValue();
+                    for ( ResourceChangeSet.RuleLoadOrder loadOrder : rcs.getLoadOrder() ) {
+                        Rule rule = (Rule) ((KnowledgePackageImp)kBase.getKiePackage( loadOrder.getPkgName() )).getRule( loadOrder.getRuleName() );
+                        if ( rule != null ) {
+                            // rule can be null, if it didn't exist before
+                            rule.setLoadOrder( loadOrder.getLoadOrder() );
+                        }
+                    }
                 }
+
                 if( fileCount > 0 ) {
                     ckbuilder.build();
                 }

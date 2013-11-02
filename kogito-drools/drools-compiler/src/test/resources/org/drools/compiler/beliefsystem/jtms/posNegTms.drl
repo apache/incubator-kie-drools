@@ -20,25 +20,25 @@ then
 end
 
 
-rule "A+" when
+rule "A+" salience 7 when
     String( this == "a" )
 then
     insertLogical( new Matter( 0, "plus" ) );
 end
 
-rule "B+" when
+rule "B+" salience 8 when
     String( this == "b" )
 then
     insertLogical( new Matter( 0, "plus" ) );
 end
 
-rule "C-" when
+rule "C-" salience 9  when
     String( this == "c" )
 then
     insertLogical( new Matter( 0, "minus" ), "neg" );
 end
 
-rule "D-" when
+rule "D-" salience 10 when
     String( this == "d" )
 then
     insertLogical( new Matter( 0, "minus" ), "neg" );

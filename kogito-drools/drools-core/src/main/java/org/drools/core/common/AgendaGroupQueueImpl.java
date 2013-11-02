@@ -77,11 +77,12 @@ public class AgendaGroupQueueImpl
         this.name = name;
         if (ruleBase.getConfiguration().isPhreakEnabled()) {
             this.priorityQueue = new BinaryHeapQueue(new PhreakConflictResolver());
-        }
-        if (ruleBase.getConfiguration().isSequential()) {
-            this.priorityQueue = new BinaryHeapQueue(new SequentialConflictResolver());
         } else {
-            this.priorityQueue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
+            if (ruleBase.getConfiguration().isSequential()) {
+                this.priorityQueue = new BinaryHeapQueue(new SequentialConflictResolver());
+            } else {
+                this.priorityQueue = new BinaryHeapQueue(ruleBase.getConfiguration().getConflictResolver());
+            }
         }
 
         this.clearedForRecency = -1;

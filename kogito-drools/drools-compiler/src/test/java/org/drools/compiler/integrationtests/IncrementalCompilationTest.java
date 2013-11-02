@@ -12,6 +12,8 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.kie.api.definition.rule.Rule;
+import org.junit.Ignore;
+
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -19,12 +21,86 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class IncrementalCompilationTest extends CommonTestMethodBase {
+
+
+    @Test
+    public void testLoadOrderAfterRuleRemoval() throws Exception {
+        String header = "package org.drools.compiler\n";
+
+        String drl1 = "rule R1 when\n" +
+                      "   $m : Message( message == \"Hello World1\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl2 = "rule R2 when\n" +
+                      "   $m : Message( message == \"Hello World2\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl3 = "rule R3 when\n" +
+                      "   $m : Message( message == \"Hello World3\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl4 = "rule R4 when\n" +
+                      "   $m : Message( message == \"Hello World4\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1");
+        KieModule km = createAndDeployJar(ks, releaseId1,header );
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+
+
+        createAndDeployAndTest(kc, "2", header, drl1 + drl2 + drl3, "R1", "R2", "R3" );
+
+        createAndDeployAndTest(kc, "3", header, drl1 + drl3, "R1","R3" );
+
+        createAndDeployAndTest(kc, "4", header, drl2 + drl1 + drl4, "R2","R1", "R4" );
+
+        createAndDeployAndTest(kc, "5", header, drl2 + drl1, "R2","R1");
+
+        createAndDeployAndTest(kc, "6", header, "" );
+
+        createAndDeployAndTest(kc, "7", header, drl3, "R3" );
+    }
+
+    private  void createAndDeployAndTest(KieContainer kc, String version, String header, String  drls, String... ruleNames) {
+        if ( ruleNames == null ) {
+            ruleNames = new String[0];
+        }
+        KieServices ks = KieServices.Factory.get();
+
+        StringBuilder sbuilder = new StringBuilder();
+        sbuilder.append(header);
+        sbuilder.append( drls );
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", version);
+        KieModule km = createAndDeployJar(ks, releaseId1, sbuilder.toString() );
+
+        kc.updateToVersion(km.getReleaseId());
+
+        KiePackage kpkg = ((KieContainerImpl) kc).getKieBase().getKiePackage( "org.drools.compiler");
+        assertEquals( ruleNames.length,  kpkg.getRules().size() );
+        Map<String, Rule> rules = rulestoMap(kpkg.getRules() );
+
+        int i = 0;
+        for ( String ruleName : ruleNames ) {
+            assertEquals( ruleName, i++, ((org.drools.core.definitions.rule.impl.RuleImpl ) rules.get( ruleName )).getRule().getLoadOrder() );
+        }
+    }
 
     @Test
     public void testKJarUpgrade() throws Exception {

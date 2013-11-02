@@ -27,31 +27,36 @@ public class RuleDescr extends AnnotatedBaseDescr
     implements
     Dialectable {
 
-    private static final long           serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
     private String                      name;
     private String                      parentName;
     private String                      documentation;
     private Map<String, AttributeDescr> attributes;
 
-    private AndDescr                    lhs;
-    private Object                      consequence;
-    private Map<String, Object>         namedConsequence;
-    private int                         consequenceLine;
-    private int                         consequencePattern;
-    private int                         offset;
+    private AndDescr            lhs;
+    private Object              consequence;
+    private Map<String, Object> namedConsequence;
+    private int                 consequenceLine;
+    private int                 consequencePattern;
+    private int                 offset;
 
-    private String                      className;
+    private String className;
 
-    private List<String>                errors;
+    /**
+     * zero based
+     */
+    private int loadOrder;
+
+    private List<String> errors;
 
     public RuleDescr() {
-        this( null,
-              "" );
+        this(null,
+             "");
     }
 
     public RuleDescr(final String name) {
-        this( name,
-              "" );
+        this(name,
+             "");
     }
 
     public RuleDescr(final String ruleName,
@@ -66,8 +71,8 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        super.readExternal( in );
+            ClassNotFoundException {
+        super.readExternal(in);
         name = (String) in.readObject();
         parentName = (String) in.readObject();
         documentation = (String) in.readObject();
@@ -79,6 +84,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         offset = in.readInt();
         attributes = (Map<String, AttributeDescr>) in.readObject();
         className = (String) in.readObject();
+        loadOrder = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -94,6 +100,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         out.writeInt( offset );
         out.writeObject( attributes );
         out.writeObject( className );
+        out.writeInt(loadOrder);
     }
 
     public String getName() {
@@ -222,6 +229,14 @@ public class RuleDescr extends AnnotatedBaseDescr
         return errors != null;
     }
 
+    public int getLoadOrder() {
+        return loadOrder;
+    }
+
+    public void setLoadOrder(int loadOrder) {
+        this.loadOrder = loadOrder;
+    }
+
     @Override
     public String toString() {
         return "[Rule name='" + this.name + "']";
@@ -236,6 +251,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         result = prime * result + ((consequence == null) ? 0 : consequence.hashCode());
         result = prime * result + consequenceLine;
         result = prime * result + consequencePattern;
+        result = prime * result + loadOrder;
         result = prime * result + ((documentation == null) ? 0 : documentation.hashCode());
         result = prime * result + ((errors == null) ? 0 : errors.hashCode());
         result = prime * result + ((lhs == null) ? 0 : lhs.hashCode());
@@ -263,6 +279,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         } else if ( !consequence.equals( other.consequence ) ) return false;
         if ( consequenceLine != other.consequenceLine ) return false;
         if ( consequencePattern != other.consequencePattern ) return false;
+        if ( loadOrder != other.loadOrder ) return false;
         if ( documentation == null ) {
             if ( other.documentation != null ) return false;
         } else if ( !documentation.equals( other.documentation ) ) return false;

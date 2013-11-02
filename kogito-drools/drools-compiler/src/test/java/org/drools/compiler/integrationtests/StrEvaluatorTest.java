@@ -32,7 +32,11 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         ksession.insert(m);
         ksession.fireAllRules();
         assertTrue(list.size() == 4);
-        assertTrue( ((String) list.get(3)).equals("Message starts with R1") );
+
+        assertTrue( ((String) list.get(0)).equals("Message starts with R1") );
+        assertTrue( ((String) list.get(1)).equals("Message length is not 17") );
+        assertTrue( ((String) list.get(2)).equals("Message does not start with R2") );
+        assertTrue( ((String) list.get(3)).equals("Message does not end with R1") );
 
     }
 
@@ -50,7 +54,11 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         ksession.insert(m);
         ksession.fireAllRules();
         assertTrue(list.size() == 4);
-        assertTrue( ((String) list.get(3)).equals("Message ends with R2") );
+
+        assertTrue( ((String) list.get(0)).equals("Message ends with R2") );
+        assertTrue( ((String) list.get(1)).equals("Message length is not 17") );
+        assertTrue( ((String) list.get(2)).equals("Message does not start with R2") );
+        assertTrue( ((String) list.get(3)).equals("Message does not end with R1") );
 
     }
 
@@ -103,7 +111,9 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         ksession.insert(m);
         ksession.fireAllRules();
         assertTrue(list.size() == 3);
-        assertTrue( ((String) list.get(0)).equals("Message does not end with R1") );
+        assertTrue( ((String) list.get(0)).equals("Message length is not 17") );
+        assertTrue( ((String) list.get(1)).equals("Message does not start with R2") );
+        assertTrue(((String) list.get(2)).equals("Message does not end with R1"));
     }
 
     @Test
@@ -120,7 +130,10 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
         ksession.insert(m);
         ksession.fireAllRules();
         assertTrue(list.size() == 3);
-        assertTrue( ((String) list.get(2)).equals("Message length is not 17") );
+
+        assertTrue( ((String) list.get(0)).equals("Message length is not 17") );
+        assertTrue( ((String) list.get(1)).equals("Message does not start with R2") );
+        assertTrue( ((String) list.get(2)).equals("Message does not end with R1") );
     }
 
     @Test

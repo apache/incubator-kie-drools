@@ -1051,7 +1051,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n"+
                      "\n"+
 
-                     "rule \"test parent and child traits\" \n" +
+                     "rule \"test parent and child traits\" salience 10\n" +
                      "no-loop\n" +
                      "when\n" +
                      "   $c : Child( $sex := sex)\n"+

@@ -2214,14 +2214,14 @@ public class CepEspTest extends CommonTestMethodBase {
                      "    insert( new A( 3 ) );\n" +
                      "    insert( new B( 2 ) );\n" +
                      "end\n" +
-                     "rule \"ab\"\n" +
+                     "rule \"ab\" \n" +
                      "when\n" +
                      "    A( $a : id ) over window:length( 1 )\n" +
                      "    B( $b : id ) over window:length( 1 )\n" +
                      "then\n" +
                      "    System.out.println(\"AB: ( \"+$a+\", \"+$b+\" )\");\n" +
                      "end\n" +
-                     "rule \"ba\"\n" +
+                     "rule \"ba\" salience 10\n" +
                      "when\n" +
                      "    B( $b : id ) over window:length( 1 )\n" +
                      "    A( $a : id ) over window:length( 1 )\n" +

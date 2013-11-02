@@ -193,6 +193,7 @@ public class PackageDescr extends BaseDescr
                 rule.addAttribute( at );
             }
         }
+        rule.setLoadOrder(rules.size());
         this.rules.add( rule );
     }
 
