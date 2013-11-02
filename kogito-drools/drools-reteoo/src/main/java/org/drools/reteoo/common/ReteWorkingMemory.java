@@ -2,12 +2,14 @@ package org.drools.reteoo.common;
 
 import org.drools.core.FactException;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.AbstractWorkingMemory;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
@@ -20,8 +22,12 @@ import org.kie.api.runtime.Environment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReteWorkingMemory extends AbstractWorkingMemory {
+
+
+    protected AtomicBoolean initialFactFlag;
 
     private List<LIANodePropagation> liaPropagations;
 
@@ -30,18 +36,22 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase) {
         super(id, ruleBase);
+        initialFactFlag = new AtomicBoolean( false );
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
         super(id, ruleBase, initInitFactHandle, config, environment);
+        initialFactFlag = new AtomicBoolean( false );
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
         super(id, ruleBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
+        initialFactFlag = new AtomicBoolean( false );
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, WorkingMemoryEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
         super(id, ruleBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
+        initialFactFlag = new AtomicBoolean( false );
     }
 
 
@@ -52,9 +62,27 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
         if (liaPropagations != null) liaPropagations.clear();
     }
 
+    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
+        WorkingMemoryEntryPoint wmEntryPoint = new ReteWorkingMemoryEntryPoint( this, this.entryPoints.get(name) );
+        //WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get(name);
+        return wmEntryPoint;
+    }
+
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
         if (liaPropagations == null) liaPropagations = new ArrayList();
         liaPropagations.add( liaNodePropagation );
+    }
+
+    public void initInitialFact() {
+        if ( initialFactFlag.compareAndSet( false, true ) && initialFactHandle == null ) {
+            synchronized ( initialFactFlag ) {
+                if ( initialFactHandle != null ) {
+                    // some other thread beat us to it.
+                    return;
+                }
+                initInitialFact(ruleBase, null);
+            }
+        }
     }
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {

@@ -18,6 +18,26 @@
 
 package org.drools.reteoo.integrationtests;
 
+import org.drools.compiler.StockTick;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,27 +50,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.StockTick;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
 
 /**
  * This is a test case for multi-thred issues
@@ -143,6 +142,7 @@ public class MultithreadTest extends CommonTestMethodBase {
     }
 
     @Test(timeout = 1000000)
+    @Ignore
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
                      "global java.util.List list; \n" +
@@ -163,7 +163,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption(EventProcessingOption.STREAM);
-        kbconf.setOption( RuleEngineOption.PHREAK );
+        kbconf.setOption( RuleEngineOption.RETEOO );
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbconf, str );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         final EntryPoint ep = ksession.getEntryPoint( "X" );

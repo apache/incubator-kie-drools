@@ -206,8 +206,6 @@ public class AbstractWorkingMemory
 
     protected InternalFactHandle initialFactHandle;
 
-    protected AtomicBoolean initialFactFlag;
-
     protected PropagationContextFactory pctxFactory;
 
     protected SessionConfiguration config;
@@ -378,14 +376,7 @@ public class AbstractWorkingMemory
 
         initManagementBeans();
 
-        initialFactFlag = new AtomicBoolean( false );
         if ( initInitFactHandle ) {
-            initInitialFact(ruleBase, null);
-        }
-    }
-
-    public void initInitialFact() {
-        if ( initialFactFlag.compareAndSet( false, true ) && initialFactHandle == null ) {
             initInitialFact(ruleBase, null);
         }
     }
@@ -548,6 +539,7 @@ public class AbstractWorkingMemory
             lsmem = SegmentUtilities.createSegmentMemory(lts, this);
         }
 
+        // TODO this is OTT, it shouldn't need to do this for ALL rules, just those rules that event stream inputs (mdp)
         if( this.ruleBase.getConfiguration().getEventProcessingMode().equals(EventProcessingOption.STREAM) ) {
             lmem.linkNode(this);
             List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
@@ -1578,13 +1570,11 @@ public class AbstractWorkingMemory
     }
 
     public ProcessInstance startProcess(final String processId) {
-        initInitialFact();
         return processRuntime.startProcess(processId);
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        initInitialFact();
         return processRuntime.startProcess(processId,
                                            parameters);
     }
