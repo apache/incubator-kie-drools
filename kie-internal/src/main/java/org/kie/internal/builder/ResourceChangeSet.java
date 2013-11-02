@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceChangeSet {
-    private final String resourceName;  // src/main/resources/org/drools/rules.drl
+    private final String     resourceName;  // src/main/resources/org/drools/rules.drl
     private final ChangeType status;
     private final List<ResourceChange> changes = new ArrayList<ResourceChange>();
-    
+    private List<RuleLoadOrder> loadOrder = new ArrayList<RuleLoadOrder>();
+
     public ResourceChangeSet(String resourceName, ChangeType status) {
         this.resourceName = resourceName;
         this.status = status;
@@ -23,6 +24,10 @@ public class ResourceChangeSet {
     
     public List<ResourceChange> getChanges() {
         return changes;
+    }
+
+    public List<RuleLoadOrder> getLoadOrder() {
+        return loadOrder;
     }
 
     @Override
@@ -49,5 +54,30 @@ public class ResourceChangeSet {
         } else if ( !resourceName.equals( other.resourceName ) ) return false;
         if ( status != other.status ) return false;
         return true;
+    }
+
+    public static class RuleLoadOrder {
+        private String pkgName;
+        private String ruleName;
+        private int loadOrder;
+
+        public RuleLoadOrder(String pkgName, String ruleName, int loadOrder) {
+            this.pkgName = pkgName;
+            this.ruleName = ruleName;
+            this.loadOrder = loadOrder;
+        }
+
+        public String getPkgName() {
+            return pkgName;
+        }
+
+        public String getRuleName() {
+            return ruleName;
+        }
+
+        public int getLoadOrder() {
+            return loadOrder;
+        }
+
     }
 }
