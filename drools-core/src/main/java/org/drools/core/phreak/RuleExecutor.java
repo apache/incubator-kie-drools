@@ -510,9 +510,20 @@ public class RuleExecutor {
             final int s1 = rtnLt1.getSalience();
             final int s2 = rtnLt2.getSalience();
 
+            // highest goes first
             if (s1 > s2) {
                 return 1;
             } else if (s1 < s2) {
+                return -1;
+            }
+
+            final int l1 = rtnLt1.getRule().getLoadOrder();
+            final int l2 = rtnLt2.getRule().getLoadOrder();
+
+            // lowest goes first
+            if (l1 < l2) {
+                return 1;
+            } else if (l1 > l2) {
                 return -1;
             } else {
                 return 0;

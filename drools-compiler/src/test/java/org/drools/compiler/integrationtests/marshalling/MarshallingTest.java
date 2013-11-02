@@ -410,9 +410,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         assertEquals( list.size(),
                       3 );
         assertEquals( bob.getObject(),
-                      list.get( 1 ) );
-        assertEquals( "stilton",
                       list.get( 2 ) );
+        assertEquals( "stilton",
+                      list.get( 1 ) );
 
         session.dispose();
 

@@ -79,6 +79,7 @@ public class RuleBuildContext extends PackageBuildContext {
         }
         this.rule.setPackage(pkg.getName());
         this.rule.setDialect(ruleDescr.getDialect());
+        this.rule.setLoadOrder( ruleDescr.getLoadOrder() );
 
         init(pkgBuilder, pkg, ruleDescr, dialectCompiletimeRegistry, defaultDialect, this.rule);
 

@@ -128,7 +128,7 @@ end
 
 
 rule "TraitSoft"
-no-loop
+no-loop   salience 10
 when
 $core: Bean( )
 then

@@ -396,7 +396,6 @@ public class Package
     public void addRule( final Rule rule ) {
         this.rules.put( rule.getName(),
                         rule );
-        rule.setLoadOrder( this.rules.size() );
     }
 
     /**
