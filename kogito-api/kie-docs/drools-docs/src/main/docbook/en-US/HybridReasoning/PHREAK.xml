@@ -78,6 +78,9 @@
     schedule the rule for evaluation. The same bit-mask technique is used to also track dirty node, segments and rules;
     this allows for a rule already link in to be scheduled for evaluation if it's considered dirty since it was last
     evaluated.</para>
+  <para>This ensures that no rule will ever evaluate partial matches, if it's impossible for it to result in rule
+    instances because one of the joins has no data. This is possible in RETE and it will merrily churn away producing
+    martial match attempts for all nodes, even if the last join is empty.</para>
   <para>While the incremental rule evaluation always starts from the root node, the dirty bit masks are used to allow
     nodes and segments that are not dirty to be skipped.</para>
   <para>Using the existence of at at least one items of data per node, is a fairly basic heuristic. Future work would
@@ -172,6 +175,22 @@
     result set, which is saved in a memory location for the resumed StackEntry to pick up and propagate to the child
     node. If the query itself called other queries the process would repeat, with the current query being paused and a
     new evaluation setup for the current query node.</para>
+  <para>One final point on performance. One single rule in general will not evaluate any faster with PHREAK than it does
+    with RETE. For a given rule and same data set, which using a root context object to enable and disable matching,
+    both attempt the same amount of matches and produce the same number of rule instances, and take roughly the same
+    time. Except for the use case with subnetworks and accumulates. </para>
+  <para>PHREAK can however be considered more forgiving that RETE for poorly written rule bases and with a more graceful
+    degradation of performance as the number of rules and complexity increases.</para>
+  <para>RETE will also churn away producing partial machines for rules that do not have data in all the joins; where as
+    PHREAK will avoid this.</para>
+  <para> So it's not that PHREAK is faster than RETE, it just won't slow down as much as your system grows :) </para>
+  <para>AgendaGroups did not help in RETE performance, as all rules where evaluated at all times, regardless of the
+    group. The same is true for salience. Which is why root context objects are often used, to limit matching attempts.
+    PHREAK only evaluates rules for the active AgendaGroup, and within that group will attempt to avoid evaluation of
+    rules (via salience) that do not result in rule instance firings. </para>
+  <para>With PHREAK AgendaGroups and salience now become useful performance tools. The root context objects are no
+    longer needed and potentially counter productive to performance, as they force the flushing and recreation of
+    matches for rules.</para>
   <para> </para>
 
 </section>
