@@ -1,14 +1,24 @@
 package org.drools.compiler.integrationtests;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
-import org.junit.Ignore;
+import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.core.RuleBase;
+import org.drools.core.common.InternalRuleBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.kie.api.definition.rule.Rule;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
@@ -468,4 +478,80 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 0, addResults2.getAddedMessages().size() );
         assertEquals( 0, addResults2.getRemovedMessages().size() );
     }
+    
+    @Test
+    public void testRuleRemoval() throws Exception {
+        String drl1 = "package org.drools.compiler\n" +
+                      "rule R1 when\n" +
+                      "   $m : Message()\n" +
+                      "then\n" +
+                      "end\n";
+ 
+        String drl2 = "rule R2 when\n" +
+                        "   $m : Message( message == \"Hi Universe\" )\n" +
+                        "then\n" +
+                        "end\n";
+ 
+        String drl3 = "rule R3 when\n" +
+                        "   $m : Message( message == \"Hello World\" )\n" +
+                        "then\n" +
+                        "end\n";
+ 
+        KieServices ks = KieServices.Factory.get();
+ 
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieModule km = createAndDeployJar(ks, releaseId1, drl1 + drl2 +drl3 );
+ 
+        // Create a session and fire rules
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KiePackage kpkg = ((KieContainerImpl) kc).getKieBase().getKiePackage( "org.drools.compiler");
+        assertEquals( 3,  kpkg.getRules().size() );
+        Map<String, Rule> rules = rulestoMap( kpkg.getRules() );
+ 
+ 
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R1")));
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R2")));
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R3")));
+ 
+        RuleBase rb_1 = ((InternalRuleBase) ((KnowledgeBaseImpl) kc.getKieBase()).getRuleBase());
+ 
+        RuleTerminalNode rtn1_1  = (RuleTerminalNode) ((InternalRuleBase) ((KnowledgeBaseImpl)kc.getKieBase()).getRuleBase()).getReteooBuilder().getTerminalNodes( "R1" )[0];
+        RuleTerminalNode rtn2_1  = (RuleTerminalNode) ((InternalRuleBase) ((KnowledgeBaseImpl)kc.getKieBase()).getRuleBase()).getReteooBuilder().getTerminalNodes( "R2" )[0];
+        RuleTerminalNode rtn3_1  = (RuleTerminalNode) ((InternalRuleBase) ((KnowledgeBaseImpl)kc.getKieBase()).getRuleBase()).getReteooBuilder().getTerminalNodes( "R3" )[0];
+ 
+        // Create a new jar for version 1.1.0
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.0");
+        km = createAndDeployJar( ks, releaseId2, drl1 + drl3 );
+ 
+        // try to update the container to version 1.1.0
+        kc.updateToVersion(releaseId2);
+ 
+        InternalRuleBase rb_2 = ((InternalRuleBase) ((KnowledgeBaseImpl) kc.getKieBase()).getRuleBase());
+        assertSame ( rb_1, rb_2 );
+ 
+        RuleTerminalNode rtn1_2  = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R1" )[0];
+        RuleTerminalNode rtn3_2  = (RuleTerminalNode) rb_2.getReteooBuilder().getTerminalNodes( "R3" )[0];
+        assertNull( rb_2.getReteooBuilder().getTerminalNodes( "R2" ) );
+ 
+        assertSame( rtn3_1, rtn3_2 );
+        assertSame( rtn1_1, rtn1_2 );
+ 
+        kpkg = ((KieContainerImpl) kc).getKieBase().getKiePackage( "org.drools.compiler");
+        assertEquals( 2,  kpkg.getRules().size() );
+        rules = rulestoMap( kpkg.getRules() );
+ 
+        assertNotNull( ((org.drools.core.definitions.rule.impl.RuleImpl ) rules.get( "R1" )) );
+        assertNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R2")));
+        assertNotNull(((org.drools.core.definitions.rule.impl.RuleImpl) rules.get("R3")));
+    }
+
+    private Map<String, Rule> rulestoMap(Collection<Rule> rules) {
+        Map<String, Rule> ret = new HashMap<String, Rule>();
+        for( Rule rule : rules ) {
+            ret.put( rule.getName(), rule );
+        }
+        return ret;
+    }    
+    
 }

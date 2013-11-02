@@ -1,5 +1,17 @@
 package org.drools.compiler.kie.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -8,21 +20,13 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.drools.compiler.kie.util.ResourceChange.Type;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.ResourceChange;
+import org.kie.internal.builder.ResourceChangeSet;
+import org.kie.internal.builder.ResourceChange.Type;
 
 public class ChangeSetBuilderTest {
 
@@ -190,7 +194,37 @@ public class ChangeSetBuilderTest {
 //        assertThat( cs.getChanges().get( 1 ), is( new ResourceChange(ChangeType.REMOVED, Type.RULE, "A removed rule") ) );
 //        assertThat( cs.getChanges().get( 2 ), is( new ResourceChange(ChangeType.UPDATED, Type.RULE, "An updated rule") ) );
     }
+    
+    @Test
+    public void testRuleRemoval() throws Exception {
+        String drl1 = "package org.drools.compiler\n" +
+                      "rule R1 when\n" +
+                      "   $m : Message()\n" +
+                      "then\n" +
+                      "end\n";
 
+        String drl2 = "rule R2 when\n" +
+                      "   $m : Message( message == \"Hi Universe\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl3 = "rule R3 when\n" +
+                      "   $m : Message( message == \"Hello World\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        InternalKieModule kieJar1 = createKieJar( drl1 + drl2 + drl3 );
+        InternalKieModule kieJar2 = createKieJar( drl1 + drl3 );
+
+        ChangeSetBuilder builder = new ChangeSetBuilder();
+        KieJarChangeSet changes = builder.build( kieJar1, kieJar2 );
+        assertEquals( 1, changes.getChanges().size() );
+
+        ResourceChangeSet rcs = changes.getChanges().values().iterator().next();
+        assertEquals( 1, rcs.getChanges().size()  );
+        assertEquals( ChangeType.REMOVED, rcs.getChanges().get(0).getChangeType() );
+    }    
+    
     private InternalKieModule createKieJar( String... drls) {
         InternalKieModule kieJar = mock( InternalKieModule.class );
         KieServices ks = KieServices.Factory.get();

@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -39,6 +40,8 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.ResourceChange;
+import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.io.ResourceTypeImpl;
@@ -351,4 +354,27 @@ public abstract class AbstractKieModule
     private byte[] getPomXml() {
         return getBytes(((ReleaseIdImpl)releaseId).getPomXmlPath());
     }
+
+    public static boolean updateResource(CompositeKnowledgeBuilder ckbuilder, 
+                                            InternalKieModule kieModule, 
+                                            String resourceName, 
+                                            ResourceChangeSet changes) {
+        ResourceConfiguration conf = getResourceConfiguration(kieModule, resourceName);
+        Resource resource = kieModule.getResource(resourceName);
+        if (resource != null) {
+            if (conf == null) {
+                ckbuilder.add(resource,
+                        ResourceType.determineResourceType(resourceName),
+                        changes );
+            } else {
+                ckbuilder.add(resource,
+                        ResourceType.determineResourceType(resourceName),
+                        conf,
+                        changes );
+            }
+            return true;
+        }
+        return false;
+    }
+    
 }

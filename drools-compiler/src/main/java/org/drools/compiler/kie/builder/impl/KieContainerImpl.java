@@ -14,9 +14,7 @@ import java.util.Map.Entry;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
-import org.drools.compiler.kie.util.ChangeType;
 import org.drools.compiler.kie.util.KieJarChangeSet;
-import org.drools.compiler.kie.util.ResourceChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
@@ -34,6 +32,8 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
@@ -41,9 +41,12 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.ResourceChange;
+import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,9 +124,23 @@ public class KieContainerImpl
                     if( ! rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
                         String resourceName = rcs.getResourceName();
                         if( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
-                            fileCount += AbstractKieModule.addFile( ckbuilder, 
-                                                                    newKM, 
-                                                                    resourceName ) ? 1 : 0;
+                            Resource resource = currentKM.getResource( rcs.getResourceName() );
+                            List<ResourceChange> changes = rcs.getChanges();
+                            if( ! changes.isEmpty() ) {
+                                // we need to deal with individual parts of the resource
+                                fileCount += AbstractKieModule.updateResource( ckbuilder, 
+                                                                               newKM, 
+                                                                               resourceName,
+                                                                               rcs ) ? 1 : 0;
+                            } else {
+                                // the whole resource has to handled
+                                if( rcs.getChangeType().equals( ChangeType.UPDATED ) ) {
+                                    pkgbuilder.removeObjectsGeneratedFromResource( resource );
+                                }
+                                fileCount += AbstractKieModule.addFile( ckbuilder, 
+                                        newKM, 
+                                        resourceName ) ? 1 : 0;
+                            }
                         }
                     }
                 }
