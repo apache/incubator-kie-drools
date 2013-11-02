@@ -1095,33 +1095,41 @@ public class PackageBuilder
 
         Package pkg = pkgRegistry.getPackage();
         if (this.ruleBase != null) {
-            // first, remove any rules that are no longer there
+            boolean needsRemoval = false;
+
+            // first, check if any rules no longer exist
             for( Rule rule : pkg.getRules() ) {
                 if (filterAcceptsRemoval( rule.getPackageName(), rule.getName() ) ) {
-                    this.ruleBase.removeRule(pkg, pkg.getRule(rule.getName()));
-                    pkg.removeRule(rule);
-                }
-            }
-            
-            boolean needsRemoval = false;
-            for (RuleDescr ruleDescr : packageDescr.getRules()) {
-                if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                    if (pkg.getRule(ruleDescr.getName()) != null) {
-                        needsRemoval = true;
-                        break;
-                    }
+                    needsRemoval = true;
+                    break;
                 }
             }
 
+            if( !needsRemoval ) {
+                for (RuleDescr ruleDescr : packageDescr.getRules()) {
+                    if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
+                        if (pkg.getRule(ruleDescr.getName()) != null) {
+                            needsRemoval = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            
             if (needsRemoval) {
                 try {
                     this.ruleBase.lock();
+                    for( Rule rule : pkg.getRules() ) {
+                        if (filterAcceptsRemoval( rule.getPackageName(), rule.getName() ) ) {
+                            this.ruleBase.removeRule(pkg, pkg.getRule(rule.getName()));
+                            pkg.removeRule(rule);
+                        }
+                    }
                     for (RuleDescr ruleDescr : packageDescr.getRules()) {
                         if (filterAccepts(ruleDescr.getNamespace(), ruleDescr.getName()) ) {
                             if (pkg.getRule(ruleDescr.getName()) != null) {
                                 // XXX: this one notifies listeners
                                 this.ruleBase.removeRule(pkg, pkg.getRule(ruleDescr.getName()));
-
                             }
                         }
                     }
