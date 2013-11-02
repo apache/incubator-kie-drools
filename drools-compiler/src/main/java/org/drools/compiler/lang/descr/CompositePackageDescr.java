@@ -1,11 +1,15 @@
 package org.drools.compiler.lang.descr;
 
+import org.drools.compiler.compiler.PackageBuilder;
 import org.kie.api.io.Resource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 public class CompositePackageDescr extends PackageDescr {
+    
+    private CompositeAssetFilter filter;
 
     public CompositePackageDescr() { }
 
@@ -92,6 +96,34 @@ public class CompositePackageDescr extends PackageDescr {
                 addWindowDeclaration(descr);
                 descr.setResource(resource);
             }
+        }
+    }
+    
+    public CompositeAssetFilter getFilter() {
+        return filter;
+    }
+    
+    public void addFilter( PackageBuilder.AssetFilter f ) {
+        if( f != null ) {
+            if( filter == null ) {
+                this.filter = new CompositeAssetFilter();
+            }
+            this.filter.filters.add( f );
+        }
+    }
+    
+    public static class CompositeAssetFilter implements PackageBuilder.AssetFilter {
+        public List<PackageBuilder.AssetFilter> filters = new ArrayList<PackageBuilder.AssetFilter>();
+
+        @Override
+        public Action accept(String pkgName, String assetName) {
+            for( PackageBuilder.AssetFilter filter : filters ) {
+                Action result = filter.accept(pkgName, assetName);
+                if( !Action.DO_NOTHING.equals( result ) ) {
+                    return result;
+                }
+            }
+            return Action.DO_NOTHING;
         }
     }
 }

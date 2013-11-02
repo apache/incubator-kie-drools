@@ -77,8 +77,6 @@ public class AndDescr extends AnnotatedBaseDescr
         return baseDescr == null ? false : descrs.remove(baseDescr);
     }
 
-
-
     public String toString() {
         return "[AND "+descrs+" ]";
     }

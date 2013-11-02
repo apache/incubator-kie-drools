@@ -29,7 +29,7 @@ public class CompositeKnowledgeBuilderAdapter implements org.drools.builder.Comp
     }
 
     public org.drools.builder.CompositeKnowledgeBuilder add(Resource resource, ResourceType type, ResourceConfiguration configuration) {
-        delegate.add(((ResourceAdapter)resource).getDelegate(), type.toKieResourceType(), null);
+        delegate.add(((ResourceAdapter)resource).getDelegate(), type.toKieResourceType(), (org.kie.api.io.ResourceConfiguration) null);
         return this;
     }
 

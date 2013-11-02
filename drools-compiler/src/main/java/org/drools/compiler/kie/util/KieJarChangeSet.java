@@ -3,6 +3,8 @@ package org.drools.compiler.kie.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.internal.builder.ResourceChangeSet;
+
 public class KieJarChangeSet {
     private final Map<String, ResourceChangeSet> changes = new HashMap<String, ResourceChangeSet>();
 
