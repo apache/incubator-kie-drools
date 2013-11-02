@@ -68,4 +68,8 @@ public interface CompositeKnowledgeBuilder {
      * Build all the Resources added during this batch
      */
     void build();
+
+    CompositeKnowledgeBuilder add(Resource resource, ResourceType determineResourceType, ResourceChangeSet changes);
+
+    CompositeKnowledgeBuilder add(Resource resource, ResourceType determineResourceType, ResourceConfiguration conf, ResourceChangeSet changes);
 }
