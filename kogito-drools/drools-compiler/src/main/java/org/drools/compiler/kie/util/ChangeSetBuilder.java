@@ -24,11 +24,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.compiler.DrlParser;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.io.impl.ByteArrayResource;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.ResourceChange;
+import org.kie.internal.builder.ResourceChangeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,10 +91,14 @@ public class ChangeSetBuilder {
                     boolean found = false;
                     for( Iterator<RuleDescr> it = orules.iterator(); it.hasNext(); ) {
                         RuleDescr ord = it.next();
-                        if( ord.getName().equals( crd ) ) {
+                        if( ord.getName().equals( crd.getName() ) ) {
                             found = true;
                             it.remove();
-                            if( !ord.equals( crd ) ) {
+                            
+                            // using byte[] comparison because using the descriptor equals() method
+                            // is brittle and heavier than iterating an array
+                            if( !segmentEquals(ob, ord.getStartCharacter(), ord.getEndCharacter(),
+                                    cb, crd.getStartCharacter(), crd.getEndCharacter() ) ) {
                                 pkgcs.getChanges().add( new ResourceChange( ChangeType.UPDATED, 
                                                                             ResourceChange.Type.RULE, 
                                                                             crd.getName() ) );
@@ -124,6 +131,21 @@ public class ChangeSetBuilder {
         return pkgcs;
     }
     
+    private boolean segmentEquals( byte[] a1, int s1, int e1, 
+                                     byte[] a2, int s2, int e2) {
+        int length = e1 - s1;
+        if( length <= 0 || length != e2-s2 || s1+length > a1.length || s2+length > a2.length ) {
+            return false;
+        }
+        for( int i = 0; i < length; i++ ) {
+            if( a1[s1+i] != a2[s2+i] ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     public String toProperties( KieJarChangeSet kcs ) {
         StringBuilder builder = new StringBuilder();
         builder.append( "kiejar.changeset.version=1.0\n" );
