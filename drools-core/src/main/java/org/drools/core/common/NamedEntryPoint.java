@@ -161,8 +161,6 @@ public class NamedEntryPoint
         try {
             this.wm.startOperation();
 
-            this.wm.initInitialFact();
-
             ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
                                                                           object );
             if ( logical && !typeConf.isTMSEnabled()) {
