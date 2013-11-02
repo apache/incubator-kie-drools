@@ -100,7 +100,7 @@ public class Rule
     private Timer                    timer;
 
     /** Load order in Package */
-    private long                     loadOrder;
+    private int                     loadOrder;
 
     /** Is recursion of this rule allowed */
     private boolean                  noLoop;
@@ -156,7 +156,7 @@ public class Rule
             out.writeObject( this.namedConsequence );
         }
         out.writeObject( timer );
-        out.writeLong( loadOrder );
+        out.writeInt(loadOrder);
         out.writeBoolean( noLoop );
         out.writeBoolean( autoFocus );
         out.writeObject( activationGroup );
@@ -193,7 +193,7 @@ public class Rule
         consequence = (Consequence) in.readObject();
         namedConsequence = (Map<String, Consequence>) in.readObject();
         timer = (Timer) in.readObject();
-        loadOrder = in.readLong();
+        loadOrder = in.readInt();
         noLoop = in.readBoolean();
         autoFocus = in.readBoolean();
         activationGroup = (String) in.readObject();
@@ -645,11 +645,11 @@ public class Rule
         this.namedConsequence.put(name, consequence);
     }
 
-    public long getLoadOrder() {
+    public int getLoadOrder() {
         return this.loadOrder;
     }
 
-    public void setLoadOrder(final long loadOrder) {
+    public void setLoadOrder(final int loadOrder) {
         this.loadOrder = loadOrder;
     }
 

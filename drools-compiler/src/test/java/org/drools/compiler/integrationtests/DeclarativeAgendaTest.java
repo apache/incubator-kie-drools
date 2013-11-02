@@ -758,8 +758,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
                       list.size() );
         System.out.println( list );
         assertTrue( list.contains( "1:2" ) );
+        assertTrue( list.contains( "rule1:go1" ) );
         assertTrue( list.contains( "rule2:go1" ) );
-        assertTrue( list.contains( "rule3:go1" ) );
 
         ksession.dispose();
     }

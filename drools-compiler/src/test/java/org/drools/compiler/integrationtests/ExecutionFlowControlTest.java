@@ -57,7 +57,7 @@ import static org.mockito.Mockito.*;
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
-    public void testSalienceIntegerAndDepthCrs() throws Exception {
+    public void testSalienceIntegerAndLoadOrder() throws Exception {
         KnowledgeBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
         KieSession ksession = createKnowledgeSession(kbase);
         final List list = new ArrayList();
@@ -176,6 +176,74 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         assertEquals( "b", list.get( 2 ) );
     }
+
+    @Test
+    public void testLoadOrderConflictResolver() throws Exception {
+        String text = "package org.kie.test\n"
+                      + "global java.util.List list\n"
+                      + "rule a\n"
+                      + "when\n"
+                      + "      s : String( this == 'a') \n"
+                      + "then\n"
+                      + "    list.add( s );\n"
+                      + "end\n" + "\n"
+
+                      + "rule b\n"
+                      + "when\n"
+                      + "      s : String( this == 'b') \n"
+                      + "then\n"
+                      + "    list.add( s );\n"
+                      + "end\n" + "\n"
+
+                      + "rule c\n"
+                      + "when\n"
+                      + "      s : String( this == 'c') \n"
+                      + "then\n"
+                      + "    list.add( s );\n"
+                      + "    insert( new String(\"a\") ); \n"
+                      + "    insert( new String(\"b\") ); \n"
+                      + "end\n" + "\n"
+
+                      + "rule d\n"
+                      + "when\n"
+                      + "    s : String( this == 'd') \n"
+                      + "then\n"
+                      + "    list.add( s );\n"
+                      + "    insert( new String(\"b\") ); \n"
+                      + "    insert( new String(\"a\") ); \n"
+                      + "end\n" + "\n"
+                      + "rule e\n"
+                      + "when\n"
+                      + "    s : String( this == 'e') \n"
+                      + "then\n"
+                      + "    list.add( s );\n"
+                      + "end\n" + "\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(text);
+        KieSession ksession = createKnowledgeSession(kbase);
+
+        final List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "a" );
+        ksession.insert( "b" );
+        ksession.insert( "c" );
+        ksession.insert( "d" );
+        ksession.insert( "e" );
+        ksession.fireAllRules();
+
+        assertEquals( 9, list.size() );
+        assertEquals( "a", list.get( 0 ) );
+        assertEquals( "b", list.get( 1 ) );
+        assertEquals( "c", list.get( 2 ) );
+        assertEquals( "a", list.get( 3 ) );
+        assertEquals( "b", list.get( 4 ) );
+        assertEquals( "d", list.get( 5 ) );
+        assertEquals( "a", list.get( 6 ) );
+        assertEquals( "b", list.get( 7 ) );
+        assertEquals( "e", list.get( 8 ) );
+    }
+
+
     
     @Test
     public void testEnabledExpressionWithOr() throws Exception {
