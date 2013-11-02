@@ -57,6 +57,7 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.RuleEngineOption;
@@ -2953,4 +2954,35 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "john", p.getName() );
     }
 
+
+    @Test
+    public void testInitialFactLeaking() {
+        // DROOLS-239
+        String drl = "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "    $o : Object()\n" +
+                     "then\n" +
+                     "    list.add(1);\n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
+
+        ksession.insert("1");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+
+        ksession.insert(1);
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
+
+        ksession.dispose();
+    }
 }

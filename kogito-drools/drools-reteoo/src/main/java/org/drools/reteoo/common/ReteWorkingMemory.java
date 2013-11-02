@@ -27,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ReteWorkingMemory extends AbstractWorkingMemory {
 
 
-    protected AtomicBoolean initialFactFlag;
+    protected final AtomicBoolean initialFactFlag = new AtomicBoolean( false );
 
     private List<LIANodePropagation> liaPropagations;
 
@@ -36,22 +36,18 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase) {
         super(id, ruleBase);
-        initialFactFlag = new AtomicBoolean( false );
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, boolean initInitFactHandle, SessionConfiguration config, Environment environment) {
         super(id, ruleBase, initInitFactHandle, config, environment);
-        initialFactFlag = new AtomicBoolean( false );
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
         super(id, ruleBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
-        initialFactFlag = new AtomicBoolean( false );
     }
 
     public ReteWorkingMemory(int id, InternalRuleBase ruleBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, WorkingMemoryEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
         super(id, ruleBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
-        initialFactFlag = new AtomicBoolean( false );
     }
 
 
@@ -63,9 +59,7 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        WorkingMemoryEntryPoint wmEntryPoint = new ReteWorkingMemoryEntryPoint( this, this.entryPoints.get(name) );
-        //WorkingMemoryEntryPoint wmEntryPoint = this.entryPoints.get(name);
-        return wmEntryPoint;
+        return new ReteWorkingMemoryEntryPoint( this, this.entryPoints.get(name) );
     }
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
@@ -74,14 +68,8 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     }
 
     public void initInitialFact() {
-        if ( initialFactFlag.compareAndSet( false, true ) && initialFactHandle == null ) {
-            synchronized ( initialFactFlag ) {
-                if ( initialFactHandle != null ) {
-                    // some other thread beat us to it.
-                    return;
-                }
-                initInitialFact(ruleBase, null);
-            }
+        if ( initialFactHandle == null && initialFactFlag.compareAndSet( false, true ) ) {
+            initInitialFact(ruleBase, null);
         }
     }
 

@@ -3999,8 +3999,6 @@ public class Misc2Test extends CommonTestMethodBase {
 
     }
 
-
-
     @Test
     public void testDynamicSalienceUpdate() {
         String drl = "package org.drools.compiler.tests; \n" +
@@ -4056,8 +4054,34 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.dispose();
     }
 
+    @Test
+    public void testInitialFactLeaking() {
+        // DROOLS-239
+        String drl = "global java.util.List list;\n" +
+                     "rule R when\n" +
+                     "    $o : Object()\n" +
+                     "then\n" +
+                     "    list.add(1);\n" +
+                     "end\n";
 
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
 
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
 
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
 
+        ksession.insert("1");
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+
+        ksession.insert(1);
+        ksession.fireAllRules();
+        assertEquals(2, list.size());
+
+        ksession.dispose();
+    }
 }
