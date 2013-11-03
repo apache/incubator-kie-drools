@@ -141,8 +141,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test(timeout = 1000000)
-    @Ignore
+    @Test(timeout = 60000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +
                      "global java.util.List list; \n" +
