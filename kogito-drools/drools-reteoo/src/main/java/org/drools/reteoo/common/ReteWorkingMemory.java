@@ -9,7 +9,6 @@ import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleBase;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.WorkingMemoryEventSupport;
@@ -22,12 +21,8 @@ import org.kie.api.runtime.Environment;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ReteWorkingMemory extends AbstractWorkingMemory {
-
-
-    protected final AtomicBoolean initialFactFlag = new AtomicBoolean( false );
 
     private List<LIANodePropagation> liaPropagations;
 
@@ -67,9 +62,15 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
         liaPropagations.add( liaNodePropagation );
     }
 
+    private Integer syncLock = 42;
     public void initInitialFact() {
-        if ( initialFactHandle == null && initialFactFlag.compareAndSet( false, true ) ) {
-            initInitialFact(ruleBase, null);
+        if ( initialFactHandle == null ) {
+            synchronized ( syncLock ) {
+                if ( initialFactHandle == null ) {
+                    // double check, inside of sync point incase some other thread beat us to it.
+                    initInitialFact(ruleBase, null);
+                }
+            }
         }
     }
 

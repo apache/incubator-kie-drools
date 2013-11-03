@@ -204,7 +204,7 @@ public class AbstractWorkingMemory
 
     protected Map<String, WorkingMemoryEntryPoint> entryPoints;
 
-    protected InternalFactHandle initialFactHandle;
+    protected volatile InternalFactHandle initialFactHandle;
 
     protected PropagationContextFactory pctxFactory;
 
