@@ -8,4 +8,9 @@
        <xi:include href="TaskServiceIntro.xml" />
        <xi:include href="UsingUserTasksInProcesses.xml" />
        <xi:include href="DataMappings.xml" />
+       <xi:include href="TasksLifecycle.xml" />
+       <xi:include href="TaskServiceDetails.xml" />
+       <xi:include href="TaskServiceAPIs.xml" />
+       <xi:include href="TaskServiceInteraction.xml" />
+       
 </chapter>
