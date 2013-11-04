@@ -1,25 +1,25 @@
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELConsequence;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.ConsequenceBuilder;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELConsequence;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Rule;
-import org.drools.compiler.rule.builder.ConsequenceBuilder;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
@@ -169,7 +169,8 @@ public class MVELConsequenceBuilder
                                                                        false );
 
             MVELConsequence expr = new MVELConsequence( unit,
-                                                        dialect.getId() );
+                                                        dialect.getId(),
+                                                        consequenceName );
             
             if ( Rule.DEFAULT_CONSEQUENCE_NAME.equals( consequenceName ) ) {
                 context.getRule().setConsequence( expr );

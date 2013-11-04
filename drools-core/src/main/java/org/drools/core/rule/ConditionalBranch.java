@@ -45,7 +45,7 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
      */
     @Override
     public ConditionalBranch clone() {
-        return this;
+        return new ConditionalBranch(condition.clone(), consequence.clone(), (elseBranch == null ) ? null : elseBranch.clone());
     }
 
     /**
