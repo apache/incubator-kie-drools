@@ -13,5 +13,6 @@
   <xi:include href="Gateways.xml" />
   <xi:include href="Others.xml" />
   <xi:include href="FluentAPI.xml" />
+  <xi:include href="Testing.xml" />
   
 </chapter>
