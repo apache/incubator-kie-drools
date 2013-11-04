@@ -1,9 +1,618 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <title>CDI</title>
+
+  <section>
+    <title>Overview</title>
+
+    <para>jBPM 6 comes with out of the box integration with CDI (Contexts and
+    Dependency Injection). Although most of the API can be used in CDI world
+    there are some dedicated modules that are designed especially for CDI
+    containers. The most important one is jbpm-kie-services that provides high
+    level services that shall be used in most of the cases were CDI is
+    available for jBPM integration. It provides following set of
+    services:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>DeploymentService</para>
+      </listitem>
+
+      <listitem>
+        <para>FormProviderService</para>
+      </listitem>
+
+      <listitem>
+        <para>RuntimeDataService</para>
+      </listitem>
+
+      <listitem>
+        <para>BPMN2DataService</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>These services are first class citizens for CDI world so they are
+    available for injection in any other CDI bean.</para>
+
+    <section>
+      <title>DeploymentService</title>
+
+      <section>
+        <para>Service responsible for deploying DeploymentUnits into runtime
+        environment. By deploying given deployment unit becomes ready for
+        execution and has RuntimeManager created for it.DeploymentService can
+        next be used to retrieve:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>RuntimeManager instance for given deployment id</para>
+          </listitem>
+
+          <listitem>
+            <para>DeployedUnit that represents complete deployment process for
+            given deployment id</para>
+          </listitem>
+
+          <listitem>
+            <para>list of all deployed units known to the deployment
+            service</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Deployment service stores the deployed units only in memory and
+        thus in case of a need to restore all previously deployed units,
+        component that uses deployment service needs to store that information
+        itself. Common places for such store is data base, file system,
+        repository of some sort etc. Deployment service will fire CDI events
+        on deployment and undeployment to allow application components to
+        react real time to these events to be able to store deployments or
+        remove them from the store when they are undeployed.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>DeploymentEvent with qualifier @Deploy will be fired on
+            deployment</para>
+          </listitem>
+
+          <listitem>
+            <para>DeploymentEvent with qualifier @Undeploy will be fired on
+            undeployment</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>use CDI observer mechanism to get notification on above events.
+        First to save deployments in the store of your choice:</para>
+
+        <programlisting language="java">    public void saveDeployment(@Observes @Deploy DeploymentEvent event) {
+        // store deployed unit info for further needs 
+        DeployedUnit deployedUnit = event.getDeployedUnit();
+    }</programlisting>
+
+        <para>next to remove it when it was undeployed</para>
+
+        <programlisting language="java">    public void removeDeployment(@Observes @Undeploy DeploymentEvent event) {
+        // remove deployment with id event.getDeploymentId()
+    }</programlisting>
+
+        <para>Due to the fact that there might be several implementation of
+        DeploymentService use of qualifiers is needed to instruct CDI
+        container which one shall be injected. jBPM comes with two out of the
+        box:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>@Kjar - KmoduleDeploymentService that is tailored to work
+            with KmoduleDeploymentUnits that are small descriptor on top of a
+            kjar - recommended to use in most of the cases</para>
+          </listitem>
+
+          <listitem>
+            <para>@Vfs - VFSDeploymentDService that allows to deploy assets
+            directly from VFS (Virtual File System) that is provided by <link
+            xlink:href="http://droolsjbpm.github.io/uberfire/">UberFire
+            framework</link>. Due to that fact VFSDeploymentService and
+            VFSDeploymentUnit are not bundled with jbpm core modules but with
+            jbpm-console-ng modules.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>The general practice is that every implementation of
+        DeploymentService should come with dedicated implementation of
+        DeploymentUnit as these two provided out of the box.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>FormProviderService</title>
+
+      <para>FormProviderService provides access to form representations
+      usually displayed on UI for both process forms and user task forms. It
+      is built on concept of isolated FormProviders that can provide different
+      capabilities and be backed by different technologies. FormProvider
+      interface describes contract for the implementations </para>
+
+      <programlisting language="java">public interface FormProvider {
+
+    int getPriority();
+
+    String render(String name, ProcessDesc process, Map&lt;String, Object&gt; renderContext);
+
+    String render(String name, Task task, ProcessDesc process, Map&lt;String, Object&gt; renderContext);
+}</programlisting>
+
+      <para>Implementations of FormProvider interface should always define
+      priority as this is the main driver for the FormProviderService to ask
+      for the content of the form of a given provider. FormProviderService
+      will collect all available providers and iterate over them asking for
+      the form content (rendered) in their priority order. The lower the
+      number the higher priority it gets during evaluation, e.g. provider with
+      priority 5 will be evalauted before provider with priority 10.
+      FormProviderService will irerate over available providers as long as one
+      delivers the content. In worse case scenario simple text based forms
+      will be returned.</para>
+
+      <para>jBPM comes with following FormProviders out of the box:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Fremarker based implementation to support jbpm version 5
+          process and task forms - priority 3</para>
+        </listitem>
+
+        <listitem>
+          <para>Default forms provider, considered last resort if none of the
+          other providers deliver content this one will always provide
+          simplest possible forms - lowest priority (1000)</para>
+        </listitem>
+
+        <listitem>
+          <para>when form modeler is used there is additional FormProvider
+          available to deliver forms modeled in that tool - priority 2</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>RuntimeDataService</title>
+
+      <para>RuntimeDataService provides access to actual data that is availabe
+      on runtime such as</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>available processes to be executed - with various
+          filters</para>
+        </listitem>
+
+        <listitem>
+          <para>active process instances - with various filters</para>
+        </listitem>
+
+        <listitem>
+          <para>process instance history </para>
+        </listitem>
+
+        <listitem>
+          <para>process instance variables</para>
+        </listitem>
+
+        <listitem>
+          <para>active and completed nodes of process instance</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Default implementation of RuntimeDataService is observing
+      deployment events and index all deployed processes to expose them to the
+      calling components. So whatever gets deployed RuntimeDataService will be
+      aware of that.</para>
+    </section>
+
+    <section>
+      <title>BPMN2DataService</title>
+
+      <section>
+        <para>Service that provides access to process details stored as part
+        of BPMN2 xml. </para>
+
+        <note>
+          <para>Before using any method that provides information, <emphasis
+          role="bold">findProcessId</emphasis> must be invoked to populate
+          repository with process information taken from BPMN2 content.</para>
+        </note>
+      </section>
+
+      <section>
+        <para>BPMN2DataService provides access to following data:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>overall description of process for given process
+            definition</para>
+          </listitem>
+
+          <listitem>
+            <para>collection of all user tasks found in the process
+            definition</para>
+          </listitem>
+
+          <listitem>
+            <para>information about defined inputs for user task node</para>
+          </listitem>
+
+          <listitem>
+            <para>information about defined outputs for user task node</para>
+          </listitem>
+
+          <listitem>
+            <para>ids of reusable processes (call activity) defined within
+            given process definition</para>
+          </listitem>
+
+          <listitem>
+            <para>information about process variables defined within given
+            process definition </para>
+          </listitem>
+
+          <listitem>
+            <para>information about all organizational entities (users and
+            groups) included in the process definition. Depending on the
+            actual process definition the returned values for users and groups
+            can contain</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>actual user or group name</para>
+              </listitem>
+
+              <listitem>
+                <para>process variable that will be used to get actual user or
+                group name on runtime e.g. #{manager}</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>Configuring CDI integration</title>
+
+    <section>
+      <para>To make use of jbpm-kie-services in your system you'll need to
+      provide some beans for the out of the box services to satisfy all
+      dependencies they have. There are several beans that depends on actual
+      scenario</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>entity manager and entity manager factory</para>
+        </listitem>
+
+        <listitem>
+          <para>user group callback for human tasks</para>
+        </listitem>
+
+        <listitem>
+          <para>identity provider to pass autheticated user information to the
+          services</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>When running in JEE environment like an JBoss Application Server
+      following producer bean should satisfy all requirements of the
+      jbpm-kie-services</para>
+
+      <programlisting language="java">public class EnvironmentProducer { 
+   
+    @PersistenceUnit(unitName = "org.jbpm.domain")
+    private EntityManagerFactory emf;
+
+    @Inject
+    @Selectable
+    private UserGroupCallback userGroupCallback;
+
+    @Produces
+    public EntityManagerFactory getEntityManagerFactory() {
+        return this.emf;
+    }
+
+    @Produces
+    @RequestScoped
+    public EntityManager getEntityManager() {
+        EntityManager em = emf.createEntityManager();
+        return em;
+    }
+
+    public void close(@Disposes EntityManager em) {
+        em.close();
+    }
+
+    @Produces
+    public UserGroupCallback produceSelectedUserGroupCalback() {
+        return userGroupCallback;
+    }
+
+    @Produces
+    public IdentityProvider produceIdentityProvider {
+        return new IdentityProvider() {
+             // implement IdentityProvider
+        };
+    }
+}</programlisting>
+
+      <para>Then beans.xml for the application should enable proper
+      alternative for user group callback (that will be taken based on
+      @Selectable qualifier)</para>
+
+      <programlisting language="xml">&lt;beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://docs.jboss.org/cdi/beans_1_0.xsd"&gt;
+
+  &lt;alternatives&gt;
+    &lt;class&gt;org.jbpm.services.task.identity.JAASUserGroupCallbackImpl&lt;/class&gt;
+  &lt;/alternatives&gt;
+
+&lt;/beans&gt;</programlisting>
+
+      <para><note>
+          <para>org.jbpm.services.task.identity.JAASUserGroupCallbackImpl is
+          just an example here which usually is the good fit for JBoss
+          Application Server to reuse security settings on application server
+          regardless of what it actually is (LDAP, DB, etc). Check Human Task
+          section for more alternatives for UserGroupCallback.</para>
+        </note></para>
+
+      <para>Optionally there can be several other producers provided to
+      deliver:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>WorkItemHandlers</para>
+        </listitem>
+
+        <listitem>
+          <para>Process, Agenda, WorkingMemory event listeners</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>These components can be provided by implementing following
+      interfaces</para>
+
+      <programlisting language="java">/**
+ * Allows to provide custom implementations to deliver WorkItem name and WorkItemHandler instance pairs
+ * for the runtime.
+ * &lt;br/&gt;
+ * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
+ * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected 
+ * results. 
+ *
+ */
+public interface WorkItemHandlerProducer {
+
+    /**
+     * Returns map of (key = work item name, value work item handler instance) of work items 
+     * to be registered on KieSession
+     * &lt;br/&gt;
+     * Parameters that might be given are as follows:
+     * &lt;ul&gt;
+     *  &lt;li&gt;ksession&lt;/li&gt;
+     *  &lt;li&gt;taskService&lt;/li&gt;
+     *  &lt;li&gt;runtimeManager&lt;/li&gt;
+     * &lt;/ul&gt;
+     * 
+     * @param identifier - identifier of the owner - usually RuntimeManager that allows the producer to filter out
+     * and provide valid instances for given owner
+     * @param params - owner might provide some parameters, usually KieSession, TaskService, RuntimeManager instances
+     * @return map of work item handler instances (recommendation is to always return new instances when this method is invoked)
+     */
+    Map&lt;String, WorkItemHandler&gt; getWorkItemHandlers(String identifier, Map&lt;String, Object&gt; params);
+}</programlisting>
+
+      <para>and</para>
+
+      <programlisting language="java">/**
+ * Allows do define custom producers for know EventListeners. Intention of this is that there might be several 
+ * implementations that might provide different listener instance based on the context they are executed in. 
+ * &lt;br/&gt;
+ * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
+ * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected 
+ * results.
+ *
+ * @param &lt;T&gt; type of the event listener - ProcessEventListener, AgendaEventListener, WorkingMemoryEventListener
+ */
+public interface EventListenerProducer&lt;T&gt; {
+
+    /**
+     * Returns list of instances for given (T) type of listeners
+     * &lt;br/&gt;
+     * Parameters that might be given are as follows:
+     * &lt;ul&gt;
+     *  &lt;li&gt;ksession&lt;/li&gt;
+     *  &lt;li&gt;taskService&lt;/li&gt;
+     *  &lt;li&gt;runtimeManager&lt;/li&gt;
+     * &lt;/ul&gt;
+     * @param identifier - identifier of the owner - usually RuntimeManager that allows the producer to filter out
+     * and provide valid instances for given owner
+     * @param params - owner might provide some parameters, usually KieSession, TaskService, RuntimeManager instances
+     * @return list of listener instances (recommendation is to always return new instances when this method is invoked)
+     */
+    List&lt;T&gt; getEventListeners(String identifier, Map&lt;String, Object&gt;  params);
+}</programlisting>
+
+      <para>Beans implementing these two interfaces will be collected on
+      runtime and consulted when building KieSession by RuntimeManager. See
+      RuntimeManager section for more details on this.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>RuntimeManager as CDI bean</title>
+
+    <section>
+      <para>RuntimeManager itself can be injected as CDI bean into any other
+      CDI bean within the application. It has then requirement to get
+      RungimeEnvironment properly produces to allow RuntimeManager to be
+      correctly initialized. RuntimeManager comes with three predefined
+      strategies and each of them gets CDI qualifier so it can be
+      referenced:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>@Singleton</para>
+        </listitem>
+
+        <listitem>
+          <para>@PerRequest</para>
+        </listitem>
+
+        <listitem>
+          <para>@PerProcessInstance</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Producer that was defined in Configuration section should be now
+      enhanced with producer methods to provide RuntimeEnvironment</para>
+
+      <programlisting language="java">public class EnvironmentProducer { 
+   
+    @PersistenceUnit(unitName = "org.jbpm.domain")
+    private EntityManagerFactory emf;
+
+    @Inject
+    @Selectable
+    private UserGroupCallback userGroupCallback;
+
+    @Inject
+    private BeanManager beanManager;
+
+    @Produces
+    public EntityManagerFactory getEntityManagerFactory() {
+        return this.emf;
+    }
+
+    @Produces
+    @RequestScoped
+    public EntityManager getEntityManager() {
+        EntityManager em = emf.createEntityManager();
+        return em;
+    }
+
+    public void close(@Disposes EntityManager em) {
+        em.close();
+    }
+
+    @Produces
+    public UserGroupCallback produceSelectedUserGroupCalback() {
+        return userGroupCallback;
+    }
+
+    @Produces
+    public IdentityProvider produceIdentityProvider {
+        return new IdentityProvider() {
+             // implement IdentityProvider
+        };
+    }
+
+    @Produces
+    @Singleton
+    @PerRequest
+    @PerProcessInstance
+    public RuntimeEnvironment produceEnvironment(EntityManagerFactory emf) {
+        
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .userGroupCallback(getUserGroupCallback())
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        return environment;
+    }
+}</programlisting>
+
+      <para>In this example single producer method is capable of providing
+      RuntimeEnvironment for all strategies of RuntimeManager by specifying
+      all qualifiers on the method level.</para>
+
+      <para>Once complete producer is available, RuntimeManager can be
+      injected into application's CDi bean</para>
+
+      <programlisting language="java">public class ProcessEngine {
+
+    @Inject
+    @Singleton
+    private RuntimeManager singletonManager;
+
+    public void startProcess() {
+        
+        RuntimeEngine runtime = singletonManager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        
+        singletonManager.disposeRuntimeEngine(runtime);     
+    }
+}</programlisting>
+
+      <para>That's all what needs to be configured to make use of CDI power
+      with jBPM.</para>
+
+      <note>
+        <para>An obvious limitation of injecting directly RuntimeManager via
+        CDI is that there might be only one RuntimeManager in the application.
+        That in some case can be desired and that's why there is such option.
+        In general recommended approach is to make use of DeploymentService
+        whenever there is a need to have many RuntimeManagers active within
+        application.</para>
+      </note>
+
+      <para>As an alternative to DeploymentService, RuntimeManagerFactory can
+      be injected and then RuntimeManager instance can be created manually by
+      the application. In such case EnvironmentProducer stays same as for
+      DeploymentService and following is an example of simple ProcessEngine
+      bean</para>
+
+      <programlisting language="java">public class ProcessEngine {
+
+    @Inject
+    private RuntimeManagerFactory managerFactory;
     
+    @Inject
+    private EntityManagerFactory emf;
+    
+    @Inject
+    private BeanManager beanManager;
+
+    public void startProcess() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(InjectableRegisterableItemsFactory.getFactory(beanManager, null))
+                .get();
+        
+        RuntimeManager manager = managerFactory.newSingletonRuntimeManager(environment);
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        
+        ProcessInstance processInstance = ksession.startProcess("UserTask");
+        
+        manager.disposeRuntimeEngine(runtime);
+        manager.close();     
+    }
+
+}</programlisting>
+    </section>
+  </section>
+
+  <section/>
 </section>
