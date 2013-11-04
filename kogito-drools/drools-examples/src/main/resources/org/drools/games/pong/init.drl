@@ -10,8 +10,9 @@ import org.drools.games.pong.KeyPressed
 import org.drools.games.pong.Collision
 import org.drools.games.pong.CollisionType
 
-import java.lang.Math
+import org.kie.api.runtime.KieRuntime
 
+import java.lang.Math
 
 import java.awt.Color
 import java.awt.Graphics
@@ -19,45 +20,79 @@ import java.awt.event.KeyEvent
 
 global PongConfiguration pconf
 
-dialect "mvel"  
+dialect "mvel"
 
-rule "Create Players" when 
-then 
-    batY =  (pconf.tableHeight/2)-(pconf.batHeight/2);
-    bat1 = new Bat( pconf.padding, batY, pconf.batWidth, pconf.batHeight);
-    bat2 = new Bat( pconf.tableWidth - pconf.padding - pconf.batWidth, batY, pconf.batWidth, pconf.batHeight );
-    
-    bat1.speed = pconf.batSpeed;
-    bat2.speed = pconf.batSpeed;
-        
-    player1 = new Player(PlayerId.PlayerOne, bat1);
-    player2 = new Player(PlayerId.PlayerTwo, bat2);    
-    
-    pongGame = new PongGame(player1, player2);
-    
-    insert( bat1 );
-    insert( bat2 );
-    insert( player1 );
-    insert( player2 );
-    insert( pongGame );    
+function Player initPlayer(PlayerId playerId, int batX, PongConfiguration pconf, KieRuntime kruntime, PongUI ui) {
+    int batY =  ( pconf.getTableHeight() / 2 ) - ( pconf.getBatHeight() / 2 );
+    Bat bat = new Bat( batX, batY, pconf.getBatWidth(), pconf.getBatHeight() );
+    bat.setSpeed( pconf.getBatSpeed() );
+    ui.drawBat(bat);
+
+    Player p = new Player(playerId, bat);
+
+    kruntime.insert( bat );
+    kruntime.insert( p);
+    return p;
+}
+
+function void initBall(KieRuntime kruntime, PongConfiguration pconf, PongUI ui) {
+    Ball ball = new Ball( (pconf.getTableWidth()/2)-(pconf.getBallWidth()/2),
+                     (pconf.getTableHeight()/2)-(pconf.getBallWidth()/2),
+                      pconf.getBallWidth());
+    ball.setSpeed( pconf.getBallStartingSpeed() );
+    ball.setDx( -2 );
+    ui.drawBall(ball);
+    kruntime.insert( ball );
+}
+
+rule "Create GUI" agenda-group "Init"  when
+then
+    PongUI ui = new PongUI(pconf);
+    ui.init( (StatefulKnowledgeSession) kcontext.getKnowledgeRuntime() );
+    insert( ui );
 end
 
-/**
- * Creates the ball with an initial direction.
- * For a new game it alway starts with a direction to the left, after that it goes
- * In the direction of the person who lost the last point.
- */ 
-rule "Create Ball" when
-     not Ball()
-     ( PointWin(player.id == PlayerId.PlayerOne ) and dx : Number() from 4 ) or
-     ( PointWin(player.id == PlayerId.PlayerTwo ) and dx : Number() from -4 ) or
-     ( not PointWin( ) and dx : Number() from -4 )
-
+rule "Draw Top and Bottom Lines and Net" agenda-group "Init" when
+    ui : PongUI( )
 then
-    ball = new Ball( (pconf.tableWidth/2)-(pconf.ballWidth/2), 
-                     (pconf.tableHeight/2)-(pconf.ballWidth/2), 
-                      pconf.ballWidth);
-    ball.speed = pconf.ballStartingSpeed;                      
-    ball.dx = dx;
-    insert( ball );                          
+    Graphics tableG = ui.getGraphics(); //ui.getTablePanel().getTableG();
+    tableG.setColor( Color.WHITE ); // background
+
+    int padding = pconf.padding;
+    int tableWidth = pconf.tableWidth;
+    int tableHeight = pconf.tableHeight;
+    int sideLineWidth = pconf.sideLineWidth;
+
+    tableG.fillRect( padding, padding,
+                     tableWidth-(padding*2), sideLineWidth );
+    tableG.fillRect( padding, tableHeight-padding-sideLineWidth,
+                     tableWidth-(padding*2), sideLineWidth );
+    // draw dash line net
+    int netWidth = pconf.netWidth;
+    int gap = pconf.netGap;
+    int dash = pconf.netDash;
+    int x = (tableWidth/2) - (netWidth/2);
+    for (int i = 0; i < tableHeight; i = i + dash + gap) {
+        tableG.fillRect( (int) x, i, netWidth, dash );
+    }
+end
+
+rule "Init Game" agenda-group "Init" when
+    ui : PongUI()
+then
+
+    Player p1 = initPlayer( PlayerId.PlayerOne, pconf.getPadding(),
+                            pconf, kcontext.getKnowledgeRuntime(), ui);
+
+    ui.drawScore(p1, 100, pconf);
+
+    Player p2 = initPlayer( PlayerId.PlayerTwo, pconf.tableWidth - pconf.padding - pconf.batWidth,
+                            pconf, kcontext.getKnowledgeRuntime(), ui);
+
+
+     ui.drawScore(p1, pconf.getTableWidth()-120, pconf);
+
+    insert( new PongGame(p1, p2) );
+
+    initBall(kcontext.getKnowledgeRuntime(), pconf, ui);
 end

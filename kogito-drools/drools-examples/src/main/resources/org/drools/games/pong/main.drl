@@ -1,0 +1,24 @@
+package org.drools.games.pong;
+dialect  "mvel"
+rule "main1" when
+then
+    insert( new Run() );
+    setFocus( "Init" );
+end
+
+rule "main2" when
+    $r : Run()
+then
+    setFocus( "Keys" );
+    setFocus( "Move" );
+    setFocus( "Collision" );
+    setFocus( "Game" );
+end
+
+rule "Redraw Cave" when
+   gui : PongUI()
+   $r : Run()
+then
+   gui.updateTable();
+   modify( $r ) {}
+end

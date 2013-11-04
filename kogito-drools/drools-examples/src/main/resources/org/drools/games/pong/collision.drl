@@ -20,16 +20,17 @@ import java.util.List
 
 global PongConfiguration pconf
 
-dialect "mvel"  
+dialect "mvel"
 
-rule "Ball Side Line Collision" when
+
+rule "Ball Side Line Collision" agenda-group "Collision" when
     not Collision()
-    ball : Ball( y <=  pconf.padding + pconf.sideLineWidth )
+    ball : Ball( y <=  pconf.getPadding() + pconf.getSideLineWidth() )
     or
-    ball : Ball( y + width >=  pconf.tableHeight - pconf.padding - pconf.sideLineWidth )
-then   
-    modify( ball ) { dy = 0 - ball.dy };
-    insert( new Collision( (Player) null, CollisionType.SideLineTop ) );
+    ball : Ball( y + width >=  pconf.tableHeight - pconf.getPadding() - pconf.getSideLineWidth() )
+then
+    modify( ball ) { setDy( 0 - ball.getDy()) };
+    insert( new Collision( null, CollisionType.SideLineTop ) );
 end
 
 rule "Abstract Ball Bat Collision" when
@@ -41,66 +42,71 @@ rule "Abstract Ball Bat Collision" when
 then
 end
 
-rule "Ball Bat Collision Top"  extends "Abstract Ball Bat Collision" when    
-    eval( bat.y < ball.y+20 && 
+rule "Ball Bat Collision Top"  extends "Abstract Ball Bat Collision" agenda-group "Collision" when
+    eval( bat.y < ball.y+20 &&
           bat.y > ball.y+10 )
-then 
-    modify( ball ) { dy = -6 };
-    insert( new Collision( bat.player, CollisionType.BatTop ) );    
-end
-
-rule "Ball Bat Collision Bottom"  extends "Abstract Ball Bat Collision" when    
-    eval( bat.y+80 < ball.y+10 && 
-          bat.y+80 > ball.y )
-then 
-    modify( ball ) { dy = 6 };
-    insert( new Collision( bat.player, CollisionType.BatBottom ) );    
-end
-
-rule "Ball Bat Collision Upper"  extends "Abstract Ball Bat Collision" when    
-    eval( bat.y <= ball.y+(ball.width/2) && 
-          bat.y + 38 > ball.y+(ball.width/2) )
 then
-    m = Math.ceil(((bat.y + 38) - (ball.y + (ball.width/2)))/10.0 ); 
-    modify( ball ) { dx = 0 - ball.dx, dy = 0 - m };
-    insert( new Collision( bat.player, CollisionType.BatUpper ) );    
+    modify( ball ) { dy = -6 };
+    insert( new Collision( bat.player, CollisionType.BatTop ) );
 end
 
-rule "Ball Bat Collision Middle" extends "Abstract Ball Bat Collision" when    
+rule "Ball Bat Collision Bottom"  extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
+    eval( bat.y+80 < ball.y+10 &&
+          bat.y+80 > ball.y )
+then
+    modify( ball ) { dy = 6 };
+    insert( new Collision( bat.player, CollisionType.BatBottom ) );
+end
+
+rule "Ball Bat Collision Upper"  extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
+    eval( bat.y <= ball.y+(ball.width/2) &&
+          bat.y + 38 > ball.y+(ball.width/2) )
+//    if ( ball.dy < 0 ) do[increaseDx]
+//    if ( ball.dy > 0 ) do[decreaseDx]
+then
+    m = Math.ceil(((bat.y + 38) - (ball.y + (ball.width/2)))/10.0 );
+    modify( ball ) { dx = 0 - ball.dx, dy = 0 - m };
+    insert( new Collision( bat.player, CollisionType.BatUpper ) );
+//then[increaseDx]
+//    modify( ball ) { dx = dx + 1 };
+//then[decreaseDx]
+//    modify( ball ) { dx = dx - 1 };
+end
+
+rule "Ball Bat Collision Middle" extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
     eval( bat.y + 38 <= ball.y+(ball.width/2) &&
           bat.y + 42 >= ball.y+(ball.width/2) )
 then
     modify( ball ) { dx = 0 - ball.dx, dy = 0 };
-    insert( new Collision( bat.player, CollisionType.BatMiddle ) );    
+    insert( new Collision( bat.player, CollisionType.BatMiddle ) );
 end
 
-rule "Ball Bat Collision Lower" extends "Abstract Ball Bat Collision" when    
+rule "Ball Bat Collision Lower" extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
     eval( bat.y + 42 < ball.y+(ball.width/2) &&
           bat.y + 80 >= ball.y+(ball.width/2) )
+//    if ( ball.dy > 0 ) do[increaseDx]
+//    if ( ball.dy < 0 ) do[decreaseDx]
 then
-    m = Math.ceil( ( (ball.y + (ball.width/2)) - (bat.y+42))/10.0 ); 
+    m = Math.ceil( ( (ball.y + (ball.width/2)) - (bat.y+42))/10.0 );
     modify( ball ) { dx = 0 - ball.dx, dy = m };
-    insert( new Collision( bat.player, CollisionType.BatLower ) );    
+    insert( new Collision( bat.player, CollisionType.BatLower ) );
+//then[increaseDx]
+//    modify( ball ) { dx = dx + 1 };
+//then[decreaseDx]
+//    modify( ball ) { dx = dx - 1 };
 end
 
 /**
  * This retracts the Collision once we've moved into a rectangle where we know no further collision is possible
  */
-rule "Retract Collision" when
+rule "Retract Collision" agenda-group "Collision" when
     c    : Collision()
     ball : Ball() @watch( x, y )
     // use eval to avoid wasted alpha nodes evaluations
-    eval( ball.x > pconf.padding  + pconf.batWidth &&
-          ball.x < pconf.tableWidth - pconf.padding  - pconf.batWidth - ball.width &&
-          ball.y > pconf.padding  +  pconf.sideLineWidth + pconf.batWidth &&
-          ball.y < pconf.tableHeight - pconf.padding -  pconf.sideLineWidth - ball.width ) 
+    eval( ball.getX() > pconf.getPadding()  + pconf.getBatWidth() &&
+          ball.getX() < pconf.getTableWidth() - pconf.getPadding()  - pconf.getBatWidth() - ball.getWidth() &&
+          ball.getY() > pconf.getPadding()  +  pconf.getSideLineWidth() + pconf.getBatWidth() &&
+          ball.getY() < pconf.getTableHeight() - pconf.getPadding() -  pconf.getSideLineWidth() - ball.getWidth() )
 then
     retract( c );
-end
-
-rule "Increase Ball Speed"  when
-    c : Collision( )
-    ball : Ball( speed-3 >= 20 ) @watch( !speed) // but make sure it never goes below 20
-then
-    modify( ball ) { speed = ball.speed - 6 };
 end

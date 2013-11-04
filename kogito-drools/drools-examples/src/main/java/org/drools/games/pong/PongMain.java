@@ -37,6 +37,8 @@ public class PongMain {
         pconf.setExitOnClose(exitOnClose);
         ksession.setGlobal("pconf", pconf);
 
+        //ksession.getAgenda().getAgendaGroup("Init").setFocus( );
+
         runKSession(ksession);
     }
 
@@ -45,7 +47,11 @@ public class PongMain {
         executorService.submit(new Runnable() {
             public void run() {
                 // run forever
-                ksession.fireUntilHalt();
+                try {
+                    ksession.fireUntilHalt();
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                }
             }
         });
     }
