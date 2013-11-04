@@ -296,6 +296,63 @@ public class BranchTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testMultipleIfAfterEval() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $a: Cheese ( )\n" +
+                "    eval( $a.getType().equals(\"stilton\") )\n" +
+                "    if ( $a.getPrice() > 10 ) do[t1]\n" +
+                "    if ( $a.getPrice() < 10 ) do[t2]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType().toUpperCase() );\n" +
+                "then[t2]\n" +
+                "    results.add( $a.getType() );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+        assertTrue( results.contains( "stilton" ) );
+    }
+
+    @Test
+    public void testInheritance() {
+        String str = "dialect \"mvel\"\n" +
+                "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R0 when\n" +
+                "    $a: Cheese ( )\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R1 extends R0 when\n" +
+                "    eval( $a.getType().equals(\"stilton\") )\n" +
+                "    if ( $a.getPrice() > 10 ) do[t1]\n" +
+                "    if ( $a.getPrice() < 10 ) do[t2]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.type );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.type.toUpperCase() );\n" +
+                "then[t2]\n" +
+                "    results.add( $a.type );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+        assertTrue( results.contains( "stilton" ) );
+    }
+
+    @Test
     public void testIfElse1() {
         String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
@@ -376,9 +433,9 @@ public class BranchTest extends CommonTestMethodBase {
                      "    $b: Cheese ( type == \"cheddar\" )\n" +
                      "    if ( 200 < 400 ) break[t1]\n" +
                      "then\n" +
-                     "    results.add( $b.getType() );\n" +
+                     "    results.add( $b.type );\n" +
                      "then[t1]\n" +
-                     "    results.add( $a.getType().toUpperCase() );\n" +
+                     "    results.add( $a.type.toUpperCase() );\n" +
                      "end\n";
 
         List<String> results = executeTestWithDRL(str);
@@ -398,9 +455,9 @@ public class BranchTest extends CommonTestMethodBase {
                      "    $b: Cheese ( type == \"cheddar\" )\n" +
                      "    if ( 200 > 400 ) break[t1]\n" +
                      "then\n" +
-                     "    results.add( $b.getType() );\n" +
+                     "    results.add( $b.type );\n" +
                      "then[t1]\n" +
-                     "    results.add( $a.getType().toUpperCase() );\n" +
+                     "    results.add( $a.type.toUpperCase() );\n" +
                      "end\n";
 
         List<String> results = executeTestWithDRL(str);
