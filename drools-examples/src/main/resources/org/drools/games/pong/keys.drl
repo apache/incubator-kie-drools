@@ -20,26 +20,32 @@ global PongConfiguration pconf
 
 dialect "mvel"  
 
-rule "Detect KeyPressed" when
+rule "Detect KeyPressed" agenda-group "Keys" when
     ke : KeyEvent( ) from entry-point "KeyPressedStream"
     not KeyPressed( keyText ==  KeyEvent.getKeyText( ke.getKeyCode() ) )    
-then 
+then
     kp = new KeyPressed( KeyEvent.getKeyText( ke.getKeyCode() ) );    
     insert( kp );
     retract( ke );
 end
 
-rule "Retract KeyPressed" when
-     ke : KeyEvent() from entry-point "KeyPressedStream"
-     exists KeyPressed( keyText ==  KeyEvent.getKeyText( ke.getKeyCode() ) )  
-then
-    retract( ke );
-end
 
-rule "Detect KeyReleased"  when
+rule "Detect KeyReleased"  agenda-group "Keys" when
     ke : KeyEvent() from entry-point "KeyReleasedStream"
     kp : KeyPressed( keyText == KeyEvent.getKeyText( ke.getKeyCode() ) )    
 then
     retract( ke );
     retract( kp );
+end
+
+rule "Remove KeyPressed Event"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+then
+    retract( ke );
+end
+
+rule "Remove KeyReleased Event"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+then
+    retract( ke );
 end
