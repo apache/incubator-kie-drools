@@ -1,5 +1,8 @@
 package org.jbpm.services.task.impl.model.xml;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -15,7 +18,7 @@ import org.kie.api.task.model.Content;
 
 @XmlRootElement(name="content")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxbContent extends AbstractJaxbTaskObject<Content> implements Content {
+public class JaxbContent implements Content {
 
     @XmlElement
     private Long id;
@@ -32,16 +35,14 @@ public class JaxbContent extends AbstractJaxbTaskObject<Content> implements Cont
     private Map<String, Object> contentMap = null;
     
     public JaxbContent() { 
-        super(Content.class);
+        // default
     }
     
-    @SuppressWarnings("unchecked")
     public JaxbContent(Content content) { 
         initialize(content);
     }
     
     public void initialize(Content content) { 
-        this.realClass = Content.class;
         if( content == null ) { 
             return; 
         }
@@ -88,4 +89,16 @@ public class JaxbContent extends AbstractJaxbTaskObject<Content> implements Cont
     public long getId() {
         return this.id;
     } 
+    
+    public void readExternal(ObjectInput arg0) throws IOException, ClassNotFoundException {
+        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
+        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + Content.class.getSimpleName()
+                + " implementation.");
+    }
+
+    public void writeExternal(ObjectOutput arg0) throws IOException {
+        String methodName = (new Throwable()).getStackTrace()[0].getMethodName();
+        throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + Content.class.getSimpleName()
+                + " implementation.");
+    }
 }
