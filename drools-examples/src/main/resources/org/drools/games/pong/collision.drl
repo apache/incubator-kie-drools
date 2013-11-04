@@ -61,16 +61,16 @@ end
 rule "Ball Bat Collision Upper"  extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
     eval( bat.y <= ball.y+(ball.width/2) &&
           bat.y + 38 > ball.y+(ball.width/2) )
-//    if ( ball.dy < 0 ) do[increaseDx]
-//    if ( ball.dy > 0 ) do[decreaseDx]
+    if ( ball.dy < 0 ) do[increaseDx]
+    if ( ball.dy > 0 ) do[decreaseDx]
 then
     m = Math.ceil(((bat.y + 38) - (ball.y + (ball.width/2)))/10.0 );
     modify( ball ) { dx = 0 - ball.dx, dy = 0 - m };
     insert( new Collision( bat.player, CollisionType.BatUpper ) );
-//then[increaseDx]
-//    modify( ball ) { dx = dx + 1 };
-//then[decreaseDx]
-//    modify( ball ) { dx = dx - 1 };
+then[increaseDx]
+    modify( ball ) { dx = ball.dx + 1 };
+then[decreaseDx]
+    modify( ball ) { dx = ball.dx - 1 };
 end
 
 rule "Ball Bat Collision Middle" extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
@@ -84,16 +84,16 @@ end
 rule "Ball Bat Collision Lower" extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
     eval( bat.y + 42 < ball.y+(ball.width/2) &&
           bat.y + 80 >= ball.y+(ball.width/2) )
-//    if ( ball.dy > 0 ) do[increaseDx]
-//    if ( ball.dy < 0 ) do[decreaseDx]
+    if ( ball.dy > 0 ) do[increaseDx]
+    if ( ball.dy < 0 ) do[decreaseDx]
 then
     m = Math.ceil( ( (ball.y + (ball.width/2)) - (bat.y+42))/10.0 );
     modify( ball ) { dx = 0 - ball.dx, dy = m };
     insert( new Collision( bat.player, CollisionType.BatLower ) );
-//then[increaseDx]
-//    modify( ball ) { dx = dx + 1 };
-//then[decreaseDx]
-//    modify( ball ) { dx = dx - 1 };
+then[increaseDx]
+    modify( ball ) { dx = ball.dx + 1 };
+then[decreaseDx]
+    modify( ball ) { dx = ball.dx - 1 };
 end
 
 /**
