@@ -9,16 +9,10 @@
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>Business rules with the guided editor</title>
 
-  <para>Business Rules authored with the Guided Editor are more commonly known as "BRL Rules".</para>
-
-  <para>These rules use the guided GUI which controls and prompts user input based on knowledge of the object
+  <para>Guided Rules are authored with a UI to control and prompt user input based on knowledge of the object
     model.</para>
 
   <para>This can also be augmented with DSL sentences.</para>
-
-  <note>
-    <para>To use the Guided Rule Editor, someone will need to have you package configured before hand.</para>
-  </note>
 
   <section xml:id="drools.GuidedRuleEditorParts">
     <title>Parts of the Guided Rule Editor</title>
