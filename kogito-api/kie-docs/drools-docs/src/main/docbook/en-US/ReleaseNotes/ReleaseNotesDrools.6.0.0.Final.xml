@@ -13,10 +13,107 @@
     <para>bar</para>
   </section>
 
+  <section>
+    <title>Automatically firing timed rule in passive mode</title>
+
+    <para>When the rule engine runs in passive mode (i.e.: using fireAllRules)
+    by default it doesn't fire consequences of timed rules unless fireAllRules isn't invoked again.
+    Now it is possible to change this default behavior by configuring the KieSession
+    with a <code>TimedRuleExectionOption</code> as shown in the following example.</para>
+
+    <example>
+      <title>Configuring a KieSession to automatically execute timed rules</title>
+
+      <programlisting language="java">KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+ksconf.setOption( TimedRuleExectionOption.YES );
+KSession ksession = kbase.newKieSession(ksconf, null);</programlisting>
+    </example>
+
+    <para>It is also possible to have a finer grained control on the timed rules that have to be
+    automatically executed. To do this it is necessary to set a <code>FILTERED</code>
+    <code>TimedRuleExectionOption</code> that allows to define a callback to filter those
+    rules, as done in the next example.</para>
+
+    <example>
+      <title>Configuring a filter to choose which timed rules should be automatically executed</title>
+
+      <programlisting language="java">KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+conf.setOption( new TimedRuleExectionOption.FILTERED(new TimedRuleExecutionFilter() {
+    public boolean accept(Rule[] rules) {
+        return rules[0].getName().equals("MyRule");
+    }
+}) );</programlisting>
+    </example>
+  </section>
 
   <section>
-    <title>Timers</title>
-    <para>bar</para>
+    <title>Expression Timers</title>
+
+    <para>It is now possible to define both the delay and interval of an interval timer
+    as an expression instead of a fixed value. To do that it is necessary to declare
+    the timer as an expression one (indicated by "expr:") as in the following example:</para>
+
+    <example>
+      <title>An Expression Timer Example</title>
+
+      <programlisting language="java">declare Bean
+    delay   : String = "30s"
+    period  : long = 60000
+end
+
+rule "Expression timer"
+    timer( expr: $d, $p )
+when
+    Bean( $d : delay, $p : period )
+then
+end</programlisting>
+    </example>
+
+    <para>The expressions, $d and $p in this case, can use any variable defined in the
+    pattern matching part of the rule and can be any String that can be parsed in a time
+    duration or any numeric value that will be internally converted in a long representing
+    a duration expressed in milliseconds.</para>
+
+    <para>Both interval and expression timers can have 3 optional parameters named
+    "start", "end" and "repeat-limit". When one or more of these parameters are used the first
+    part of the timer definition must be followed by a semicolon ';' and the parameters have
+    to be separated by a comma ',' as in the following example:</para>
+
+    <example>
+      <title>An Interval Timer with a start and an end</title>
+
+      <programlisting language="java">timer (int: 30s 10s; start=3-JAN-2010, end=5-JAN-2010)</programlisting>
+    </example>
+
+    <para>The value for start and end parameters can be a Date, a String representing
+    a Date or a long, or more in general any Number, that will be transformed in a Java Date
+    applying the following conversion:</para>
+
+    <programlisting language="java">new Date( ((Number) n).longValue() )</programlisting>
+
+    <para>Conversely the repeat-limit can be only an integer and it defines the maximum
+    number of repetitions allowed by the timer. If both the end and the repeat-limit parameters
+    are set the timer will stop when the first of the two will be matched.</para>
+
+    <para>The using of the start parameter implies the definition of a phase for the timer,
+    where the beginning of the phase is given by the start itself plus the eventual delay.
+    In other words in this case the timed rule will then be scheduled at times:</para>
+
+    <programlisting language="java">start + delay + n*period</programlisting>
+
+    <para>for up to repeat-limit times and no later than the end timestamp (whichever first).
+    For instance the rule having the following interval timer</para>
+
+    <programlisting language="java">timer ( int: 30s 1m; start="3-JAN-2010" )</programlisting>
+
+    <para>will be scheduled at the 30th second of every minute after the midnight of the
+    3-JAN-2010. This also means that if for example you turn the system on at midnight of
+    the 3-FEB-2010 it won't be scheduled immediately but will preserve the phase defined by
+    the timer and so it will be scheduled for the first time 30 seconds after the midnight.
+    If for some reason the system is paused (e.g. the session is serialized and then deserialized
+    after a while) the rule will be scheduled only once to recover from missing activations
+    (regardless of how many activations we missed) and subsequently it will be scheduled
+    again in phase with the timer.</para>
   </section>
 
   <section>
