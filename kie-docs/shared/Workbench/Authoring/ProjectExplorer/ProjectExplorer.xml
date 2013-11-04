@@ -42,9 +42,7 @@
       <title>Showing packages</title>
       <mediaobject>
         <imageobject>
-          <imagedata
-            fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Show-Packages.png"
-          />
+          <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Project-Show-Packages.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -57,9 +55,7 @@
       <title>Expanded asset group</title>
       <mediaobject>
         <imageobject>
-          <imagedata
-            fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Expanded.png"
-          />
+          <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Project-Expanded.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -69,20 +65,20 @@
     <title>Different views</title>
     <para>Project Explorer supports multiple views.<itemizedlist>
         <listitem>
-          <para>Business View</para>
+          <para>Project View</para>
           <para>A simplified view of the underlying project structure. Certain system files are
             hidden from view.</para>
         </listitem>
         <listitem>
-          <para>Technical View</para>
+          <para>Repository View</para>
           <para>A complete view of the underlying project structure including all files; either
             user-defined or system generated.</para>
         </listitem>
       </itemizedlist></para>
     <para>Views can be selected by clicking on the icon within the Project Explorer, as shown
       below.</para>
-    <para>Both Business View and Technical Views can be further refined by seleting either
-      "Breadcrumbs" or "Tree".</para>
+    <para>Both Project View and Repository Views can be further refined by seleting either "Show as Folders" or "Show as
+      Links".</para>
     <figure>
       <title>Switching view</title>
       <mediaobject>
@@ -95,48 +91,40 @@
     </figure>
 
     <section xml:id="wb.ProjectExplorerBusinessView">
-      <title>Business View examples</title>
+      <title>Project View examples</title>
       <figure>
-        <title>Business View - Tree</title>
+        <title>Project View - Folders</title>
         <mediaobject>
           <imageobject>
-            <imagedata
-              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Tree.png"
-            />
+            <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Project-Folders.png"/>
           </imageobject>
         </mediaobject>
       </figure>
       <figure>
-        <title>Business View - Breadcrumbs</title>
+        <title>Project View - Links</title>
         <mediaobject>
           <imageobject>
-            <imagedata
-              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Business-Breadcrumbs.png"
-            />
+            <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Project-Links.png"/>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
 
     <section xml:id="wb.ProjectExplorerTechnicalView">
-      <title>Technical View examples</title>
+      <title>Repository View examples</title>
       <figure>
-        <title>Technical View - Tree</title>
+        <title>Repository View - Folders</title>
         <mediaobject>
           <imageobject>
-            <imagedata
-              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Technical-Tree.png"
-            />
+            <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Repository-Folders.png"/>
           </imageobject>
         </mediaobject>
       </figure>
       <figure>
-        <title>Technical View - Breadcrumbs</title>
+        <title>Repository View - Links</title>
         <mediaobject>
           <imageobject>
-            <imagedata
-              fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Technical-Breadcrumbs.png"
-            />
+            <imagedata fileref="images/Workbench/Authoring/ProjectExplorer/ProjectExplorer-Repository-Links.png"/>
           </imageobject>
         </mediaobject>
       </figure>
