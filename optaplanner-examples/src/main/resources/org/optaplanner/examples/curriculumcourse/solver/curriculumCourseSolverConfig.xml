@@ -47,11 +47,23 @@
         <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
       </swapMoveSelector>
     </unionMoveSelector>
+    <!--<acceptor>-->
+      <!--<entityTabuSize>9</entityTabuSize>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<acceptedCountLimit>900</acceptedCountLimit>-->
+    <!--</forager>-->
     <acceptor>
-      <entityTabuSize>10</entityTabuSize>
+      <lateAcceptanceSize>600</lateAcceptanceSize>
     </acceptor>
     <forager>
-      <acceptedCountLimit>900</acceptedCountLimit><!-- TODO tweak me -->
+      <acceptedCountLimit>4</acceptedCountLimit>
     </forager>
+    <!--<acceptor>-->
+      <!--<stepCountingHillClimbingSize>200</stepCountingHillClimbingSize>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<acceptedCountLimit>1</acceptedCountLimit>-->
+    <!--</forager>-->
   </localSearch>
 </solver>

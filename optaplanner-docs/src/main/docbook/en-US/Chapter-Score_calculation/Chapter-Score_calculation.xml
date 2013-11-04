@@ -590,6 +590,12 @@
     
 }</programlisting>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Score_calculation/incrementalScoreCalculatorSequenceDiagram.png"/>
+        </imageobject>
+      </mediaobject>
+
       <para>For example in n queens:</para>
 
       <programlisting language="java">public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator&lt;NQueens&gt; {

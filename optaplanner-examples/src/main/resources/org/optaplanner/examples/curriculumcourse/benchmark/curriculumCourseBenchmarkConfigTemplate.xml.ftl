@@ -40,64 +40,130 @@
     </solver>
   </inheritedSolverBenchmark>
 
-  <#list [50, 100, 200, 400, 800] as lateAcceptanceSize>
-  <solverBenchmark>
-    <name>Late Acceptance ${lateAcceptanceSize}</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <variableName>period</variableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <variableName>room</variableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-          </swapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>4</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
+  <#list [9] as entityTabuSize>
+    <#list [900] as acceptedCountLimit>
+      <solverBenchmark>
+        <name>Entity Tabu ${entityTabuSize} (acceptedCount ${acceptedCountLimit})</name>
+        <solver>
+          <localSearch>
+            <unionMoveSelector>
+              <changeMoveSelector>
+                <valueSelector>
+                  <variableName>period</variableName>
+                </valueSelector>
+              </changeMoveSelector>
+              <changeMoveSelector>
+                <valueSelector>
+                  <variableName>room</variableName>
+                </valueSelector>
+              </changeMoveSelector>
+              <swapMoveSelector>
+                <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+              </swapMoveSelector>
+            </unionMoveSelector>
+            <acceptor>
+              <entityTabuSize>${entityTabuSize}</entityTabuSize>
+            </acceptor>
+            <forager>
+              <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
+            </forager>
+          </localSearch>
+        </solver>
+      </solverBenchmark>
+    </#list>
   </#list>
-  <#list [50, 100, 200, 400, 800] as lateSimulatedAnnealingSize>
-  <solverBenchmark>
-    <name>Late Simulated Annealing ${lateSimulatedAnnealingSize}</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <variableName>period</variableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <changeMoveSelector>
-            <valueSelector>
-              <variableName>room</variableName>
-            </valueSelector>
-          </changeMoveSelector>
-          <swapMoveSelector>
-            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-          </swapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <lateSimulatedAnnealingSize>${lateSimulatedAnnealingSize}</lateSimulatedAnnealingSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>4</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
+  <#list [600] as lateAcceptanceSize>
+    <#list [4] as acceptedCountLimit>
+      <solverBenchmark>
+        <name>Late Acceptance ${lateAcceptanceSize} (acceptedCount ${acceptedCountLimit})</name>
+        <solver>
+          <localSearch>
+            <unionMoveSelector>
+              <changeMoveSelector>
+                <valueSelector>
+                  <variableName>period</variableName>
+                </valueSelector>
+              </changeMoveSelector>
+              <changeMoveSelector>
+                <valueSelector>
+                  <variableName>room</variableName>
+                </valueSelector>
+              </changeMoveSelector>
+              <swapMoveSelector>
+                <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+              </swapMoveSelector>
+            </unionMoveSelector>
+            <acceptor>
+              <lateAcceptanceSize>${lateAcceptanceSize}</lateAcceptanceSize>
+            </acceptor>
+            <forager>
+              <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
+            </forager>
+          </localSearch>
+        </solver>
+      </solverBenchmark>
+    </#list>
   </#list>
+  <#list [200] as stepCountingHillClimbingSize>
+    <#list [1] as acceptedCountLimit>
+      <solverBenchmark>
+        <name>Step Counting Hill Climbing ${stepCountingHillClimbingSize} (acceptedCount ${acceptedCountLimit})</name>
+        <solver>
+          <localSearch>
+            <unionMoveSelector>
+              <changeMoveSelector>
+                <valueSelector>
+                  <variableName>period</variableName>
+                </valueSelector>
+              </changeMoveSelector>
+              <changeMoveSelector>
+                <valueSelector>
+                  <variableName>room</variableName>
+                </valueSelector>
+              </changeMoveSelector>
+              <swapMoveSelector>
+                <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+              </swapMoveSelector>
+            </unionMoveSelector>
+            <acceptor>
+              <stepCountingHillClimbingSize>${stepCountingHillClimbingSize}</stepCountingHillClimbingSize>
+            </acceptor>
+            <forager>
+              <acceptedCountLimit>${acceptedCountLimit}</acceptedCountLimit>
+            </forager>
+          </localSearch>
+        </solver>
+      </solverBenchmark>
+    </#list>
+  </#list>
+  <#--<#list [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000] as lateSimulatedAnnealingSize>-->
+  <#--<solverBenchmark>-->
+    <#--<name>Late Simulated Annealing ${lateSimulatedAnnealingSize}</name>-->
+    <#--<solver>-->
+      <#--<localSearch>-->
+        <#--<unionMoveSelector>-->
+          <#--<changeMoveSelector>-->
+            <#--<valueSelector>-->
+              <#--<variableName>period</variableName>-->
+            <#--</valueSelector>-->
+          <#--</changeMoveSelector>-->
+          <#--<changeMoveSelector>-->
+            <#--<valueSelector>-->
+              <#--<variableName>room</variableName>-->
+            <#--</valueSelector>-->
+          <#--</changeMoveSelector>-->
+          <#--<swapMoveSelector>-->
+            <#--<filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>-->
+          <#--</swapMoveSelector>-->
+        <#--</unionMoveSelector>-->
+        <#--<acceptor>-->
+          <#--<lateSimulatedAnnealingSize>${lateSimulatedAnnealingSize}</lateSimulatedAnnealingSize>-->
+        <#--</acceptor>-->
+        <#--<forager>-->
+          <#--<acceptedCountLimit>1</acceptedCountLimit>-->
+        <#--</forager>-->
+      <#--</localSearch>-->
+    <#--</solver>-->
+  <#--</solverBenchmark>-->
+  <#--</#list>-->
 </plannerBenchmark>
