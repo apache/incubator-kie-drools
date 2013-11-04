@@ -21,6 +21,7 @@ import java.util.Comparator;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.optaplanner.examples.pas.domain.Bed;
+import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Room;
 
 public class BedStrengthComparator implements Comparator<Bed>, Serializable {
@@ -35,11 +36,21 @@ public class BedStrengthComparator implements Comparator<Bed>, Serializable {
             return 1;
         }
         Room aRoom = a.getRoom();
+        Department aDepartment = aRoom.getDepartment();
         Room bRoom = b.getRoom();
+        Department bDepartment = bRoom.getDepartment();
         return new CompareToBuilder()
+                // null minimumAge is stronger
+                .append(aDepartment.getMinimumAge() == null, bDepartment.getMinimumAge() == null)
+                // null maximumAge is stronger
+                .append(aDepartment.getMaximumAge() == null, bDepartment.getMaximumAge() == null)
+                // Descending, low minimumAge is stronger
+                .append(bDepartment.getMinimumAge(), aDepartment.getMinimumAge())
+                // High maximumAge is stronger
+                .append(aDepartment.getMaximumAge(), bDepartment.getMaximumAge())
+                .append(aRoom.getRoomEquipmentList().size(), bRoom.getRoomEquipmentList().size())
+                .append(aRoom.getRoomSpecialismList().size(), bRoom.getRoomSpecialismList().size())
                 .append(bRoom.getCapacity(), aRoom.getCapacity()) // Descending (smaller rooms are stronger)
-                .append(aRoom.getRoomEquipmentList().size() + aRoom.getRoomSpecialismList().size(),
-                        bRoom.getRoomEquipmentList().size() + bRoom.getRoomSpecialismList().size())
                 .append(a.getId(), b.getId())
                 .toComparison();
     }

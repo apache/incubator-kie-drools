@@ -12,30 +12,17 @@
   <termination>
     <maximumSecondsSpend>300</maximumSecondsSpend>
   </termination>
-  <!--<customSolverPhase>-->
-    <!--<customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>-->
-    <!--<forceUpdateBestSolution>true</forceUpdateBestSolution>-->
-  <!--</customSolverPhase>-->
-  <!--<localSearch>-->
-    <!--<moveListFactory>-->
-      <!--<moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>-->
-    <!--</moveListFactory>-->
-    <!--<acceptor>-->
-      <!--<solutionTabuSize>1000</solutionTabuSize>-->
-      <!--<undoMoveTabuSize>3</undoMoveTabuSize>-->
-    <!--</acceptor>-->
-    <!--<forager>-->
-      <!--<acceptedCountLimit>500</acceptedCountLimit>-->
-    <!--</forager>-->
-  <!--</localSearch>-->
   <constructionHeuristic>
     <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
       <changeMoveSelector/>
-      <swapMoveSelector/>
-      <pillarSwapMoveSelector/>
+      <!--<swapMoveSelector/>-->
+      <!--<pillarSwapMoveSelector/>-->
+      <moveListFactory>
+        <moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+      </moveListFactory>
     </unionMoveSelector>
     <acceptor>
       <entityTabuSize>7</entityTabuSize>

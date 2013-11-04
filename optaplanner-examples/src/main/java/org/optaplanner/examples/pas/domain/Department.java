@@ -63,7 +63,14 @@ public class Department extends AbstractPersistable {
     }
 
     public String getLabel() {
-        return name;
+        String label = name;
+        if (minimumAge != null) {
+            label += "(≥" + minimumAge + ")";
+        }
+        if (maximumAge != null) {
+            label += "(≤" + maximumAge + ")";
+        }
+        return label;
     }
 
     @Override
@@ -71,17 +78,17 @@ public class Department extends AbstractPersistable {
         return name;
     }
 
-    public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
+    public int countHardDisallowedAdmissionPart(AdmissionPart admissionPart) {
         return countDisallowedPatientAge(admissionPart.getPatient());
     }
 
     public int countDisallowedPatientAge(Patient patient) {
         int count = 0;
         if (minimumAge != null && patient.getAge() < minimumAge) {
-            count += 10;
+            count += 100;
         }
         if (maximumAge != null && patient.getAge() > maximumAge) {
-            count += 10;
+            count += 100;
         }
         return count;
     }

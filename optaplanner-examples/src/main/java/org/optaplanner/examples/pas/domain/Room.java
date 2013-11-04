@@ -99,28 +99,11 @@ public class Room extends AbstractPersistable {
         return department + "_" + name;
     }
 
-    public int countDisallowedAdmissionPart(AdmissionPart admissionPart) {
-        return department.countDisallowedAdmissionPart(admissionPart)
-                + countDisallowedPatientGender(admissionPart.getPatient())
-                + countMissingRequiredRoomProperties(admissionPart.getPatient())
-                + countMissingPreferredRoomProperties(admissionPart.getPatient());
+    public int countHardDisallowedAdmissionPart(AdmissionPart admissionPart) {
+        return countMissingRequiredRoomProperties(admissionPart.getPatient())
+                + department.countHardDisallowedAdmissionPart(admissionPart)
+                + countDisallowedPatientGender(admissionPart.getPatient());
         // TODO preferredMaximumRoomCapacity and specialism
-    }
-
-    public int countDisallowedPatientGender(Patient patient) {
-        switch (genderLimitation) {
-            case ANY_GENDER:
-                return 0;
-            case MALE_ONLY:
-                return patient.getGender() == Gender.MALE ? 0 : 50;
-            case FEMALE_ONLY:
-                return patient.getGender() == Gender.FEMALE ? 0 : 50;
-            case SAME_GENDER:
-                // scoreRules check this
-                return 25;
-            default:
-                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented.");
-        }
     }
 
     public int countMissingRequiredRoomProperties(Patient patient) {
@@ -134,10 +117,31 @@ public class Room extends AbstractPersistable {
                 }
             }
             if (!hasRequiredEquipment) {
-                count += 50;
+                count += 100000;
             }
         }
         return count;
+    }
+
+    public int countDisallowedPatientGender(Patient patient) {
+        switch (genderLimitation) {
+            case ANY_GENDER:
+                return 0;
+            case MALE_ONLY:
+                return patient.getGender() == Gender.MALE ? 0 : 4;
+            case FEMALE_ONLY:
+                return patient.getGender() == Gender.FEMALE ? 0 : 4;
+            case SAME_GENDER:
+                // scoreRules check this
+                return 1;
+            default:
+                throw new IllegalStateException("The genderLimitation (" + genderLimitation + ") is not implemented.");
+        }
+    }
+
+    public int countSoftDisallowedAdmissionPart(AdmissionPart admissionPart) {
+        return countMissingPreferredRoomProperties(admissionPart.getPatient());
+        // TODO preferredMaximumRoomCapacity and specialism
     }
 
     public int countMissingPreferredRoomProperties(Patient patient) {

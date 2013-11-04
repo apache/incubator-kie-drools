@@ -17,6 +17,9 @@
 package org.optaplanner.examples.pas.swingui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -44,8 +47,11 @@ import org.optaplanner.examples.pas.domain.Department;
 import org.optaplanner.examples.pas.domain.Gender;
 import org.optaplanner.examples.pas.domain.GenderLimitation;
 import org.optaplanner.examples.pas.domain.Night;
+import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
 import org.optaplanner.examples.pas.domain.Room;
+import org.optaplanner.examples.pas.domain.RoomEquipment;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
@@ -58,6 +64,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     private final ImageIcon sameGenderIcon;
 
     private TimeTablePanel<Night, Bed> timeTablePanel;
+    private TangoColorFactory equipmentTangoColorFactory;
 
     public PatientAdmissionSchedulePanel() {
         anyGenderIcon = new ImageIcon(getClass().getResource("anyGender.png"));
@@ -80,6 +87,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     public void resetPanel(Solution solution) {
         timeTablePanel.reset();
+        equipmentTangoColorFactory = new TangoColorFactory();
         PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
         defineGrid(patientAdmissionSchedule);
         fillCells(patientAdmissionSchedule);
@@ -131,8 +139,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
                     createHeaderPanel(new JLabel(department.getLabel())));
             for (Room room : roomList) {
                 List<Bed> bedList = room.getBedList();
-                JLabel roomLabel = new JLabel(room.getLabel(), determineRoomGenderIcon(room.getGenderLimitation()),
-                        SwingConstants.RIGHT);
+                JLabel roomLabel = new JLabel(room.getLabel(), new PatientOrRoomIcon(room), SwingConstants.RIGHT);
                 timeTablePanel.addRowHeader(HEADER_COLUMN_GROUP1, bedList.get(0),
                         HEADER_COLUMN_GROUP1, bedList.get(bedList.size() - 1),
                         createHeaderPanel(roomLabel));
@@ -145,11 +152,9 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     }
 
     private void fillBedDesignationCells(PatientAdmissionSchedule patientAdmissionSchedule) {
-        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             JButton button = new JButton(new BedDesignationAction(bedDesignation));
             button.setMargin(new Insets(0, 0, 0, 0));
-            button.setBackground(tangoColorFactory.pickColor(bedDesignation));
             AdmissionPart admissionPart = bedDesignation.getAdmissionPart();
             timeTablePanel.addCell(admissionPart.getFirstNight(), bedDesignation.getBed(),
                     admissionPart.getLastNight(), bedDesignation.getBed(), button);
@@ -167,11 +172,11 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     private class BedDesignationAction extends AbstractAction {
 
-        private BedDesignation bedDesignation;
+        private final BedDesignation bedDesignation;
 
         public BedDesignationAction(BedDesignation bedDesignation) {
             super(bedDesignation.getAdmissionPart().getPatient().getName(),
-                    determinePatientGenderIcon(bedDesignation.getAdmissionPart().getPatient().getGender()));
+                    new PatientOrRoomIcon(bedDesignation.getAdmissionPart().getPatient()));
             this.bedDesignation = bedDesignation;
         }
 
@@ -184,12 +189,61 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             JComboBox bedListField = new JComboBox(bedListWithNull.toArray());
             bedListField.setSelectedItem(bedDesignation.getBed());
             listFieldsPanel.add(bedListField);
-            int result = JOptionPane.showConfirmDialog(PatientAdmissionSchedulePanel.this.getRootPane(), listFieldsPanel,
-                    "Select bed", JOptionPane.OK_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(PatientAdmissionSchedulePanel.this.getRootPane(),
+                    listFieldsPanel, "Select bed for " + bedDesignation.getAdmissionPart().getPatient().getName(),
+                    JOptionPane.OK_CANCEL_OPTION);
             if (result == JOptionPane.OK_OPTION) {
                 Bed toBed = (Bed) bedListField.getSelectedItem();
                 solutionBusiness.doChangeMove(bedDesignation, "bed", toBed);
                 solverAndPersistenceFrame.resetScreen();
+            }
+        }
+
+    }
+
+    private class PatientOrRoomIcon implements Icon {
+
+        private static final int EQUIPMENT_ICON_WIDTH = 8;
+
+        private final ImageIcon genderIcon;
+        private final List<Color> equipmentColorList;
+
+        private PatientOrRoomIcon(Patient patient) {
+            this.genderIcon = determinePatientGenderIcon(patient.getGender());
+            List<RequiredPatientEquipment> equipmentList = patient.getRequiredPatientEquipmentList();
+            equipmentColorList = new ArrayList<Color>(equipmentList.size());
+            for (RequiredPatientEquipment equipment : equipmentList) {
+                equipmentColorList.add(equipmentTangoColorFactory.pickColor(equipment.getEquipment()));
+            }
+        }
+
+        private PatientOrRoomIcon(Room room) {
+            this.genderIcon = determineRoomGenderIcon(room.getGenderLimitation());
+            List<RoomEquipment> equipmentList = room.getRoomEquipmentList();
+            equipmentColorList = new ArrayList<Color>(equipmentList.size());
+            for (RoomEquipment equipment : equipmentList) {
+                equipmentColorList.add(equipmentTangoColorFactory.pickColor(equipment.getEquipment()));
+            }
+        }
+
+        public int getIconWidth() {
+            return genderIcon.getIconWidth() + equipmentColorList.size() * EQUIPMENT_ICON_WIDTH;
+        }
+
+        public int getIconHeight() {
+            return genderIcon.getIconHeight();
+        }
+
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            genderIcon.paintIcon(c, g, x, y);
+            int innerX = x + genderIcon.getIconWidth();
+            int equipmentIconHeight = genderIcon.getIconHeight();
+            for (int i = 0; i < equipmentColorList.size(); i++) {
+                g.setColor(equipmentColorList.get(i));
+                g.fillRect(innerX + 1, y + 1, EQUIPMENT_ICON_WIDTH - 2, equipmentIconHeight - 2);
+                g.setColor(TangoColorFactory.ALUMINIUM_5);
+                g.drawRect(innerX + 1, y + 1, EQUIPMENT_ICON_WIDTH - 2, equipmentIconHeight - 2);
+                innerX += EQUIPMENT_ICON_WIDTH;
             }
         }
 

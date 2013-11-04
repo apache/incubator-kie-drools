@@ -26,30 +26,41 @@ public class BedDesignationDifficultyWeightFactory
         implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
 
     public Comparable createSorterWeight(PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
-        int disallowedCount = 0;
+        int hardDisallowedCount = 0;
+        int softDisallowedCount = 0;
         for (Room room : schedule.getRoomList()) {
-            disallowedCount += (room.countDisallowedAdmissionPart(bedDesignation.getAdmissionPart())
+            hardDisallowedCount += (room.countHardDisallowedAdmissionPart(bedDesignation.getAdmissionPart())
+                    * room.getCapacity());
+            softDisallowedCount += (room.countSoftDisallowedAdmissionPart(bedDesignation.getAdmissionPart())
                     * room.getCapacity());
         }
-        return new BedDesignationDifficultyWeight(bedDesignation, disallowedCount);
+        return new BedDesignationDifficultyWeight(bedDesignation, hardDisallowedCount, softDisallowedCount);
     }
 
     public static class BedDesignationDifficultyWeight implements Comparable<BedDesignationDifficultyWeight> {
 
         private final BedDesignation bedDesignation;
+        private int requiredEquipmentCount;
         private int nightCount;
-        private int disallowedCount;
+        private int hardDisallowedCount;
+        private int softDisallowedCount;
 
-        public BedDesignationDifficultyWeight(BedDesignation bedDesignation, int disallowedCount) {
+        public BedDesignationDifficultyWeight(BedDesignation bedDesignation,
+                int hardDisallowedCount, int softDisallowedCount) {
             this.bedDesignation = bedDesignation;
+            requiredEquipmentCount = bedDesignation.getPatient().getRequiredPatientEquipmentList().size();
             this.nightCount = bedDesignation.getAdmissionPart().getNightCount();
-            this.disallowedCount = disallowedCount;
+            this.hardDisallowedCount = hardDisallowedCount;
+            this.softDisallowedCount = softDisallowedCount;
         }
 
         public int compareTo(BedDesignationDifficultyWeight other) {
             return new CompareToBuilder()
+                    .append(requiredEquipmentCount * nightCount,
+                            other.requiredEquipmentCount * other.nightCount)
+                    .append(hardDisallowedCount * nightCount, other.hardDisallowedCount * other.nightCount)
                     .append(nightCount, other.nightCount)
-                    .append(disallowedCount, other.disallowedCount)
+                    .append(softDisallowedCount * nightCount, other.softDisallowedCount * nightCount)
                     // Descending (earlier nights are more difficult) // TODO probably because less occupancy
                     .append(other.bedDesignation.getAdmissionPart().getFirstNight().getIndex(),
                             bedDesignation.getAdmissionPart().getFirstNight().getIndex())

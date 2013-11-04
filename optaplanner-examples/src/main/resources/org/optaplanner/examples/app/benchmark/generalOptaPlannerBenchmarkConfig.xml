@@ -151,19 +151,23 @@
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
       </termination>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-      </customSolverPhase>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
-        <moveListFactory>
-          <moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
-        </moveListFactory>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <!--<swapMoveSelector/>-->
+          <!--<pillarSwapMoveSelector/>-->
+          <moveListFactory>
+            <moveListFactoryClass>org.optaplanner.examples.pas.solver.move.factory.BedDesignationPillarPartSwapMoveFactory</moveListFactoryClass>
+          </moveListFactory>
+        </unionMoveSelector>
         <acceptor>
-          <solutionTabuSize>1000</solutionTabuSize>
-          <undoMoveTabuSize>3</undoMoveTabuSize>
+          <entityTabuSize>7</entityTabuSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>500</acceptedCountLimit>
+          <acceptedCountLimit>1000</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>

@@ -37,16 +37,6 @@
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>old CH</name>
-    <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-        <forceUpdateBestSolution>true</forceUpdateBestSolution>
-      </customSolverPhase>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
     <name>FFD</name>
     <solver>
       <constructionHeuristic>
@@ -67,10 +57,9 @@
   <solverBenchmark>
     <name>old MH</name>
     <solver>
-      <customSolverPhase>
-        <customSolverPhaseCommandClass>org.optaplanner.examples.pas.solver.solution.initializer.PatientAdmissionScheduleSolutionInitializer</customSolverPhaseCommandClass>
-        <forceUpdateBestSolution>true</forceUpdateBestSolution>
-      </customSolverPhase>
+      <constructionHeuristic>
+        <constructionHeuristicType>BEST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <moveListFactory>
           <selectionOrder>RANDOM</selectionOrder>
