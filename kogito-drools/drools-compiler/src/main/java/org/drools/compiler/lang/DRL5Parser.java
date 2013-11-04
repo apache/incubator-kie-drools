@@ -2136,7 +2136,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
      * lhsUnary := 
      *           ( lhsExists namedConsequence?
      *           | lhsNot namedConsequence?
-     *           | lhsEval
+     *           | lhsEval consequenceInvocation*
      *           | lhsForall
      *           | lhsAccumulate
      *           | LEFT_PAREN lhsOr RIGHT_PAREN namedConsequence?
@@ -2164,6 +2164,7 @@ public class DRL5Parser extends AbstractDRLParser implements DRLParser {
             }
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.EVAL ) ) {
             result = lhsEval( ce );
+            for (BaseDescr i = consequenceInvocation( ce ); i != null; i = consequenceInvocation( ce ));
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.FORALL ) ) {
             result = lhsForall( ce );
         } else if ( helper.validateIdentifierKey( DroolsSoftKeywords.ACCUMULATE ) ) {

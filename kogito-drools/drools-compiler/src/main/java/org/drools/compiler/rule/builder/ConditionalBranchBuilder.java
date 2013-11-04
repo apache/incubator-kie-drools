@@ -11,6 +11,7 @@ import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.NamedConsequence;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.Rule;
 import org.drools.core.rule.RuleConditionElement;
 
 import java.util.List;
@@ -44,13 +45,23 @@ public class ConditionalBranchBuilder implements RuleConditionBuilder {
 
     private Pattern getLastPattern(RuleBuildContext context) {
         GroupElement ge = (GroupElement)context.getBuildStack().peek();
-        List<RuleConditionElement> siblings = ge.getChildren();
+        Pattern lastPattern = getLastPattern(ge.getChildren());
+        if (lastPattern == null) {
+            Rule parent = context.getRule().getParent();
+            if (parent != null) {
+                lastPattern = getLastPattern(parent.getLhs().getChildren());
+            }
+        }
+        return lastPattern;
+    }
+
+    private Pattern getLastPattern(List<RuleConditionElement> siblings) {
         for (int i = siblings.size()-1; i >= 0; i--) {
             RuleConditionElement element = siblings.get(i);
             if (element instanceof Pattern) {
                 return (Pattern) element;
             }
         }
-        throw new RuntimeException("Cannot find a Pattern in the RuleBuildContext");
+        return null;
     }
 }
