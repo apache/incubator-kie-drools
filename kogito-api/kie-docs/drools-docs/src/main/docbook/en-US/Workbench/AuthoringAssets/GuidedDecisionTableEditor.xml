@@ -7,7 +7,7 @@
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Guided decision tables (web based)</title>
+  <title>mbGuided decision tables (web based)</title>
 
   <para>The guided decision table feature allows decision tables to be edited in place on the web. This works similar to
   the guided editor by introspecting what facts and fields are available to guide the creation of a decision table. Rule
@@ -813,7 +813,8 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/audit-log1.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-dtable-audit-log1.png" format="PNG"
+          />
         </imageobject>
       </mediaobject>
     </figure>
@@ -836,7 +837,8 @@ end</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/audit-log2.png" format="PNG"/>
+          <imagedata align="center" fileref="images/Workbench/AuthoringAssets/guided-dtable-audit-log2.png" format="PNG"
+          />
         </imageobject>
       </mediaobject>
     </figure>
