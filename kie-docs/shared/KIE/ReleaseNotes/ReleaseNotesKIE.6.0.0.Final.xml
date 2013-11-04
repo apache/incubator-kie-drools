@@ -13,10 +13,35 @@
     <title>Configuration and convention based projects</title>
     <para>xxxx</para>
   </section>
+
   <section>
-    <title>KieBase Inheretence</title>
-    <para>xxxx</para>
+    <title>KieBase Inclusion</title>
+
+    <para>It is possible to include all the Kie artifacts belonging to a KieBase into a second KieBase.
+    This means that the second KieBase beyond all the rules, function and processes directly defined
+    into it will also contain the ones created in the included KieBase. This inclusion can be
+    done both declaratively in the kmodule.xml file</para>
+
+    <example>
+      <title>Including a KieBase into another declaratively</title>
+
+      <programlisting language="xml">&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+  &lt;kbase name="kbase2" includes="kbase1"&gt;
+    &lt;ksession name="ksession2"/&gt;
+  &lt;/kbase&gt;
+&lt;/kmodule&gt;</programlisting>
+    </example>
+
+    <para>or programmatically using the <code>KieModuleModel</code>.</para>
+
+    <example>
+      <title>Including a KieBase into another programmatically</title>
+
+      <programlisting language="java">KieModuleModel kmodule = KieServices.Factory.get().newKieModuleModel();
+KieBaseModel kieBaseModel1 = kmodule.newKieBaseModel("KBase2").addInclude("KBase1");</programlisting>
+    </example>
   </section>
+
   <section>
     <title>Maven aligned projects and modules</title>
     <para>xxxx</para>
@@ -25,10 +50,40 @@
     <title>Maven based deployment</title>
     <para>xxxx</para>
   </section>
+
   <section>
     <title>KieScanner</title>
-    <para>xxxx</para>
+
+    <para>The <code>KieScanner</code> is a maven-oriented replacement of the KnowledgeAgent
+    present in Drools 5. In fact it allows to continously monitoring your maven repository
+    to check if a new release of a Kie project has been installed and if so deploying it in
+    the <code>KieContainer</code> wrapping that project. The use of the <code>KieScanner</code>
+    requires kie-ci.jar to be on the classpath.</para>
+
+    <para>In more detail a <code>KieScanner</code> can be registered on a <code>KieContainer</code>
+    as in the following example.</para>
+
+    <example>
+      <title>Registering and starting a KieScanner on a KieContainer</title>
+
+      <programlisting language="java">KieServices kieServices = KieServices.Factory.get();
+ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "myartifact", "1.0-SNAPSHOT" );
+KieContainer kContainer = kieServices.newKieContainer( releaseId );
+KieScanner kScanner = kieServices.newKieScanner( kContainer );
+
+// Start the KieScanner polling the maven repository every 10 seconds
+kScanner.start( 10000L );</programlisting>
+    </example>
+
+    <para>In this example the <code>KieScanner</code> is configured to run with a fixed
+    time interval, but it is also possible to run it on demand by invoking the
+    <code>scanNow()</code> method on it. If the <code>KieScanner</code> finds in the
+    maven repository an updated version of the Kie project used by that <code>KieContainer</code>
+    it automatically downloads the new version and triggers an incremental build of the new
+    project. From this moment all the new <code>KieBase</code>s and <code>KieSession</code>s
+    created from that <code>KieContainer</code> will use the new project version.</para>
   </section>
+
   <section>
     <title>Hierarchical ClassLoader</title>
     <para>xxxx</para>
