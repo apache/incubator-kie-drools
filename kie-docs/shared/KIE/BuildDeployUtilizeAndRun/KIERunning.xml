@@ -110,24 +110,68 @@ ksession.setGlobal("list", list);           </programlisting>
   <section>
     <title>Event Model</title>
 
-    <para>The event package provides means to be notified of rule engine events, including rules
-      firing, objects being asserted, processes started etc. This allows you, for instance, to
-      separate logging and auditing activities from the main part of your application (and the
-      rules).</para>
+    <para>The event package provides means to be notified of rule engine
+      events, including rules firing, objects being asserted, etc. This allows
+      you, for instance, to separate logging and auditing activities from the
+      main part of your application (and the rules).</para>
 
-    <para>The <code>KieRuntimeEventManager</code> interface is implemented by the
-        <code>KieRuntime</code> which provides two interfaces,
-        <code>WorkingMemoryEventManager</code> and <code>ProcessEventManager</code>. </para>
+    <para>The <code>KieRuntimeEventManager</code> interface is
+      implemented by the <code>KieRuntime</code> which provides two
+      interfaces, <code>RuleRuntimeEventManager</code> and
+      <code>ProcessEventManager</code>. We will only cover the
+      <code>RuleRuntimeEventManager</code> here.</para>
 
     <figure>
       <title>KieRuntimeEventManager</title>
+
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/kie/BuildDeployUtilizeAndRun/KieRuntimeEventManager.png"
-            format=""/>
+                     format=""/>
         </imageobject>
       </mediaobject>
     </figure>
+
+    <para>The <code>RuleRuntimeEventManager</code> allows for listeners to
+      be added and removed, so that events for the working memory and the agenda
+      can be listened to.</para>
+
+    <figure>
+      <title>RuleRuntimeEventManager</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/kie/BuildDeployUtilizeAndRun/RuleRuntimeEventManager.png"
+                     format=""/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The following code snippet shows how a simple agenda listener is
+      declared and attached to a session. It will print matches after they
+      have fired.</para>
+
+    <example>
+      <title>Adding an AgendaEventListener</title>
+
+      <programlisting language="java">ksession.addEventListener( new DefaultAgendaEventListener() {
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        super.afterMatchFired( event );
+        System.out.println( event );
+    }
+});</programlisting>
+    </example>
+
+    <para>Drools also provides <code>DebugRuleRuntimeEventListener</code>
+      and <code>DebugAgendaEventListener</code> which implement each method with
+      a debug print statement. To print all Working Memory events, you add a
+      listener like this:</para>
+
+    <example>
+      <title>Adding a DebugRuleRuntimeEventListener</title>
+
+      <programlisting language="java">ksession.addEventListener( new DebugRuleRuntimeEventListener() );</programlisting>
+    </example>
 
     <para>All emitted events implement the <code>KieRuntimeEvent</code>
     interface which can be used to retrieve the actual
@@ -584,7 +628,7 @@ env.set( EnvironmentName.ENTITY_MANAGER_FACTORY,
 env.set( EnvironmentName.TRANSACTION_MANAGER,
          TransactionManagerServices.getTransactionManager() );
 
-// KnowledgeSessionConfiguration may be null, and a default will be used
+// KieSessionConfiguration may be null, and a default will be used
 KieSession ksession =
         kieServices.getStoreServices().newKieSession( kbase, null, env );
 int sessionId = ksession.getId();
