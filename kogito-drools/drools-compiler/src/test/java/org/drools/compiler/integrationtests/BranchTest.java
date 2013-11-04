@@ -1,18 +1,18 @@
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class BranchTest extends CommonTestMethodBase {
 
@@ -364,6 +364,70 @@ public class BranchTest extends CommonTestMethodBase {
 
         assertEquals( 1, results.size() );
         assertTrue( results.contains( "STILTON" ) );
+    }
+
+    @Test
+    public void testMVELBreak() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $a: Cheese ( type == \"stilton\" )\n" +
+                     "    $b: Cheese ( type == \"cheddar\" )\n" +
+                     "    if ( 200 < 400 ) break[t1]\n" +
+                     "then\n" +
+                     "    results.add( $b.getType() );\n" +
+                     "then[t1]\n" +
+                     "    results.add( $a.getType().toUpperCase() );\n" +
+                     "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        System.out.println( results );
+        assertEquals( 1, results.size() );
+        assertTrue( results.contains( "STILTON" ) );
+    }
+
+    @Test
+    public void testMVELNoBreak() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $a: Cheese ( type == \"stilton\" )\n" +
+                     "    $b: Cheese ( type == \"cheddar\" )\n" +
+                     "    if ( 200 > 400 ) break[t1]\n" +
+                     "then\n" +
+                     "    results.add( $b.getType() );\n" +
+                     "then[t1]\n" +
+                     "    results.add( $a.getType().toUpperCase() );\n" +
+                     "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        System.out.println( results );
+        assertEquals( 1, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+    }
+
+    @Test
+    public void testWrongConsequenceName() {
+        String str = "import org.drools.compiler.Cheese;\n " +
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 dialect \"mvel\" when\n" +
+                     "    $a: Cheese ( type == \"stilton\" )\n" +
+                     "    $b: Cheese ( type == \"cheddar\" )\n" +
+                     "    if ( 200 < 400 ) break[t2]\n" +
+                     "then\n" +
+                     "    results.add( $b.getType() );\n" +
+                     "then[t1]\n" +
+                     "    results.add( $a.getType().toUpperCase() );\n" +
+                     "end\n";
+
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+        assertTrue ( builder.hasErrors() );
     }
 
     @Test

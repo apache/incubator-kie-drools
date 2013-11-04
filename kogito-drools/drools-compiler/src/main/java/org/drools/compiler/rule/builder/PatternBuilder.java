@@ -16,42 +16,15 @@
 
 package org.drools.compiler.rule.builder;
 
-import org.drools.compiler.compiler.DroolsErrorWrapper;
-import org.drools.compiler.compiler.DroolsWarningWrapper;
-import org.drools.core.base.ClassFieldReader;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.ValueType;
-import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
-import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
-import org.drools.core.base.mvel.ActivationPropertyHandler;
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
-import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DrlExprParser;
+import org.drools.compiler.compiler.DroolsErrorWrapper;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.rule.builder.dialect.DialectUtil;
-import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-import org.drools.core.common.AgendaItemImpl;
-import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
-import org.drools.core.rule.constraint.EvaluatorConstraint;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.core.util.index.IndexUtil;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.facttemplates.FactTemplateFieldExtractor;
-import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.compiler.lang.MVELDumper;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
@@ -66,7 +39,29 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
 import org.drools.compiler.lang.descr.ReturnValueRestrictionDescr;
+import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
+import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+import org.drools.core.base.ClassFieldReader;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.ValueType;
+import org.drools.core.base.evaluators.EvaluatorDefinition.Target;
+import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
+import org.drools.core.base.mvel.ActivationPropertyHandler;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
+import org.drools.core.base.mvel.MVELCompileable;
+import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.facttemplates.FactTemplateFieldExtractor;
+import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
@@ -80,6 +75,7 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
@@ -89,6 +85,9 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.TimeUtils;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.StringUtils;
+import org.drools.core.util.index.IndexUtil;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.mvel2.MVEL;
@@ -981,6 +980,8 @@ public class PatternBuilder
                     return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING );
                 }
             } catch ( ClassNotFoundException e ) {
+                // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
+            }  catch ( NoClassDefFoundError e ) {
                 // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
             }
         }

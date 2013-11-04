@@ -1,5 +1,7 @@
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.EvalDescr;
@@ -21,6 +23,14 @@ public class ConditionalBranchBuilder implements RuleConditionBuilder {
 
     public ConditionalBranch build(RuleBuildContext context, BaseDescr descr, Pattern prefixPattern) {
         ConditionalBranchDescr conditionalBranch = (ConditionalBranchDescr) descr;
+
+        String consequenceName = conditionalBranch.getConsequence().getName();
+        if ( !context.getRuleDescr().getNamedConsequences().keySet().contains( consequenceName ) ) {
+            DroolsError err = new RuleBuildError( context.getRule(), context.getParentDescr(), null,
+                                                  "Unknown consequence name: " + consequenceName );
+            context.addError( err  );
+            return null;
+        }
 
         RuleConditionBuilder evalBuilder = (RuleConditionBuilder) context.getDialect().getBuilder( EvalDescr.class );
         EvalCondition condition = (EvalCondition) evalBuilder.build(context, conditionalBranch.getCondition(), getLastPattern(context));

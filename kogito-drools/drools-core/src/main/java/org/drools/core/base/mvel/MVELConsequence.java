@@ -16,12 +16,6 @@
 
 package org.drools.core.base.mvel;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
@@ -37,6 +31,12 @@ import org.mvel2.integration.VariableResolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+
 public class MVELConsequence
     implements
     Consequence,
@@ -50,24 +50,30 @@ public class MVELConsequence
 
     private Serializable        expr;
 
+    private String              consequenceName;
+
     public MVELConsequence() {
     }
 
     public MVELConsequence(final MVELCompilationUnit unit,
-                           final String id) {
+                           final String id,
+                           String consequenceName) {
         this.unit = unit;
         this.id = id;
+        this.consequenceName = consequenceName;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         unit = (MVELCompilationUnit) in.readObject();
         id = in.readUTF();
+        consequenceName = in.readUTF();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( unit );
         out.writeUTF( id );
+        out.writeUTF(consequenceName);
     }
 
     public void compile(MVELDialectRuntimeData runtimeData) {
@@ -108,7 +114,7 @@ public class MVELConsequence
     }
 
     public String getName() {
-        return "default";
+        return consequenceName;
     }
 
 }

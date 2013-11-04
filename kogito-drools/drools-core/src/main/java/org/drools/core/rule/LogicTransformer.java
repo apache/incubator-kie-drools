@@ -16,6 +16,15 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.DeclarationScopeResolver;
+import org.drools.core.util.ArrayUtils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,15 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.util.ArrayUtils;
-import org.drools.core.rule.constraint.MvelConstraint;
-import org.drools.core.spi.Constraint;
-import org.drools.core.spi.DataProvider;
-import org.drools.core.spi.DeclarationScopeResolver;
 
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or
@@ -189,15 +189,7 @@ public class LogicTransformer {
                 }
             }
         } else if ( element instanceof EvalCondition ) {
-            Declaration[] decl = ((EvalCondition) element).getRequiredDeclarations();
-            for (Declaration aDecl : decl) {
-                Declaration resolved = resolver.getDeclaration(null,
-                        aDecl.getIdentifier());
-                if (resolved != null && resolved != aDecl) {
-                    ((EvalCondition) element).replaceDeclaration(aDecl,
-                            resolved);
-                }
-            }
+            processEvalCondition(resolver, (EvalCondition) element);
         } else if ( element instanceof Accumulate ) {
             for ( RuleConditionElement rce : element.getNestedElements() ) {
                 processElement( resolver,
@@ -264,6 +256,8 @@ public class LogicTransformer {
                 }                  
             }
             qe.setVariableIndexes( ArrayUtils.toIntArray( varIndexes ) );            
+        }  else if ( element instanceof ConditionalBranch ) {
+            processBranch( resolver, (ConditionalBranch) element );
         } else {
             contextStack.push( element );
             for (RuleConditionElement ruleConditionElement : element.getNestedElements()) {
@@ -274,6 +268,26 @@ public class LogicTransformer {
             contextStack.pop();
         }
     }
+
+    private void processEvalCondition(DeclarationScopeResolver resolver, EvalCondition element) {
+        Declaration[] decl = ((EvalCondition) element).getRequiredDeclarations();
+        for (Declaration aDecl : decl) {
+            Declaration resolved = resolver.getDeclaration(null,
+                    aDecl.getIdentifier());
+            if (resolved != null && resolved != aDecl) {
+                ((EvalCondition) element).replaceDeclaration(aDecl,
+                        resolved);
+            }
+        }
+    }
+
+    private void processBranch(DeclarationScopeResolver resolver, ConditionalBranch branch) {
+        processEvalCondition(resolver, branch.getEvalCondition());
+        if ( branch.getElseBranch() != null ) {
+            processBranch(resolver, branch.getElseBranch());
+        }
+    }
+
 
     /**
      * Traverses a Tree, during the process it transforms Or nodes moving the
