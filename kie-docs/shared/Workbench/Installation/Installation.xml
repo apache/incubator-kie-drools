@@ -1,13 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../" xml:id="wb.Installation"
+<section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
+         xml:base="../../" xml:id="wb.Installation" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-
   <title>Installation</title>
 
-  <para>todo</para>
+  <section xml:id="wb.warInstallation">
+    <title>War installation</title>
 
+    <para>From the workbench distribution zip, take the <literal>kie-wb-*.war</literal> that corresponds to your
+    application server: </para>
+
+    <itemizedlist>
+      <listitem>
+        <para><literal>jboss-as7</literal>: tailored for JBoss AS 7 (which is being renamed to WildFly in version
+        8)</para>
+      </listitem>
+
+      <listitem>
+        <para><literal>eap-6</literal>: tailored to JBoss EAP 6</para>
+      </listitem>
+
+      <listitem>
+        <para><literal>tomcat7</literal>: the generic war, works on Tomcat and Jetty</para>
+      </listitem>
+    </itemizedlist>
+
+    <note>
+      <para>The differences between these <literal>war</literal> files are superficial only, to allow out-of-the-box
+      deployment. For example, some jars might be excluded if the application server already supplies them.</para>
+    </note>
+
+    <para>To use the workbench on a different application server (Websphere, Weblogic, ...), use the
+    <literal>tomcat7</literal> war and tailor it to your application server's version.</para>
+  </section>
+
+  <section xml:id="wb.workbenchData">
+    <title>Workbench data</title>
+
+    <para>The workbench stores its data, by default in the directory <literal>$WORKING_DIRECTORY/.niogit</literal>, for
+    example <literal>wildfly-8.0.0.Final/bin/.gitnio</literal>, but it can be overridden with the <link
+    linkend="wb.systemProperties">system property</link> <literal>-Dorg.uberfire.nio.git.dir</literal>.</para>
+
+    <note>
+      <para>In production, make sure to back up the workbench data directory.</para>
+    </note>
+  </section>
+
+  <section xml:id="wb.systemProperties">
+    <title>System properties</title>
+
+    <para>Here's a list of all system properties:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.dir</literal></emphasis>: Location of the directory
+        <literal>.niogit</literal>. Default: working directory</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.enabled</literal></emphasis>: Enables/disables
+        git daemon. Default: <literal>true</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.host</literal></emphasis>: If daemon enabled,
+        uses this property as local host identifier. Default: <literal>localhost</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.port</literal></emphasis>: If daemon enabled,
+        uses this property as port number. Default: <literal>9418</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.nio.git.daemon.upload</literal></emphasis>: If daemon enabled,
+        uses this information to define if it's possible to push (upload) data to git. Default:
+        <literal>true</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.cluster.id</literal></emphasis>: Name of the helix cluster,
+        for example: <literal>kie-cluster</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.cluster.zk</literal></emphasis>: Connection string to
+        zookeeper. This is of the form <literal>host1:port1,host2:port2,host3:port3</literal>, for example:
+        <literal>localhost:2188</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.cluster.local.id</literal></emphasis>: Unique id of the helix
+        cluster node, note that '<literal>:</literal>' is replaced with '<literal>_</literal>', for example:
+        <literal>node1_12345</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.cluster.vfs.lock</literal></emphasis>: Name of the resource
+        defined on helix cluster, for example: <literal>kie-vfs</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.cluster.autostart</literal></emphasis>: Delays VFS clustering
+        until the application is fully initialized to avoid conflicts when all cluster members create local clones.
+        Default: <literal>false</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.sys.repo.monitor.disabled</literal></emphasis>: Disable
+        configuration monitor (do not disable unless you know what you're doing). Default:
+        <literal>false</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.secure.key</literal></emphasis>: Secret password used by
+        password encryption. Default: <literal>org.uberfire.admin</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.secure.alg</literal></emphasis>: Crypto algorithm used by
+        password encryption. Default: <literal>PBEWithMD5AndDES</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.metadata.index.dir</literal></emphasis>: Place where lucene
+        <literal>.index</literal> folder will be stored. Default: working directory</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.guvnor.m2repo.dir</literal></emphasis>: Place where maven repository
+        folder will be stored. Default: working directory</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.kie.demo</literal></emphasis>: Enables external clone of a demo
+        application. Default: <literal>true</literal></para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.kie.example</literal></emphasis>: Enables example structure composed by
+        Repository, Organization Unit and Project. Default: <literal>false</literal></para>
+      </listitem>
+    </itemizedlist>
+  </section>
 </section>
