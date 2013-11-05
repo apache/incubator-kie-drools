@@ -9,3 +9,5 @@
 /*.iws
 /*.iml
 
+# test data
+/test-output

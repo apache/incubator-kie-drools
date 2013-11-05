@@ -48,6 +48,7 @@ public class GetTasksByVariousFieldsCommand extends TaskCommand<List<TaskSummary
 		this.busAdmins = busAdmins;
 		this.potOwners = potOwners;
 		this.taskOwners = taskOwners;
+		this.statuses = statuses;
 		this.union = union;
     }
 	

@@ -30,6 +30,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.services.task.deadlines.notifications.impl.email.EmailSessionProducer;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -37,6 +38,8 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.InternalTaskSummary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -46,6 +49,8 @@ import org.kie.internal.task.api.model.InternalTaskSummary;
 @ApplicationScoped
 public class TaskQueryServiceImpl implements TaskQueryService {
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskQueryServiceImpl.class);
+    
     @Inject
     private JbpmServicesPersistenceManager pm;
 
@@ -430,7 +435,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             statusQueryAdder.addToQueryBuilder(query, paramName, status);
         }
         
-        return (List<TaskSummary>) pm.queryStringWithParametersInTransaction(queryBuilder.toString(), params);
+        String query = queryBuilder.toString();
+        logger.debug("QUERY: " + query);
+        return (List<TaskSummary>) pm.queryStringWithParametersInTransaction(query, params);
     }
     
     private static String VARIOUS_FIELDS_TASKSUM_QUERY = 
@@ -462,7 +469,6 @@ public class TaskQueryServiceImpl implements TaskQueryService {
 
         private final String andOr;
         private boolean alreadyUsed = false;
-        
         private final StringBuilder queryBuilder;
         private final Map<String, Object> queryParams;
         private final Class clazz;
