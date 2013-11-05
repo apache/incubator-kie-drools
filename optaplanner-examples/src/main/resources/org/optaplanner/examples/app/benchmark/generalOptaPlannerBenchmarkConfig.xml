@@ -145,8 +145,8 @@
       <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
       <planningEntityClass>org.optaplanner.examples.pas.domain.BedDesignation</planningEntityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
-        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleBaseScoreRules.drl</scoreDrl>
+        <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
+        <scoreDrl>/org/optaplanner/examples/pas/solver/patientAdmissionScheduleScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
         <maximumMinutesSpend>5</maximumMinutesSpend>
