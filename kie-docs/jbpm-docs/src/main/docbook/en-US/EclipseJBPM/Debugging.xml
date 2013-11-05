@@ -20,74 +20,82 @@
     <para>When debugging the application, you can use the following debug views to
     track the execution of the process:</para>
       <orderedlist>
-        <listitem>The process instances view, showing all running process instances (and 
+        <listitem><para>The process instances view, showing all running process instances (and 
         their state).  When double-clicking a process instance, the process instance view
         visually shows the current state of that process instance at that point in time.
-        </listitem>
-        <listitem>The audit view, showing the audit log (note that you should probably
+        </para></listitem>
+        <listitem><para>The audit view, showing the audit log (note that you should probably
         use a threaded file logger if you want to session to save the audit event to the 
         file system on regular intervals, so the audit view can be update to show the latest
-        state).</listitem>
-        <listitem>The global data view, showing the globals.</listitem>
-        <listitem>Other views related to rule execution like the working memory view 
+        state).</para></listitem>
+        <listitem><para>The global data view, showing the globals.</para></listitem>
+        <listitem><para>Other views related to rule execution like the working memory view 
         (showing the contents (data) in the working memory related to rule execution), the
-        agenda view (showing all activated rules), etc.</listitem>
+        agenda view (showing all activated rules), etc.</para></listitem>
       </orderedlist>
 
     <section>
       <title>The Process Instances View</title>
 
-      <para>The process instances view shows the currently running process instances.
-      The example shows that there is currently one running process (instance),
-      currently executing one node instance, i.e. business rule task. When double-clicking
-      a process instance, the process instance viewer will graphically show the progress
-      of the process instance.  An example where the process instance is waiting for a human
-      actor to perform a self-evaluation task is shown below.</para>
+      <para>The process instances view shows the process instances currently running in the
+      selected ksession.  To be able to use the process instances view, first open the
+      Process Instances view (Window - Show View - Other ... and under the Drools category select
+      Process Instances and Process Instance).  Tip: it might be useful to drag the Process Instance
+      view to the Outline View and slightly enlarge it, as shown in the screenshot below, so you can
+       see both the Process Instances and Process Instance views at the same time.</para>
+      
+      <para>Next, use a (regular) Java breakpoint to stop your application at a specific point (for example
+      right after starting a new process instance). In the Debug perspective, select the ksession you would
+      like to inspect, and the Process Instances view should show the process instances that are currently
+      active inside that ksession.  For example, the screenshot below shows one running process instance
+      (with id "1").  When double-clicking a process instance, the process instance viewer will 
+      graphically show the progress of that process instance.  An example where the process instance is 
+      waiting for a human actor to perform "Task 1" is shown below.</para>
+      
+      <note><para>The process instances view shows the process instances currently active inside
+      the selected ksession.  Note that, when using persistence, process instances are not kept
+      in memory inside the ksession, as they are stored in the database as soon as the command
+      completes.  Therefore, you will not be able to use the Process Instances view when using
+      persistence.  For example, when executing a JUnit test using the JbpmJUnitBaseTestCase,
+      make sure to call "super(true, false);" in the constructor to create a runtime manager
+      that is not using persistence.</para></note>
 
       <mediaobject>
         <imageobject>
 	    <imagedata align="center" format="PNG" role="" 
-                     fileref="images/Chapter-Testing/process-instances.png"/>
+                     fileref="images/EclipseJBPM/Debugging.png"/>
         </imageobject>
       </mediaobject>
-
-      <para>When you double-click a process instance in the process instances view and
+      
+      <tip><para>When you double-click a process instance in the process instances view and
       the process instance view complains that it cannot find the process, this means
       that the plugin wasn't able to find the process definition of the selected process
       instance in the cache of parsed process definitions.  To solve this, simply change
       the process definition in question and save again (so it will be parsed) or rebuild
-      the project that contains the process definition in question.</para>
+      the project that contains the process definition in question.</para></tip>
 
-      <mediaobject>
-        <imageobject>
-	    <imagedata align="center" format="PNG" role="" 
-                     fileref="images/EclipseJBPM/process-instance.png"/>
-        </imageobject>
-      </mediaobject>
-      
     </section>
 
     <section>
       <title>The Audit View</title>
-      <para>The audit view, showing the audit log, which is a log of all events that
-      were logged from the session.  To create a logger, use the KnowledgeRuntimeLoggerFactory
-      to create a new logger and attach it to a session.  Note that you should probably
-        use a threaded file logger if you want to session to save the audit event to the 
-        file system on regular intervals, so the audit view can be update to show the latest
-        state.  When creating a threaded file logger, you can specify the name of the file
-        where the audit log should be created and the interval after which event should be 
-        saved to the file (in milliseconds).  Be sure to close the logger after usage.</para>
-        
-      <programlisting language="java">KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory
-   .newThreadedFileLogger(ksession, "logdir/mylogfile", 1000);
-// do something with the session here
+      <para>The audit view can be used to show the all the events inside an audit log in a tree-based
+      manner.  An audit log is an XML-based log file which contains a log of all the events that
+      occurred while executing a specific ksession.  To create a logger, use KieServices to create a
+      new logger and attach it to a ksession. Be sure to close the logger after usage.</para>
+      
+      <programlisting language="java">KieRuntimeLogger logger = KieServices.Factory.get().getLoggers()
+    .newThreadedFileLogger(ksession, "mylogfile", 1000);
+// do something with the ksession here
 logger.close();
       </programlisting>
       
-      <para>To open up an audit tree in the audit view, open the selected log file in the audit
-      view or simply drag the file into the audit view.  A tree-based view is generated based
-      on the audit log.  An event is shown as a subnode of another event if the child event is
-      caused by (a direct consequence of) the parent event.  An example is shown below.</para>
+      <para>To be able to use the Audit View, first open it (Window - Show View - Other ... and under
+      the Drools category select Audit). To open up a log file in the audit view, open the selected
+      log file in the audit view (using the "Open Log" action in the top right corner), or simply drag
+      and drop the log file from the Package Explorer or Navigator into the audit view.  A tree-based
+      view is generated based on the data inside the audit log.  An event is shown as a subnode of
+      another event if the child event is caused by (a direct consequence of) the parent event.  
+      An example is shown below.</para>
 
       <mediaobject>
         <imageobject>
@@ -95,6 +103,13 @@ logger.close();
                      fileref="images/EclipseJBPM/audit.png"/>
         </imageobject>
       </mediaobject>
+
+      <tip><para>Note that the file-based logger will only save the events on close (or when a certain
+      threshhold is reached).  If you want to make sure the events are saved on a regular interval
+      (for example during debugging), make sure to use a threaded file logger, so the audit view can
+      be update to show the latest state.  When creating a threaded file logger, you can specify the
+      interval after which events should be saved to the file (in milliseconds).</para></tip>
+        
     </section>
 
 </section>
