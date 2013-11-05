@@ -62,7 +62,7 @@
     <title>Workbench</title>
     <partintro><para>How to use the web-based Workbench</para></partintro>
     
-  <xi:include href="Workbench.xml"/>
+  <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
   <xi:include href="Designer.xml"/>
   <xi:include href="DataModeler.xml"/>
   <xi:include href="FormModeler.xml"/>

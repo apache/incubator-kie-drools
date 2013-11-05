@@ -5,5 +5,326 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>jBPM Eclipse Plugin</title>
+  
+  <para>The jBPM Eclipse plugin provides developers (and very technical users) with an environment 
+  to edit and test processes, and integrate it deeply with their applications.  It provides the following
+  features (on top of the Eclipse IDE):</para>
+  
+  <itemizedlist>
+    <listitem>
+      <para>Wizards for creation of</para>
+      <itemizedlist>
+        <listitem>
+          <para>a jBPM project</para>
+        </listitem>
+        <listitem>
+          <para>a BPMN2 process</para>
+        </listitem>
+      </itemizedlist>
+    </listitem>
+    <listitem>
+      <para>jBPM Perspective (showing the most commonly used views in a predefined layout)</para>
+    </listitem>
+  </itemizedlist>
+
+  <section>
+    <title>Installation</title>
+    
+    <para>The jBPM installer is capable of downloading and installing an Eclipse installation, including
+    the Drools and jBPM Eclipse plugin (with a full jBPM runtime preconfigured) and the Eclipse BPMN2 Modeler.
+    </para>
+    
+    <tip><para>Using the jBPM installer is definitely the recommended starting point for most users.</para></tip>
+    
+    <para>You can however also download and install the jBPM Eclipse Plugin manually.  To do so, you need to:</para>
+    <itemizedlist>
+      <listitem><para>Download Eclipse (Kepler recommended, but older versions like Indigo or Juno should also
+      still work)</para></listitem>
+      <listitem><para>Start Eclipse</para></listitem>
+      <listitem><para>Select "Install New Software ..." from the Help menu. Add the Drools and jBPM update
+      site <link xlink:href="http://downloads.jboss.org/jbpm/release/6.0.0.Final/org.drools.updatesite/">
+      http://downloads.jboss.org/jbpm/release/6.0.0.Final/org.drools.updatesite/</link>.  You should see
+      the plugins as shown below.  Note that you can also download and unzip the Drools and jBPM update site
+      to your local file system and use that as local update site instead.</para>
+      
+    <figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/UpdateSite.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+      <para>Select the JBoss jBPM Core and JBoss Drools Core plugins and click "Next >". Click "Next >"
+      again after reviewing your selecting, accept the terms of the license 
+      agreement and click "Finish" to download and install the plugins.  If you get a warning about
+      installing software that contains unsigned content, click OK.  After successful installation,
+      Eclipse should ask you to restart, click Yes.</para></listitem>
+      <listitem><para>The plugin should now be installed.  To check, check if you can for example see the
+      new jBPM Project wizard: under the "File" menu, select "New Project ..." and there you should be 
+      able to see "New jBPM Project" under the jBPM category.</para></listitem>
+      <listitem><para>Register a jBPM runtime to get started, see the section on jBPM runtimes in this chapter
+      for more information.</para></listitem>
+    </itemizedlist>
+    
+    <para>Note that, when doing a manual install, you still need to manually install the Eclipse BPMN 2.0
+    Modeler plugin as well. Check out the chapter on the Eclipse BPMN 2.0 Modeler on how to do that.</para>
+  </section>
+  
+  <section>
+    <title>jBPM Project Wizard</title>
+  
+    <para>The aim of the new project wizard is to set up an executable
+    sample project to start using processes immediately. This will set up a
+    basic structure, the classpath, sample process and a test case to get you
+    started.  To create a new jBPM project, in the "File" menu select "New" and then
+    "Project ..." and under the jBPM category, select "jBPM Project".  A dialog as shown
+    below should pop up.</para>
+    
+    <figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/WizardProject.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>Fill in a name for your project and if necessary change the location where this project
+    should be located (by default Eclipse will generate it inside your Eclipse workspace folder) and
+    click "Next >".</para>
+    
+    <para>Now you can optionally include a sample process in your project to get started.  You can select
+    to either use a simple "Hello World" process, a slightly more advanced process including human tasks
+    and persistence or simply an empty project.  You can also select to include a JUnit test class that you
+    can use to test your process. These can serve as a starting point, and will give you
+    something executable almost immediately, which you can then modify to your needs. </para>
+    
+    <figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/WizardProject2.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    
+    <para>Finally, the last page in the wizard allows you select a jBPM runtime, as shown below.
+    You can either use the default runtime (as configured for you workspace, in your workspace
+    preferences), or you can select a specific runtime for this project.  For more information
+    about runtimes and how to create them, see the section on jBPM runtimes in this chapter.</para>
+    
+    <para>You can also select which version of jBPM you want to generate sample code for.  By
+    default it will generate an example using the latest jBPM 6.x API, but you could also generate
+    examples using the old jBPM 5.x API.  Note that you yourself are responsible for making sure that
+    the code you generate can be understood by the runtime (for example, if you create an example using
+    jBPM6 API but select a jBPM5 runtime, your sample will not compile).  Also note that, if you want
+    to execute a jBPM5 example on jBPM6, you will need to have the knowledge-api jar inside your
+    jBPM6 runtime, as this is responsible for the backwards compatibility of the jBPM5 API in jBPM6.
+    </para>
+
+    <figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/WizardProject3.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+   
+    <para>When you selected the simple 'hello world' example, the result is shown
+    below. Feel free to experiment with the plug-in at this point.</para>
+
+    <figure>
+      <title>New jBPM project artifacts</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/WizardProjectStructure.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>The newly created project contains an example process file (sample.bpmn)
+    in the src/main/resources directory and an example Java file (ProcessTest.java) that
+    can be used to test the process in a jBPM engine. You'll find this in
+    the folder src/main/java, in the com.sample package. All the other jars that
+    are necessary during execution are also added to the classpath in a custom
+    classpath container called jBPM Library.</para>
+
+    <para>You can also convert an existing Java project to a jBPM project by selecting the
+    "Convert to jBPM Project" action.  Right-click the project you want to convert and under
+    the "Configure" category (at the bottom) select "Convert to jBPM Project".  This will add
+    the jBPM Library to your project's classpath.</para>
+  </section>
+    
+  <section>
+    <title>New BPMN2 Process Wizard</title>
+
+    <para>You can create a new process simply as an empty text file with extension ".bpmn",
+    or use the "New BPMN2 Process" wizard to do so. To create a new process, in the 
+    "File" menu select "New" and then "Other ..." and under the jBPM category, select 
+    "BPMN2 Process" and click "Next >".  In the next dialog, you should select the folder
+    where the process should be created (for example the src/main/resources folder of your
+    project) and a name for the process.  Clicking "Finish" should create your new process
+    (by default it should only contain one start node) and open it so you can start editing
+    it.</para>
+
+  </section>
+
+  <section>
+    <title>jBPM Runtime</title>
+    
+    <para>A jBPM runtime is a collection of jar files that represent one specific release of the
+    jBPM project jars. To create a runtime, download the binary distribution of the version of
+    jBPM you want to use and unzip on your local file system.  You must then point the IDE to the 
+    release of your choice by selecting the folder where these jars are located. If you want to 
+    create a new runtime based on the latest jBPM project jars included in the plugin itself, you
+    can also easily do that. You are required to specify a default jBPM runtime for your Eclipse
+    workspace, but each individual project can override the default and select the appropriate runtime
+    for that project specifically.</para>
+    
+    <section>
+      <title>Defining a jBPM Runtime</title>
+
+      <para>To define one or more jBPM runtimes using the Eclipse
+      preferences view you open up your Preferences, by selecting the
+      "Preferences" menu item in the menu "Window". A "Preferences" dialog
+      should show all your settings. On the left side of this dialog, under
+      the jBPM category, select "Installed jBPM runtimes". The panel on
+      the right should then show the currently defined jBPM runtimes. For example,
+      if you used the jBPM Installer, it should look like the figure
+      below.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/PreferencesRuntimes.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>To define a new jBPM runtime, click on the "Add" button. A dialog
+      such as the one shown below should pop up, asking for the name of your
+      runtime and the location on your file system where it can be
+      found.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/PreferencesAddRuntime.png"
+                     format="PNG" role=""></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>In general, you have two options:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>If you simply want to use the default jar files as included in
+          the jBPM Eclipse plugin, you can create a new jBPM runtime
+          automatically by clicking the "Create a new jBPM Runtime ..."
+          button. A file browser will show up, asking you to select the folder
+          on your file system where you want this runtime to be created. The
+          plugin will then automatically copy all required dependencies to the
+          specified folder.  Make sure to select a unique name for the newly
+          created runtime and click "OK" to register this runtime.</para>
+          
+          <tip><para>Note that creating a jBPM runtime from the default jar files
+          as included in the jBPM Eclipse plugin is only recommended to get you
+          started the first time and for very simple use cases.  The runtime that is
+          created this way only contains the minimal set of jars, and therefore doesn't
+          support a significant set of features, including for example persistence.
+          Make sure to create a full runtime (using the second approach) for real 
+          development.</para></tip>
+          
+        </listitem>
+
+        <listitem>
+          <para>If you want to use one specific release of the jBPM project,
+          you should create a folder on your file system that contains all the
+          necessary jBPM libraries and dependencies (for example by downloading
+          the binary distribution and unzipping it on your local file system).
+          Instead of creating a new jBPM runtime as explained above, give your
+          runtime a unique name and click the "Browse ..." button to select the
+          location of this folder containing all the required jars.  Click "OK"
+          to register this runtime.</para>
+        </listitem>
+      </orderedlist>
+
+      <para>After clicking the OK button, the runtime should show up in your
+      table of installed jBPM runtimes, as shown below. Click on the checkbox in
+      front of one of the installed runtimes to make it the default jBPM
+      runtime. The default jBPM runtime will be used as the runtime of all
+      your new jBPM projects (in case you didn't select a project-specific
+      runtime).</para>
+
+      <para>You can add as many jBPM runtimes as you need.  Note that you will
+      need to restart Eclipse if you changed the default runtime and you want
+      to make sure that all the projects that are using the default runtime 
+      update their classpath accordingly.</para>
+    </section>
+
+    <section>
+      <title>Selecting a runtime for your jBPM project</title>
+
+      <para>Whenever you create a jBPM project (using the New jBPM Project
+      wizard or by converting an existing Java project to a jBPM project),
+      the plugin will automatically add all the required jars to the classpath
+      of your project.</para>
+
+      <para>When creating a new jBPM project, the plugin will automatically
+      use the default Drools runtime for that project, unless you specify a
+      project-specific one. You can do this in the final step of the New
+      jBPM Project wizard, as shown below, by deselecting the "Use default
+      Drools runtime" checkbox and selecting the appropriate runtime in the
+      drop-down box. If you click the "Configure workspace settings ..." link,
+      the workspace preferences showing the currently installed jBPM
+      runtimes will be opened, so you can add new runtimes there.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Eclipse/WizardProject3.png"
+                     format="PNG" role=""></imagedata>
+        </imageobject>
+      </mediaobject>
+
+      <para>You can change the runtime of a jBPM project at any time by
+      opening the project properties and selecting the jBPM category, as
+      shown below. Mark the "Enable project specific settings" checkbox and
+      select the appropriate runtime from the drop-down box. If you click the
+      "Configure workspace settings ..." link, the workspace preferences
+      showing the currently installed jBPM runtimes will be opened, so you
+      can add new runtimes there. If you deselect the "Enable project specific
+      settings" checkbox, it will use the default runtime as defined in your
+      global workspace preferences.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/PreferencesProject.png"
+                     format="PNG" role=""></imagedata>
+        </imageobject>
+      </mediaobject>
+    </section>
+    
+  </section>
+  
+  <section>
+    <title>Drools Eclipse plugin</title>
+    
+    <para>The Drools Eclipse Plugin, which is bundled as part of the same Eclipse Update Site
+    as the jBPM Eclipse Plugin, provides similar features for creating and editing business rules,
+    and execute them using the Drools engine.  This for example allows you to create and edit .drl
+    files containing business rules.  You can combine your processes and rules inside one project
+    and execute them together on the same KieSession.</para>
+  </section>
     
 </section>
