@@ -5,21 +5,264 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>REST</title>
-       <para>todo (this folder and file is named consistently with the place-holder in jBPM)</para>
-     <para>NOTE: This REST API is that within drools-wb, but shared with kie-wb and kie-drools-wb
-          with the following features:<itemizedlist>
+      
+     <para>REST API calls to Knowledge Store allow you to manage the Knowledge Store content and manipulate the static data in the repositories of 
+          the Knowledge Store. The calls are asynchronous, that is, they continue their execution after the call was performed as a job. The job ID 
+          is returned by every calls to allow after the REST API call was performed to request the job status and verify whether the job finished 
+          successfully. Parameters of these calls are provided in the form of JSON entities. </para>
+     <para>When using Java code to interface with the REST API, the classes used in POST operations
+          or otherwise returned by various operations can be found in the <code>(org.kie.workbench.services:)kie-wb-common-services</code> jar. All 
+          of the classes mentioned below can be found in the <code>org.kie.workbench.common.services.shared.rest</code> package in that jar.</para> 
+     
+     <section>
+          <title>Job calls</title>
+          <para>Every Knowledge Store REST call returns its job ID after it was sent. This is necessary as the calls are asynchronous and you need 
+               to be able to reference the job to check its status as it goes through its lifecycle. During its lifecycle, a job can have the 
+               following statuses:
+          </para>
+          <itemizedlist>
                <listitem>
-                    <para>Create/Delete OU</para>
+                    <para><code>ACCEPTED</code>: the job was accepted and is being processed</para>
                </listitem>
                <listitem>
-                    <para>Create/Delete Repository</para>
+                    <para><code>BAD_REQUEST</code>: the request was not accepted as it contained incorrect content</para>
                </listitem>
                <listitem>
-                    <para>Create/Delete Project</para>
+                    <para><code>RESOURCE_NOT_EXIST</code>: the requested resource (path) does not exist</para>
                </listitem>
                <listitem>
-                    <para>Stuff I've probably not mentioned (but basically no jBPM runtime!)</para>
+                    <para><code>DUPLICATE_RESOURCE</code>: the resource already exists</para>
                </listitem>
-          </itemizedlist></para>
-    
+               <listitem>
+                    <para><code>SERVER_ERROR</code>: an error on the server occurred</para>
+               </listitem>
+               <listitem>
+                    <para><code>SUCCESS</code>: the job finished successfully</para>
+               </listitem>
+               <listitem>
+                    <para><code>FAIL</code>: the job failed</para>
+               </listitem>
+               <listitem>
+                    <para><code>DENIED</code>: the job was denied</para>
+               </listitem>
+               <listitem>
+                    <para><code>GONE</code>: the job ID could not be found</para>
+                    <para>A job can be GONE in the following cases:</para>
+                    <itemizedlist>
+                         <listitem>
+                              <para>The job was explicitly removed</para>
+                         </listitem>
+                         <listitem>
+                              <para>The job finished and has been deleted from the status cache (the job is removed from status cache after the cache 
+                              has reached its maximum capacity)</para>
+                         </listitem>
+                         <listitem>
+                              <para>The job never existed</para>
+                         </listitem>
+                    </itemizedlist>
+               </listitem>
+          </itemizedlist>
+          <para>The following <code>job</code> calls are provided:</para>
+          <variablelist>
+               <varlistentry>
+                    <term>[GET] <command>/jobs/<emphasis>{jobID}</emphasis></command></term>
+                    <listitem>
+                         <para>Returns the job status</para>
+                         <para>Returns a <code>JobResult</code> instance</para>
+                         <example>
+                              <title>An example (formatted) response body to the get job call on a
+                                   repository clone request</title>
+                              <programlisting>"{
+  "status":"SUCCESS",
+  "jodId":"1377770574783-27",
+  "result":"Alias: testInstallAndDeployProject, Scheme: git, Uri: git://testInstallAndDeployProject",
+  "lastModified":1377770578194,"detailedResult":null
+}"</programlisting>
+                         </example>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[DELETE] <command>/jobs/<emphasis>{jobID}</emphasis></command></term>
+                    <listitem>
+                         <para>Removes the job: If the job is not yet being processed, this will
+                              remove the job from the job queue. However, this will not cancel or
+                              stop an ongoing job</para>
+                         <para>Returns a <code>JobResult</code> instance</para>
+                    </listitem>
+               </varlistentry>
+          </variablelist>
+     </section>
+     
+     <section>
+          <title>Repository calls</title>
+          <para>Repository calls are calls to the Knowledge Store that allow you to manage its Git repositories and their projects.</para>
+          <para>The following <code>repositories</code> calls are provided:</para>
+          <variablelist>
+               <varlistentry>
+                    <term>[GET] <command>/repositories</command></term>
+                    <listitem>
+                         <para>Gets information about the repositories in the Knowledge Store</para>
+                         <para>Returns a <code>Collection&lt;Map&lt;String, String&gt;&gt;</code> or <code>Collection&lt;RepositoryRequest&gt;</code> instance,  
+                               depending on the JSON serialization library being used. The keys used in the <code>Map&lt;String, String&gt;</code> instance match
+                               the fields in the <code>RepositoryRequest</code> class</para>
+                         <example>
+                              <title>An example (formatted) response body to the get repositories
+                                   call</title>
+                              <programlisting>[
+  {
+    "name":"wb-assets",
+    "description":"generic assets",
+    "userName":null,
+    "password":null,
+    "requestType":null,
+    "gitURL":"git://bpms-assets"
+ },
+ {
+   "name":"loanProject",
+   "description":"Loan processes and rules",
+   "userName":null,
+   "password":null,
+   "requestType":null,
+   "gitURL":"git://loansProject"
+ }
+]</programlisting>
+                         </example>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[POST] <command>/repositories</command></term>
+                    <listitem>
+                         <para>Creates a new empty repository or a new repository cloned from an existing (git) repository</para>
+                         <para>Consumes a <code>RepositoryRequest</code> instance</para>
+                         <para>Returns a <code>CreateOrCloneRepositoryRequest</code> instance</para>
+                         <example>
+                              <title>An example (formatted) response body to the create repositories
+                                   call</title>
+                              <programlisting>{
+  "name":"new-project-repo",
+  "description":"repo for my new project",
+  "userName":null,"password":null,
+  "requestType":"new",
+  "gitURL":null
+}</programlisting>
+                         </example>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[DELETE] <command>/repositories/<emphasis>{repositoryName}</emphasis></command></term>
+                    <listitem>
+                         <para>Removes the repository from the Knowledge Store</para>
+                         <para>Returns a <code>RemoveRepositoryRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+               
+               <varlistentry>
+                    <term>[POST] <command>/repositories/<emphasis>{repositoryName}</emphasis>/projects/</command></term>
+                    <listitem>
+                         <para>Creates a project in the repository</para>
+                         <para>Consumes an <code>Entity</code> instance</para>
+                         <para>Returns a <code>CreateProjectRequest</code> instance</para>
+                         <example>
+                              <title>An example (formatted) request body that defines the project to be created</title>
+                              <programlisting>{
+  "name":"myProject",
+  "description": "my project"
+}</programlisting>
+                         </example>
+                    </listitem>
+               </varlistentry>
+               <!-- Not yet implemented
+               <varlistentry>
+                    <term>[DELETE] <command>/repositories/<emphasis>{repositoryName}</emphasis>/projects/</command></term>
+                    <listitem>
+                         <para>Deletes the project in the repository</para>
+                         <para>Returns a <code>JobRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+               -->
+          </variablelist>
+     </section>
+     
+     <section>
+          <title>Organizational unit calls</title>
+          <para>Organizational unit calls are calls to the Knowledge Store that allow you to manage its organizational units, so as to organize the 
+                connected Git repositories.
+          </para>
+          <para>The following <code>organizationalUnits</code> calls are provided:</para>
+          <variablelist>
+               <varlistentry>
+                    <term>[POST] <command>/organizationalunits</command></term>
+                    <listitem>
+                         <para>Creates an organizational unit in the Knowledge Store</para>
+                         <para>Consumes an <code>OrganizationalUnit</code> instance</para>
+                         <para>Returns a <code>CreateOrganizationalUnitRequest</code> instance</para>
+                         <example>
+                              <title>An example (formatted) request body defining a new organizational unit to be created</title>
+                              <programlisting>{
+  "name":"testgroup",
+  "description":"",
+  "owner":"tester",
+  "repositories":["testGroupRepository"]
+}</programlisting>
+                         </example>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[POST] <command>/organizationalunits/<emphasis>{organizationalUnitName}</emphasis>/repositories/<emphasis>{repositoryName}</emphasis></command></term>
+                    <listitem>
+                         <para>Adds the repository to the organizational unit</para>
+                         <para>Returns a <code>AddRepositoryToOrganizationalUnitRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[DELETE] <command>/organizationalunits/<emphasis>{organizationalUnitName}</emphasis>/repositories/<emphasis>{repositoryName}</emphasis></command></term>
+                    <listitem>
+                         <para>Removes the repository from the organizational unit</para>
+                         <para>Returns a <code>RemoveRepositoryFromOrganizationalUnitRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+
+          </variablelist>
+     </section>
+     
+     <section>
+          <title>Maven calls</title>
+          <para>Maven calls are calls to a Project in the Knowledge Store that allow you compile and deploy the Project resources.</para>
+          <para>The following <code>maven</code> calls are provided:</para>
+          <variablelist>
+               <varlistentry>
+                    <term> [POST] <command>/repositories/<emphasis>{repositoryName}</emphasis>/projects/<emphasis>{projectName}</emphasis>/maven/compile</command></term>
+                    <listitem>
+                         <para>Compiles the project (equivalent to <code>mvn compile</code>)</para>
+                         <para>Consumes a <code>BuildConfig</code> instance. While this must be supplied, it's not needed for the operation and may be left blank.</para>
+                         <para>Returns a <code>CompileProjectRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[POST] <command>/repositories/<emphasis>{repositoryName}</emphasis>/projects/<emphasis>{projectName}</emphasis>/maven/install</command></term>
+                    <listitem>
+                         <para>Installs the project (equivalent to <code>mvn install</code>)</para>
+                         <para>Consumes a <code>BuildConfig</code> instance. While this must be supplied, it's not needed for the operation and may be left blank.</para>
+                         <para>Returns a <code>InstallProjectRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[POST] <command>/repositories/<emphasis>{repositoryName}</emphasis>/projects/<emphasis>{projectName}</emphasis>/maven/test</command></term>
+                    <listitem>
+                         <para>Compiles the project runs a test as part of compilation</para>
+                         <para>Consumes a <code>BuildConfig</code> instance</para>
+                         <para>Returns a <code>TestProjectRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+               <varlistentry>
+                    <term>[POST] <command>/repositories/<emphasis>{repositoryName}</emphasis>/projects/<emphasis>{projectName}</emphasis>/maven/deploy</command></term>
+                    <listitem>
+                         <para>Deploys the project (equivalent to  <code>mvn deploy</code>)</para>
+                         <para>Consumes a <code>BuildConfig</code> instance. While this must be supplied, it's not needed for the operation and may be left blank.</para>
+                         <para>Returns a <code>DeployProjectRequest</code> instance</para>
+                    </listitem>
+               </varlistentry>
+          </variablelist>
+     </section>
+         
 </section>
