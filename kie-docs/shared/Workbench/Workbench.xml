@@ -15,5 +15,6 @@
        <xi:include href="General/ChangingLayout.xml"/>
        <xi:include href="Authoring/Authoring.xml"/>
   <xi:include href="RemoteAPI/REST.xml"/>
+  <xi:include href="HighAvailability/HighAvailability.xml"/>
 
 </chapter>
