@@ -1,14 +1,149 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../../" xml:id="wb.ProjectEditor"
-  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xmlns="http://docbook.org/ns/docbook"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xlink="http://www.w3.org/1999/xlink"
-  xmlns:xi="http://www.w3.org/2001/XInclude"
-  xmlns:ns="http://docbook.org/ns/docbook">
+<section version="5.0" xml:base="../../../" xml:id="wb.ProjectEditor" xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   
   <title>Project Editor</title>
-  <para>todo</para>
+  <figure>
+    <title>Project Screen and the different views</title>
+    
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+          fileref="images/Workbench/Authoring/ProjectEditor/project_editor_menu.png" format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+  <para>The Project Editor screen can be accessed from the Project menu. Project menu shows the settings for the
+    currently active project. </para>
+  <para>Unlike most of the workbench editors, project  editor edits more than one file. Showing everything that is
+    needed for configuring the KIE project in one place.</para>
+  <figure>
+    <title>Project Screen and the different views</title>
+    
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+          fileref="images/Workbench/Authoring/ProjectEditor/project_editor_menu.png" format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+ <section>
+   <title>Build &amp; Deploy</title>
+   <para>Build &amp; Depoy builds the current project and deploys the KJAR into the workbench internal
+      m2-repository.</para>
+   </section>
+  <section>
+    <title>Project Settings </title>
+  <para>Project Settings are editing the pom.xml file used by Maven.</para>
+   
+  <section>
+    <title>Project General Settings </title>
+  <para>General settings provide tools for project name and GAV-data (Group, Artifact, Version). GAV values are used as
+    indentifiers to differ different projects and version of the same project.</para>
+    <figure>
+      <title>Project Settings</title>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata width="100%"
+            fileref="images/Workbench/Authoring/ProjectEditor/general_settings.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+  <section>
+    <title>Dependencies </title>
+  <para>The project may have any number of either internal or external dependencies. Dependency is a project that has
+    been built and deployed to a m2-repository. Internal dependencies are projects build and deployed in the same
+    workbench as the project that the editor is editing. External dependencies are retrieved from repositories outside
+    of the current workbench. Each dependency uses the GAV-values to specify the project name and version that is used
+    by the project. </para>
+    <figure>
+      <title>Dependencies</title>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata width="100%"
+            fileref="images/Workbench/Authoring/ProjectEditor/dependencies.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+  <section>
+  <title>Metadata </title>
+  <para>Metadata for the pom.xml file.</para>
+  </section>
+  </section>
+    <section>
+  <title>Knowledge Base Settings</title>
+    <para>Knowledge Base Settings are editing the kmodule.xml file used by Drools. </para>
+      <figure>
+        <title>Knowledge Base Settings</title>
+        
+        <mediaobject>
+          <imageobject>
+            <imagedata width="100%"
+              fileref="images/Workbench/Authoring/ProjectEditor/kmodule.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    <note><para>For more information about the properties in this section, check the Drools Expert documentation for
+        kmodule.xml.</para></note>
+  <section>
+    <title>Knowledge bases and sessions </title>
+    <para>Knowledge bases and sessions lists the knowledge bases and the knowledge sessions specified for the project. </para>
+    <section>
+      <title>Knowledge base list</title>
+      <para>Lists all the knowledge bases by name. One of the knowledge bases in the list can be made the default
+        knowledge base for the project. </para>
+    </section>
+    <section>
+      <title>Knowledge base properties</title>
+      <para>Knowledge base can include other knowledge bases. The models, rules and any other content in the included
+        knowledge base will be visible and usable by the currently selected knowledge base.</para>
+      <para>Rules and models are stored in packages. The packages property specifies what packages are included into
+        this knowledge base.</para>
+      <para>Equals behavior is explained in the Drools Expert part of the documentation.</para>
+      <para>Event processing mode is explained in the Drools Fusion part of the documentation. </para>
+    </section>
+    <section>
+      <title>Knowledge sessions</title>
+      <para>The table lists all the knowledge sessions in the selected knowledge base. There can be only one default of
+        each type. The types are stateless and stateful. Clicking the pen-icon opens a popup that shows more properties
+        for the knowledge session.</para>
+    </section>
+  </section>
+      <section>
+        <title>Metadata </title>
+        <para>Metadata for the kmodule.xml</para>
+      </section>
+    </section>
+  <section>
+    <title>Imports </title>
+    <para>Settings edits the project.imports file used by the workbench editors.</para>
+    <figure>
+      <title>Imports</title>
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata width="100%"
+            fileref="images/Workbench/Authoring/ProjectEditor/imports.png" format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    
+    <note><para>Unlike in the previous version of Guvnor. The imports listed in the import suggestions are not automatically added
+      into the knowledge base or into the packages in the workbench. Each import needs to be explicitly added into
+      each file.</para></note>
+  <section>
+    <title>Import Suggestions </title>
+  <para>Import Suggestions lists imports that are used as suggestions when using the guided editors the workbench has.
+        Making it easier to work with the workbench, as there is no need to type each import in each file that uses the
+        import.</para>
+  </section>
+  <section>
+    <title>Metadata</title>
+  <para>Metadata for the project.imports file.</para>
+  </section>
+  </section>
   
 </section>
