@@ -25,12 +25,23 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
 
     protected int stepCountingHillClimbingSize = -1;
+    protected StepCountingHillClimbingType stepCountingHillClimbingType;
 
     protected Score thresholdScore;
-    protected int stepCount = -1;
+    protected int count = -1;
 
-    public void setStepCountingHillClimbingSize(int stepCountingHillClimbingSize) {
+    public StepCountingHillClimbingAcceptor(int stepCountingHillClimbingSize,
+            StepCountingHillClimbingType stepCountingHillClimbingType) {
         this.stepCountingHillClimbingSize = stepCountingHillClimbingSize;
+        this.stepCountingHillClimbingType = stepCountingHillClimbingType;
+        if (stepCountingHillClimbingSize <= 0) {
+            throw new IllegalArgumentException("The stepCountingHillClimbingSize (" + stepCountingHillClimbingSize
+                    + ") cannot be negative or zero.");
+        }
+        if (stepCountingHillClimbingType == null) {
+            throw new IllegalArgumentException("The stepCountingHillClimbingType (" + stepCountingHillClimbingType
+                    + ") cannot be null.");
+        }
     }
 
     // ************************************************************************
@@ -40,16 +51,8 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     @Override
     public void phaseStarted(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        validate();
         thresholdScore = phaseScope.getBestScore();
-        stepCount = 0;
-    }
-
-    private void validate() {
-        if (stepCountingHillClimbingSize <= 0) {
-            throw new IllegalArgumentException("The stepCountingHillClimbingSize (" + stepCountingHillClimbingSize
-                    + ") cannot be negative or zero.");
-        }
+        count = 0;
     }
 
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
@@ -64,10 +67,31 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     @Override
     public void stepEnded(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
-        stepCount++;
-        if (stepCount >= stepCountingHillClimbingSize) {
+        count += determineCountIncrement(stepScope);
+        if (count >= stepCountingHillClimbingSize) {
             thresholdScore = stepScope.getScore();
-            stepCount = 0;
+            count = 0;
+        }
+    }
+
+    private int determineCountIncrement(LocalSearchStepScope stepScope) {
+        switch (stepCountingHillClimbingType) {
+            case SELECTED_MOVE:
+                long selectedMoveCount = stepScope.getSelectedMoveCount();
+                return selectedMoveCount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) selectedMoveCount;
+            case ACCEPTED_MOVE:
+                long acceptedMoveCount = stepScope.getAcceptedMoveCount();
+                return acceptedMoveCount > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) acceptedMoveCount;
+            case STEP:
+                return 1;
+            case EQUAL_OR_IMPROVING_STEP:
+                return stepScope.getScore().compareTo(
+                        stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) >= 0 ? 1 : 0;
+            case IMPROVING_STEP:
+                return stepScope.getScore().compareTo(
+                        stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) > 0 ? 1 : 0;
+            default:
+                throw new IllegalStateException("The cacheType (" + this + ") is not implemented.");
         }
     }
 
@@ -75,7 +99,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
     public void phaseEnded(LocalSearchSolverPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         thresholdScore = null;
-        stepCount = -1;
+        count = -1;
     }
 
 }
