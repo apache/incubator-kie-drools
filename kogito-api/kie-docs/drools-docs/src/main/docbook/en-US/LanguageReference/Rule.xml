@@ -453,7 +453,7 @@ end</programlisting>
       <programlisting language="java">Calendar weekDayCal = QuartzHelper.quartzCalendarAdapter(org.quartz.Calendar quartzCal)</programlisting>
     </example>
 
-    <para>Calendars are registered with the StatefulKnowledgeSession:</para>
+    <para>Calendars are registered with the KieSession:</para>
 
     <example>
       <title>Registering a Calendar</title>
@@ -901,6 +901,47 @@ Person( $age := age) </programlisting>
       </section>
 
       <section>
+        <title>Grouped accessors for nested objects</title>
+
+        <para>Often it happens that it is necessary to access multiple properties
+        of a nested object as in the following example</para>
+
+        <programlisting>Person( name == "mark", address.city == "london", address.country == "uk" )</programlisting>
+
+        <para>These accessors to nested objects can be grouped with a '.(...)'
+        syntax providing more readable rules as in</para>
+
+        <programlisting>Person( name==  "mark", address.( city == "london", country ==  "uk") )</programlisting>
+
+        <para>Note the '.' prefix, this is necessary to differentiate the nested
+        object constraints from a method call.</para>
+      </section>
+
+      <section>
+        <title>Inline casts and coercion</title>
+
+        <para>When dealing with nested objects, it also quite common the need to
+        cast to a subtype. It is possible to do that via the # symbol as in:</para>
+
+        <programlisting>Person( name=="mark", address#LongAddress.country == "uk" )</programlisting>
+
+        <para>This example casts Address to LongAddress, making its getters available.
+        If the cast is not possible (instanceof returns false), the evaluation will
+        be considered false. Also fully qualified names are supported:</para>
+
+        <programlisting>Person( name=="mark", address#org.domain.LongAddress.country == "uk" )</programlisting>
+
+        <para>It is possible to use multiple inline casts in the same expression:</para>
+
+        <programlisting>Person( name == "mark", address#LongAddress.country#DetailedCountry.population > 10000000 )</programlisting>
+
+        <para>moreover, since we also support the instanceof operator, if that is used
+        we will infer its results for further uses of that field, within that pattern:</para>
+
+        <programlisting>Person( name=="mark", address instanceof LongAddress, address.country == "uk" )</programlisting>
+      </section>
+
+      <section>
         <title>Special literal support</title>
 
         <para>Besides normal Java literals (including Java 5 enums), this
@@ -1017,6 +1058,21 @@ Person( age &gt; 30 &amp;&amp; &lt; 40 || location == "london" )</programlisting
 
           <para>Only applies on <literal>Comparable</literal>
           properties.</para>
+        </section>
+
+        <section>
+          <title>Null-safe dereferencing operator</title>
+
+          <para>The !. operator allows to derefencing in a null-safe way.
+          More in details the matching algorithm requires the value to the left
+          of the !. operator to be not null in order to give a positive result
+          for pattern matching itself. In other words the pattern:</para>
+
+          <programlisting>Person( $streetName : address!.street )</programlisting>
+
+          <para>will be internally translated in:</para>
+
+          <programlisting>Person( address != null, $streetName : address.street )</programlisting>
         </section>
 
         <section>
@@ -1274,9 +1330,9 @@ Person( eval( age == girlAge + 2 ), sex = 'M' ) // eval() is actually obsolete i
 
             <tbody>
               <row>
-                <entry>(nested) property access</entry>
+                <entry>(nested / null safe) property access</entry>
 
-                <entry><literal>.</literal></entry>
+                <entry><literal>.</literal> <literal>!.</literal></entry>
 
                 <entry>Not normal Java semantics</entry>
               </row>
@@ -1452,131 +1508,131 @@ Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
       <title>Fine grained property change listeners</title>
 
       <para>When you call modify() (see the modify statement section) on a given object it will trigger a revaluation of all
-          patterns of the matching object type in the knowledge base. This can can lead to unwanted and useless evaluations
-          and in the worst cases to infinite recursions. The only workaround to avoid it was to split up your objects into
-          smaller ones having a 1 to 1 relationship with the original object.</para>
+      patterns of the matching object type in the knowledge base. This can can lead to unwanted and useless evaluations
+      and in the worst cases to infinite recursions. The only workaround to avoid it was to split up your objects into
+      smaller ones having a 1 to 1 relationship with the original object.</para>
 
       <para>This feature allows the pattern matching to only react to modification of properties actually
-          constrained or bound inside of a given pattern. That will help with performance and recursion and avoid artificial
-          object splitting.</para>
+      constrained or bound inside of a given pattern. That will help with performance and recursion and avoid artificial
+      object splitting.</para>
 
       <para>By default this feature is off in order to make the behavior of the rule engine backward compatible with the
-          former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
-          This annotation works both on drl type declarations:</para>
+      former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
+      This annotation works both on drl type declarations:</para>
 
       <programlisting>declare Person
-          @propertyReactive
-          firstName : String
-          lastName : String
-          end</programlisting>
+@propertyReactive
+    firstName : String
+    lastName : String
+end</programlisting>
 
       <para>and on Java classes:</para>
 
       <programlisting>@PropertyReactive
-          public static class Person {
-          private String firstName;
-          private String lastName;
-          }</programlisting>
+    public static class Person {
+    private String firstName;
+    private String lastName;
+}</programlisting>
 
       <para>In this way, for instance, if you have a rule like the following:</para>
 
       <programlisting>rule "Every person named Mario is a male" when
-          $person : Person( firstName == "Mario" )
-          then
-          modify ( $person )  { setMale( true ) }
-          end</programlisting>
+    $person : Person( firstName == "Mario" )
+then
+    modify ( $person )  { setMale( true ) }
+end</programlisting>
 
       <para>you won't have to add the no-loop attribute to it in order to avoid an infinite recursion because the engine
-          recognizes that the pattern matching is done on the 'firstName' property while the RHS of the rule modifies the
-          'male' one. Note that this feature does not work for update(), and this is one of the reasons why we promote
-          modify() since it encapsulates the field changes within the statement. Moreover, on Java classes, you can also
-          annotate any method to say that its invocation actually modifies other properties. For instance in the former
-          Person class you could have a method like:</para>
+      recognizes that the pattern matching is done on the 'firstName' property while the RHS of the rule modifies the
+      'male' one. Note that this feature does not work for update(), and this is one of the reasons why we promote
+      modify() since it encapsulates the field changes within the statement. Moreover, on Java classes, you can also
+      annotate any method to say that its invocation actually modifies other properties. For instance in the former
+      Person class you could have a method like:</para>
 
       <programlisting>@Modifies( { "firstName", "lastName" } )
-          public void setName(String name) {
-          String[] names = name.split("\\s");
-          this.firstName = names[0];
-          this.lastName = names[1];
-          }</programlisting>
+public void setName(String name) {
+    String[] names = name.split("\\s");
+    this.firstName = names[0];
+    this.lastName = names[1];
+}</programlisting>
 
       <para>That means that if a rule has a RHS like the following:</para>
 
       <programlisting>modify($person) { setName("Mario Fusco") }</programlisting>
 
       <para>it will correctly recognize that the values of both properties 'firstName' and 'lastName' could have
-          potentially been modified and act accordingly, not missing of reevaluating the patterns constrained on them. At
-          the moment the usage of @Modifies is not allowed on fields but only on methods. This is coherent with the most
-          common scenario where the @Modifies will be used for methods that are not related with a class field as in the
-          Person.setName() in the former example. Also note that @Modifies is not transitive, meaning that if another method
-          internally invokes the Person.setName() one it won't be enough to annotate it with @Modifies( { "name" } ), but it
-          is necessary to use @Modifies( { "firstName", "lastName" } ) even on it. Very likely @Modifies transitivity will
-          be implemented in the next release.</para>
+      potentially been modified and act accordingly, not missing of reevaluating the patterns constrained on them. At
+      the moment the usage of @Modifies is not allowed on fields but only on methods. This is coherent with the most
+      common scenario where the @Modifies will be used for methods that are not related with a class field as in the
+      Person.setName() in the former example. Also note that @Modifies is not transitive, meaning that if another method
+      internally invokes the Person.setName() one it won't be enough to annotate it with @Modifies( { "name" } ), but it
+      is necessary to use @Modifies( { "firstName", "lastName" } ) even on it. Very likely @Modifies transitivity will
+      be implemented in the next release.</para>
 
       <para>For what regards nested accessors, the engine will be notified only for top level fields. In other words a
-          pattern matching like:</para>
+      pattern matching like:</para>
 
       <programlisting>Person ( address.city.name == "London ) </programlisting>
 
       <para>will be revaluated only for modification of the 'address' property of a Person object. In the same way the
-          constraints analysis is currently strictly limited to what there is inside a pattern. Another example could help
-          to clarify this. An LHS like the following:</para>
+      constraints analysis is currently strictly limited to what there is inside a pattern. Another example could help
+      to clarify this. An LHS like the following:</para>
 
       <programlisting>$p : Person( )
-          Car( owner = $p.name )</programlisting>
+Car( owner = $p.name )</programlisting>
 
       <para>will not listen on modifications of the person's name, while this one will do:</para>
 
       <programlisting>Person( $name : name )
-          Car( owner = $name )</programlisting>
+Car( owner = $name )</programlisting>
 
       <para>To overcome this problem it is possible to annotate a pattern with @watch as it follows:</para>
 
       <programlisting>$p : Person( ) @watch ( name )
-          Car( owner = $p.name )</programlisting>
+Car( owner = $p.name )</programlisting>
 
       <para>Indeed, annotating a pattern with @watch allows you to modify the inferred set of properties for which that
-          pattern will react. Note that the properties named in the @watch annotation are actually added to the ones
-          automatically inferred, but it is also possible to explicitly exclude one or more of them prepending their name
-          with a ! and to make the pattern to listen for all or none of the properties of the type used in the pattern
-          respectively with the wildcrds * and !*. So, for example, you can annotate a pattern in the LHS of a rule
-          like:</para>
+      pattern will react. Note that the properties named in the @watch annotation are actually added to the ones
+      automatically inferred, but it is also possible to explicitly exclude one or more of them prepending their name
+      with a ! and to make the pattern to listen for all or none of the properties of the type used in the pattern
+      respectively with the wildcrds * and !*. So, for example, you can annotate a pattern in the LHS of a rule
+      like:</para>
 
       <programlisting>// listens for changes on both firstName (inferred) and lastName
-          Person( firstName == $expectedFirstName ) @watch( lastName )
+Person( firstName == $expectedFirstName ) @watch( lastName )
 
-          // listens for all the properties of the Person bean
-          Person( firstName == $expectedFirstName ) @watch( * )
+// listens for all the properties of the Person bean
+Person( firstName == $expectedFirstName ) @watch( * )
 
-          // listens for changes on lastName and explicitly exclude firstName
-          Person( firstName == $expectedFirstName ) @watch( lastName, !firstName )
+// listens for changes on lastName and explicitly exclude firstName
+Person( firstName == $expectedFirstName ) @watch( lastName, !firstName )
 
-          // listens for changes on all the properties except the age one
-          Person( firstName == $expectedFirstName ) @watch( *, !age )</programlisting>
+// listens for changes on all the properties except the age one
+Person( firstName == $expectedFirstName ) @watch( *, !age )</programlisting>
 
       <para>Since doesn't make sense to use this annotation on a pattern using a type not annotated with
-          @PropertyReactive the rule compiler will raise a compilation error if you try to do so. Also the duplicated usage
-          of the same property in @watch (for example like in: @watch( firstName, ! firstName ) ) will end up in a
-          compilation error. In a next release we will make the automatic detection of the properties to be listened smarter
-          by doing analysis even outside of the pattern.</para>
+      @PropertyReactive the rule compiler will raise a compilation error if you try to do so. Also the duplicated usage
+      of the same property in @watch (for example like in: @watch( firstName, ! firstName ) ) will end up in a
+      compilation error. In a next release we will make the automatic detection of the properties to be listened smarter
+      by doing analysis even outside of the pattern.</para>
 
       <para>It also possible to enable this feature by default on all the types of your model or to completely disallow
-          it by using on option of the KnowledgeBuilderConfiguration. In particular this new PropertySpecificOption can have
-          one of the following 3 values:</para>
+      it by using on option of the KnowledgeBuilderConfiguration. In particular this new PropertySpecificOption can have
+      one of the following 3 values:</para>
 
       <programlisting>- DISABLED =&gt; the feature is turned off and all the other related annotations are just ignored
-          - ALLOWED =&gt; this is the default behavior: types are not property reactive unless they are not annotated with @PropertySpecific
-          - ALWAYS =&gt; all types are property reactive by default</programlisting>
+- ALLOWED =&gt; this is the default behavior: types are not property reactive unless they are not annotated with @PropertySpecific
+- ALWAYS =&gt; all types are property reactive by default</programlisting>
 
       <para>So, for example, to have a KnowledgeBuilder generating property reactive types by default you could
-          do:</para>
+      do:</para>
 
       <programlisting>KnowledgeBuilderConfiguration config = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-          config.setOption(PropertySpecificOption.ALWAYS);
-          KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);</programlisting>
+config.setOption(PropertySpecificOption.ALWAYS);
+KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(config);</programlisting>
 
       <para>In this last case it will be possible to disable the property reactivity feature on a specific type by
-          annotating it with @ClassReactive.</para>
+      annotating it with @ClassReactive.</para>
     </section>
 
     <section>
@@ -2793,7 +2849,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/Arguments.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/Arguments.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -2862,7 +2919,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/ConditionalElementEval.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/ConditionalElementEval.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -2938,7 +2996,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/Definition.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/Definition.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -3014,7 +3073,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/FromCollectClause.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/FromCollectClause.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -3097,7 +3157,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/ModifyStatement.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/ModifyStatement.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -3180,7 +3241,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/RealLiteral.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/RealLiteral.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -3263,7 +3325,8 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/LanguageReference/SourcePattern.svg" format="SVG"/>
+          <imagedata fileref="images/LanguageReference/SourcePattern.png"
+                     format="PNG"/>
         </imageobject>
       </mediaobject>
 
@@ -3454,15 +3517,14 @@ eval( isValid( p1, p2 ) )</programlisting>
 
       <para>The full Knowledge Runtime API is exposed through another
       predefined variable, <code>kcontext</code>, of type
-      <code>KnowledgeContext</code>. Its method
-      <code>getKnowledgeRuntime()</code> delivers an object of type
-      <code>KnowledgeRuntime</code>, which, in turn, provides access to a
+      <code>KieContext</code>. Its method <code>getKieRuntime()</code> delivers
+      an object of type <code>KieRuntime</code>, which, in turn, provides access to a
       wealth of methods, many of which are quite useful for coding RHS
       logic.</para>
 
       <itemizedlist>
         <listitem>
-          <para>The call <code>kcontext.getKnowledgeRuntime().halt()</code>
+          <para>The call <code>kcontext.getKieRuntime().halt()</code>
           terminates rule execution immediately.</para>
         </listitem>
 
@@ -3474,7 +3536,7 @@ eval( isValid( p1, p2 ) )</programlisting>
           agenda group, which could be done with the lengthy call:</para>
 
           <programlisting language="java">// give focus to the agenda group CleanUp
-kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
+kcontext.getKieRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus();</programlisting>
 
           <para>(You can achieve the same using <code>drools.setFocus(
           "CleanUp" )</code>.)</para>
@@ -3483,8 +3545,8 @@ kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus(
         <listitem>
           <para>To run a query, you call <code>getQueryResults(String
           query)</code>, whereupon you may process the results, as explained
-          in section <quote><link endterm="QuerySection"
-          linkend="QuerySection"></link></quote>.</para>
+          in section <link endterm="QuerySection"
+          linkend="QuerySection">Query</link>.</para>
         </listitem>
 
         <listitem>
@@ -3494,8 +3556,8 @@ kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "CleanUp" ).setFocus(
         </listitem>
 
         <listitem>
-          <para>Method<code>getKnowledgeBase()</code> returns the
-          <code>KnowledgeBase</code> object, the backbone of all the Knowledge
+          <para>Method <code>getKieBase()</code> returns the
+          <code>KieBase</code> object, the backbone of all the Knowledge
           in your system, and the originator of the current session.</para>
         </listitem>
 
@@ -3550,6 +3612,107 @@ end</programlisting>
       used in conjuction with fine grained property change listeners.
       See the corresponding section for more details.</para>
     </section>
+  </section>
+
+  <section>
+    <title>Conditional named consequences</title>
+
+    <para>Sometimes the constraint of having one single consequence for each rule can
+    be somewhat limiting and leads to verbose and difficult to be maintained repetitions
+    like in the following example:</para>
+
+    <programlisting>rule "Give 10% discount to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+end</programlisting>
+
+    <para>It is already possible to partially overcome this problem by making the
+    second rule extending the first one like in:</para>
+
+    <programlisting>rule "Give 10% discount to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+then
+    modify($customer) { setDiscount( 0.1 ) };
+end
+
+rule "Give free parking to customers older than 60"
+    extends "Give 10% discount to customers older than 60"
+when
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+end</programlisting>
+
+    <para>Anyway this feature makes it possible to define more labelled consequences
+    other than the default one in a single rule, so, for example, the 2 former rules
+    can be compacted in only one like it follows:</para>
+
+    <programlisting>rule "Give 10% discount and free parking to customers older than 60"
+when
+    $customer : Customer( age > 60 )
+    do[giveDiscount]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end</programlisting>
+
+    <para>This last rule has 2 consequences, the usual default one, plus another one
+    named "giveDiscount" that is activated, using the keyword do, as soon as a customer
+    older than 60 is found in the knowledge base, regardless of the fact that he owns a
+    car or not. The activation of a named consequence can be also guarded by an additional
+    condition like in this further example:</para>
+
+    <programlisting>rule "Give free parking to customers older than 60 and 10% discount to golden ones among them"
+when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount]
+    modify($customer) { setDiscount( 0.1 ) };
+end</programlisting>
+
+    <para>The condition in the if statement is always evaluated on the pattern immediately
+    preceding it. In the end this last, a bit more complicated, example shows how it is
+    possible to switch over different conditions using a nested if/else statement:</para>
+
+    <programlisting>rule "Give free parking and 10% discount to over 60 Golden customer and 5% to Silver ones"
+when
+    $customer : Customer( age > 60 )
+    if ( type == "Golden" ) do[giveDiscount10]
+    else if ( type == "Silver" ) break[giveDiscount5]
+    $car : Car ( owner == $customer )
+then
+    modify($car) { setFreeParking( true ) };
+then[giveDiscount10]
+    modify($customer) { setDiscount( 0.1 ) };
+then[giveDiscount5]
+    modify($customer) { setDiscount( 0.05 ) };
+end</programlisting>
+
+    <para>Here the purpose is to give a 10% discount AND a free parking to Golden customers
+    over 60, but only a 5% discount (without free parking) to the Silver ones. This result
+    is achieved by activating the consequence named "giveDiscount5" using the keyword break
+    instead of do. In fact do just schedules a consequence in the agenda, allowing the
+    remaining part of the LHS to continue of being evaluated as per normal, while break also
+    blocks any further pattern matching evaluation. Note, of course, that the activation of
+    a named consequence not guarded by any condition with break doesn't make sense (and
+    generates a compile time error) since otherwise the LHS part following it would be never
+    reachable.</para>
   </section>
 
   <section>

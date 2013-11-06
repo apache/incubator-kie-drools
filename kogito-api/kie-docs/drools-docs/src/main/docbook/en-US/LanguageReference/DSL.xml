@@ -544,21 +544,12 @@ There is a person with name of "Bob" and Person is at least 30 years old and liv
 [when][]- with an? {attr} greater than {amount}={attr} &lt;= {amount!num}
 [when][]- with a {what} {attr}={attr} {what!positive?&gt;0/negative?%lt;0/zero?==0/ERROR}</programlisting>
 
-    <para>A file containing a DSL definition is customarily given the extension
-    <code>.dsl</code>. It is passed to the Knowledge Builder with 
-    <code>ResourceType.DSL</code>. For a file using DSL definition, the extension
-    <code>.dslr</code> should be used. The Knowledge Builder expects
-    <code>ResourceType.DSLR</code>. The IDE, however, relies on file extensions
-    to correctly recognize and work with your rules file.</para>
-
-    <para>The DSL must be passed to the Knowledge Builder ahead of any rules
-    file using the DSL.</para>
-    <programlisting>KnowledgeBuilder kBuilder = new KnowledgeBuilder();
-Resource dsl = ResourceFactory.newClassPathResource( dslPath, getClass() );
-kBuilder.add( dsl, ResourceType.DSL );
-Resource dslr = ResourceFactory.newClassPathResource( dslrPath, getClass() );
-kBuilder.add( dslr, ResourceType.DSLR );
-</programlisting>
+    <para>A file containing a DSL definition has to be put under the resources folder
+    or any of its subfolders like any other drools artifact. It must have the extension
+    <code>.dsl</code>, or alternatively be marked with type <code>ResourceType.DSL</code>.
+    when programmatically added to a <code>KieFileSystem</code>. For a file using DSL
+    definition, the extension <code>.dslr</code> should be used, while it can be
+    added to a <code>KieFileSystem</code> with type <code>ResourceType.DSLR</code>.</para>
 
     <para>For parsing and expanding a DSLR file the DSL configuration is read
     and supplied to the parser. Thus, the parser can "recognize" the DSL

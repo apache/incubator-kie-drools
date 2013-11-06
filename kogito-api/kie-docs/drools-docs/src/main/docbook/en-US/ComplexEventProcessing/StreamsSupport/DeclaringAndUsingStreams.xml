@@ -71,10 +71,10 @@ end
       <title>Inserting facts into an entry point</title>
 
       <programlisting language="java">// create your rulebase and your session as usual
-StatefulKnowledgeSession session = ...
+KieSession session = ...
 
 // get a reference to the entry point
-WorkingMemoryEntryPoint atmStream = session.getWorkingMemoryEntryPoint( "ATM Stream" );
+EntryPoint atmStream = session.getEntryPoint( "ATM Stream" );
 
 // and start inserting your facts into the entry point
 atmStream.insert( aWithdrawRequest );

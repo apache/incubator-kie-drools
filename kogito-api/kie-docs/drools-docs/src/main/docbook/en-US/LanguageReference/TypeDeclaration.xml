@@ -657,7 +657,7 @@ Person( String firstName, String lastName, int age )</programlisting>
       <title>Handling declared fact types through the API</title>
 
       <programlisting>// get a reference to a knowledge base with a declared type:
-KnowledgeBase kbase = ...
+KieBase kbase = ...
 
 // get the declared FactType
 FactType personType = kbase.getFactType( "org.drools.examples",
@@ -676,7 +676,7 @@ personType.set( bob,
                 42 );
 
 // insert fact into a session
-StatefulKnowledgeSession ksession = ...
+KieSession ksession = ...
 ksession.insert( bob );
 ksession.fireAllRules();
 
