@@ -7,7 +7,7 @@
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
-  <title>mbGuided decision tables (web based)</title>
+  <title>Guided decision tables (web based)</title>
 
   <para>The guided decision table feature allows decision tables to be edited in place on the web. This works similar to
   the guided editor by introspecting what facts and fields are available to guide the creation of a decision table. Rule
