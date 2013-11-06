@@ -149,11 +149,9 @@
   <section xml:id="drools.GuidedRuleTemplateEditorGeneratedDRL">
     <title>Generated DRL</title>
 
-    <para>Whilst not necessary, rule authors can view the DRL that will be
-    generated for a "Rule Template" and associated data. This feature and its
-    operation is no different to that for other assets. Select the "Source"
-    -&gt; "View Source" menu item from the Asset Editor screen. The DRL for
-    all rules will be displayed.</para>
+    <para>Whilst not necessary, rule authors can view the DRL that will be generated for a "Rule Template" and
+      associated data. This feature and its operation is no different to that for other assets. Select the "Source" tab
+      from the bottom of the editor screen. The DRL for all rules will be displayed.</para>
 
     <figure>
       <title>Generated DRL</title>
