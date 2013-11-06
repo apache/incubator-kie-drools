@@ -15,6 +15,10 @@
  */
 package org.kie.internal.runtime.manager;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,9 +39,18 @@ public interface RuntimeManagerFactory extends org.kie.api.runtime.manager.Runti
         
         static {
             try {                
-                INSTANCE = ( RuntimeManagerFactory ) 
+            	final Object delegate =  
                 		Class.forName( System.getProperty("org.jbpm.runtime.manager.class", 
                 				"org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl") ).newInstance();
+                INSTANCE = (RuntimeManagerFactory) Proxy.newProxyInstance(RuntimeManagerFactory.class.getClassLoader(),
+                		new Class[]{RuntimeManagerFactory.class}, new InvocationHandler() {
+					
+					@Override
+					public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
+						
+						return method.invoke(delegate, arguments);
+					}
+				});
             } catch (Exception e) {
                 logger.error("Unable to instance RuntimeManagerFactory due to " + e.getMessage());
             }
