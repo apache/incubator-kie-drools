@@ -9,10 +9,9 @@
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>Spreadsheet decision tables</title>
 
-  <para>Multiple rules can be stored in a spreadsheet. Each row in the 
-  spreadsheet is a rule, and each column is either a condition, an action, or 
-  an option. The Drools Expert User Guide discusses spreadsheet decision 
-  tables in more detail.</para>
+  <para>Multiple rules can be stored in a spreadsheet. Each row in the spreadsheet is a rule, and each column is either
+    a condition, an action, or an option. The Drools Expert section of this document discusses spreadsheet decision
+    tables in more detail.</para>
 
   <figure>
     <title>Spreadsheet decision table</title>
@@ -24,8 +23,6 @@
     </mediaobject>
   </figure>
 
-  <para>To use a spreadsheet, you upload an XLS file (and can download the
-  current version, as per the picture above). To create a new decision table,
-  when you launch the rule wizard, you will get an option to create one (after
-  that point, you can upload the XLS file).</para>
+  <para>To use a spreadsheet, you upload an XLS file. To create a new decision table: launch the new "Decision Table
+    (Spreadsheet)" wizard, you will get an option to upload one.</para>
 </section>

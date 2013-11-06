@@ -42,9 +42,7 @@
     </para>
     <orderedlist spacing="compact">
       <listitem>
-        <para>Facts: This dropdown shows a list of facts that are visible in this package. These are classes that are
-          imported into this package.
-        </para>
+        <para>Facts: This dropdown shows a list of facts that are visible for this asset. </para>
       </listitem>
       <listitem>
         <para>

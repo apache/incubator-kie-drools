@@ -591,8 +591,7 @@ end</programlisting>
       <section xml:id="drools.GuidedDecisionTableEditorSelectingWizard">
         <title>Selecting the wizard</title>
 
-        <para>The "New Wizard" dialog shows a "Use wizard" checkbox when the asset type is set to "Decision Table (Web -
-        guided editor)".</para>
+        <para>The "New Wizard" dialog shows a "Use wizard" checkbox.</para>
 
         <figure>
           <title>Selecting the wizard</title>
@@ -609,8 +608,8 @@ end</programlisting>
       <section xml:id="drools.GuidedDecisionTableEditorWizardSummaryPage">
         <title>Summary page</title>
 
-        <para>the summary page shows a few basic details about the decision table and allows the asset name to be
-        changed.</para>
+        <para>The summary page shows a few basic details about the decision table and allows the asset name to be
+          changed.</para>
 
         <figure>
           <title>Summary page</title>
