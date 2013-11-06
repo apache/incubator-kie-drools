@@ -47,7 +47,7 @@
       
       <para>To enable id using the API, use:</para>
       
-      <programlisting language="xml"> KnowledgeBaseConfiguration conf = ... 
+      <programlisting language="xml"> KieBaseConfiguration conf = ...
  conf.setOption( MBeansOption.ENABLED );</programlisting>
     </section>
     

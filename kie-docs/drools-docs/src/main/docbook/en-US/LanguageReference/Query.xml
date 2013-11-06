@@ -27,7 +27,7 @@
   the LHS of a rule, so that you specify neither "when" nor "then". A query
   has an optional set of parameters, each of which can be optionally typed. If
   the type is not given, the type Object is assumed. The engine will attempt
-  to coerce the values as needed. Query names are global to the KnowledgeBase;
+  to coerce the values as needed. Query names are global to the KieBase;
   so do not add queries of the same name to different packages for the same
   RuleBase.</para>
 

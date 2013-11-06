@@ -522,7 +522,7 @@
           <title>Mix and Match of different declaration styles</title>
 
           <para>The drools-spring module allows you to mix and match the
-          different declarative styles within the same KnowledgeSession. The
+          different declarative styles within the same KieSession. The
           below sample provides more clarity.</para>
 
           <example>
@@ -557,7 +557,7 @@
           <title>Defining multiple listeners of the same type</title>
 
           <para>It is also valid to define multiple beans of the same event
-          listener types for a KnowledgeSession.</para>
+          listener types for a KieSession.</para>
 
           <example>
             <title>Listener configuration example - multiple listeners of the

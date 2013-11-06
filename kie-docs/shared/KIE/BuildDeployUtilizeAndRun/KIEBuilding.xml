@@ -26,7 +26,7 @@
     of including a kmodule.xml file defining in a declaratively way the <code>KieBase</code>s
     and <code>KieSession</code>s that can be created from it. This file has to be placed in the
     resources/META-INF folder of the maven project while all the other Kie artifacts, such as
-    DRL or a Excel files, must be stored in the resource folder or in any other subfolder under it.</para>
+    DRL or a Excel files, must be stored in the resources folder or in any other subfolder under it.</para>
 
     <para>Since meaningful defaults have been provided for all configuration aspects, the simplest
     kmodule.xml file can contain just an empty kmodule tag like the following:</para>

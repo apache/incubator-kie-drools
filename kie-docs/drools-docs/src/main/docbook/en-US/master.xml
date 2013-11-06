@@ -55,6 +55,7 @@
     <title>Drools Runtime and Language</title>
     <partintro><para>Drools is a powerful Hybrid Reasoning System. </para></partintro>
     <xi:include href="HybridReasoning.xml"/>
+    <xi:include href="UserGuide.xml"/>
     <xi:include href="LanguageReference.xml"/>
     <xi:include href="ComplexEventProcessing.xml"/>
   </part>
