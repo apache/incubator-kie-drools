@@ -11,7 +11,7 @@
     <title>War installation</title>
 
     <para>From the workbench distribution zip, take the <literal>kie-wb-*.war</literal> that corresponds to your
-    application server: </para>
+    application server:</para>
 
     <itemizedlist>
       <listitem>
@@ -82,6 +82,11 @@
       </listitem>
 
       <listitem>
+        <para><emphasis role="bold"><literal>org.uberfire.metadata.index.dir</literal></emphasis>: Place where lucene
+        <literal>.index</literal> folder will be stored. Default: working directory</para>
+      </listitem>
+
+      <listitem>
         <para><emphasis role="bold"><literal>org.uberfire.cluster.id</literal></emphasis>: Name of the helix cluster,
         for example: <literal>kie-cluster</literal></para>
       </listitem>
@@ -126,11 +131,6 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold"><literal>org.uberfire.metadata.index.dir</literal></emphasis>: Place where lucene
-        <literal>.index</literal> folder will be stored. Default: working directory</para>
-      </listitem>
-
-      <listitem>
         <para><emphasis role="bold"><literal>org.guvnor.m2repo.dir</literal></emphasis>: Place where maven repository
         folder will be stored. Default: working directory</para>
       </listitem>
@@ -145,5 +145,23 @@
         Repository, Organization Unit and Project. Default: <literal>false</literal></para>
       </listitem>
     </itemizedlist>
+
+    <para>To change one of these system properties in a WildFly or JBoss EAP cluster:</para>
+
+    <orderedlist>
+      <listitem>
+        <para>Edit the file <literal>$JBOSS_HOME/domain/configuration/host.xml</literal>.</para>
+      </listitem>
+
+      <listitem>
+        <para>Locate the XML elements <literal>server</literal> that belong to the <literal>main-server-group</literal>
+        and add a system property, for example:</para>
+
+        <programlisting language="xml">&lt;system-properties&gt;
+  &lt;property name="org.uberfire.nio.git.dir" value="..." boot-time="false"/&gt;
+  ...
+&lt;/system-properties&gt;</programlisting>
+      </listitem>
+    </orderedlist>
   </section>
 </section>
