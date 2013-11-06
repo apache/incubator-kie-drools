@@ -8,7 +8,7 @@
 
   <title>Authoring</title>
 
-  <xi:include href="AssetRepository/AssetRepository.xml"/>
+  <xi:include href="ArtifactRepository/ArtifactRepository.xml"/>
      <xi:include href="ProjectExplorer/ProjectExplorer.xml"/>
      <xi:include href="ProjectEditor/ProjectEditor.xml"/>
      <xi:include href="Validation/Validation.xml"/>
