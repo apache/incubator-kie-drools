@@ -51,6 +51,26 @@
                             <para>user</para>
                      </listitem>
               </itemizedlist>
+         <section>
+           <title>Admin</title>
+           <para>Administrates the BPMS system. Has full access rights to make any changes necessary. Also has the ability to add and remove users from the system.</para>
+         </section>
+         <section>
+           <title>Analyst</title>
+           <para>Creates rules, models, process flows, forms, dashboards and handles process change requests.</para>
+         </section>
+         <section>
+           <title>Developer</title>
+           <para>Implements code required for process to work. Mostly uses the JBDS connection to view processes, but may use the web tool occasionally.</para>
+         </section>
+         <section>
+           <title>Business user</title>
+           <para>Daily user of the system to take actions on business tasks that are required for the processes to continue forward. Works primarily with the task lists.</para>
+         </section>
+         <section>
+           <title>Manager/Viewer-only User</title>
+           <para>Viewer of the system that is interested in statistics around the business processes and their performance, business indicators, and other reporting of the system and people who interact with the system.</para>
+         </section>
        </section>
 
 </section>
