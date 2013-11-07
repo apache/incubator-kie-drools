@@ -199,7 +199,7 @@
         </warning>
       </section>
 
-      <section>
+      <section xml:id="xStreamProblemIO">
         <title><literal>XStreamProblemIO</literal>: the default <literal>ProblemIO</literal></title>
 
         <para>By default, a benchmarker uses a <literal>XStreamProblemIO</literal> instance to read and write
@@ -224,7 +224,7 @@
         </warning>
       </section>
 
-      <section>
+      <section xml:id="customProblemIO">
         <title>Custom <literal>ProblemIO</literal></title>
 
         <para>Alternatively, you can implement your own <literal>ProblemIO</literal> implementation and configure it
@@ -260,7 +260,7 @@
     &lt;/problemBenchmarks&gt;</programlisting>
     </section>
 
-    <section>
+    <section xml:id="warmingUpTheHotSpotCompiler">
       <title>Warming up the HotSpot compiler</title>
 
       <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
@@ -278,7 +278,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="benchmarkReport">
     <title>Benchmark report</title>
 
     <section>

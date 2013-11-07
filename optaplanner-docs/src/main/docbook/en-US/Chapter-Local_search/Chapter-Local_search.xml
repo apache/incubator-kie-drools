@@ -188,7 +188,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
       <para>You can implement your own <literal>Forager</literal>, but the build-in forager should suffice for most
       needs.</para>
 
-      <section>
+      <section xml:id="acceptedCountLimit">
         <title>Accepted count limit</title>
 
         <para>When there are many possible moves, it becomes inefficient to evaluate all of them at every step. To
@@ -217,7 +217,7 @@ DEBUG     Step index (0), time spend (6), score (-3), new best score (-3), accep
         </important>
       </section>
 
-      <section>
+      <section xml:id="pickEarlyType">
         <title>Pick early type</title>
 
         <para>A forager can pick a move early during a step, ignoring subsequent selected moves. There are 3 pick early

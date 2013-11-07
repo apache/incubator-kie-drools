@@ -7,7 +7,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Planner introduction</title>
 
-  <section>
+  <section xml:id="whatIsOptaPlanner">
     <title>What is OptaPlanner?</title>
 
     <para><emphasis role="bold"><link xlink:href="http://www.optaplanner.org">OptaPlanner</link> is a lightweight,
@@ -81,10 +81,10 @@
     and is available in <link linkend="useWithMavenGradleEtc">the Maven Central Repository</link> too.</para>
   </section>
 
-  <section>
+  <section xml:id="whatIsAPlanningProblem">
     <title>What is a planning problem?</title>
 
-    <section>
+    <section xml:id="aPlanningProblemIsNPComplete">
       <title>A planning problem is NP-complete</title>
 
       <para>All the use cases above are <emphasis>probably</emphasis> <link
@@ -127,7 +127,7 @@
       reasonable time for such planning problems.</emphasis></para>
     </section>
 
-    <section>
+    <section xml:id="aPlanningProblemHasConstraints">
       <title>A planning problem has (hard and soft) constraints</title>
 
       <para>Usually, a planning problem has at least 2 levels of constraints:</para>
@@ -162,7 +162,7 @@
       code or Drools rules</emphasis>. Such code is easy, flexible and scalable.</para>
     </section>
 
-    <section>
+    <section xml:id="aPlanningProblemHasAHugeSearchSpace">
       <title>A planning problem has a huge search space</title>
 
       <para>A planning problem has a number of <emphasis>solutions</emphasis>. There are several categories of
@@ -209,7 +209,7 @@
   <section xml:id="downloadAndRunTheExamples">
     <title>Download and run the examples</title>
 
-    <section>
+    <section xml:id="getTheReleaseZipAndRunTheExamples">
       <title>Get the release zip and run the examples</title>
 
       <para>To try it now:</para>
@@ -395,7 +395,7 @@ $ mvn exec:exec
     </section>
   </section>
 
-  <section>
+  <section xml:id="statusOfOptaPlanner">
     <title>Status of OptaPlanner</title>
 
     <para>OptaPlanner is production ready. The API is almost stable but backward incompatible changes can occur. With
@@ -417,7 +417,7 @@ $ mvn exec:exec
     </mediaobject>
   </section>
 
-  <section>
+  <section xml:id="questionsIssuesAndBlog">
     <title>Questions, issues and blog</title>
 
     <para>Your questions and comments are welcome on <link xlink:href="http://www.jboss.org/drools/lists.html">the user

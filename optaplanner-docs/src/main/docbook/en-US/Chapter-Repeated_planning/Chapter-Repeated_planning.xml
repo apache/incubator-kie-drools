@@ -7,7 +7,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Repeated planning</title>
 
-  <section>
+  <section xml:id="introductionToRepeatedPlanning">
     <title>Introduction to repeated planning</title>
 
     <para>The world constantly changes. The planning facts used to create a solution, might change before or during the
@@ -85,7 +85,7 @@
     <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
     planning facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
 
-    <section>
+    <section xml:id="immovablePlanningEntities">
       <title>Immovable planning entities</title>
 
       <para>To make some planning entities immovable, simply add an entity <literal>SelectionFilter</literal> that

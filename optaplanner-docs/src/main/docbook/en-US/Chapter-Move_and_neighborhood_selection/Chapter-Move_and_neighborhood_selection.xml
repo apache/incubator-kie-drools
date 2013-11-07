@@ -7,10 +7,10 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title><literal>Move</literal> and neighborhood selection</title>
 
-  <section>
+  <section xml:id="moveAndNeighborhoodSelectionIntroduction">
     <title><literal>Move</literal> and neighborhood introduction</title>
 
-    <section>
+    <section xml:id="whatIsAMove">
       <title>What is a <literal>Move</literal>?</title>
 
       <para>A <literal>Move</literal> is a change (or set of changes) from a solution A to a solution B. For example,
@@ -62,7 +62,7 @@
       to evaluate first.</para>
     </section>
 
-    <section>
+    <section xml:id="whatIsAMoveSelector">
       <title>What is a <literal>MoveSelector</literal>?</title>
 
       <para>A <literal>MoveSelector</literal>'s main function is to create <literal>Iterator&lt;Move&gt;</literal> when
@@ -82,7 +82,7 @@
       moves.</para>
     </section>
 
-    <section>
+    <section xml:id="subselectingOfEntitiesValuesAndOtherMoves">
       <title>Subselecting of entities, values and other moves</title>
 
       <para>To create a <literal>Move</literal>, a <literal>MoveSelector</literal> needs to select 1 or more planning
@@ -123,7 +123,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="genericMoveSelectors">
     <title>Generic MoveSelectors</title>
 
     <section xml:id="changeMoveSelector">
@@ -333,10 +333,10 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="combiningMultipleMoveSelectors">
     <title>Combining multiple <literal>MoveSelector</literal>s</title>
 
-    <section>
+    <section xml:id="unionMoveSelector">
       <title>unionMoveSelector</title>
 
       <para>A <literal>unionMoveSelector</literal> selects a <literal>Move</literal> by selecting 1 of its child
@@ -408,7 +408,7 @@
     &lt;/unionMoveSelector&gt;</programlisting>
     </section>
 
-    <section>
+    <section xml:id="cartesianProductMoveSelector">
       <title>cartesianProductMoveSelector</title>
 
       <para>A <literal>cartesianProductMoveSelector</literal> selects a new <literal>CompositeMove</literal>. It builds
@@ -449,7 +449,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="entitySelector">
     <title>EntitySelector</title>
 
     <para>Simplest configuration:</para>
@@ -467,7 +467,7 @@
     there are multiple entity classes.</para>
   </section>
 
-  <section>
+  <section xml:id="valueSelector">
     <title>ValueSelector</title>
 
     <para>Simplest configuration:</para>
@@ -485,10 +485,10 @@
     there are multiple variables (for the related entity class).</para>
   </section>
 
-  <section>
+  <section xml:id="generalSelectorFeatures">
     <title>General <literal>Selector</literal> features</title>
 
-    <section>
+    <section xml:id="cacheType">
       <title><literal>CacheType</literal>: Create moves ahead of time or Just In Time</title>
 
       <para>A <literal>Selector</literal>'s <literal>cacheType</literal> determines when a selection (such as a
@@ -545,7 +545,7 @@
       <literal>STEP</literal> cached <literal>changeMoveSelector</literal>.</para>
     </section>
 
-    <section>
+    <section xml:id="selectionOrder">
       <title>SelectionOrder: original, sorted, random, shuffled or probabilistic</title>
 
       <para>A <literal>Selector</literal>'s <literal>selectionOrder</literal> determines the order in which the
@@ -639,10 +639,10 @@
       </note>
     </section>
 
-    <section>
+    <section xml:id="recommendedCombinationsOfCacheTypeAndSelectionOrder">
       <title>Recommended combinations of <literal>CacheType</literal> and <literal>SelectionOrder</literal></title>
 
-      <section>
+      <section xml:id="justInTimeRandomSelection">
         <title>Just in time random selection (default)</title>
 
         <para>This combination is great for big use cases (10 000 entities or more), as it scales up well in memory
@@ -672,7 +672,7 @@
         generates random numbers only for <literal>Move</literal>s that are actually selected.</para>
       </section>
 
-      <section>
+      <section xml:id="cachedShuffledSelection">
         <title>Cached shuffled selection</title>
 
         <para>This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it
@@ -717,7 +717,7 @@
     &lt;/unionMoveSelector&gt;</programlisting>
       </section>
 
-      <section>
+      <section xml:id="cachedRandomSelection">
         <title>Cached random selection</title>
 
         <para>This combination is often a worthy competitor for medium use cases, especially with fast stepping
@@ -987,7 +987,7 @@
     </section>
   </section>
 
-  <section>
+  <section xml:id="customMoves">
     <title>Custom moves</title>
 
     <section>
@@ -1020,7 +1020,7 @@
       check for score corruptions.</para>
     </section>
 
-    <section>
+    <section xml:id="theInterfaceMove">
       <title>The interface <literal>Move</literal></title>
 
       <para>Your custom moves must implement the <literal>Move</literal> interface:</para>
@@ -1186,7 +1186,7 @@
       custom moves.</para>
     </section>
 
-    <section>
+    <section xml:id="moveListFactory">
       <title><literal>MoveListFactory</literal>: the easy way to generate custom moves</title>
 
       <para>The easiest way to generate custom moves is by implementing the interface
@@ -1234,7 +1234,7 @@
       scales badly in memory footprint.</para>
     </section>
 
-    <section>
+    <section xml:id="moveIteratorFactory">
       <title><literal>MoveIteratorFactory</literal>: generate custom moves just in time</title>
 
       <para>Use this advanced form to generate custom moves by implementing the interface

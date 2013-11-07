@@ -91,7 +91,8 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
                 return stepScope.getScore().compareTo(
                         stepScope.getPhaseScope().getLastCompletedStepScope().getScore()) > 0 ? 1 : 0;
             default:
-                throw new IllegalStateException("The cacheType (" + this + ") is not implemented.");
+                throw new IllegalStateException("The stepCountingHillClimbingType (" + stepCountingHillClimbingType
+                        + ") is not implemented.");
         }
     }
 
