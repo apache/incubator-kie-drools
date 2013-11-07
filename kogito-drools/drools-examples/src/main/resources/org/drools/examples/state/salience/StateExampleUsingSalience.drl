@@ -17,6 +17,10 @@
 package org.drools.examples.state
  
 import org.drools.examples.state.State;
+
+declare type State
+    @propertyChangeSupport
+end
  
 rule Bootstrap
     when
