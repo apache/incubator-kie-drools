@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xml:base="./" xml:id="wb.Authoring"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>Authoring</title>
 
   <xi:include href="ArtifactRepository/ArtifactRepository.xml"/>
-     <xi:include href="ProjectExplorer/ProjectExplorer.xml"/>
-     <xi:include href="ProjectEditor/ProjectEditor.xml"/>
-     <xi:include href="Validation/Validation.xml"/>
-     <xi:include href="DataModeller/DataModeller.xml"/>
-     
+  <xi:include href="ProjectExplorer/ProjectExplorer.xml"/>
+  <xi:include href="ProjectEditor/ProjectEditor.xml"/>
+  <xi:include href="Validation/Validation.xml"/>
+  <xi:include href="DataModeller/DataModeller.xml"/>
+  <xi:include href="CategoriesEditor/CategoriesEditor.xml"/>
+
 </section>
