@@ -16,14 +16,9 @@
 
 package org.drools.examples.state;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import org.drools.core.RuleBase;
-import org.drools.core.RuleBaseFactory;
-import org.drools.core.StatefulSession;
-import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.compiler.compiler.PackageBuilder;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class StateExampleUsingSalience {
 
@@ -32,46 +27,34 @@ public class StateExampleUsingSalience {
      */
     public static void main(final String[] args) {
 
-        final PackageBuilder builder = new PackageBuilder();
-        try {
-            builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingSalience.class.getResourceAsStream( "StateExampleUsingSalience.drl" ) ) );
-        } catch (DroolsParserException e) {
-            throw new IllegalArgumentException("Invalid drl", e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read drl", e);
-        }
-
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-
-        final StatefulSession session = ruleBase.newStatefulSession();
-
-//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-//        logger.setFileName( "log/state" );
+        // KieServices is the factory for all KIE services 
+        KieServices ks = KieServices.Factory.get();
+        
+        // From the kie services, a container is created from the classpath
+        KieContainer kc = ks.getKieClasspathContainer();
+        
+        // From the container, a session is created based on  
+        // its definition and configuration in the META-INF/kmodule.xml file 
+        KieSession ksession = kc.newKieSession("StateSalienceKS");
+        
+        // To setup a file based audit logger, uncomment the next line 
+        // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./helloworld" );
 
         final State a = new State( "A" );
         final State b = new State( "B" );
         final State c = new State( "C" );
         final State d = new State( "D" );
 
-        // By setting dynamic to TRUE, Drools will use JavaBean
-        // PropertyChangeListeners so you don't have to call update().
-        final boolean dynamic = true;
+        ksession.insert( a );
+        ksession.insert( b );
+        ksession.insert( c );
+        ksession.insert( d );
 
-        session.insert( a,
-                        dynamic );
-        session.insert( b,
-                        dynamic );
-        session.insert( c,
-                        dynamic );
-        session.insert( d,
-                        dynamic );
-
-        session.fireAllRules();
+        ksession.fireAllRules();
 
 //        logger.writeToDisk();
         
-        session.dispose(); // Stateful rule session must always be disposed when finished        
+        ksession.dispose(); // Stateful rule session must always be disposed when finished        
     }
 
 }
