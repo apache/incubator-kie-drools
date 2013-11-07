@@ -49,4 +49,5 @@ public class MrGlobalPenaltyInfo extends AbstractPersistable {
     public void setMachineMoveCostWeight(int machineMoveCostWeight) {
         this.machineMoveCostWeight = machineMoveCostWeight;
     }
+
 }

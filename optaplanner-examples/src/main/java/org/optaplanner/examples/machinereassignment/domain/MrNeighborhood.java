@@ -21,4 +21,5 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @XStreamAlias("MrNeighborhood")
 public class MrNeighborhood extends AbstractPersistable {
+
 }

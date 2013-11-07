@@ -22,5 +22,4 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("MrLocation")
 public class MrLocation extends AbstractPersistable {
 
-
 }

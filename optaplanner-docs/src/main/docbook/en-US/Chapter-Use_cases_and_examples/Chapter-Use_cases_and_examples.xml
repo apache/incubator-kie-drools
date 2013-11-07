@@ -859,6 +859,16 @@ model_b_8  has  3 resources,  5 neighborhoods,  10 locations,  100 machines, 450
 model_b_9  has  3 resources,  5 neighborhoods, 100 locations, 1000 machines,  4609 services, 50000 processes and 1 balancePenalties with a search space of 10^150000.
 model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  4896 services, 50000 processes and 1 balancePenalties with a search space of 10^184948.</programlisting>
       </section>
+
+      <section>
+        <title>Domain model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
     </section>
 
     <section xml:id="vehicleRouting">
