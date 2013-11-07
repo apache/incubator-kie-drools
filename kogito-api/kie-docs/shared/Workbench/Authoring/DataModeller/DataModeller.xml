@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0" xml:base="../../../" xml:id="wb.DataModeller"
+<section version="5.0" xml:base="." xml:id="wb.DataModeller"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
   xmlns="http://docbook.org/ns/docbook"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -9,6 +9,14 @@
   xmlns:ns="http://docbook.org/ns/docbook">
   
   <title>Data Modeller</title>
-  <para>todo</para>
-    
+
+  <xi:include href="FirstSteps.xml" />
+  <xi:include href="Entities.xml" />
+  <xi:include href="PropertiesRelationships.xml" />
+  <xi:include href="AddtionalOptions.xml" />
+  <xi:include href="GenerateCode.xml" />
+  <xi:include href="ExternalModels.xml" />
+  <xi:include href="ExternalChanges.xml" />
+
+
 </section>
