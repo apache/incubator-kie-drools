@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.examples.state
+package org.drools.examples.state.salience
  
 import org.drools.examples.state.State;
 

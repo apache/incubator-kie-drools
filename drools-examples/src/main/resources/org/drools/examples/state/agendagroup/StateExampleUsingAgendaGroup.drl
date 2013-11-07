@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.examples.state
+package org.drools.examples.state.agendagroup
  
-import org.drools.examples.state.State;
+import org.drools.examples.state.State
+
+declare type State
+    @propertyChangeSupport
+end
  
 rule Bootstrap
     when
