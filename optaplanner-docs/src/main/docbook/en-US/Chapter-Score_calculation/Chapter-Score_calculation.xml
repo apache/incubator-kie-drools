@@ -748,7 +748,7 @@
                       </listitem>
 
                       <listitem>
-                        <para>Guvnor WebUI</para>
+                        <para>KIE Workbench WebUI</para>
                       </listitem>
                     </itemizedlist>
                   </listitem>
@@ -758,7 +758,7 @@
                   </listitem>
 
                   <listitem>
-                    <para>Store and release in the Guvnor repository</para>
+                    <para>Store and release in the KIE Workbench repository</para>
                   </listitem>
                 </itemizedlist>
               </listitem>
@@ -832,7 +832,7 @@
           <title>A KieBase (possibly defined by Drools Workbench)</title>
 
           <para>If you prefer to build the <literal>KieBase</literal> yourself or if you're combining Planner with
-          Drools Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
+          KIE Workbench (formerly known as Guvnor), you can set the <literal>KieBase</literal> on the
           <literal>SolverFactory</literal> before building the <literal>Solver</literal>:</para>
 
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>

@@ -617,7 +617,7 @@ end</programlisting>
         </example>
 
         <para>If you use the Drools rule engine for score calculation, you can integrate with other Drools technologies,
-        such as decision tables (XLS or web based), the Guvnor rule repository, ...</para>
+        such as decision tables (XLS or web based), the KIE Workbench rule repository, ...</para>
       </section>
     </section>
 

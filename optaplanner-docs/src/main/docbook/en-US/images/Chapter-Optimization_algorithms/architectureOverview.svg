@@ -282,7 +282,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -603,7 +603,7 @@
            height="36.212223"
            width="168.99039"
            id="rect3363" /></flowRegion><flowPara
-         id="flowPara3365">Drools Expert</flowPara><flowPara
+         id="flowPara3365">Drools</flowPara><flowPara
          id="flowPara4315">(rule engine)</flowPara></flowRoot>    <rect
        style="fill:#e9b96e;stroke:#8f5902;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect3377"
@@ -751,7 +751,7 @@
            height="18.106121"
            width="144.84889"
            id="rect3503" /></flowRegion><flowPara
-         id="flowPara3505">Guvnor</flowPara></flowRoot>    <g
+         id="flowPara3505">KIE Workbench</flowPara></flowRoot>    <g
        id="g4283"
        transform="translate(0,170)">
       <path

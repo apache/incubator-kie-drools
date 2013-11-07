@@ -170,13 +170,13 @@
       <para>If an <literal>Exception</literal> or <literal>Error</literal> occurs in a single benchmark, the entire
       Benchmarker will not fail-fast (unlike everything else in OptaPlanner). Instead, the Benchmarker will continue to
       run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single
-      benchmark). The failing benchmarks will be clearly marked in the benchmark report. </para>
+      benchmark). The failing benchmarks will be clearly marked in the benchmark report.</para>
     </section>
 
     <section xml:id="problemIO">
       <title>ProblemIO: input and output of Solution files</title>
 
-      <section>
+      <section xml:id="theProblemIOInterface">
         <title><literal>ProblemIO</literal> interface</title>
 
         <para>The benchmarker needs to be able to read the input files to contain a <literal>Solution</literal> write
@@ -242,6 +242,23 @@
       </section>
     </section>
 
+    <section xml:id="warmingUpTheHotSpotCompiler">
+      <title>Warming up the HotSpot compiler</title>
+
+      <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
+      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
+      too).</para>
+
+      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
+      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+    </section>
+
     <section xml:id="writingTheOutputSolutionOfTheBenchmarkRuns">
       <title>Writing the output solution of the benchmark runs</title>
 
@@ -258,23 +275,6 @@
       &lt;writeOutputSolutionEnabled&gt;true&lt;/writeOutputSolutionEnabled&gt;
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
-    </section>
-
-    <section xml:id="warmingUpTheHotSpotCompiler">
-      <title>Warming up the HotSpot compiler</title>
-
-      <para><emphasis role="bold">Without a warm up, the results of the first (or first few) benchmarks are not
-      reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
-      too).</para>
-
-      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
-      before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
-
-      <programlisting language="xml">&lt;plannerBenchmark&gt;
-  ...
-  &lt;warmUpSecondsSpend&gt;30&lt;/warmUpSecondsSpend&gt;
-  ...
-&lt;/plannerBenchmark&gt;</programlisting>
     </section>
   </section>
 
@@ -316,307 +316,7 @@
 &lt;/plannerBenchmark&gt;</programlisting>
     </section>
 
-    <section>
-      <title>Summary statistics</title>
-
-      <section>
-        <title>Best score summary (graph and table)</title>
-
-        <para>Shows the best score per <literal>inputSolutionFile</literal> for each solver configuration.</para>
-
-        <para>Useful for visualizing the best solver configuration.</para>
-
-        <figure>
-          <title>Best score summary statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-      </section>
-
-      <section>
-        <title>Best score scalability summary (graph)</title>
-
-        <para>Shows the best score per problem scale for each solver configuration.</para>
-
-        <para>Useful for visualizing the scalability of each solver configuration.</para>
-      </section>
-
-      <section>
-        <title>Winning score difference summary (graph and table)</title>
-
-        <para>Shows the winning score difference score per <literal>inputSolutionFile</literal> for each solver
-        configuration. The winning score difference is the score difference with the score of the winning solver
-        configuration for that particular <literal>inputSolutionFile</literal>.</para>
-
-        <para>Useful for zooming in on the results of the best score summary.</para>
-      </section>
-
-      <section>
-        <title>Worst score difference percentage (ROI) summary (graph and table)</title>
-
-        <para>Shows the return on investment (ROI) per <literal>inputSolutionFile</literal> for each solver
-        configuration if you'd upgrade from the worst solver configuration for that particular
-        <literal>inputSolutionFile</literal>.</para>
-
-        <para>Useful for visualizing the return on investment (ROI) to decision makers.</para>
-      </section>
-
-      <section>
-        <title>Average calculation count summary (graph and table)</title>
-
-        <para>Shows the score calculation speed: the average calculation count per second per problem scale for each
-        solver configuration.</para>
-
-        <para>Useful for comparing different score calculators and/or score rule implementations (presuming that the
-        solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra
-        constraint.</para>
-      </section>
-
-      <section>
-        <title>Time spend summary (graph and table)</title>
-
-        <para>Shows the time spend per <literal>inputSolutionFile</literal> for each solver configuration. This is
-        pointless if it's benchmarking against a fixed time limit.</para>
-
-        <para>Useful for visualizing the performance of construction heuristics (presuming that no other solver phases
-        are configured).</para>
-      </section>
-
-      <section>
-        <title>Time spend scalability summary (graph)</title>
-
-        <para>Shows the time spend per problem scale for each solver configuration. This is pointless if it's
-        benchmarking against a fixed time limit.</para>
-
-        <para>Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases
-        are configured).</para>
-      </section>
-
-      <section>
-        <title>Best score per time spend summary (graph)</title>
-
-        <para>Shows the best score per time spend for each solver configuration. This is pointless if it's benchmarking
-        against a fixed time limit.</para>
-
-        <para>Useful for visualizing trade-off between the best score versus the time spend for construction heuristics
-        (presuming that no other solver phases are configured).</para>
-      </section>
-    </section>
-
-    <section>
-      <title>Statistic per data set (graph and CSV)</title>
-
-      <section>
-        <title>Enabling a problem statistic</title>
-
-        <para>The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to
-        the <literal>benchmarkDirectory</literal>.</para>
-
-        <para>To configure graph and CSV output of a statistic, just add a <literal>problemStatisticType</literal>
-        line:</para>
-
-        <programlisting language="xml">&lt;plannerBenchmark&gt;
-  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
-  &lt;inheritedSolverBenchmark&gt;
-    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
-      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;
-    ...
-  &lt;/inheritedSolverBenchmark&gt;
-  ...
-&lt;/plannerBenchmark&gt;</programlisting>
-
-        <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might
-        influence performance and benchmark results noticeably.</para>
-
-        <note>
-          <para>These statistic per data set can slow down the solver noticeably, which can affect the benchmark
-          results. That's why they are optional and not enabled by default.</para>
-
-          <para>The non-optional summary statistics cannot slow down the solver noticeably.</para>
-        </note>
-
-        <para>The following types are supported:</para>
-      </section>
-
-      <section>
-        <title>Best score over time statistic (graph and CSV)</title>
-
-        <para>To see how the best score evolves over time, add:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <figure>
-          <title>Best score over time statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png" format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as a
-        potential <link linkend="scoreTrap">score trap</link>.</emphasis></para>
-
-        <note>
-          <para>A time gradient based algorithm (such as Simulated Annealing) will have a different statistic if it's
-          run with a different time limit configuration. That's because this Simulated Annealing implementation
-          automatically determines its velocity based on the amount of time that can be spend. On the other hand, for
-          the Tabu Search and Late Annealing, what you see is what you'd get.</para>
-        </note>
-      </section>
-
-      <section>
-        <title>Step score over time statistic (graph and CSV)</title>
-
-        <para>To see how the step score evolves over time, add:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;STEP_SCORE&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <figure>
-          <title>Step score over time statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/stepScoreStatistic.png" format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para>Compare the step score statistic with the best score statistic (especially on parts for which the best
-        score flatlines). If it hits a local optima, the solver should take deteriorating steps to escape it. But it
-        shouldn't deteriorate too much either.</para>
-
-        <warning>
-          <para>The step score statistic has been seen to slow down the solver noticeably due to GC stress, especially
-          for fast stepping algorithms (such as Simulated Annealing and Late Acceptance).</para>
-        </warning>
-      </section>
-
-      <section>
-        <title>Calculate count per second statistic (graph and CSV)</title>
-
-        <para>To see how fast the scores are calculated, add:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <figure>
-          <title>Calculate count per second statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
-                         format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <note>
-          <para>The initial high calculate count is typical during solution initialization: it's far easier to calculate
-          the score of a solution if only a handful planning entities have been initialized, than when all the planning
-          entities are initialized.</para>
-
-          <para>After those few seconds of initialization, the calculate count is relatively stable, apart from an
-          occasional stop-the-world garbage collector disruption.</para>
-        </note>
-      </section>
-
-      <section>
-        <title>Best solution mutation over time statistic (graph and CSV)</title>
-
-        <para>To see how much each new best solution differs from the <emphasis>previous best solution</emphasis>, by
-        counting the number of planning variables which have a different value (not including the variables that have
-        changed multiple times but still end up with the same value), add:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;BEST_SOLUTION_MUTATION&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <figure>
-          <title>Best solution mutation over time statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png"
-                         format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <para>Use Tabu Search - an algorithm that behaves like a human - to get an estimation on how difficult it would
-        be for a human to improve the previous best solution to that new best solution.</para>
-      </section>
-
-      <section>
-        <title>Move count per step statistic (graph and CSV)</title>
-
-        <para>To see how the selected and accepted move count per step evolves over time, add:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;MOVE_COUNT_PER_STEP&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <figure>
-          <title>Move count per step statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png" format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <warning>
-          <para>This statistic has been seen to slow down the solver noticeably due to GC stress, especially for fast
-          stepping algorithms (such as Simulated Annealing and Late Acceptance).</para>
-        </warning>
-      </section>
-
-      <section>
-        <title>Memory use statistic (graph and CSV)</title>
-
-        <para>To see how much memory is used, add:</para>
-
-        <programlisting language="xml">    &lt;problemBenchmarks&gt;
-      ...
-      &lt;problemStatisticType&gt;MEMORY_USE&lt;/problemStatisticType&gt;
-    &lt;/problemBenchmarks&gt;</programlisting>
-
-        <figure>
-          <title>Memory use statistic</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"/>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
-        <warning>
-          <para>The memory use statistic has been seen to affect the solver noticeably.</para>
-        </warning>
-      </section>
-    </section>
-
-    <section>
+    <section xml:id="rankingTheSolvers">
       <title>Ranking the <literal>Solver</literal>s</title>
 
       <para>The benchmark report automatically ranks the solvers. The <literal>Solver</literal> with rank
@@ -660,13 +360,312 @@
     </section>
   </section>
 
-  <section>
-    <title>Advanced benchmarking</title>
+  <section xml:id="benchmarkReportSummaryStatistics">
+    <title>Summary statistics</title>
+
+    <section xml:id="benchmarkReportBestScoreSummary">
+      <title>Best score summary (graph and table)</title>
+
+      <para>Shows the best score per <literal>inputSolutionFile</literal> for each solver configuration.</para>
+
+      <para>Useful for visualizing the best solver configuration.</para>
+
+      <figure>
+        <title>Best score summary statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section xml:id="benchmarkReportBestScoreScalabilitySummary">
+      <title>Best score scalability summary (graph)</title>
+
+      <para>Shows the best score per problem scale for each solver configuration.</para>
+
+      <para>Useful for visualizing the scalability of each solver configuration.</para>
+    </section>
+
+    <section xml:id="benchmarkReportWinningScoreDifferenceSummary">
+      <title>Winning score difference summary (graph and table)</title>
+
+      <para>Shows the winning score difference score per <literal>inputSolutionFile</literal> for each solver
+      configuration. The winning score difference is the score difference with the score of the winning solver
+      configuration for that particular <literal>inputSolutionFile</literal>.</para>
+
+      <para>Useful for zooming in on the results of the best score summary.</para>
+    </section>
+
+    <section xml:id="benchmarkReportWorstScoreDifferencePercentageSummary">
+      <title>Worst score difference percentage (ROI) summary (graph and table)</title>
+
+      <para>Shows the return on investment (ROI) per <literal>inputSolutionFile</literal> for each solver configuration
+      if you'd upgrade from the worst solver configuration for that particular
+      <literal>inputSolutionFile</literal>.</para>
+
+      <para>Useful for visualizing the return on investment (ROI) to decision makers.</para>
+    </section>
+
+    <section xml:id="benchmarkReportAverageCalculationCountSummary">
+      <title>Average calculation count summary (graph and table)</title>
+
+      <para>Shows the score calculation speed: the average calculation count per second per problem scale for each
+      solver configuration.</para>
+
+      <para>Useful for comparing different score calculators and/or score rule implementations (presuming that the
+      solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra
+      constraint.</para>
+    </section>
+
+    <section xml:id="benchmarkReportTimeSpendSummary">
+      <title>Time spend summary (graph and table)</title>
+
+      <para>Shows the time spend per <literal>inputSolutionFile</literal> for each solver configuration. This is
+      pointless if it's benchmarking against a fixed time limit.</para>
+
+      <para>Useful for visualizing the performance of construction heuristics (presuming that no other solver phases are
+      configured).</para>
+    </section>
+
+    <section xml:id="benchmarkReportTimeSpendScalabilitySummary">
+      <title>Time spend scalability summary (graph)</title>
+
+      <para>Shows the time spend per problem scale for each solver configuration. This is pointless if it's benchmarking
+      against a fixed time limit.</para>
+
+      <para>Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases
+      are configured).</para>
+    </section>
+
+    <section xml:id="benchmarkReportBestScorePerTimeSpendSummary">
+      <title>Best score per time spend summary (graph)</title>
+
+      <para>Shows the best score per time spend for each solver configuration. This is pointless if it's benchmarking
+      against a fixed time limit.</para>
+
+      <para>Useful for visualizing trade-off between the best score versus the time spend for construction heuristics
+      (presuming that no other solver phases are configured).</para>
+    </section>
+  </section>
+
+  <section xml:id="benchmarkReportStatisticPerDataset">
+    <title>Statistic per dataset (graph and CSV)</title>
 
     <section>
+      <title>Enabling a problem statistic</title>
+
+      <para>The benchmarker supports outputting problem statistics as graphs and CSV (comma separated values) files to
+      the <literal>benchmarkDirectory</literal>.</para>
+
+      <para>To configure graph and CSV output of a statistic, just add a <literal>problemStatisticType</literal>
+      line:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  &lt;benchmarkDirectory&gt;local/data/nqueens/solved&lt;/benchmarkDirectory&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;
+    ...
+  &lt;/inheritedSolverBenchmark&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+
+      <para>Multiple <literal>problemStatisticType</literal> elements are allowed. Some statistic types might influence
+      performance and benchmark results noticeably.</para>
+
+      <note>
+        <para>These statistic per data set can slow down the solver noticeably, which can affect the benchmark results.
+        That's why they are optional and not enabled by default.</para>
+
+        <para>The non-optional summary statistics cannot slow down the solver noticeably.</para>
+      </note>
+
+      <para>The following types are supported:</para>
+    </section>
+
+    <section xml:id="benchmarkReportBestScoreOverTimeStatistic">
+      <title>Best score over time statistic (graph and CSV)</title>
+
+      <para>To see how the best score evolves over time, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Best score over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as a
+      potential <link linkend="scoreTrap">score trap</link>.</emphasis></para>
+
+      <note>
+        <para>A time gradient based algorithm (such as Simulated Annealing) will have a different statistic if it's run
+        with a different time limit configuration. That's because this Simulated Annealing implementation automatically
+        determines its velocity based on the amount of time that can be spend. On the other hand, for the Tabu Search
+        and Late Annealing, what you see is what you'd get.</para>
+      </note>
+    </section>
+
+    <section xml:id="benchmarkReportStepScoreOverTimeStatistic">
+      <title>Step score over time statistic (graph and CSV)</title>
+
+      <para>To see how the step score evolves over time, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;STEP_SCORE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Step score over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/stepScoreStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Compare the step score statistic with the best score statistic (especially on parts for which the best score
+      flatlines). If it hits a local optima, the solver should take deteriorating steps to escape it. But it shouldn't
+      deteriorate too much either.</para>
+
+      <warning>
+        <para>The step score statistic has been seen to slow down the solver noticeably due to GC stress, especially for
+        fast stepping algorithms (such as Simulated Annealing and Late Acceptance).</para>
+      </warning>
+    </section>
+
+    <section xml:id="benchmarkReportCalculateCountPerSecondStatistic">
+      <title>Calculate count per second statistic (graph and CSV)</title>
+
+      <para>To see how fast the scores are calculated, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Calculate count per second statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"
+                       format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <note>
+        <para>The initial high calculate count is typical during solution initialization: it's far easier to calculate
+        the score of a solution if only a handful planning entities have been initialized, than when all the planning
+        entities are initialized.</para>
+
+        <para>After those few seconds of initialization, the calculate count is relatively stable, apart from an
+        occasional stop-the-world garbage collector disruption.</para>
+      </note>
+    </section>
+
+    <section xml:id="benchmarkReportBestSolutionMutationOverTimeStatistic">
+      <title>Best solution mutation over time statistic (graph and CSV)</title>
+
+      <para>To see how much each new best solution differs from the <emphasis>previous best solution</emphasis>, by
+      counting the number of planning variables which have a different value (not including the variables that have
+      changed multiple times but still end up with the same value), add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;BEST_SOLUTION_MUTATION&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Best solution mutation over time statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Use Tabu Search - an algorithm that behaves like a human - to get an estimation on how difficult it would be
+      for a human to improve the previous best solution to that new best solution.</para>
+    </section>
+
+    <section xml:id="benchmarkReportMoveCountPerStepStatistic">
+      <title>Move count per step statistic (graph and CSV)</title>
+
+      <para>To see how the selected and accepted move count per step evolves over time, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;MOVE_COUNT_PER_STEP&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Move count per step statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <warning>
+        <para>This statistic has been seen to slow down the solver noticeably due to GC stress, especially for fast
+        stepping algorithms (such as Simulated Annealing and Late Acceptance).</para>
+      </warning>
+    </section>
+
+    <section xml:id="benchmarkReportMemoryUseStatistic">
+      <title>Memory use statistic (graph and CSV)</title>
+
+      <para>To see how much memory is used, add:</para>
+
+      <programlisting language="xml">    &lt;problemBenchmarks&gt;
+      ...
+      &lt;problemStatisticType&gt;MEMORY_USE&lt;/problemStatisticType&gt;
+    &lt;/problemBenchmarks&gt;</programlisting>
+
+      <figure>
+        <title>Memory use statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png" format="PNG"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <warning>
+        <para>The memory use statistic has been seen to affect the solver noticeably.</para>
+      </warning>
+    </section>
+  </section>
+
+  <section xml:id="advancedBenchmarking">
+    <title>Advanced benchmarking</title>
+
+    <section xml:id="benchmarkingPerformanceTricks">
       <title>Benchmarking performance tricks</title>
 
-      <section>
+      <section xml:id="parallelBenchmarkingOnMultipleThreads">
         <title>Parallel benchmarking on multiple threads</title>
 
         <para>If you have multiple processors available on your computer, you can run multiple benchmarks in parallel on
@@ -725,7 +724,7 @@
       </section>
     </section>
 
-    <section>
+    <section xml:id="templateBasedBenchmarking">
       <title>Template based benchmarking and matrix benchmarking</title>
 
       <para>Matrix benchmarking is benchmarking a combination of value sets. For example: benchmark 4
