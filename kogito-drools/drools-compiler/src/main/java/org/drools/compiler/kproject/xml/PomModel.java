@@ -53,7 +53,11 @@ public class PomModel {
         }
 
         public static PomModel parse(String path, InputStream is) {
-            return PomModelGeneratorHolder.pomModelGenerator.parse(path, is);
+            try {
+                return PomModelGeneratorHolder.pomModelGenerator.parse(path, is);
+            } catch (Exception e) {
+                return MinimalPomParser.parse(path, is);
+            }
         }
     }
 
