@@ -76,7 +76,7 @@ public class SimpleBeliefSystem
 
             ((NamedEntryPoint) bfh.getEntryPoint()).delete( bfh, context.getRuleOrigin(), node.getJustifier());
 
-        } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() ) {
+        } else if ( !beliefSet.isEmpty() && beliefSet.getFactHandle().getObject() == node.getObject() && node.getObject() != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
             ((NamedEntryPoint)bfh.getEntryPoint()).getObjectStore().updateHandle( bfh,  ((LinkedListEntry<LogicalDependency>) beliefSet.getFirst()).getObject().getObject() );
