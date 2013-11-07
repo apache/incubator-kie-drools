@@ -5,5 +5,20 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Remote Java API</title>
+  
+  
+  <section>
+    <title>Using the Remote Java RuntimeEngine API</title>
     
+    <section>
+      <title>REST usage</title>     
+      
+    </section>
+         
+    <section>
+      <title>JMS usage</title>     
+    </section>
+
+  </section>
+       
 </section>

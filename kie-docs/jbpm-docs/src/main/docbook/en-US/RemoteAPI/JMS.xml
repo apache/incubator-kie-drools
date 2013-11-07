@@ -1,9 +1,260 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0"
+ <section version="5.0"
          xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
          xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>JMS</title>
     
+  <section>
+    <title>JMS Queue setup</title>
+         
+    <para>When the Workbench is deployed, it automatically creates 3 queues: 
+    <itemizedlist>
+           <listitem><para><code>jms/queue/KIE.SESSION</code></para></listitem>
+           <listitem><para><code>jms/queue/KIE.TASK</code></para></listitem>
+           <listitem><para><code>jms/queue/KIE.RESPONSE</code></para></listitem>
+    </itemizedlist>
+           The <code>KIE.SESSION</code> and <code>KIE.TASK</code> queues should be used to send command request messages to the JMS API. Command response
+           messages will be then placed on the <code>KIE.RESPONSE</code>. Command request messages that involve starting and managing business processes 
+           should be sent to the <code>KIE.SESSION</code> and command request messages that involve managing human tasks, should be sent to the 
+           <code>KIE.TASK</code> queue. 
+    </para>
+    <para>Although there are 2 different input queues, <code>KIE.SESSION</code> and <code>KIE.TASK</code>, this is only in order to provide multiple 
+           input queues so as to optimize processing: command request messages will be processed in the same manner regardless of which queue they're sent to. 
+           However, in some cases, users may send many more requests involving human tasks than requests involving business processes, but then not want the 
+           processing of business process-related request messages to be delayed by the human task messages. By sending the appropriate command request 
+           messages to the appropriate queues, this problem can be avoided.</para>
+    <para>The term "<emphasis>command request message</emphasis>" used above refers to a JMS byte message that contains a serialized 
+           <code>JaxbCommandsRequest</code> object. At the moment, only XML serialization (as opposed to, JSON or protobuf, for example) is supported. 
+    </para>     
+  </section>
+
+  <section>
+    <title>Example JMS usage</title>
+    
+    <para>The following is a rather long example that shows how to use the JMS API. The numbers ("callouts") along the side of the example
+      refer to notes below that explain particular parts of the example. It's supplied for those advanced users that do not wish to use
+      the jBPM Remote Java API.</para>
+    
+    <para>The jBPM Remote Java API, described here, will otherwise take care of all of the logic shown below.</para>
+    
+    <programlistingco>
+      <areaspec>
+        <areaset xml:id="jbpm.jms.imports">
+          <area xml:id="jbpm.jms.imports.1" coords='13' />
+        </areaset>
+        <areaset xml:id="jbpm.jms.commands">
+          <area xml:id="jbpm.jms.commands.1" coords='30' />
+        </areaset>
+        <areaset xml:id="jbpm.jms.msg.structure">
+          <area xml:id="jbpm.jms.msg.structure.1" coords='75' />
+          <area xml:id="jbpm.jms.msg.structure.2" coords='76' />
+          <area xml:id="jbpm.jms.msg.structure.3" coords='77' />
+          <area xml:id="jbpm.jms.msg.structure.4" coords='78' />
+        </areaset>
+        <areaset xml:id="jbpm.jms.response.serialization">
+          <area xml:id="jbpm.jms.response.serialization.1" coords='106' />
+        </areaset>
+        <areaset id="jbpm.jms.response.index">
+          <area id="jbpm.jms.response.index.1" coords='29' />
+          <area id="jbpm.jms.response.index.2" coords='32' />
+          <area id="jbpm.jms.response.index.3" coords='134' />
+          <area id="jbpm.jms.response.index.4" coords='136' />
+        </areaset>
+        <areaset id="jbpm.jms.response.jaxb">        
+          <area id="jbpm.jms.response.jaxb.1" coords='130' />
+          <area id="jbpm.jms.response.jaxb.2" coords='135' />
+          <area id="jbpm.jms.response.jaxb.2" coords='137' />
+        </areaset>
+      </areaspec>
+      <programlisting language="java"><![CDATA[import java.util.List;
+import java.util.UUID;
+
+import javax.jms.*;
+import javax.naming.*;
+import javax.xml.bind.JAXBException;
+
+import org.drools.core.command.runtime.process.StartProcessCommand;
+import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.services.client.serialization.jaxb.JaxbSerializationProvider;
+import org.kie.services.client.serialization.jaxb.impl.JaxbCommandResponse;
+import org.kie.services.client.serialization.jaxb.impl.JaxbCommandsRequest;
+import org.kie.services.client.serialization.jaxb.impl.JaxbCommandsResponse;
+import org.kie.services.client.serialization.jaxb.impl.JaxbExceptionResponse;
+
+// ...
+
+  String USER = "charlie";
+  String PASSWORD = "ch0c0licious";
+
+  String DEPLOYMENT_ID = "test-project";
+  String PROCESS_ID_1 = "oompa-processing";
+  
+  // Create command
+  Command<?> cmd = new StartProcessCommand(PROCESS_ID_1);
+  int oompaProcessingResultIndex = 0;
+  JaxbCommandsRequest req = new JaxbCommandsRequest(DEPLOYMENT_ID, cmd);
+  req.getCommands().add(new GetTaskAssignedAsPotentialOwnerCommand(USER, "en-UK"));
+  int loompaMonitoringResultIndex = 1;
+
+  // Setup queues
+  
+  InitialContext context;
+  Queue sendQueue, responseQueue;
+  try { 
+      context = new InitialContext();
+      sendQueue = (Queue) context.lookup("jms/queue/KIE.SESSION");
+      responseQueue = (Queue) context.lookup("jms/queue/KIE.RESPONSE");
+  } catch( NamingException ne ) { 
+     throw new RuntimeException("Unable to lookup send or response queue", ne); 
+  }
+
+  Connection connection = null;
+  Session session = null;
+  JaxbCommandsResponse cmdResponse = null;
+
+  String corrId = UUID.randomUUID().toString();
+  String selector = "JMSCorrelationID = '" + corrId + "'";
+  try {
+
+      // Create JMS connection and session
+      MessageProducer producer;
+      MessageConsumer consumer;
+      try {
+          ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup("jms/RemoteConnectionFactory");
+          connection = connectionFactory.createConnection(USER, PASSWORD);
+          session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+          producer = session.createProducer(sendQueue);
+          consumer = session.createConsumer(responseQueue, selector);
+
+          connection.start();
+      } catch (JMSException jmse) {
+          throw new RuntimeException("Unable to setup a JMS connection.", jmse);
+      } catch (NamingException ne) {
+          throw new RuntimeException("Unable to lookup JMS connection factory.", ne);
+      }
+
+      // Create msg
+      BytesMessage msg;
+      try {
+          msg = session.createBytesMessage();
+          msg.setJMSCorrelationID(corrId);
+          msg.setIntProperty("serialization", JaxbSerializationProvider.JMS_SERIALIZATION_TYPE);
+          String xmlStr = JaxbSerializationProvider.convertJaxbObjectToString(req);
+          msg.writeUTF(xmlStr);
+      } catch (JMSException jmse) {
+          throw new RuntimeException("Unable to create and fill a JMS message.", jmse);
+      } catch (JAXBException jaxbe) {
+          throw new RuntimeException("Unable to deserialze JMS message.", jaxbe);
+      }
+
+      // Send msg
+      try {
+          producer.send(msg);
+      } catch (JMSException jmse) {
+          throw new RuntimeException("Unable to send a JMS message.", jmse);
+      }
+
+      // receive
+      Message response;
+      try {
+          long qualityOfServiceThresholdMilliSeconds = 5 * 1000;
+          response = consumer.receive(qualityOfServiceThresholdMilliSeconds);
+      } catch (JMSException jmse) {
+          throw new RuntimeException("Unable to receive or retrieve the JMS response.", jmse);
+      }
+
+      // extract response
+      assert response != null : "Response is empty.";
+      try {
+          String xmlStr = ((BytesMessage) response).readUTF();
+          cmdResponse = (JaxbCommandsResponse) JaxbSerializationProvider.convertStringToJaxbObject(xmlStr);
+      } catch (JMSException jmse) {
+          throw new RuntimeException("Unable to extract " + JaxbCommandsResponse.class.getSimpleName()
+                  + " instance from JMS response.", jmse);
+      } catch (JAXBException jaxbe) {
+          throw new RuntimeException("Unable to extract " + JaxbCommandsResponse.class.getSimpleName()
+                  + " instance from JMS response.", jaxbe);
+      }
+      assert cmdResponse != null : "Jaxb Cmd Response was null!";
+  } finally {
+      if (connection != null) {
+          try {
+              connection.close();
+              session.close();
+          } catch (JMSException jmse) {
+              System.out.println("Unable to close connection or session!");
+              jmse.printStackTrace();
+          }
+      }
+  }
+
+  ProcessInstance oompaProcInst = null;
+  List<TaskSummary> charliesTasks = null;
+  for (JaxbCommandResponse<?> response : cmdResponse.getResponses()) {
+      if (response instanceof JaxbExceptionResponse) {
+          JaxbExceptionResponse exceptionResponse = (JaxbExceptionResponse) response;
+          throw new RuntimeException(exceptionResponse.getMessage());
+      }
+      if (response.getIndex() == oompaProcessingResultIndex) {
+          oompaProcInst = (ProcessInstance) response.getResult();
+      } else if (response.getIndex() == loompaMonitoringResultIndex) {
+          charliesTasks = (List<TaskSummary>) response.getResult();
+      }
+  }]]></programlisting>
+      <calloutlist>
+        <callout arearefs="jbpm.jms.imports">
+          <para>These classes can all be found in the (org.kie.remote:)kie-services-client jar.</para>
+        </callout>
+        <callout arearefs="jbpm.jms.commands">
+          <para>The <code>JaxbCommandsRequest</code> instance is the "holder" object in which you can place all of the commands
+          you want to execute in a particular request. By using the <code>JaxbCommandsRequest.getCommands()</code> method, you 
+          can retrieve the list of commands in order to add more commands to the request.</para>
+          <para>A deployment id is required for command request messages that deal with business processes. Command request messages
+          that only contain human task-related commands do not require a deployment id.</para>
+        </callout>
+        <callout arearefs="jbpm.jms.msg.structure">
+          <para>Note that the JMS message sent to the remote JMS API <emphasis>must</emphasis> be constructed as follows:
+          <itemizedlist>
+            <listitem><para>It must be a JMS byte message.</para></listitem>
+            <listitem><para>It must have a filled JMS Correlation ID property.</para></listitem>
+            <listitem><para>It must have an int property with the name of "serialization" set to an acceptable value (only 0 at the moment).</para></listitem>
+            <listitem><para>It must contain a serialized instance of a <code>JaxbCommandsRequest</code>, added to the message as a UTF string</para></listitem>
+          </itemizedlist>
+          </para>
+        </callout>
+        <callout arearefs="jbpm.jms.response.serialization">
+          <para>The same serialization mechanism used to serialize the request message will be used to serialize the response message.</para>
+        </callout>        
+        <callout arearefs="jbpm.jms.response.index">
+          <para>In order to match the response to a command, to the initial command, use the <code>index</code> field of the returned
+          <code>JaxbCommandResponse</code> instances. This <code>index</code> field will match the index of the initial command. Because
+          not all commands will return a result, it's possible to send 3 commands with a command request message, and then receive
+          a command response message that only includes one <code>JaxbCommandResponse</code> message with an <code>index</code> value of 1. 
+          That 1 then identifies it as the response to the second command.</para>
+        </callout>        
+        <callout arearefs="jbpm.jms.response.jaxb">
+          <para>Since many of the results returned by various commands are not serializable, the jBPM JMS Remote API converts these results
+          into JAXB equivalents, all of which implement the <code>JaxbCommandResponse</code> interface. The <code>JaxbCommandResponse.getResult()</code>
+          method then returns the JAXB equivalent to the actual result, which will conform to the interface of the result.</para>
+          <para>For example, in the code above, the <code>StartProcessCommand</code> returns a <code>ProcessInstance</code>. In order 
+          to return this object to the requester, the <code>ProcessInstance</code> is converted to a <code>JaxbProcessInstanceResponse</code> and then
+          added as a <code>JaxbCommandResponse</code> to the command response message. The same applies to the <code>List&lt;TaskSummary&gt;</code>
+            that's returned by the <code>GetTaskAssignedAsPotentialOwnerCommand</code>.</para>
+          <para><emphasis>However, not all methods that can be called on a normal <code>ProcessInstance</code> can be called on the 
+          <code>JaxbProcessInstanceResponse</code></emphasis> because the <code>JaxbProcessInstanceResponse</code> is simply a representation
+          of a <code>ProcessInstance</code> object. This applies to various other command response as well. In particular, methods which 
+          require an active (backing) <code>KieSession</code>, such as <code>ProcessInstance.getProess()</code> or 
+          <code>ProcessInstance.signalEvent(String type, Object event)</code> will throw an <code>UnsupportedOperationException</code>.</para>
+        </callout>        
+      </calloutlist>
+    </programlistingco>
+    
+  </section>
+                
 </section>
