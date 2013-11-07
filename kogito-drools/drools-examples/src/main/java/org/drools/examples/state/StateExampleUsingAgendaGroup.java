@@ -26,6 +26,10 @@ import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.core.event.AfterActivationFiredEvent;
 import org.drools.core.event.DefaultAgendaEventListener;
+import org.kie.api.KieServices;
+import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class StateExampleUsingAgendaGroup {
 
@@ -33,53 +37,34 @@ public class StateExampleUsingAgendaGroup {
      * @param args
      */
     public static void main(final String[] args) {
-
-        final PackageBuilder builder = new PackageBuilder();
-        try {
-            builder.addPackageFromDrl( new InputStreamReader( StateExampleUsingAgendaGroup.class.getResourceAsStream( "StateExampleUsingAgendaGroup.drl" ) ) );
-        } catch (DroolsParserException e) {
-            throw new IllegalArgumentException("Invalid drl", e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read drl", e);
-        }
-
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage( builder.getPackage() );
-
-        final StatefulSession session = ruleBase.newStatefulSession();
-
-        session.addEventListener( new DefaultAgendaEventListener() {
-            public void afterActivationFired(final AfterActivationFiredEvent arg0) {
-                super.afterActivationFired( arg0,
-                                            session );
-            }
-        } );
-
-//        final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( session );
-//        logger.setFileName( "log/state.log" );
+        // KieServices is the factory for all KIE services 
+        KieServices ks = KieServices.Factory.get();
+        
+        // From the kie services, a container is created from the classpath
+        KieContainer kc = ks.getKieClasspathContainer();
+        
+        // From the container, a session is created based on  
+        // its definition and configuration in the META-INF/kmodule.xml file 
+        KieSession ksession = kc.newKieSession("StateAgendaGroupKS");
+        
+        // To setup a file based audit logger, uncomment the next line 
+        // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./state" );
 
         final State a = new State( "A" );
         final State b = new State( "B" );
         final State c = new State( "C" );
         final State d = new State( "D" );
 
-        // By setting dynamic to TRUE, Drools will use JavaBean
-        // PropertyChangeListeners so you don't have to call update().
-        final boolean dynamic = true;
+        ksession.insert( a );
+        ksession.insert( b );
+        ksession.insert( c );
+        ksession.insert( d );
 
-        session.insert( a,
-                        dynamic );
-        session.insert( b,
-                        dynamic );
-        session.insert( c,
-                        dynamic );
-        session.insert( d,
-                        dynamic );
+        ksession.fireAllRules();
 
-        session.fireAllRules();
-        session.dispose();
-
-//        logger.writeToDisk();
+        // logger.close();
+        
+        ksession.dispose(); // Stateful rule session must always be disposed when finished        
     }
 
 }

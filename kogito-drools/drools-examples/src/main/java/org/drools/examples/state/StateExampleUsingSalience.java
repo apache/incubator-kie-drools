@@ -17,6 +17,7 @@
 package org.drools.examples.state;
 
 import org.kie.api.KieServices;
+import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
@@ -26,7 +27,6 @@ public class StateExampleUsingSalience {
      * @param args
      */
     public static void main(final String[] args) {
-
         // KieServices is the factory for all KIE services 
         KieServices ks = KieServices.Factory.get();
         
@@ -38,7 +38,7 @@ public class StateExampleUsingSalience {
         KieSession ksession = kc.newKieSession("StateSalienceKS");
         
         // To setup a file based audit logger, uncomment the next line 
-        // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./helloworld" );
+        // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./state" );
 
         final State a = new State( "A" );
         final State b = new State( "B" );
@@ -52,7 +52,7 @@ public class StateExampleUsingSalience {
 
         ksession.fireAllRules();
 
-//        logger.writeToDisk();
+        // logger.close();
         
         ksession.dispose(); // Stateful rule session must always be disposed when finished        
     }
