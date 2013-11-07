@@ -31,14 +31,15 @@ import java.util.Map;
 public interface KieCommands {
     Command newInsert(Object object);
 
-    Command newInsert(Object object,
-                      String outIdentifier,
-                      boolean returnObject,
-                      String entryPoint);
+    Command newInsert(Object object, String outIdentifier);
 
-    Command newInsertElements(Collection objects);
+    Command newInsert(Object object, String outIdentifier, boolean returnObject, String entryPoint);
+
+    Command newInsertElements(Iterable objects);
     
-    Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint);
+    Command newInsertElements(Iterable objects, String outIdentifier);
+
+    Command newInsertElements(Iterable objects, String outIdentifier, boolean returnObject, String entryPoint);
 
     Command newDelete(FactHandle factHandle);
 
@@ -100,6 +101,8 @@ public interface KieCommands {
     Command newQuery(String identifier,
                      String name,
                      Object[] arguments);
+
+    BatchExecutionCommand newBatchExecution(List< ? extends Command> commands);
 
     BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup);
 

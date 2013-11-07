@@ -67,9 +67,7 @@ public class CommandFactory {
     public static Command newInsert(Object object,
                                     String outIdentifier) {
         return getCommandFactoryProvider().newInsert( object,
-                                                      outIdentifier,
-                                                      true,
-                                                      null );
+                                                      outIdentifier );
     }
     
     /**
