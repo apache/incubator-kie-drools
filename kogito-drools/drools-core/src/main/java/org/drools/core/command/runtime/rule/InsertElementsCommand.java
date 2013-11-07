@@ -74,7 +74,7 @@ public class InsertElementsCommand
         return this.objects;
     }
 
-    public void setObjects(List<Object> objects) {
+    public void setObjects(Collection<Object> objects) {
         this.objects = objects;
     }
 
