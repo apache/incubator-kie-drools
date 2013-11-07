@@ -6,6 +6,18 @@
         <ksession name="HelloWorldKS"/>
     </kbase>
 
+    <kbase name="StateSalienceKB" packages="org.drools.examples.state.salience">
+        <ksession name="StateSalienceKS"/>
+    </kbase>
+
+    <kbase name="StateAgendaGroupKB" packages="org.drools.examples.state.agendagroup">
+        <ksession name="StateAgendaGroupKS"/>
+    </kbase>
+
+    <kbase name="StateDynamicKB" packages="org.drools.examples.state.dynamic">
+        <ksession name="StateDynamicKS"/>
+    </kbase>
+
     <kbase name="WumpusMainKB" packages="org.drools.games.wumpus.server, org.drools.games.wumpus.server.view">
         <ksession name="WumpusMainKS" />
     </kbase>
