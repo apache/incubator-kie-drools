@@ -19,6 +19,8 @@ import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -30,6 +32,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class JTMSTest {
+
     protected StatefulKnowledgeSession getSessionFromString( String drlString) {
         KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kBuilder.add( ResourceFactory.newByteArrayResource(drlString.getBytes()),
@@ -617,5 +620,49 @@ public class JTMSTest {
             e.printStackTrace();
             fail( "No exception should have been thrown" );
         }
-    }    
+    }
+
+    @Test
+    public void testPrimeJustificationWithEqualityMode() {
+        String droolsSource =
+                "package org.drools.tms.test; \n" +
+                "declare Bar end \n" +
+                "" +
+                "declare Holder x : Bar end \n" +
+                "" +
+                "" +
+                "rule Init \n" +
+                "when \n" +
+                "then \n" +
+                "   insert( new Holder( new Bar() ) ); \n" +
+                "end \n" +
+
+                "rule Justify \n" +
+                "when \n" +
+                " $s : Integer() \n" +
+                " $h : Holder( $b : x ) \n" +
+                "then \n" +
+                " insertLogical( $b ); \n" +
+                "end \n" +
+
+                "rule React \n" +
+                "when \n" +
+                " $b : Bar(  ) \n" +
+                "then \n" +
+                " System.out.println( $b );  \n" +
+                "end \n" ;
+
+        /////////////////////////////////////
+
+        StatefulKnowledgeSession session = getSessionFromString( droolsSource );
+
+        FactHandle handle1 = session.insert( 10 );
+        FactHandle handle2 = session.insert( 20 );
+
+        assertEquals( 4, session.fireAllRules() );
+
+        session.delete( handle1 );
+        assertEquals( 0, session.fireAllRules() );
+    }
+
 }
