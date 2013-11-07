@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../../" xml:id="wb.AssetEditor"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Asset Editor</title>
+  <para> The Asset Editor is the principle component of Guvnor's User-Interface. It consists of two main views Edit and
+    Metadata. </para>
+  <itemizedlist>
+    <listitem>
+      <para>The views</para>
+      <itemizedlist>
+        <listitem>
+          <para> A : The editing area - exactly what form the editor takes depends on the Asset type. </para>
+        </listitem>
+        <listitem>
+          <para> B : This menu bar contains various actions for the Asset; such as Saving, Renaming, Copy etc. </para>
+        </listitem>
+        <listitem>
+          <para>C : Different views for asset content or asset information.</para>
+          <itemizedlist>
+            <listitem><para>Edit shows the main editor for the asset</para></listitem>
+            <listitem>
+              <para>Source shows the asset in plain DRL. Note: This tab is only visible if the asset content can be
+                generated into DRL.</para>
+            </listitem>
+            <listitem><para>Config contains the model imports used by the asset.</para></listitem>
+            <listitem><para>Metadata contains the metadata view for this editor. Explained in more detail below.</para></listitem>
+          </itemizedlist>
+        </listitem>
+      </itemizedlist>
+      <figure>
+        <title>The Asset Editor - Edit tab</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-edit.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </listitem>
+    <listitem>
+      <para>Metadata</para>
+      <itemizedlist>
+        <listitem>
+          <para>A : Meta data (from the "Dublin Core" standard):-</para>
+          <para>"Title:" Name of the asset</para>
+          <para>"Categories:" A deprecated feature for grouping the assets.</para>
+          <para>"Last modified:" The last modified date.</para>
+          <para>"By:" Who made the last change.</para>
+          <para>
+            "Note:" A comment made when the Asset was last updated (i.e. why a change was made)
+          </para>
+          <para>
+            "Created on:" The date and time the Asset was created.
+          </para>
+          <para>"Created by:" Who initially authored the Asset.</para>
+          <para>
+            "Format:" The short format name of the type of Asset.
+          </para>
+          <para> "URI:" URI to the asset inside the Git repository.</para>
+        </listitem>
+        <listitem>
+          <para>B : Other miscellaneous meta data for the Asset.</para>
+        </listitem>
+        <listitem>
+          <para>C : Version history of the Asset.</para>
+        </listitem>
+        <listitem>
+          <para>
+            D : Free-format documentation\description for the Asset. It is encouraged, but not mandatory, to record a description of the Asset before editing.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            E : Discussions regarding development of the Asset can be recorded here.
+          </para>
+        </listitem>
+      </itemizedlist>
+      <figure>
+        <title>The Asset Editor - Attributes tab</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-1.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>The Asset Editor - Other meta data</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-2.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>The Asset Editor - Version history</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-3.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>The Asset Editor - Description</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-4.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+      <figure>
+        <title>The Asset Editor - Discussion</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-5.png" format="PNG" />
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </listitem>
+  </itemizedlist>
+  <para/>
+
+</section>
