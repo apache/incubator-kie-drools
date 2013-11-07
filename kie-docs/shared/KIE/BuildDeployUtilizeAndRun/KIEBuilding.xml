@@ -38,9 +38,10 @@
 &lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"/&gt;</programlisting>
     </example>
 
-    <para>In this way the kmodule will contain one single <code>KieBase</code> and all the Kie artifacts
-    stored undered the resources folder, or any of its subfolder, will be compiled and added to it.
-    To trigger the building of these artifacts it is enough to create a <code>KieContainer</code> for them.</para>
+    <para>In this way the kmodule will contain one single default <code>KieBase</code>. All Kie
+      assets stored under the resources folder, or any of its subfolders, will be compiled and added
+      to it. To trigger the building of these artifacts it is enough to create a
+        <code>KieContainer</code> for them.</para>
 
     <figure>
       <title>KieContainer</title>
@@ -52,8 +53,8 @@
       </mediaobject>
     </figure>
 
-    <para>For this simple case it is enough to create a <code>KieContainer</code> that reads the files
-    to be build from the classpath as it follows:</para>
+    <para>For this simple case it is enough to create a <code>KieContainer</code> that reads the
+      files to be built from the classpath:</para>
 
     <example>
       <title>Creating a KieContainer from the classpath</title>
@@ -62,8 +63,8 @@
 KieContainer kContainer = kieServices.getKieClasspathContainer();</programlisting>
     </example>
 
-    <para>where <code>KieServices</code> is the interface from where it possible to access all the Kie
-    building and runtime facilities:</para>
+    <para><code>KieServices</code> is the interface from where it possible to access all the Kie
+      building and runtime facilities:</para>
 
     <figure>
       <title>KieServices</title>
