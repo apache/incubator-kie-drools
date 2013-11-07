@@ -320,6 +320,56 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testIfElseWithConstant() {
+        // DROOLS-325
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    if ( price > Cheese.BASE_PRICE ) do[t1] else do[t2]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType() );\n" +
+                "then[t2]\n" +
+                "    results.add( $a.getType().toUpperCase() );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+        assertTrue( results.contains( "STILTON" ) );
+    }
+
+    @Test
+    public void testIfElseWithMvelAccessor() {
+        // DROOLS-324
+        String str = "import org.drools.compiler.Cheese;\n " +
+                "global java.util.List results;\n" +
+                "\n" +
+                "rule R1 dialect \"mvel\" when\n" +
+                "    $a: Cheese ( type == \"stilton\" )\n" +
+                "    if ( $a.price > Cheese.BASE_PRICE ) do[t1] else do[t2]\n" +
+                "    $b: Cheese ( type == \"cheddar\" )\n" +
+                "then\n" +
+                "    results.add( $b.getType() );\n" +
+                "then[t1]\n" +
+                "    results.add( $a.getType() );\n" +
+                "then[t2]\n" +
+                "    results.add( $a.getType().toUpperCase() );\n" +
+                "end\n";
+
+        List<String> results = executeTestWithDRL(str);
+
+        assertEquals( 2, results.size() );
+        assertTrue( results.contains( "cheddar" ) );
+        assertTrue( results.contains( "STILTON" ) );
+    }
+
+    @Test
     public void testIfElse2() {
         String str = "import org.drools.compiler.Cheese;\n " +
                 "global java.util.List results;\n" +
