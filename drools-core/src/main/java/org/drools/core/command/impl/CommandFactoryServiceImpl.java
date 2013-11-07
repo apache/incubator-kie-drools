@@ -44,6 +44,7 @@ import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -60,20 +61,43 @@ public class CommandFactoryServiceImpl implements KieCommands {
         return cmd;
     }
 
-    public Command newInsertElements(Collection objects) {
-        return new InsertElementsCommand(objects);
+    public Command newInsertElements(Iterable objects) {
+        return new InsertElementsCommand( i2c(objects) );
     }
 
-    public Command newInsertElements(Collection objects, String outIdentifier, boolean returnObject, String entryPoint) {
-        InsertElementsCommand cmd = new InsertElementsCommand(objects);
+    public Command newInsertElements(Iterable objects, String outIdentifier) {
+        InsertElementsCommand cmd = new InsertElementsCommand( i2c(objects) );
+        cmd.setOutIdentifier(outIdentifier);
+        return cmd;
+    }
+
+    public Command newInsertElements(Iterable objects, String outIdentifier, boolean returnObject, String entryPoint) {
+        InsertElementsCommand cmd = new InsertElementsCommand( i2c(objects) );
         cmd.setEntryPoint( entryPoint );
         cmd.setOutIdentifier( outIdentifier );
         cmd.setReturnObject( returnObject );
         return cmd;
     }
 
+    private Collection i2c(Iterable i) {
+        if (i instanceof Collection) {
+            return (Collection) i;
+        }
+        Collection c = new ArrayList();
+        for (Object o : i) {
+            c.add(o);
+        }
+        return c;
+    }
+
     public Command newInsert(Object object) {
         return new InsertObjectCommand(object);
+    }
+
+    public Command newInsert(Object object, String outIdentifier) {
+        InsertObjectCommand cmd = new InsertObjectCommand(object);
+        cmd.setOutIdentifier( outIdentifier );
+        return cmd;
     }
 
     public Command newInsert(Object object, String outIdentifier, boolean returnObject, String entryPoint) {
@@ -198,6 +222,10 @@ public class CommandFactoryServiceImpl implements KieCommands {
 
     public Command newQuery(String identifier, String name, Object[] arguments) {
         return new QueryCommand(identifier, name, arguments);
+    }
+
+    public BatchExecutionCommand newBatchExecution(List<? extends Command> commands) {
+        return newBatchExecution( commands, null );
     }
 
     public BatchExecutionCommand newBatchExecution(List<? extends Command> commands, String lookup) {
