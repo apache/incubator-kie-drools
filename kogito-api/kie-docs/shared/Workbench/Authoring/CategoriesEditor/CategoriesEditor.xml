@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xml:base="../../../" xml:id="wb.CategoriesEditor"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
+  <title>Categories Editor</title>
+
+  <para>Categories allow assets to be labelled (or tagged) with any number of categories that you define. Assets can
+    belong to any number of categories. In the below diagram, you can see this can in effect create a folder/explorer
+    like view of categories. The names can be anything you want, and are defined by the Workbench administrator (you can
+    also remove/add new categories).</para>
+  <note>
+    <para>Categories do not have the same role in the current release of the Workbench as they had in prior versions (up
+      to and including 5.5). Projects can no longer be built using a selector to include assets that are labelled with
+      certain Categories. Categories are therefore considered a deprecated feature.</para>
+  </note>
+
+  <section xml:id="wb.LaunchingCategoriesEditor">
+    <title>Launching the Categories Editor</title>
+    <para>The Categories Editor is available from the Repository menu on the Authoring Perspective.</para>
+
+    <figure>
+      <title>Launching Categories Editor</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/Authoring/CategoriesEditor/CategoriesEditorMenu.png"
+            format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section xml:id="wb.ManagingCategories">
+    <title>Managing Categories</title>
+    <para>The below view shows the administration screen for setting up categories (there) are no categories in the
+      system by default. As the categories can be hierarchical you chose the "parent" category that you want to create a
+      sub-category for. From here categories can also be removed (but only if they are not in use by any current
+      versions of assets).</para>
+
+    <figure>
+      <title>Managing categories</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/Authoring/CategoriesEditor/CategoriesEditor.png"
+            format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>Generally categories are created with meaningful name that match the area of the business the rule applies to
+      (if the rule applies to multiple areas, multiple categories can be attached).</para>
+
+  </section>
+
+  <section xml:id="wb.AddingCategoriesToAssets">
+    <title>Adding Categories to assets</title>
+    <para>Assets can be assigned Categories using the MetaData tab on the assets' editor.</para>
+    <para>When you open an asset to view or edit, it will show a list of categories that it currently belongs to If you
+      make a change (remove or add a category) you will need to save the asset - this will create a new item in the
+      version history. Changing the categories of a rule has no effect on its execution.</para>
+
+    <figure>
+      <title>Adding Categories to an asset</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center" fileref="images/Workbench/Authoring/CategoriesEditor/AssetCategories.png"
+            format="PNG"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+</section>
