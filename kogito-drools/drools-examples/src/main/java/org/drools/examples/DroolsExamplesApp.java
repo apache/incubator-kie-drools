@@ -27,7 +27,6 @@ import org.drools.examples.petstore.PetStoreExample;
 import org.drools.examples.shopping.ShoppingExample;
 import org.drools.examples.state.StateExampleUsingAgendaGroup;
 import org.drools.examples.state.StateExampleUsingSalience;
-import org.drools.examples.state.StateExampleWithDynamicRules;
 import org.drools.examples.sudoku.SudokuExample;
 import org.drools.examples.templates.SimpleRuleTemplateExample;
 import org.drools.examples.troubleticket.TroubleTicketExample;
@@ -147,11 +146,6 @@ public class DroolsExamplesApp extends JFrame {
         contentPane.add(new JButton(new AbstractAction("StateExampleUsingAgendaGroup") {
             public void actionPerformed(ActionEvent e) {
                 StateExampleUsingAgendaGroup.main(new String[0]);
-            }
-        }));
-        contentPane.add(new JButton(new AbstractAction("StateExampleWithDynamicRules") {
-            public void actionPerformed(ActionEvent e) {
-                StateExampleWithDynamicRules.main(new String[0]);
             }
         }));
         contentPane.add(new JButton(new AbstractAction("PricingRuleTemplateExample") {
