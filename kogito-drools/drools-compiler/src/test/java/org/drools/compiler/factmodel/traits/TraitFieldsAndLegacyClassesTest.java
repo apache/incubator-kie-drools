@@ -60,7 +60,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n" +
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -74,7 +74,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "   $map : HashMap([parent] != null)\n"+
@@ -135,12 +135,11 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +
                      "@Traitable \n" +
                      "@propertyReactive\n" +
-                     "   sex : String = \"male\"\n"+
+                     "   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -152,7 +151,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
                      "salience -1\n"+
                      "when\n" +
                      "    $p : Parent( name == \"parent\" )\n" +
@@ -163,9 +161,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait child\" \n" +
-                     "no-loop\n" +
                      "when\n" +
-                     "    $c : Child( sex == \"male\" )\n" +
+                     "    $c : Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
                      "   System.out.println(\"donned : \"+c);\n" +
@@ -173,7 +170,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    $p : ParentTrait( $c : child isA ChildTrait.class )\n" +
                      "then\n" +
@@ -228,12 +224,11 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +
                      "@Traitable\n" +
                      "@propertyReactive\n" +
-                     "   sex : String = \"male\"\n"+
+                     "   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -245,7 +240,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -255,9 +249,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait child\" \n" +
-                     "no-loop\n" +
                      "when\n" +
-                     "   $c : Child( sex == \"male\" )\n" +
+                     "   $c : Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
                      "   System.out.println(\"donned : \"+c);\n" +
@@ -265,9 +258,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"assign child to parent\" \n" +          //<<<<<<
-                     "no-loop\n" +
                      "when\n" +
-                     "   $c : Child( sex == \"male\" )\n" +
+                     "   $c : Child( gender == \"male\" )\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "   ParentTrait( child not isA ChildTrait.class )\n" +
                      "   ChildTrait()\n"+
@@ -281,7 +273,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
@@ -336,12 +327,11 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +
                      "@Traitable\n" +
                      "@propertyReactive\n" +
-                     "   sex : String = \"male\"\n"+
+                     "   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -353,7 +343,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -363,9 +352,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait child\" \n" +
-                     "no-loop\n" +
                      "when\n" +
-                     "   $c : Child( sex == \"male\" )\n" +
+                     "   $c : Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
                      "   System.out.println(\"donned : \"+c);\n" +
@@ -373,9 +361,8 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"assign child to parent\" \n" +
-                     "no-loop\n" +
                      "when\n" +
-                     "   Child( sex == \"male\" )\n" +
+                     "   Child( gender == \"male\" )\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "   ParentTrait( child not isA ChildTrait.class )\n" +
                      "   $c : ChildTrait()\n"+             //<<<<<
@@ -387,7 +374,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
@@ -440,12 +426,11 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +
                      "@Traitable\n" +
                      "@propertyReactive\n" +
-                     "   sex : String = \"male\"\n"+
+                     "   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -457,19 +442,19 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait child\" \n" +
-                     "no-loop\n" +
                      "when\n" +
-                     "   $p : Parent( $c := child )\n"+
-                     "   $c := Child( sex == \"male\" )\n" +
+                     "   $p : Parent( $c := child not isA ChildTrait )\n"+
+                     "   $c := Child( gender == \"male\" )\n" +
                      "then\n" +
                      "   ChildTrait c = don ( $c , ChildTrait.class );\n" +
+                     // this modify is necessary to tell the engine that the Parent's Child has gained a type
+                     // if enabled, "logical" mode traits render this unnecessary
                      "   modify ( $p ) {}; \n"+
                      "   System.out.println(\"donned : \"+c);\n" +
                      "end\n"+
                      "\n"+
 
                      "rule \"test parent and a child trait\" \n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    $p : Parent( child isA ChildTrait.class ) \n" +    //<<<<<
                      "then\n" +
@@ -528,12 +513,12 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +
                      "@Traitable\n" +
                      "@propertyReactive\n" +
-                     "   sex : String = \"male\"\n"+
+                     "   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -545,7 +530,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -556,7 +541,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    $p : ParentTrait( $c : child isA ChildTrait.class ) \n" +     //<<<<<
                      "then\n" +
@@ -614,12 +599,12 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +               //<<<<<
                      "@Traitable(logical=true)\n" +
                      "@propertyReactive\n" +
-                     //"   sex : String = \"male\"\n"+
+                     //"   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -631,7 +616,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -652,9 +637,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 
 
 //                     "rule \"trait and assign the child\" \n" +
-//                     "no-loop\n" +
+//                     "\n" +
 //                     "when\n" +
-//                     "   $c : Child( sex == \"male\" )\n" +
+//                     "   $c : Child( gender == \"male\" )\n" +
 //                     "   $p : Parent( this isA ParentTrait )\n" +       //<<<<<
 //                     "then\n" +
 //                     "   ChildTrait c = don ( $c , ChildTrait.class );\n"+
@@ -665,7 +650,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 //                     "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
@@ -720,7 +705,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "@Trait( logical = true ) \n"+
                      "@propertyReactive\n"+
                      "   name : String = \"child\"\n"+
-                     "   sex : String\n"+
+                     "   gender : String\n"+
                      "end\n"+
 
                      "declare Parent\n" +
@@ -735,7 +720,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -747,7 +732,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -757,9 +742,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
 //                     "rule \"trait and assign the child\" \n" +
-//                     "no-loop\n" +
+//                     "\n" +
 //                     "when\n" +
-//                     "   $c : Child( sex == \"male\" )\n" +
+//                     "   $c : Child( gender == \"male\" )\n" +
 //                     "   $p : Parent( this isA ParentTrait )\n" +
 //                     "then\n" +
 //                     "   ChildTrait c =  don ( $c , ChildTrait.class );\n"+   //<<<<<<
@@ -770,9 +755,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 //                     "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
-//                     "   $c : Child( $sex := sex )\n"+
+//                     "   $c : Child( $gender := gender )\n"+
                      "   $p : ParentTrait( child isA ChildTrait )\n" +    //<<<<<
                      "then\n" +
                      "   list.add(\"correct\");\n"+
@@ -834,12 +819,12 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare Child\n" +
                      "@Traitable(logical=true)\n" +
                      "@propertyReactive\n" +
-                     //"   sex : String = \"male\"\n"+
+                     //"   gender : String = \"male\"\n"+
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -851,7 +836,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -861,7 +846,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    $p : ParentTrait( child isA ChildTrait.class )\n" +
                      "then\n" +
@@ -921,7 +906,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -933,7 +918,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -943,9 +928,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait and assign the child\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
-                     "   $c : Child( sex == \"male\" )\n" +
+                     "   $c : Child( gender == \"male\", this not isA ChildTrait )\n" +
                      "   $p : Parent( this isA ParentTrait )\n" +
                      "then\n" +
                      "   ChildTrait c =  don ( $c , ChildTrait.class );\n"+   //<<<<<<
@@ -956,9 +941,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test parent and child traits\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
-                     "    $p : ParentTrait( child isA ChildTrait.class, child.sex == \"male\" )\n" +    //<<<<<
+                     "    $p : ParentTrait( child isA ChildTrait.class, child.gender == \"male\" )\n" +    //<<<<<
                      "then\n" +
                      "   //shed ( $p , ParentTrait.class );\n"+
                      "   System.out.println(\"::ParentTrait( child isA ChildTrait.class ) \");\n" +
@@ -1002,7 +987,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare trait ChildTrait\n"+
                      "@propertyReactive\n"+
                      "   name : String = \"child\"\n"+
-                     "   sex : String\n"+        //<<<<<
+                     "   gender : String\n"+        //<<<<<
                      "end\n"+
 
                      "declare Parent\n" +            //<<<<<
@@ -1017,7 +1002,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -1029,7 +1014,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -1039,9 +1024,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait and assign the child\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
-                     "   $c : Child( sex == \"male\" )\n" +
+                     "   $c : Child( gender == \"male\", this not isA ChildTrait )\n" +
                      "   $p : Parent( this isA ParentTrait )\n" +
                      "then\n" +
                      "   ChildTrait c =  don ( $c , ChildTrait.class );\n"+   //<<<<<<
@@ -1052,12 +1037,12 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test parent and child traits\" salience 10\n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
-                     "   $c : Child( $sex := sex)\n"+
+                     "   $c : Child( $gender := gender)\n"+
                      "   $p : ParentTrait( $age, $c; )\n" +    //<<<<<
                      "then\n" +
-                     "   System.out.println(\"::ParentTrait(  $age, $sex; ) \"+$age+\" \"+$sex);\n" +
+                     "   System.out.println(\"::ParentTrait(  $age, $gender; ) \"+$age+\" \"+$gender);\n" +
                      "   list.add(\"correct\");\n"+
                      "end\n"+
                      "\n"+
@@ -1103,7 +1088,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "declare trait FatherTrait extends ParentTrait, GrandParentTrait \n"+ //<<<<<
                      "@propertyReactive\n"+
                      "   name : String = \"child\"\n"+
-                     "   sex : String\n"+
+                     "   gender : String\n"+
                      "end\n"+
 
                      "declare Parent\n" +
@@ -1117,12 +1102,12 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "@Traitable\n" +
                      "@propertyReactive\n" +
                      "   name : String\n" +
-                     "   sex : String = \"male\"\n" +
+                     "   gender : String = \"male\"\n" +
                      "end\n"+
                      "\n"+
 
                      "rule \"Init\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    \n" +
                      "then\n" +
@@ -1146,7 +1131,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait as parent\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : Parent( name == \"parent\" )\n" +
                      "then\n" +
@@ -1156,7 +1141,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"trait and assign the grandchild\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $c : Child( name == \"C1\" )\n" +
                      "   $p : Parent( child == $c )\n" +
@@ -1169,7 +1154,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "\n"+
 
                      "rule \"test three traits\" \n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "   $p : FatherTrait( this isA ParentTrait, this isA GrandParentTrait )\n" +    //<<<<<
                      "then\n" +
@@ -1246,7 +1231,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n" +
                      "rule \"init\"\n" +
-                     "no-loop\n" +
                      "when\n" +
                      "then\n" +
                      "    Person p = new Person(\"1234\",\"IR\",true,true);\n" +
@@ -1257,7 +1241,6 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n" +
                      "rule \"check for being student\"\n" +
-                     "no-loop\n" +
                      "when\n" +
                      "    $p : Person( $ssn : ssn, $pob : pob,  isStudent == true )\n" +
                      "    if($pob == \"IR\" ) do[pobIsIR]\n" +
@@ -1275,7 +1258,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n" +
                      "rule \"check for being US citizen\"\n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    $s : Student( studyingCountry == \"US\" )\n" +
                      "then\n" +
@@ -1285,7 +1268,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n" +
                      "rule \"check for being worker\"\n" +
-                     "no-loop\n" +
+                     "\n" +
                      "when\n" +
                      "    $p : Student( hasAssistantship == true, $sc : studyingCountry )\n" +
                      "then\n" +
@@ -1331,6 +1314,9 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
         kSession.setGlobal("list", list);
 
         kSession.fireAllRules();
+
+        System.out.println( list );
+
         assertTrue(list.contains("initialized"));
         assertTrue(list.contains("student"));
         assertTrue(list.contains("IR citizen"));
@@ -1339,6 +1325,7 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
         assertTrue(list.contains("You are working in US as student worker"));
         assertTrue(list.contains("You are studying and working at ASU"));
     }
+
 
     @Test
     public void singlePositionTraitTest(){
@@ -1546,20 +1533,20 @@ public class TraitFieldsAndLegacyClassesTest extends CommonTestMethodBase {
 
 
     public static class Child {
-        private String sex = "male";
+        private String gender = "male";
 
-        public String getSex() {
-            return sex;
+        public String getGender() {
+            return gender;
         }
 
-        public void setSex(String sex) {
-            this.sex = sex;
+        public void setGender(String gender) {
+            this.gender = gender;
         }
 
         @Override
         public String toString() {
             return "Child{" +
-                   "sex='" + sex + '\'' +
+                   "gender='" + gender + '\'' +
                    '}';
         }
     }

@@ -40,7 +40,10 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Package;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -1493,6 +1496,55 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 1, session.getObjects().size() );
         session.dispose();
     }
+
+
+    @Test
+    public void testPrimeJustificationWithEqualityMode() {
+        String droolsSource =
+                "package org.drools.tms.test; \n" +
+                "declare Bar end \n" +
+                "" +
+                "declare Holder x : Bar end \n" +
+                "" +
+                "" +
+                "rule Init \n" +
+                "when \n" +
+                "then \n" +
+                "   insert( new Holder( new Bar() ) ); \n" +
+                "end \n" +
+
+                "rule Justify \n" +
+                "when \n" +
+                " $s : Integer() \n" +
+                " $h : Holder( $b : x ) \n" +
+                "then \n" +
+                " insertLogical( $b ); \n" +
+                "end \n" +
+
+                "rule React \n" +
+                "when \n" +
+                " $b : Bar(  ) \n" +
+                "then \n" +
+                " System.out.println( $b );  \n" +
+                "end \n" ;
+
+        /////////////////////////////////////
+
+        KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieConf.setOption( EqualityBehaviorOption.EQUALITY );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        FactHandle handle1 = session.insert( 10 );
+        FactHandle handle2 = session.insert( 20 );
+
+        assertEquals( 4, session.fireAllRules() );
+
+        session.delete( handle1 );
+        assertEquals( 0, session.fireAllRules() );
+    }
+
+
 
 }
 

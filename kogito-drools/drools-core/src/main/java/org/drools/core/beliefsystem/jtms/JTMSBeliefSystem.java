@@ -208,8 +208,10 @@ public class JTMSBeliefSystem
             }
 
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
-            ((NamedEntryPoint) handle.getEntryPoint()).getObjectStore().updateHandle( handle, object );
-            ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, Object.class, null );
+            if ( handle.getObject() != object ) {
+                ((NamedEntryPoint) handle.getEntryPoint()).getObjectStore().updateHandle( handle, object );
+                ((NamedEntryPoint) handle.getEntryPoint() ).update( handle, true, handle.getObject(), Long.MAX_VALUE, Object.class, null );
+            }
         }
     }
 
