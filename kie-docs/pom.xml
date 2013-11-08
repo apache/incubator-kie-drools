@@ -29,31 +29,13 @@
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-resources-html_single</id>
-            <!-- here the phase you need -->
+            <id>copy-resources-pdf</id>
             <phase>generate-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${basedir}/target/docbook/publish/en-US/html_single/images</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${basedir}/../shared/images/</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-resources-html</id>
-            <!-- here the phase you need -->
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${basedir}/target/docbook/publish/en-US/html/images</outputDirectory>
+              <outputDirectory>${basedir}/target/docbook/staging/images/images</outputDirectory>
               <resources>
                 <resource>
                   <directory>${basedir}/../shared/images/</directory>
