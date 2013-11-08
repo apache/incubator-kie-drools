@@ -72,5 +72,135 @@
            <para>Viewer of the system that is interested in statistics around the business processes and their performance, business indicators, and other reporting of the system and people who interact with the system.</para>
          </section>
        </section>
-
+  <section xml:id="wb.CommandLineConfig">
+  <title>Command line config tool</title>
+    <para>Provides capabilites to manage the system repository from command line.</para>
+    <section>
+      <title>Modes</title>
+      <itemizedlist>
+        <listitem>
+          <para>Online (default and recommended) - Connects to the git repository on startup using GIT server provided
+            by the KIE Workbench. All changes are made locally and published to upstream when:</para>
+          <itemizedlist>
+            <listitem>
+              <para>"push-changes" command is explicitly executed</para>
+            </listitem>
+            <listitem>
+              <para>"exit" command will publish all local changes and exit</para>
+            </listitem>
+          </itemizedlist>
+          </listitem>
+        <listitem>
+          <para>Offline - Creates and manipulates system repository directly on the server (no discard option)</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+    <section>
+      <title>Available Commands</title>
+      <table frame="all">
+        <title>Available Commands</title>
+        <tgroup cols='2' align='left' colsep='1' rowsep='1'>
+        <tbody>
+        <row>
+          <entry>exit</entry>
+          <entry>Publishes local changes, cleans up temporary directories and quits the command line tool</entry>
+        </row>
+          <row>
+            <entry>discard</entry>
+            <entry>Discards local changes without publishing them, cleans up temporary directories and quits this
+                command line tool</entry>
+          </row>
+          <row>
+            <entry>help</entry>
+            <entry>Prints a list of available commands</entry>
+          </row>
+          <row>
+            <entry>list-repo</entry>
+            <entry>List available repositories</entry>
+          </row>
+          <row>
+            <entry>list-org-units</entry>
+            <entry>List available organizational units</entry>
+          </row>
+          <row>
+            <entry>list-deployment</entry>
+            <entry>List available deployments</entry>
+          </row>
+          <row>
+            <entry>create-org-unit</entry>
+            <entry>Creates new organizational unit</entry>
+          </row>
+          <row>
+            <entry>remove-org-unit</entry>
+            <entry>Removes existing organizational unit</entry>
+          </row>
+          <row>
+            <entry>add-deployment</entry>
+            <entry>Adds new deployment unit</entry>
+          </row>
+          <row>
+            <entry>remove-deployment</entry>
+            <entry>Removes existing deployment</entry>
+          </row>
+          <row>
+            <entry>create-repo</entry>
+            <entry>Creates new git repository</entry>
+          </row>
+          <row>
+            <entry>remove-repo</entry>
+            <entry>Removes existing repository ( only from config )</entry>
+          </row>
+          <row>
+            <entry>add-repo-org-unit</entry>
+            <entry>Adds repository to the organizational unit</entry>
+          </row>
+          <row>
+            <entry>remove-repo-org-unit</entry>
+            <entry>Removes repository from the organizational unit</entry>
+          </row>
+          <row>
+            <entry>add-role-repo</entry>
+            <entry>Adds role(s) to repository</entry>
+          </row>
+          <row>
+            <entry>remove-role-repo</entry>
+            <entry>Removes role(s) from repository</entry>
+          </row>
+          <row>
+            <entry>add-role-org-unit</entry>
+            <entry>Adds role(s) to organizational unit</entry>
+          </row>
+          <row>
+            <entry>remove-role-org-unit</entry>
+            <entry>Removes role(s) from organizational unit</entry>
+          </row>
+          <row>
+            <entry>add-role-project</entry>
+            <entry>Adds role(s) to project</entry>
+          </row>
+          <row>
+            <entry>remove-role-project</entry>
+            <entry>Removes role(s) from project</entry>
+          </row>
+          <row>
+            <entry>push-changes</entry>
+            <entry>Pushes changes to upstream repository (only in online mode)</entry>
+          </row>
+        </tbody>
+        </tgroup>
+      </table>
+    </section>
+    <section>
+      <title>How to use</title>
+      <para>The tool can be found from kie-config-cli-${version}-dist.zip. Execute the kie-config-cli.sh script and by
+        default it will start in online mode asking for a Git url to connect to ( the default value is
+        git://localhost/system ). To connect to a remote server, replace the host and port with appropiate values e.g.
+        git://kie-wb-host:9148/system.</para>
+      <programlisting>./kie-config-cli.sh </programlisting>
+      <para>To operate in offline mode, append the offline parameter to the kie-config-cli.sh command. This will change
+        the behaviour and ask for a folder where the .niogit (system repository) is. If .niogit does not yet exist, the
+        folder value can be left empty and a brand new setup is created. </para>
+    <programlisting>./kie-config-cli.sh offline</programlisting>
+    </section>
+  </section>
 </section>
