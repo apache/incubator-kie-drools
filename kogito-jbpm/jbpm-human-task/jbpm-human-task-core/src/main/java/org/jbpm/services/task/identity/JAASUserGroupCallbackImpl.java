@@ -79,7 +79,7 @@ public class JAASUserGroupCallbackImpl implements UserGroupCallback {
                 
                 this.rolePrincipleName = config.getProperty("jaas.role.principle.name");
             } catch (IOException e) {
-                logger.error("Error when loading properties for DB user group callback", e);
+                logger.error("Error when loading properties for JAAS user group callback", e);
                 config = null;
             }
         }
