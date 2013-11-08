@@ -1,244 +1,247 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xml:id="sect-datamodeler-externalModels"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../../.." xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xml:base="../../.." xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>Using external models</title>
 
-  <para>Using an external model means the ability to use a set for already
-    defined POJOs in current project context. In order to make those POJOs
-    available a dependency to the given JAR should be added. Once the dependency
-    has been added the external POJOs can be referenced from current project
-    data model.
-  </para>
+  <para>Using an external model means the ability to use a set for already defined POJOs in current project context. In
+    order to make those POJOs available a dependency to the given JAR should be added. Once the dependency has been
+    added the external POJOs can be referenced from current project data model. </para>
 
   <para>There are two ways to add a dependency to an external JAR file:</para>
 
   <itemizedlist>
     <listitem>
-      <para>Dependency to a JAR file already installed in current local M2
-        repository (typically associated the the user home).
-      </para>
+      <para>Dependency to a JAR file already installed in current local M2 repository (typically associated the the user
+        home). </para>
     </listitem>
 
     <listitem>
-      <para>Dependency to a JAR file installed in current Kie Workbench/Drools
-        Workbench "Guvnor M2 repository". (internal to the application)
-      </para>
+      <para>Dependency to a JAR file installed in current Kie Workbench/Drools Workbench "Guvnor M2 repository".
+        (internal to the application) </para>
     </listitem>
   </itemizedlist>
 
   <section>
     <title>Dependency to a JAR file in local M2 repository</title>
 
-    <para>To add a dependency to a JAR file in local M2 repository follow this
-      steps.
-    </para>
+    <para>To add a dependency to a JAR file in local M2 repository follow this steps. </para>
 
     <section>
-      <title>Open the Project Editor for current project and select the
-        Dependencies view.
-      </title>
+      <title>Open the Project Editor for current project and select the Dependencies view. </title>
 
-      <mediaobject>
+      <figure>
         <title>Project editor.</title>
+        <screenshot>
+          <mediaobject>
 
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-1.png"/>
-        </imageobject>
-      </mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-1.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
       <title>Click on the "Add" button to add a new dependency line.</title>
 
-      <mediaobject>
+      <figure>
         <title>New dependency line.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-2.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-2.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
-      <title>Complete the GAV for the JAR file already installed in local M2
-        repository.
-      </title>
+      <title>Complete the GAV for the JAR file already installed in local M2 repository. </title>
 
-      <mediaobject>
+      <figure>
         <title>Dependency line edition.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-3.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-3.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
       <title>Save the project to update its dependencies.</title>
 
-      <para>When project is saved the POJOs defined in the external file will
-        be available.
-      </para>
+      <para>When project is saved the POJOs defined in the external file will be available. </para>
 
-      <mediaobject>
+      <figure>
         <title>Save project.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-4.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-4.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
   </section>
 
   <section>
     <title>Dependency to a JAR file in current "Guvnor M2 repository".</title>
 
-    <para>To add a dependency to a JAR file in current "Guvnor M2 repository"
-      follow this steps.
-    </para>
+    <para>To add a dependency to a JAR file in current "Guvnor M2 repository" follow this steps. </para>
 
     <section>
-      <title>Open the Guvnor M2 Repository editor.</title>
+      <title>Open the Maven Artifact Repository editor.</title>
 
-      <mediaobject>
+      <figure>
         <title>Guvnor M2 Repository editor.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-1.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-1.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
-      <title>Browse your local file system and select the JAR file to be
-        uploaded using the Browse button.
-      </title>
+      <title>Browse your local file system and select the JAR file to be uploaded using the Browse button. </title>
 
-      <mediaobject>
+      <figure>
         <title>File browser.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-2.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-2.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
       <title>Upload the file using the Upload button.</title>
 
-      <mediaobject>
+      <figure>
         <title>File upload success.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-3.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-3.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
       <title>Guvnor M2 repository files.</title>
 
-      <para>Once the file has been loaded it will be displayed in the
-        repository files list.
-      </para>
+      <para>Once the file has been loaded it will be displayed in the repository files list. </para>
 
-      <mediaobject>
+      <figure>
         <title>Files list.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-4.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-4.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
       <title>Provide a GAV for the uploaded file (optional).</title>
 
-      <para>If the uploaded file is not a valid maven JAR (don't have a
-        pom.xml file) the system will prompt the user in order to provide a GAV
-        for the file to be installed.
-      </para>
+      <para>If the uploaded file is not a valid maven JAR (don't have a pom.xml file) the system will prompt the user in
+        order to provide a GAV for the file to be installed. </para>
 
-      <mediaobject>
+      <figure>
         <title>Not valid pom.</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-not-gav-1.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
 
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-not-gav-1.png"/>
-        </imageobject>
-      </mediaobject>
-
-      <mediaobject>
+      <figure>
         <title>Enter GAV manually.</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-not-gav-2.png"/>
-        </imageobject>
-      </mediaobject>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-not-gav-2.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
 
     <section>
       <title>Add dependency from repository.</title>
 
-      <para>Open the project editor (see bellow) and click on the "Add from
-        repository" button to open the JAR selector to see all the installed JAR
-        files in current "Guvnor M2 repository". When the desired file is
-        selected the project should be saved in order to make the new dependency
-        available.
-      </para>
+      <para>Open the project editor (see bellow) and click on the "Add from repository" button to open the JAR selector
+        to see all the installed JAR files in current "Guvnor M2 repository". When the desired file is selected the
+        project should be saved in order to make the new dependency available. </para>
 
-      <mediaobject>
-        <title>Select JAR from "Guvnor M2 repository".</title>
-
-        <imageobject>
-          <imagedata fileref="images/DataModeler/add-dependency-guvnor-m2-5.png"/>
-        </imageobject>
-      </mediaobject>
+      <figure>
+        <title>Select JAR from "Maven Artifact Repository".</title>
+        <screenshot>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-guvnor-m2-5.png"/>
+            </imageobject>
+          </mediaobject>
+        </screenshot>
+      </figure>
     </section>
   </section>
 
   <section>
     <title>Using the external objects</title>
 
-    <para>When a dependency to an external JAR has been set, the external
-      POJOs can be used in the context of current project data model in the
-      following ways:
-    </para>
+    <para>When a dependency to an external JAR has been set, the external POJOs can be used in the context of current
+      project data model in the following ways: </para>
 
     <itemizedlist>
       <listitem>
-        <para>External POJOs can be extended by current model data
-          objects.
-        </para>
+        <para>External POJOs can be extended by current model data objects. </para>
       </listitem>
     </itemizedlist>
 
     <itemizedlist>
       <listitem>
-        <para>External POJOs can be used as field types for current model data
-          objects.
-        </para>
+        <para>External POJOs can be used as field types for current model data objects. </para>
       </listitem>
     </itemizedlist>
 
-    <para>The following screenshot shows how external objects are prefixed
-      with the string " -ext- " in order to be quickly identified.
-    </para>
+    <para>The following screenshot shows how external objects are prefixed with the string " -ext- " in order to be
+      quickly identified. </para>
 
     <para/>
 
-    <mediaobject>
+    <figure>
       <title>Identifying external objects.</title>
-
-      <imageobject>
-        <imagedata fileref="images/DataModeler/add-dependency-select-external-pojo.png"/>
-      </imageobject>
-    </mediaobject>
+      <screenshot>
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Workbench/Authoring/DataModeller/add-dependency-select-external-pojo.png"/>
+          </imageobject>
+        </mediaobject>
+      </screenshot>
+    </figure>
   </section>
 </section>

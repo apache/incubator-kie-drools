@@ -28,7 +28,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/authoring.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/authoring.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -46,7 +46,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/explorer.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/explorer.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -68,7 +68,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/explorer2.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/explorer2.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -89,7 +89,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/tools.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/tools.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -109,7 +109,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/DataModeler/general.jpg"/>
+          <imagedata fileref="images/Workbench/Authoring/DataModeller/general.jpg"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -135,7 +135,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/modelbrowser.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/modelbrowser.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -162,7 +162,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/breadcrumb.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/breadcrumb.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -178,7 +178,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/newattrib.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/newattrib.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -197,7 +197,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/attribbrowser.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/attribbrowser.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -221,7 +221,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/DataModeler/propeditor.jpg"/>
+              <imagedata fileref="images/Workbench/Authoring/DataModeller/propeditor.jpg"/>
             </imageobject>
           </mediaobject>
         </screenshot>

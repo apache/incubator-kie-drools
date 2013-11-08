@@ -59,7 +59,7 @@
             <screenshot>
               <mediaobject>
                 <imageobject>
-                  <imagedata fileref="images/DataModeler/types_primitive.jpg"/>
+                  <imagedata fileref="images/Workbench/Authoring/DataModeller/types_primitive.jpg"/>
                 </imageobject>
               </mediaobject>
             </screenshot>
@@ -91,7 +91,7 @@
             <screenshot>
               <mediaobject>
                 <imageobject>
-                  <imagedata fileref="images/DataModeler/types_entity.jpg"/>
+                  <imagedata fileref="images/Workbench/Authoring/DataModeller/types_entity.jpg"/>
                 </imageobject>
               </mediaobject>
             </screenshot>
@@ -116,7 +116,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/DataModeler/new_attribute_table.jpg"/>
+          <imagedata fileref="images/Workbench/Authoring/DataModeller/new_attribute_table.jpg"/>
         </imageobject>
       </mediaobject>
     </screenshot>
