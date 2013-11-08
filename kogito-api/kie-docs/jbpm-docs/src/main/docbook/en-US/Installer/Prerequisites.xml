@@ -11,5 +11,11 @@
     <para>Java: <link
   xlink:href="http://java.sun.com/javase/downloads/index.jsp">http://java.sun.com/javase/downloads/index.jsp</link></para>
     <para>Ant: <link
-  xlink:href="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindownload.cgi</link></para>    
+  xlink:href="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindownload.cgi</link></para>
+  
+  <tip><para>To check whether Java and Ant are installed correctly, type the following commands inside a
+  command prompt:</para>
+  <para>java -version</para>
+  <para>ant -version</para>
+  <para>This should return information about which version of Java and Ant you are currently using.</para></tip>
 </section>

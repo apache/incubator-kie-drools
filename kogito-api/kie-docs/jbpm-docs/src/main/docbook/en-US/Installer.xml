@@ -11,6 +11,7 @@
   <xi:include href="Setup.xml" />
   <xi:include href="10MinWorkbench.xml" />
   <xi:include href="10MinEclipse.xml" />
+  <xi:include href="Configuration.xml" />
   <xi:include href="FAQ.xml" />
   
 </chapter>

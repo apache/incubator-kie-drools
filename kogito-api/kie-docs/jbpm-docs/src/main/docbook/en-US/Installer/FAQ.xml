@@ -23,7 +23,7 @@
     <para>A: Always check the consoles for output like error messages or stack traces.  You can also check the Eclipse Error Log for exceptions.  Try adding an audit logger to your session to figure out what's happening at runtime, or try debugging your application.</para>
 
     <para>Q: Something seems to be going wrong when running the a web-based application like the jbpm-console.  What can I do?</para>
-    <para>A: You can check the server log for possible exceptions: jbpm-installer/jboss-as-{version}/standalone/log/server.log (for JBoss AS7) or jbpm-installer/jboss-as-{version}/server/default/log/server.log (for earlier versions).</para>
+    <para>A: You can check the server log for possible exceptions: jbpm-installer/jboss-as-{version}/standalone/log/server.log (for JBoss AS7).</para>
 
     <para>For all other questions, try contacting the jBPM community as described in the Getting Started chapter.</para>    
 </section>
