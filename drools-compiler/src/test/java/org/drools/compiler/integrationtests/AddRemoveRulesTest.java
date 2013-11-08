@@ -12,6 +12,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.StringReader;
 import java.util.Collection;
@@ -188,6 +189,65 @@ public class AddRemoveRulesTest {
     }
 
 
+
+    @Test
+    @Ignore
+    public void AddRemoveFromKB() {
+
+        String drl = "\n" +
+                     "rule A\n" +
+                     "  when\n" +
+                     "    Double() from entry-point \"AAA\"\n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "rule B\n" +
+                     "  when\n" +
+                     "    Boolean() from entry-point \"BBB\"\n" +
+                     "    Float()\n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule C\n" +
+                     "  when\n" +
+                     "  then\n" +
+                     "    insertLogical( new Float( 0.0f ) );\n" +
+                     "  end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule D\n" +
+                     "  when\n" +
+                     "    Byte( )\n" +
+                     "    String( )\n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule E\n" +
+                     "  when\n" +
+                     "    Float()\n" +
+                     "  then\n" +
+                     "    insertLogical( \"foo\" );\n" +
+                     "  end\n" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        // Create kSession and initialize it
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        kSession.fireAllRules();
+
+        kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+    }
 
 
 }
