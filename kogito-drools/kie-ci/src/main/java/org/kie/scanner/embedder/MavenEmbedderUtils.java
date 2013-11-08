@@ -1,5 +1,6 @@
 package org.kie.scanner.embedder;
 
+import org.apache.maven.execution.MavenExecutionRequestPopulator;
 import org.apache.tools.ant.AntClassLoader;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
@@ -8,10 +9,14 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
+import org.sonatype.aether.RepositorySystem;
+import org.sonatype.plexus.components.cipher.PlexusCipher;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MavenEmbedderUtils {
     
@@ -69,7 +74,8 @@ public class MavenEmbedderUtils {
         DefaultContainerConfiguration conf = new DefaultContainerConfiguration();
 
         conf.setContainerConfigurationURL( mavenRequest.getOverridingComponentsXml() )
-        .setRealm( classRealm ).setClassWorld( world );
+            .setRealm(classRealm)
+            .setClassWorld(world);
         
         return buildPlexusContainer(mavenRequest,conf);
     }
@@ -85,10 +91,13 @@ public class MavenEmbedderUtils {
 
         ClassWorld classWorld = new ClassWorld();
 
+        ClassRealm parentRealm = createParentRealm(classWorld, parent,
+                                                   MavenExecutionRequestPopulator.class,
+                                                   RepositorySystem.class,
+                                                   PlexusCipher.class);
+
         ClassRealm classRealm = new ClassRealm( classWorld, "maven", mavenClassLoader );
-        classRealm.setParentRealm( new ClassRealm( classWorld, "maven-parent",
-                                                   parent == null ? Thread.currentThread().getContextClassLoader()
-                                                                   : parent ) );
+        classRealm.setParentRealm( parentRealm );
         conf.setRealm( classRealm );
 
         conf.setClassWorld( classWorld );
@@ -96,10 +105,29 @@ public class MavenEmbedderUtils {
         return buildPlexusContainer(mavenRequest,conf);
     }
 
+    private static ClassRealm createParentRealm(ClassWorld classWorld, ClassLoader parent, Class... requiredClasses) {
+        ClassLoader parentCL = parent == null ? Thread.currentThread().getContextClassLoader() : parent;
+        Set<ClassLoader> usedCLs = new HashSet<ClassLoader>();
+        usedCLs.add(parentCL);
+
+        ClassRealm parentRealm = new ClassRealm( classWorld, "maven-parent", parentCL);
+
+        int i = 1;
+        ClassRealm lastParent = parentRealm;
+        for ( Class c : requiredClasses ) {
+            if ( usedCLs.add(c.getClassLoader()) ) {
+                ClassRealm newParent = new ClassRealm( classWorld, "maven-parent" + i++, c.getClassLoader() );
+                lastParent.setParentRealm( newParent );
+                lastParent = newParent;
+            }
+        }
+
+        return parentRealm;
+    }
+
     private static PlexusContainer buildPlexusContainer(MavenRequest mavenRequest,ContainerConfiguration containerConfiguration )
         throws MavenEmbedderException {
-        try
-        {
+        try {
             DefaultPlexusContainer plexusContainer = new DefaultPlexusContainer( containerConfiguration );
             if (mavenRequest.getMavenLoggerManager() != null) {
                 plexusContainer.setLoggerManager( mavenRequest.getMavenLoggerManager() );
