@@ -8,13 +8,20 @@
 <para>Open up the process management console:</para>
     <para><link
   xlink:href="http://localhost:8080/jbpm-console">http://localhost:8080/jbpm-console</link></para>
+  
+    <note><para>It could take a minute to start up the AS and web application.  If the web page
+    doesn't show up after a while, make sure you don't have a firewall blocking that port, or another
+    application already using the port 8080.  You can always take a look at the server
+    log jbpm-installer/jboss-as-7.1.1.Final/standalone/log/server.log</para></note>
 
-    <para>Log in, using krisv / krisv as username / password.
-      The <link
-  xlink:href="http://people.redhat.com/kverlaen/jBPM6-console.swf">following screencast</link> gives an
-      overview of how to manage your process instances. It shows you:
+    <para>Log in, using krisv / krisv as username / password.</para>
+    
+    <para>Using a prebuilt Evaluation example, the <link 
+    xlink:href="http://people.redhat.com/kverlaen/jbpm6F-installer-console.swf">following screencast</link>
+      gives an overview of how to manage your process instances. It shows you:
       <itemizedlist>
-        <listitem>How to start a new process</listitem>
+        <listitem>How to build and deploy a process</listitem>
+        <listitem>How to start a new process instance</listitem>
         <listitem>How to look up the current status of a running process instance</listitem>
         <listitem>How to look up your tasks</listitem>
         <listitem>How to complete a task</listitem>
@@ -22,19 +29,35 @@
       </itemizedlist>
     </para>
 
-    <link
-  xlink:href="http://people.redhat.com/kverlaen/jBPM6-console.swf">
+    <link xlink:href="http://people.redhat.com/kverlaen/jbpm6F-installer-console.swf">
       <figure>
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastConsole.jpg" format="JPG" role="" />
+            <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastConsole.png" format="PNG" />
           </imageobject>
         </mediaobject>
       </figure>
     </link>
 
-    <para>
+    <para>The workbench supports the entire life cycle of your business processes: authoring, deployment,
+        process management, tasks and dashboards.
       <itemizedlist>
+        <listitem>The project authoring perspective allows you to look at existing repositories, where each
+        project can contain business processes (but also business rules, data models, forms, etc.).  By default,
+        the workbench will download two sample playground repositories, containing examples to look at.
+          <itemizedlist>
+            <listitem>In this screencast, the Evaluation project inside the jbpm-playground repository is used.</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>The project explorer shows all available artefacts:
+          <itemizedlist>
+            <listitem>evaluation: business process describing the evaluation process as a sequence of tasks</listitem>
+            <listitem>evaluation-taskform: process form to start the evaluation process</listitem>
+            <listitem>PerformanceEvaluation-taskform: task form to perform the evaluation tasks</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>To make a process available for execution, you need to successfully build and deploy it first.
+        To do so, open up the Project Editor (from the Tools menu) and click Build &amp; Deploy.</listitem>
         <listitem>To manage your process definitions and instances, click on the "Process Management" menu option
           at the top menu bar an select one of available options depending on you interest:
           <itemizedlist>
@@ -43,33 +66,33 @@
               aborted as well by changing filter criteria)</listitem>
           </itemizedlist>
           </listitem>
-
-        <listitem>Process definitions panel allow you to start a new process instance by clicking on the "Play" button.
-          You will see a process form where you need to fill in the
-          necessary information to start the process.  In this case, you need to fill in your username "krisv" and a
-          reason for the request, after which you can complete the form and close the window. After process form
-          window is closed process instance details panel will be shown. From there you can access additional details:
+        <listitem>Process definitions panel allow you to start a new process instance by clicking on the "Play"
+          button.  The process form (as defined in the project) will be shown, where you need to fill in the
+          necessary information to start the process.  In this case, you need to fill the user you want to start
+          an evaluation for (in this case use "krisv") and a reason for the request, after which you can complete
+          the form. Some details about the process instance that was just started will be shown in the process
+          instance details panel. From there you can access additional details:
           <itemizedlist>
             <listitem>Process model - to visualize current state of the process</listitem>
             <listitem>Process variables - to see current values of process variables</listitem>
           </itemizedlist>
-          The process instance that you just started is first requiring a self-evaluation of the user and is waiting until
-          the user has completed this task.</listitem>
-
-        <listitem>To see the tasks that have been assigned to you, choose the "Tasks" menu option on the top bar and select
-          "Task List" (you may need to click refresh to update your task view).  The personal tasks table
-          should show a "Performance Evaluation" task for you.  You can complete this task by selecting it and
-          clicking the "View" button.  This will open the task form for performance evaluations.  You can fill
+          The process instance that you just started is first requiring a self-evaluation of the user and is
+          waiting until the user has completed this task.</listitem>
+        <listitem>To see the tasks that have been assigned to you, choose the "Tasks" menu option on the top 
+          bar and select "Task List" (you may need to click refresh to update your task view).  The personal
+          tasks table should show a "Performance Evaluation" task reserved for you.  After starting the task,
+          you can complete the task, which will open up the task form related to this task.  You can fill
           in the necessary data and then complete the form and close the window.  After completing the task, you
           could check the "Process Instances" once more to check the progress of your process instance.  You
           should be able to see that the process is now waiting for your HR manager and project manager to also
           perform an evaluation.  You could log in as "john" / "john" and "mary" / "mary" to complete these
           tasks.</listitem>
 
-        <listitem>After starting and/or completing a few process instances and human tasks, you can generate a report of
-          what has happened so far.  Under "Dashboards", select "Process &amp; Task Dashboard".  By default, you will
-          see predefined set of charts that allow to directly spot what is going on in the system. Charts can be
-        customized as well which will be described in following chapters.</listitem>
+        <listitem>After starting and/or completing a few process instances and human tasks, you can generate
+          a report of what has happened so far.  Under "Dashboards", select "Process &amp; Task Dashboard".  
+          This is a set of see predefined charts that allow users to spot what is going on in the system.
+          Charts can be fully customized as well, as explained in the Business Activity Monitoring chapter.
+        </listitem>
       </itemizedlist>
     </para>    
 </section>

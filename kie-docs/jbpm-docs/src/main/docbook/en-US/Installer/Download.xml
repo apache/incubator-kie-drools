@@ -7,15 +7,14 @@
   <title>Downloading the Installer</title>
 <para>First of all, you need to <link
   xlink:href="https://sourceforge.net/projects/jbpm/files/jBPM%206/">
-    download</link> the installer.  There are two versions
-      <itemizedlist>
-      <listitem>full installer - which already contains a lot of the dependencies that are necessary during the installation</listitem>
-      <listitem>minimal installer - which only contains the installer and will download all dependencies</listitem>
-      </itemizedlist>
+    download</link> the installer and unzip it to your local file system.  There are two versions
+    <itemizedlist>
+      <listitem><para>full installer - which already contains a lot of the dependencies that are necessary during the installation</para></listitem>
+      <listitem><para>minimal installer - which only contains the installer and will download all dependencies</para></listitem>
+    </itemizedlist>
     In general, it is probably best to download the full installer: jBPM-{version}-installer-full.zip</para>
     
     <para>You can also find the latest snapshot release here (only minimal installer) here:</para>
-    <para><link
-  xlink:href="https://hudson.jboss.org/jenkins/job/jBPM/lastSuccessfulBuild/artifact/jbpm-distribution/target/">
+    <para><link xlink:href="https://hudson.jboss.org/jenkins/job/jBPM/lastSuccessfulBuild/artifact/jbpm-distribution/target/">
     https://hudson.jboss.org/jenkins/job/jBPM/lastSuccessfulBuild/artifact/jbpm-distribution/target/</link></para>    
 </section>

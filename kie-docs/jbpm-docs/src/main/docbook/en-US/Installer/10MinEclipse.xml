@@ -6,37 +6,46 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>10-Minute Tutorial using Eclipse</title>
 <para>The <link
-  xlink:href="http://people.redhat.com/kverlaen/jBPM6-EclipseGitIntegration.swf">following
-    screencast</link> gives an overview of how to integrate Web Console and Eclipse. It shows you:
+  xlink:href="http://people.redhat.com/kverlaen/jbpm6F-installer-eclipse.swf">following
+    screencast</link> gives an overview of how to use the Eclipse tooling. It shows you:
       <itemizedlist>
-        <listitem>How to create new project inside web console</listitem>
-        <listitem>How to create new process inside web console</listitem>
-        <listitem>How to import an existing project into your workspace</listitem>
-        <listitem>How to apply changes in Eclipse</listitem>
-        <listitem>How to push back changes done in Eclipse to Web Console</listitem>
+        <listitem>How to import and execute the evaluation sample project
+          <itemizedlist>
+            <listitem>Import the evaluation project (included in the jbpm-installer)</listitem>
+            <listitem>Open the Evaluation.bpmn process</listitem>
+            <listitem>Open the com.sample.ProcessTest Java class</listitem>
+            <listitem>Execute the ProcessTest class to run the process</listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>How to create a new jBPM project (including sample process and JUnit test)</listitem>
       </itemizedlist>
     </para>
     
     <link
-  xlink:href="http://people.redhat.com/kverlaen/jBPM6-EclipseGitIntegration.swf">
+  xlink:href="http://people.redhat.com/kverlaen/jbpm6F-installer-eclipse.swf">
       <figure>
         <mediaobject>
           <imageobject>
-        <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastEclipse.png" format="PNG" role="" />
+        <imagedata align="center" fileref="images/Chapter-3-Installer/ScreencastEclipse.png" format="PNG" width="100%" />
           </imageobject>
         </mediaobject>
       </figure>
     </link>
+    
+    <para>You can import the evaluation project - a sample included in the jbpm-installer - by selecting
+    "File -> Import ...", select "Existing Projects into Workspace" and browse to the 
+    jbpm-installer/sample/evaluation folder and click "Finish".  You can open up the evaluation process
+    and the ProcessTest class.  To execute the class, right-click on it and select 
+    "Run as ... - Java Application".  The console should show how the process was started and how
+    the different actors in the process completed the tasks assigned to them, to complete the process
+    instance.</para>
 
-    <para>You could also create a new project using the jBPM project wizard.  This sample project
-    contains a simple HelloWorld BPMN2 process and an associated Java file to start the process.
-    Simply select "File - New - jBPM Project" (if you cannot see that (because you're not in the jBPM
-    perspective) you can do "File - New ... - Project ..." and under the "jBPM" category, select 
-    "jBPM project" and click "Next").  Give the project a name and click "Finish".  You should see a new project
-    containing a "sample.bpmn" process and a "com.sample.ProcessMain" Java class and a "com.sample.ProcessTest"
-    JUnit test class.  You can open the BPMN2 process by double-clicking it.  To execute the process,
-    right-click on ProcessMain.java and select "Run As - Java Application".  You should see a 
-    "Hello World" statement in the output console.  To execute the test, right-click on ProcessTest.java
-    and select "Run As - JUnit Test".  You should also see a "Hello World" statement in the output console,
-    and the JUnit test completion in the JUnit view.</para>    
+    <para>You could also create a new project using the jBPM project wizard.  The sample projects
+    contain a process and an associated Java file to start the process.  Select "File - New ... - Project ..."
+    and under the "jBPM" category, select "jBPM project" and click "Next".  Give the project a name and click
+    "Next".  You can choose from a simple HelloWorld example or a slightly more advanced example using
+    persistence and human tasks.  If you select the latter and click Finish, you should see a new project
+    containing a "sample.bpmn" process and a "com.sample.ProcessTest" JUnit test class.  You can open the
+    BPMN2 process by double-clicking it.  To execute the process, right-click on ProcessTest.java and select
+    "Run As - Java Application".</para>    
 </section>
