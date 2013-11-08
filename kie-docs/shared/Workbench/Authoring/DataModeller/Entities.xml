@@ -30,7 +30,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/DataModeler/create_top.jpg"/>
+          <imagedata fileref="images/Workbench/Authoring/DataModeller/create_top.jpg"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -44,7 +44,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/DataModeler/new_object.jpg"/>
+          <imagedata fileref="images/Workbench/Authoring/DataModeller/new_object.jpg"/>
         </imageobject>
       </mediaobject>
     </screenshot>
@@ -115,7 +115,7 @@
     <screenshot>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="images/DataModeler/new_created.jpg"/>
+          <imagedata fileref="images/Workbench/Authoring/DataModeller/new_created.jpg"/>
         </imageobject>
       </mediaobject>
     </screenshot>

@@ -1,13 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section version="5.0" xml:base="../../" xml:id="wb.ReleaseNotesWorkbench.6.0.0"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xmlns="http://docbook.org/ns/docbook"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-         xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+  xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>New and Noteworthy in KIE Workbench 6.0.0</title>
 
-  <para>todo</para>
+  <para>What's not new?</para>
+
+  <figure>
+    <title>Workbench</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Workbench/ReleaseNotes/kie-drools-wb.png" format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Guvnor has been renamed. It has essentially been completely re-write. </para>
+  <para>There are two primary distributions, the one you need to use depends upon your requirements:- <itemizedlist>
+      <listitem>
+        <para>KIE Drools Workbench</para>
+        <itemizedlist>
+          <listitem>
+            <para>Drools Editors, for rules and supporting assets.</para>
+          </listitem>
+          <listitem>
+            <para>jBPM Designer, for Rule Flow and supporting assets.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>KIE Workbench</para>
+        <itemizedlist>
+          <listitem>
+            <para>Drools Editors, for rules and supporting assets.</para>
+          </listitem>
+          <listitem>
+            <para>jBPM Designer, for BPMN2 and supporting assets.</para>
+          </listitem>
+          <listitem>
+            <para>jBPM Console, runtime and Human Task support.</para>
+          </listitem>
+          <listitem>
+            <para>jBPM Form Builder.</para>
+          </listitem>
+          <listitem>
+            <para>BAM.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist><important>
+      <para>KIE Drools Workbench and KIE Workbench share a common set of components for generic workbench functionality
+        such as Project navigation, Project defintions, Maven based Projects, Maven Artifact Repository. These common
+        features are described in more detail throughout this documentation.</para>
+    </important></para>
+  <para>The following diagram illustrates the new module strucuture and how the Workbenchs fit into the larger
+    picture.</para>
+
+  <figure>
+    <title>Module Structure</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Workbench/ReleaseNotes/kie-structure.png" format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>Most notably: <itemizedlist>
+      <listitem>
+        <para>New flexible Workbench environment.</para>
+      </listitem>
+      <listitem>
+        <para>New packaging and build system following KIE API.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Maven based projects.</para>
+          </listitem>
+          <listitem>
+            <para>Maven Artifact Repository replaces Global Area.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>New Data Modeller replaces the declarative Fact Model Editor; bringing authoring of Java classes to the
+          authoring environment. Java classes are packaged into the project and can be used within rules, processes etc
+          and externally in your own applications.</para>
+      </listitem>
+      <listitem>
+        <para>Virtual File System replaces JCR with a default GIT based implementation.</para>
+        <itemizedlist>
+          <listitem>
+            <para>Default GIT based implementation supports remote operations.</para>
+          </listitem>
+          <listitem>
+            <para>External modifications appear within the Workbench.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+      <listitem>
+        <para>Incremental Build system showing, near real-time validation results of your project and assets.</para>
+      </listitem>
+    </itemizedlist>
+  </para>
+  <para>The editors themselves are largely unchanged; however of note imports have moved from the package definition to
+    individual editors so you need only import types used for an asset and not the package as a whole.</para>
 
 </section>

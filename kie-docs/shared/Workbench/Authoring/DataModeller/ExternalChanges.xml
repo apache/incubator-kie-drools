@@ -43,7 +43,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/DataModeler/extchanges_reopen_ignore.jpg"/>
+            <imagedata fileref="images/Workbench/Authoring/DataModeller/extchanges_reopen_ignore.jpg"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -70,7 +70,7 @@
           <screenshot>
             <mediaobject>
               <imageobject>
-                <imagedata fileref="images/DataModeler/extchanges_forcesave_reopen.jpg"/>
+                <imagedata fileref="images/Workbench/Authoring/DataModeller/extchanges_forcesave_reopen.jpg"/>
               </imageobject>
             </mediaobject>
           </screenshot>
@@ -106,7 +106,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/DataModeler/extchanges_reopen_ignore.jpg"/>
+            <imagedata fileref="images/Workbench/Authoring/DataModeller/extchanges_reopen_ignore.jpg"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -140,7 +140,7 @@
               <screenshot>
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="images/DataModeler/extchanges_forcesave_reopen.jpg"/>
+                    <imagedata fileref="images/Workbench/Authoring/DataModeller/extchanges_forcesave_reopen.jpg"/>
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -150,8 +150,6 @@
             external changes, while "Re-open" will discard any local changes
             and reload the model.</para>
           </listitem>
-
-		  <para/>
 
           <listitem>
             <para>The user switches to another project. In this case he will
@@ -164,7 +162,7 @@
               <screenshot>
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="images/DataModeler/project-switch_save.jpg"/>
+                    <imagedata fileref="images/Workbench/Authoring/DataModeller/project-switch_save.jpg"/>
                   </imageobject>
                 </mediaobject>
               </screenshot>
@@ -182,7 +180,7 @@
               <screenshot>
                 <mediaobject>
                   <imageobject>
-                    <imagedata fileref="images/DataModeler/extchanges_projswitch_forcesave_discard.jpg"/>
+                    <imagedata fileref="images/Workbench/Authoring/DataModeller/extchanges_projswitch_forcesave_discard.jpg"/>
                   </imageobject>
                 </mediaobject>
               </screenshot>

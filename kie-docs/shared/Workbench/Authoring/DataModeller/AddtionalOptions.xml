@@ -25,7 +25,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/DataModeler/propeditor.jpg"/>
+            <imagedata fileref="images/Workbench/Authoring/DataModeller/propeditor.jpg"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -66,7 +66,7 @@
       <screenshot>
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/DataModeler/attrib_propeditor.jpg"/>
+            <imagedata fileref="images/Workbench/Authoring/DataModeller/attrib_propeditor.jpg"/>
           </imageobject>
         </mediaobject>
       </screenshot>
@@ -103,5 +103,4 @@
     </itemizedlist>
   </section>
 
-  <para/>
 </section>
