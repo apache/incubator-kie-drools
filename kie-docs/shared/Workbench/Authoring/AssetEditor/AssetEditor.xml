@@ -86,11 +86,12 @@
           </imageobject>
         </mediaobject>
       </figure>
+      
       <figure>
         <title>The Asset Editor - Other meta data</title>
         <mediaobject>
           <imageobject>
-            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-2.png" format="PNG" />
+            <imagedata align="center" fileref="images/Workbench/Authoring/AssetEditor/AssetEditor-attributes-2.png" format="PNG" scalefit="1" />
           </imageobject>
         </mediaobject>
       </figure>
