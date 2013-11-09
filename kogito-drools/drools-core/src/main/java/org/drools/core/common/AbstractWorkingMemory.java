@@ -1418,7 +1418,10 @@ public class AbstractWorkingMemory
             if ( this.leftTuple != null ) {
                 ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
                 for( LeftTuple entry = this.leftTuple; entry != null; entry = entry.getParent() ) {
-                    _tuple.addHandleId( entry.getLastHandle().getId() );
+                    if ( entry.getLastHandle() != null ) {
+                        // can be null for eval, not and exists that have no right input
+                        _tuple.addHandleId( entry.getLastHandle().getId() );
+                    }
                 }
                 _assert.setOriginPkgName( ruleOrigin.getPackageName() )
                        .setOriginRuleName( ruleOrigin.getName() )

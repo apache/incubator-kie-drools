@@ -16,9 +16,13 @@ public class VarargsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase("varargs.drl");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
 
-        ksession.setGlobal( "invoker", new Invoker() );
+        Invoker inv = new Invoker();
+        ksession.setGlobal( "invoker", inv );
+        assertEquals( 1, ksession.fireAllRules() );
 
-        ksession.fireAllRules();
+        assertTrue( inv.isI1()  );
+        assertTrue( inv.isI2()  );
+        assertTrue( inv.isI3()  );
     }
 
     @Test
@@ -28,19 +32,36 @@ public class VarargsTest extends CommonTestMethodBase {
 
         MySet mySet = new MySet( "one", "two" );
         ksession.insert(mySet);
-        ksession.fireAllRules();
-    }
+        assertEquals( 5, ksession.fireAllRules() );
+
+        assertTrue(mySet.contains("one"));
+        assertTrue( mySet.contains("two") );
+        assertTrue( mySet.contains("three") );
+        assertTrue( mySet.contains("four") );
+        assertTrue( mySet.contains("z") );
+
+        mySet = (MySet) ksession.getGlobal("set");
+        assertTrue( mySet.contains("x") );
+        assertTrue( mySet.contains("y") );
+        assertTrue( mySet.contains("three") );
+        assertTrue( mySet.contains("four") );
+        assertTrue( mySet.contains("z") );     }
 
     public static class Invoker {
-        public void invoke(String s1, int num, String... strings) {
+        private boolean i1;
+        private boolean i2;
+        private boolean i3;
+         public void invoke(String s1, int num, String... strings) {
             if (num != strings.length) {
                 throw new RuntimeException("Expected num: " + num + ", got: " + strings.length);
             }
+             i1 = true;
         }
         public void invoke(String s1, int num, A... as) {
             if (num != as.length) {
                 throw new RuntimeException("Expected num: " + num + ", got: " + as.length);
             }
+            i2 = true;
         }
         public void invoke(int total, A... as) {
             int sum = 0;
@@ -48,6 +69,31 @@ public class VarargsTest extends CommonTestMethodBase {
             if (total != sum) {
                 throw new RuntimeException("Expected total: " + total);
             }
+            i3 = true;
+        }
+
+        public boolean isI1() {
+            return i1;
+        }
+
+        public void setI1(boolean i1) {
+            this.i1 = i1;
+        }
+
+        public boolean isI2() {
+            return i2;
+        }
+
+        public void setI2(boolean i2) {
+            this.i2 = i2;
+        }
+
+        public boolean isI3() {
+            return i3;
+        }
+
+        public void setI3(boolean i3) {
+            this.i3 = i3;
         }
     }
 
@@ -66,10 +112,19 @@ public class VarargsTest extends CommonTestMethodBase {
 
     @PropertyReactive
     public static class MySet {
+        private boolean processed;
         Set<String> set = new HashSet<String>();
 
         public MySet( String... strings ){
             add( strings );
+        }
+
+        public boolean isProcessed() {
+            return processed;
+        }
+
+        public void setProcessed(boolean processed) {
+            this.processed = processed;
         }
 
         public void add( String... strings ){
@@ -80,6 +135,10 @@ public class VarargsTest extends CommonTestMethodBase {
 
         public boolean contains( String s ){
             return set.contains( s );
+        }
+
+        public Set<String> getSet() {
+            return this.set;
         }
 
         public String toString(){

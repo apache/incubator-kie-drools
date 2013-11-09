@@ -781,7 +781,10 @@ public class ProtobufOutputMarshaller {
                 LeftTuple t1 = o1.getTuple();
                 LeftTuple t2 = o2.getTuple();
                 while ( result == 0 && t1 != null && t2 != null ) {
-                    result = t1.getLastHandle().getId() - t2.getLastHandle().getId();
+                    if ( t1.getLastHandle() != null && t2.getLastHandle() != null ) {
+                        // can be null for eval, not and exists that have no right input
+                        result = t1.getLastHandle().getId() - t2.getLastHandle().getId();
+                    }
                     t1 = t1.getParent();
                     t2 = t2.getParent();
                 }
@@ -823,7 +826,10 @@ public class ProtobufOutputMarshaller {
         ProtobufMessages.Tuple.Builder _tb = ProtobufMessages.Tuple.newBuilder();
         for ( LeftTuple entry = tuple; entry != null; entry = entry.getParent() ) {
             InternalFactHandle handle = entry.getLastHandle();
-            _tb.addHandleId( handle.getId() );
+            if ( handle != null ) {
+                 // can be null for eval, not and exists that have no right input
+                _tb.addHandleId( handle.getId() );
+            }
         }
         return _tb.build();
     }

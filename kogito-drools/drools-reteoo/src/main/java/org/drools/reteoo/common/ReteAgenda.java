@@ -1307,6 +1307,10 @@ public class ReteAgenda
                 }
                 // if the tuple contains expired events
                 for ( LeftTuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getLastHandle() == null ) {
+                        // can be null for eval, not and exists that have no right input
+                        continue;
+                    }
                     if ( tuple.getLastHandle().isEvent() ) {
                         EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
                         // decrease the activation count for the event

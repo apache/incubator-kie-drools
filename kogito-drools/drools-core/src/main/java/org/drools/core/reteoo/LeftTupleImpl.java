@@ -162,7 +162,10 @@ public class LeftTupleImpl extends BaseLeftTuple {
         int[] ids = new int[getIndex() + 1];
         LeftTuple entry = this;
         while (entry != null) {
-            ids[entry.getIndex()] = entry.getLastHandle().getId();
+            if ( entry.getLastHandle() != null ) {
+                // can be null for eval, not and exists that have no right input
+                ids[entry.getIndex()] = entry.getLastHandle().getId();
+            }
             entry = entry.getParent();
         }
         builder.append(Arrays.toString(ids))
