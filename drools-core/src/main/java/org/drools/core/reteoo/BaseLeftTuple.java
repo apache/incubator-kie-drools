@@ -93,19 +93,19 @@ public class BaseLeftTuple
     public BaseLeftTuple(final InternalFactHandle factHandle,
                          final LeftTuple leftTuple,
                          final LeftTupleSink sink) {
-    this.handle = factHandle;
-    this.index = leftTuple.getIndex() + 1;
-    this.parent = leftTuple;   
-    this.sink = sink;
-}    
+        this.handle = factHandle;
+        this.index = leftTuple.getIndex() + 1;
+        this.parent = leftTuple;
+        this.sink = sink;
+    }
 
     public BaseLeftTuple(final LeftTuple leftTuple,
                          final LeftTupleSink sink,
                          final PropagationContext pctx,
                          final boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
-        this.parent = leftTuple.getParent();
-        this.handle = leftTuple.getHandle();
+        this.parent = leftTuple;
+        this.handle = null;
         this.propagationContext = pctx;
 
         if ( leftTupleMemoryEnabled ) {
@@ -475,7 +475,7 @@ public class BaseLeftTuple
      */
     public InternalFactHandle get(final int index) {
         LeftTuple entry = this;
-        while ( entry != null && entry.getIndex() != index ) {
+        while ( entry != null && ( entry.getIndex() != index || entry.getLastHandle() == null ) ) {
             entry = entry.getParent();
         }
         return entry == null ? null : entry.getHandle();
@@ -507,7 +507,10 @@ public class BaseLeftTuple
         InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
         LeftTuple entry = this;
         while ( entry != null ) {
-            handles[entry.getIndex()] = entry.getHandle();
+            if ( entry.getHandle() != null ) {
+                // eval, not, exists have no right input
+                handles[entry.getIndex()] = entry.getHandle();
+            }
             entry = entry.getParent();
         }
         return handles;
@@ -597,8 +600,9 @@ public class BaseLeftTuple
      * @see org.kie.reteoo.LeftTuple#hashCode()
      */
     public int hashCode() {
-        return this.handle.hashCode();
+        return handle == null ? 0 : handle.hashCode();
     }
+
     /* (non-Javadoc)
      * @see org.kie.reteoo.LeftTuple#equals(org.kie.reteoo.LeftTuple)
      */
@@ -773,10 +777,10 @@ public class BaseLeftTuple
      */
     public LeftTuple getSubTuple(final int elements) {
         LeftTuple entry = this;
-        if ( elements < this.size() ) {
+        if ( elements <= this.size() ) {
             final int lastindex = elements - 1;
 
-            while ( entry.getIndex() != lastindex ) {
+            while ( entry.getIndex() != lastindex || entry.getLastHandle() == null ) {
                 entry = entry.getParent();
             }
         }
@@ -790,8 +794,11 @@ public class BaseLeftTuple
         Object[] objects = new Object[this.index + 1];
         LeftTuple entry = this;
         while ( entry != null ) {
-            Object object = entry.getLastHandle().getObject();
-            objects[entry.getIndex()] = object;
+            if ( entry.getLastHandle() != null ) {
+                // can be null for eval, not and exists that have no right input
+                Object object = entry.getLastHandle().getObject();
+                objects[entry.getIndex()] = object;
+            }
             entry = entry.getParent();
         }
         return objects;
@@ -854,7 +861,8 @@ public class BaseLeftTuple
      */
     public void increaseActivationCountForEvents() {
         for ( LeftTuple entry = this; entry != null; entry = entry.getParent() ) {
-            if( entry.getLastHandle().isEvent() ) {
+            if(entry.getLastHandle() != null &&  entry.getLastHandle().isEvent() ) {
+                // can be null for eval, not and exists that have no right input
                 ((EventFactHandle)entry.getLastHandle()).increaseActivationsCount();
             }
         }
@@ -865,7 +873,8 @@ public class BaseLeftTuple
      */
     public void decreaseActivationCountForEvents() {
         for ( LeftTuple entry = this; entry != null; entry = entry.getParent() ) {
-            if( entry.getLastHandle().isEvent() ) {
+            if( entry.getLastHandle() != null &&  entry.getLastHandle().isEvent() ) {
+                // can be null for eval, not and exists that have no right input
                 ((EventFactHandle)entry.getLastHandle()).decreaseActivationsCount();
             }
         }

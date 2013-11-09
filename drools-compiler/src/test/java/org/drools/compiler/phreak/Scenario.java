@@ -242,7 +242,7 @@ public class Scenario {
                 actualTuple = actual.getInsertFirst();        
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertEquals( "insert " + i, expectedTuple, actualTuple );
+                    Assert.assertTrue("insert " + i, equals(expectedTuple, actualTuple));
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
@@ -258,7 +258,7 @@ public class Scenario {
                 actualTuple = actual.getDeleteFirst();
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertEquals( "delete " + i, expectedTuple, actualTuple );
+                    Assert.assertTrue( "delete " + i, equals( expectedTuple, actualTuple ) );
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
@@ -274,7 +274,7 @@ public class Scenario {
                 actualTuple = actual.getUpdateFirst();
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertEquals( "update " + i, expectedTuple, actualTuple );
+                    Assert.assertTrue( "update " + i, equals( expectedTuple, actualTuple ) );
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
@@ -284,6 +284,43 @@ public class Scenario {
             }
         }
 
+    }
+
+    public boolean equals(final LeftTuple expected, LeftTuple actual) {
+        // we know the object is never null and always of the  type LeftTuple
+        if ( expected == actual ) {
+            return true;
+        }
+
+        if ( expected == null ) {
+            if ( actual == null ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if ( actual == null ) {
+            if ( expected == null ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        while ( actual.getLastHandle() == null ) {
+            // skip exists, not, evals
+            actual = actual.getParent();
+        }
+
+        // A LeftTuple is  only the same if it has the same hashCode, factId and parent
+        if ( expected.hashCode() != actual.hashCode() ) {
+            return false;
+        }
+
+        if ( expected.getLastHandle() != actual.getLastHandle() ) {
+            return false;
+        }
+
+        return equals( expected.getParent(), actual.getParent() );
     }
 
     public void equalsLeftMemory(List<LeftTuple> leftTuples) {

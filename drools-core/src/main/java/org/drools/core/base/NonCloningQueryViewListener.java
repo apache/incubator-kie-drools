@@ -50,7 +50,11 @@ public class NonCloningQueryViewListener
         // Add all the FactHandles except the root DroolQuery object
         while ( entry.getIndex() > 0 ) {
             InternalFactHandle handle = entry.getLastHandle();
-            handles[entry.getIndex()] = handle;
+            if ( handle != null ) {
+                // can be null for eval, not and exists that have no right input
+                handles[entry.getIndex()] = handle;
+            }
+
             entry = entry.getParent();
         }
 

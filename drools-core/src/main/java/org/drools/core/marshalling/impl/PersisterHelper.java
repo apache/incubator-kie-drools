@@ -134,7 +134,10 @@ public class PersisterHelper {
     public static ProtobufMessages.Tuple createTuple( final LeftTuple leftTuple ) {
         ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
         for( LeftTuple entry = leftTuple; entry != null ; entry = entry.getParent() ) {
-            _tuple.addHandleId( entry.getLastHandle().getId() );
+            if ( entry.getLastHandle() != null ) {
+                // can be null for eval, not and exists that have no right input
+                _tuple.addHandleId( entry.getLastHandle().getId() );
+            }
         }
         return _tuple.build();
     }
@@ -154,8 +157,11 @@ public class PersisterHelper {
             // tuple iterations happens backwards
             int i = tuple.length;
             for( LeftTuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
-                // have to decrement i before assignment
-                tuple[--i] = entry.getLastHandle().getId();
+                if ( entry.getLastHandle() != null ) {
+                    // can be null for eval, not and exists that have no right input
+                    // have to decrement i before assignment
+                    tuple[--i] = entry.getLastHandle().getId();
+                }
             }
             return tuple;
         } else {

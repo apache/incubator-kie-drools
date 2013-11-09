@@ -89,8 +89,9 @@ public class TupleStartEqualsConstraint
     public boolean isAllowedCachedLeft(final ContextEntry context,
                                        final InternalFactHandle handle) {
         // object MUST be a ReteTuple
-        final LeftTuple tuple = ((LeftTuple) handle.getObject()).getSubTuple( ((TupleStartEqualsConstraintContextEntry) context).compareSize );
-        return ((TupleStartEqualsConstraintContextEntry) context).left.equals( tuple );
+        int size = ((TupleStartEqualsConstraintContextEntry) context).compareSize;
+        final LeftTuple tuple = ((LeftTuple) handle.getObject()).getSubTuple( size );
+        return ((TupleStartEqualsConstraintContextEntry) context).left.getSubTuple( size ).equals( tuple );
     }
 
     public boolean isAllowedCachedRight(final LeftTuple tuple,
