@@ -16,6 +16,7 @@
 
 package org.jbpm.process.workitem.webservice;
 
+import java.lang.reflect.Array;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.namespace.QName;
@@ -50,16 +51,26 @@ public class WebServiceCommand implements Command {
 
     @Override
     public ExecutionResults execute(CommandContext ctx) throws Exception {
-        
+    	Object[] parameters = null;
         WorkItem workItem = (WorkItem) ctx.getData("workItem");
         
         String interfaceRef = (String) workItem.getParameter("Interface");
         String operationRef = (String) workItem.getParameter("Operation");
-        Object parameter = workItem.getParameter("Parameter");
+        if ( workItem.getParameter("Parameter") instanceof Object[]) {
+        	parameters =  (Object[]) workItem.getParameter("Parameter");
+        } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
+        	int length = Array.getLength(workItem.getParameter("Parameter"));
+            parameters = new Object[length];
+            for(int i = 0; i < length; i++) {
+            	parameters[i] = Array.get(workItem.getParameter("Parameter"), i);
+            }            
+        } else {
+        	parameters = new Object[]{ workItem.getParameter("Parameter")};
+        }
         
         Client client = getWSClient(workItem, interfaceRef);
         
-        Object[] result = client.invoke(operationRef, parameter);
+        Object[] result = client.invoke(operationRef, parameters);
         
         ExecutionResults results = new ExecutionResults();       
 

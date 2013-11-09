@@ -153,6 +153,38 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
+    public void testServiceInvocationWithMultipleParams() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new WebServiceWorkItemHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", new String[]{"john", "doe"});
+        params.put("mode", "sync");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("multiparamws", params);
+        String variable = (String) processInstance.getVariable("s2");
+        assertEquals("Hello doe, john", variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
+    @Test
+    public void testServiceInvocationWithMultipleIntParams() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new WebServiceWorkItemHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", new int[]{2, 3});
+        params.put("mode", "sync");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("multiparamws-int", params);
+        String variable = (String) processInstance.getVariable("s2");
+        assertEquals("Hello 2, 3", variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+    
     private void startWebService() {
         this.service = new SimpleService();
         this.endpoint = Endpoint.publish("http://127.0.0.1:9876/HelloService/greeting", service);
@@ -171,6 +203,8 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTask.bpmn2"), ResourceType.BPMN2);
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-JaxWSServiceTaskWithErrorBoundaryEvent.bpmn2"), ResourceType.BPMN2);
         kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-TwoWebServiceImports.bpmn"), ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultipleParamsWebService.bpmn"), ResourceType.BPMN2);
+        kbuilder.add(ResourceFactory.newClassPathResource("BPMN2-MultipleIntParamsWebService.bpmn"), ResourceType.BPMN2);
         return kbuilder.newKnowledgeBase();
     }
     

@@ -29,4 +29,18 @@ public class SimpleService {
         throw new RuntimeException("Hello exception " + name);
     }
     
+    @WebMethod(operationName = "helloMulti")
+    public String helloMulitpleParams(@WebParam(name = "name") String name, @WebParam(name = "lastname") String lastname) {
+
+        logger.info("Hello first name {} and last name {}", name, lastname);
+        return "Hello " + lastname + ", " + name;
+    }
+    
+    @WebMethod(operationName = "helloMultiInt")
+    public String helloMulitpleIntParams(@WebParam(name = "name") int first, @WebParam(name = "lastname") int second) {
+
+        logger.info("Got numbers first {} and last {}", first, second);
+        return "Hello " + first + ", " + second;
+    }
+    
 }

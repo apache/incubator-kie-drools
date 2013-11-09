@@ -16,6 +16,8 @@
 
 package org.jbpm.process.workitem.webservice;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,10 +77,21 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
     }
 
     public void executeWorkItem(WorkItem workItem, final WorkItemManager manager) {
-
+    	Object[] parameters = null;
         String interfaceRef = (String) workItem.getParameter("Interface");
         String operationRef = (String) workItem.getParameter("Operation");
-        Object parameter = workItem.getParameter("Parameter");
+        if ( workItem.getParameter("Parameter") instanceof Object[]) {
+        	parameters =  (Object[]) workItem.getParameter("Parameter");
+        } else if (workItem.getParameter("Parameter") != null && workItem.getParameter("Parameter").getClass().isArray()) {
+        	int length = Array.getLength(workItem.getParameter("Parameter"));
+            parameters = new Object[length];
+            for(int i = 0; i < length; i++) {
+            	parameters[i] = Array.get(workItem.getParameter("Parameter"), i);
+            }            
+        } else {
+        	parameters = new Object[]{ workItem.getParameter("Parameter")};
+        }
+        
         String modeParam = (String) workItem.getParameter("Mode");
         WSMode mode = WSMode.valueOf(modeParam == null ? "SYNC" : modeParam.toUpperCase());
             
@@ -89,7 +102,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
              }
              switch (mode) {
                 case SYNC:
-                    Object[] result = client.invoke(operationRef, parameter);
+                    Object[] result = client.invoke(operationRef, parameters);
                     
                     Map<String, Object> output = new HashMap<String, Object>();          
    
@@ -104,7 +117,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
                 case ASYNC:
                     final ClientCallback callback = new ClientCallback();
                     final long workItemId = workItem.getId();
-                    client.invoke(callback, operationRef, parameter);
+                    client.invoke(callback, operationRef, parameters);
                     new Thread(new Runnable() {
                        
                        public void run() {
@@ -134,7 +147,7 @@ public class WebServiceWorkItemHandler extends AbstractLogOrThrowWorkItemHandler
             case ONEWAY:
                 ClientCallback callbackFF = new ClientCallback();
                 
-                client.invoke(callbackFF, operationRef, parameter);
+                client.invoke(callbackFF, operationRef, parameters);
                 logger.debug("One way operation, not going to wait for response, completing work item {}", workItem.getId());
                 manager.completeWorkItem(workItem.getId(),  new HashMap<String, Object>());
                 break;
