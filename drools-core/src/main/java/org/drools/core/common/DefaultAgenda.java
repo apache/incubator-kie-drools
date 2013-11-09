@@ -1039,7 +1039,9 @@ public class DefaultAgenda
                 }
                 // if the tuple contains expired events
                 for ( LeftTuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getLastHandle().isEvent() ) {
+                    if ( tuple.getLastHandle() != null &&  tuple.getLastHandle().isEvent() ) {
+                        // can be null for eval, not and exists that have no right input
+
                         EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
                         // decrease the activation count for the event
                         handle.decreaseActivationsCount();

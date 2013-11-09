@@ -58,8 +58,8 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         assertEquals( 2,
                       list.size() );
-        assertEquals( "rule1:go1", list.get(0) );
-        assertEquals( "rule2:go1", list.get(1) );
+        assertTrue( list.contains("rule1:go1") );
+        assertTrue( list.contains("rule2:go1") );
 
         ksession.dispose();
     }

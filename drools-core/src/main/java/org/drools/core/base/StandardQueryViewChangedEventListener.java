@@ -51,12 +51,15 @@ public class StandardQueryViewChangedEventListener
         // Add all the FactHandles
         while ( entry != null) {
             InternalFactHandle handle = entry.getLastHandle();
-            handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
-                                                               ( handle.getEntryPoint() != null ) ?  handle.getEntryPoint().getEntryPointId() : null,
-                                                               handle.getIdentityHashCode(),
-                                                               handle.getObjectHashCode(),
-                                                               handle.getRecency(),
-                                                               handle.getObject() );
+            if ( handle != null ) {
+                // can be null for eval, not and exists that have no right input
+                handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
+                                                                   ( handle.getEntryPoint() != null ) ?  handle.getEntryPoint().getEntryPointId() : null,
+                                                                   handle.getIdentityHashCode(),
+                                                                   handle.getObjectHashCode(),
+                                                                   handle.getRecency(),
+                                                                   handle.getObject() );
+            }
             entry = entry.getParent();
         }
         

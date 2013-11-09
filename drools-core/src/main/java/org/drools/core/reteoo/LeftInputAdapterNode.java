@@ -353,13 +353,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
                                               final LiaNodeMemory lm, SegmentMemory sm, LeftTupleSets leftTuples, LeftTupleSink sink) {
-        if ( leftTuple.getStagedType() != LeftTuple.INSERT ) {
-            // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
-            leftTuple.setPropagationContext( pctx );
-            if (leftTuple.getFirstChild() != null) {
-                leftTuple.getFirstChild().setPropagationContext( pctx );
-            }
-        }
+        leftTuple.setPropagationContext( pctx );
+
         synchronized ( ((SynchronizedLeftTupleSets)leftTuples).getLock() ) {
             // @TODO I synchronized this, as I'm not 100% of the thread interactions here, it might be possible to remove this later.
             if ( leftTuple.getStagedType() == LeftTuple.NONE ) {

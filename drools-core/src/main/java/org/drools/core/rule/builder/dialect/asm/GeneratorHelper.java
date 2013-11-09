@@ -209,7 +209,8 @@ public final class GeneratorHelper {
         }
 
         protected LeftTuple traverseTuplesUntilDeclaration(LeftTuple currentLeftTuple, int declarOffset, int tupleReg) {
-            while ( currentLeftTuple.getIndex() > declarOffset ) {
+            while ( currentLeftTuple.getLastHandle() == null || currentLeftTuple.getIndex() > declarOffset ) {
+                // FactHandle is null for eval, not and join nodes as it ahs no right input
                 mv.visitVarInsn(ALOAD, tupleReg);
                 invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
                 mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
