@@ -1,5 +1,7 @@
 package org.drools.factmodel;
 
+import org.drools.core.util.HierNode;
+import org.drools.factmodel.traits.LatticeElement;
 import org.drools.factmodel.traits.TypeHierarchy;
 
 import java.io.Externalizable;
@@ -16,7 +18,7 @@ import java.util.Map;
  * Use @see{TypeHierarchy} instead.
  * @param <T>
  */
-public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externalizable {
+public class IndexedTypeHierarchy<T> extends TypeHierarchy<T,HierNode<T>> implements Externalizable {
 
     protected transient Map<T, HierNode<T>> cache;
 
@@ -29,8 +31,8 @@ public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externa
         setTopCode( topKey );
         setBottomCode( bottomKey );
         cache = new HashMap<T, HierNode<T>>();
-        addMember( topElement, topKey );
-        addMember( bottomElement, bottomKey );
+        addMember( (LatticeElement)topElement, topKey );
+        addMember( (LatticeElement)bottomElement, bottomKey );
 
     }
 
@@ -54,7 +56,7 @@ public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externa
         }
 
         for ( HierNode<T> node : getNodes() ) {
-            builder.append( node.toString( len ) ).append("\n");
+            builder.append( node.toString(len) ).append("\n");
         }
         builder.append( "*****************************************\n" );
         builder.append( getSortedMap() ).append("\n");

@@ -2,6 +2,7 @@ package org.drools.factmodel.traits;
 
 import org.drools.WorkingMemory;
 import org.drools.common.DefaultAgenda;
+import org.drools.core.util.HierNode;
 import org.drools.rule.Package;
 import org.drools.rule.TypeDeclaration;
 import org.drools.spi.KnowledgeHelper;
@@ -31,7 +32,7 @@ public class TraitField implements Serializable, Externalizable {
     private PriorityQueue<TypeWrapper> rangeTypes;
 
     // type restrictions added by traits donned by the core object
-    private TypeHierarchy<Object> defaultValuesByTraits;
+    private TypeHierarchy<Object,TraitFieldDefaultValue> defaultValuesByTraits;
     private Object defaultValueByClass;
     private short position;
 
@@ -166,9 +167,10 @@ public class TraitField implements Serializable, Externalizable {
 
         if ( defaultValue != null ) {
             if ( defaultValuesByTraits == null ) {
-                defaultValuesByTraits = new TypeHierarchy<Object>();
+                defaultValuesByTraits = new TypeHierarchy<Object,TraitFieldDefaultValue>();
             }
-            defaultValuesByTraits.addMember( defaultValue, trait.getTypeCode() );
+            TraitFieldDefaultValue bmk = new TraitFieldDefaultValue(defaultValue,trait.getTypeCode());
+            defaultValuesByTraits.addMember(bmk, trait.getTypeCode());
             if ( defaultValuesByTraits.getBottomCode() == null ) {
                 defaultValuesByTraits.setBottomCode( (BitSet) trait.getTypeCode().clone() );
             } else {
@@ -297,11 +299,11 @@ public class TraitField implements Serializable, Externalizable {
             return defaultValueByClass;
         }
         if ( defaultValuesByTraits != null && ! defaultValuesByTraits.isEmpty() ) {
-            Collection lowerBorder = defaultValuesByTraits.upperBorder( defaultValuesByTraits.getBottomCode() );
+            Collection<LatticeElement<Object>> lowerBorder = defaultValuesByTraits.upperBorder( defaultValuesByTraits.getBottomCode() );
             if ( lowerBorder.size() > 1 ) {
                 return null;
             } else {
-                return lowerBorder.iterator().next();
+                return lowerBorder.iterator().next().getValue();
             }
         }
         return null;
@@ -348,7 +350,7 @@ public class TraitField implements Serializable, Externalizable {
 
         rangeTypes = (PriorityQueue<TypeWrapper>) in.readObject();
 
-        defaultValuesByTraits = (TypeHierarchy<Object>) in.readObject();
+        defaultValuesByTraits = (TypeHierarchy<Object,TraitFieldDefaultValue>) in.readObject();
         defaultValueByClass = in.readObject();
 
         position = in.readShort();

@@ -9,7 +9,6 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -19,6 +18,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+//public abstract class AbstractCodedHierarchyImpl<T> extends AbstractBitwiseHierarchyImpl<T,AbstractCodedHierarchyImpl.HierNode<T>> implements CodedHierarchy<T>, Externalizable {
 public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable {
 
     protected SortedMap<BitSet, HierNode<T>> line = new TreeMap<BitSet, HierNode<T>>( new HierCodeComparator() );
@@ -29,7 +29,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
     }
 
     public boolean hasKey( BitSet key ) {
-        return line.containsKey( key );
+        return line.containsKey(key);
     }
 
 
@@ -40,7 +40,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
     protected abstract HierNode<T> getNode( T name );
 
     protected void add( HierNode<T> node ) {
-        line.put( node.getBitMask(), node );
+        line.put(node.getBitMask(), node);
     }
 
     protected void remove( HierNode<T> node ) {
@@ -48,7 +48,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
     }
 
     protected boolean contains( HierNode<T> node ) {
-        return line.containsKey( node.getBitMask() );
+        return line.containsKey(node.getBitMask());
     }
 
     protected Collection<HierNode<T>> getNodes() {
@@ -106,7 +106,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
                 first = false;
                 x.or( code );
             } else {
-                x.and( code );
+                x.and(code);
             }
 
         }
@@ -120,7 +120,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
         List<T> anx = new ArrayList<T>( size() );
         for ( HierNode<T> node : getNodes() ) {
             if ( node.getValue() != null ) {
-                anx.add( node.getValue() );
+                anx.add(node.getValue());
             }
         }
         return anx;
@@ -221,20 +221,20 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
     }
 
     public Collection<T> parents( T x ) {
-        HierNode<T> node = getNode( x );
+        HierNode<T> node = getNode(x);
         return parentValues(node);
     }
 
     public Collection<T> parents( BitSet x ) {
         HierNode<T> node = getNodeByKey(x);
-        return parentValues( node );
+        return parentValues(node);
     }
 
 
 
 
     public Collection<T> ancestors( T x ) {
-        HierNode<T> node = getNode( x );
+        HierNode<T> node = getNode(x);
         return ancestorValues( node );
     }
 
@@ -253,7 +253,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
         Collection<HierNode<T>> parents = node.getParents();
         for ( HierNode<T> p : parents ) {
             ancestors.add( p.getValue() );
-            ancestors.addAll( ancestors( p.getValue() ) );
+            ancestors.addAll( ancestors(p.getValue()) );
         }
         return ancestors;
     }
@@ -327,7 +327,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
     }
 
     public Collection<T> children( T x ) {
-        HierNode<T> node = getNode( x );
+        HierNode<T> node = getNode(x);
         return childrenValues( node );
     }
 
@@ -356,7 +356,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
 
 
     public Collection<T> descendants( T y ) {
-        HierNode<T> node = getNode( y );
+        HierNode<T> node = getNode(y);
         return descendantValues( node );
     }
 
@@ -618,10 +618,10 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
         b.or( key );
         int x = key.nextSetBit( 0 );
         if ( x == 0 ) {
-            b.clear( 0 );
+            b.clear(0);
         } else {
             b.set( 0, x, true );
-            b.clear( x );
+            b.clear(x);
         }
         return b;
     }
@@ -640,7 +640,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
         int x = key.nextSetBit( 0 );
         if ( x == 0 ) {
             int y = b.nextClearBit( 0 );
-            b.set( x, y, false );
+            b.set(x, y, false);
             b.set(y);
         } else {
             b.set(0);
@@ -663,7 +663,7 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
             x.or( n1 );
             x.and( n2 );
         }
-        return x.equals( n2 );
+        return x.equals(n2);
     }
 
     int superset( HierNode<T> n1, HierNode<T> n2 ) {
@@ -701,7 +701,8 @@ public abstract class AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>
     }
 
 
-    protected static class HierNode<T> implements Comparable<HierNode<T>>, Externalizable {
+//    protected static class HierNode<T> implements LatticeElement<T>, Comparable<HierNode<T>>, Externalizable {
+protected static class HierNode<T> implements Comparable<HierNode<T>>, Externalizable {
 
         public T value;
         public BitSet bitMask = null;

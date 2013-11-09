@@ -86,7 +86,9 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     private boolean sameAndNotCoveredByDescendants( TraitProxy proxy, BitSet typeMask ) {
         boolean isSameType = typeMask.equals( proxy.getTypeCode() );
         if ( isSameType ) {
-            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).children( typeMask );
+            // moved to a bitwise operation
+//            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).children( typeMask );
+            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).immediateChildren( typeMask );
             // we have to exclude the "mock" bottom proxy
             return descs.size() <= 1;
         } else {
@@ -151,7 +153,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     }
 
                 } else {
-                    //System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+//                    System.out.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,

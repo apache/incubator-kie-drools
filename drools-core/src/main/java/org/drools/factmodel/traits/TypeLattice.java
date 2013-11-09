@@ -17,6 +17,7 @@
 package org.drools.factmodel.traits;
 
 
+import org.drools.util.AbstractCodedHierarchy;
 import org.drools.util.CodedHierarchy;
 
 import java.util.BitSet;

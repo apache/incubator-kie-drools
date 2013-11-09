@@ -2856,7 +2856,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-
+    //error
     @Test
     public void testShedWithTMS( ) {
         String source = "package t.x \n" +
@@ -2891,9 +2891,10 @@ public class TraitTest extends CommonTestMethodBase {
                 "" +
                 "rule \"Rule 0 >> http://t/x#D\"\n" +
                 "when\n" +
-                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == false, this not isA t.x.E.class, this isA t.x.D.class ) " +
                 "then\n" +
                 "   list.add( \"E\" ); \n" +
+                "   System.out.println( \"E due to \" + $t); \n" +
                 "   don( $t, E.class, true ); \n" +
                 "end\n" +
                 "" +
@@ -2920,6 +2921,7 @@ public class TraitTest extends CommonTestMethodBase {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
+        System.out.println( list );
         assertEquals( 2, list.size() );
         assertTrue( list.contains( "E" ) );
         assertTrue( list.contains( "X" ) );
@@ -3544,7 +3546,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-
+    //error--
     @Test
     public void testShedThing() {
         String s1 = "package test;\n" +
@@ -4323,7 +4325,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-
+    //error    need to be discussed
     @Test
     public void testTraitNoType() {
         String drl = "" +

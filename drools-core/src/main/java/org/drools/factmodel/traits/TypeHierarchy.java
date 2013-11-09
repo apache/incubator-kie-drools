@@ -16,17 +16,18 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.util.AbstractCodedHierarchyImpl;
-import org.drools.util.CodedHierarchyImpl;
+import org.drools.core.util.HierNode;
+import org.drools.util.AbstractBitwiseHierarchyImpl;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.BitSet;
-import java.util.List;
+import java.util.*;
 
-public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements TypeLattice<T>, Externalizable {
+//public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements TypeLattice<T>, Externalizable {
+public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwiseHierarchyImpl<T,J>
+        implements TypeLattice<LatticeElement<T>>, Externalizable {
 
     private BitSet bottom;
     private BitSet top;
@@ -35,11 +36,16 @@ public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements T
         top = new BitSet();
     }
 
-    public TypeHierarchy( T topElement, BitSet topKey, T bottomElement, BitSet bottomKey ) {
-        this.top = topKey;
-        this.bottom = bottomKey;
-        addMember( topElement, topKey );
-        addMember( bottomElement, bottomKey );
+//    public TypeHierarchy( T topElement, BitSet topKey, T bottomElement, BitSet bottomKey ) {
+//        this.top = topKey;
+//        this.bottom = bottomKey;
+//        addMember( topElement, topKey );
+//        addMember( bottomElement, bottomKey );
+//    }
+
+    @Override
+    protected J getNode(LatticeElement<T> name) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
@@ -54,17 +60,17 @@ public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements T
         bottom = (BitSet) objectInput.readObject();
     }
 
-    @Override
-    protected HierNode<T> getNode( T name ) {
-        throw new UnsupportedOperationException( "Concrete Type lattices should be indexed by key (BitSet), not by value" );
-    }
+//    @Override
+//    protected HierNode<T> getNode( T name ) {
+//        throw new UnsupportedOperationException( "Concrete Type lattices should be indexed by key (BitSet), not by value" );
+//    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append( super.toString() );
         sb.append("***************************************** \n");
-        List<T> sorted = getSortedMembers();
+/*        List<T> sorted = getSortedMembers();
         for ( T member : sorted ) {
             HierNode<T> node = null;
             // no index by value is preserved for performance reasons, so I need to look it up
@@ -79,7 +85,7 @@ public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements T
             sb.append("\t parents ").append( node.getParents() ).append( "\n ");
             sb.append( "\t children " ).append( node.getChildren() ).append( "\n ");
         }
-        sb.append( "***************************************** \n" );
+*/        sb.append( "***************************************** \n" );
         return sb.toString();
     }
 
@@ -98,4 +104,90 @@ public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements T
     public void setTopCode( BitSet top ) {
         this.top = top;
     }
+
+    public void addMember(LatticeElement<T> val, BitSet key) {
+        add( (J) val );
+    }
+
+    public Collection<LatticeElement<T>> children(LatticeElement<T> y) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<LatticeElement<T>> descendants(LatticeElement<T> y) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<LatticeElement<T>> children(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<LatticeElement<T>> descendants(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<LatticeElement<T>> ancestors(LatticeElement<T> x) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<LatticeElement<T>> ancestors(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+/*
+    public void removeMember(T val) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void removeMember(BitSet key) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Map<T, BitSet> getSortedMap() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean hasKey(BitSet key) {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<T> children(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<T> lowerDescendants(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<T> parents(T x) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<T> parents(BitSet x) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<T> upperBorder(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Collection<T> immediateParents(BitSet key) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public boolean isEmpty() {
+        return false;
+    }
+
+    protected void add( HierNode<T> node ) {
+    }
+
+    protected Collection<HierNode<T>> getNodes() {
+        return null;
+    }
+
+    public T getMember( BitSet key ) {
+        return null;
+    }
+*/
+
 }
