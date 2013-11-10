@@ -24,16 +24,22 @@ import org.drools.definition.type.FactField;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 import org.mvel2.MVEL;
-import org.mvel2.asm.*;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 import java.beans.IntrospectionException;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,8 +51,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import java.io.Serializable;
 
 public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
 
@@ -576,8 +580,6 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         FieldVisitor fv;
 
         if ( ! isSoftField ) {
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null );
-            fv.visitEnd();
             fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
             fv.visitEnd();
         }

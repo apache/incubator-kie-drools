@@ -283,8 +283,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                 try {
                     if ( ( cdef.isFullTraiting() && ( ! traitField.getType().isPrimitive() || field.getType().equals( traitField.getType() ) ) )
                          || field.getType().isAssignableFrom( traitField.getType() ) ) {
-                        staticField = proxyClass.getField( traitField.getName() + "_reader" );
-                        staticField.set( null, field.getFieldAccessor().getReadAccessor() );
 
                         staticField = proxyClass.getField( traitField.getName() + "_writer" );
                         staticField.set( null, field.getFieldAccessor().getWriteAccessor() );
@@ -302,8 +300,6 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         for ( FieldDefinition field : cdef.getFieldsDefinitions() ) {
             Field staticField;
             try {
-                staticField = wrapperClass.getField(field.getName() + "_reader");
-                staticField.set(null, field.getFieldAccessor().getReadAccessor() );
 
                 staticField = wrapperClass.getField(field.getName() + "_writer");
                 staticField.set(null, field.getFieldAccessor().getWriteAccessor() );
@@ -481,11 +477,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
     public static void invokeExtractor( MethodVisitor mv, String masterName, ClassDefinition trait, ClassDefinition core, FieldDefinition field ) {
-        String fieldType = field.getTypeName();
-        mv.visitFieldInsn( GETSTATIC,
-                BuildUtils.getInternalType( masterName ),
-                field.getName() + "_reader",
-                Type.getDescriptor( InternalReadAccessor.class ) );
+        FieldDefinition tgtField = core.getFieldByAlias( field.resolveAlias() );
+        String fieldType = tgtField.getTypeName();
+        String fieldName = tgtField.getName();
+        String returnType = BuildUtils.getTypeDescriptor( fieldType );
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD,
@@ -493,11 +488,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                 "object",
                 BuildUtils.getTypeDescriptor( core.getClassName() ) );
 
-        String returnType = BuildUtils.isPrimitive( fieldType ) ? BuildUtils.getTypeDescriptor( fieldType ) : Type.getDescriptor( Object.class );
-        mv.visitMethodInsn( INVOKEINTERFACE,
-                Type.getInternalName( InternalReadAccessor.class ),
-                BuildUtils.extractor( fieldType ),
-                Type.getMethodDescriptor( Type.getType( returnType ), new Type[] { Type.getType( Object.class ) } ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                Type.getInternalName( core.getDefinedClass() ),
+                BuildUtils.getterName( fieldName, fieldType ),
+                Type.getMethodDescriptor( Type.getType( returnType ), new Type[] {} ) );
 
 
     }

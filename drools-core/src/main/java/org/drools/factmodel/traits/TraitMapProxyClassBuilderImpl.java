@@ -21,11 +21,16 @@ import org.drools.definition.type.FactField;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.InternalReadAccessor;
 import org.drools.spi.WriteAccessor;
 import org.drools.util.ExternalizableLinkedHashMap;
 import org.mvel2.MVEL;
-import org.mvel2.asm.*;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -438,8 +443,6 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
             boolean hardField = ! TraitRegistry.isSoftField( field, j++, mask );
             if ( hardField ) {
-                fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null );
-                fv.visitEnd();
                 fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
                 fv.visitEnd();
             }
