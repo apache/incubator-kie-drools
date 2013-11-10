@@ -106,15 +106,10 @@ public class MVELConsequenceBuilderTest {
         ruleBase.addPackage( pkg );
         final WorkingMemory wm = ruleBase.newStatefulSession();
 
-        MockLeftTupleSink sink = new MockLeftTupleSink();
-        final Cheese cheddar = new Cheese( "cheddar",
-                                           10 );
+        final Cheese cheddar = new Cheese( "cheddar", 10 );
         final InternalFactHandle f0 = (InternalFactHandle) wm.insert( cheddar );
-        final LeftTupleImpl tuple = new LeftTupleImpl( f0,
-                                               sink,
-                                               true );
+        final LeftTupleImpl tuple = new LeftTupleImpl( f0, null, true );
         f0.removeLeftTuple(tuple);
-        
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
                                                 pctxFactory.createPropagationContext(1, 1, null, tuple, null),
