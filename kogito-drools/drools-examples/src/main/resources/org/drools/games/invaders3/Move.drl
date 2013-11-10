@@ -1,0 +1,45 @@
+package org.drools.games.invaders3;
+
+import org.drools.games.KeyPressed
+import org.drools.games.Run
+
+import org.drools.games.invaders.Ship
+import org.drools.games.invaders.Unit
+
+dialect "mvel"
+
+rule ShipDeltaMoveLeft agenda-group "Move" when
+    s : Ship()
+        KeyPressed( keyText == "Z" )
+then
+    modify( s ) { dx = 0 - s.speed }
+end
+
+rule ShipDeltaStopLeft agenda-group "Move" when
+    s : Ship( )
+        not KeyPressed( keyText == "Z" )
+then
+    modify( s ) { dx = 0 }
+end
+
+
+rule ShipDeltaMoveRight agenda-group "Move" when
+    s : Ship()
+        KeyPressed( keyText == "X" )
+then
+    modify( s ) { dx = s.speed }
+end
+
+rule ShipDeltaStopRight agenda-group "Move" when
+    s : Ship()
+        not KeyPressed( keyText == "X" )
+then
+    modify( s ) { dx = 0 }
+end
+
+rule ShipMove agenda-group "Move" when
+    s : Unit( dx != 0 )
+    Run()
+then
+    modify( s ) { x = s.x + s.dx }
+end

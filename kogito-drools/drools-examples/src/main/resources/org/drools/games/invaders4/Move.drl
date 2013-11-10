@@ -1,0 +1,50 @@
+package org.drools.games.invaders4;
+
+import org.drools.games.KeyPressed
+import org.drools.games.Run
+
+import org.drools.games.invaders.Ship
+import org.drools.games.invaders.Unit
+import org.drools.games.GameUI
+import org.drools.games.invaders.InvadersConfiguration
+
+global GameUI ui
+global InvadersConfiguration conf
+
+dialect "mvel"
+
+rule ShipDeltaMoveLeft agenda-group "Move" when
+    s : Ship()
+        KeyPressed( keyText == "Z" )
+then
+    modify( s ) { dx = 0 - s.speed }
+end
+
+rule ShipDeltaStopLeft agenda-group "Move" when
+    s : Ship()
+        not KeyPressed( keyText == "Z" )
+then
+    modify( s ) { dx = 0 }
+end
+
+
+rule ShipDeltaMoveRight agenda-group "Move" when
+    s : Ship()
+        KeyPressed( keyText == "X" )
+then
+    modify( s ) { dx = s.speed }
+end
+
+rule ShipDeltaStopRight agenda-group "Move" when
+    s : Ship()
+        not KeyPressed( keyText == "X" )
+then
+    modify( s ) { dx = 0 }
+end
+
+rule ShipMove agenda-group "Move" when
+    s : Ship( dx != 0, x + dx > 0,  x + dx + width < conf.windowWidth ) @watch( !x ) // show with and without for demo
+    Run()
+then
+    modify( s ) { x = s.x + s.dx }
+end

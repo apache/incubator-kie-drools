@@ -1,0 +1,69 @@
+package org.drools.games.numberguess
+
+import org.drools.games.numberguess.RandomNumber
+import org.drools.games.numberguess.Guess
+import org.drools.games.numberguess.Game
+import org.drools.games.numberguess.GameRules
+
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+
+dialect "mvel"
+
+rule Main when
+    rules : GameRules( )
+then
+    insert( new RandomNumber( rules.maxRange ) );
+    setFocus("Guess");
+end
+
+rule "No more Guesses" when
+    rules : GameRules( )
+    game : Game( guessCount == rules.allowedGuesses )
+    not Guess()
+    r : RandomNumber()
+then
+    System.out.println( "You have no more guesses\nThe correct guess was " + r.value );
+end
+
+rule "Get user Guess" agenda-group "Guess" when
+    $r : RandomNumber()
+    rules : GameRules( )
+    game : Game(  guessCount < rules.allowedGuesses  )
+    not Guess()
+then
+    System.out.println( "You have " + ( rules.allowedGuesses - game.guessCount ) + " out of " + rules.allowedGuesses + " guesses left.\nPlease enter your guess from 0 to " + rules.maxRange );
+    br = new BufferedReader( new InputStreamReader( System.in ) );
+
+    modify (game) { guessCount = game.guessCount + 1 }
+    int i = Integer.parseInt( br.readLine() );
+    insert( new Guess( i ) );
+end
+
+rule "Record the highest Guess" agenda-group "Guess"  no-loop when
+    game  : Game( )
+    r : RandomNumber()
+    guess : Guess( value > r.value)
+then
+    modify ( game ) { biggest = guess.value };
+    retract( guess );
+    System.out.println( "Your guess was too high" );
+end
+
+rule "Record the lowest Guess" agenda-group "Guess" when
+    game : Game( )
+    r : RandomNumber()
+    guess :  Guess(value < r.value )
+then
+    modify ( game ) { smallest = guess.value };
+    retract( guess );
+    System.out.println( "Your guess was too low" );
+end
+
+rule "Guess correct" agenda-group "Guess" when
+    game  : Game( )
+    r : RandomNumber()
+    guess : Guess( value == r.value)
+then
+    System.out.println( "You guessed correctly" );
+end

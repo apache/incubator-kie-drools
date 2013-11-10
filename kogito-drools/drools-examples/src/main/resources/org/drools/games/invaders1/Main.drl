@@ -1,0 +1,35 @@
+package org.drools.games.invaders1;
+
+import org.drools.games.KeyPressed
+import org.drools.games.Run
+
+dialect "mvel"
+
+rule "init" when
+then
+    insert( new Run() );
+end
+
+rule Main when
+    r : Run()
+then
+    setFocus( "Keys" );
+end
+
+rule DetectInsertedKey when
+    kp : KeyPressed()
+then
+    System.out.println( "KeyPressed inserted" + kp );
+end
+
+rule DetectDeletedKey when
+    not KeyPressed()
+then
+    System.out.println( "KeyPressed deleted" );
+end
+
+rule Loop when
+    r : Run()
+then
+    modify( r ) {}
+end

@@ -1,0 +1,70 @@
+package org.drools.games.invaders6;
+
+import org.drools.games.KeyPressed
+import org.drools.games.Run
+import org.drools.games.invaders.Ship
+import org.drools.games.invaders.Bullet
+import org.drools.games.invaders.Invader1
+import org.drools.games.GameUI
+import org.drools.games.invaders.InvadersConfiguration
+
+global GameUI ui
+global InvadersConfiguration conf
+
+
+import javax.imageio.ImageIO
+import java.awt.Color;
+import java.awt.Graphics
+
+dialect "mvel"
+
+rule DrawShip agenda-group "Draw" when
+  s : Ship()
+      Run()
+then
+   g = ui.getGraphics();
+   g.setColor( Color.BLACK ); // background
+   g.fillRect( s.x - s.dx - s.dy, s.y, s.width, s.height ); // restore the previous blackground
+   g.drawImage( ImageIO.read( GameUI.class.getResource( "invaders/ship.gif" ) ), s.x, s.y, s.width, s.height, ui.getCanvas() );
+end
+
+rule DrawLiveInvader agenda-group "Draw" when
+  i : Invader1( alive == true)
+      Run()
+then
+   g = ui.getGraphics();
+   g.setColor( Color.BLACK ); // background
+   g.fillRect( i.x - i.dx, i.y - i.dy, i.width, i.height ); // restore the previous blackground
+   g.drawImage( ImageIO.read( GameUI.class.getResource( "invaders/invader1.gif" ) ), i.x, i.y, i.width, i.height, ui.getCanvas() );
+end
+
+rule DrawDeadInvader agenda-group "Draw" when
+  i : Invader1( alive == false)
+      Run()
+then
+   g = ui.getGraphics();
+   g.setColor( Color.BLACK ); // background
+   g.fillRect( i.x, i.y, i.width, i.height ); // restore the previous blackground
+end
+
+rule DrawBullet agenda-group "Draw" when
+  b : Bullet()
+      Run()
+then
+   g = ui.getGraphics();
+   g.setColor( Color.BLACK ); // background
+   g.fillRect( b.x - b.dx , b.y - b.dy , b.width, b.height ); // restore the previous blackground
+
+   g.setColor( Color.GREEN ); // bullet
+   g.fillRect( b.x , b.y, b.width, b.height );
+end
+
+rule DrawBulletOffscreen agenda-group "Bullet" when
+    b : Bullet( y <= 0 )
+    Run()
+then
+   g = ui.getGraphics();
+   g.setColor( Color.BLACK ); // background
+   g.fillRect( b.x - b.dx , b.y - b.dy , b.width, b.height ); // restore the previous blackground
+   retract( b )
+end

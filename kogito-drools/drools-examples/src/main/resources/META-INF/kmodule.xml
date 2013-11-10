@@ -63,4 +63,34 @@
         <ksession name="ShoppingKS"/>
     </kbase>
 
+    <kbase name="NumberGuessKB" packages="org.drools.games.numberguess">
+        <ksession name="NumberGuessKS"/>
+    </kbase>
+
+    <kbase name="Invaders1KB" packages="org.drools.games.invaders1, org.drools.games.keys">
+        <ksession name="Invaders1KS"/>
+    </kbase>
+
+
+    <kbase name="Invaders2KB" packages="org.drools.games.invaders2, org.drools.games.keys">
+        <ksession name="Invaders2KS"/>
+    </kbase>
+
+    <kbase name="Invaders3KB" packages="org.drools.games.invaders3, org.drools.games.keys">
+        <ksession name="Invaders3KS"/>
+    </kbase>
+
+    <kbase name="Invaders4KB" packages="org.drools.games.invaders4, org.drools.games.keys">
+        <ksession name="Invaders4KS"/>
+    </kbase>
+
+    <kbase name="Invaders5KB" packages="org.drools.games.invaders5, org.drools.games.keys">
+        <ksession name="Invaders5KS"/>
+    </kbase>
+
+    <kbase name="Invaders6KB" packages="org.drools.games.invaders6, org.drools.games.keys">
+        <ksession name="Invaders6KS"/>
+    </kbase>
+
+
 </kmodule>
