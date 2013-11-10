@@ -832,10 +832,6 @@ public class DefaultKnowledgeHelper
             this.update( h, inner );
         }
 
-        if ( ! inner.hasTrait( Thing.class.getName() ) ) {
-            don( inner, Thing.class, false );
-        }
-
         return thing;
     }
 
@@ -920,7 +916,8 @@ public class DefaultKnowledgeHelper
             Collection removedTraits = core.removeTrait( trait.getName() );
             if ( ! removedTraits.isEmpty() ) {
                 update( core, Long.MIN_VALUE, core.getClass() );
-                updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
+                // used to be here, but probably not necessary since it will be called by the core update
+                //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
             return (Thing<K>) core;
         } else {
@@ -951,9 +948,13 @@ public class DefaultKnowledgeHelper
                     retract( t );
                 }
             }
-            if ( ! removedTypes.isEmpty() ) {
+
+            if ( ! core.hasTraits() ) {
+                don( core, Thing.class );
+            } else if ( ! removedTypes.isEmpty() ) {
                 update( core, Long.MIN_VALUE, core.getClass() );
-                updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
+                // used to be here, but probably not necessary since it will be called by the core update
+                // updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
             return thing;
         }

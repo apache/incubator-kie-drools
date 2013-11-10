@@ -1514,7 +1514,7 @@ public class TraitTest extends CommonTestMethodBase {
             System.err.println( o );
         }
         Collection x = ksession.getObjects();
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 2, ksession.getObjects().size() );
 
         assertEquals( 5, list.size() );
         assertEquals( 0, list.get( 0 ) );
@@ -1789,7 +1789,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         FactHandle h = ksession.insert( "trigger" );
         ksession.fireAllRules();
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.retract( h );
         ksession.fireAllRules();
@@ -1800,12 +1800,12 @@ public class TraitTest extends CommonTestMethodBase {
         FactHandle h2 = ksession.insert( "trigger2" );
         ksession.fireAllRules();
 
-        assertEquals( 6, ksession.getObjects().size() );
+        assertEquals( 5, ksession.getObjects().size() );
 
         ksession.retract( h2 );
         ksession.fireAllRules();
 
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.retract( h1 );
         ksession.fireAllRules();
@@ -1936,7 +1936,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
         Collection yOld = ksession.getObjects();
-        assertEquals( 3, yOld.size() );
+        assertEquals( 2, yOld.size() );
 
         TraitableBean coreOld = null;
         for ( Object o : yOld ) {
@@ -1951,7 +1951,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         assertEquals( "abc", ((TBean) coreOld).getFld() );
         assertEquals( 1, coreOld._getDynamicProperties().size() );
-        assertEquals( 2, coreOld._getTraitMap().size() );
+        assertEquals( 1, coreOld._getTraitMap().size() );
     }
 
 
@@ -2829,10 +2829,10 @@ public class TraitTest extends CommonTestMethodBase {
                 "" +
                 "rule \"Rule 0 >> http://t/x#D\"\n" +
                 "when\n" +
-                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                "   $t : org.drools.factmodel.traits.Thing( $c : core, this not isA t.x.E.class, this isA t.x.D.class ) " +
                 "then\n" +
                 "   list.add( \"E\" ); \n" +
-                "   don( $t, E.class, true ); \n" +
+                "   don( $t, E.class ); \n" +
                 "end\n" +
                 "" +
                 "rule React \n" +
@@ -2881,6 +2881,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "then\n" +
                 "   Entity o = new Entity();\n" +
                 "   insert(o);\n" +
+                "   don( o, Thing.class ); \n" +
                 "   don( o, D.class ); \n" +
                 "end\n" +
                 "" +
@@ -2891,11 +2892,11 @@ public class TraitTest extends CommonTestMethodBase {
                 "" +
                 "rule \"Rule 0 >> http://t/x#D\"\n" +
                 "when\n" +
-                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == false, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                "   $t : org.drools.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
                 "then\n" +
                 "   list.add( \"E\" ); \n" +
                 "   System.out.println( \"E due to \" + $t); \n" +
-                "   don( $t, E.class, true ); \n" +
+                "   don( $t, E.class ); \n" +
                 "end\n" +
                 "" +
                 "rule React \n" +
@@ -2932,7 +2933,7 @@ public class TraitTest extends CommonTestMethodBase {
         for ( Object o : ks.getObjects() ) {
             System.out.println( o );
         }
-        assertEquals( 2, ks.getObjects().size() );
+        assertEquals( 3, ks.getObjects().size() );
 
     }
 
@@ -3491,7 +3492,7 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 5, ksession.getObjects().size() );
+        assertEquals( 4, ksession.getObjects().size() );
 
         ksession.retract( h1 );
         ksession.fireAllRules();
@@ -3501,7 +3502,7 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.retract( h2 );
         ksession.fireAllRules();
@@ -3511,7 +3512,7 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 2, ksession.getObjects().size() );
+        assertEquals( 1, ksession.getObjects().size() );
 
         ksession.insert( "trigger3" );
         ksession.fireAllRules();
@@ -3531,7 +3532,7 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.insert( "trigger5" );
         ksession.fireAllRules();
@@ -3731,7 +3732,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         FactHandle h = ksession.insert( "trigger" );
         ksession.fireAllRules();
-        assertEquals( 6, ksession.getObjects().size() );
+        assertEquals( 5, ksession.getObjects().size() );
 
         ksession.retract( h );
         ksession.fireAllRules();
@@ -3740,7 +3741,7 @@ public class TraitTest extends CommonTestMethodBase {
             // lose the string and the Student proxy
             System.out.println( o );
         }
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
     }
 
@@ -3805,7 +3806,7 @@ public class TraitTest extends CommonTestMethodBase {
             System.out.println( o );
         }
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 2, ksession.getObjects().size() );
     }
 
 
@@ -4430,7 +4431,7 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         System.out.println( list );
-        assertEquals( Arrays.asList( "B", "C", "A", "Thing" ), list );
+        assertEquals( Arrays.asList( "B", "C", "A" ), list );
     }
 
 
@@ -4466,7 +4467,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 2, ksession.getObjects().size() );
 
     }
 
@@ -4598,8 +4599,8 @@ public class TraitTest extends CommonTestMethodBase {
         // insert Core Bean, A, B, Thing.
         // Update the bean on don A, update the bean and A on don B
         assertEquals( 0, cwm.getRetracts() );
-        assertEquals( 4, cwm.getInserts() );
-        assertEquals( 3, cwm.getUpdates() );
+        assertEquals( 3, cwm.getInserts() );
+        assertEquals( 2, cwm.getUpdates() );
         cwm.reset();
 
         FactHandle handle = ksession.insert( "go" );
@@ -4631,7 +4632,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         // retracting the core bean
         // A, B, Thing are retracted too
-        assertEquals( 4, cwm.getRetracts() );
+        assertEquals( 3, cwm.getRetracts() );
         assertEquals( 0, cwm.getInserts() );
         assertEquals( 0, cwm.getUpdates() );
         cwm.reset();
@@ -4726,6 +4727,153 @@ public class TraitTest extends CommonTestMethodBase {
 
         assertEquals(0, queuedTasks.size());
         assertEquals(true, executorService.isTerminated());
+    }
+
+
+    @Test
+    public void testShedOneLastTrait() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare Core @Traitable end\n" +
+                          "" +
+                          "declare trait Mask\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new Core(), Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"React\" \n" +
+                          "	when \n" +
+                          "     $s : String() \n" +
+                          "		$m : Mask() \n" +
+                          "then \n" +
+                          "     retract( $s ); \n" +
+                          "     shed( $m, Mask.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule Log \n" +
+                          "when \n" +
+                          " $t : Thing() \n" +
+                          "then \n" +
+                          " System.out.println( \"Thing detected \" + $t ); \n" +
+                          " list.add( $t.getClass().getName() ); \n" +
+                          "end \n" +
+                          "";
+
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "shed" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "org.drools.factmodel.traits.Thing.test.Core_Proxy" ), list );
+    }
+
+
+
+    @Test
+    public void testShedThingCompletelyThenDonAgain() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare Core @Traitable end\n" +
+                          "" +
+                          "declare trait Mask end\n" +
+                          "declare trait Mask2 end\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "     $s : String( this == \"don1\" ) \n" +
+                          "	then\n" +
+                          "     retract( $s ); \n" +
+                          "		don( new Core(), Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Clear\" \n" +
+                          "	when \n" +
+                          "     $s : String( this == \"shed1\" ) \n" +
+                          "		$m : Mask() \n" +
+                          "then \n" +
+                          "     retract( $s ); \n" +
+                          "     shed( $m, Thing.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Add\" \n" +
+                          "	when \n" +
+                          "     $s : String( this == \"don2\" ) \n" +
+                          "		$c : Core() \n" +
+                          "then \n" +
+                          "     retract( $s ); \n" +
+                          "     don( $c, Mask2.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Clear Again\" \n" +
+                          "	when \n" +
+                          "     $s : String( this == \"shed2\" ) \n" +
+                          "		$m : Mask2() \n" +
+                          "then \n" +
+                          "     retract( $s ); \n" +
+                          "     shed( $m, Mask2.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "" +
+                          "rule Log \n" +
+                          "when \n" +
+                          " $t : Thing() \n" +
+                          "then \n" +
+                          "  System.out.println( \"Thing detected \" + $t ); \n" +
+                          "  list.add( $t.getClass().getName() ); \n" +
+                          "end \n" +
+                          "";
+
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( "don1" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "shed1" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "don2" );
+        knowledgeSession.fireAllRules();
+
+        System.out.println( list );
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "shed2" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 3, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy", "org.drools.factmodel.traits.Thing.test.Core_Proxy" ), list );
+
     }
 
 

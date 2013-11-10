@@ -1,7 +1,5 @@
 package org.drools.factmodel.traits;
 
-import org.drools.core.util.CompositeCollection;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -22,6 +20,10 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public TraitTypeMap(Map map) {
         innerMap = map;
+
+        // create "top" element placeholder. will be replaced by a Thing proxy later, should the core object don it
+        ThingProxyPlaceHolder thingPlaceHolder = ThingProxyPlaceHolder.getThingPlaceHolder();
+        addMember( new BitMaskKey( -1, thingPlaceHolder ), thingPlaceHolder.getTypeCode() );
     }
 
     public int size() {
@@ -177,6 +179,10 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
 
     public Collection<LatticeElement<K>> getMostSpecificTraits() {
+        if ( getBottomCode() == null ) {
+            // not yet initialized -> no trait donned yet
+            return null;
+        }
         if ( hasKey( getBottomCode() ) ) {
 //            BitMaskKey<K> b = new BitMaskKey<K>(System.identityHashCode(getMember(getBottomCode())),
 //                    getMember( getBottomCode()));
@@ -228,4 +234,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     public BitSet getCurrentTypeCode() {
         return currentTypeCode;
     }
+
+
+
 }
