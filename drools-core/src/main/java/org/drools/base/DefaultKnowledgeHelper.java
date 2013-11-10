@@ -823,8 +823,18 @@ public class DefaultKnowledgeHelper
                 h = lookupHandleForWrapper( core );
             }
             if ( h == null ) {
-                throw new FactException( "Update error: handle not found for object: " + core + ". Is it in the working memory?" );
+                h = (InternalFactHandle) this.workingMemory.insert( core,
+                                                                    null,
+                                                                    false,
+                                                                    logical,
+                                                                    this.activation.getRule(),
+                                                                    this.activation );
+                if ( this.identityMap != null ) {
+                    this.getIdentityMap().put( core,
+                                               h );
+                }
             }
+
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
                                                  "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );

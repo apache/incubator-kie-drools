@@ -70,6 +70,7 @@ import org.drools.runtime.StatelessKnowledgeSession;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.runtime.rule.QueryResults;
 import org.drools.runtime.rule.QueryResultsRow;
+import org.drools.spi.ConsequenceException;
 import org.drools.util.CodedHierarchyImpl;
 import org.drools.util.HierarchyEncoder;
 import org.junit.AfterClass;
@@ -4876,5 +4877,39 @@ public class TraitTest extends CommonTestMethodBase {
 
     }
 
+
+    @Test
+    public void testTraitImplicitInsertionExceptionOnNonTraitable() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare Core id : String  end\n" +  // should be @Traitable
+                          "" +
+                          "declare trait Mask  id : String end\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new Core(), Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "";
+
+        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        try {
+            knowledgeSession.fireAllRules();
+            fail( "Core is not declared @Traitable, this test should have thrown an exception" );
+        } catch ( Exception csq ) {
+            assertTrue( csq.getCause() instanceof IllegalStateException );
+        }
+
+    }
 
 }
