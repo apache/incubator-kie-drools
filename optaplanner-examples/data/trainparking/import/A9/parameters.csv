@@ -1,0 +1,16 @@
+parameterName;value;
+junTime;00:05:00;
+disjTime;00:05:00;
+revTime;00:03:00;
+minAsbTime;00:10:00;
+junCost;100;
+disjCost;100;
+remDCost;0.2;
+remTCost;5.0E-5;
+platAsgCost;100;
+dwellCost;0.5;
+reuseCost;100;
+minResTime;00:01:00;
+maxDwellTime;00:05:00;
+nbDays;7;
+maxMaint;100;

@@ -1,0 +1,5 @@
+idCategory;length;catGroup;maxDBM;maxTBM;maintTimeD;maintTimeT;
+Cat1;200;CatGroup1;5000;72:00:00;03:00:00;02:00:00;
+Cat2;200;CatGroup2;4100;48:00:00;02:50:00;02:25:00;
+Cat3;200;CatGroup3;2800;24:00:00;02:30:00;02:15:00;
+Cat4;200;CatGroup4;3500;48:00:00;02:30:00;02:45:00;

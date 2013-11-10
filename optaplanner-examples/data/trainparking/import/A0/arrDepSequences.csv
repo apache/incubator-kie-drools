@@ -1,0 +1,17 @@
+sequence;trackGroup;rankInSequence;
+DepSeq1;TrackGroup1;1;
+ArrSeq1;TrackGroup1;1;
+DepSeq2;TrackGroup2;1;
+DepSeq2;TrackGroup4;2;
+DepSeq2;TrackGroup5;3;
+ArrSeq2;TrackGroup5;1;
+ArrSeq2;TrackGroup4;2;
+ArrSeq2;TrackGroup2;3;
+DepSeq3;TrackGroup2;1;
+DepSeq3;TrackGroup6;2;
+ArrSeq3;TrackGroup6;1;
+ArrSeq3;TrackGroup2;2;
+DepSeq4;TrackGroup3;1;
+DepSeq4;TrackGroup6;2;
+ArrSeq4;TrackGroup6;1;
+ArrSeq4;TrackGroup3;2;
