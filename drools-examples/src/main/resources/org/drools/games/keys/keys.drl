@@ -1,0 +1,41 @@
+package org.drools.games.keys
+
+import org.drools.games.KeyPressed
+
+import java.lang.Math
+
+
+import java.awt.event.KeyEvent
+import org.drools.games.KeyPressed
+
+dialect "mvel"
+
+rule "Detect KeyPressed" agenda-group "Keys" when
+    ke : KeyEvent( ) from entry-point "KeyPressedStream"
+    not KeyPressed( keyText ==  KeyEvent.getKeyText( ke.getKeyCode() ) )    
+then
+    kp = new KeyPressed( KeyEvent.getKeyText( ke.getKeyCode() ) );
+    insert( kp );
+    retract( ke );
+end
+
+
+rule "Detect KeyReleased"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+    kp : KeyPressed( keyText == KeyEvent.getKeyText( ke.getKeyCode() ) )    
+then
+    retract( ke );
+    retract( kp );
+end
+
+rule "Remove KeyPressed Event"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyPressedStream"
+then
+    retract( ke );
+end
+
+rule "Remove KeyReleased Event"  agenda-group "Keys" when
+    ke : KeyEvent() from entry-point "KeyReleasedStream"
+then
+    retract( ke );
+end
