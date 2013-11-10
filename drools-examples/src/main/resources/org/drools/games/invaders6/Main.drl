@@ -1,0 +1,32 @@
+package org.drools.games.invaders6;
+
+import org.drools.games.KeyPressed
+import org.drools.games.Run
+import org.drools.games.GameUI
+
+global GameUI ui
+
+dialect "mvel"
+
+rule "init" when
+then
+    insert( new Run() );
+    setFocus( "Init" );
+end
+
+rule GameLoop when
+    r : Run()
+then
+    setFocus( "Draw" );
+    setFocus( "Bullet" );
+    setFocus( "Keys" );
+    setFocus( "Move" );
+end
+
+
+rule Draw when
+    r : Run()
+then
+    ui.show();
+    modify( r ) {} // force loop
+end

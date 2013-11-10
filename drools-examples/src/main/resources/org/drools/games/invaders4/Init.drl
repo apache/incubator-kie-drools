@@ -1,0 +1,24 @@
+package org.drools.games.invaders4;
+
+import org.drools.games.Run
+
+import org.drools.games.invaders.Ship
+
+import org.drools.games.invaders.InvadersConfiguration
+
+global InvadersConfiguration conf
+
+dialect "mvel"
+
+rule InitShip agenda-group "Init" when
+    not Ship()
+    Run()
+then
+    ship = new Ship();
+    ship.width = conf.shipWidth;
+    ship.height = conf.shipHeight;
+    ship.speed = conf.shipSpeed;
+    ship.x = (conf.windowWidth/2) - (conf.shipWidth/2);
+    ship.y = conf.windowHeight-10 - conf.shipHeight;
+    insert( ship );
+end

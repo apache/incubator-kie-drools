@@ -1,0 +1,50 @@
+package org.drools.games.invaders6;
+
+import org.drools.games.KeyPressed
+import org.drools.games.Run
+
+import org.drools.games.invaders.Ship
+import org.drools.games.invaders.Unit
+import org.drools.games.invaders.Bullet
+import org.drools.games.invaders.Invader1
+import org.drools.games.GameUI
+import org.drools.games.invaders.InvadersConfiguration
+
+global GameUI ui
+global InvadersConfiguration conf
+
+dialect "mvel"
+
+rule InsertBullet agenda-group "Bullet" when
+        KeyPressed( keyText == "M" )
+    s : Ship()
+    not Bullet()
+then
+    b = new Bullet();
+    b.x = s.x + (s.width/2) - (b.width/2);
+    b.y = s.y - s.height - b.height;
+    b.width = conf.bulletWidth;
+    b.height = conf.bulletHeight;
+    b.dy = 0 - conf.bulletSpeed;
+    insert( b );
+end
+
+
+rule BulletMove agenda-group "Bullet" when
+    b : Bullet( )
+    Run()
+then
+    //System.out.println( b + ":" + b.y + ":" + b.speed);
+    modify( b ) { y = b.y + b.dy }
+end
+
+rule Collision agenda-group "Bullet" when
+    b : Bullet( ) @watch( y )
+    i : Invader1( x < b.x, x + width > b.x, y > b.y)
+    Run()
+then
+
+    //System.out.println( "collision" + i.y + ":" +  b.y );
+    modify( i ) { alive = false }
+end
+
