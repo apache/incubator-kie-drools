@@ -21,7 +21,6 @@ import org.drools.definition.type.FactField;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.WriteAccessor;
 import org.drools.util.ExternalizableLinkedHashMap;
 import org.mvel2.MVEL;
 import org.mvel2.asm.ClassVisitor;
@@ -442,10 +441,6 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
 
             boolean hardField = ! TraitRegistry.isSoftField( field, j++, mask );
-            if ( hardField ) {
-                fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
-                fv.visitEnd();
-            }
 
             if ( core.isFullTraiting() ) {
                 buildLogicalGetter( cw, field, masterName, trait, core );

@@ -24,7 +24,6 @@ import org.drools.definition.type.FactField;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.WriteAccessor;
 import org.mvel2.MVEL;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;
@@ -578,11 +577,6 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
     protected void buildProxyAccessor( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
         FieldVisitor fv;
-
-        if ( ! isSoftField ) {
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
-            fv.visitEnd();
-        }
 
         if ( core.isFullTraiting() ) {
             buildLogicalGetter( cw, field, masterName, trait, core );

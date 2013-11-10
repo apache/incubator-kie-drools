@@ -22,7 +22,6 @@ import org.drools.core.util.TripleStore;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.WriteAccessor;
 import org.mvel2.asm.ClassVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.FieldVisitor;
@@ -97,16 +96,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
                             "Entry", 
                             ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE );
 
-
-
-        for ( FieldDefinition fld : core.getFieldsDefinitions() ) {
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC,
-                                fld.getName() + "_writer", 
-                                Type.getDescriptor( WriteAccessor.class ),
-                                null, 
-                                null );
-            fv.visitEnd();
-        }
 
 
         {
