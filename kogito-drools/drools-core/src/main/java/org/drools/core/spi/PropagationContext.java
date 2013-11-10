@@ -24,6 +24,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Rule;
 
@@ -33,6 +34,8 @@ public interface PropagationContext
     org.kie.api.runtime.rule.PropagationContext {
 
     Rule getRuleOrigin();
+
+    TerminalNode getTerminalNodeOrigin();
     
     FactHandle getFactHandleOrigin();
     

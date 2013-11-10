@@ -34,7 +34,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         if ( (!this.rule.isEffective( leftTuple,
                                       this,
                                       workingMemory )) ||
-             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
+             (this.rule.isNoLoop() && this.equals( context.getTerminalNodeOrigin() )) ) {
             leftTuple.setObject( Boolean.TRUE );
             return;
         }
@@ -69,7 +69,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         if ( (!this.rule.isEffective( leftTuple,
                                       this,
                                       workingMemory )) ||
-             (this.rule.isNoLoop() && this.rule.equals( context.getRuleOrigin() )) ) {
+             (this.rule.isNoLoop() && this.equals( context.getTerminalNodeOrigin() )) ) {
             return;
         }
 

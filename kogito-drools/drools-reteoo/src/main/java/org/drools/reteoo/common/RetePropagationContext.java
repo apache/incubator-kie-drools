@@ -23,6 +23,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.*;
 import org.drools.core.rule.Package;
 import org.drools.core.spi.ObjectType;
@@ -45,6 +46,8 @@ public class RetePropagationContext
     private int                             type;
 
     private Rule                            rule;
+
+    private TerminalNode                    terminalNodeOrigin;
 
     private LeftTuple                       leftTuple;
 
@@ -160,6 +163,7 @@ public class RetePropagationContext
         this.type = type;
         this.rule = rule;
         this.leftTuple = leftTuple;
+        this.terminalNodeOrigin = leftTuple != null ? (TerminalNode)leftTuple.getSink() : null;
         this.factHandle = factHandle;
         this.propagationNumber = number;
         this.entryPoint = entryPoint;
@@ -206,6 +210,10 @@ public class RetePropagationContext
      */
     public Rule getRuleOrigin() {
         return this.rule;
+    }
+
+    public TerminalNode getTerminalNodeOrigin() {
+        return terminalNodeOrigin;
     }
 
     public org.kie.api.definition.rule.Rule getRule() {

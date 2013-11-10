@@ -4084,4 +4084,30 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testNoLoopWithNamedConsequences() {
+        // DROOLS-327
+        String drl =
+                "import org.drools.compiler.Message\n" +
+                "rule \"Hello World\" no-loop\n" +
+                "    when\n" +
+                "        m : Message( myMessage : message )\n" +
+                "        if (status == 0) do[sayHello]\n" +
+                "    then\n" +
+                "        System.out.println( myMessage );\n" +
+                "        m.setMessage( \"Goodbye cruel world\" );\n" +
+                "        m.setStatus( Message.GOODBYE );\n" +
+                "        update( m );\n" +
+                "    then[sayHello]\n" +
+                "        System.out.println(\"Hello, I'm here!\");\n" +
+                "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new Message("Hello World"));
+        ksession.fireAllRules();
+    }
 }
