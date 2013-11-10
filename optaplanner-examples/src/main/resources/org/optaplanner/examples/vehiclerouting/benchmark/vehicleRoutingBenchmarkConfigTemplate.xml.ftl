@@ -156,4 +156,32 @@
     </solver>
   </solverBenchmark>
 </#list>
+<#list [50, 300] as stepCountingHillClimbingSize>
+    <solverBenchmark>
+        <name>Step Counting Hill Climbing ${stepCountingHillClimbingSize}</name>
+        <solver>
+            <constructionHeuristic>
+                <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+            </constructionHeuristic>
+            <localSearch>
+                <unionMoveSelector>
+                    <changeMoveSelector/>
+                    <swapMoveSelector/>
+                    <subChainChangeMoveSelector>
+                        <selectReversingMoveToo>true</selectReversingMoveToo>
+                    </subChainChangeMoveSelector>
+                    <subChainSwapMoveSelector>
+                        <selectReversingMoveToo>true</selectReversingMoveToo>
+                    </subChainSwapMoveSelector>
+                </unionMoveSelector>
+                <acceptor>
+                    <stepCountingHillClimbingSize>${stepCountingHillClimbingSize}</stepCountingHillClimbingSize>
+                </acceptor>
+                <forager>
+                    <acceptedCountLimit>1</acceptedCountLimit>
+                </forager>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+</#list>
 </plannerBenchmark>
