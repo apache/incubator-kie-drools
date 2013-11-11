@@ -22,20 +22,12 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
 public class IntConstraintMatch extends ConstraintMatch {
 
-    protected final IntConstraintMatchTotal constraintMatchTotal;
-
     protected final int weight;
 
-    public IntConstraintMatch(IntConstraintMatchTotal constraintMatchTotal,
+    public IntConstraintMatch(String constraintPackage, String constraintName, int scoreLevel,
             List<Object> justificationList, int weight) {
-        super(justificationList);
-        this.constraintMatchTotal = constraintMatchTotal;
+        super(constraintPackage, constraintName, scoreLevel, justificationList);
         this.weight = weight;
-    }
-
-    @Override
-    public IntConstraintMatchTotal getConstraintMatchTotal() {
-        return constraintMatchTotal;
     }
 
     public int getWeight() {

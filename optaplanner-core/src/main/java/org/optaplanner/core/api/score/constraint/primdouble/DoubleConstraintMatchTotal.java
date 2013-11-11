@@ -55,7 +55,8 @@ public class DoubleConstraintMatchTotal extends ConstraintMatchTotal {
     public DoubleConstraintMatch addConstraintMatch(RuleContext kcontext, double weight) {
         weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
-        DoubleConstraintMatch constraintMatch = new DoubleConstraintMatch(this, justificationList, weight);
+        DoubleConstraintMatch constraintMatch = new DoubleConstraintMatch(constraintPackage, constraintName, scoreLevel,
+                justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
             throw new IllegalStateException("The constraintMatchTotal (" + this

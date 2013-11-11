@@ -23,20 +23,12 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
 public class BigDecimalConstraintMatch extends ConstraintMatch {
 
-    protected final BigDecimalConstraintMatchTotal constraintMatchTotal;
-
     protected final BigDecimal weight;
 
-    public BigDecimalConstraintMatch(BigDecimalConstraintMatchTotal constraintMatchTotal,
+    public BigDecimalConstraintMatch(String constraintPackage, String constraintName, int scoreLevel,
             List<Object> justificationList, BigDecimal weight) {
-        super(justificationList);
-        this.constraintMatchTotal = constraintMatchTotal;
+        super(constraintPackage, constraintName, scoreLevel, justificationList);
         this.weight = weight;
-    }
-
-    @Override
-    public BigDecimalConstraintMatchTotal getConstraintMatchTotal() {
-        return constraintMatchTotal;
     }
 
     public BigDecimal getWeight() {

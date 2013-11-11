@@ -56,7 +56,9 @@ public class BigDecimalConstraintMatchTotal extends ConstraintMatchTotal {
     public BigDecimalConstraintMatch addConstraintMatch(RuleContext kcontext, BigDecimal weight) {
         weightTotal = weightTotal.add(weight);
         List<Object> justificationList = extractJustificationList(kcontext);
-        BigDecimalConstraintMatch constraintMatch = new BigDecimalConstraintMatch(this, justificationList, weight);
+        BigDecimalConstraintMatch constraintMatch = new BigDecimalConstraintMatch(
+                constraintPackage, constraintName, scoreLevel,
+                justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
             throw new IllegalStateException("The constraintMatchTotal (" + this

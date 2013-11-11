@@ -23,13 +23,31 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 
 public abstract class ConstraintMatch implements Serializable, Comparable<ConstraintMatch> {
 
+    protected final String constraintPackage;
+    protected final String constraintName;
+    protected final int scoreLevel;
+
     protected final List<Object> justificationList;
 
-    protected ConstraintMatch(List<Object> justificationList) {
+    protected ConstraintMatch(String constraintPackage, String constraintName, int scoreLevel,
+            List<Object> justificationList) {
+        this.constraintPackage = constraintPackage;
+        this.constraintName = constraintName;
+        this.scoreLevel = scoreLevel;
         this.justificationList = justificationList;
     }
 
-    public abstract ConstraintMatchTotal getConstraintMatchTotal();
+    public String getConstraintPackage() {
+        return constraintPackage;
+    }
+
+    public String getConstraintName() {
+        return constraintName;
+    }
+
+    public int getScoreLevel() {
+        return scoreLevel;
+    }
 
     public List<Object> getJustificationList() {
         return justificationList;
@@ -41,14 +59,16 @@ public abstract class ConstraintMatch implements Serializable, Comparable<Constr
     // Worker methods
     // ************************************************************************
 
-    private String getIdentificationString() {
-        return getConstraintMatchTotal().getIdentificationString() + "/" + justificationList;
+    public String getIdentificationString() {
+        return constraintPackage + "/" + constraintName + "/level" + scoreLevel + "/" + justificationList;
     }
 
     @Override
     public int compareTo(ConstraintMatch other) {
         return new CompareToBuilder()
-                .append(getConstraintMatchTotal(), other.getConstraintMatchTotal())
+                .append(getConstraintPackage(), other.getConstraintPackage())
+                .append(getConstraintName(), other.getConstraintName())
+                .append(getScoreLevel(), other.getScoreLevel())
                 .append(getJustificationList(), other.getJustificationList())
                 .append(getWeightAsNumber(), other.getWeightAsNumber())
                 .toComparison();

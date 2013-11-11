@@ -55,7 +55,8 @@ public class LongConstraintMatchTotal extends ConstraintMatchTotal {
     public LongConstraintMatch addConstraintMatch(RuleContext kcontext, long weight) {
         weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
-        LongConstraintMatch constraintMatch = new LongConstraintMatch(this, justificationList, weight);
+        LongConstraintMatch constraintMatch = new LongConstraintMatch(constraintPackage, constraintName, scoreLevel,
+                justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
             throw new IllegalStateException("The constraintMatchTotal (" + this

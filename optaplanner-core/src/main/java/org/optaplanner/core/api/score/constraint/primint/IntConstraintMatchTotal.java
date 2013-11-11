@@ -55,7 +55,8 @@ public class IntConstraintMatchTotal extends ConstraintMatchTotal {
     public IntConstraintMatch addConstraintMatch(RuleContext kcontext, int weight) {
         weightTotal += weight;
         List<Object> justificationList = extractJustificationList(kcontext);
-        IntConstraintMatch constraintMatch = new IntConstraintMatch(this, justificationList, weight);
+        IntConstraintMatch constraintMatch = new IntConstraintMatch(constraintPackage, constraintName, scoreLevel,
+                justificationList, weight);
         boolean added = constraintMatchSet.add(constraintMatch);
         if (!added) {
             throw new IllegalStateException("The constraintMatchTotal (" + this

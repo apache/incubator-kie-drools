@@ -22,20 +22,12 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
 public class LongConstraintMatch extends ConstraintMatch {
 
-    protected final LongConstraintMatchTotal constraintMatchTotal;
-
     protected final long weight;
 
-    public LongConstraintMatch(LongConstraintMatchTotal constraintMatchTotal,
+    public LongConstraintMatch(String constraintPackage, String constraintName, int scoreLevel,
             List<Object> justificationList, long weight) {
-        super(justificationList);
-        this.constraintMatchTotal = constraintMatchTotal;
+        super(constraintPackage, constraintName, scoreLevel, justificationList);
         this.weight = weight;
-    }
-
-    @Override
-    public LongConstraintMatchTotal getConstraintMatchTotal() {
-        return constraintMatchTotal;
     }
 
     public long getWeight() {
