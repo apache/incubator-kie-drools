@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
@@ -33,6 +34,7 @@ import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.InternalI18NText;
 
 public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest {
@@ -929,5 +931,99 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         List<TaskSummary> newTasks = taskService.getTasksAssignedAsPotentialOwner("Bobba Fet", "en-UK");
         assertEquals(1, newTasks.size());
         assertEquals("New task name", newTasks.get(0).getName());
+    }
+    
+    
+    @Test
+    public void testGetTasksByVariousFieldsWithUserGroupCallback() {
+        
+        String potOwner = "Bobba Fet";
+        List<String> potOwners = new ArrayList<String>();                     
+        potOwners.add(potOwner);
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new Group('Administrators')],"
+                + "potentialOwners = [new Group('Crusaders')]"
+                + " }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        ((TaskDataImpl) task.getTaskData()).setWorkItemId(1);
+        ((TaskDataImpl) task.getTaskData()).setProcessInstanceId(1);
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        List<TaskSummary> results = taskService.getTasksByVariousFields(null, null, null, null, potOwners, null, null, false);
+        
+        assertNotNull(results);
+        assertEquals(1, results.size());
+    }
+    
+    @Test
+    public void testGetTasksByVariousFieldsWithUserGroupCallbackAdmin() {
+        
+        String potOwner = "Administrator";
+        List<String> busAdmins = new ArrayList<String>();
+        busAdmins.add(potOwner);
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new Group('Administrators')],"
+                + "potentialOwners = [new Group('Crusaders')]"
+                + " }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        ((TaskDataImpl) task.getTaskData()).setWorkItemId(1);
+        ((TaskDataImpl) task.getTaskData()).setProcessInstanceId(1);
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        List<TaskSummary> results = taskService.getTasksByVariousFields(null, null, null, busAdmins, null, null, null, false);
+        
+        assertNotNull(results);
+        assertEquals(1, results.size());
+    }
+    
+    @Test
+    public void testGetTasksByVariousFieldsWithUserGroupCallbackByParams() {
+    	Map<String, List<?>> parameters = new HashMap<String, List<?>>();
+        String potOwner = "Bobba Fet";
+        List<String> potOwners = new ArrayList<String>();                     
+        potOwners.add(potOwner);
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new Group('Administrators')],"
+                + "potentialOwners = [new Group('Crusaders')]"
+                + " }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        ((TaskDataImpl) task.getTaskData()).setWorkItemId(1);
+        ((TaskDataImpl) task.getTaskData()).setProcessInstanceId(1);
+        taskService.addTask(task, new HashMap<String, Object>());
+        parameters.put(TaskQueryService.POTENTIAL_OWNER_ID_LIST, potOwners);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(parameters, false);
+        
+        assertNotNull(results);
+        assertEquals(1, results.size());
+    }
+    
+    @Test
+    public void testGetTasksByVariousFieldsWithUserGroupCallbackAdminByParams() {
+        Map<String, List<?>> parameters = new HashMap<String, List<?>>();
+        String potOwner = "Administrator";
+        List<String> busAdmins = new ArrayList<String>();
+        busAdmins.add(potOwner);
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
+                + "businessAdministrators = [new Group('Administrators')],"
+                + "potentialOwners = [new Group('Crusaders')]"
+                + " }),";
+        str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
+        TaskImpl task = TaskFactory.evalTask(new StringReader(str));
+        ((TaskDataImpl) task.getTaskData()).setWorkItemId(1);
+        ((TaskDataImpl) task.getTaskData()).setProcessInstanceId(1);
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        parameters.put(TaskQueryService.BUSINESS_ADMIN_ID_LIST, busAdmins);
+        List<TaskSummary> results = taskService.getTasksByVariousFields(parameters, false);
+        
+        assertNotNull(results);
+        assertEquals(1, results.size());
     }
 }

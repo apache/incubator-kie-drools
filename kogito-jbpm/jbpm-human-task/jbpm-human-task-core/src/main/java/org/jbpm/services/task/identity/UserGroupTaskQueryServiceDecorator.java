@@ -1,8 +1,11 @@
 package org.jbpm.services.task.identity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.decorator.Decorator;
 import javax.decorator.Delegate;
@@ -242,12 +245,40 @@ public class UserGroupTaskQueryServiceDecorator extends
     @Override
     public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> status, boolean union) {
+    	potOwners = populateOrganizationalEntityWithGroupInfo(potOwners);
+    	busAdmins = populateOrganizationalEntityWithGroupInfo(busAdmins);
         return delegate.getTasksByVariousFields(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, status, union);
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public List<TaskSummary> getTasksByVariousFields(Map<String, List<?>> parameters, boolean union) {
+    	List<String> potOwners = populateOrganizationalEntityWithGroupInfo((List<String>) parameters.get(POTENTIAL_OWNER_ID_LIST));
+    	parameters.put(POTENTIAL_OWNER_ID_LIST, potOwners);
+    	List<String> bussinessAdmins = populateOrganizationalEntityWithGroupInfo((List<String>) parameters.get(BUSINESS_ADMIN_ID_LIST));
+    	parameters.put(BUSINESS_ADMIN_ID_LIST, bussinessAdmins);
         return delegate.getTasksByVariousFields(parameters, union);
+    }
+    /**
+     * Populates given list with group information taken from UserGroupCallback implementation
+     * to allow proper query for tasks based on user assignments.
+     * @param entities - "raw" list of organizational entities 
+     * @return if list is not null and not empty returns list of org entities populated with group info, otherwise same as argument
+     */
+    protected List<String> populateOrganizationalEntityWithGroupInfo(List<String> entities) {
+    	if (entities != null && entities.size() > 0) {
+    		Set<String> groupIds = new HashSet<String>();
+    		for (String userId : entities) {
+    			List<String> tmp = doUserGroupCallbackOperation(userId, null);
+    			if (tmp != null) {
+    				groupIds.addAll(tmp);
+    			}
+    		}
+    		groupIds.addAll(entities);
+    		return new ArrayList<String>(groupIds);
+    	}
+    	
+    	return entities;
     }
 
 }
