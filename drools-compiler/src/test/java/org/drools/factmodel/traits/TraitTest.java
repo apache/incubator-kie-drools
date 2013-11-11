@@ -2857,7 +2857,6 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    //error
     @Test
     public void testShedWithTMS( ) {
         String source = "package t.x \n" +
@@ -3548,7 +3547,6 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-    //error--
     @Test
     public void testShedThing() {
         String s1 = "package test;\n" +
@@ -4325,9 +4323,6 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-
-
-    //error    need to be discussed
     @Test
     public void testTraitNoType() {
         String drl = "" +

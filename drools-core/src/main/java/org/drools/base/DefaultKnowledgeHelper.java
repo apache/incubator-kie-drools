@@ -398,15 +398,14 @@ public class DefaultKnowledgeHelper
     }
 
 
-    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Key<Thing>> mostSpecificTraits ) {
+    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
         updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, veto, mostSpecificTraits );
     }
 
-    private void updateManyTraits( Object object, long mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Key<Thing>> mostSpecificTraits ) {
+    private void updateManyTraits( Object object, long mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
         veto = veto != null ? (BitSet) veto.clone() : null;
 
-        for ( Key<Thing> k : mostSpecificTraits ) {
-            Thing t = k.getValue();
+        for ( Thing t : mostSpecificTraits ) {
             if ( ! originators.contains( t ) ) {
                 TraitProxy proxy = (TraitProxy) t;
 
@@ -694,7 +693,7 @@ public class DefaultKnowledgeHelper
 
         TraitableBean inner = makeTraitable( core, builder, logical );
 
-        Collection<Key<Thing>> mostSpecificTraits = inner.getMostSpecificTraits();
+        Collection<Thing> mostSpecificTraits = inner.getMostSpecificTraits();
         boolean newTraitsAdded = false;
         T firstThing = null;
         Map<Thing, BitSet> things = new HashMap<Thing, BitSet>( traits.size() );
@@ -748,7 +747,7 @@ public class DefaultKnowledgeHelper
 
         BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
 
-        Collection<Key<Thing>> mostSpecificTraits = getTraitBoundary( inner, needsProxy, hasTrait, trait );
+        Collection<Thing> mostSpecificTraits = getTraitBoundary( inner, needsProxy, hasTrait, trait );
 
         T thing = asTrait( core, inner, trait, needsProxy, hasTrait, needsUpdate, builder, logical );
 
@@ -761,7 +760,7 @@ public class DefaultKnowledgeHelper
         return thing;
     }
 
-    protected Collection<Key<Thing>> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
+    protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
         boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
         if ( refresh ) {
             return inner.getMostSpecificTraits();
@@ -769,7 +768,7 @@ public class DefaultKnowledgeHelper
         return null;
     }
 
-    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Key<Thing>> mostSpecificTraits, boolean logical ) {
+    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Thing> mostSpecificTraits, boolean logical ) {
         if ( mostSpecificTraits != null ) {
             updateCore( inner, core, trait, logical );
             if ( ! mostSpecificTraits.isEmpty() ) {

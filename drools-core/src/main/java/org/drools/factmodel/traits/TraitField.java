@@ -167,10 +167,9 @@ public class TraitField implements Serializable, Externalizable {
 
         if ( defaultValue != null ) {
             if ( defaultValuesByTraits == null ) {
-                defaultValuesByTraits = new TypeHierarchy<Object,TraitFieldDefaultValue>();
+                defaultValuesByTraits = new DefaultValueHierarchy();
             }
-            TraitFieldDefaultValue bmk = new TraitFieldDefaultValue(defaultValue,trait.getTypeCode());
-            defaultValuesByTraits.addMember(bmk, trait.getTypeCode());
+            defaultValuesByTraits.addMember( defaultValue, trait.getTypeCode() );
             if ( defaultValuesByTraits.getBottomCode() == null ) {
                 defaultValuesByTraits.setBottomCode( (BitSet) trait.getTypeCode().clone() );
             } else {
@@ -299,11 +298,11 @@ public class TraitField implements Serializable, Externalizable {
             return defaultValueByClass;
         }
         if ( defaultValuesByTraits != null && ! defaultValuesByTraits.isEmpty() ) {
-            Collection<LatticeElement<Object>> lowerBorder = defaultValuesByTraits.upperBorder( defaultValuesByTraits.getBottomCode() );
+            Collection<Object> lowerBorder = defaultValuesByTraits.upperBorder( defaultValuesByTraits.getBottomCode() );
             if ( lowerBorder.size() > 1 ) {
                 return null;
             } else {
-                return lowerBorder.iterator().next().getValue();
+                return lowerBorder.iterator().next();
             }
         }
         return null;
@@ -350,7 +349,7 @@ public class TraitField implements Serializable, Externalizable {
 
         rangeTypes = (PriorityQueue<TypeWrapper>) in.readObject();
 
-        defaultValuesByTraits = (TypeHierarchy<Object,TraitFieldDefaultValue>) in.readObject();
+        defaultValuesByTraits = (DefaultValueHierarchy) in.readObject();
         defaultValueByClass = in.readObject();
 
         position = in.readShort();
@@ -396,6 +395,18 @@ public class TraitField implements Serializable, Externalizable {
         if ( Byte.class == klass ) { return Byte.valueOf( (byte) 0 ); }
         if ( Character.class == klass ) { return Character.valueOf( (char) 0 ); }
         return null;
+    }
+
+
+    public static class DefaultValueHierarchy extends TypeHierarchy<Object,TraitFieldDefaultValue> implements Externalizable {
+
+        public DefaultValueHierarchy() {
+
+        }
+
+        protected TraitFieldDefaultValue wrap( Object val, BitSet key ) {
+            return new TraitFieldDefaultValue( val, key );
+        }
     }
 
 }

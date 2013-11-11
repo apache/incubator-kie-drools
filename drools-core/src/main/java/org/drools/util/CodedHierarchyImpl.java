@@ -37,8 +37,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-//public class CodedHierarchyImpl<T> extends AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable {
-public class CodedHierarchyImpl<T> extends AbstractCodedHierarchyImpl<T> implements Externalizable {
+public class CodedHierarchyImpl<T> extends AbstractCodedHierarchyImpl<T> implements CodedHierarchy<T>, Externalizable {
 
     protected transient Map<T, HierNode<T>> cache = new HashMap<T, HierNode<T>>();
 

@@ -9,7 +9,7 @@ import java.io.ObjectOutput;
 import java.util.*;
 
 
-public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H>> implements Externalizable {
+public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H>> implements Externalizable, CodedHierarchy<H> {
 
 
     protected SortedMap<BitSet,J> line = new TreeMap<BitSet,J>( new HierCodeComparator() );
@@ -23,7 +23,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return line.get( key );
     }
 
-    protected abstract J getNode( LatticeElement<H> name );
+    protected abstract J getNode( H name );
 
     protected void remove( J node ) {
         line.remove( node.getBitMask() );
@@ -33,7 +33,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return line.containsKey( node.getBitMask() );
     }
 
-    public BitSet getCode( LatticeElement<H> val ) {
+    public BitSet getCode( H val ) {
         if ( val == null ) {
             return null;
         }
@@ -41,18 +41,18 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return node != null ? node.getBitMask() : null;
     }
 
-    public BitSet metMembersCode( Collection<LatticeElement<H>> vals ) {
+    public BitSet metMembersCode( Collection<H> vals ) {
         BitSet x = new BitSet( this.size() );
-        for ( LatticeElement<H> val : vals ) {
+        for ( H val : vals ) {
             x.or( getNode( val ).getBitMask() );
         }
         return x;
     }
 
-    public BitSet jointMembersCode( Collection<LatticeElement<H>> vals ) {
+    public BitSet jointMembersCode( Collection<H> vals ) {
         BitSet x = new BitSet( this.size() );
         boolean first = true;
-        for ( LatticeElement<H> val : vals ) {
+        for ( H val : vals ) {
             if ( first ) {
                 first = false;
                 x.or( getNode( val ).getBitMask() );
@@ -87,18 +87,18 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return x;
     }
 
-    public List<LatticeElement<H>> getSortedMembers() {
-        List<LatticeElement<H>> anx = new ArrayList<LatticeElement<H>>( size() );
+    public List<H> getSortedMembers() {
+        List<H> anx = new ArrayList<H>( size() );
         for ( J node : getNodes() ) {
             if ( node.getValue() != null ) {
-                anx.add( node );
+                anx.add( node.getValue() );
             }
         }
         return anx;
     }
 
-    public Collection<LatticeElement<H>> upperAncestors( BitSet key ) {
-        List<LatticeElement<H>> vals = new LinkedList<LatticeElement<H>>();
+    public Collection<H> upperAncestors( BitSet key ) {
+        List<H> vals = new LinkedList<H>();
         int l = key.length();
         //System.out.println( key );
 
@@ -107,7 +107,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
 
         int index = 0;
 
-        LatticeElement<H> rootVal = getMember( new BitSet() );
+        H rootVal = getMember( new BitSet() );
         if ( rootVal != null ) {
             vals.add( rootVal );
         }
@@ -127,7 +127,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
             if ( t > 0 ) {
                 for ( J val : line.subMap( start, nextKey( end ) ).values() ) {
 //                    System.out.println( "\t " + val.getValue() );
-                    vals.add( val );
+                    vals.add( val.getValue() );
                 }
             }
             index = key.nextSetBit( t );
@@ -135,11 +135,11 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return vals;
     }
 
-     /**
+    /**
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
-    public Collection<LatticeElement<H>> lowerBorder( BitSet key ) {
+    public Collection<H> lowerBorder( BitSet key ) {
         return gcs( key, true );
     }
 
@@ -147,7 +147,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
-    public Collection<LatticeElement<H>> immediateChildren( BitSet key ) {
+    public Collection<H> immediateChildren( BitSet key ) {
         return gcs( key, false );
     }
 
@@ -155,15 +155,15 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
-    Collection<LatticeElement<H>> gcs( BitSet key, boolean includeEquals ) {
+    Collection<H> gcs( BitSet key, boolean includeEquals ) {
 
-        List<LatticeElement<H>> vals = new LinkedList<LatticeElement<H>>();
+        List<H> vals = new LinkedList<H>();
         List<J> border = gcsBorderNodes( key, includeEquals );
 
         for ( int j = 0; j < border.size(); j++ ) {
             J node = border.get( j );
             if ( node != null ) {
-                vals.add( node );
+                vals.add( node.getValue() );
             }
         }
 
@@ -231,13 +231,13 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
      * @param key a key, possibly the meet of a number of member keys
      * @return
      */
-    Collection<LatticeElement<H>> lcs( BitSet key, boolean includeEquals ) {
-        List<LatticeElement<H>> vals = new LinkedList<LatticeElement<H>>();
+    Collection<H> lcs( BitSet key, boolean includeEquals ) {
+        List<H> vals = new LinkedList<H>();
         List<J> border = lcsBorderNodes( key, includeEquals );
         for ( int j = 0; j < border.size(); j++ ) {
             J node = border.get( j );
             if ( node != null ) {
-                vals.add( node);//.getValue() );
+                vals.add( node.getValue() );
             }
         }
         return vals;
@@ -437,8 +437,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
 //        System.out.println(">>>>>>************* it should not happen");
 //    }
 
-    public void removeMember(LatticeElement<H> val) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void removeMember( H val ) {
         System.out.println(">>>>>>************* it should not happen");
     }
 
@@ -447,11 +446,11 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         remove(node);
     }
 
-    public Map<LatticeElement<H>, BitSet> getSortedMap() {
-        Map<LatticeElement<H>,BitSet> anx = new LinkedHashMap<LatticeElement<H>, BitSet>( size() );
+    public Map<H, BitSet> getSortedMap() {
+        Map<H,BitSet> anx = new LinkedHashMap<H, BitSet>( size() );
         for ( J node : getNodes() ) {
             if ( node.getValue() != null ) {
-                anx.put( node, node.getBitMask() );
+                anx.put( node.getValue(), node.getBitMask() );
             }
         }
         return anx;
@@ -465,10 +464,10 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
 //        return null;  //To change body of implemented methods use File | Settings | File Templates.
 //    }
 
-    public Collection<LatticeElement<H>> lowerDescendants( BitSet key ) {
-        List<LatticeElement<H>> vals = new LinkedList<LatticeElement<H>>();
+    public Collection<H> lowerDescendants( BitSet key ) {
+        List<H> vals = new LinkedList<H>();
         int l = key.length();
-        if ( l == 0 || line.size()==0) {//changed by mamad
+        if ( l == 0 || line.isEmpty() ) {
             return new ArrayList( getSortedMembers() );
         }
         int n = line.lastKey().length();
@@ -485,7 +484,7 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         for ( J val : line.subMap( start, end ).values() ) {
             BitSet x = val.getBitMask();
             if ( superset( x, key ) >= 0 ) {
-                vals.add( val);//.getValue() );
+                vals.add( val.getValue() );
             }
         }
 
@@ -494,40 +493,32 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return vals;
     }
 
-    protected Collection<LatticeElement<H>> parentValues( J node ) {
-        if ( node == null ) {
-            return Collections.EMPTY_LIST;
-        }
+    protected abstract Collection<H> parentValues( J node );
 
-//        List<H> p = new ArrayList<H>( node.getParents().size() );
-//        for ( J parent : node.getParents() ) {
-//            p.add( parent.getValue() );
-//        }
-//        return p;
-        System.out.println(">>>>>>************* it should not happen");
-        return null;
-    }
-
-    public Collection<LatticeElement<H>> parents(LatticeElement<H> x) {
+    public Collection<H> parents(H x) {
         J node = getNode( x );
         return parentValues(node);
     }
 
-    public Collection<LatticeElement<H>> parents(BitSet x) {
+    public Collection<H> parents(BitSet x) {
         J node = getNodeByKey(x);
         return parentValues( node );
     }
 
-    public Collection<LatticeElement<H>> upperBorder(BitSet key) {
+    public Collection<H> upperBorder(BitSet key) {
         return lcs( key, true );
     }
 
-    public Collection<LatticeElement<H>> immediateParents(BitSet key) {
+    public Collection<H> immediateParents(BitSet key) {
         return lcs( key, false );
     }
 
     public boolean isEmpty() {
         return line.isEmpty();
+    }
+
+    public void clear() {
+        line.clear();
     }
 
     protected void add( J node ) {
@@ -538,8 +529,8 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
         return line.values();
     }
 
-    public LatticeElement<H> getMember( BitSet key ) {
-        return line.containsKey( key ) ? line.get( key ) : null;
+    public H getMember( BitSet key ) {
+        return line.containsKey( key ) ? line.get( key ).getValue() : null;
     }
 
 }

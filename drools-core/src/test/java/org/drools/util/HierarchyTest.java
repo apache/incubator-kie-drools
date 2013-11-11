@@ -1049,7 +1049,6 @@ public class HierarchyTest {
 
 
 
-    /*
     @Test
     public void testClassInstanceHierarchies() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
@@ -1072,8 +1071,7 @@ public class HierarchyTest {
 
         System.out.println( encoder );
 
-//        CodedHierarchy<String> types = new IndexedTypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
-        AbstractCodedHierarchy<String> types = new IndexedTypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
+        CodedHierarchy<String> types = new IndexedTypeHierarchy<String>( "A", new BitSet(), "ZZZZ", encoder.getBottom() );
 
         types.addMember( "A", ak );
         types.addMember( "c", ck );
@@ -1130,7 +1128,6 @@ public class HierarchyTest {
         assertEquals( Arrays.asList( "p" ), types.children( "h" ) );
 
     }
-  */
 
 
     @Test

@@ -16,18 +16,17 @@
 
 package org.drools.factmodel.traits;
 
-import org.drools.core.util.HierNode;
 import org.drools.util.AbstractBitwiseHierarchyImpl;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collection;
 
-//public class TypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements TypeLattice<T>, Externalizable {
-public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwiseHierarchyImpl<T,J>
-        implements TypeLattice<LatticeElement<T>>, Externalizable {
+public abstract class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwiseHierarchyImpl<T,J>
+        implements TypeLattice<T>, Externalizable {
 
     private BitSet bottom;
     private BitSet top;
@@ -37,7 +36,7 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
     }
 
     @Override
-    protected J getNode(LatticeElement<T> name) {
+    protected J getNode( T name ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
@@ -93,31 +92,37 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
         this.top = top;
     }
 
-    public void addMember(LatticeElement<T> val, BitSet key) {
-        add( (J) val );
+    public void addMember(T val, BitSet key) {
+        add(  wrap( val, key ) );
     }
 
-    public Collection<LatticeElement<T>> children(LatticeElement<T> y) {
+    protected abstract J wrap( T val, BitSet key );
+
+    protected Collection<T> parentValues( J node ) {
+        return null;
+    }
+
+    public Collection<T> children(T y) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Collection<LatticeElement<T>> descendants(LatticeElement<T> y) {
+    public Collection<T> descendants(T y) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Collection<LatticeElement<T>> children(BitSet key) {
+    public Collection<T> children(BitSet key) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Collection<LatticeElement<T>> descendants(BitSet key) {
+    public Collection<T> descendants(BitSet key) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Collection<LatticeElement<T>> ancestors(LatticeElement<T> x) {
+    public Collection<T> ancestors( T x ) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Collection<LatticeElement<T>> ancestors(BitSet key) {
+    public Collection<T> ancestors(BitSet key) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 

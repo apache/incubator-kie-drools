@@ -8,13 +8,13 @@ import java.util.*;
 
 
 public class TraitTypeMap<T extends String, K extends Thing<C>, C>
-        extends TypeHierarchy<K, Key<K>>
+        extends TypeHierarchy<K, BitMaskKey<K>>
         implements Map<String, K>, Externalizable {
 
     private Map<String,K> innerMap;
 
     private BitSet currentTypeCode = new BitSet();
-    private transient Collection<LatticeElement<K>> mostSpecificTraits = new LinkedList<LatticeElement<K>>();
+    private transient Collection<K> mostSpecificTraits = new LinkedList<K>();
 
     public TraitTypeMap() {
     }
@@ -24,7 +24,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
         // create "top" element placeholder. will be replaced by a Thing proxy later, should the core object don it
         ThingProxyPlaceHolder thingPlaceHolder = ThingProxyPlaceHolder.getThingPlaceHolder();
-        addMember( new BitMaskKey( -1, thingPlaceHolder ), thingPlaceHolder.getTypeCode() );
+        addMember( (K) thingPlaceHolder, thingPlaceHolder.getTypeCode() );
     }
 
     public int size() {
@@ -49,9 +49,8 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public K put( String key, K value ) {
         BitSet code = ((TraitType) value).getTypeCode();
-        LatticeElement<K> elem = new BitMaskKey<K>( System.identityHashCode( value ), value );
 
-        addMember( elem, code );
+        addMember( value, code );
         innerMap.put( key, value );
 
         currentTypeCode.or( code );
@@ -63,16 +62,20 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     public void setBottomCode( BitSet code ) {
         if ( ! hasKey(code) ) {
             super.setBottomCode(code);
-            addMember( new BitMaskKey( 0, new NullTraitType(code) ), code );
+            addMember( (K) new NullTraitType( code ), code );
         }
+    }
+
+    @Override
+    protected BitMaskKey<K> wrap( K value, BitSet key ) {
+        return new BitMaskKey<K>( System.identityHashCode( value ), value );
     }
 
 
     public K putSafe( String key, K value ) throws LogicalTypeInconsistencyException {
         BitSet code = ((TraitType) value).getTypeCode();
-        LatticeElement<K> elem = new BitMaskKey<K>( System.identityHashCode( value ), value );
 
-        addMember( elem, code );
+        addMember( value, code );
         innerMap.put( key, value );
 
         currentTypeCode.or( code );
@@ -81,34 +84,13 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return value;
     }
 
-    private void updateMostSpecificTrait( LatticeElement<K> elem ) {
-        if ( mostSpecificTraits == null ) {
-            return;
-        }
-
-        boolean addIt = true;
-        Collection<LatticeElement<K>> tmpMost = new ArrayList<LatticeElement<K>>( mostSpecificTraits );
-
-        for( LatticeElement<K> node : tmpMost ) {
-            if( superset( elem.getBitMask(), node.getBitMask() ) > 0 ) {
-                mostSpecificTraits.remove( node );
-            } else if( superset( node.getBitMask(), elem.getBitMask() ) > 0 ) {
-                addIt = false;
-                break;
-            }
-        }
-
-        if( addIt ) {
-            mostSpecificTraits.add( elem );
-        }
-    }
 
     public K remove( Object key ) {
         K t = innerMap.remove( key );
         if ( t instanceof TraitProxy ) {
             ((TraitProxy) t).shed();
         }
-        removeMember( new BitMaskKey<K>( System.identityHashCode( t ), t ) );
+        removeMember( ( (TraitProxy) t ).getTypeCode() );
 
         mostSpecificTraits = null;
         resetCurrentCode();
@@ -124,10 +106,10 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
     }
 
     public Collection<K> removeCascade( BitSet code ) {
-        Collection<LatticeElement<K>> subs = this.lowerDescendants( code );
+        Collection<K> subs = this.lowerDescendants( code );
         List<K> ret = new ArrayList<K>( subs.size() );
-        for ( LatticeElement<K> k : subs ) {
-            Key<K> t = new BitMaskKey<K>(System.identityHashCode(k),k.getValue());
+        for ( K k : subs ) {
+            Key<K> t = new BitMaskKey<K>( System.identityHashCode(k), k );
             TraitType tt = (TraitType) t.getValue();
             if ( ! tt.isVirtual() ) {
                 ret.add( t.getValue() );
@@ -155,7 +137,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
 
     public void putAll( Map<? extends String, ? extends K> m ) {
         for ( K proxy : m.values() ) {
-            addMember( new BitMaskKey<K>( System.identityHashCode( proxy ), proxy ), ((TraitProxy) proxy).getTypeCode() );
+            addMember( proxy, ((TraitProxy) proxy).getTypeCode() );
         }
         resetCurrentCode();
         mostSpecificTraits = null;
@@ -211,11 +193,11 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
 
         currentTypeCode = (BitSet) objectInput.readObject();
-        mostSpecificTraits = (Collection<LatticeElement<K>>) objectInput.readObject();
+        mostSpecificTraits = (Collection<K>) objectInput.readObject();
     }
 
 
-    public Collection<LatticeElement<K>> getMostSpecificTraits() {
+    public Collection<K> getMostSpecificTraits() {
         if ( getBottomCode() == null ) {
             // not yet initialized -> no trait donned yet
             return null;
@@ -224,8 +206,8 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
             return mostSpecificTraits;
         }
         if ( hasKey( getBottomCode() ) ) {
-            LatticeElement<K> b = (BitMaskKey) getMember(getBottomCode());
-            if ( ((TraitType) b.getValue()).isVirtual() ) {
+            K b = getMember( getBottomCode() );
+            if ( ((TraitType) b).isVirtual() ) {
                 mostSpecificTraits = immediateParents( getBottomCode() );
                 return mostSpecificTraits;
             } else {
