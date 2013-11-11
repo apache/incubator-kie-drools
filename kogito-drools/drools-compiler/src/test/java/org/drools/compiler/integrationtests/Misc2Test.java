@@ -4110,4 +4110,45 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(new Message("Hello World"));
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testInsertModifyInteractionsWithNoloop() {
+        String drl =
+                "package org.drools.compiler.integrationtests;\n" +
+                "import org.drools.compiler.Message;\n" +
+                "global Message m2;\n" +
+                "rule r1  no-loop\n" +
+                "    when\n" +
+                "        m: Message()\n" +
+                "    then\n" +
+                "        modify( m ){ setMessage2( 'msg2' ) };\n" +
+                "        m2 =  new Message( 'msg1' );\n" +
+                "        kcontext.getKnowledgeRuntime().setGlobal( 'm2', m2 ); \n" +
+                "        insert( m2 );\n" +
+                "end\n" +
+                "rule r2 no-loop salience 1000\n" +
+                "    when\n" +
+                "        m : Message()\n" +
+                "    then\n" +
+                "        modify( m ){ setMessage3( 'msg3' ) };\n" +
+                "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Message m1 = new Message( "msg1" );
+        ksession.insert(m1);
+        assertEquals(4, ksession.fireAllRules());
+
+        Message m2 = (Message) ksession.getGlobal( "m2" );
+
+        assertEquals( "msg1", m1.getMessage() );
+        assertEquals( "msg2", m1.getMessage2() );
+        assertEquals( "msg3", m1.getMessage3() );
+
+        assertEquals( "msg1", m2.getMessage() );
+        assertEquals( "Two", m2.getMessage2() ); // r1 does not fire for m2
+        assertEquals( "msg3", m2.getMessage3() );
+    }
 }

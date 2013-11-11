@@ -408,12 +408,10 @@ public class AccumulateNode extends BetaNode {
         if ( rightTuple != null && (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
-            if ( rightTuple.getStagedType() != LeftTuple.INSERT ) {
-                // things staged as inserts, are left as inserts and use the pctx associated from the time of insertion
-                rightTuple.setPropagationContext( context );
-            }
             if ( intersect( context.getModificationMask(), getRightInferredMask() ) ) {
                 // RightTuple previously existed, so continue as modify
+                rightTuple.setPropagationContext( context );  // only update, if the mask intersects
+
                 BetaMemory bm = getBetaMemory( this, wm );
                 rightTuple.setPropagationContext( context );
                 doUpdateRightTuple(rightTuple, wm, bm);

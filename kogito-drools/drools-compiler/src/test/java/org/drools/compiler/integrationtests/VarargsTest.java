@@ -4,9 +4,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.definition.type.PropertyReactive;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 public class VarargsTest extends CommonTestMethodBase {
