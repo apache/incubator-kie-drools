@@ -31,19 +31,10 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
 
     private BitSet bottom;
     private BitSet top;
-    Collection<LatticeElement<T>> mostSpecificTraits = new LinkedList<LatticeElement<T>>();
-
 
     public TypeHierarchy() {
         top = new BitSet();
     }
-
-//    public TypeHierarchy( T topElement, BitSet topKey, T bottomElement, BitSet bottomKey ) {
-//        this.top = topKey;
-//        this.bottom = bottomKey;
-//        addMember( topElement, topKey );
-//        addMember( bottomElement, bottomKey );
-//    }
 
     @Override
     protected J getNode(LatticeElement<T> name) {
@@ -61,11 +52,6 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
         super.readExternal( objectInput );
         bottom = (BitSet) objectInput.readObject();
     }
-
-//    @Override
-//    protected HierNode<T> getNode( T name ) {
-//        throw new UnsupportedOperationException( "Concrete Type lattices should be indexed by key (BitSet), not by value" );
-//    }
 
     @Override
     public String toString() {
@@ -105,28 +91,6 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
 
     public void setTopCode( BitSet top ) {
         this.top = top;
-    }
-
-    public void updateMostSpecificTrait(LatticeElement<T> val)
-    {
-        BitSet tmp = (BitSet)val.getBitMask().clone();
-        int size = mostSpecificTraits.size();
-        boolean addIt = true;
-        Collection<LatticeElement<T>> tmpMost = new LinkedList<LatticeElement<T>>(mostSpecificTraits);
-        for(LatticeElement<T> node : tmpMost)
-        {
-            if( superset( tmp, node.getBitMask() ) > 0 )
-            {
-                mostSpecificTraits.remove( node );
-            }
-            else if(superset( node.getBitMask(), tmp ) > 0)
-            {
-                addIt = false;
-                break;
-            }
-        }
-        if( size > mostSpecificTraits.size() || addIt )
-            mostSpecificTraits.add( val );
     }
 
     public void addMember(LatticeElement<T> val, BitSet key) {
