@@ -4,29 +4,27 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class TraitTypeMap<T extends String, K extends Thing<C>, C>
-        extends TypeHierarchy<Key<Thing<C>>>
-        implements Map<String, Thing<C>>, Externalizable {
+        extends TypeHierarchy<K, BitMaskKey<K>>
+        implements Map<String, K>, Externalizable {
 
-    private Map<String,Thing<C>> innerMap;
+    private Map<String,K> innerMap;
 
     private BitSet currentTypeCode = new BitSet();
+    private transient Collection<K> mostSpecificTraits = new LinkedList<K>();
 
     public TraitTypeMap() {
     }
 
     public TraitTypeMap(Map map) {
         innerMap = map;
+
+        // create "top" element placeholder. will be replaced by a Thing proxy later, should the core object don it
+        ThingProxyPlaceHolder thingPlaceHolder = ThingProxyPlaceHolder.getThingPlaceHolder();
+        addMember( (K) thingPlaceHolder, thingPlaceHolder.getTypeCode() );
     }
 
     public int size() {
@@ -45,66 +43,85 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return innerMap.containsValue( value );
     }
 
-    public Thing<C> get( Object key ) {
+    public K get( Object key ) {
         return innerMap.get( key );
     }
 
-    public Thing<C> put( String key, Thing<C> value ) {
+    public K put( String key, K value ) {
         BitSet code = ((TraitType) value).getTypeCode();
-        addMember( new Key<Thing<C>>( System.identityHashCode( value ), value ), code );
+
+        addMember( value, code );
         innerMap.put( key, value );
+
         currentTypeCode.or( code );
+        mostSpecificTraits = null;
+
         return value;
     }
 
     public void setBottomCode( BitSet code ) {
         if ( ! hasKey(code) ) {
             super.setBottomCode(code);
-            addMember( new Key( 0, new NullTraitType(code) ), code );
+            addMember( (K) new NullTraitType( code ), code );
         }
     }
 
+    @Override
+    protected BitMaskKey<K> wrap( K value, BitSet key ) {
+        return new BitMaskKey<K>( System.identityHashCode( value ), value );
+    }
 
-    public Thing<C> putSafe( String key, Thing<C> value ) throws LogicalTypeInconsistencyException {
+
+    public K putSafe( String key, K value ) throws LogicalTypeInconsistencyException {
         BitSet code = ((TraitType) value).getTypeCode();
-        addMember( new Key<Thing<C>>( System.identityHashCode( value ), value ), code );
-        currentTypeCode.or( code );
+
+        addMember( value, code );
         innerMap.put( key, value );
+
+        currentTypeCode.or( code );
+        mostSpecificTraits = null;
+
         return value;
     }
 
-    public Thing<C> remove( Object key ) {
-        Thing<C> t = innerMap.remove( key );
+
+    public K remove( Object key ) {
+        K t = innerMap.remove( key );
         if ( t instanceof TraitProxy ) {
             ((TraitProxy) t).shed();
         }
-        removeMember( new Key<Thing<C>>( System.identityHashCode( t ), t ) );
+        removeMember( ( (TraitProxy) t ).getTypeCode() );
+
+        mostSpecificTraits = null;
         resetCurrentCode();
         return t;
     }
 
-    public Collection<Thing<C>> removeCascade( String traitName ) {
+    public Collection<K> removeCascade( String traitName ) {
         if ( ! innerMap.containsKey( traitName ) ) {
             return Collections.emptyList();
         }
-        Thing<C> thing = innerMap.get( traitName );
+        K thing = innerMap.get( traitName );
         return removeCascade( ( (TraitType) thing ).getTypeCode() );
     }
 
-    public Collection<Thing<C>> removeCascade( BitSet code ) {
-        Collection<Key<Thing<C>>> subs = this.lowerDescendants( code );
-        List<Thing<C>> ret = new ArrayList<Thing<C>>( subs.size() );
-        for ( Key<Thing<C>> t : subs ) {
+    public Collection<K> removeCascade( BitSet code ) {
+        Collection<K> subs = this.lowerDescendants( code );
+        List<K> ret = new ArrayList<K>( subs.size() );
+        for ( K k : subs ) {
+            Key<K> t = new BitMaskKey<K>( System.identityHashCode(k), k );
             TraitType tt = (TraitType) t.getValue();
             if ( ! tt.isVirtual() ) {
                 ret.add( t.getValue() );
                 removeMember( tt.getTypeCode() );
-                Thing<C> thing = innerMap.remove( tt.getTraitName() );
+                K thing = innerMap.remove( tt.getTraitName() );
                 if ( thing instanceof TraitProxy ) {
-                    ((TraitProxy) thing).shed();
+                    ((TraitProxy) thing).shed(); //is this working?
                 }
             }
         }
+
+        mostSpecificTraits = null;
         resetCurrentCode();
         return ret;
     }
@@ -118,11 +135,12 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
     }
 
-    public void putAll( Map<? extends String, ? extends Thing<C>> m ) {
-        for ( String key : m.keySet() ) {
-            Thing<C> proxy = m.get( key );
-            addMember( new Key<Thing<C>>( System.identityHashCode( proxy ), proxy ), ((TraitProxy) proxy).getTypeCode());
+    public void putAll( Map<? extends String, ? extends K> m ) {
+        for ( K proxy : m.values() ) {
+            addMember( proxy, ((TraitProxy) proxy).getTypeCode() );
         }
+        resetCurrentCode();
+        mostSpecificTraits = null;
         innerMap.putAll( m );
     }
 
@@ -134,18 +152,18 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         return innerMap.keySet();
     }
 
-    public Collection<Thing<C>> values() {
+    public Collection<K> values() {
         return innerMap.values();
     }
 
-    public Set<Entry<String, Thing<C>>> entrySet() {
+    public Set<Entry<String, K>> entrySet() {
         return innerMap.entrySet();
     }
 
     @Override
     public String toString() {
         return "VetoableTypedMap{" +
-                "innerMap=" + innerMap + '}';
+               "innerMap=" + innerMap + '}';
     }
 
     public void writeExternal( ObjectOutput objectOutput ) throws IOException {
@@ -160,41 +178,53 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         }
 
         objectOutput.writeObject( currentTypeCode );
+        objectOutput.writeObject( mostSpecificTraits );
     }
 
     public void readExternal( ObjectInput objectInput ) throws IOException, ClassNotFoundException {
         super.readExternal( objectInput );
 
-        innerMap = new HashMap<String, Thing<C>>();
+        innerMap = new HashMap<String, K>();
         int n = objectInput.readInt();
         for ( int j = 0; j < n; j++ ) {
             String k = (String) objectInput.readObject();
-            Thing<C> tf = (Thing<C>) objectInput.readObject();
+            K tf = (K) objectInput.readObject();
             innerMap.put( k, tf );
         }
 
         currentTypeCode = (BitSet) objectInput.readObject();
+        mostSpecificTraits = (Collection<K>) objectInput.readObject();
     }
 
 
-    public Collection<Key<Thing<C>>> getMostSpecificTraits() {
+    public Collection<K> getMostSpecificTraits() {
+        if ( getBottomCode() == null ) {
+            // not yet initialized -> no trait donned yet
+            return null;
+        }
+        if( mostSpecificTraits != null && ! mostSpecificTraits.isEmpty() ) {
+            return mostSpecificTraits;
+        }
         if ( hasKey( getBottomCode() ) ) {
-            Key<Thing<C>> b = getMember( getBottomCode() );
-            if ( ((TraitType) b.getValue()).isVirtual() ) {
-                Collection<Key<Thing<C>>> p =  parents( getBottomCode() );
-                return p;
+            K b = getMember( getBottomCode() );
+            if ( ((TraitType) b).isVirtual() ) {
+                mostSpecificTraits = immediateParents( getBottomCode() );
+                return mostSpecificTraits;
             } else {
-                return Collections.singleton( b );
+                mostSpecificTraits = Collections.singleton( b );
+                return mostSpecificTraits;
             }
         } else {
-            Collection<Key<Thing<C>>> p =  immediateParents( getBottomCode() );
-            return p;
+            mostSpecificTraits = immediateParents( getBottomCode() );
+            return mostSpecificTraits;
         }
     }
-
 
 
     public BitSet getCurrentTypeCode() {
         return currentTypeCode;
     }
+
+
+
 }

@@ -571,9 +571,12 @@ public class NamedEntryPoint
                     removedTypes.addAll( traitableBean._getTraitMap().values() );
 
                     while ( ! removedTypes.isEmpty() ) {
-                        delete( getFactHandle( removedTypes.poll() ),
-                                rule,
-                                activation );
+                        TraitProxy proxy = removedTypes.poll();
+                        if ( ! proxy.isVirtual() ) {
+                            delete( getFactHandle( proxy ),
+                                    rule,
+                                    activation );
+                        }
                     }
                 }
             }

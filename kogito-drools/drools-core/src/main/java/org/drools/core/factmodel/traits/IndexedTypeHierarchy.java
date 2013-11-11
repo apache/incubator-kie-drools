@@ -1,6 +1,7 @@
 package org.drools.core.factmodel.traits;
 
-import org.drools.core.factmodel.traits.TypeHierarchy;
+import org.drools.core.util.AbstractCodedHierarchyImpl;
+import org.drools.core.util.HierNode;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -16,12 +17,17 @@ import java.util.Map;
  * Use @see{TypeHierarchy} instead.
  * @param <T>
  */
-public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externalizable {
+public class IndexedTypeHierarchy<T> extends AbstractCodedHierarchyImpl<T> implements Externalizable {
 
     protected transient Map<T, HierNode<T>> cache;
 
+    private BitSet bottom;
+    private BitSet top;
+
+
     public IndexedTypeHierarchy() {
         super();
+        top = new BitSet();
         cache = new HashMap<T, HierNode<T>>();
     }
 
@@ -32,6 +38,24 @@ public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externa
         addMember( topElement, topKey );
         addMember( bottomElement, bottomKey );
 
+    }
+
+
+
+    public BitSet getTopCode() {
+        return top;
+    }
+
+    public BitSet getBottomCode() {
+        return bottom;
+    }
+
+    public void setBottomCode( BitSet bottom ) {
+        this.bottom = bottom;
+    }
+
+    public void setTopCode( BitSet top ) {
+        this.top = top;
     }
 
     protected HierNode<T> getNode( T name ) {
@@ -54,12 +78,16 @@ public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externa
         }
 
         for ( HierNode<T> node : getNodes() ) {
-            builder.append( node.toString( len ) ).append("\n");
+            builder.append( node.toString(len) ).append("\n");
         }
         builder.append( "*****************************************\n" );
         builder.append( getSortedMap() ).append("\n");
         builder.append("*****************************************\n");
         return builder.toString();
+    }
+
+    protected HierNode<T> getNode( LatticeElement<T> name ) {
+        return null;
     }
 
     @Override
@@ -71,4 +99,5 @@ public class IndexedTypeHierarchy<T> extends TypeHierarchy<T> implements Externa
     public void readExternal( ObjectInput objectInput ) throws IOException, ClassNotFoundException {
         super.readExternal( objectInput );
     }
+
 }

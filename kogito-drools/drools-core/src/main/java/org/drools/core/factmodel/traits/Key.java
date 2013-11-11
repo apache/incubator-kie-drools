@@ -2,7 +2,7 @@ package org.drools.core.factmodel.traits;
 
 import java.io.Serializable;
 
-public class Key<T> implements Serializable {
+public abstract class Key<T> implements LatticeElement<T>, Serializable {
 
     private T value;
     private int id;
