@@ -1049,7 +1049,6 @@ public class HierarchyTest {
 
 
 
-
     @Test
     public void testClassInstanceHierarchies() {
         HierarchyEncoder<String> encoder = new HierarchyEncoderImpl<String>();
@@ -1129,7 +1128,6 @@ public class HierarchyTest {
         assertEquals( Arrays.asList( "p" ), types.children( "h" ) );
 
     }
-
 
 
     @Test

@@ -19,9 +19,12 @@ package org.drools.factmodel.traits;
 import org.drools.factmodel.BuildUtils;
 import org.drools.factmodel.ClassDefinition;
 import org.drools.factmodel.FieldDefinition;
-import org.drools.spi.InternalReadAccessor;
-import org.drools.spi.WriteAccessor;
-import org.mvel2.asm.*;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Type;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -83,15 +86,6 @@ public class TraitMapPropertyWrapperClassBuilderImpl implements TraitPropertyWra
                 new String[]{ Type.getInternalName( Map.class ), Type.getInternalName( MapWrapper.class ), Type.getInternalName( Serializable.class ) } );
 
         cw.visitInnerClass( Type.getInternalName( Map.Entry.class ), Type.getInternalName( Map.class ), "Entry", ACC_PUBLIC + ACC_STATIC + ACC_ABSTRACT + ACC_INTERFACE );
-
-
-        for ( FieldDefinition fld : core.getFieldsDefinitions() ) {
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, fld.getName()+"_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null);
-            fv.visitEnd();
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, fld.getName()+"_writer", Type.getDescriptor( WriteAccessor.class ), null, null);
-            fv.visitEnd();
-        }
-
 
         {
             fv = cw.visitField( 0, "object", descrCore, null, null );

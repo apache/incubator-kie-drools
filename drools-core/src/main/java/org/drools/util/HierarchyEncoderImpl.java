@@ -16,6 +16,8 @@
 
 package org.drools.util;
 
+import org.drools.core.util.HierNode;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;

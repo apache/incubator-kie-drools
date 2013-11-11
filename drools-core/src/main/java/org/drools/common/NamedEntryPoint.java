@@ -569,11 +569,14 @@ public class NamedEntryPoint
                     removedTypes.addAll( traitableBean._getTraitMap().values() );
 
                     while ( ! removedTypes.isEmpty() ) {
-                        retract( getFactHandle( removedTypes.poll() ),
-                                removeLogical,
-                                updateEqualsMap,
-                                rule,
-                                activation );
+                        TraitProxy proxy = removedTypes.poll();
+                        if ( ! proxy.isVirtual() ) {
+                            retract( getFactHandle( proxy ),
+                                     removeLogical,
+                                     updateEqualsMap,
+                                     rule,
+                                     activation );
+                        }
                     }
                 }
             }

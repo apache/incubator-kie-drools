@@ -16,6 +16,8 @@
 
 package org.drools.util;
 
+import org.drools.core.util.HierNode;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -40,6 +42,10 @@ public class CodedHierarchyImpl<T> extends AbstractCodedHierarchyImpl<T> impleme
     protected transient Map<T, HierNode<T>> cache = new HashMap<T, HierNode<T>>();
 
     protected HierNode<T> getNode( T name ) {
+        return cache.get( name );
+    }
+
+    protected HierNode<T> getNode( HierNode<T> name ) {
         return cache.get( name );
     }
 
