@@ -4151,4 +4151,229 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "Two", m2.getMessage2() ); // r1 does not fire for m2
         assertEquals( "msg3", m2.getMessage3() );
     }
+
+    @Test
+    public void testWumpus1() {
+        String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
+                     "global java.util.List list; \n " +
+                     "\n" +
+                     "\n" +
+                     "rule StepLeft when\n" +
+                     "    $h  : Hero( goingRight == false )\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "then\n" +
+                     "    modify ( $h ) { setPos( $h.getPos()-1 ) };\n" +
+                     "    list.add( 'StepLeft' );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule StepRight when\n" +
+                     "    $h  : Hero( goingRight == true )\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "then\n" +
+                     "    modify ( $h ) { setPos( $h.getPos()+1 ) };\n" +
+                     "    list.add( 'StepRight' );\n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Hero hero = new Hero(1);
+        ksession.insert(hero);
+        ksession.fireAllRules();
+
+        ksession.insert(new StepForwardCommand());
+        assertEquals( 1, ksession.fireAllRules() );
+        assertEquals(2, hero.getPos());
+    }
+
+    @Test
+    public void testWumpus2() {
+        String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.ChangeDirectionCommand;\n" +
+                     "global java.util.List list; \n " +
+                     "\n" +
+                     "\n" +
+                     "rule StepLeft when\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "    $h  : Hero( goingRight == false )\n" +
+                     "then\n" +
+                     "    modify ( $h ) { setPos( $h.getPos()-1 ) };\n" +
+                     "    list.add( 'StepLeft' );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule StepRight when\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "    $h  : Hero( goingRight == true )\n" +
+                     "then\n" +
+                     "    modify ( $h ) { setPos( $h.getPos()+1 ) };\n" +
+                     "    list.add( 'StepRight' );\n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Hero hero = new Hero(1);
+        ksession.insert(hero);
+        ksession.fireAllRules();
+
+        ksession.insert(new StepForwardCommand());
+        assertEquals( 1, ksession.fireAllRules() );
+        assertEquals(2, hero.getPos());
+    }
+
+    @Test
+    public void testWumpus3() {
+        String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.ChangeDirectionCommand;\n" +
+                     "global java.util.List list; \n " +
+                     "\n" +
+                     "rule RotateLeft when\n" +
+                     "    $h  : Hero( goingRight == true )\n" +
+                     "    $dc : ChangeDirectionCommand()\n" +
+                     "then\n" +
+                     "    retract ( $dc );   \n" +
+                     "    modify ( $h ) { setGoingRight( false ) };\n" +
+                     "    list.add( 'RotateLeft' );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule StepLeft when\n" +
+                     "    $h  : Hero( goingRight == false )\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "then\n" +
+                     "    retract ( $sc );   \n" +
+                     "    modify ( $h ) { setPos( $h.getPos()-1 ) };\n" +
+                     "    list.add( 'StepLeft' );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule StepRight when\n" +
+                     "    $h  : Hero( goingRight == true )\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "then\n" +
+                     "    retract ( $sc );\n" +
+                     "    modify ( $h ) { setPos( $h.getPos()+1 ) };\n" +
+                     "    list.add( 'StepRight' );\n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Hero hero = new Hero(1);
+        ksession.insert(hero);
+        ksession.fireAllRules();
+
+        ksession.insert(new StepForwardCommand());
+        ksession.fireAllRules();
+        assertEquals(2, hero.getPos());
+
+        ksession.insert(new ChangeDirectionCommand());
+        ksession.fireAllRules();
+        ksession.insert(new StepForwardCommand());
+        ksession.fireAllRules();
+        assertEquals(1, hero.getPos());
+    }
+
+    @Test
+    public void testWumpus4() {
+        String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.ChangeDirectionCommand;\n" +
+                     "global java.util.List list; \n " +
+                     "\n" +
+                     "rule RotateLeft when\n" +
+                     "    $dc : ChangeDirectionCommand()\n" +
+                     "    $h  : Hero( goingRight == true )\n" +
+                     "then\n" +
+                     "    retract ( $dc );   \n" +
+                     "    modify ( $h ) { setGoingRight( false ) };\n" +
+                     "    list.add( 'RotateLeft' );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule StepLeft when\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "    $h  : Hero( goingRight == false )\n" +
+                     "then\n" +
+                     "    retract ( $sc );   \n" +
+                     "    modify ( $h ) { setPos( $h.getPos()-1 ) };\n" +
+                     "    list.add( 'StepLeft' );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule StepRight when\n" +
+                     "    $sc : StepForwardCommand()\n" +
+                     "    $h  : Hero( goingRight == true )\n" +
+                     "then\n" +
+                     "    retract ( $sc );\n" +
+                     "    modify ( $h ) { setPos( $h.getPos()+1 ) };\n" +
+                     "    list.add( 'StepRight' );\n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        Hero hero = new Hero(1);
+        ksession.insert(hero);
+        ksession.fireAllRules();
+
+        ksession.insert(new StepForwardCommand());
+        ksession.fireAllRules();
+        assertEquals(2, hero.getPos());
+
+
+
+        ksession.insert(new ChangeDirectionCommand());
+        ksession.fireAllRules();
+        ksession.insert(new StepForwardCommand());
+        ksession.fireAllRules();
+        assertEquals(1, hero.getPos());
+    }
+
+    @PropertyReactive
+    public static class Hero {
+        private int pos = 1;
+        private boolean goingRight = true;
+
+        public Hero(int pos) {
+            this.pos = pos;
+        }
+
+        public int getPos() {
+            return pos;
+        }
+
+        public void setPos(int pos) {
+            this.pos = pos;
+        }
+
+        public boolean isGoingRight() {
+            return goingRight;
+        }
+
+        public void setGoingRight(boolean goingRight) {
+            this.goingRight = goingRight;
+        }
+
+    }
+
+    public static class ChangeDirectionCommand { }
+    public static class StepForwardCommand { }
 }

@@ -20,6 +20,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
+import static org.drools.core.util.BitMaskUtil.intersect;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 import java.io.IOException;
@@ -316,10 +317,43 @@ public abstract class BetaNode extends LeftTupleSource
             MarshallerReaderContext mrc = (MarshallerReaderContext) pctx.getReaderContext();
             mrc.filter.fireRNEAs( wm );
         }
-
-
     }
 
+    public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+
+        // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
+        while ( rightTuple != null &&
+                (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().before( getRightInputOtnId() ) ) {
+            modifyPreviousTuples.removeRightTuple();
+
+            // we skipped this node, due to alpha hashing, so retract now
+            rightTuple.setPropagationContext( context );
+            BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getRightTupleSink(), wm );
+            (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
+            rightTuple = modifyPreviousTuples.peekRightTuple();
+        }
+
+        if ( rightTuple != null && (( BetaNode ) rightTuple.getRightTupleSink()).getRightInputOtnId().equals(getRightInputOtnId()) ) {
+            modifyPreviousTuples.removeRightTuple();
+            rightTuple.reAdd();
+            if ( intersect( context.getModificationMask(), getRightInferredMask() ) ) {
+                // RightTuple previously existed, so continue as modify
+                rightTuple.setPropagationContext( context );  // only update, if the mask intersects
+
+                BetaMemory bm = getBetaMemory( this, wm );
+                rightTuple.setPropagationContext( context );
+                doUpdateRightTuple(rightTuple, wm, bm);
+            }
+        } else {
+            if ( intersect( context.getModificationMask(), getRightInferredMask() ) ) {
+                // RightTuple does not exist for this node, so create and continue as assert
+                assertObject( factHandle,
+                              context,
+                              wm );
+            }
+        }
+    }
 
     public void doDeleteRightTuple(final RightTuple rightTuple,
                                    final InternalWorkingMemory wm,
