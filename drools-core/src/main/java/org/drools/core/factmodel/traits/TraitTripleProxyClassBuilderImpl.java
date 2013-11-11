@@ -20,8 +20,6 @@ import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
@@ -580,13 +578,6 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
     protected void buildProxyAccessor( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
         FieldVisitor fv;
-
-        if ( ! isSoftField ) {
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null );
-            fv.visitEnd();
-            fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
-            fv.visitEnd();
-        }
 
         if ( core.isFullTraiting() ) {
             buildLogicalGetter( cw, field, masterName, trait, core );

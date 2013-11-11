@@ -256,8 +256,7 @@ public class ClassObjectTypeConf
                 || typeDecl.getTypeClassDef().isTraitable()
                 || typeDecl.getTypeClass().getAnnotation( Traitable.class ) != null
         ) || Thing.class.isAssignableFrom( cls )
-               || TraitableBean.class.isAssignableFrom( cls )
-               || ( this.getTypeDeclaration() != null );
+               || TraitableBean.class.isAssignableFrom( cls );
     }
 
     public TypeDeclaration getTypeDeclaration() {
