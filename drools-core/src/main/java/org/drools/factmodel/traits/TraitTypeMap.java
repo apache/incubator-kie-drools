@@ -26,6 +26,13 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         addMember( new BitMaskKey( -1, thingPlaceHolder ), thingPlaceHolder.getTypeCode() );
     }
 
+    @Override
+    public void addMember(LatticeElement<K> val, BitSet key) {
+        super.addMember(val, key);
+        if(!mostSpecificTraits.isEmpty())
+            updateMostSpecificTrait( val );
+    }
+
     public int size() {
         return innerMap.size();
     }
@@ -78,6 +85,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
             ((TraitProxy) t).shed();
         }
         removeMember( new BitMaskKey<K>( System.identityHashCode( t ), t ) );
+        mostSpecificTraits.clear();
         resetCurrentCode();
         return t;
     }
@@ -99,6 +107,7 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
         if ( ! tt.isVirtual() ) {
             ret.add( t.getValue() );
             removeMember( tt.getTypeCode() );
+            mostSpecificTraits.clear();
             K thing = innerMap.remove( tt.getTraitName() );
             if ( thing instanceof TraitProxy ) {
                 ((TraitProxy) thing).shed(); //is this working?
@@ -183,18 +192,24 @@ public class TraitTypeMap<T extends String, K extends Thing<C>, C>
             // not yet initialized -> no trait donned yet
             return null;
         }
+        if(!mostSpecificTraits.isEmpty())
+            return mostSpecificTraits;
         if ( hasKey( getBottomCode() ) ) {
 //            BitMaskKey<K> b = new BitMaskKey<K>(System.identityHashCode(getMember(getBottomCode())),
 //                    getMember( getBottomCode()));
             LatticeElement<K> b = (BitMaskKey) getMember(getBottomCode());
             if ( ((TraitType) b.getValue()).isVirtual() ) {
                 Collection<LatticeElement<K>> p =  immediateParents( getBottomCode() );
+                mostSpecificTraits.clear();
+                mostSpecificTraits.addAll(p);
                 return p;
             } else {
                 return Collections.singleton( b );
             }
         } else {
             Collection<LatticeElement<K>> p =  immediateParents( getBottomCode() );
+            mostSpecificTraits.clear();
+            mostSpecificTraits.addAll(p);
             return p;
         }
     }

@@ -31,6 +31,8 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
 
     private BitSet bottom;
     private BitSet top;
+    Collection<LatticeElement<T>> mostSpecificTraits = new LinkedList<LatticeElement<T>>();
+
 
     public TypeHierarchy() {
         top = new BitSet();
@@ -103,6 +105,28 @@ public class TypeHierarchy<T,J extends LatticeElement<T>> extends AbstractBitwis
 
     public void setTopCode( BitSet top ) {
         this.top = top;
+    }
+
+    public void updateMostSpecificTrait(LatticeElement<T> val)
+    {
+        BitSet tmp = (BitSet)val.getBitMask().clone();
+        int size = mostSpecificTraits.size();
+        boolean addIt = true;
+        Collection<LatticeElement<T>> tmpMost = new LinkedList<LatticeElement<T>>(mostSpecificTraits);
+        for(LatticeElement<T> node : tmpMost)
+        {
+            if( superset( tmp, node.getBitMask() ) > 0 )
+            {
+                mostSpecificTraits.remove( node );
+            }
+            else if(superset( node.getBitMask(), tmp ) > 0)
+            {
+                addIt = false;
+                break;
+            }
+        }
+        if( size > mostSpecificTraits.size() || addIt )
+            mostSpecificTraits.add( val );
     }
 
     public void addMember(LatticeElement<T> val, BitSet key) {
