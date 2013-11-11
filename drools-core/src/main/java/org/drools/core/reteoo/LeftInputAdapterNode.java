@@ -353,8 +353,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
                                               final LiaNodeMemory lm, SegmentMemory sm, LeftTupleSets leftTuples, LeftTupleSink sink) {
-        leftTuple.setPropagationContext( pctx );
-
         synchronized ( ((SynchronizedLeftTupleSets)leftTuples).getLock() ) {
             // @TODO I synchronized this, as I'm not 100% of the thread interactions here, it might be possible to remove this later.
             if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
@@ -362,6 +360,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 long mask = sink.getLeftInferredMask();
 
                 if ( intersect( pctx.getModificationMask(),  mask) ) {
+                    leftTuple.setPropagationContext( pctx ); // only update, if the mask intersects
+
                     // only add to staging if masks match
 
                     boolean stagedUpdateWasEmpty = false;
