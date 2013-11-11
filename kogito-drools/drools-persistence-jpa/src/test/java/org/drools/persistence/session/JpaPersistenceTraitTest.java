@@ -166,7 +166,7 @@ public class JpaPersistenceTraitTest {
 
 
         Collection x = ksession2.getObjects();
-        assertEquals( 4, x.size() );
+        assertEquals( 3, x.size() );
 
         TraitableBean core = null;
         for ( Object o : x ) {
@@ -177,7 +177,6 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 2, core._getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak" ) );
 
@@ -270,7 +269,7 @@ public class JpaPersistenceTraitTest {
 
 
         Collection x = ksession2.getObjects();
-        assertEquals( 4, x.size() );
+        assertEquals( 3, x.size() );
 
         TraitableBean core = null;
         for ( Object o : x ) {
@@ -281,7 +280,6 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 2, core._getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask2" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Cloak2" ) );
 
@@ -368,7 +366,7 @@ public class JpaPersistenceTraitTest {
 
 
         Collection y = ksession2.getObjects();
-        assertEquals( 3, y.size() );
+        assertEquals( 2, y.size() );
 
         TraitableBean core = null;
         for ( Object o : y ) {
@@ -379,7 +377,6 @@ public class JpaPersistenceTraitTest {
         }
         assertNotNull( core );
         assertEquals( 1, core._getDynamicProperties().size() );
-        assertNotNull( core.getTrait( "org.drools.core.factmodel.traits.Thing" ) );
         assertNotNull( core.getTrait( "org.drools.trait.test.Mask" ) );
 
     }
