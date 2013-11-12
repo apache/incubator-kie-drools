@@ -14,7 +14,7 @@ public class ThingProxyPlaceHolder<K> extends TraitProxy implements Thing<K>, Tr
         return singleton;
     }
 
-    private ThingProxyPlaceHolder() {
+    public ThingProxyPlaceHolder() {
         setTypeCode( new BitSet() );
     }
 
