@@ -1,9 +1,10 @@
 package org.drools.core.factmodel.traits;
 
+import java.io.Serializable;
 import java.util.BitSet;
 
 
-public class TraitFieldDefaultValue implements LatticeElement<Object> {
+public class TraitFieldDefaultValue implements LatticeElement<Object>, Serializable {
 
     private Object value;
     private BitSet bitMask;
