@@ -86,7 +86,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
     private boolean sameAndNotCoveredByDescendants( TraitProxy proxy, BitSet typeMask ) {
         boolean isSameType = typeMask.equals( proxy.getTypeCode() );
         if ( isSameType ) {
-            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).children( typeMask );
+            Collection descs = ((TraitTypeMap) proxy.getObject()._getTraitMap()).immediateChildren( typeMask );
             // we have to exclude the "mock" bottom proxy
             return descs.size() <= 1;
         } else {
@@ -128,11 +128,11 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
                         TraitableBean txBean = (TraitableBean) proxy.getObject();
                         TraitTypeMap tMap = (TraitTypeMap) txBean._getTraitMap();
-                        Collection<Key<Thing>> x = tMap.immediateParents( this.typeMask );
-                        Key<Thing> k = x.iterator().next();
+                        Collection<Thing> x = tMap.immediateParents( this.typeMask );
+                        Thing k = x.iterator().next();
 
                         long originalMask = context.getModificationMask();
-                        if ( ! k.getValue().isTop() ) {
+                        if ( ! k.isTop() ) {
                             context.setModificationMask( -1L );
                         }
                         //System.out.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );

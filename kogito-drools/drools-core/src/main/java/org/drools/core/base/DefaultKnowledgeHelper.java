@@ -411,15 +411,14 @@ public class DefaultKnowledgeHelper
     }
 
 
-    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Key<Thing>> mostSpecificTraits ) {
+    private void updateTraits( Object object, long mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
         updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, veto, mostSpecificTraits );
     }
 
-    private void updateManyTraits( Object object, long mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Key<Thing>> mostSpecificTraits ) {
+    private void updateManyTraits( Object object, long mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits ) {
         veto = veto != null ? (BitSet) veto.clone() : null;
 
-        for ( Key<Thing> k : mostSpecificTraits ) {
-            Thing t = k.getValue();
+        for ( Thing t : mostSpecificTraits ) {
             if ( ! originators.contains( t ) ) {
                 TraitProxy proxy = (TraitProxy) t;
 
@@ -701,7 +700,7 @@ public class DefaultKnowledgeHelper
 
         TraitableBean inner = makeTraitable( core, builder, logical );
 
-        Collection<Key<Thing>> mostSpecificTraits = inner.getMostSpecificTraits();
+        Collection<Thing> mostSpecificTraits = inner.getMostSpecificTraits();
         boolean newTraitsAdded = false;
         T firstThing = null;
         Map<Thing, BitSet> things = new HashMap<Thing, BitSet>( traits.size() );
@@ -755,7 +754,7 @@ public class DefaultKnowledgeHelper
 
         BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
 
-        Collection<Key<Thing>> mostSpecificTraits = getTraitBoundary( inner, needsProxy, hasTrait, trait );
+        Collection<Thing> mostSpecificTraits = getTraitBoundary( inner, needsProxy, hasTrait, trait );
 
         T thing = asTrait( core, inner, trait, needsProxy, hasTrait, needsUpdate, builder, logical );
 
@@ -771,7 +770,7 @@ public class DefaultKnowledgeHelper
         return thing;
     }
 
-    protected Collection<Key<Thing>> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
+    protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
         boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
         if ( refresh ) {
             return inner.getMostSpecificTraits();
@@ -779,7 +778,7 @@ public class DefaultKnowledgeHelper
         return null;
     }
 
-    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Key<Thing>> mostSpecificTraits, boolean logical ) {
+    private <T,K> void refresh( T thing, K core, TraitableBean inner, Class<T> trait, Collection<Thing> mostSpecificTraits, boolean logical ) {
         if ( mostSpecificTraits != null ) {
             updateCore( inner, core, trait, logical );
             if ( ! mostSpecificTraits.isEmpty() ) {
@@ -834,17 +833,22 @@ public class DefaultKnowledgeHelper
                 h = lookupHandleForWrapper( core );
             }
             if ( h == null ) {
-                throw new FactException( "Update error: handle not found for object: " + core + ". Is it in the working memory?" );
+                h = (InternalFactHandle) this.workingMemory.insert( core,
+                                                                    null,
+                                                                    false,
+                                                                    logical,
+                                                                    this.activation.getRule(),
+                                                                    this.activation );
+                if ( this.identityMap != null ) {
+                    this.getIdentityMap().put( core,
+                                               h );
+                }
             }
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
                                                  "Please verify that its class was declared as @Traitable : " + core.getClass().getName() );
             }
             this.update( h, inner );
-        }
-
-        if ( ! inner.hasTrait( Thing.class.getName() ) ) {
-            don( inner, Thing.class, false );
         }
 
         return thing;
@@ -931,7 +935,7 @@ public class DefaultKnowledgeHelper
             Collection removedTraits = core.removeTrait( trait.getName() );
             if ( ! removedTraits.isEmpty() ) {
                 update( core, Long.MIN_VALUE, core.getClass() );
-                updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
+                //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
             return (Thing<K>) core;
         } else {
@@ -963,9 +967,12 @@ public class DefaultKnowledgeHelper
                     retract( t );
                 }
             }
-            if ( ! removedTypes.isEmpty() ) {
+
+            if ( ! core.hasTraits() ) {
+                don( core, Thing.class );
+            } else if ( ! removedTypes.isEmpty() ) {
                 update( core, Long.MIN_VALUE, core.getClass() );
-                updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
+                //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
             return thing;
         }
