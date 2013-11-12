@@ -4376,4 +4376,66 @@ public class Misc2Test extends CommonTestMethodBase {
 
     public static class ChangeDirectionCommand { }
     public static class StepForwardCommand { }
+
+    @Test
+    public void testDynamicSalience() {
+        // DROOLS-334
+        String drl = "import org.drools.compiler.integrationtests.Misc2Test.SimpleMessage\n" +
+                     "\n" +
+                     "rule R1\n" +
+                     "    salience ( $index )\n" +
+                     "    when\n" +
+                     "        $m : SimpleMessage( status == SimpleMessage.Status.ENRICHED, $index : index)\n" +
+                     "        Number() from accumulate ( SimpleMessage(), count(1) )\n" +
+                     "    then\n" +
+                     "        System.out.println(\"R1: \" + $m);\n" +
+                     "        modify($m) { setStatus(SimpleMessage.Status.FILTERED) }\n" +
+                     "end\n";
+
+        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        SimpleMessage[] msgs = new SimpleMessage[] { new SimpleMessage(0), new SimpleMessage(1), new SimpleMessage(2) };
+        for (SimpleMessage msg : msgs) {
+            ksession.insert(msg);
+        }
+
+        ksession.fireAllRules();
+
+        for (SimpleMessage msg : msgs) {
+            assertEquals(SimpleMessage.Status.FILTERED, msg.getStatus());
+        }
+    }
+
+    public static class SimpleMessage {
+
+        public enum Status { ENRICHED, TO_SEND, SENT, FILTERED }
+
+        private final int index;
+        private Status status = Status.ENRICHED;
+
+        public SimpleMessage(int index) {
+            this.index = index;
+        }
+
+        public Status getStatus() {
+            return status;
+        }
+
+        public void setStatus(Status status) {
+            this.status = status;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        @Override
+        public String toString() {
+            return "SimpleMessage(" + index + "): " + status;
+        }
+    }
 }
+
