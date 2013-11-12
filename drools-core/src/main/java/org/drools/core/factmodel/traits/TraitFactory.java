@@ -28,8 +28,6 @@ import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.KieComponentFactory;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
@@ -64,7 +62,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
     public final static String SUFFIX = "_Trait__Extension";
 
-    private static final String pack = "org.drools.factmodel.traits.";
+    private static final String pack = "org.drools.core.factmodel.traits.";
 
     private Map<String, Constructor> factoryCache = new HashMap<String, Constructor>();
 
@@ -264,60 +262,13 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
         try {
             BitSet mask = ruleBase.getTraitRegistry().getFieldMask( trait.getName(), cdef.getDefinedClass().getName() );
             Class<T> proxyClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( proxyName );
-            bindAccessors( proxyClass, tdef, cdef, mask );
             Class<T> wrapperClass = (Class<T>) ruleBase.getRootClassLoader().loadClass( wrapperName );
-            bindCoreAccessors( wrapperClass, cdef );
             return proxyClass;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
     }
-
-    private void bindAccessors( Class<T> proxyClass, ClassDefinition tdef, ClassDefinition cdef, BitSet mask ) {
-        int j = 0;
-        for ( FieldDefinition traitField : tdef.getFieldsDefinitions() ) {
-            boolean isSoftField = TraitRegistry.isSoftField( traitField, j++, mask );
-            if ( ! isSoftField ) {
-                String traitFieldHook = traitField.resolveAlias();
-                FieldDefinition field = cdef.getFieldByAlias( traitFieldHook );
-
-                Field staticField;
-                try {
-                    if ( ( cdef.isFullTraiting() && ( ! traitField.getType().isPrimitive() || field.getType().equals( traitField.getType() ) ) )
-                         || field.getType().isAssignableFrom( traitField.getType() ) ) {
-                        staticField = proxyClass.getField( traitField.getName() + "_reader" );
-                        staticField.set( null, field.getFieldAccessor().getReadAccessor() );
-
-                        staticField = proxyClass.getField( traitField.getName() + "_writer" );
-                        staticField.set( null, field.getFieldAccessor().getWriteAccessor() );
-                    }
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-        }
-    }
-
-    private void bindCoreAccessors( Class<T> wrapperClass, ClassDefinition cdef ) {
-        for ( FieldDefinition field : cdef.getFieldsDefinitions() ) {
-            Field staticField;
-            try {
-                staticField = wrapperClass.getField(field.getName() + "_reader");
-                staticField.set(null, field.getFieldAccessor().getReadAccessor() );
-
-                staticField = wrapperClass.getField(field.getName() + "_writer");
-                staticField.set(null, field.getFieldAccessor().getWriteAccessor() );
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }
-    }
-
 
 
     private Package getPackage(String pack) {
@@ -484,11 +435,10 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
 
 
     public static void invokeExtractor( MethodVisitor mv, String masterName, ClassDefinition trait, ClassDefinition core, FieldDefinition field ) {
-        String fieldType = field.getTypeName();
-        mv.visitFieldInsn( GETSTATIC,
-                           BuildUtils.getInternalType( masterName ),
-                           field.getName() + "_reader",
-                           Type.getDescriptor( InternalReadAccessor.class ) );
+        FieldDefinition tgtField = core.getFieldByAlias( field.resolveAlias() );
+        String fieldType = tgtField.getTypeName();
+        String fieldName = tgtField.getName();
+        String returnType = BuildUtils.getTypeDescriptor( fieldType );
 
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitFieldInsn( GETFIELD,
@@ -496,41 +446,42 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> implement
                            "object",
                            BuildUtils.getTypeDescriptor( core.getClassName() ) );
 
-        String returnType = BuildUtils.isPrimitive( fieldType ) ? BuildUtils.getTypeDescriptor( fieldType ) : Type.getDescriptor( Object.class );
-        mv.visitMethodInsn( INVOKEINTERFACE,
-                            Type.getInternalName( InternalReadAccessor.class ),
-                            BuildUtils.extractor( fieldType ),
-                            Type.getMethodDescriptor( Type.getType( returnType ), new Type[] { Type.getType( Object.class ) } ) );
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            Type.getInternalName( core.getDefinedClass() ),
+                            BuildUtils.getterName( fieldName, fieldType ),
+                            Type.getMethodDescriptor( Type.getType( returnType ), new Type[] {} ) );
 
 
     }
 
 
-    public static void invokeInjector( MethodVisitor mv, String masterName, ClassDefinition source, ClassDefinition target, FieldDefinition field, boolean toNull, int pointer ) {
-        String fieldName = field.getName();
-        String fieldType = field.getTypeName();
-        mv.visitFieldInsn( GETSTATIC,
-                           BuildUtils.getInternalType( masterName ),
-                           fieldName + "_writer",
-                           Type.getDescriptor( WriteAccessor.class ) );
+    public static void invokeInjector( MethodVisitor mv, String masterName, ClassDefinition trait, ClassDefinition core, FieldDefinition field, boolean toNull, int pointer ) {
+        FieldDefinition tgtField = core.getFieldByAlias( field.resolveAlias() );
+        String fieldType = tgtField.getTypeName();
+        String fieldName = tgtField.getName();
+        String returnType = BuildUtils.getTypeDescriptor( fieldType );
+
+
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn( GETFIELD,
                            BuildUtils.getInternalType( masterName ),
                            "object",
-                           BuildUtils.getTypeDescriptor( target.getName() ) );
+                           BuildUtils.getTypeDescriptor( core.getName() ) );
 
         if ( toNull ) {
             mv.visitInsn( BuildUtils.zero( field.getTypeName() ) );
         } else {
             mv.visitVarInsn( BuildUtils.varType( fieldType ), pointer );
         }
-        String argType = BuildUtils.isPrimitive( fieldType ) ?
-                         BuildUtils.getTypeDescriptor( fieldType ) :
-                         "Ljava/lang/Object;";
-        mv.visitMethodInsn( INVOKEINTERFACE,
-                            Type.getInternalName( WriteAccessor.class ),
-                            BuildUtils.injector( fieldType ),
-                            "(Ljava/lang/Object;" + argType + ")V");
+
+        if ( ! BuildUtils.isPrimitive( fieldType ) ) {
+            mv.visitTypeInsn( CHECKCAST, BuildUtils.getInternalType( fieldType ) );
+        }
+
+        mv.visitMethodInsn( INVOKEVIRTUAL,
+                            Type.getInternalName( core.getDefinedClass() ),
+                            BuildUtils.setterName( fieldName, fieldType ),
+                            Type.getMethodDescriptor( Type.getType( void.class ), new Type[] { Type.getType( returnType ) } ) );
 
     }
 
