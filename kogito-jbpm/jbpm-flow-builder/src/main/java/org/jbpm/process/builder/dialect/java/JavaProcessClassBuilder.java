@@ -16,7 +16,9 @@
 
 package org.jbpm.process.builder.dialect.java;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.drools.core.util.StringUtils;
 import org.drools.compiler.lang.descr.ProcessDescr;
@@ -31,6 +33,11 @@ import org.jbpm.process.builder.ProcessClassBuilder;
 public class JavaProcessClassBuilder
     implements
     ProcessClassBuilder {
+
+    protected static List<String> systemImports = new ArrayList<String>();
+    static {
+        systemImports.add( org.drools.core.util.KieFunctions.class.getName() );
+    }
 
     /* (non-Javadoc)
      * @see org.drools.core.rule.builder.dialect.java.RuleClassBuilder#buildRule(org.drools.core.rule.builder.BuildContext, org.drools.core.rule.builder.dialect.java.BuildUtils, RuleDescr)
@@ -48,6 +55,12 @@ public class JavaProcessClassBuilder
 
         for ( ImportDeclaration decl : context.getPkg().getImports().values() ) {
             buffer.append( "import " +  decl.getTarget() + ";" + lineSeparator );
+        }
+
+        for ( String systemImport : systemImports ) {
+            if ( !context.getPkg().getImports().containsKey( systemImport ) ) {
+                buffer.append( "import ").append( systemImport ).append( ";" ).append( lineSeparator );
+            }
         }
 
         for ( final Iterator it = context.getPkg().getStaticImports().iterator(); it.hasNext(); ) {
