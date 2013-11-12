@@ -20,8 +20,6 @@ import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
 import org.drools.core.util.ExternalizableLinkedHashMap;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
@@ -444,12 +442,6 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
 
             boolean hardField = ! TraitRegistry.isSoftField( field, j++, mask );
-            if ( hardField ) {
-                fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_reader", Type.getDescriptor( InternalReadAccessor.class ), null, null );
-                fv.visitEnd();
-                fv = cw.visitField( ACC_PUBLIC + ACC_STATIC, field.getName() + "_writer", Type.getDescriptor( WriteAccessor.class ), null, null );
-                fv.visitEnd();
-            }
 
             if ( core.isFullTraiting() ) {
                 buildLogicalGetter( cw, field, masterName, trait, core );

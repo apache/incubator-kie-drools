@@ -135,7 +135,7 @@ public class TraitTest extends CommonTestMethodBase {
     private StatefulKnowledgeSession getSessionFromString( String drl ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
-                ResourceType.DRL );
+                              ResourceType.DRL );
         if (knowledgeBuilder.hasErrors()) {
             throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
         }
@@ -147,10 +147,10 @@ public class TraitTest extends CommonTestMethodBase {
         return session;
     }
 
-    private KnowledgeBase getKnowledgeBaseFromString( String drl ) {
+    private KnowledgeBase getKieBaseFromString( String drl ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
-                ResourceType.DRL );
+                              ResourceType.DRL );
         if (knowledgeBuilder.hasErrors()) {
             throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
         }
@@ -177,7 +177,7 @@ public class TraitTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         KnowledgeBase kb = KnowledgeBaseFactory.newKnowledgeBase();
-            TraitFactory.setMode( mode, kb );
+        TraitFactory.setMode( mode, kb );
         kb.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         TraitFactory tFactory = ((ReteooRuleBase) ((KnowledgeBaseImpl) kb).getRuleBase()).getConfiguration().getComponentFactory().getTraitFactory();
@@ -395,7 +395,7 @@ public class TraitTest extends CommonTestMethodBase {
 
             assertNotNull( trait );
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                                   trait );
+                                                               trait );
             proxy.getFields().put( "field",
                                    "xyz" );
             //            proxy.getFields().put("name", "aaa");
@@ -403,12 +403,12 @@ public class TraitTest extends CommonTestMethodBase {
             assertNotNull( proxy );
 
             TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( imp,
-                                                                    trait );
+                                                                trait );
             assertSame( proxy2,
                         proxy );
 
             TraitProxy proxy3 = (TraitProxy) tFactory.getProxy( imp,
-                                                                    trait2 );
+                                                                trait2 );
             assertNotNull( proxy3 );
             assertEquals( "xyz",
                           proxy3.getFields().get( "field" ) );
@@ -420,7 +420,7 @@ public class TraitTest extends CommonTestMethodBase {
                           "name",
                           "aaa" );
             TraitProxy proxy4 = (TraitProxy) tFactory.getProxy( imp2,
-                                                                    trait );
+                                                                trait );
             //            proxy4.getFields().put("name", "aaa");
             proxy4.getFields().put( "field",
                                     "xyz" );
@@ -468,7 +468,7 @@ public class TraitTest extends CommonTestMethodBase {
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                                   trait );
+                                                               trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -478,8 +478,8 @@ public class TraitTest extends CommonTestMethodBase {
                           virtualFields.size() );
 
             impClass.set(imp,
-                    "name",
-                    "john");
+                         "name",
+                         "john");
             assertEquals( 3,
                           wrapper.size() );
             assertEquals( 1,
@@ -499,12 +499,12 @@ public class TraitTest extends CommonTestMethodBase {
             assertEquals( 2,
                           virtualFields.size() );
 
-            //            FactType indClass = kb.getFactType("org.test","Entity");
+            //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             //            TraitableBean ind = (TraitableBean) indClass.newInstance();
             TraitableBean ind = new Entity();
 
             TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
-                                                                    trait );
+                                                                trait );
 
             Map virtualFields2 = ind._getDynamicProperties();
             Map wrapper2 = proxy2.getFields();
@@ -542,7 +542,7 @@ public class TraitTest extends CommonTestMethodBase {
             TraitableBean ind2 = new Entity();
 
             TraitProxy proxy99 = (TraitProxy) tFactory.getProxy( ind2,
-                                                                     trait2 );
+                                                                 trait2 );
 
             proxy99.getFields().put( "surname",
                                      "xxx" );
@@ -555,7 +555,7 @@ public class TraitTest extends CommonTestMethodBase {
                           proxy99.getFields().size() );
 
             TraitProxy proxy100 = (TraitProxy) tFactory.getProxy( ind2,
-                                                                      trait );
+                                                                  trait );
 
             assertEquals( 4,
                           proxy100.getFields().size() );
@@ -621,7 +621,7 @@ public class TraitTest extends CommonTestMethodBase {
                               null );
             assertFalse( wrapper.isEmpty() );
 
-            //            FactType indClass = kb.getFactType("org.test","Entity");
+            //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             TraitableBean ind = new Entity();
 
             FactType RoleClass = kb.getFactType( "org.drools.compiler.trait.test",
@@ -681,7 +681,7 @@ public class TraitTest extends CommonTestMethodBase {
                                                   "Student" );
             Class trait = traitClass.getFactClass();
             TraitProxy proxy = (TraitProxy) tFactory.getProxy( imp,
-                                                                   trait );
+                                                               trait );
 
             Map<String, Object> virtualFields = imp._getDynamicProperties();
             Map<String, Object> wrapper = proxy.getFields();
@@ -697,7 +697,7 @@ public class TraitTest extends CommonTestMethodBase {
                                    "xxx" );
             assertTrue( wrapper.containsKey( "surname" ) );
 
-            //            FactType indClass = kb.getFactType("org.test","Entity");
+            //            FactType indClass = kb.getFactType("org.drools.compiler.trait.test","Entity");
             TraitableBean ind = new Entity();
 
             TraitProxy proxy2 = (TraitProxy) tFactory.getProxy( ind,
@@ -1061,7 +1061,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testIsAEvaluator( ) {
-        String source = "package org.test;\n" +
+        String source = "package org.drools.compiler.trait.test;\n" +
                         "\n" +
                         "import org.drools.core.factmodel.traits.Traitable;\n" +
                         "import org.drools.core.factmodel.traits.Entity;\n" +
@@ -1183,7 +1183,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testOverrideType2( ) {
-        String drl = "package org.test; \n" +
+        String drl = "package org.drools.compiler.trait.test; \n" +
                      "import org.drools.core.factmodel.traits.Traitable; \n" +
                      "" +
                      "declare Foo @Traitable end\n" +
@@ -1212,7 +1212,7 @@ public class TraitTest extends CommonTestMethodBase {
 
     @Test
     public void testOverrideType3( ) {
-        String drl = "package org.test; \n" +
+        String drl = "package org.drools.compiler.trait.test; \n" +
                      "import org.drools.core.factmodel.traits.Traitable; \n" +
                      "" +
                      "declare trait Foo end\n" +
@@ -1368,9 +1368,9 @@ public class TraitTest extends CommonTestMethodBase {
         TraitFactory.setMode( mode, ks.getKieBase() );
 
         ks.setGlobal( "trueTraits",
-                           trueTraits );
+                      trueTraits );
         ks.setGlobal( "untrueTraits",
-                           untrueTraits );
+                      untrueTraits );
 
         ks.fireAllRules();
         ks.dispose();
@@ -1444,46 +1444,46 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testManyTraits() {
         String source = "" +
-                "import org.drools.compiler.Message;" +
-                "" +
-                "global java.util.List list; \n" +
-                "" +
-                "declare Message\n" +
-                "      @Traitable\n" +
-                "    end\n" +
-                "\n" +
-                "    declare trait NiceMessage\n" +
-                "       message : String\n" +
-                "    end\n" +
-                "" +
-                "rule \"Nice\"\n" +
-                "when\n" +
-                "  $n : NiceMessage( $m : message )\n" +
-                "then\n" +
-                "  System.out.println( $m );\n" +
-                "end" +
-                "\n" +
-                "    rule load\n" +
-                "        when\n" +
-                "\n" +
-                "        then\n" +
-                "            Message message = new Message();\n" +
-                "            message.setMessage(\"Hello World\");\n" +
-                "            insert(message);\n" +
-                "            don( message, NiceMessage.class );\n" +
-                "\n" +
-                "            Message unreadMessage = new Message();\n" +
-                "            unreadMessage.setMessage(\"unread\");\n" +
-                "            insert(unreadMessage);\n" +
-                "            don( unreadMessage, NiceMessage.class );\n" +
-                "\n" +
-                "            Message oldMessage = new Message();\n" +
-                "            oldMessage.setMessage(\"old\");\n" +
-                "            insert(oldMessage);\n" +
-                "            don( oldMessage, NiceMessage.class );" +
+                        "import org.drools.compiler.Message;" +
+                        "" +
+                        "global java.util.List list; \n" +
+                        "" +
+                        "declare Message\n" +
+                        "      @Traitable\n" +
+                        "    end\n" +
+                        "\n" +
+                        "    declare trait NiceMessage\n" +
+                        "       message : String\n" +
+                        "    end\n" +
+                        "" +
+                        "rule \"Nice\"\n" +
+                        "when\n" +
+                        "  $n : NiceMessage( $m : message )\n" +
+                        "then\n" +
+                        "  System.out.println( $m );\n" +
+                        "end" +
+                        "\n" +
+                        "    rule load\n" +
+                        "        when\n" +
+                        "\n" +
+                        "        then\n" +
+                        "            Message message = new Message();\n" +
+                        "            message.setMessage(\"Hello World\");\n" +
+                        "            insert(message);\n" +
+                        "            don( message, NiceMessage.class );\n" +
+                        "\n" +
+                        "            Message unreadMessage = new Message();\n" +
+                        "            unreadMessage.setMessage(\"unread\");\n" +
+                        "            insert(unreadMessage);\n" +
+                        "            don( unreadMessage, NiceMessage.class );\n" +
+                        "\n" +
+                        "            Message oldMessage = new Message();\n" +
+                        "            oldMessage.setMessage(\"old\");\n" +
+                        "            insert(oldMessage);\n" +
+                        "            don( oldMessage, NiceMessage.class );" +
 
-                "            list.add(\"OK\");\n" +
-                "    end";
+                        "            list.add(\"OK\");\n" +
+                        "    end";
         StatefulKnowledgeSession ksession = getSessionFromString( source );
         TraitFactory.setMode( mode, ksession.getKieBase() );
 
@@ -1516,7 +1516,7 @@ public class TraitTest extends CommonTestMethodBase {
             System.err.println( o );
         }
         Collection x = ksession.getObjects();
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 2, ksession.getObjects().size() );
 
         assertEquals( 5, list.size() );
         assertEquals( 0, list.get( 0 ) );
@@ -1534,42 +1534,42 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void traitsInBatchExecution() {
         String str = "package org.jboss.qa.brms.traits\n" +
-                "import org.drools.compiler.Person;\n" +
-                "import org.drools.core.factmodel.traits.Traitable;\n" +
-                "" +
-                "global java.util.List list;" +
-                "" +
-                "declare Person \n" +
-                "  @Traitable \n" +
-                "end \n" +
-                "" +
-                "declare trait Student\n" +
-                "  school : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"create student\" \n" +
-                "  when\n" +
-                "    $student : Person( age < 26 )\n" +
-                "  then\n" +
-                "    Student s = don( $student, Student.class );\n" +
-                "    s.setSchool(\"Masaryk University\");\n" +
-                "end\n" +
-                "\n" +
-                "rule \"print student\"\n" +
-                "  when\n" +
-                "    student : Person( this isA Student )\n" +
-                "  then" +
-                "    list.add( 1 );\n" +
-                "    System.out.println(\"Person is a student: \" + student);\n" +
-                "end\n" +
-                "\n" +
-                "rule \"print school\"\n" +
-                "  when\n" +
-                "    Student( $school : school )\n" +
-                "  then\n" +
-                "    list.add( 2 );\n" +
-                "    System.out.println(\"Student is attending \" + $school);\n" +
-                "end";
+                     "import org.drools.compiler.Person;\n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "" +
+                     "global java.util.List list;" +
+                     "" +
+                     "declare Person \n" +
+                     "  @Traitable \n" +
+                     "end \n" +
+                     "" +
+                     "declare trait Student\n" +
+                     "  school : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"create student\" \n" +
+                     "  when\n" +
+                     "    $student : Person( age < 26 )\n" +
+                     "  then\n" +
+                     "    Student s = don( $student, Student.class );\n" +
+                     "    s.setSchool(\"Masaryk University\");\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"print student\"\n" +
+                     "  when\n" +
+                     "    student : Person( this isA Student )\n" +
+                     "  then" +
+                     "    list.add( 1 );\n" +
+                     "    System.out.println(\"Person is a student: \" + student);\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"print school\"\n" +
+                     "  when\n" +
+                     "    Student( $school : school )\n" +
+                     "  then\n" +
+                     "    list.add( 2 );\n" +
+                     "    System.out.println(\"Student is attending \" + $school);\n" +
+                     "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
@@ -1590,7 +1590,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
         Person student = new Person("student", 18);
-        commands.add(CommandFactory.newInsert(student));
+        commands.add( CommandFactory.newInsert( student ));
 
         System.out.println("Starting execution...");
         commands.add(CommandFactory.newFireAllRules());
@@ -1610,47 +1610,47 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testManyTraitsStateless() {
         String source = "" +
-                "import org.drools.compiler.Message;" +
-                "" +
-                "global java.util.List list; \n" +
-                "" +
-                "declare Message\n" +
-                "      @Traitable\n" +
-                "    end\n" +
-                "\n" +
-                "    declare trait NiceMessage\n" +
-                "       message : String\n" +
-                "    end\n" +
-                "" +
-                "rule \"Nice\"\n" +
-                "when\n" +
-                "  $n : NiceMessage( $m : message )\n" +
-                "then\n" +
-                "  System.out.println( $m );\n" +
-                "end" +
-                "\n" +
-                "    rule load\n" +
-                "        when\n" +
-                "\n" +
-                "        then\n" +
-                "            Message message = new Message();\n" +
-                "            message.setMessage(\"Hello World\");\n" +
-                "            insert(message);\n" +
-                "            don( message, NiceMessage.class );\n" +
-                "\n" +
-                "            Message unreadMessage = new Message();\n" +
-                "            unreadMessage.setMessage(\"unread\");\n" +
-                "            insert(unreadMessage);\n" +
-                "            don( unreadMessage, NiceMessage.class );\n" +
-                "\n" +
-                "            Message oldMessage = new Message();\n" +
-                "            oldMessage.setMessage(\"old\");\n" +
-                "            insert(oldMessage);\n" +
-                "            don( oldMessage, NiceMessage.class );" +
+                        "import org.drools.compiler.Message;" +
+                        "" +
+                        "global java.util.List list; \n" +
+                        "" +
+                        "declare Message\n" +
+                        "      @Traitable\n" +
+                        "    end\n" +
+                        "\n" +
+                        "    declare trait NiceMessage\n" +
+                        "       message : String\n" +
+                        "    end\n" +
+                        "" +
+                        "rule \"Nice\"\n" +
+                        "when\n" +
+                        "  $n : NiceMessage( $m : message )\n" +
+                        "then\n" +
+                        "  System.out.println( $m );\n" +
+                        "end" +
+                        "\n" +
+                        "    rule load\n" +
+                        "        when\n" +
+                        "\n" +
+                        "        then\n" +
+                        "            Message message = new Message();\n" +
+                        "            message.setMessage(\"Hello World\");\n" +
+                        "            insert(message);\n" +
+                        "            don( message, NiceMessage.class );\n" +
+                        "\n" +
+                        "            Message unreadMessage = new Message();\n" +
+                        "            unreadMessage.setMessage(\"unread\");\n" +
+                        "            insert(unreadMessage);\n" +
+                        "            don( unreadMessage, NiceMessage.class );\n" +
+                        "\n" +
+                        "            Message oldMessage = new Message();\n" +
+                        "            oldMessage.setMessage(\"old\");\n" +
+                        "            insert(oldMessage);\n" +
+                        "            don( oldMessage, NiceMessage.class );" +
 
-                "            list.add(\"OK\");\n" +
-                "    end";
-        KnowledgeBase kb = getKnowledgeBaseFromString( source );
+                        "            list.add(\"OK\");\n" +
+                        "    end";
+        KnowledgeBase kb = getKieBaseFromString( source );
         TraitFactory.setMode( mode, kb );
 
         StatelessKnowledgeSession ksession = kb.newStatelessKnowledgeSession();
@@ -1670,56 +1670,56 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testAliasing() {
         String drl = "package org.drools.traits\n" +
-                "import org.drools.core.factmodel.traits.Traitable;\n" +
-                "import org.drools.core.factmodel.traits.Alias;\n" +
-                "" +
-                "global java.util.List list;" +
-                "" +
-                "declare Person \n" +
-                "  @Traitable \n" +
-                "  nomen     : String  @key @Alias(\"fld1\") \n" +
-                "  workPlace : String \n" +
-                "  address   : String \n" +
-                "  serviceYrs: int \n" +
-                "end \n" +
-                "" +
-                "declare Student\n" +
-                "  @kind(trait)" +
-                // this alias maps to the hard field
-                "  name      : String @Alias(\"fld1\") \n" +
-                // this alias works, binding school to workPlace
-                "  school    : String  @Alias(\"workPlace\") \n" +
-                // soft field, will use name 'level'
-                "  grade     : int @Alias(\"level\") \n" +
-                // this will try to bind rank to address
-                "  rank      : int @Alias(\"serviceYrs\") \n" +
-                "end \n" +
-                "\n" +
-                "rule \"create student\" \n" +
-                "  when\n" +
-                "  then\n" +
-                "    Person p = new Person( \"davide\", \"UniBoh\", \"Floor84\", 1 ); \n" +
-                "    Student s = don( p, Student.class );\n" +
-                "end\n" +
-                "\n" +
-                "rule \"print school\"\n" +
-                "  when\n" +
-                "    $student : Student( $school : school == \"UniBoh\",  $f : fields, fields[ \"workPlace\" ] == \"UniBoh\" )\n" +
-                "  then \n " +
-                "    $student.setRank( 99 ); \n" +
-                "    System.out.println( $student ); \n" +
-                "    $f.put( \"school\", \"Skool\" ); \n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "import org.drools.core.factmodel.traits.Alias;\n" +
+                     "" +
+                     "global java.util.List list;" +
+                     "" +
+                     "declare Person \n" +
+                     "  @Traitable \n" +
+                     "  nomen     : String  @key @Alias(\"fld1\") \n" +
+                     "  workPlace : String \n" +
+                     "  address   : String \n" +
+                     "  serviceYrs: int \n" +
+                     "end \n" +
+                     "" +
+                     "declare Student\n" +
+                     "  @kind(trait)" +
+                     // this alias maps to the hard field
+                     "  name      : String @Alias(\"fld1\") \n" +
+                     // this alias works, binding school to workPlace
+                     "  school    : String  @Alias(\"workPlace\") \n" +
+                     // soft field, will use name 'level'
+                     "  grade     : int @Alias(\"level\") \n" +
+                     // this will try to bind rank to address
+                     "  rank      : int @Alias(\"serviceYrs\") \n" +
+                     "end \n" +
+                     "\n" +
+                     "rule \"create student\" \n" +
+                     "  when\n" +
+                     "  then\n" +
+                     "    Person p = new Person( \"davide\", \"UniBoh\", \"Floor84\", 1 ); \n" +
+                     "    Student s = don( p, Student.class );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"print school\"\n" +
+                     "  when\n" +
+                     "    $student : Student( $school : school == \"UniBoh\",  $f : fields, fields[ \"workPlace\" ] == \"UniBoh\" )\n" +
+                     "  then \n " +
+                     "    $student.setRank( 99 ); \n" +
+                     "    System.out.println( $student ); \n" +
+                     "    $f.put( \"school\", \"Skool\" ); \n" +
 
-                "    list.add( $school );\n" +
-                "    list.add( $f.get( \"school\" ) );\n" +
-                "    list.add( $student.getSchool() );\n" +
-                "    list.add( $f.keySet() );\n" +
-                "    list.add( $f.entrySet() );\n" +
-                "    list.add( $f.values() );\n" +
-                "    list.add( $f.containsKey( \"school\" ) );\n" +
-                "    list.add( $student.getRank() );\n" +
-                "    list.add( $f.get( \"address\" ) );\n" +
-                "end";
+                     "    list.add( $school );\n" +
+                     "    list.add( $f.get( \"school\" ) );\n" +
+                     "    list.add( $student.getSchool() );\n" +
+                     "    list.add( $f.keySet() );\n" +
+                     "    list.add( $f.entrySet() );\n" +
+                     "    list.add( $f.values() );\n" +
+                     "    list.add( $f.containsKey( \"school\" ) );\n" +
+                     "    list.add( $student.getRank() );\n" +
+                     "    list.add( $f.get( \"address\" ) );\n" +
+                     "end";
 
         StatefulKnowledgeSession ksession = getSessionFromString( drl );
         TraitFactory.setMode( mode, ksession.getKieBase() );
@@ -1745,42 +1745,42 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitLogicalRemoval() {
         String drl = "package org.drools.trait.test;\n" +
-                "\n" +
-                "import org.drools.core.factmodel.traits.Traitable;\n" +
-                "\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "  age  : int\n" +
-                "  name : String\n" +
-                "end\n" +
-                "\n" +
-                "declare trait Worker\n" +
-                "  wage  : int\n" +
-                "  name : String\n" +
-                "end\n" +
-                "declare Person\n" +
-                "  @Traitable\n" +
-                "  name : String \n" +
-                "end\n" +
-                "\n" +
-                "\n" +
-                "rule \"Don Logical\"\n" +
-                "when\n" +
-                "  $s : String( this == \"trigger\" )\n" +
-                "then\n" +
-                "  Person p = new Person( \"john\" );\n" +
-                "  insertLogical( p ); \n" +
-                "  don( p, Student.class, true );\n" +
-                "end\n" +
-                " " +
-                "rule \"Don Logical 2\"\n" +
-                "when\n" +
-                "  $s : String( this == \"trigger2\" )\n" +
-                "  $p : Person( name == \"john\" )" +
-                "then\n" +
-                "  don( $p, Worker.class, true );\n" +
-                "end";
+                     "\n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare trait Student\n" +
+                     "  age  : int\n" +
+                     "  name : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare trait Worker\n" +
+                     "  wage  : int\n" +
+                     "  name : String\n" +
+                     "end\n" +
+                     "declare Person\n" +
+                     "  @Traitable\n" +
+                     "  name : String \n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"Don Logical\"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger\" )\n" +
+                     "then\n" +
+                     "  Person p = new Person( \"john\" );\n" +
+                     "  insertLogical( p ); \n" +
+                     "  don( p, Student.class, true );\n" +
+                     "end\n" +
+                     " " +
+                     "rule \"Don Logical 2\"\n" +
+                     "when\n" +
+                     "  $s : String( this == \"trigger2\" )\n" +
+                     "  $p : Person( name == \"john\" )" +
+                     "then\n" +
+                     "  don( $p, Worker.class, true );\n" +
+                     "end";
 
 
         StatefulKnowledgeSession ksession = getSessionFromString(drl);
@@ -1791,26 +1791,23 @@ public class TraitTest extends CommonTestMethodBase {
 
         FactHandle h = ksession.insert( "trigger" );
         ksession.fireAllRules();
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.delete( h );
         ksession.fireAllRules();
 
-        for ( Object o : ksession.getObjects() ) {
-            System.out.println( o );
-        }
         assertEquals( 0, ksession.getObjects().size() );
 
         FactHandle h1 = ksession.insert( "trigger" );
         FactHandle h2 = ksession.insert( "trigger2" );
         ksession.fireAllRules();
 
-        assertEquals( 6, ksession.getObjects().size() );
+        assertEquals( 5, ksession.getObjects().size() );
 
         ksession.delete( h2 );
         ksession.fireAllRules();
 
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.delete( h1 );
         ksession.fireAllRules();
@@ -1824,28 +1821,28 @@ public class TraitTest extends CommonTestMethodBase {
     public void testTMSConsistencyWithNonTraitableBeans() {
 
         String s1 = "package org.drools.test;\n" +
-                "import org.drools.compiler.Person; \n" +
-                "import org.drools.core.factmodel.traits.Traitable; \n" +
-                "" +
-                "declare Person @Traitable end \n" +
-                "" +
-                "rule \"Init\"\n" +
-                "when\n" +
-                "then\n" +
-                "  insertLogical( new Person( \"x\", 18 ) );\n" +
-                "end\n" +
-                "\n" +
-                "declare trait Student\n" +
-                "  age  : int\n" +
-                "  name : String\n" +
-                "end\n" +
-                "\n" +
-                "rule \"Trait\"\n" +
-                "when\n" +
-                "    $p : Person( )\n" +
-                "then\n" +
-                "    don( $p, Student.class, true );\n" +
-                "end\n";
+                    "import org.drools.compiler.Person; \n" +
+                    "import org.drools.core.factmodel.traits.Traitable; \n" +
+                    "" +
+                    "declare Person @Traitable end \n" +
+                    "" +
+                    "rule \"Init\"\n" +
+                    "when\n" +
+                    "then\n" +
+                    "  insertLogical( new Person( \"x\", 18 ) );\n" +
+                    "end\n" +
+                    "\n" +
+                    "declare trait Student\n" +
+                    "  age  : int\n" +
+                    "  name : String\n" +
+                    "end\n" +
+                    "\n" +
+                    "rule \"Trait\"\n" +
+                    "when\n" +
+                    "    $p : Person( )\n" +
+                    "then\n" +
+                    "    don( $p, Student.class, true );\n" +
+                    "end\n";
 
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -1887,41 +1884,41 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitsLegacyWrapperCoherence() {
         String str = "package org.drools.trait.test; \n" +
-                "global java.util.List list; \n" +
-                "import org.drools.core.factmodel.traits.Traitable;\n" +
-                "import org.drools.compiler.factmodel.traits.TraitTest.TBean;\n" +
-                "" +                "" +
-                "declare TBean \n" +
-                "@Traitable \n" +
-                "end \n " +
-                "" +
-                "declare trait Mask \n" +
-                "  fld : String \n" +
-                "  xyz : int  \n" +
-                "end \n" +
-                "\n " +
-                "rule Init \n" +
-                "when \n" +
-                "then \n" +
-                "  insert( new TBean(\"abc\") ); \n" +
-                "end \n" +
-                "" +
-                "rule Don \n" +
-                "no-loop \n" +
-                "when \n" +
-                "  $b : TBean( ) \n" +
-                "then \n" +
-                "  Mask m = don( $b, Mask.class ); \n" +
-                "  modify (m) { setXyz( 10 ); } \n" +
-                "  list.add( m ); \n" +
-                "  System.out.println( \"Don result : \" + m ); \n " +
-                "end \n" +
-                "\n" +
-                "";
+                     "global java.util.List list; \n" +
+                     "import org.drools.core.factmodel.traits.Traitable;\n" +
+                     "import org.drools.compiler.factmodel.traits.TraitTest.TBean;\n" +
+                     "" +                "" +
+                     "declare TBean \n" +
+                     "@Traitable \n" +
+                     "end \n " +
+                     "" +
+                     "declare trait Mask \n" +
+                     "  fld : String \n" +
+                     "  xyz : int  \n" +
+                     "end \n" +
+                     "\n " +
+                     "rule Init \n" +
+                     "when \n" +
+                     "then \n" +
+                     "  insert( new TBean(\"abc\") ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule Don \n" +
+                     "no-loop \n" +
+                     "when \n" +
+                     "  $b : TBean( ) \n" +
+                     "then \n" +
+                     "  Mask m = don( $b, Mask.class ); \n" +
+                     "  modify (m) { setXyz( 10 ); } \n" +
+                     "  list.add( m ); \n" +
+                     "  System.out.println( \"Don result : \" + m ); \n " +
+                     "end \n" +
+                     "\n" +
+                     "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                ResourceType.DRL );
+                      ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         if ( kbuilder.hasErrors() ) {
@@ -1935,13 +1932,13 @@ public class TraitTest extends CommonTestMethodBase {
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
-                list);
+                           list);
 
         ksession.fireAllRules();
 
 
         Collection yOld = ksession.getObjects();
-        assertEquals( 3, yOld.size() );
+        assertEquals( 2, yOld.size() );
 
         TraitableBean coreOld = null;
         for ( Object o : yOld ) {
@@ -1956,7 +1953,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         assertEquals( "abc", ((TBean) coreOld).getFld() );
         assertEquals( 1, coreOld._getDynamicProperties().size() );
-        assertEquals( 2, coreOld._getTraitMap().size() );
+        assertEquals( 1, coreOld._getTraitMap().size() );
     }
 
 
@@ -2017,42 +2014,42 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitRedundancy() {
         String str = "package org.drools.compiler.factmodel.traits; \n" +
-                "global java.util.List list; \n" +
-                "" +
-                "declare trait IStudent end \n" +
-                "" +
-                "declare org.drools.compiler.factmodel.traits.IPerson @typesafe(false) end \n" +
-                "" +
-                "rule \"Students\" \n" +
-                "salience -10" +
-                "when \n" +
-                "   $s : IStudent() \n" +
-                "then \n" +
-                "   System.out.println( \"Student in \" + $s ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Don\" \n" +
-                "no-loop  \n" +
-                "when \n" +
-                "  $p : IPerson( age < 30 ) \n" +
-                "then \n" +
-                "   System.out.println( \"Candidate student \" + $p ); \n" +
-                "   don( $p, IStudent.class );\n" +
-                "end \n" +
-                "" +
-                "rule \"Check\" \n" +
-                "no-loop \n" +
-                "when \n" +
-                "  $p : IPerson( this isA IStudent ) \n" +
-                "then \n" +
-                "   System.out.println( \"Known student \" + $p ); " +
-                "   modify ($p) { setAge( 37 ); } \n" +
-                "   shed( $p, IStudent.class );\n" +
-                "end \n";
+                     "global java.util.List list; \n" +
+                     "" +
+                     "declare trait IStudent end \n" +
+                     "" +
+                     "declare org.drools.compiler.factmodel.traits.IPerson @typesafe(false) end \n" +
+                     "" +
+                     "rule \"Students\" \n" +
+                     "salience -10" +
+                     "when \n" +
+                     "   $s : IStudent() \n" +
+                     "then \n" +
+                     "   System.out.println( \"Student in \" + $s ); \n" +
+                     "end \n" +
+                     "" +
+                     "rule \"Don\" \n" +
+                     "no-loop  \n" +
+                     "when \n" +
+                     "  $p : IPerson( age < 30 ) \n" +
+                     "then \n" +
+                     "   System.out.println( \"Candidate student \" + $p ); \n" +
+                     "   don( $p, IStudent.class );\n" +
+                     "end \n" +
+                     "" +
+                     "rule \"Check\" \n" +
+                     "no-loop \n" +
+                     "when \n" +
+                     "  $p : IPerson( this isA IStudent ) \n" +
+                     "then \n" +
+                     "   System.out.println( \"Known student \" + $p ); " +
+                     "   modify ($p) { setAge( 37 ); } \n" +
+                     "   shed( $p, IStudent.class );\n" +
+                     "end \n";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                ResourceType.DRL );
+                      ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
         if ( kbuilder.hasErrors() ) {
@@ -2066,7 +2063,7 @@ public class TraitTest extends CommonTestMethodBase {
         List<?> list = new ArrayList<Object>();
 
         ksession.setGlobal("list",
-                list);
+                           list);
 
         ksession.insert( new StudentImpl( "skool", "john", 27 ) );
 
@@ -2084,25 +2081,25 @@ public class TraitTest extends CommonTestMethodBase {
     public void traitSimpleTypes() {
 
         String s1 = "package org.drools.factmodel.traits;\n" +
-                "\n" +
-                "import org.drools.core.factmodel.traits.Traitable;\n" +
-                "" +
-                "declare trait PassMark\n" +
-                "end\n" +
-                "\n" +
-                "declare ExamMark \n" +
-                "@Traitable\n" +
-                "value : long \n" +
-                "end\n" +
-                "" +
-                "rule \"testTraitFieldTypePrimitive\"\n" +
-                "when\n" +
-                "    $mark : ExamMark()\n" +
-                "then\n" +
-                "    don($mark, PassMark.class);\n" +
-                "end\n" +
-                "" +
-                "rule \"Init\" when then insert( new ExamMark() ); end \n";
+                    "\n" +
+                    "import org.drools.core.factmodel.traits.Traitable;\n" +
+                    "" +
+                    "declare trait PassMark\n" +
+                    "end\n" +
+                    "\n" +
+                    "declare ExamMark \n" +
+                    "@Traitable\n" +
+                    "value : long \n" +
+                    "end\n" +
+                    "" +
+                    "rule \"testTraitFieldTypePrimitive\"\n" +
+                    "when\n" +
+                    "    $mark : ExamMark()\n" +
+                    "then\n" +
+                    "    don($mark, PassMark.class);\n" +
+                    "end\n" +
+                    "" +
+                    "rule \"Init\" when then insert( new ExamMark() ); end \n";
 
 
 
@@ -2127,47 +2124,47 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitEncoding() {
         String s1 = "package org.drools.core.factmodel.traits;\n" +
-                "declare trait A end\n" +
-                "declare trait B extends A end\n" +
-                "declare trait C extends A end\n" +
-                "declare trait D extends A end\n" +
-                "declare trait E extends B end\n" +
-                "declare trait F extends C end\n" +
-                "declare trait G extends D end\n" +
-                "declare trait H extends D end\n" +
-                "declare trait I extends E end\n" +
-                "declare trait J extends F end\n" +
-                "declare trait K extends G, H end\n" +
-                "declare trait L extends G, H end\n" +
-                "declare trait M extends I, J end\n" +
-                "declare trait N extends K, L end\n" +
-                "" +
-                "rule \"donOneThing\"\n" +
-                "when\n" +
-                "    $x : Entity()\n" +
-                "then\n" +
-                "    don( $x, A.class );\n" +
-                "end\n" +
-                "" +
-                "rule \"donManyThing\"\n" +
-                "when\n" +
-                "    String( this == \"y\" ) \n" +
-                "    $x : Entity()\n" +
-                "then\n" +
-                "    don( $x, B.class );\n" +
-                "    don( $x, D.class );\n" +
-                "    don( $x, F.class );\n" +
-                "    don( $x, E.class );\n" +
-                "    don( $x, I.class );\n" +
-                "    don( $x, K.class );\n" +
-                "    don( $x, J.class );\n" +
-                "    don( $x, C.class );\n" +
-                "    don( $x, H.class );\n" +
-                "    don( $x, G.class );\n" +
-                "    don( $x, L.class );\n" +
-                "    don( $x, M.class );\n" +
-                "    don( $x, N.class );\n" +
-                "end\n"
+                    "declare trait A end\n" +
+                    "declare trait B extends A end\n" +
+                    "declare trait C extends A end\n" +
+                    "declare trait D extends A end\n" +
+                    "declare trait E extends B end\n" +
+                    "declare trait F extends C end\n" +
+                    "declare trait G extends D end\n" +
+                    "declare trait H extends D end\n" +
+                    "declare trait I extends E end\n" +
+                    "declare trait J extends F end\n" +
+                    "declare trait K extends G, H end\n" +
+                    "declare trait L extends G, H end\n" +
+                    "declare trait M extends I, J end\n" +
+                    "declare trait N extends K, L end\n" +
+                    "" +
+                    "rule \"donOneThing\"\n" +
+                    "when\n" +
+                    "    $x : Entity()\n" +
+                    "then\n" +
+                    "    don( $x, A.class );\n" +
+                    "end\n" +
+                    "" +
+                    "rule \"donManyThing\"\n" +
+                    "when\n" +
+                    "    String( this == \"y\" ) \n" +
+                    "    $x : Entity()\n" +
+                    "then\n" +
+                    "    don( $x, B.class );\n" +
+                    "    don( $x, D.class );\n" +
+                    "    don( $x, F.class );\n" +
+                    "    don( $x, E.class );\n" +
+                    "    don( $x, I.class );\n" +
+                    "    don( $x, K.class );\n" +
+                    "    don( $x, J.class );\n" +
+                    "    don( $x, C.class );\n" +
+                    "    don( $x, H.class );\n" +
+                    "    don( $x, G.class );\n" +
+                    "    don( $x, L.class );\n" +
+                    "    don( $x, M.class );\n" +
+                    "    don( $x, N.class );\n" +
+                    "end\n"
                 ;
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
@@ -2242,8 +2239,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         ksession.insert( "e" );
         ksession.fireAllRules();
-        assertEquals( CodedHierarchyImpl
-                              .stringToBitSet( "11011" ), ent.getCurrentTypeCode( ) );
+        assertEquals( CodedHierarchyImpl.stringToBitSet( "11011" ), ent.getCurrentTypeCode( ) );
 
         ksession.insert( "-c" );
         ksession.fireAllRules();
@@ -2265,72 +2261,72 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitModifyCore() {
         String s1 = "package test;\n" +
-                "import org.drools.core.factmodel.traits.*;\n" +
-                "" +
-                "declare trait Student name : String end\n" +
-                "declare trait Worker name : String end\n" +
-                "declare trait StudentWorker extends Student, Worker name : String end\n" +
-                "declare trait Assistant extends Student, Worker name : String end\n" +
-                "declare Person @Traitable name : String end\n" +
-                "" +
-                "rule \"Init\" \n" +
-                "when \n" +
-                "then \n" +
-                "  Person p = new Person( \"john\" ); \n" +
-                "  insert( p ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Don\" \n" +
-                "no-loop\n " +
-                "when \n" +
-                "  $p : Person( name == \"john\" ) \n" +
-                "then \n" +
-                "  System.out.println( $p ); \n" +
-                "" +
-                "  System.out.println( \" ----------------------------------------------------------------------------------- Don student\" ); \n" +
-                "  don( $p, Student.class ); \n" +
-                "  System.out.println( \" ----------------------------------------------------------------------------------- Don worker\" ); \n" +
-                "  don( $p, Worker.class ); \n" +
-                "  System.out.println( \" ----------------------------------------------------------------------------------- Don studentworker\" ); \n" +
-                "  don( $p, StudentWorker.class ); \n" +
-                "  System.out.println( \" ----------------------------------------------------------------------------------- Don assistant\" ); \n" +
-                "  don( $p, Assistant.class ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Log S\" \n" +
-                "when \n" +
-                "  $t : Student() \n" +
-                "then \n" +
-                "  System.out.println( \"Student >> \" +  $t ); \n" +
-                "end \n" +
-                "rule \"Log W\" \n" +
-                "when \n" +
-                "  $t : Worker() \n" +
-                "then \n" +
-                "  System.out.println( \"Worker >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log SW\" \n" +
-                "when \n" +
-                "  $t : StudentWorker() \n" +
-                "then \n" +
-                "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log RA\" \n" +
-                "when \n" +
-                "  $t : Assistant() \n" +
-                "then \n" +
-                "  System.out.println( \"Assistant >> \" + $t ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Mod\" \n" +
-                "salience -10 \n" +
-                "when \n" +
-                "  $p : Person( name == \"john\" ) \n" +
-                "then \n" +
-                "   System.out.println( \"-----------------------------\" );\n" +
-                "   modify ( $p ) { setName( \"alan\" ); } " +
-                "end \n" +
-                "";
+                    "import org.drools.core.factmodel.traits.*;\n" +
+                    "" +
+                    "declare trait Student name : String end\n" +
+                    "declare trait Worker name : String end\n" +
+                    "declare trait StudentWorker extends Student, Worker name : String end\n" +
+                    "declare trait Assistant extends Student, Worker name : String end\n" +
+                    "declare Person @Traitable name : String end\n" +
+                    "" +
+                    "rule \"Init\" \n" +
+                    "when \n" +
+                    "then \n" +
+                    "  Person p = new Person( \"john\" ); \n" +
+                    "  insert( p ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Don\" \n" +
+                    "no-loop\n " +
+                    "when \n" +
+                    "  $p : Person( name == \"john\" ) \n" +
+                    "then \n" +
+                    "  System.out.println( $p ); \n" +
+                    "" +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don student\" ); \n" +
+                    "  don( $p, Student.class ); \n" +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don worker\" ); \n" +
+                    "  don( $p, Worker.class ); \n" +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don studentworker\" ); \n" +
+                    "  don( $p, StudentWorker.class ); \n" +
+                    "  System.out.println( \" ----------------------------------------------------------------------------------- Don assistant\" ); \n" +
+                    "  don( $p, Assistant.class ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Log S\" \n" +
+                    "when \n" +
+                    "  $t : Student() \n" +
+                    "then \n" +
+                    "  System.out.println( \"Student >> \" +  $t ); \n" +
+                    "end \n" +
+                    "rule \"Log W\" \n" +
+                    "when \n" +
+                    "  $t : Worker() \n" +
+                    "then \n" +
+                    "  System.out.println( \"Worker >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log SW\" \n" +
+                    "when \n" +
+                    "  $t : StudentWorker() \n" +
+                    "then \n" +
+                    "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log RA\" \n" +
+                    "when \n" +
+                    "  $t : Assistant() \n" +
+                    "then \n" +
+                    "  System.out.println( \"Assistant >> \" + $t ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  $p : Person( name == \"john\" ) \n" +
+                    "then \n" +
+                    "   System.out.println( \"-----------------------------\" );\n" +
+                    "   modify ( $p ) { setName( \"alan\" ); } " +
+                    "end \n" +
+                    "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2356,76 +2352,76 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitModifyCore2() {
         String s1 = "package test;\n" +
-                "import org.drools.core.factmodel.traits.*;\n" +
-                "" +
-                "declare trait Student @propertyReactive name : String end\n" +
-                "declare trait Worker @propertyReactive name : String end\n" +
-                "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end\n" +
-                "declare trait StudentWorker2 extends StudentWorker @propertyReactive name : String end\n" +
-                "declare trait Assistant extends Student, Worker @propertyReactive name : String end\n" +
-                "declare Person @Traitable @propertyReactive name : String end\n" +
-                "" +
-                "rule \"Init\" \n" +
-                "when \n" +
-                "then \n" +
-                "  Person p = new Person( \"john\" ); \n" +
-                "  insert( p ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Don\" \n" +
-                "when \n" +
-                "  $p : Person( name == \"john\" ) \n" +
-                "then \n" +
-                "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  ); \n" +
-                "  don( $p, Worker.class ); \n" +
-                "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER \" + $p ); \n" +
-                "  don( $p, StudentWorker2.class ); \n" +
-                "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON ASSISTANT \" + $p ); \n" +
-                "  don( $p, Assistant.class ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Log S\" \n" +
-                "when \n" +
-                "  $t : Student() @watch( name ) \n" +
-                "then \n" +
-                "  System.out.println( \"@@Student >> \" +  $t ); \n" +
-                "end \n" +
-                "rule \"Log W\" \n" +
-                "when \n" +
-                "  $t : Worker() @watch( name ) \n" +
-                "then \n" +
-                "  System.out.println( \"@@Worker >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log SW\" \n" +
-                "when \n" +
-                "  $t : StudentWorker() @watch( name ) \n" +
-                "then \n" +
-                "  System.out.println( \"@@StudentWorker >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log RA\" \n" +
-                "when \n" +
-                "  $t : Assistant() @watch( name ) \n" +
-                "then \n" +
-                "  System.out.println( \"@@Assistant >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log Px\" \n" +
-                "salience -1 \n" +
-                "when \n" +
-                "  $p : Person() @watch( name ) \n" +
-                "then \n" +
-                "  System.out.println( \"Poor Core Person >> \" + $p ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Mod\" \n" +
-                "salience -10 \n" +
-                "when \n" +
-                "  String( this == \"go\" ) \n" +
-                "  $p : Student( name == \"john\" ) \n" +
-                "then \n" +
-                "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
-                "  modify ( $p ) { setName( \"alan\" ); } " +
-                "end \n" +
-                "";
+                    "import org.drools.core.factmodel.traits.*;\n" +
+                    "" +
+                    "declare trait Student @propertyReactive name : String end\n" +
+                    "declare trait Worker @propertyReactive name : String end\n" +
+                    "declare trait StudentWorker extends Student, Worker @propertyReactive name : String end\n" +
+                    "declare trait StudentWorker2 extends StudentWorker @propertyReactive name : String end\n" +
+                    "declare trait Assistant extends Student, Worker @propertyReactive name : String end\n" +
+                    "declare Person @Traitable @propertyReactive name : String end\n" +
+                    "" +
+                    "rule \"Init\" \n" +
+                    "when \n" +
+                    "then \n" +
+                    "  Person p = new Person( \"john\" ); \n" +
+                    "  insert( p ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Don\" \n" +
+                    "when \n" +
+                    "  $p : Person( name == \"john\" ) \n" +
+                    "then \n" +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON WORKER \" + $p  ); \n" +
+                    "  don( $p, Worker.class ); \n" +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON STUDWORKER \" + $p ); \n" +
+                    "  don( $p, StudentWorker2.class ); \n" +
+                    "  System.out.println( \">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DON ASSISTANT \" + $p ); \n" +
+                    "  don( $p, Assistant.class ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Log S\" \n" +
+                    "when \n" +
+                    "  $t : Student() @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"@@Student >> \" +  $t ); \n" +
+                    "end \n" +
+                    "rule \"Log W\" \n" +
+                    "when \n" +
+                    "  $t : Worker() @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"@@Worker >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log SW\" \n" +
+                    "when \n" +
+                    "  $t : StudentWorker() @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"@@StudentWorker >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log RA\" \n" +
+                    "when \n" +
+                    "  $t : Assistant() @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"@@Assistant >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log Px\" \n" +
+                    "salience -1 \n" +
+                    "when \n" +
+                    "  $p : Person() @watch( name ) \n" +
+                    "then \n" +
+                    "  System.out.println( \"Poor Core Person >> \" + $p ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  String( this == \"go\" ) \n" +
+                    "  $p : Student( name == \"john\" ) \n" +
+                    "then \n" +
+                    "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
+                    "  modify ( $p ) { setName( \"alan\" ); } " +
+                    "end \n" +
+                    "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2517,80 +2513,80 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitModifyCore3() {
         String s1 = "package test;\n" +
-                "import org.drools.core.factmodel.traits.*;\n" +
-                "global java.util.List list; \n" +
-                "" +
-                "declare trait A id : int end\n" +
-                "declare trait B extends A end\n" +
-                "declare trait C extends A end\n" +
-                "declare trait D extends A end\n" +
-                "declare trait E extends B end\n" +
-                "declare trait F extends C end\n" +
-                "declare trait G extends D end\n" +
-                "declare trait H extends D end\n" +
-                "declare trait I extends E end\n" +
-                "declare trait J extends F end\n" +
-                "declare trait K extends G, H end\n" +
-                "declare trait L extends G, H end\n" +
-                "declare trait M extends I, J end\n" +
-                "declare trait N extends K, L end\n" +
-                "" +
-                "declare Core @Traitable id : int = 0 end \n" +
-                "" +
-                "rule \"Init\" when \n" +
-                "then \n" +
-                "   insert( new Core() );" +
-                "end \n" +
-                "" +
-                "rule \"donManyThing\"\n" +
-                "when\n" +
-                "    $x : Core( id == 0 )\n" +
-                "then\n" +
-                "    don( $x, A.class );\n" +
-                "    don( $x, B.class );\n" +
-                "    don( $x, D.class );\n" +
-                "    don( $x, F.class );\n" +
-                "    don( $x, E.class );\n" +
-                "    don( $x, I.class );\n" +
-                "    don( $x, K.class );\n" +
-                "    don( $x, J.class );\n" +
-                "    don( $x, C.class );\n" +
-                "    don( $x, H.class );\n" +
-                "    don( $x, G.class );\n" +
-                "    don( $x, L.class );\n" +
-                "    don( $x, M.class );\n" +
-                "    don( $x, N.class );\n" +
-                "end\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "rule \"Log A\" when $x : A( id == 1 ) then System.out.println( \"A >> \" +  $x ); list.add( 1 ); end \n" +
-                "rule \"Log B\" when $x : B( id == 1 ) then System.out.println( \"B >> \" +  $x ); list.add( 2 ); end \n" +
-                "rule \"Log C\" when $x : C( id == 1 ) then System.out.println( \"C >> \" +  $x ); list.add( 3 ); end \n" +
-                "rule \"Log D\" when $x : D( id == 1 ) then System.out.println( \"D >> \" +  $x ); list.add( 4 ); end \n" +
-                "rule \"Log E\" when $x : E( id == 1 ) then System.out.println( \"E >> \" +  $x ); list.add( 5 ); end \n" +
-                "rule \"Log F\" when $x : F( id == 1 ) then System.out.println( \"F >> \" +  $x ); list.add( 6 ); end \n" +
-                "rule \"Log G\" when $x : G( id == 1 ) then System.out.println( \"G >> \" +  $x ); list.add( 7 ); end \n" +
-                "rule \"Log H\" when $x : H( id == 1 ) then System.out.println( \"H >> \" +  $x ); list.add( 8 ); end \n" +
-                "rule \"Log I\" when $x : I( id == 1 ) then System.out.println( \"I >> \" +  $x ); list.add( 9 ); end \n" +
-                "rule \"Log J\" when $x : J( id == 1 ) then System.out.println( \"J >> \" +  $x ); list.add( 10 ); end \n" +
-                "rule \"Log K\" when $x : K( id == 1 ) then System.out.println( \"K >> \" +  $x ); list.add( 11 ); end \n" +
-                "rule \"Log L\" when $x : L( id == 1 ) then System.out.println( \"L >> \" +  $x ); list.add( 12 ); end \n" +
-                "rule \"Log M\" when $x : M( id == 1 ) then System.out.println( \"M >> \" +  $x ); list.add( 13 ); end \n" +
-                "rule \"Log N\" when $x : N( id == 1 ) then System.out.println( \"N >> \" +  $x ); list.add( 14 ); end \n" +
-                "" +
-                "rule \"Log Core\" when $x : Core( $id : id ) then System.out.println( \"Core >>>>>> \" +  $x ); end \n" +
-                "" +
-                "rule \"Mod\" \n" +
-                "salience -10 \n" +
-                "when \n" +
-                "  String( this == \"go\" ) \n" +
-                "  $x : Core( id == 0 ) \n" +
-                "then \n" +
-                "  System.out.println( \" ------------------------------------------------------------------------------ \" ); \n" +
-                "  modify ( $x ) { setId( 1 ); }" +
-                "end \n" +
-                "";
+                    "import org.drools.core.factmodel.traits.*;\n" +
+                    "global java.util.List list; \n" +
+                    "" +
+                    "declare trait A id : int end\n" +
+                    "declare trait B extends A end\n" +
+                    "declare trait C extends A end\n" +
+                    "declare trait D extends A end\n" +
+                    "declare trait E extends B end\n" +
+                    "declare trait F extends C end\n" +
+                    "declare trait G extends D end\n" +
+                    "declare trait H extends D end\n" +
+                    "declare trait I extends E end\n" +
+                    "declare trait J extends F end\n" +
+                    "declare trait K extends G, H end\n" +
+                    "declare trait L extends G, H end\n" +
+                    "declare trait M extends I, J end\n" +
+                    "declare trait N extends K, L end\n" +
+                    "" +
+                    "declare Core @Traitable id : int = 0 end \n" +
+                    "" +
+                    "rule \"Init\" when \n" +
+                    "then \n" +
+                    "   insert( new Core() );" +
+                    "end \n" +
+                    "" +
+                    "rule \"donManyThing\"\n" +
+                    "when\n" +
+                    "    $x : Core( id == 0 )\n" +
+                    "then\n" +
+                    "    don( $x, A.class );\n" +
+                    "    don( $x, B.class );\n" +
+                    "    don( $x, D.class );\n" +
+                    "    don( $x, F.class );\n" +
+                    "    don( $x, E.class );\n" +
+                    "    don( $x, I.class );\n" +
+                    "    don( $x, K.class );\n" +
+                    "    don( $x, J.class );\n" +
+                    "    don( $x, C.class );\n" +
+                    "    don( $x, H.class );\n" +
+                    "    don( $x, G.class );\n" +
+                    "    don( $x, L.class );\n" +
+                    "    don( $x, M.class );\n" +
+                    "    don( $x, N.class );\n" +
+                    "end\n" +
+                    "\n" +
+                    "\n" +
+                    "\n" +
+                    "rule \"Log A\" when $x : A( id == 1 ) then System.out.println( \"A >> \" +  $x ); list.add( 1 ); end \n" +
+                    "rule \"Log B\" when $x : B( id == 1 ) then System.out.println( \"B >> \" +  $x ); list.add( 2 ); end \n" +
+                    "rule \"Log C\" when $x : C( id == 1 ) then System.out.println( \"C >> \" +  $x ); list.add( 3 ); end \n" +
+                    "rule \"Log D\" when $x : D( id == 1 ) then System.out.println( \"D >> \" +  $x ); list.add( 4 ); end \n" +
+                    "rule \"Log E\" when $x : E( id == 1 ) then System.out.println( \"E >> \" +  $x ); list.add( 5 ); end \n" +
+                    "rule \"Log F\" when $x : F( id == 1 ) then System.out.println( \"F >> \" +  $x ); list.add( 6 ); end \n" +
+                    "rule \"Log G\" when $x : G( id == 1 ) then System.out.println( \"G >> \" +  $x ); list.add( 7 ); end \n" +
+                    "rule \"Log H\" when $x : H( id == 1 ) then System.out.println( \"H >> \" +  $x ); list.add( 8 ); end \n" +
+                    "rule \"Log I\" when $x : I( id == 1 ) then System.out.println( \"I >> \" +  $x ); list.add( 9 ); end \n" +
+                    "rule \"Log J\" when $x : J( id == 1 ) then System.out.println( \"J >> \" +  $x ); list.add( 10 ); end \n" +
+                    "rule \"Log K\" when $x : K( id == 1 ) then System.out.println( \"K >> \" +  $x ); list.add( 11 ); end \n" +
+                    "rule \"Log L\" when $x : L( id == 1 ) then System.out.println( \"L >> \" +  $x ); list.add( 12 ); end \n" +
+                    "rule \"Log M\" when $x : M( id == 1 ) then System.out.println( \"M >> \" +  $x ); list.add( 13 ); end \n" +
+                    "rule \"Log N\" when $x : N( id == 1 ) then System.out.println( \"N >> \" +  $x ); list.add( 14 ); end \n" +
+                    "" +
+                    "rule \"Log Core\" when $x : Core( $id : id ) then System.out.println( \"Core >>>>>> \" +  $x ); end \n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  String( this == \"go\" ) \n" +
+                    "  $x : Core( id == 0 ) \n" +
+                    "then \n" +
+                    "  System.out.println( \" ------------------------------------------------------------------------------ \" ); \n" +
+                    "  modify ( $x ) { setId( 1 ); }" +
+                    "end \n" +
+                    "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2628,87 +2624,87 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitModifyCoreWithPropertyReactivity() {
         String s1 = "package test;\n" +
-                "import org.drools.core.factmodel.traits.*;\n" +
-                "global java.util.List list;\n" +
-                "" +
-                "declare trait Student @propertyReactive " +
-                "   name : String " +
-                "   age : int " +
-                "   grades : double " +
-                "   school : String " +
-                "   aaa : boolean " +
-                "end\n" +
-                "declare trait Worker @propertyReactive " +
-                "   name : String " +
-                "   wage : double " +
-                "end\n" +
-                "declare trait StudentWorker extends Student, Worker @propertyReactive " +
-                "   hours : int " +
-                "end\n" +
-                "declare trait Assistant extends Student, Worker @propertyReactive " +
-                "   address : String " +
-                "end\n" +
-                "declare Person @propertyReactive @Traitable " +
-                "   wage : double " +
-                "   name : String " +
-                "   age : int  " +
-                "end\n" +
-                "" +
-                "rule \"Init\" \n" +
-                "when \n" +
-                "then \n" +
-                "  Person p = new Person( 109.99, \"john\", 18 ); \n" +
-                "  insert( p ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Don\" \n" +
-                "when \n" +
-                "  $p : Person( name == \"john\" ) \n" +
-                "then \n" +
-                "  System.out.println( $p ); \n" +
-                "  don( $p, StudentWorker.class ); \n" +
-                "  don( $p, Assistant.class ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Log S\" \n" +
-                "when \n" +
-                "  $t : Student( age == 44 ) \n" +
-                "then \n" +
-                "  list.add( 1 );\n " +
-                "  System.out.println( \"Student >> \" +  $t ); \n" +
-                "end \n" +
-                "rule \"Log W\" \n" +
-                "when \n" +
-                "  $t : Worker( name == \"alan\" ) \n" +
-                "then \n" +
-                "  list.add( 2 );\n " +
-                "  System.out.println( \"Worker >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log SW\" \n" +
-                "when \n" +
-                "  $t : StudentWorker( age == 44 ) \n" +
-                "then \n" +
-                "  list.add( 3 );\n " +
-                "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
-                "end \n" +
-                "rule \"Log Pers\" \n" +
-                "when \n" +
-                "  $t : Person( age == 44 ) \n" +
-                "then \n" +
-                "  list.add( 4 );\n " +
-                "  System.out.println( \"Person >> \" + $t ); \n" +
-                "end \n" +
-                "" +
-                "rule \"Mod\" \n" +
-                "salience -10 \n" +
-                "when \n" +
-                "  String( this == \"go\" ) \n" +
-                "  $p : Student( name == \"john\" ) \n" +
-                "then \n" +
-                "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
-                "  modify ( $p ) { setSchool( \"myschool\" ), setAge( 44 ), setName( \"alan\" ); } " +
-                "end \n" +
-                "";
+                    "import org.drools.core.factmodel.traits.*;\n" +
+                    "global java.util.List list;\n" +
+                    "" +
+                    "declare trait Student @propertyReactive " +
+                    "   name : String " +
+                    "   age : int " +
+                    "   grades : double " +
+                    "   school : String " +
+                    "   aaa : boolean " +
+                    "end\n" +
+                    "declare trait Worker @propertyReactive " +
+                    "   name : String " +
+                    "   wage : double " +
+                    "end\n" +
+                    "declare trait StudentWorker extends Student, Worker @propertyReactive " +
+                    "   hours : int " +
+                    "end\n" +
+                    "declare trait Assistant extends Student, Worker @propertyReactive " +
+                    "   address : String " +
+                    "end\n" +
+                    "declare Person @propertyReactive @Traitable " +
+                    "   wage : double " +
+                    "   name : String " +
+                    "   age : int  " +
+                    "end\n" +
+                    "" +
+                    "rule \"Init\" \n" +
+                    "when \n" +
+                    "then \n" +
+                    "  Person p = new Person( 109.99, \"john\", 18 ); \n" +
+                    "  insert( p ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Don\" \n" +
+                    "when \n" +
+                    "  $p : Person( name == \"john\" ) \n" +
+                    "then \n" +
+                    "  System.out.println( $p ); \n" +
+                    "  don( $p, StudentWorker.class ); \n" +
+                    "  don( $p, Assistant.class ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Log S\" \n" +
+                    "when \n" +
+                    "  $t : Student( age == 44 ) \n" +
+                    "then \n" +
+                    "  list.add( 1 );\n " +
+                    "  System.out.println( \"Student >> \" +  $t ); \n" +
+                    "end \n" +
+                    "rule \"Log W\" \n" +
+                    "when \n" +
+                    "  $t : Worker( name == \"alan\" ) \n" +
+                    "then \n" +
+                    "  list.add( 2 );\n " +
+                    "  System.out.println( \"Worker >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log SW\" \n" +
+                    "when \n" +
+                    "  $t : StudentWorker( age == 44 ) \n" +
+                    "then \n" +
+                    "  list.add( 3 );\n " +
+                    "  System.out.println( \"StudentWorker >> \" + $t ); \n" +
+                    "end \n" +
+                    "rule \"Log Pers\" \n" +
+                    "when \n" +
+                    "  $t : Person( age == 44 ) \n" +
+                    "then \n" +
+                    "  list.add( 4 );\n " +
+                    "  System.out.println( \"Person >> \" + $t ); \n" +
+                    "end \n" +
+                    "" +
+                    "rule \"Mod\" \n" +
+                    "salience -10 \n" +
+                    "when \n" +
+                    "  String( this == \"go\" ) \n" +
+                    "  $p : Student( name == \"john\" ) \n" +
+                    "then \n" +
+                    "  System.out.println( \" ------------------------------------------------------------------------------ \" + $p ); \n" +
+                    "  modify ( $p ) { setSchool( \"myschool\" ), setAge( 44 ), setName( \"alan\" ); } " +
+                    "end \n" +
+                    "";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
@@ -2747,12 +2743,12 @@ public class TraitTest extends CommonTestMethodBase {
     public void testTraitEncodeExtendingNonTrait() {
 
         String s1 = "package test;\n" +
-                "import org.drools.compiler.factmodel.traits.TraitTest.IntfParent;\n" +
-                "" +
-                "declare IntfParent end\n" +
-                "" +
-                "declare trait TChild extends IntfParent end \n" +
-                "";
+                    "import org.drools.compiler.factmodel.traits.TraitTest.IntfParent;\n" +
+                    "" +
+                    "declare IntfParent end\n" +
+                    "" +
+                    "declare trait TChild extends IntfParent end \n" +
+                    "";
 
         String s2 = "package test; declare trait SomeThing end \n";
 
@@ -2804,47 +2800,47 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testIsAEvaluatorOnClassification( ) {
         String source = "package t.x \n" +
-                "\n" +
-                "global java.util.List list; \n" +
-                "import org.drools.core.factmodel.traits.Thing\n" +
-                "import org.drools.core.factmodel.traits.Entity\n" +
-                "\n" +
-                "declare t.x.D\n" +
-                "    @propertyReactive\n" +
-                "    @kind( TRAIT )\n" +
-                "\n" +
-                "end\n" +
-                "" +
-                "declare t.x.E\n" +
-                "    @propertyReactive\n" +
-                "    @kind( TRAIT )\n" +
-                "\n" +
-                "end\n" +
-                "" +
-                "rule Init when\n" +
-                "then\n" +
-                "   Entity o = new Entity();\n" +
-                "   insert(o);\n" +
-                "   don( o, D.class ); \n" +
-                "end\n" +
-                "" +
-                "rule Don when\n" +
-                " $o : Entity() \n" +
-                "then \n" +
-                "end \n" +
-                "" +
-                "rule \"Rule 0 >> http://t/x#D\"\n" +
-                "when\n" +
-                "   $t : org.drools.core.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
-                "then\n" +
-                "   list.add( \"E\" ); \n" +
-                "   don( $t, E.class, true ); \n" +
-                "end\n" +
-                "" +
-                "rule React \n" +
-                "when E() then \n" +
-                "   list.add( \"X\" ); \n" +
-                "end \n"
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "import org.drools.core.factmodel.traits.Thing\n" +
+                        "import org.drools.core.factmodel.traits.Entity\n" +
+                        "\n" +
+                        "declare t.x.D\n" +
+                        "    @propertyReactive\n" +
+                        "    @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "declare t.x.E\n" +
+                        "    @propertyReactive\n" +
+                        "    @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Entity o = new Entity();\n" +
+                        "   insert(o);\n" +
+                        "   don( o, D.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Don when\n" +
+                        " $o : Entity() \n" +
+                        "then \n" +
+                        "end \n" +
+                        "" +
+                        "rule \"Rule 0 >> http://t/x#D\"\n" +
+                        "when\n" +
+                        "   $t : org.drools.core.factmodel.traits.Thing( $c : core, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                        "then\n" +
+                        "   list.add( \"E\" ); \n" +
+                        "   don( $t, E.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule React \n" +
+                        "when E() then \n" +
+                        "   list.add( \"X\" ); \n" +
+                        "end \n"
                 ;
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
@@ -2862,61 +2858,62 @@ public class TraitTest extends CommonTestMethodBase {
 
 
 
-
     @Test
     public void testShedWithTMS( ) {
         String source = "package t.x \n" +
-                "\n" +
-                "global java.util.List list; \n" +
-                "import org.drools.core.factmodel.traits.Thing\n" +
-                "import org.drools.core.factmodel.traits.Entity\n" +
-                "\n" +
-                "declare trait t.x.D\n" +
-                "    @propertyReactive\n" +
-                "    @kind( TRAIT )\n" +
-                "\n" +
-                "end\n" +
-                "" +
-                "declare trait t.x.E\n" +
-                "    @propertyReactive\n" +
-                "    @kind( TRAIT )\n" +
-                "\n" +
-                "end\n" +
-                "" +
-                "rule Init when\n" +
-                "then\n" +
-                "   Entity o = new Entity();\n" +
-                "   insert(o);\n" +
-                "   don( o, D.class ); \n" +
-                "end\n" +
-                "" +
-                "rule Don when\n" +
-                " $o : Entity() \n" +
-                "then \n" +
-                "end \n" +
-                "" +
-                "rule \"Rule 0 >> http://t/x#D\"\n" +
-                "when\n" +
-                "   $t : org.drools.core.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
-                "then\n" +
-                "   list.add( \"E\" ); \n" +
-                "   don( $t, E.class, true ); \n" +
-                "end\n" +
-                "" +
-                "rule React \n" +
-                "when $x : E() then \n" +
-                "   list.add( \"X\" ); \n" +
-                "end \n" +
-                "" +
-                "rule Shed \n" +
-                "when \n" +
-                "   $s : String() \n" +
-                "   $d : Entity() \n" +
-                "then \n" +
-                "   retract( $s ); \n" +
-                "   shed( $d, D.class );\n" +
-                "end \n" +
-                ""
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "import org.drools.core.factmodel.traits.Thing\n" +
+                        "import org.drools.core.factmodel.traits.Entity\n" +
+                        "\n" +
+                        "declare t.x.D\n" +
+                        "    @propertyReactive\n" +
+                        "    @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "declare t.x.E\n" +
+                        "    @propertyReactive\n" +
+                        "    @kind( TRAIT )\n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Entity o = new Entity();\n" +
+                        "   insert(o);\n" +
+                        "   don( o, Thing.class ); \n" +
+                        "   don( o, D.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Don when\n" +
+                        " $o : Entity() \n" +
+                        "then \n" +
+                        "end \n" +
+                        "" +
+                        "rule \"Rule 0 >> http://t/x#D\"\n" +
+                        "when\n" +
+                        "   $t : org.drools.core.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                        "then\n" +
+                        "   list.add( \"E\" ); \n" +
+                        "   System.out.println( \"E due to \" + $t); \n" +
+                        "   don( $t, E.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule React \n" +
+                        "when $x : E() then \n" +
+                        "   list.add( \"X\" ); \n" +
+                        "end \n" +
+                        "" +
+                        "rule Shed \n" +
+                        "when \n" +
+                        "   $s : String() \n" +
+                        "   $d : Entity() \n" +
+                        "then \n" +
+                        "   delete( $s ); \n" +
+                        "   shed( $d, D.class );\n" +
+                        "end \n" +
+                        ""
                 ;
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
@@ -2926,6 +2923,7 @@ public class TraitTest extends CommonTestMethodBase {
         ks.setGlobal( "list", list );
         ks.fireAllRules();
 
+        System.out.println( list );
         assertEquals( 2, list.size() );
         assertTrue( list.contains( "E" ) );
         assertTrue( list.contains( "X" ) );
@@ -2936,7 +2934,7 @@ public class TraitTest extends CommonTestMethodBase {
         for ( Object o : ks.getObjects() ) {
             System.out.println( o );
         }
-        assertEquals( 2, ks.getObjects().size() );
+        assertEquals( 3, ks.getObjects().size() );
 
     }
 
@@ -2945,50 +2943,50 @@ public class TraitTest extends CommonTestMethodBase {
     @Test
     public void testTraitInitialization() {
         String source = "package t.x \n" +
-                "import java.util.*; \n" +
-                "import org.drools.core.factmodel.traits.Thing \n" +
-                "import org.drools.core.factmodel.traits.Traitable \n" +
-                "\n" +
-                "global java.util.List list; \n" +
-                "\n" +
-                "declare trait Foo\n" +
-                "   hardList : List = new ArrayList() \n" +
-                "   softList : List = new ArrayList() \n" +
-                "   moreList : List = new ArrayList() \n" +
-                "   otraList : List = new ArrayList() \n" +
-                "   primFld  : int = 3 \n" +
-                "   primDbl  : double = 0.421 \n" +
-                "\n" +
-                "end\n" +
-                "" +
-                "declare Bar\n" +
-                "   @Traitable()\n" +
-                "   hardList : List \n" +
-                "   moreList : List = Arrays.asList( 1, 2, 3 ) \n" +
-                "\n" +
-                "end\n" +
-                "" +
-                "rule Init when\n" +
-                "then\n" +
-                "   Bar o = new Bar();\n" +
-                "   insert(o);\n" +
-                "   Thing t = don( o, Thing.class ); \n" +
-                "   t.getFields().put( \"otraList\", Arrays.asList( 42 ) ); \n" +
-                "   don( o, Foo.class ); \n" +
-                "end\n" +
-                "" +
-                "rule Don when\n" +
-                "   $x : Foo( $h : hardList, $s : softList, $o : otraList, $m : moreList, $i : primFld, $d : primDbl ) \n" +
-                "then \n" +
-                "   list.add( $h ); \n" +
-                "   list.add( $s ); \n" +
-                "   list.add( $o ); \n" +
-                "   list.add( $m ); \n" +
-                "   list.add( $i ); \n" +
-                "   list.add( $d ); \n" +
-                "   System.out.println( $x ); \n" +
-                "end\n" +
-                ""
+                        "import java.util.*; \n" +
+                        "import org.drools.core.factmodel.traits.Thing \n" +
+                        "import org.drools.core.factmodel.traits.Traitable \n" +
+                        "\n" +
+                        "global java.util.List list; \n" +
+                        "\n" +
+                        "declare trait Foo\n" +
+                        "   hardList : List = new ArrayList() \n" +
+                        "   softList : List = new ArrayList() \n" +
+                        "   moreList : List = new ArrayList() \n" +
+                        "   otraList : List = new ArrayList() \n" +
+                        "   primFld  : int = 3 \n" +
+                        "   primDbl  : double = 0.421 \n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "declare Bar\n" +
+                        "   @Traitable()\n" +
+                        "   hardList : List \n" +
+                        "   moreList : List = Arrays.asList( 1, 2, 3 ) \n" +
+                        "\n" +
+                        "end\n" +
+                        "" +
+                        "rule Init when\n" +
+                        "then\n" +
+                        "   Bar o = new Bar();\n" +
+                        "   insert(o);\n" +
+                        "   Thing t = don( o, Thing.class ); \n" +
+                        "   t.getFields().put( \"otraList\", Arrays.asList( 42 ) ); \n" +
+                        "   don( o, Foo.class ); \n" +
+                        "end\n" +
+                        "" +
+                        "rule Don when\n" +
+                        "   $x : Foo( $h : hardList, $s : softList, $o : otraList, $m : moreList, $i : primFld, $d : primDbl ) \n" +
+                        "then \n" +
+                        "   list.add( $h ); \n" +
+                        "   list.add( $s ); \n" +
+                        "   list.add( $o ); \n" +
+                        "   list.add( $m ); \n" +
+                        "   list.add( $i ); \n" +
+                        "   list.add( $d ); \n" +
+                        "   System.out.println( $x ); \n" +
+                        "end\n" +
+                        ""
                 ;
 
         StatefulKnowledgeSession ks = getSessionFromString( source );
@@ -3417,7 +3415,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     @Test
-    public void traitLogicalSupportAndRetract() {
+    public void traitLogicalSupportAnddelete() {
         String drl = "package org.drools.trait.test;\n" +
                      "\n" +
                      "import org.drools.core.factmodel.traits.Traitable;\n" +
@@ -3458,7 +3456,7 @@ public class TraitTest extends CommonTestMethodBase {
                      "  $p : Person() \n" +
                      "then\n" +
                      "  shed( $p, org.drools.core.factmodel.traits.Thing.class ); " +
-                     "  retract( $s ); \n" +
+                     "  delete( $s ); \n" +
                      "end\n" +
                      " " +
                      "rule \"Don Logical3\"\n" +
@@ -3474,8 +3472,8 @@ public class TraitTest extends CommonTestMethodBase {
                      "  $s : String( this == \"trigger5\" )\n" +
                      "  $p : Person() \n" +
                      "then\n" +
-                     "  retract( $s ); \n" +
-                     "  retract( $p ); \n" +
+                     "  delete( $s ); \n" +
+                     "  delete( $p ); \n" +
                      "end\n" +
                      "";
 
@@ -3495,19 +3493,9 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 5, ksession.getObjects().size() );
-
-        ksession.retract( h1 );
-        ksession.fireAllRules();
-
-        for ( Object o : ksession.getObjects() ) {
-            System.err.println( o );
-        }
-        System.err.println( "---------------------------------" );
-
         assertEquals( 4, ksession.getObjects().size() );
 
-        ksession.retract( h2 );
+        ksession.delete( h1 );
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
@@ -3515,7 +3503,17 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 2, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
+
+        ksession.delete( h2 );
+        ksession.fireAllRules();
+
+        for ( Object o : ksession.getObjects() ) {
+            System.err.println( o );
+        }
+        System.err.println( "---------------------------------" );
+
+        assertEquals( 1, ksession.getObjects().size() );
 
         ksession.insert( "trigger3" );
         ksession.fireAllRules();
@@ -3535,7 +3533,7 @@ public class TraitTest extends CommonTestMethodBase {
         }
         System.err.println( "---------------------------------" );
 
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
         ksession.insert( "trigger5" );
         ksession.fireAllRules();
@@ -3547,7 +3545,6 @@ public class TraitTest extends CommonTestMethodBase {
 
         assertEquals( 1, ksession.getObjects().size() );
     }
-
 
 
 
@@ -3590,7 +3587,7 @@ public class TraitTest extends CommonTestMethodBase {
                     "  $x : Core( id == 0 ) \n" +
                     "then \n" +
                     "  shed( $x, Thing.class ); " +
-                    "  retract( $g ); \n\n" +
+                    "  delete( $g ); \n\n" +
                     "end \n" +
                     "";
 
@@ -3622,7 +3619,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     @Test
-    public void testRetractThings() {
+    public void testdeleteThings() {
         String s1 = "package test;\n" +
                     "import org.drools.core.factmodel.traits.*;\n" +
                     "global java.util.List list; \n" +
@@ -3659,8 +3656,8 @@ public class TraitTest extends CommonTestMethodBase {
                     "  $g : String( this == \"go\" ) \n" +
                     "  $x : Core( id == 0 ) \n" +
                     "then \n" +
-                    "  retract( $x ); \n\n" +
-                    "  retract( $g ); \n\n" +
+                    "  delete( $x ); \n\n" +
+                    "  delete( $g ); \n\n" +
                     "end \n" +
                     "";
 
@@ -3735,16 +3732,16 @@ public class TraitTest extends CommonTestMethodBase {
 
         FactHandle h = ksession.insert( "trigger" );
         ksession.fireAllRules();
-        assertEquals( 6, ksession.getObjects().size() );
+        assertEquals( 5, ksession.getObjects().size() );
 
-        ksession.retract( h );
+        ksession.delete( h );
         ksession.fireAllRules();
 
         for ( Object o : ksession.getObjects() ) {
             // lose the string and the Student proxy
             System.out.println( o );
         }
-        assertEquals( 4, ksession.getObjects().size() );
+        assertEquals( 3, ksession.getObjects().size() );
 
     }
 
@@ -3809,13 +3806,13 @@ public class TraitTest extends CommonTestMethodBase {
             System.out.println( o );
         }
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 2, ksession.getObjects().size() );
     }
 
 
 
     @Test
-    public void testRetractCoreObjectChained(  ) {
+    public void testdeleteCoreObjectChained(  ) {
         String source = "package org.drools.test;\n" +
                         "import java.util.List; \n" +
                         "import org.drools.core.factmodel.traits.Thing \n" +
@@ -3852,13 +3849,13 @@ public class TraitTest extends CommonTestMethodBase {
                         "end\n" +
                         "" +
                         "" +
-                        "rule Retract \n" +
+                        "rule delete \n" +
                         "salience -99 \n" +
                         "when \n" +
                         "   $x : String() \n" +
                         "then \n" +
-                        "   System.out.println( \"Retracting\" ); \n" +
-                        "   retract( $x ); \n" +
+                        "   System.out.println( \"deleteing\" ); \n" +
+                        "   delete( $x ); \n" +
                         "end \n" +
                         "\n";
 
@@ -3912,7 +3909,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "  $p : Person()\n" +
                         "then\n" +
                         "  System.out.println( \"Change name\" ); \n" +
-                        "  retract( $s ); \n" +
+                        "  delete( $s ); \n" +
                         "  modify( $p ) { setName( $s ); }\n" +
                         "end\n" +
                         "\n" +
@@ -4327,9 +4324,6 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
-
-
-
     @Test
     public void testTraitNoType() {
         String drl = "" +
@@ -4389,7 +4383,7 @@ public class TraitTest extends CommonTestMethodBase {
 
 
     @Test
-    public void testTraitRetractOrder() {
+    public void testTraitdeleteOrder() {
         String drl = "" +
                      "package org.drools.core.factmodel.traits.test;\n" +
                      "\n" +
@@ -4419,10 +4413,10 @@ public class TraitTest extends CommonTestMethodBase {
         final ArrayList list = new ArrayList();
 
         ksession.addEventListener( new RuleRuntimeEventListener() {
-            public void objectInserted( ObjectInsertedEvent objectInsertedEvent ) { }
-            public void objectUpdated( ObjectUpdatedEvent objectUpdatedEvent ) { }
-            public void objectDeleted( ObjectDeletedEvent event ) {
-                Object o = event.getOldObject();
+            public void objectInserted( org.kie.api.event.rule.ObjectInsertedEvent objectInsertedEvent ) { }
+            public void objectUpdated( org.kie.api.event.rule.ObjectUpdatedEvent objectUpdatedEvent ) { }
+            public void objectDeleted( org.kie.api.event.rule.ObjectDeletedEvent objectRetractedEvent ) {
+                Object o = objectRetractedEvent.getOldObject();
                 if ( o instanceof TraitProxy ) {
                     String traitName = ( (TraitProxy) o ).getTraitName();
                     list.add( traitName.substring( traitName.lastIndexOf( "." ) + 1 ) );
@@ -4430,11 +4424,11 @@ public class TraitTest extends CommonTestMethodBase {
             }
         } );
 
-        ksession.retract( handle );
+        ksession.delete( handle );
         ksession.fireAllRules();
 
         System.out.println( list );
-        assertEquals( Arrays.asList( "B", "C", "A", "Thing" ), list );
+        assertEquals( Arrays.asList( "B", "C", "A" ), list );
     }
 
 
@@ -4452,25 +4446,25 @@ public class TraitTest extends CommonTestMethodBase {
             drl += " fld" + j + " : String \n";
         }
 
-               drl += "" +
-                     "end \n" +
-                     "\n" +
-                     "declare TBean @Traitable fld0 : String end \n" +
-                     "" +
-                     "rule \"don\"\n" +
-                     "when \n" +
-                     "then\n" +
-                     "  don( new TBean(), Tx.class ); \n" +
-                     "end\n" +
-                     "" +
-                     "";
+        drl += "" +
+               "end \n" +
+               "\n" +
+               "declare TBean @Traitable fld0 : String end \n" +
+               "" +
+               "rule \"don\"\n" +
+               "when \n" +
+               "then\n" +
+               "  don( new TBean(), Tx.class ); \n" +
+               "end\n" +
+               "" +
+               "";
 
         StatefulKnowledgeSession ksession = loadKnowledgeBaseFromString(drl).newStatefulKnowledgeSession();
         TraitFactory.setMode( mode, ksession.getKieBase() );
 
         ksession.fireAllRules();
 
-        assertEquals( 3, ksession.getObjects().size() );
+        assertEquals( 2, ksession.getObjects().size() );
 
     }
 
@@ -4480,7 +4474,7 @@ public class TraitTest extends CommonTestMethodBase {
 
         private int inserts = 0;
         private int updates = 0;
-        private int retracts = 0;
+        private int deletes = 0;
 
         public int getInserts() {
             return inserts;
@@ -4490,32 +4484,33 @@ public class TraitTest extends CommonTestMethodBase {
             return updates;
         }
 
-        public int getRetracts() {
-            return retracts;
+        public int getdeletes() {
+            return deletes;
         }
 
-        public void objectInserted( ObjectInsertedEvent objectInsertedEvent ) {
-            if ( ! ( objectInsertedEvent.getObject() instanceof String ) ) {
+        @Override
+        public void objectInserted( org.kie.api.event.rule.ObjectInsertedEvent event ) {
+            if ( ! ( event.getObject() instanceof String ) ) {
                 inserts++;
             }
         }
 
-        public void objectUpdated( ObjectUpdatedEvent objectUpdatedEvent ) {
-            System.out.println( objectUpdatedEvent );
-            if ( ! ( objectUpdatedEvent.getObject() instanceof String ) ) {
+        @Override
+        public void objectUpdated( org.kie.api.event.rule.ObjectUpdatedEvent event ) {
+            if ( ! ( event.getObject() instanceof String ) ) {
                 updates++;
             }
         }
 
-        public void objectDeleted( ObjectDeletedEvent objectRetractedEvent ) {
-            if ( ! ( objectRetractedEvent.getOldObject() instanceof String ) ) {
-                retracts++;
+        public void objectDeleted( org.kie.api.event.rule.ObjectDeletedEvent objectdeleteedEvent ) {
+            if ( ! ( objectdeleteedEvent.getOldObject() instanceof String ) ) {
+                deletes++;
             }
         }
 
         public void reset() {
             inserts = 0;
-            retracts = 0;
+            deletes = 0;
             updates = 0;
         }
     }
@@ -4563,8 +4558,8 @@ public class TraitTest extends CommonTestMethodBase {
                      "  $s : String( this == \"undo\" ) \n" +
                      "  $t : TBean() \n" +
                      "then \n" +
-                     "  retract( $s ); \n" +
-                     "  retract( $t ); \n" +
+                     "  delete( $s ); \n" +
+                     "  delete( $t ); \n" +
                      "end \n" +
                      "" +
                      "rule C \n" +
@@ -4601,9 +4596,9 @@ public class TraitTest extends CommonTestMethodBase {
 
         // insert Core Bean, A, B, Thing.
         // Update the bean on don A, update the bean and A on don B
-        assertEquals( 0, cwm.getRetracts() );
-        assertEquals( 4, cwm.getInserts() );
-        assertEquals( 3, cwm.getUpdates() );
+        assertEquals( 0, cwm.getdeletes() );
+        assertEquals( 3, cwm.getInserts() );
+        assertEquals( 2, cwm.getUpdates() );
         cwm.reset();
 
         FactHandle handle = ksession.insert( "go" );
@@ -4611,17 +4606,17 @@ public class TraitTest extends CommonTestMethodBase {
 
         // don C, D, E, F at once : 4 inserts
         // Update the bean, A and B.
-        assertEquals( 0, cwm.getRetracts() );
+        assertEquals( 0, cwm.getdeletes() );
         assertEquals( 4, cwm.getInserts() );
         assertEquals( 3, cwm.getUpdates() );
         cwm.reset();
 
-        ksession.retract( handle );
+        ksession.delete( handle );
         ksession.fireAllRules();
 
-        // logically asserted C, D, E, F are retracted
-        // as a logical retraction, no update is made. This could be a bug....
-        assertEquals( 4, cwm.getRetracts() );
+        // logically asserted C, D, E, F are deleteed
+        // as a logical deleteion, no update is made. This could be a bug....
+        assertEquals( 4, cwm.getdeletes() );
         assertEquals( 0, cwm.getInserts() );
         assertEquals( 0, cwm.getUpdates() );
         cwm.reset();
@@ -4633,9 +4628,9 @@ public class TraitTest extends CommonTestMethodBase {
         ksession.insert( "undo" );
         ksession.fireAllRules();
 
-        // retracting the core bean
-        // A, B, Thing are retracted too
-        assertEquals( 4, cwm.getRetracts() );
+        // deleteing the core bean
+        // A, B, Thing are deleteed too
+        assertEquals( 3, cwm.getdeletes() );
         assertEquals( 0, cwm.getInserts() );
         assertEquals( 0, cwm.getUpdates() );
         cwm.reset();
@@ -4674,7 +4669,7 @@ public class TraitTest extends CommonTestMethodBase {
         public void run() {
             for (int repetitionIndex = 0; repetitionIndex < numRepetitions; repetitionIndex++) {
                 final Item i = new Item();
-                i.setId( String.format( "testId_%d%d", threadIndex, repetitionIndex ));
+                i.setId(String.format("testId_%d%d", threadIndex, repetitionIndex));
                 ksession.insert(i);
                 ksession.fireAllRules();
             }
@@ -4711,7 +4706,7 @@ public class TraitTest extends CommonTestMethodBase {
                           "			setAdjustable(true)" +
                           "		};" +
                           "end";
-        final KnowledgeBase kbase = getKnowledgeBaseFromString(s1);
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
         TraitFactory.setMode( mode, kbase );
 
         // might need to tweak these numbers.  often works with 7-10,100,60, but often fails 15-20,100,60
@@ -4732,5 +4727,186 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals(true, executorService.isTerminated());
     }
 
+
+    @Test
+    public void testShedOneLastTrait() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare Core @Traitable end\n" +
+                          "" +
+                          "declare trait Mask\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new Core(), Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"React\" \n" +
+                          "	when \n" +
+                          "     $s : String() \n" +
+                          "		$m : Mask() \n" +
+                          "then \n" +
+                          "     delete( $s ); \n" +
+                          "     shed( $m, Mask.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule Log \n" +
+                          "when \n" +
+                          " $t : Thing() \n" +
+                          "then \n" +
+                          " System.out.println( \"Thing detected \" + $t ); \n" +
+                          " list.add( $t.getClass().getName() ); \n" +
+                          "end \n" +
+                          "";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "shed" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy" ), list );
+    }
+
+
+
+    @Test
+    public void testShedThingCompletelyThenDonAgain() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare Core @Traitable end\n" +
+                          "" +
+                          "declare trait Mask end\n" +
+                          "declare trait Mask2 end\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "     $s : String( this == \"don1\" ) \n" +
+                          "	then\n" +
+                          "     delete( $s ); \n" +
+                          "		don( new Core(), Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Clear\" \n" +
+                          "	when \n" +
+                          "     $s : String( this == \"shed1\" ) \n" +
+                          "		$m : Mask() \n" +
+                          "then \n" +
+                          "     delete( $s ); \n" +
+                          "     shed( $m, Thing.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Add\" \n" +
+                          "	when \n" +
+                          "     $s : String( this == \"don2\" ) \n" +
+                          "		$c : Core() \n" +
+                          "then \n" +
+                          "     delete( $s ); \n" +
+                          "     don( $c, Mask2.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "rule \"Clear Again\" \n" +
+                          "	when \n" +
+                          "     $s : String( this == \"shed2\" ) \n" +
+                          "		$m : Mask2() \n" +
+                          "then \n" +
+                          "     delete( $s ); \n" +
+                          "     shed( $m, Mask2.class ); \n" +
+                          "end\n" +
+                          "" +
+                          "" +
+                          "rule Log \n" +
+                          "when \n" +
+                          " $t : Thing() \n" +
+                          "then \n" +
+                          "  System.out.println( \"Thing detected \" + $t ); \n" +
+                          "  list.add( $t.getClass().getName() ); \n" +
+                          "end \n" +
+                          "";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( "don1" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "shed1" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "don2" );
+        knowledgeSession.fireAllRules();
+
+        System.out.println( list );
+        assertEquals( 2, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy" ), list );
+
+        knowledgeSession.insert( "shed2" );
+        knowledgeSession.fireAllRules();
+
+        assertEquals( 3, list.size() );
+        assertEquals( Arrays.asList( "test.Mask.test.Core_Proxy", "test.Mask2.test.Core_Proxy", "org.drools.core.factmodel.traits.Thing.test.Core_Proxy" ), list );
+
+    }
+
+
+    @Test
+    public void testTraitImplicitInsertionExceptionOnNonTraitable() throws InterruptedException {
+        final String s1 = "package test;\n" +
+                          "import org.drools.core.factmodel.traits.*; \n" +
+                          "global java.util.List list;\n" +
+                          "" +
+                          "declare Core id : String  end\n" +  // should be @Traitable
+                          "" +
+                          "declare trait Mask  id : String end\n" +
+                          "" +
+                          "rule \"Don ItemStyle\"\n" +
+                          "	when\n" +
+                          "	then\n" +
+                          "		don( new Core(), Mask.class );\n" +
+                          "end\n" +
+                          "" +
+                          "";
+
+        final KnowledgeBase kbase = getKieBaseFromString(s1);
+        TraitFactory.setMode( mode, kbase );
+        ArrayList list = new ArrayList();
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+
+        try {
+            knowledgeSession.fireAllRules();
+            fail( "Core is not declared @Traitable, this test should have thrown an exception" );
+        } catch ( Exception csq ) {
+            assertTrue( csq.getCause() instanceof IllegalStateException );
+        }
+
+    }
 
 }
