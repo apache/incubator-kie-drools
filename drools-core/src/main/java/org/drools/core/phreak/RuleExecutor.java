@@ -382,7 +382,6 @@ public class RuleExecutor {
             PropagationContext pctx, AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
         if ((!rule.isEffective(leftTuple, rtn, wm)) ||
-                //(rule.isNoLoop() && rule.equals(pctx.getRuleOrigin()))) {
                 (rule.isNoLoop() && rtn.equals(pctx.getTerminalNodeOrigin()))) {
             return true;
         }
@@ -443,23 +442,10 @@ public class RuleExecutor {
         }
     }
 
-    public void removeQueuedLeftTuple(LeftTuple leftTuple) {
+    private void removeQueuedLeftTuple(LeftTuple leftTuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
         queue.dequeue(((Activation) leftTuple).getQueueIndex());
         updateSalience(currentSalience);
-    }
-
-    public void updateLeftTuple(RuleTerminalNodeLeftTuple leftTuple, int salience, PropagationContext pctx) {
-        // this method is only call when dynamic salience is on for the current rule and the salience for the LeftTuple has changed
-        if (salience != leftTuple.getSalience()) {
-            // saliences are different, so it must be dynamic and thus the queue is not null
-            int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-
-            leftTuple.dequeue();
-            queue.enqueue(leftTuple);
-            updateSalience(currentSalience);
-        }
-        leftTuple.update(salience, pctx);
     }
 
     private void updateSalience(int currentSalience) {

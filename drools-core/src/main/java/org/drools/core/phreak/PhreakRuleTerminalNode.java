@@ -181,9 +181,7 @@ public class PhreakRuleTerminalNode {
                 }
             }
             if ( addToExector ) {
-                if (rtnLeftTuple.isQueued() ) {
-                    executor.updateLeftTuple(rtnLeftTuple, salienceInt, pctx);
-                } else {
+                if (!rtnLeftTuple.isQueued() ) {
                     // not queued, so already fired, so it's effectively recreated
                     EventSupport es = (EventSupport) wm;
                     es.getAgendaEventSupport().fireActivationCreated(rtnLeftTuple, wm);
