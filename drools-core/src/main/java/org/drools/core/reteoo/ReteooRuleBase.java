@@ -572,7 +572,9 @@ public class ReteooRuleBase
                 this.additionsSinceLock++;
                 this.eventSupport.fireBeforePackageAdded( newPkg );
 
-                getTraitRegistry().merge( newPkg.getTraitRegistry() );
+                if ( newPkg.hasTraitRegistry() ) {
+                    getTraitRegistry().merge( newPkg.getTraitRegistry() );
+                }
 
                 Package pkg = this.pkgs.get( newPkg.getName() );
                 if ( pkg == null ) {

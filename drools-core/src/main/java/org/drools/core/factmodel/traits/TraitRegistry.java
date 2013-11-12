@@ -46,7 +46,7 @@ public class TraitRegistry implements Externalizable {
 
     private Map<String, BitSet> masks;
 
-    private HierarchyEncoder<String> hierarchy = new HierarchyEncoderImpl<String>();
+    private HierarchyEncoder<String> hierarchy;
 
 
     public TraitRegistry() {
@@ -115,11 +115,11 @@ public class TraitRegistry implements Externalizable {
                     ClassDefinition trait = other.traits.get( traitName );
                     List<String> parentTraits = new ArrayList<String>( );
                     for ( String candidateIntf : trait.getInterfaces() ) {
-                        if ( hierarchy.getCode( candidateIntf ) != null ) {
+                        if ( getHierarchy().getCode( candidateIntf ) != null ) {
                             parentTraits.add( candidateIntf );
                         }
                     }
-                    hierarchy.encode( trait.getName(), parentTraits );
+                    getHierarchy().encode( trait.getName(), parentTraits );
                 }
             }
         }
@@ -159,7 +159,7 @@ public class TraitRegistry implements Externalizable {
             traits = new HashMap<String, ClassDefinition>();
         }
         this.traits.put( className, trait );
-        hierarchy.encode( className, getTraitInterfaces( trait ) );
+        getHierarchy().encode( className, getTraitInterfaces( trait ) );
     }
 
     private Collection<String> getTraitInterfaces( ClassDefinition trait ) {
@@ -253,6 +253,9 @@ public class TraitRegistry implements Externalizable {
 
 
     public HierarchyEncoder getHierarchy() {
+        if ( hierarchy == null ) {
+            hierarchy = new HierarchyEncoderImpl<String>();
+        }
         return hierarchy;
     }
 
