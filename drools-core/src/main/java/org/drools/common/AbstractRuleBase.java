@@ -520,7 +520,9 @@ abstract public class AbstractRuleBase
                 this.additionsSinceLock++;
                 this.eventSupport.fireBeforePackageAdded( newPkg );
 
-                getTraitRegistry().merge( newPkg.getTraitRegistry() );
+                if ( newPkg.hasTraitRegistry() ) {
+                    getTraitRegistry().merge( newPkg.getTraitRegistry() );
+                }
 
                 Package pkg = this.pkgs.get( newPkg.getName() );
                 if ( pkg == null ) {

@@ -594,6 +594,10 @@ public class Package
         this.windowDeclarations = windowDeclarations;
     }
 
+    public boolean hasTraitRegistry() {
+        return traitRegistry != null;
+    }
+
     public TraitRegistry getTraitRegistry() {
         if ( traitRegistry == null ) {
             traitRegistry = new TraitRegistry();
