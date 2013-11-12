@@ -251,9 +251,12 @@ public class KieComponentFactory implements Serializable {
         return new TraitFactory();
     }
 
-    private TraitRegistry traitRegistry = new TraitRegistry();
+    private TraitRegistry traitRegistry;
 
     public TraitRegistry getTraitRegistry() {
+        if ( traitRegistry == null ) {
+            traitRegistry = new TraitRegistry();
+        }
         return traitRegistry;
     }
 

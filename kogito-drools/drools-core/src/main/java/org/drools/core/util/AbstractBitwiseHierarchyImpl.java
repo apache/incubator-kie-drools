@@ -382,9 +382,13 @@ public abstract class AbstractBitwiseHierarchyImpl<H ,J extends LatticeElement<H
     }
 
     public void writeExternal( ObjectOutput objectOutput ) throws IOException {
+        objectOutput.writeBoolean( this.fixedRoot );
+        objectOutput.writeObject( this.line );
     }
 
     public void readExternal( ObjectInput objectInput ) throws IOException, ClassNotFoundException {
+        this.fixedRoot = objectInput.readBoolean();
+        this.line = (SortedMap<BitSet, J>) objectInput.readObject();
     }
 
     protected static class HierCodeComparator implements Comparator<BitSet>, Externalizable {
