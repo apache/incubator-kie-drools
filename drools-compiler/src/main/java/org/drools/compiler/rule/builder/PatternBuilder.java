@@ -31,6 +31,7 @@ import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BehaviorDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.ConnectiveType;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
@@ -109,6 +110,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeMVELLiteralExpression;
 import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
@@ -697,7 +699,6 @@ public class PatternBuilder
         mvelCtx.clear();
         String expr = context.getCompilerFactory().getExpressionProcessor().dump( d, ccd, mvelCtx );
         Map<String, OperatorDescr> aliases = mvelCtx.getAliases();
-        Map<String, Class<?>> localTypes = mvelCtx.getLocalTypes();
 
         // create bindings
         for ( BindingDescr bind : mvelCtx.getBindings() ) {
@@ -731,8 +732,63 @@ public class PatternBuilder
         } else {
             // Either it's a complex expression, so do as predicate
             // Or it's a Map and we have to treat it as a special case
-            createAndBuildPredicate( context, pattern, d, expr, aliases );
+            createAndBuildPredicate( context, pattern, d, rewriteOrExpressions(context, pattern, d, expr), aliases );
         }
+    }
+
+    private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {
+        if (!(d instanceof ConstraintConnectiveDescr) || ((ConstraintConnectiveDescr) d).getConnective() != ConnectiveType.OR) {
+            return expr;
+        }
+        List<BaseDescr> subDescrs = ((ConstraintConnectiveDescr) d).getDescrs();
+        for (BaseDescr subDescr : subDescrs) {
+            if (!(subDescr instanceof RelationalExprDescr && isSimpleExpr( (RelationalExprDescr)subDescr ))) {
+                return expr;
+            }
+        }
+        String[] subExprs = expr.split("\\Q||\\E");
+        if (subExprs.length != subDescrs.size()) {
+            return expr;
+        }
+
+        int i = 0;
+        StringBuilder sb = new StringBuilder();
+        for (BaseDescr subDescr : subDescrs) {
+            RelationalExprDescr relDescr = (RelationalExprDescr)subDescr;
+            String[] values = new String[2];
+            findExpressionValues(relDescr, values);
+            String normalizedExpr;
+
+            if (!getExprBindings(context, pattern, values[1]).isConstant()) {
+                normalizedExpr = subExprs[i++];
+            } else {
+                InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), values[0], null, true );
+                if (extractor == null) {
+                    normalizedExpr = subExprs[i++];
+                } else {
+                    ValueType vtype = extractor.getValueType();
+                    LiteralRestrictionDescr restrictionDescr = new LiteralRestrictionDescr( relDescr.getOperator(),
+                                                                                            relDescr.isNegated(),
+                                                                                            relDescr.getParameters(),
+                                                                                            values[1],
+                                                                                            LiteralRestrictionDescr.TYPE_STRING );
+                    normalizedExpr = normalizeMVELLiteralExpression( vtype,
+                                                                     getFieldValue(context, vtype, restrictionDescr),
+                                                                     subExprs[i++],
+                                                                     values[0],
+                                                                     relDescr.getOperator(),
+                                                                     values[1],
+                                                                     restrictionDescr );
+                }
+            }
+
+            sb.append(normalizedExpr);
+            if (i < subExprs.length) {
+                sb.append(" || ");
+            }
+        }
+
+        return sb.toString();
     }
 
     protected void buildRelationalExpression( final RuleBuildContext context,
@@ -740,45 +796,49 @@ public class PatternBuilder
                                             final RelationalExprDescr relDescr,
                                             final String expr,
                                             final Map<String, OperatorDescr> aliases ) {
-        String value1;
-        String value2;
-        boolean usesThisRef;
-        if ( relDescr.getRight() instanceof AtomicExprDescr ) {
-            AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
-            value2 = rdescr.getRewrittenExpression().trim();
-            usesThisRef = "this".equals( value2 ) || value2.startsWith( "this." );
-        } else {
-            BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
-            value2 = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( value2 ) || value2.startsWith( "this." );
-        }
-        if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
-            AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
-            value1 = ldescr.getRewrittenExpression();
-            usesThisRef = usesThisRef || "this".equals( value1 ) || value1.startsWith( "this." );
-        } else {
-            value1 = ((BindingDescr) relDescr.getLeft()).getExpression();
-            usesThisRef = usesThisRef || "this".equals( value1 ) || value1.startsWith( "this." );
-        }
+        String[] values = new String[2];
+        boolean usesThisRef = findExpressionValues(relDescr, values);
 
-        ExprBindings value1Expr = new ExprBindings();
-        setInputs( context,
-                   value1Expr,
-                   (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
-                   value1 );
-
-        ExprBindings value2Expr = new ExprBindings();
-        setInputs( context,
-                   value2Expr,
-                   (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
-                   value2 );
+        ExprBindings value1Expr = getExprBindings(context, pattern, values[0]);
+        ExprBindings value2Expr = getExprBindings(context, pattern, values[1]);
 
         // build a predicate if it is a constant expression or at least has a constant on the left side
         // or as a fallback when the building of a constraint fails
         if ( (!usesThisRef && value1Expr.isConstant()) ||
-                !addConstraintToPattern( context, pattern, relDescr, expr, value1, value2, value2Expr.isConstant() )) {
+                !addConstraintToPattern( context, pattern, relDescr, expr, values[0], values[1], value2Expr.isConstant() )) {
             createAndBuildPredicate( context, pattern, relDescr, expr, aliases );
         }
+    }
+
+    private ExprBindings getExprBindings(RuleBuildContext context, Pattern pattern, String value) {
+        ExprBindings value1Expr = new ExprBindings();
+        setInputs( context,
+                   value1Expr,
+                   (pattern.getObjectType() instanceof ClassObjectType) ? ((ClassObjectType) pattern.getObjectType()).getClassType() : FactTemplate.class,
+                   value);
+        return value1Expr;
+    }
+
+    private boolean findExpressionValues(RelationalExprDescr relDescr, String[] values) {
+        boolean usesThisRef;
+        if ( relDescr.getRight() instanceof AtomicExprDescr ) {
+            AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
+            values[1] = rdescr.getRewrittenExpression().trim();
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.");
+        } else {
+            BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
+            values[1] = rdescr.getExpression().trim();
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.");
+        }
+        if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
+            AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
+            values[0] = ldescr.getRewrittenExpression();
+            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.");
+        } else {
+            values[0] = ((BindingDescr) relDescr.getLeft()).getExpression();
+            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.");
+        }
+        return usesThisRef;
     }
 
     protected boolean addConstraintToPattern( final RuleBuildContext context,
@@ -965,8 +1025,9 @@ public class PatternBuilder
                                                                    String operator,
                                                                    boolean isRightLiteral) {
         // is it a literal? Does not include enums
-        if ( isRightLiteral )
+        if ( isRightLiteral ) {
             return new LiteralRestrictionDescr(operator, exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
+        }
 
         // is it an enum?
         int dotPos = rightValue.lastIndexOf( '.' );
