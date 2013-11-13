@@ -220,9 +220,9 @@ implements RuleSheetListener {
                 case TIMER:
                     ruleset.setTimer( value );
                     break;
-				case ENABLED:
-					ruleset.setEnabled( RuleSheetParserUtil.isStringMeaningTrue( value ) );
-					break;
+                case ENABLED:
+                    ruleset.setEnabled( RuleSheetParserUtil.isStringMeaningTrue( value ) );
+                    break;
                 case CALENDARS:
                     ruleset.setCalendars( value );
                     break;
@@ -655,9 +655,9 @@ implements RuleSheetListener {
         case TIMER:
             this._currentRule.setTimer( value );
             break;
-		case ENABLED:
-			this._currentRule.setEnabled( RuleSheetParserUtil.isStringMeaningTrue( value ) );
-			break;
+        case ENABLED:
+            this._currentRule.setEnabled( RuleSheetParserUtil.isStringMeaningTrue( value ) );
+            break;
         case CALENDARS:
             this._currentRule.setCalendars( value );
             break;
