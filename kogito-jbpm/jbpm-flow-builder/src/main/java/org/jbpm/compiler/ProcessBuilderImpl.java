@@ -248,10 +248,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         PackageBuilderConfiguration configuration = packageBuilder.getPackageBuilderConfiguration();
         XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules(), packageBuilder.getRootClassLoader() );
         
-        final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-        final ClassLoader newLoader = this.getClass().getClassLoader();
         try {
-            Thread.currentThread().setContextClassLoader( newLoader );
             String portRuleFlow = System.getProperty( "drools.ruleflow.port", "false" );
             Reader portedReader = null;
             if ( portRuleFlow.equalsIgnoreCase( "true" ) ) {
@@ -276,9 +273,9 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         	e2.printStackTrace();
             this.errors.add( new ProcessLoadError( resource, "unable to parse xml", e2 ) );
         } finally {
-            Thread.currentThread().setContextClassLoader( oldLoader );
+            reader.close();
         }
-        reader.close();
+
         return this.errors;
     }
                                    
