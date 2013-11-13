@@ -52,6 +52,7 @@ import org.kie.api.event.rule.AgendaGroupPoppedEvent;
 import org.kie.api.event.rule.AgendaGroupPushedEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DebugAgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
@@ -101,6 +102,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -3556,10 +3558,10 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-
-
     @Test
-    public void testLockOnActive() {
+    public void testLockOnActive1() {
+        // the modify changes the hashcode of TradeHeader
+        // this forces the 'from' to think it's new. This results in an insert and a delete propagation from the 'from'
         String drl = "" +
                      "package org.drools.test; \n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
@@ -3571,7 +3573,6 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  $trade: TradeHeader() from $booking.getTrade()\n" +
                      "  not String()\n" +
                      "then\n" +
-                     "  System.out.println( \"Rule1\" ); \n" +
                      "  $trade.setAction(\"New\");\n" +
                      "  modify($booking) {}\n" +
                      "  insert (\"run\");\n" +
@@ -3583,39 +3584,27 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  $booking: TradeBooking( )\n" +
                      "  $trade: Object( ) from $booking.getTrade()\n" +
                      "then\n" +
-                     "  System.out.println( \"Rule2\" ); \n" +
                      "end";
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
 
-        ks.addEventListener( new AgendaEventListener() {
-            int step = 0;
+        final List created = new ArrayList();
+        final List cancelled = new ArrayList();
+        final List fired = new ArrayList();
 
-            public void matchCreated( MatchCreatedEvent event ) {}
+        ks.addEventListener( new DefaultAgendaEventListener() {
+
+            public void matchCreated( MatchCreatedEvent event ) {
+                created.add( event.getMatch().getRule().getName() );
+            }
 
             public void matchCancelled( MatchCancelledEvent event ) {
-                switch ( step ) {
-                    case 0 : assertEquals( "Rule2", event.getMatch().getRule().getName() );
-                        step++;
-                        break;
-                    case 1 : assertEquals( "Rule1", event.getMatch().getRule().getName() );
-                        step++;
-                        break;
-                    default: fail( "More cancelled activations than expected" );
-                }
+                cancelled.add( event.getMatch().getRule().getName() );
             }
-
-            public void beforeMatchFired( BeforeMatchFiredEvent event ) {}
 
             public void afterMatchFired( AfterMatchFiredEvent event ) {
-                assertEquals( "Rule1", event.getMatch().getRule().getName() );
+                fired.add( event.getMatch().getRule().getName() );
             }
-            public void agendaGroupPopped( AgendaGroupPoppedEvent event ) {}
-            public void agendaGroupPushed( AgendaGroupPushedEvent event ) {}
-            public void beforeRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
-            public void afterRuleFlowGroupActivated( RuleFlowGroupActivatedEvent event ) {}
-            public void beforeRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
-            public void afterRuleFlowGroupDeactivated( RuleFlowGroupDeactivatedEvent event ) {}
         } );
         ks.fireAllRules();
 
@@ -3623,8 +3612,87 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ks.insert( tb );
         assertEquals( 1, ks.fireAllRules() );
+
+        assertEquals( 3, created.size() );
+        assertEquals( 2, cancelled.size() );
+        assertEquals( 1, fired.size() );
+
+
+        assertEquals( "Rule2", created.get(0));
+        assertEquals( "Rule1", created.get(1));
+        assertEquals( "Rule2", created.get(2));
+
+        assertEquals( "Rule2", cancelled.get(0));
+        assertEquals( "Rule2", cancelled.get(1));
+
+        assertEquals( "Rule1", fired.get(0));
     }
 
+    @Test
+    public void testLockOnActive2() {
+        // the modify changes the hashcode of TradeHeader
+        // this forces the 'from' to think it's new. This results in an insert and a delete propagation from the 'from'
+        String drl = "" +
+                     "package org.drools.test; \n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.TradeBooking;\n" +
+                     "import org.drools.compiler.integrationtests.Misc2Test.TradeHeader;\n" +
+                     "rule \"Rule1\" \n" +
+                     "lock-on-active true\n" +
+                     "salience 1 \n" +
+                     "when\n" +
+                     "  $booking: TradeBooking()\n" +
+                     "  $trade: TradeHeader() from $booking.getTrade()\n" +
+                     "then\n" +
+                     "  $trade.setAction(\"New\");\n" +
+                     "  modify($booking) {}\n" +
+                     "end;\n" +
+                     "\n" +
+                     "rule \"Rule2\"\n" +
+                     "when\n" +
+                     "  $booking: TradeBooking( )\n" +
+                     "  $trade: Object( ) from $booking.getTrade()\n" +
+                     "then\n" +
+                     "end";
+        KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
+
+        final List created = new ArrayList();
+        final List cancelled = new ArrayList();
+        final List fired = new ArrayList();
+
+        ks.addEventListener( new DefaultAgendaEventListener() {
+
+            public void matchCreated( MatchCreatedEvent event ) {
+                created.add( event.getMatch().getRule().getName() );}
+
+            public void matchCancelled( MatchCancelledEvent event ) {
+                cancelled.add( event.getMatch().getRule().getName() );
+            }
+
+            public void afterMatchFired( AfterMatchFiredEvent event ) {
+                fired.add( event.getMatch().getRule().getName() );
+            }
+        } );
+        ks.fireAllRules();
+
+        TradeBooking tb = new TradeBookingImpl( new TradeHeaderImpl() );
+
+        ks.insert( tb );
+        assertEquals( 2, ks.fireAllRules() );
+
+        assertEquals( 3, created.size() );
+        assertEquals( 1, cancelled.size() );
+        assertEquals( 2, fired.size() );
+
+        assertEquals( "Rule1", created.get(0));
+        assertEquals( "Rule1", created.get(1));
+        assertEquals( "Rule2", created.get(2));
+
+        assertEquals( "Rule1", cancelled.get(0));
+
+        assertEquals( "Rule1", fired.get(0));
+        assertEquals( "Rule2", fired.get(1));
+    }
 
     @Test
     public void testLockOnActiveWithModify() {
@@ -4535,6 +4603,53 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("working", list.get(0));
+    }
+
+    @Test
+    public void testMatchingEventsInStreamMode() {
+        // DROOLS-338
+        String drl =
+                    "import org.drools.compiler.integrationtests.Misc2Test.SimpleEvent\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role(event)\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"RuleA\"\n" +
+                     "salience 5\n" +
+                     "when\n" +
+                     "    $f : SimpleEvent( )\n" +
+                     "then\n" +
+                     "    delete ($f);\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"RuleB\"\n" +
+                     "when\n" +
+                     "    $f : SimpleEvent( )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kconf.setOption( EventProcessingOption.STREAM );
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        final AtomicInteger i = new AtomicInteger(0);
+
+        ksession.addEventListener( new DefaultAgendaEventListener() {
+            public void matchCreated( MatchCreatedEvent event ) {
+                i.incrementAndGet();
+            }
+
+            public void matchCancelled( MatchCancelledEvent event ) {
+                i.decrementAndGet();
+            }
+        } );
+
+        ksession.insert(new SimpleEvent());
+        ksession.fireAllRules();
+
+        assertEquals(1, i.get());
     }
 }
 

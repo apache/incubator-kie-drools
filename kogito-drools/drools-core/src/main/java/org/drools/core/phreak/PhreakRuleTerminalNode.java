@@ -221,12 +221,6 @@ public class PhreakRuleTerminalNode {
 
         RuleTerminalNodeLeftTuple rtnLt = ( RuleTerminalNodeLeftTuple ) leftTuple;
 
-        //if ( leftTuple.getMemory() != null && !(pctx.getType() == PropagationContext.EXPIRATION && pctx.getFactHandleOrigin() != null ) ) {
-        if ( leftTuple.getMemory() != null && (pctx.getType() != PropagationContext.EXPIRATION  ) ) {
-            // Expiration propagations should not be removed from the list, as they still need to fire
-            executor.removeLeftTuple(leftTuple);
-        }
-
         Activation activation = (Activation) leftTuple;
         activation.setMatched( false );
 
@@ -236,6 +230,11 @@ public class PhreakRuleTerminalNode {
                                  wm,
                                  activation,
                                  rtnLt.getTerminalNode() );
+
+        if ( leftTuple.getMemory() != null && (pctx.getType() != PropagationContext.EXPIRATION  ) ) {
+            // Expiration propagations should not be removed from the list, as they still need to fire
+            executor.removeLeftTuple(leftTuple);
+        }
 
         rtnLt.setActivationUnMatchListener(null);
         leftTuple.setObject(null);
