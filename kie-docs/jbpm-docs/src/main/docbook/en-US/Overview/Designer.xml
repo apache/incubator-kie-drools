@@ -9,7 +9,7 @@
           environment.  It is targeted towards business users and offers a graphical editor
           for viewing and editing your business processes (using drag and drop), similar to the
           Eclipse plugin.  It supports round-tripping between the Eclipse editor and the
-          web-based designer.</para>
+          web-based designer.  It also supports simulation of processes.</para>
 
         <figure>
           <title>Web-based designer for creating BPMN2 processes</title>

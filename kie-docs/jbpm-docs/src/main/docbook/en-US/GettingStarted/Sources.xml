@@ -76,10 +76,8 @@
   <section>
     <title>Building from source</title>
 
-    <section>
       <para>If you're interested in building the source code, contributing,
       releasing, etc. make sure to read this <link
       xlink:href="https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md">README</link>.</para>
-    </section>
   </section>
 </section>

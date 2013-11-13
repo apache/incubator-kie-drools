@@ -12,6 +12,15 @@
     jBPM has never been so easy!
   </para>
 
+        <figure>
+          <title>Business Activity Monitoring</title>
+          <mediaobject>
+            <imageobject>
+          <imagedata align="center" fileref="images/Chapter-1-Overview/BAM.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
+
   <para>Key features:</para>
 
   <itemizedlist spacing="compact">
