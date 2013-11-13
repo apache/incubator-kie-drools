@@ -1,0 +1,519 @@
+<TennisSolution id="1">
+  <id>0</id>
+  <teamList id="2">
+    <TennisTeam id="3">
+      <id>0</id>
+      <name>Micha</name>
+    </TennisTeam>
+    <TennisTeam id="4">
+      <id>1</id>
+      <name>Angelika</name>
+    </TennisTeam>
+    <TennisTeam id="5">
+      <id>2</id>
+      <name>Katrin</name>
+    </TennisTeam>
+    <TennisTeam id="6">
+      <id>3</id>
+      <name>Susi</name>
+    </TennisTeam>
+    <TennisTeam id="7">
+      <id>4</id>
+      <name>Irene</name>
+    </TennisTeam>
+    <TennisTeam id="8">
+      <id>5</id>
+      <name>Kristina</name>
+    </TennisTeam>
+    <TennisTeam id="9">
+      <id>6</id>
+      <name>Tobias</name>
+    </TennisTeam>
+  </teamList>
+  <dayList id="10">
+    <TennisDay id="11">
+      <id>0</id>
+      <dateIndex>0</dateIndex>
+    </TennisDay>
+    <TennisDay id="12">
+      <id>1</id>
+      <dateIndex>1</dateIndex>
+    </TennisDay>
+    <TennisDay id="13">
+      <id>2</id>
+      <dateIndex>2</dateIndex>
+    </TennisDay>
+    <TennisDay id="14">
+      <id>3</id>
+      <dateIndex>3</dateIndex>
+    </TennisDay>
+    <TennisDay id="15">
+      <id>4</id>
+      <dateIndex>4</dateIndex>
+    </TennisDay>
+    <TennisDay id="16">
+      <id>5</id>
+      <dateIndex>5</dateIndex>
+    </TennisDay>
+    <TennisDay id="17">
+      <id>6</id>
+      <dateIndex>6</dateIndex>
+    </TennisDay>
+    <TennisDay id="18">
+      <id>7</id>
+      <dateIndex>7</dateIndex>
+    </TennisDay>
+    <TennisDay id="19">
+      <id>8</id>
+      <dateIndex>8</dateIndex>
+    </TennisDay>
+    <TennisDay id="20">
+      <id>9</id>
+      <dateIndex>9</dateIndex>
+    </TennisDay>
+    <TennisDay id="21">
+      <id>10</id>
+      <dateIndex>10</dateIndex>
+    </TennisDay>
+    <TennisDay id="22">
+      <id>11</id>
+      <dateIndex>11</dateIndex>
+    </TennisDay>
+    <TennisDay id="23">
+      <id>12</id>
+      <dateIndex>12</dateIndex>
+    </TennisDay>
+    <TennisDay id="24">
+      <id>13</id>
+      <dateIndex>13</dateIndex>
+    </TennisDay>
+    <TennisDay id="25">
+      <id>14</id>
+      <dateIndex>14</dateIndex>
+    </TennisDay>
+    <TennisDay id="26">
+      <id>15</id>
+      <dateIndex>15</dateIndex>
+    </TennisDay>
+    <TennisDay id="27">
+      <id>16</id>
+      <dateIndex>16</dateIndex>
+    </TennisDay>
+    <TennisDay id="28">
+      <id>17</id>
+      <dateIndex>17</dateIndex>
+    </TennisDay>
+  </dayList>
+  <unavailabilityPenaltyList id="29">
+    <TennisUnavailabilityPenalty id="30">
+      <team reference="7"/>
+      <day reference="11"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="31">
+      <team reference="9"/>
+      <day reference="12"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="32">
+      <team reference="5"/>
+      <day reference="13"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="33">
+      <team reference="7"/>
+      <day reference="14"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="34">
+      <team reference="7"/>
+      <day reference="16"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="35">
+      <team reference="5"/>
+      <day reference="17"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="36">
+      <team reference="4"/>
+      <day reference="19"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="37">
+      <team reference="5"/>
+      <day reference="20"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="38">
+      <team reference="7"/>
+      <day reference="21"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="39">
+      <team reference="7"/>
+      <day reference="22"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="40">
+      <team reference="9"/>
+      <day reference="23"/>
+    </TennisUnavailabilityPenalty>
+    <TennisUnavailabilityPenalty id="41">
+      <team reference="8"/>
+      <day reference="26"/>
+    </TennisUnavailabilityPenalty>
+  </unavailabilityPenaltyList>
+  <teamAssignmentList id="42">
+    <TennisTeamAssignment id="43">
+      <id>0</id>
+      <day reference="11"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="44">
+      <id>1</id>
+      <day reference="11"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="45">
+      <id>2</id>
+      <day reference="11"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="46">
+      <id>3</id>
+      <day reference="11"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="47">
+      <id>4</id>
+      <day reference="12"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="48">
+      <id>5</id>
+      <day reference="12"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="49">
+      <id>6</id>
+      <day reference="12"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="50">
+      <id>7</id>
+      <day reference="12"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="51">
+      <id>8</id>
+      <day reference="13"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="52">
+      <id>9</id>
+      <day reference="13"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="53">
+      <id>10</id>
+      <day reference="13"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="54">
+      <id>11</id>
+      <day reference="13"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="55">
+      <id>12</id>
+      <day reference="14"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="56">
+      <id>13</id>
+      <day reference="14"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="57">
+      <id>14</id>
+      <day reference="14"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="58">
+      <id>15</id>
+      <day reference="14"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="59">
+      <id>16</id>
+      <day reference="15"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="60">
+      <id>17</id>
+      <day reference="15"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="61">
+      <id>18</id>
+      <day reference="15"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="62">
+      <id>19</id>
+      <day reference="15"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="63">
+      <id>20</id>
+      <day reference="16"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="64">
+      <id>21</id>
+      <day reference="16"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="65">
+      <id>22</id>
+      <day reference="16"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="66">
+      <id>23</id>
+      <day reference="16"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="67">
+      <id>24</id>
+      <day reference="17"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="68">
+      <id>25</id>
+      <day reference="17"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="69">
+      <id>26</id>
+      <day reference="17"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="70">
+      <id>27</id>
+      <day reference="17"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="71">
+      <id>28</id>
+      <day reference="18"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="72">
+      <id>29</id>
+      <day reference="18"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="73">
+      <id>30</id>
+      <day reference="18"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="74">
+      <id>31</id>
+      <day reference="18"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="75">
+      <id>32</id>
+      <day reference="19"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="76">
+      <id>33</id>
+      <day reference="19"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="77">
+      <id>34</id>
+      <day reference="19"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="78">
+      <id>35</id>
+      <day reference="19"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="79">
+      <id>36</id>
+      <day reference="20"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="80">
+      <id>37</id>
+      <day reference="20"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="81">
+      <id>38</id>
+      <day reference="20"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="82">
+      <id>39</id>
+      <day reference="20"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="83">
+      <id>40</id>
+      <day reference="21"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="84">
+      <id>41</id>
+      <day reference="21"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="85">
+      <id>42</id>
+      <day reference="21"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="86">
+      <id>43</id>
+      <day reference="21"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="87">
+      <id>44</id>
+      <day reference="22"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="88">
+      <id>45</id>
+      <day reference="22"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="89">
+      <id>46</id>
+      <day reference="22"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="90">
+      <id>47</id>
+      <day reference="22"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="91">
+      <id>48</id>
+      <day reference="23"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="92">
+      <id>49</id>
+      <day reference="23"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="93">
+      <id>50</id>
+      <day reference="23"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="94">
+      <id>51</id>
+      <day reference="23"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="95">
+      <id>52</id>
+      <day reference="24"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="96">
+      <id>53</id>
+      <day reference="24"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="97">
+      <id>54</id>
+      <day reference="24"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="98">
+      <id>55</id>
+      <day reference="24"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="99">
+      <id>56</id>
+      <day reference="25"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="100">
+      <id>57</id>
+      <day reference="25"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="101">
+      <id>58</id>
+      <day reference="25"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="102">
+      <id>59</id>
+      <day reference="25"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="103">
+      <id>60</id>
+      <day reference="26"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="104">
+      <id>61</id>
+      <day reference="26"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="105">
+      <id>62</id>
+      <day reference="26"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="106">
+      <id>63</id>
+      <day reference="26"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="107">
+      <id>64</id>
+      <day reference="27"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="108">
+      <id>65</id>
+      <day reference="27"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="109">
+      <id>66</id>
+      <day reference="27"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="110">
+      <id>67</id>
+      <day reference="27"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="111">
+      <id>68</id>
+      <day reference="28"/>
+      <indexInDay>0</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="112">
+      <id>69</id>
+      <day reference="28"/>
+      <indexInDay>1</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="113">
+      <id>70</id>
+      <day reference="28"/>
+      <indexInDay>2</indexInDay>
+    </TennisTeamAssignment>
+    <TennisTeamAssignment id="114">
+      <id>71</id>
+      <day reference="28"/>
+      <indexInDay>3</indexInDay>
+    </TennisTeamAssignment>
+  </teamAssignmentList>
+</TennisSolution>

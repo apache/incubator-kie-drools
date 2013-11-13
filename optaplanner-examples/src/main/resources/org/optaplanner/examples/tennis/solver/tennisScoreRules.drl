@@ -1,0 +1,98 @@
+/*
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.tennis.solver;
+    dialect "java"
+
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+
+import org.optaplanner.examples.tennis.domain.Team;
+import org.optaplanner.examples.tennis.domain.Day;
+import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
+import org.optaplanner.examples.tennis.domain.TeamAssignment;
+
+global HardSoftScoreHolder scoreHolder;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "oneMatchPerDate"
+    when
+        TeamAssignment($t : team, $d : day, $leftId : id)
+        TeamAssignment(team == $t, day == $d, id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
+rule "UnavailabilityPenalty"
+    when
+        UnavailabilityPenalty($t : team, $d : day)
+        TeamAssignment(team == $t, day == $d)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1);
+end
+
+rule "fair"
+    when
+        $t : Team()
+        $total : Number() from accumulate(
+            $a : TeamAssignment(team == $t),
+            count($a)
+        )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()) * 10000);
+end
+
+rule "playEvenlyAgainstEveryone"
+    when
+        $t1 : Team()
+        $t2 : Team()
+        $total : Number() from accumulate(
+            $a : TeamAssignment(team == $t1, $d : day, $leftId : id)
+            and TeamAssignment(team == $t2, day == $d, id > $leftId),
+            count($a)
+        )
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
+end
+
+
+//
+//rule "requiredNetworkBandwidthTotal"
+//    when
+//        $computer : CloudComputer($networkBandwidth : networkBandwidth)
+//        $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
+//            CloudProcess(
+//                computer == $computer,
+//                $requiredNetworkBandwidth : requiredNetworkBandwidth),
+//            sum($requiredNetworkBandwidth)
+//        )
+//    then
+//        scoreHolder.addHardConstraintMatch(kcontext, $networkBandwidth - $requiredNetworkBandwidthTotal.intValue());
+//end
+//
+//// ############################################################################
+//// Soft constraints
+//// ############################################################################
+//
+//rule "computerCost"
+//    when
+//        $computer : CloudComputer($cost : cost)
+//        exists CloudProcess(computer == $computer)
+//    then
+//        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+//end

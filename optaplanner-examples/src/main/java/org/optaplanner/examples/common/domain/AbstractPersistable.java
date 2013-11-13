@@ -25,6 +25,13 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
 
     protected Long id;
 
+    protected AbstractPersistable() {
+    }
+
+    protected AbstractPersistable(long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
