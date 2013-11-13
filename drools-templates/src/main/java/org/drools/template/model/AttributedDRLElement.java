@@ -77,6 +77,10 @@ public abstract class AttributedDRLElement extends DRLElement {
         this._attr2value.put( "timer", asTimerLiteral( value ) );
     }
 
+    public void setEnabled(final boolean value) {
+        this._attr2value.put("enabled", Boolean.toString(value));
+    }
+
     public void setCalendars(final String value) {
         this._attr2value.put( "calendars", asStringLiteral( value ) );
     }

@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.decisiontable.parser.RuleSheetParserUtil;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener.CaseInsensitiveMap;
 import org.drools.template.model.Condition;
@@ -218,6 +219,9 @@ implements RuleSheetListener {
                     break;
                 case TIMER:
                     ruleset.setTimer( value );
+                    break;
+                case ENABLED:
+                    ruleset.setEnabled( RuleSheetParserUtil.isStringMeaningTrue( value ) );
                     break;
                 case CALENDARS:
                     ruleset.setCalendars( value );
@@ -644,6 +648,9 @@ implements RuleSheetListener {
             break;
         case TIMER:
             this._currentRule.setTimer( value );
+            break;
+        case ENABLED:
+            this._currentRule.setEnabled( RuleSheetParserUtil.isStringMeaningTrue( value ) );
             break;
         case CALENDARS:
             this._currentRule.setCalendars( value );
