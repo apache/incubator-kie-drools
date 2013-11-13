@@ -4133,8 +4133,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        modify( m ){ setMessage3( 'msg3' ) };\n" +
                 "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         Message m1 = new Message( "msg1" );
@@ -4175,10 +4174,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
-
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -4215,10 +4213,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
-
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -4266,10 +4263,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
-
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -4323,10 +4319,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( 'StepRight' );\n" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
-
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -4390,14 +4385,20 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    then\n" +
                      "        System.out.println(\"R1: \" + $m);\n" +
                      "        modify($m) { setStatus(SimpleMessage.Status.FILTERED) }\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R2\n" +
+                     "    salience( -$index )" +
+                     "    when" +
+                     "        $m : SimpleMessage( status == SimpleMessage.Status.FILTERED, $index : index)\n" +
+                     "    then" +
+                     "        delete( $m );" +
                      "end\n";
 
-        KnowledgeBuilderConfiguration kbConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
-
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        SimpleMessage[] msgs = new SimpleMessage[] { new SimpleMessage(0), new SimpleMessage(1), new SimpleMessage(2) };
+        SimpleMessage[] msgs = new SimpleMessage[] { new SimpleMessage(0), new SimpleMessage(1), new SimpleMessage(2), new SimpleMessage(3) };
         for (SimpleMessage msg : msgs) {
             ksession.insert(msg);
         }
@@ -4407,6 +4408,8 @@ public class Misc2Test extends CommonTestMethodBase {
         for (SimpleMessage msg : msgs) {
             assertEquals(SimpleMessage.Status.FILTERED, msg.getStatus());
         }
+
+        assertEquals(0, ksession.getFactCount());
     }
 
     public static class SimpleMessage {
@@ -4436,6 +4439,71 @@ public class Misc2Test extends CommonTestMethodBase {
         public String toString() {
             return "SimpleMessage(" + index + "): " + status;
         }
+    }
+
+    @Test
+    public void testCollectAndAccumulate() {
+        // DROOLS-173
+        String drl = "import java.util.List\n" +
+                     "\n" +
+                     "global List list\n" +
+                     "\n" +
+                     " declare Item\n" +
+                     "     code: int\n" +
+                     "     price: int\n" +
+                     "     present: boolean\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"Init\"\n" +
+                     " when\n" +
+                     " then\n" +
+                     "     insert(new Item(1,40,false));\n" +
+                     "     insert(new Item(2,40,false));\n" +
+                     "     insert(new Item(3,40,false));\n" +
+                     "     insert(new Item(4,40,false));\n" +
+                     " end\n" +
+                     "\n" +
+                     " rule \"CollectAndAccumulateRule\"\n" +
+                     " when\n" +
+                     "     //At least two items that aren't presents\n" +
+                     "     objList: List(size>=2) from collect( Item(present==false))\n" +
+                     "     //Total price bigger than 100\n" +
+                     "     price: Number(intValue>=100) from accumulate( Item($w:price, present==false), sum($w))\n" +
+                     " then\n" +
+                     "\n" +
+                     "     list.add(price);\n" +
+                     "     list.add(objList.size());\n" +
+                     "     \n" +
+                     "     //Look for the minor price item\n" +
+                     "     Item min = null;\n" +
+                     "     for(Object obj: objList){\n" +
+                     "         if (min!=null){\n" +
+                     "             min = (min.getPrice()>((Item)obj).getPrice())?(Item)obj:min;\n" +
+                     "         }\n" +
+                     "         else {\n" +
+                     "             min = (Item)obj;\n" +
+                     "         }\n" +
+                     "     }\n" +
+                     "     \n" +
+                     "     //And make it a present\n" +
+                     "     if (min!=null){\n" +
+                     "         modify(min){setPresent(true)};\n" +
+                     "     }\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+
+        assertEquals(4, list.size());
+        assertEquals(160.0, list.get(0));
+        assertEquals(4, list.get(1));
+        assertEquals(120.0, list.get(2));
+        assertEquals(3, list.get(3));
     }
 }
 
