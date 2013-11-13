@@ -23,8 +23,8 @@ dialect "mvel"
 rule Recurse
     salience 10
     when
-        not ( Fibonacci ( sequence == 1 ) )    
         f : Fibonacci ( value == -1 )
+        not ( Fibonacci ( sequence == 1 ) )    
     then
         insert( new Fibonacci( f.sequence - 1 ) );
         System.out.println( "recurse for " + f.sequence );
