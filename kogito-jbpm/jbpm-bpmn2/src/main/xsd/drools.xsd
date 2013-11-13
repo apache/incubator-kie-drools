@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.jboss.org/drools"
+        elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:drools="http://www.jboss.org/drools">
+
+    <attribute name="packageName">
+        <simpleType>
+            <restriction base="string" />
+        </simpleType>
+    </attribute>
+
+    <attribute name="version">
+        <simpleType>
+            <restriction base="string" />
+        </simpleType>
+    </attribute>
+
+    <attribute name="ruleFlowGroup">
+        <simpleType>
+            <restriction base="string" />
+        </simpleType>
+    </attribute>
+
+    <attribute name="taskName">
+        <simpleType>
+            <restriction base="string" />
+        </simpleType>
+    </attribute>
+
+    <attribute name="priority">
+        <simpleType>
+            <restriction base="integer">
+                <minInclusive value="1" />
+            </restriction>
+        </simpleType>
+    </attribute>
+
+    <attributeGroup name="onxscriptattributes">
+        <attribute name="scriptFormat" type="string" use="required" />
+    </attributeGroup>
+
+    <attributeGroup name="importattributes">
+        <attribute name="name" type="string" use="required" />
+    </attributeGroup>
+
+    <attributeGroup name="globalattributes">
+        <attribute name="identifier" type="string" use="required" />
+        <attribute name="type" type="string" use="required" />
+    </attributeGroup>
+
+    <element name="onEntry-script">
+        <complexType>
+            <sequence>
+                <element name="script" minOccurs="1" maxOccurs="1" type="string" />
+            </sequence>
+            <attributeGroup ref="drools:onxscriptattributes" />
+        </complexType>
+    </element>
+
+    <element name="onExit-script">
+        <complexType>
+            <sequence>
+                <element name="script" minOccurs="1" maxOccurs="1" type="string" />
+            </sequence>
+            <attributeGroup ref="drools:onxscriptattributes" />
+        </complexType>
+    </element>
+
+    <element name="import">
+        <complexType>
+            <attributeGroup ref="drools:importattributes" />
+        </complexType>
+    </element>
+
+    <element name="global">
+        <complexType>
+            <attributeGroup ref="drools:globalattributes" />
+        </complexType>
+    </element>
+
+    <element name="metadata">
+        <complexType>
+            <sequence>
+                <element maxOccurs="unbounded" ref="drools:metaentry" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <element name="metaentry">
+        <complexType>
+            <sequence>
+                <element name="name" type="string" minOccurs="1" maxOccurs="1" />
+                <element name="value" type="string" minOccurs="1" maxOccurs="1" />
+            </sequence>
+        </complexType>
+    </element>
+
+</schema>
