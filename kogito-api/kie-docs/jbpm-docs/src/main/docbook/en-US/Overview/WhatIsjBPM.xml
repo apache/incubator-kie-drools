@@ -9,6 +9,12 @@
     fully open-source (distributed under Apache license) and written in Java.  It allows
     you to model, execute, and monitor business processes throughout their life cycle.</para>
     
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="PNG" role="" fileref="images/Chapter-1-Overview/Process.png"/>
+      </imageobject>
+    </mediaobject>
+
     <para>A business process allows you to model your business goals by describing the steps
     that need to be executed to achieve those goals, and the order of those goals are depicted
     using a flow chart. This process greatly improves the visibility and agility of your business logic.  
@@ -17,12 +23,9 @@
     the gap between business users and developers as they are higher-level and use 
     domain-specific concepts that are understood by business users but can also be executed
     directly.</para>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" format="PNG" role="" fileref="images/Chapter-1-Overview/Process.png"/>
-      </imageobject>
-    </mediaobject>
+    
+    <para>Business processes need to be supported throughout their entire life cycle: authoring, deployment,
+    process management and task lists, and dashboards and reporting.</para>
 
     <para>The core of jBPM is a light-weight, extensible workflow engine written
     in pure Java that allows you to execute business processes using the latest
@@ -32,19 +35,31 @@
     <para>On top of the core engine, a lot of features and tools are offered to 
     support business processes throughout their entire life cycle:
       <itemizedlist>
-        <listitem>Eclipse-based and web-based editor to support the graphical 
-        creation of your business processes (drag and drop).</listitem>
-        <listitem>Pluggable persistence and transactions based on JPA / JTA.</listitem>
         <listitem>Pluggable human task service based on WS-HumanTask for including 
         tasks that need to be performed by human actors.</listitem>
-        <listitem>Complete BPM life cycle management web console that allows:
+        <listitem>Pluggable persistence and transactions (based on JPA / JTA).</listitem>
+        <listitem>Web-based process designer to support the graphical 
+        creation and simulation of your business processes (drag and drop).</listitem>
+        <listitem>Web-based data modeler and form modeler to support the creation of data models and process
+        and task forms</listitem>
+        <listitem>Web-based, customizable dashboards and reporting</listitem>
+        <listitem>All combined in one web-based workbench, supporting the complete BPM life cycle:
           <itemizedlist>
-            <listitem>Model - author your processes, rules, forms and other assets </listitem>
-            <listitem>Execute - build and deploy packages to runtime engine</listitem>
-            <listitem>Work - work on assigned task, manage process instances, etc</listitem>
-            <listitem>Monitor - keep track of the execution using Business Activity Monitoring capabilities</listitem>
+            <listitem>Modeling and deployment - author your processes, rules, data models, forms and other assets</listitem>
+            <listitem>Execution - execute processes, tasks, rules and events on the core runtime engine</listitem>
+            <listitem>Runtime Management - work on assigned task, manage process instances, etc</listitem>
+            <listitem>Reporting - keep track of the execution using Business Activity Monitoring capabilities</listitem>
           </itemizedlist>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" format="PNG" role="" fileref="images/Chapter-1-Overview/kie-wb.png"/>
+      </imageobject>
+    </mediaobject>
+
         </listitem>
+        <listitem>Eclipse-based developer tools to support the modeling, testing and debugging of processes</listitem>
+        <listitem>Remote API to process engine as a service (REST, JMS, Remote Java API)</listitem>
         <listitem>Integration with Maven, Spring, OSGi, etc.</listitem>
       </itemizedlist>
     </para>
@@ -65,7 +80,4 @@
     environment that integrates these paradigms where you model your business logic as a 
     combination of processes, rules and events.</para>
 
-    <para>Apart from the core engine itself, there are quite a few additional (optional)
-    components that you can use, like an Eclipse-based or web-based designer and a 
-    management console.</para>
 </section>

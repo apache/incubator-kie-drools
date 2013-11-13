@@ -7,12 +7,21 @@
 
   <title>Form Modeler</title>
 
-  <para>jBPM Form modeler is a form engine and editor that enables users to
-    create forms to capture and display information during task execution,
+  <para>The jBPM Form Modeler is a form engine and editor that enables users to
+    create forms to capture and display information during process or task execution,
     without needing any coding or template markup skills.</para>
 
   <para>It provides a WYSIWYG environment to model forms that it's easy to use
     for less technical users.</para>
+
+        <figure>
+          <title>Form Modeler</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center" fileref="images/Chapter-1-Overview/FormModeler.png" format="PNG" role="" />
+            </imageobject>
+          </mediaobject>
+        </figure>
 
   <para>Key features:</para>
 
@@ -48,10 +57,4 @@
   <para>Developers or advanced used will also have some advanced features to
     customize form behavior and look&amp;feel.</para>
 
-  <para>This guide intends to describe in a simple ways all the steps required
-    to create a process with human tasks, generate and modify the forms for
-    these tasks and execute them.</para>
-
-  <para>It will provide initial guidance to perform all initial steps, but it
-    will not provide a full description of all available features.</para>
 </section>

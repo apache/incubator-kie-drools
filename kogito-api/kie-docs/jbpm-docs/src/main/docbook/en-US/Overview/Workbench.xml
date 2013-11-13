@@ -5,19 +5,20 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Workbench</title>
- <para>Optionally, you can use one or more knowledge repositories to store your business processes
-    (and other related artefacts).  The web-based designer is integrated in the Guvnor repository,
-    which is targeted towards business users and allows you to manage your processes separately 
-    from your application.  It supports the following:
+  
+  <para>The workbench is the web-based application that combines all of the above web-based
+  tools into one configurable solution.</para>
+ <para>It supports the following:
       <itemizedlist>
         <listitem>A repository service to store your business processes and related artefacts,
         using a GIT repository, which supports versioning, remote accessing (as a file system),
         and using REST services.</listitem>
         <listitem>A web-based user interface to manage your business processes, targeted towards
-        business users; it also supports the visualization (and editing) of your processes (the web-based
-        designer is integrated here), but also categorisation, scenario testing, and deployment.</listitem>
+        business users; it also supports the visualization (and editing) of your artifacts (the web-based
+        editors like designer, data and form modeler are integrated here), but also categorisation, 
+        build and deployment, etc..</listitem>
         <listitem>Collaboration features to have multiple actors (for example business users and
-        developers) work together on the same process definition.</listitem>
+        developers) work together on the same project.</listitem>
       </itemizedlist>
       Workbench application covers complete life cycle of BPM projects starting at authoring phase, going through
       implementation, execution and monitoring.

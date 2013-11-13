@@ -43,7 +43,7 @@
     </listitem>
   </itemizedlist>
 
-  <section>
+  <!-- section>
     <title>Use with Maven, Gradle, Ivy, Buildr or ANT</title>
 
       <para>The jars are also available in <link
@@ -85,5 +85,5 @@
       <para>If you're still using ANT (without Ivy), copy all the jars from
       the download zip's binaries directory and manually verify that your
       classpath doesn't contain duplicate jars.</para>
-  </section>
+  </section-->
 </section>

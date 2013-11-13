@@ -8,8 +8,8 @@
 
   <xi:include href="Maven.xml" />
   <xi:include href="CDI.xml" />
-  <xi:include href="Spring.xml" />
-  <xi:include href="Camel.xml" />
+  <!--xi:include href="Spring.xml" />
+  <xi:include href="Camel.xml" /-->
   <xi:include href="OSGi.xml" />
   
 </chapter>
