@@ -17,15 +17,128 @@
    
     <section>
       <title>Serialization: JAXB or JSON</title>
-
       <para>Serialization (json/jaxb)</para>
+      <para>Except for the <link linkend='remote.rest.execute' nextend='remote.rest.execute.title'>Execute calls</link>,  all other REST calls 
+        described below can use either JAXB or JSON.</para>
+      
+      <para>All REST calls, unless otherwise specified, will use JAXB serialization.</para>
+      
+      <para>When using JSON, make sure to add the JSON media type (<code>"application/json"</code>) to the <code>ACCEPT</code> header of your REST 
+        call.</para>     
     </section>
     
     <section>
       <title>Pagination</title>
 
-      <para>the results of certain operations can be "paginated", which means.. </para>
-      <para>In this case, the following query parameters can be used.. </para>
+      <para>Some of the REST calls below return lists of information. The results of these operations can be <emphasis>paginated</emphasis>, which 
+        means that the lists can be split up and returned according to the parameters sent by the user. </para>
+      <para>For example, if the REST call parameters indicate that <emphasis>page 2</emphasis> with <emphasis>page size 10</emphasis> should
+        be returned for the results, then results 10 to (and including) 19 will be returned. </para>
+      
+      <para>The first page is always page 1 (as opposed to page "0").</para>
+      
+      <table frame="all">
+        <title>Pagination query parameter syntax</title>
+        <tgroup cols="2" align="left" rowsep="1" colsep="1">
+          <thead valign="top">
+            <row>
+              <entry>Parameter name</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody valign="top">
+            <row>
+              <entry><code>page</code></entry>
+              <entry><para>This the page number requested. The default value is 1.</para></entry>
+            </row>
+            <row>
+              <entry><code>p</code></entry>
+              <entry><para>This is a synonym for the above <code>page</code> parameter.</para></entry>
+            </row>
+            <row>
+              <entry><code>pageSize</code></entry>
+              <entry><para>This is the number of elements per page to return. The default value is 10.</para></entry>
+            </row>
+            <row>
+              <entry><code>s</code></entry>
+              <entry><para>This is a synonym for the above <code>pageSize</code> parameter.</para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      
+      <para>If both a "long" pagination parameter and its synonym are used, then only the value from the "long" variant is used. For example, if
+        the <code>page</code> is given with a value of 11 and the <code>p</code> parameter is given with a value of 37, then the value of the <code>page</code>
+        parameter, <emphasis>11</emphasis>, will be used and the <code>p</code> parameter will be ignored.</para>
+      
+      <para>For the following operations, pagination is <emphasis>always</emphasis> used. See above for the default values used.</para>
+      
+      <table frame="all">
+        <title>REST operations using pagination</title>
+        <tgroup cols="2" align="left" rowsep="1" colsep="1">
+          <thead valign="top">
+            <row>
+              <entry>REST call URL</entry>
+              <entry>Short Description</entry>
+            </row>
+          </thead>
+          <tbody valign="top">
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/instance</code></para></entry>
+              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>runtime/{deploymentId}/history/instance/{procInstid}</code></para></entry>
+              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/child</code></para></entry>              
+              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/node</code></para></entry>
+              <entry><para>Returns a list of <code>NodeInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/node/{nodeId}</code></para></entry>
+              <entry><para>Returns a list of <code>NodeInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/variable</code></para></entry>
+              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/instance/{procInstId}/variable/{varId}</code></para></entry>
+              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}</code></para></entry>
+              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}/instances</code></para></entry>
+              <entry><para>Returns a list of <code>ProcessInstance</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}/value/{value}</code></para></entry>
+              <entry><para>Returns a list of <code>VariableInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/variable/{variableId}/value/{value}/instances</code></para></entry>
+              <entry><para>Returns a list of <code>ProcessInstance</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/runtime/{deploymentId}/history/process/{procDefId}</code></para></entry>
+              <entry><para>Returns a list of <code>ProcessInstanceLog</code> instances</para></entry>
+            </row>
+            <row>
+              <entry><para><code>/task/query</code></para></entry>
+              <entry><para>Returns a list of <code>TaskSummaryImpl</code> instances</para></entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      
     </section>
  
     <section>
@@ -36,12 +149,14 @@
         you can submit key-value pairs to the operation to simulate this behaviour by passing a query parameter whose name starts with 
         <code>map_</code>.</para>
         <example>
-          <para>For example, if you pass the query parameter <code>map_kEy=vAlue</code> in a REST call, then the <code>Map</code> that's passed to the 
+          <para>If you pass the query parameter <code>map_kEy=vAlue</code> in a REST call, then the <code>Map</code> that's passed to the 
             actual underlying <code>KieSession</code> or <code>TaskService</code> operation will contain this (<code>String, String</code>) key value pair: 
-            <code>"kEy" => "vAlue"</code>.</para> 
-            <para>Map query parameters also use the object query parameter syntax described below, so the following query parameter, 
-            <code>map_age=5000</code> will be translated into a key-value pair in a map where the key is the String "age" and the value is a Long with the 
-            value of 5000.</para>
+            <code>"kEy" => "vAlue"</code>.You could pass this parameter like so:</para> 
+          <para><code>http://localhost:8080/kie-wb/rest/runtime/myproject/process/wonka.factory.loompa.hire/start?map_kEy=vAlue</code></para>
+          <para>Map query parameters also use the object query parameter syntax described below, so the following query parameter, 
+            <code>map_total=5000</code> will be translated into a key-value pair in a map where the key is the String "total" and the value is a Long with the 
+            value of 5000. For example:</para>
+          <para><code>http://localhost:8080/kie-wb/rest/runtime/myproject/process/wonka.factory.oompa.chocolate/start?map_total=5000</code></para>
         </example>
         
         <para>The following operations take query map parameters:
@@ -91,11 +206,41 @@
     <section>
       <title>Runtime strategies</title>
 
-      <para>per process instance means query param, etc.. </para>
+      <para>The REST calls allow access to the underlying deployments, regardless of whether these deployments use the <code>Singleton</code>, 
+        <code>Per-Process-Instance</code> or <code>Per-Request</code> strategies.</para>
+      
+      <para>While there's enough information in the URL in order to access deployments that use the <code>Singleton</code>, or <code>Per-Request</code> 
+        strategies, that's not always the case with the <code>Per-Process-Instance</code> runtimes because the REST operation will obviously 
+        need the process instance id in order to identify the deployment.</para>
+      
+      <para>Therefore, for REST calls for which the URL does not contain the process instance id, you'll need to add the following parameter: 
+        <table frame="all">
+          <title>Per-Process-Instance runtime query parameter</title>
+          <tgroup cols="2" align="left" rowsep="1" colsep="1">
+            <thead valign="top">
+              <row>
+                <entry>Parameter name</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+            <tbody valign="top">
+              <row>
+                <entry><code>runtimeProcInstId</code></entry>
+                <entry><para>Query parameter that may only have numbers as it values: the value specify the process instance id that identifies the 
+                  underlying <code>Per-Process-Instance</code> deployment</para>
+                <para>This parameter will have no effect if the underlying deployment uses the <code>Singleton</code> or <code>Per-Request</code>
+                strategy.</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </para>
+        
     </section>
 
   </section>
 
+<!-- add later.. :/ 
   <section>
     <title>URL overview</title>
     
@@ -117,7 +262,8 @@
       </tgroup>
     </table>
   </section>
-
+-->
+   
   <section>
     <title>Runtime calls</title>
 
@@ -678,19 +824,75 @@
               <listitem><para>Queries the available (non-archived) tasks</para></listitem>
               <listitem><para>Returns a <code>JaxbTaskSummaryListResponse</code> with a list of <code>TaskSummaryImpl</code> instances.</para></listitem>
               <listitem><para>Takes the following (case-<emphasis>in</emphasis>sensitive) query parameters listed below:</para><itemizedlist>
-                <listitem><para><code>businessAdministrator</code></para><itemizedlist>
-                  <listitem><para>Specifies that the returned tasks should have the business administrator identified by this parameter</para></listitem>
-                  <listitem><para>This parameter may be repeated in the call</para></listitem>
-                </itemizedlist></listitem>
-                <listitem><para><code>potentialOwner</code></para></listitem>
-                <listitem><para><code>processInstanceId</code></para></listitem>
-                <listitem><para><code>status</code></para></listitem>
-                <listitem><para><code>taskId</code></para></listitem>
-                <listitem><para><code>taskOwner</code></para></listitem>
-                <listitem><para><code>union</code></para></listitem>
-                <listitem><para><code>workItemId</code></para></listitem>
+                <listitem><para><code>businessAdministrator</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should have the business administrator identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>potentialOwner</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should have the potential owner identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>processInstanceId</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should be associated with the process instance identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>status</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should have the status identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>taskId</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should have the (task) id identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>taskOwner</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should have the task owner (initiator) identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>workItemId</code></para>
+                  <itemizedlist>
+                    <listitem><para>Specifies that the returned tasks should be associated with the work item identified by this parameter</para></listitem>
+                    <listitem><para>This parameter may be repeated</para></listitem>
+                  </itemizedlist>
+                </listitem>
+                <listitem><para><code>union</code></para>
+                  <itemizedlist>
+                    <listitem><para>This specifies whether the query should query the union or intersection of the parameters. See below for more info.</para></listitem>
+                    <listitem><para>This parameter must only be passed <emphasis>once</emphasis></para></listitem>
+                  </itemizedlist>
+                </listitem>
               </itemizedlist></listitem>
             </itemizedlist>
+            <para>Except for the union parameter, if any of the other parameters are passed multiple
+              times, this operation will query tasks based on the union of all values specific
+              parameter. This is always true, regardless of the value of the <code>union</code>
+              parameter. </para>
+            <para>For example, if multiple <code>taskOwner</code> parameters are passed, this
+              operation will return all tasks that have a task owner matching at least one of the
+              passed values. </para>
+            <para>However, behaviour with regards to <emphasis>multiple</emphasis> (types of)
+              parameters is governed by the <code>union</code> parameter: if the
+              <code>union</code>parameter is passed as <code>false</code>, then the operation will
+              query based on the intersection of the two sets of values. </para>
+            <para>For example, if both a <code>taskOwner</code> and <code>taskId</code> parameter
+              are passed as well as a <code>union</code> parameter with a value of
+                <code>false</code>, then the operation will query for tasks that have
+                <emphasis>both</emphasis> the specified task owner and task id. </para>
+            <para>However, if the <code>union</code> parameter in the above example is
+                <code>true</code>, then the operation will query for tasks that have
+                <emphasis>either</emphasis> the specified task owner <emphasis>or</emphasis> the
+              specified task id.</para>
           </listitem>
         </varlistentry>
         
@@ -729,8 +931,8 @@
          
   </section>
 
-  <section>
-    <title>Execute calls</title>
+  <section id='remote.rest.execute'>
+    <title id='remote.rest.execute.title'>Execute calls</title>
 
     <para>While there is a <code>/runtime/{id}/execute</code> and a <code>task/execute</code> method, both will take all types 
     of commands. This is possible because execute takes a JaxbCommandsRequest object, which contains 
