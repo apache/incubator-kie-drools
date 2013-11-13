@@ -6,7 +6,6 @@ import org.drools.games.pong.Player
 import org.drools.games.pong.PlayerId
 import org.drools.games.pong.PongGame
 import org.drools.games.pong.PointWin
-import org.drools.games.pong.KeyPressed
 import org.drools.games.pong.Collision
 import org.drools.games.pong.CollisionType
 
@@ -34,18 +33,14 @@ dialect "mvel"
 rule "PlayerOne Win" agenda-group "Game" when
     ui : PongUI( )
     ball : Ball( x >= pconf.tableWidth + width )
-    player : Player( id == PlayerId.PlayerOne )    
+    player : Player( id == PlayerId.PlayerOne )
+
 then
-    ui.restoreBallBackground(ball);
-                     
+    ui.clearBall(ball); // deltas won't match new position, so clear now
+
     modify ( ball ) { x = (pconf.tableWidth/2)-(pconf.ballWidth/2), y = (pconf.tableHeight/2)-(pconf.ballWidth/2),
-                      speed =  pconf.ballStartingSpeed, dx = 1}
-
-    ui.drawBall(ball);
-
+                      dx = 1, dy = 0, speed = pconf.ballStartingSpeed }
     modify( player ) { score = player.score + 1 };
-
-    ui.drawScore(player, 100, pconf );
 end
 
 
@@ -54,43 +49,10 @@ rule "PlayerTwo Win" agenda-group "Game" when
     ball : Ball( x <= 0 )
     player : Player( id == PlayerId.PlayerTwo )
 then
-    ui.restoreBallBackground(ball);
+    ui.clearBall(ball); // deltas won't match new position, so clear now
                      
     modify ( ball ) { x = (pconf.tableWidth/2)-(pconf.ballWidth/2), y = (pconf.tableHeight/2)-(pconf.ballWidth/2),
-                      speed =  pconf.ballStartingSpeed, dx = -1}
+                     dx = -1, dy = 0, speed = pconf.ballStartingSpeed }
 
-    ui.drawBall(ball);
-
-    modify( player ) { score = player.score + 1 };  
-
-    ui.drawScore(player, pconf.getTableWidth()-120, pconf);
+    modify( player ) { score = player.score + 1 };
 end
-
-/*
-rule "Remove PointWin" agenda-group "Game" salience -25 when
-    pw : PointWin()
-then
-    retract( pw );
-end
-*/
-
-/*
-rule "Draw Score" agenda-group "Game" when
-    ui : PongUI( )
-    ( player : Player( id == PlayerId.PlayerOne ) @watch(score) and x : Integer() from 100) or
-    ( player : Player( id == PlayerId.PlayerTwo ) @watch(score) and x : Integer() from (pconf.tableWidth-120) )
-then
-     Graphics tableG = ui.getTablePanel().getTableG();
-     y = new Integer( (pconf.padding + pconf.sideLineWidth + 50) );
-
-     tableG.setColor( Color.BLACK ); // background
-     tableG.fillRect( x, y-50, 80, 60 );
-
-     FontRenderContext frc = ((Graphics2D)tableG).getFontRenderContext();
-     Font f = new Font("Monospaced",Font.BOLD, 70);
-     String s = "" + player.score;
-     TextLayout tl = new TextLayout(s, f, frc);
-     tableG.setColor( Color.WHITE );
-     tl.draw(((Graphics2D)tableG), x, y );
-end
-*/

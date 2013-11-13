@@ -1,11 +1,8 @@
 package org.drools.games.pong;
 
-public class PongConfiguration {
+import org.drools.games.GameConfiguration;
 
-    private boolean exitOnClose;
-
-    private int tableWidth;
-    private int tableHeight;
+public class PongConfiguration extends GameConfiguration {
     private int padding;
     
     private int sideLineWidth;
@@ -27,39 +24,31 @@ public class PongConfiguration {
         setSideLineWidth( 10 );
         
         setBallWidth( 20 );
-        setBallStartingSpeed( 60 );
+        setBallStartingSpeed( 1 );
         
         setBatWidth( 5 );
         setBatHeight( 80 );
-        setBatSpeed( 15 );
+        setBatSpeed( 2 );
         setPadding( 10 );
         setNet( 2, 20, 10 );
     }
 
-    public boolean isExitOnClose() {
-        return exitOnClose;
-    }
-
-    public void setExitOnClose(boolean exitOnClose) {
-        this.exitOnClose = exitOnClose;
-    }
-
     public int getTableWidth() {
-        return tableWidth;
+        return getWindowWidth();
     }
 
     public void setTableWidth(int tableWidth) {
         validTableDimension( tableWidth );
-        this.tableWidth = tableWidth;
+        setWindowWidth(tableWidth);
     }
 
     public int getTableHeight() {
-        return tableHeight;
+        return getWindowHeight();
     }
 
     public void setTableHeight(int tableHeight) {
         validTableDimension( tableHeight );
-        this.tableHeight = tableHeight;
+        setWindowHeight(tableHeight);
     }
 
     private void validTableDimension(int dimension) {
@@ -148,6 +137,20 @@ public class PongConfiguration {
         return netGap;
     }
 
+    public int boundedRight() {
+        return getTableWidth() - getPadding();
+    }
 
+    public int boundedLeft() {
+        return getPadding();
+    }
+
+    public int boundedBottom() {
+        return getTableHeight() - getPadding() - getSideLineWidth();
+    }
+
+    public int boundedTop() {
+        return getPadding() + getSideLineWidth() ;
+    }
 
 }

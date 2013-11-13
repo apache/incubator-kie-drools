@@ -1,0 +1,82 @@
+package org.drools.games.wumpus.server;
+
+import org.drools.games.wumpus.Init;
+import org.drools.games.wumpus.Score;
+import org.drools.games.wumpus.Cell;
+import org.drools.games.wumpus.Pit;
+import org.drools.games.wumpus.Wumpus;
+import org.drools.games.wumpus.Gold;
+import org.drools.games.wumpus.Hero;
+
+import org.drools.games.wumpus.Reset;
+import org.drools.games.wumpus.PitDeath;
+import org.drools.games.wumpus.GoldWin;
+import org.drools.games.wumpus.WumpusDeath;
+
+import org.drools.games.wumpus.Play;
+import org.drools.games.wumpus.SensorArray;
+
+import org.drools.games.wumpus.view.GameView
+import org.drools.games.wumpus.view.GameUI
+
+
+global java.util.Random randomInteger;
+
+dialect "mvel"
+
+rule "End Play" salience 100 agenda-group "Reset"  when
+    Reset()
+    $p : Play()
+then
+    retract( $p );
+end
+
+rule "Reset View" when
+    Reset()
+    $gv : GameView()
+then
+    $gv.showAllCells = false;
+end
+
+rule "Reset Cells"  agenda-group "Reset" when
+    Reset()
+    $c : Cell()
+then
+    retract( $c );
+    System.out.println( kcontext );
+end
+
+rule "Reset Pits"  agenda-group "Reset" when
+    Reset()
+    $p : Pit()
+then
+    retract( $p );
+end
+
+rule "Reset Score"  agenda-group "Reset" when
+    $r : Reset(resetScore == true)
+    $s : Score()
+then
+    retract( $s );
+end
+
+rule "Reset Wumpus, Gold and Hero"  agenda-group "Reset" when
+    $r : Reset()
+    not Pit()
+    not Cell()
+    not PitDeath()
+    not GoldWin()
+    not WumpusDeath()
+    $w : Wumpus()
+    $g : Gold()
+    $h : Hero()
+then
+    retract( $w );
+    retract( $g );
+    retract( $h );
+    setFocus( "PaintCave" );
+    retract( $r );
+    insert( new Init() );
+    setFocus( "Init" );
+end
+

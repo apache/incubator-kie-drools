@@ -2,14 +2,15 @@ package org.drools.games.pong
 
 import org.drools.games.pong.Ball
 import org.drools.games.pong.Bat
-import org.drools.games.pong.Run
 import org.drools.games.pong.Player
 import org.drools.games.pong.PlayerId
 import org.drools.games.pong.PongGame
 import org.drools.games.pong.PointWin
-import org.drools.games.pong.KeyPressed
+import org.drools.games.KeyPressed
 import org.drools.games.pong.Collision
 import org.drools.games.pong.CollisionType
+
+import org.drools.games.Run;
 
 import java.lang.Math
 
@@ -22,49 +23,66 @@ global PongConfiguration pconf
 dialect "mvel"
 
 
-rule "Move Ball" agenda-group "Move" when
+rule MoveBall agenda-group "Move" when
     ui : PongUI( )
     ball : Ball()
     $r : Run()
 then
-   ui.restoreBallBackground(ball);
-   modify( ball ) { x =  ball.x + ball.dx, y =  ball.y + ball.dy };
-   ui.drawBall(ball);
-   //System.out.println( "delta: " + ball.dx + " : " + ball.dy );
+    modify( ball ) { x =  ball.x + ( ball.dx * ball.speed), y =  ball.y + ( ball.dy * ball.speed )};
 end
 
-rule "Move Bat Up"  agenda-group "Move" when
+rule "Detect Move Bat Up"  agenda-group "Move" when
     ui : PongUI( )
     ( ( KeyPressed( keyText == "A" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
        or
       (KeyPressed( keyText == "K" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
     )
-    Run()
-    if ( bat.y -4 <= (pconf.padding + pconf.sideLineWidth ) ) break[bounded]
 then
-    ui.restoreBatBackground(bat);
-    modify( bat ) { y = bat.y - 4  };
-    ui.drawBat(bat);
-then[bounded]
-    ui.restoreBatBackground(bat);
-    modify( bat ) { y = pconf.padding + pconf.sideLineWidth };
-    ui.drawBat(bat);
+    modify( bat ) { dy = 0 - bat.speed };
 end
 
-rule "Move Bat Down"  agenda-group "Move" when
+rule "Undetect Move Bat Up"  agenda-group "Move" when
+    ui : PongUI( )
+    ( ( not KeyPressed( keyText == "A" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
+       or
+      ( not KeyPressed( keyText == "K" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
+    )
+then
+    modify( bat ) { dy = 0 };
+end
+
+rule "Detect Move Bat Down"  agenda-group "Move" when
     ui : PongUI( )
     ( ( KeyPressed( keyText == "Z" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
        or
       (KeyPressed( keyText == "M" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
     )
-    Run()
-    if ( bat.y +4 >= (pconf.tableHeight - pconf.padding - pconf.sideLineWidth - pconf.batHeight )) break[bounded]
 then
-    ui.restoreBatBackground(bat);
-    modify( bat ) { y = bat.y + 4 };
-    ui.drawBat(bat);
-then[bounded]
-    ui.restoreBatBackground(bat);
-    modify( bat ) { y =  pconf.tableHeight- pconf.padding - pconf.getSideLineWidth()- pconf.batHeight  };
-    ui.drawBat(bat);
+    modify( bat ) { dy = bat.speed  };
+end
+
+
+rule "Undetect Move Bat Down"  agenda-group "Move" when
+    ui : PongUI( )
+    ( ( not KeyPressed( keyText == "Z" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
+       or
+      ( not KeyPressed( keyText == "M" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
+    )
+then
+    modify( bat ) { dy = 0 };
+end
+
+
+rule "Move Bat" agenda-group "Move" when
+    ui : PongUI( )
+    bat : Bat()
+    $r : Run()
+    if ( bat.y + bat.dy <= pconf.boundedTop ) break[boundedTop]
+    if ( bat.y + bat.dy + bat.height >= pconf.boundedBottom) break[boundedBottom]
+then
+    modify( bat ) { y =  bat.y + bat.dy };
+then[boundedTop]
+    modify( bat ) { y =  pconf.boundedTop };
+then[boundedBottom]
+    modify( bat ) { y =  pconf.boundedBottom - pconf.batHeight   };
 end

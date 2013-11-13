@@ -3,166 +3,104 @@ package org.drools.games.pong;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
+import org.drools.games.GameConfiguration;
+import org.drools.games.GameUI;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
 
-public class PongUI {
+public class PongUI extends GameUI {
     private PongConfiguration pconf;
 
-    private JFrame     frame;
-    private Canvas     canvas;
-
-    private int x;
-    private int y;
-//    private BufferedImage areaCopy;
-//    private Graphics areaCopyG;
-
-//    private TablePanel tablePanel;
-//
-//    private boolean    ready;
-    
-    StatefulKnowledgeSession ksession;
-
-    /**
-     * @wbp.parser.entryPoint
-     */
-    public PongUI() {
-        this(new PongConfiguration());
-        init( null );
-    }
-    public PongUI(PongConfiguration pconf) {
-        this.pconf = pconf;
+    public PongUI(KieSession ksession, GameConfiguration conf) {
+        super(ksession, conf);
+        this.pconf = (PongConfiguration) conf;
     }
 
-    public Graphics getGraphics() {
-        return canvas.getBufferStrategy().getDrawGraphics();
+    public void drawGame(Ball ball, Bat bat1, Bat bat2, Player p1, Player p2) {
+        clearMovingBall(ball);
+        clearBat(bat1);
+        clearBat(bat2);
+
+        drawScore( p1, 100 );
+        drawScore( p2, pconf.getTableWidth()-120 );
+        drawTable();
+
+        drawBall(ball);
+        drawBat(bat1);
+        drawBat(bat2);
+
+        show();
     }
 
-
-    public StatefulKnowledgeSession getKsession() {
-        return ksession;
+    public void clearBall(Ball ball) {
+        Graphics g = getGraphics();
+        g.setColor( Color.BLACK ); // background
+        g.clearRect(ball.getX(), ball.getY(), ball.getWidth(), ball.getWidth());
     }
 
-    public void setKsession(StatefulKnowledgeSession ksession) {
-        this.ksession = ksession;
+    public void clearMovingBall(Ball ball) {
+        Graphics g = getGraphics();
+        g.setColor( Color.BLACK ); // background
+        g.clearRect(ball.getX()-(ball.getDx()*ball.getSpeed()), ball.getY()-(ball.getDy()*ball.getSpeed()), ball.getWidth(), ball.getWidth());
     }
 
-    /**
-     * Initialize the contents of the frame.
-     */
-    public void init(StatefulKnowledgeSession ksession) {
-        this.ksession = ksession;
-        
-        frame = new JFrame();
-
-        // must add before visible, and also request focus. As sometimes it would fail to attach. (mdp still seeing the problem, apparently a konwn swing bug)
-        KeyListener klistener = new PongKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
-        frame.addKeyListener( klistener );
-
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(pconf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-
-        frame.setSize(new Dimension(pconf.getTableWidth(), pconf.getTableHeight()));
-
-
-        canvas = new Canvas();
-        canvas.setBackground(Color.BLACK);
-        canvas.setSize(new Dimension(pconf.getTableWidth() + 100, pconf.getTableHeight()));
-
-        // Use ScrollPanel for offscreen drawing area, to preserve background
-        JScrollPane jsp = new JScrollPane( canvas );
-        jsp.setPreferredSize(new Dimension(pconf.getTableWidth(), pconf.getTableHeight()));
-        jsp.add( canvas );
-
-        frame.add(jsp);
-        frame.setVisible( true );
-        frame.pack();
-        canvas.createBufferStrategy(2);
-
-        frame.setLocationRelativeTo(null); // Center in screen
-        frame.requestFocus();
+    public void clearBat(Bat bat) {
+        Graphics g = getGraphics();
+        g.setColor( Color.BLACK ); // background
+        g.clearRect(bat.getX(), bat.getY()-bat.getDy(), bat.getWidth(), bat.getHeight());
     }
 
-    public static class PongKeyListener implements KeyListener {
-        
-        EntryPoint keyPressedEntryPoint;
-        EntryPoint keyReleasedEntryPoint;
+    public void drawTable() {
+        Graphics tableG = getGraphics(); //ui.getTablePanel().getTableG();
+        tableG.setColor( Color.WHITE ); // background
 
-        public PongKeyListener(EntryPoint keyPressedEntryPoint,
-                               EntryPoint keyReleasedEntryPoint) {           
-            this.keyPressedEntryPoint = keyPressedEntryPoint;
-            this.keyReleasedEntryPoint = keyReleasedEntryPoint;
+        int padding = pconf.getPadding();
+        int tableWidth = pconf.getTableWidth();
+        int tableHeight = pconf.getTableHeight();
+        int sideLineWidth = pconf.getSideLineWidth();
+
+        tableG.fillRect( padding, padding,
+                         tableWidth-(padding*2), sideLineWidth );
+        tableG.fillRect( padding, tableHeight-padding-sideLineWidth,
+                         tableWidth-(padding*2), sideLineWidth );
+        // draw dash line net
+        int netWidth = pconf.getNetWidth();
+        int gap = pconf.getNetGap();
+        int dash = pconf.getNetDash();
+        int x = (tableWidth/2) - (netWidth/2);
+        for (int i = 0; i < tableHeight; i = i + dash + gap) {
+            tableG.fillRect( (int) x, i, netWidth, dash );
         }
-
-        public void keyTyped(KeyEvent e) {
-        }
-
-        public void keyPressed(KeyEvent e) {
-            this.keyPressedEntryPoint.insert( e );
-        }
-
-        public void keyReleased(KeyEvent e) {
-            this.keyReleasedEntryPoint.insert( e );
-        }        
-    }
-
-    public synchronized void updateTable() {
-        canvas.getBufferStrategy().show();
-        Toolkit.getDefaultToolkit().sync();
-    }
-
-
-    public void restoreBallBackground(Ball ball) {
-        Graphics g = getGraphics(); //ui.getTablePanel().getTableG();
-        int copyX = 0 - ( pconf.getTableWidth() - ball.getX()  +2);
-        int copyY = ball.getY()-2;
-        g.copyArea( pconf.getTableWidth(), 0,
-                    ball.getWidth()+4, ball.getWidth()+4,
-                    copyX,copyY );
     }
 
     public void drawBall(Ball ball) {
         Graphics g = getGraphics();
-
-        // ball must preserve the area it's being drawn over, such as the net
-        int copyX = pconf.getTableWidth() - ball.getX() + 2;
-        int copyY = 0 - (ball.getY()-2);
-
-        g.copyArea( ball.getX()-2, ball.getY()-2,
-                    ball.getWidth()+4, ball.getWidth()+4,
-                    copyX, copyY );
-
         g.setColor( Color.WHITE ); // background
         g.fillOval( ball.getX(), ball.getY(), ball.getWidth(), ball.getWidth() );
     }
 
-    public void restoreBatBackground(Bat bat) {
-        Graphics g = getGraphics();
-
-        g.setColor( Color.BLACK ); // background
-        g.fillRect( bat.getX(), bat.getY(), bat.getWidth(), bat.getHeight() );
-    }
-
     public void drawBat(Bat bat) {
         Graphics g = getGraphics();
-
         g.setColor( Color.WHITE ); // background
         g.fillRect( bat.getX(), bat.getY(), bat.getWidth(), bat.getHeight() );
     }
 
-    public void drawScore(Player p, int x, PongConfiguration pconf) {
+    public void drawScore(Player p, int x) {
         Graphics g = getGraphics(); //ui.getTablePanel().getTableG();
-        int y = (pconf.getPadding() + pconf.getSideLineWidth() + 50);
+        int y = (pconf.boundedTop()+ 60);
 
         g.setColor( Color.BLACK ); // background
-        g.fillRect( x, y-50, 80, 60 );
+        g.fillRect( x, y-60, 90, 90 );
 
         FontRenderContext frc = ((Graphics2D)g).getFontRenderContext();
         Font f = new Font("Monospaced",Font.BOLD, 70);

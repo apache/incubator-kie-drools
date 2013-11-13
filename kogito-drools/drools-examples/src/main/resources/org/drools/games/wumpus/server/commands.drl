@@ -24,180 +24,184 @@ import org.drools.games.wumpus.Direction;
 
 dialect "mvel"
 
-rule "Create Sensor Array" salience 100 when
-    Command() 
+rule "Create Sensor Array" agenda-group "Commands"  when
+    c : Command()
 then
     insert( new SensorArray() );
 end
 
-rule "Clear FeelBump" salience 100 when
-    Command() 
+rule "Clear FeelBump" agenda-group "Commands"  when
+    Command()
     $s : FeelBump()
 then
     retract( $s );
 end
 
-rule "Clear HearScream" salience 100 when
-    Command() 
-    $s : HearScream()
+rule "Shoot Arrow" agenda-group "Commands" when
+    $sc : ShootCommand();
+    $h  : Hero( arrows == 1 )
 then
-    retract( $s );
+    retract ( $sc );
+    modify( $h ) { arrows = 0 };
+    insert( new Arrow($h.row, $h.col, $h.direction) );
+    System.out.println( kcontext.rule );
+    setFocus( "Shoot" );
 end
 
-rule "Direction.UP, Move.TURN_LEFT"  when
+rule "Direction.UP, Move.TURN_LEFT"  agenda-group "Commands"  when
     $h  : Hero( direction == Direction.UP)
-    $mc : MoveCommand( move == Move.TURN_LEFT )   
+    $mc : MoveCommand( move == Move.TURN_LEFT )
 then
-	retract ( $mc ); 
-    modify( $h ) { direction = Direction.LEFT };  
+	retract ( $mc );
+    modify( $h ) { direction = Direction.LEFT };
 end
 
-rule "Direction.LEFT, MOVE.TURN_LEFT"  when
+rule "Direction.LEFT, MOVE.TURN_LEFT" agenda-group "Commands" when
     $h  : Hero( direction == Direction.LEFT)
-    $mc : MoveCommand( move == Move.TURN_LEFT )   
+    $mc : MoveCommand( move == Move.TURN_LEFT )
 then
 	retract ( $mc );
-    modify( $h ) { direction = Direction.DOWN };   
+    modify( $h ) { direction = Direction.DOWN };
 end
 
-rule "Direction DOWN,  MOVE.TURN_LEFT" when
+rule "Direction DOWN,  MOVE.TURN_LEFT" agenda-group "Commands" when
     $h  : Hero( direction == Direction.DOWN)
-    $mc : MoveCommand( move == Move.TURN_LEFT )   
+    $mc : MoveCommand( move == Move.TURN_LEFT )
 then
 	retract ( $mc );
-    modify( $h ) { direction = Direction.RIGHT };   
+    modify( $h ) { direction = Direction.RIGHT };
 end
 
-rule "Direction.RIGHT, MOVE.TURN_LEFT" when
+rule "Direction.RIGHT, MOVE.TURN_LEFT" agenda-group "Commands" when
     $h  : Hero( direction == Direction.RIGHT )
-    $mc : MoveCommand( move == Move.TURN_LEFT )   
+    $mc : MoveCommand( move == Move.TURN_LEFT )
 then
-	retract ( $mc );  
-    modify( $h ) { direction = Direction.UP }; 
+	retract ( $mc );
+    modify( $h ) { direction = Direction.UP };
 end
 
-rule "Direction.UP, Move.TURN_RIGHT" when
+rule "Direction.UP, Move.TURN_RIGHT"agenda-group "Commands"  when
     $h  : Hero( direction == Direction.UP)
-    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
 then
-	retract ( $mc );  
-    modify( $h ) { direction = Direction.RIGHT }; 
+	retract ( $mc );
+    modify( $h ) { direction = Direction.RIGHT };
 end
 
-rule "Direction.RIGHT, MOVE.TURN_RIGHT"  when
+rule "Direction.RIGHT, MOVE.TURN_RIGHT" agenda-group "Commands" when
     $h  : Hero( direction == Direction.RIGHT)
-    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
 then
-	retract ( $mc );  
-    modify( $h ) { direction = Direction.DOWN }; 
+	retract ( $mc );
+    modify( $h ) { direction = Direction.DOWN };
 end
 
-rule "Direction DOWN,  MOVE.TURN_RIGHT"  when
+rule "Direction DOWN,  MOVE.TURN_RIGHT" agenda-group "Commands" when
     $h  : Hero( direction == Direction.DOWN)
-    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
 then
 	retract ( $mc );
-    modify( $h ) { direction = Direction.LEFT };   
+    modify( $h ) { direction = Direction.LEFT };
 end
 
-rule "Direction.LEFT, MOVE.TURN_RIGHT"  when
+rule "Direction.LEFT, MOVE.TURN_RIGHT" agenda-group "Commands" when
     $h  : Hero( direction == Direction.LEFT )
-    $mc : MoveCommand( move == Move.TURN_RIGHT )   
+    $mc : MoveCommand( move == Move.TURN_RIGHT )
 then
 	retract ( $mc );
-    modify( $h ) { direction = Direction.UP };   
+    modify( $h ) { direction = Direction.UP };
 end
 
 
-rule "Move Up" when
-    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+rule "Move Up" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.UP)) or
-    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
      $h  : Hero(direction == Direction.DOWN)))
      $c  : Cell(row == $h.row + 1, col == $h.col )
 then
-	retract ( $mc );  
+	retract ( $mc );
     modify( $h ) { row = $h.row + 1 };
-    modify( $c ) { hidden = false }; 
+    modify( $c ) { hidden = false };
 end
 
-rule "Move Down" when
-    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+rule "Move Down" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.DOWN)) or
-    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
      $h  : Hero(direction == Direction.UP)))
      $c  : Cell(row == $h.row - 1, col == $h.col )
 then
-	retract ( $mc );  
+	retract ( $mc );
     modify( $h ) { row = $h.row - 1 };
     modify( $c ) { hidden = false };
 end
 
-rule "Move Left" when
-    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+rule "Move Left" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.LEFT)) or
-    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
      $h  : Hero(direction == Direction.RIGHT)))
      $c  : Cell(row == $h.row, col == $h.col - 1 )
 then
-	retract ( $mc );  
+	retract ( $mc );
     modify( $h ) { col = $h.col - 1 };
     modify( $c ) { hidden = false };
 end
 
-rule "Move Right" when
-    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+rule "Move Right" agenda-group "Commands" when
+    (($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.RIGHT)) or
-    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
-     $h  : Hero(direction == Direction.LEFT))) 
+    ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.LEFT)))
      $c  : Cell(row == $h.row, col == $h.col + 1 )
 then
-	retract ( $mc );  
+	retract ( $mc );
     modify( $h ) { col = $h.col + 1 };
     modify( $c ) { hidden = false };
 end
 
-rule "Invalid Move"   when
+rule "Invalid Move"  agenda-group "Commands" when
      // Invalid Up
-     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.UP)) or
-     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
-     $h  : Hero(direction == Direction.DOWN))) and 
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
+     $h  : Hero(direction == Direction.DOWN))) and
      not Cell(row == $h.row + 1, col == $h.col )) or
-    
-    // Invalid Down 
-     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+
+    // Invalid Down
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.DOWN)) or
-     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
      $h  : Hero(direction == Direction.UP))) and
      not Cell(row == $h.row - 1, col == $h.col )) or
 
      // Invalid LEFT
-     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.LEFT)) or
-     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
      $h  : Hero(direction == Direction.RIGHT))) and
      not Cell(row == $h.row, col == $h.col - 1 )) or
-          
-     // Invalid RIGHT     
-     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and   
+
+     // Invalid RIGHT
+     ((($mc : MoveCommand( move == Move.MOVE_FORWARD ) and
      $h  : Hero(direction == Direction.RIGHT)) or
-     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and  
+     ($mc : MoveCommand( move == Move.MOVE_BACKWARD ) and
      $h  : Hero(direction == Direction.LEFT))) and
-     not Cell(row == $h.row, col == $h.col + 1 ) )        
+     not Cell(row == $h.row, col == $h.col + 1 ) )
 then
     retract( $mc );
     insert( new FeelBump() );
 end
 
-rule "Move Gold" when
+rule "Move Gold" agenda-group "Commands" when
     $h : Hero( gold == true ) @watch( col, row )
     $g : Gold()
 then
    modify( $g ) { col = $h.col, row = $h.row };
-end    
+end
 
-rule "Climb With Gold" when
+rule "Climb With Gold" agenda-group "Commands" when
     $cc : ClimbCommand()
     Hero( gold == true, row == 0, col == 0 )
 then
@@ -205,69 +209,28 @@ then
     insert( new GoldWin() );
 end
 
-rule "Climb without Gold" when
+rule "Climb retraction"  agenda-group "Commands" when
+    $cc : ClimbCommand()
+    Hero( row != 0 || col != 0 )
+then
+    retract( $cc );
+end
+
+rule "Grab Gold" agenda-group "Commands" when
+    $gc : GrabCommand()
+    $h  : Hero()
+    $g  : Gold(row == $h.row, col == $h.col )
+then
+    retract ( $gc );
+    modify ( $h ) { gold = true };
+end
+
+rule "Climb without Gold" agenda-group "Commands" when
     $cc : ClimbCommand()
     Hero( gold == false,  row == 0, col == 0 )
 then
     retract( $cc );
     insert( new Reset() );
-end
-
-rule "Climb retraction"   when
-    $cc : ClimbCommand()
-    Hero( row != 0 || col != 0 )    
-then
-    retract( $cc );
-end
-
-rule "Grab Gold" when
-    $gc : GrabCommand()
-    $h  : Hero()
-    $g  : Gold(row == $h.row, col == $h.col )
-then
-    retract ( $gc );   
-    modify ( $h ) { gold = true };
-end
-
-rule "Smell Stench"  when 
-    $h  : Hero() @watch( col, row )
-          Wumpus(row == $h.row, col == $h.col ) or    
-          Wumpus(row == $h.row + 1, col == $h.col ) or
-          Wumpus(row == $h.row - 1, col == $h.col ) or          
-          Wumpus(row == $h.row, col == $h.col + 1 ) or
-          Wumpus(row == $h.row, col == $h.col - 1 )
-then
-    insertLogical( new SmellStench() );
-end 
-
-rule "Feel Breeze"  when 
-    $h  : Hero() @watch( col, row )
-          Pit(row == $h.row + 1, col == $h.col ) or
-          Pit(row == $h.row - 1, col == $h.col ) or          
-          Pit(row == $h.row, col == $h.col + 1 ) or
-          Pit(row == $h.row, col == $h.col - 1 )
-then
-    insertLogical( new FeelBreeze() );
-end
-
-rule "See Glitter"  when 
-    $h  : Hero( ) @watch( col, row )
-          Gold(row == $h.row, col == $h.col )
-then
-    insertLogical( new SeeGlitter() );
-end
-
-rule "Wumpus Death" when
-    $h  : Hero() @watch( col, row )
-          Wumpus(row == $h.row, col == $h.col, alive == true )
-then
-    insert( new WumpusDeath() );
-end
-
-rule "Pit Death" when
-    $h  : Hero() @watch( col, row )
-          Pit(row == $h.row, col == $h.col )
-then
-    insert( new PitDeath() ); 
+    setFocus( "Reset" );
 end
 

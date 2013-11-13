@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class GameUI {
     private GameConfiguration conf;
@@ -29,35 +31,58 @@ public class GameUI {
         return canvas;
     }
 
+    /**
+     * Initialize the contents of the frame.
+     */
     public void init() {
-        frame = new JFrame();
-
-        // must add before visible, and also request focus. As sometimes it would fail to attach. (mdp still seeing the problem, apparently a konwn swing bug)
-        KeyListener klistener = new GameKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
-        frame.addKeyListener( klistener );
-
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(conf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
-
-        frame.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
-
-
         canvas = new Canvas();
         canvas.setBackground(Color.BLACK);
         canvas.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
 
-        JPanel jp = new JPanel(  );
-        jp.setBackground(Color.BLACK);
-        jp.setPreferredSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
-        jp.add( canvas );
+        KeyListener klistener = new GameKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
+        canvas.addKeyListener(klistener);
 
-        frame.add(jp);
-        frame.setVisible( true );
+        canvas.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                canvas.requestFocus();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+
+        frame = new JFrame();
+        frame.setResizable(false);
+        frame.setDefaultCloseOperation(conf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
+        frame.setBackground(Color.BLACK);
+        frame.add(canvas);
+        frame.revalidate();
         frame.pack();
-        canvas.createBufferStrategy(2);
-
+        frame.setVisible(true);
         frame.setLocationRelativeTo(null); // Center in screen
-        frame.requestFocus();
+
+        canvas.createBufferStrategy(2);
+        canvas.requestFocus();
     }
 
     public static class GameKeyListener implements KeyListener {

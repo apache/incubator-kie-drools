@@ -6,7 +6,6 @@ import org.drools.games.pong.Player
 import org.drools.games.pong.PlayerId
 import org.drools.games.pong.PongGame
 import org.drools.games.pong.PointWin
-import org.drools.games.pong.KeyPressed
 import org.drools.games.pong.Collision
 import org.drools.games.pong.CollisionType
 
@@ -17,6 +16,7 @@ import java.lang.Math
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.event.KeyEvent
+import org.kie.api.runtime.KieSession
 
 global PongConfiguration pconf
 
@@ -40,59 +40,23 @@ function void initBall(KieRuntime kruntime, PongConfiguration pconf, PongUI ui) 
                      (pconf.getTableHeight()/2)-(pconf.getBallWidth()/2),
                       pconf.getBallWidth());
     ball.setSpeed( pconf.getBallStartingSpeed() );
-    ball.setDx( -2 );
-    ui.drawBall(ball);
+    ball.setDx( 0 - ball.getSpeed() );
     kruntime.insert( ball );
 }
 
-rule "Create GUI" agenda-group "Init"  when
+rule Init when
 then
-    PongUI ui = new PongUI(pconf);
-    ui.init( (StatefulKnowledgeSession) kcontext.getKnowledgeRuntime() );
-    insert( ui );
-end
+        PongUI ui = new PongUI((KieSession) kcontext.knowledgeRuntime, pconf);
+        ui.init();
+        insert( ui );
 
-rule "Draw Top and Bottom Lines and Net" agenda-group "Init" when
-    ui : PongUI( )
-then
-    Graphics tableG = ui.getGraphics(); //ui.getTablePanel().getTableG();
-    tableG.setColor( Color.WHITE ); // background
+        Player p1 = initPlayer( PlayerId.PlayerOne, pconf.getPadding(),
+                                pconf, kcontext.getKnowledgeRuntime(), ui);
 
-    int padding = pconf.padding;
-    int tableWidth = pconf.tableWidth;
-    int tableHeight = pconf.tableHeight;
-    int sideLineWidth = pconf.sideLineWidth;
+        Player p2 = initPlayer( PlayerId.PlayerTwo, pconf.tableWidth - pconf.padding - pconf.batWidth,
+                                pconf, kcontext.getKnowledgeRuntime(), ui);
 
-    tableG.fillRect( padding, padding,
-                     tableWidth-(padding*2), sideLineWidth );
-    tableG.fillRect( padding, tableHeight-padding-sideLineWidth,
-                     tableWidth-(padding*2), sideLineWidth );
-    // draw dash line net
-    int netWidth = pconf.netWidth;
-    int gap = pconf.netGap;
-    int dash = pconf.netDash;
-    int x = (tableWidth/2) - (netWidth/2);
-    for (int i = 0; i < tableHeight; i = i + dash + gap) {
-        tableG.fillRect( (int) x, i, netWidth, dash );
-    }
-end
+        insert( new PongGame(p1, p2) );
 
-rule "Init Game" agenda-group "Init" when
-    ui : PongUI()
-then
-
-    Player p1 = initPlayer( PlayerId.PlayerOne, pconf.getPadding(),
-                            pconf, kcontext.getKnowledgeRuntime(), ui);
-
-    ui.drawScore(p1, 100, pconf);
-
-    Player p2 = initPlayer( PlayerId.PlayerTwo, pconf.tableWidth - pconf.padding - pconf.batWidth,
-                            pconf, kcontext.getKnowledgeRuntime(), ui);
-
-
-     ui.drawScore(p1, pconf.getTableWidth()-120, pconf);
-
-    insert( new PongGame(p1, p2) );
-
-    initBall(kcontext.getKnowledgeRuntime(), pconf, ui);
+        initBall(kcontext.getKnowledgeRuntime(), pconf, ui);
 end

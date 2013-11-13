@@ -32,7 +32,6 @@ public class PongMain {
     public void init(boolean exitOnClose) {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         final KieSession ksession = kc.newKieSession( "PongKS");
-
         PongConfiguration pconf = new PongConfiguration();
         pconf.setExitOnClose(exitOnClose);
         ksession.setGlobal("pconf", pconf);

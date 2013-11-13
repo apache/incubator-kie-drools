@@ -32,14 +32,14 @@ public class WumpusWorldMain {
         serverKsession.getChannels().put( "sensors", new Channel() {
             public void send(Object object) {
                 clientKsession.insert( object );
-//                clientKsession.fireAllRules();
+                clientKsession.fireAllRules();
             }
         } );
 
         clientKsession.getChannels().put( "commands", new Channel() {
             public void send(Object object) {
                 serverKsession.insert( object );
-//                serverKsession.fireAllRules();
+                serverKsession.fireAllRules();
             }
         } );
 
@@ -47,6 +47,7 @@ public class WumpusWorldMain {
         wumpusWorldConfiguration.setExitOnClose(exitOnClose);
         serverKsession.setGlobal("wumpusWorldConfiguration", wumpusWorldConfiguration);
         serverKsession.setGlobal("randomInteger",new java.util.Random() );
+
 
         new Thread(new Runnable() {
             public void run() {
@@ -59,8 +60,6 @@ public class WumpusWorldMain {
                 clientKsession.fireUntilHalt();
             }
         }).start();
-//        serverKsession.fireAllRules();
-//        clientKsession.fireAllRules();
     }
     
 

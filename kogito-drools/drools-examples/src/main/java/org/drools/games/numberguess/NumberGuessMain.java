@@ -10,8 +10,7 @@ public class NumberGuessMain {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         final KieSession ksession = kc.newKieSession( "NumberGuessKS");
 
-        ksession.insert( new GameRules( 10, 5 ) );
-        //ksession.insert( new RandomNumber() );
+        ksession.insert( new GameRules( 25, 5 ) );
         ksession.insert( new Game() );
 
         ksession.fireAllRules();

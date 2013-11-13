@@ -9,6 +9,7 @@ public class Bat {
     private Player        player;
     private int           x;    
     private int           y;
+    private int           dy;
     private int           width;
     private int           height;
     private int           speed;
@@ -37,6 +38,14 @@ public class Bat {
 
     public int getSpeed() {
         return speed;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
+    public void setDy(int dy) {
+        this.dy = dy;
     }
 
     public void setSpeed(int speed) {

@@ -1,12 +1,16 @@
 package org.drools.games.pong;
+
+import org.drools.games.Run;
+
 dialect  "mvel"
-rule "main1" when
+
+rule InitMain when
 then
     insert( new Run() );
     setFocus( "Init" );
 end
 
-rule "main2" when
+rule Main when
     $r : Run()
 then
     setFocus( "Keys" );
@@ -15,10 +19,15 @@ then
     setFocus( "Game" );
 end
 
-rule "Redraw Cave" when
+rule Redraw when
    gui : PongUI()
+   ball : Ball()
+   bat1 : Bat( playerId == PlayerId.PlayerOne )
+   bat2 : Bat( playerId == PlayerId.PlayerTwo )
+   p1 : Player( id == PlayerId.PlayerOne)
+   p2 : Player( id == PlayerId.PlayerTwo)
    $r : Run()
 then
-   gui.updateTable();
+   gui.drawGame(ball, bat1, bat2, p1, p2);
    modify( $r ) {}
 end
