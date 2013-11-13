@@ -24,45 +24,14 @@ global org.drools.games.wumpus.WumpusWorldConfiguration wumpusWorldConfiguration
 
 dialect "mvel"
 
-rule "Create GUI" when
-    not GameUI()
-then
-    insert( new GameUI(wumpusWorldConfiguration) );
-end          
-
-rule "Reset View" when
-    Reset()
-    $gv : GameView()
-then
-    $gv.showAllCells = false;
-end
-
-rule "Init Game View"  when
-    Play()
-    $ui : GameUI()
-    not GameView()  
-then    
-    GameView $gv = new GameView();
-    $gv.init(50, 50, 3, 20, 5, 5);
-    $gv.setKsession( (StatefulKnowledgeSession) kcontext.knowledgeRuntime );
-    $gv.setKbase( ((StatefulKnowledgeSession) kcontext.knowledgeRuntime).getKieBase() );
-    
-    new java.io.File("log").mkdir();
-    KnowledgeRuntimeLogger klogger = KnowledgeRuntimeLoggerFactory.newThreadedFileLogger((StatefulKnowledgeSession) kcontext.knowledgeRuntime, "log/wumpus", 500);
-    $gv.setKlogger( klogger );
-         
-    $ui.gameView = $gv; 
-    insert( $gv );
-end    
-
-rule "Score Updated" when
+rule "Score Updated" agenda-group "UpdateScore" when
     $gv : GameView()
     $s : Score() @watch(*)
 then
     channels["score"].send( $s );
 end
 
-rule "Wumpus Death View" when
+rule "Wumpus Death View" agenda-group "EndGame" when
     $g  : GameView()
     $ui : GameUI()    
     $wd : WumpusDeath()       
@@ -71,9 +40,10 @@ then
                                    "Oh No! You where killed by the Wumpus" );
     retract( $wd );                                   
     insert( new Reset() );
+    setFocus( "Reset" );
 end
 
-rule "Pit Game View" when
+rule "Pit Game View" agenda-group "EndGame" when
     $g : GameView()
     $ui : GameUI()    
     $pd : PitDeath()
@@ -82,9 +52,10 @@ then
                                    "Oh No! You where killed by a Pit" );
     retract( $pd );                                   
     insert( new Reset() );
+    setFocus( "Reset" );
 end
 
-rule "Gold Win View" when
+rule "Gold Win View" agenda-group "EndGame" when
     $g : GameView()
     $ui : GameUI()    
     $gw : GoldWin()    
@@ -93,4 +64,5 @@ then
                                    "Congratulations! You retreived the gold from the cave" );
     retract( $gw );                                       
     insert( new Reset() );
+    setFocus( "Reset" );
 end

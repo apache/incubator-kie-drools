@@ -42,20 +42,9 @@ declare CompositeImageName
     wumpus : String
     gold : String
     hero : String    
-end 
-
-declare CaveDirty
-	@propertyReactive
-    dirty : boolean
-end   
-
-rule "Init CaveDirty" when
-    not CaveDirty()
-then
-    insert( new CaveDirty() );
 end
 
-rule "Create CompositeImage" when
+rule "Create CompositeImage"  agenda-group "PaintCave" when
     $c : Cell()
     not CompositeImageName( cell == $c )
 then
@@ -63,104 +52,99 @@ then
     insert( cin );
 end  
 
-rule "Reset CompositeImage" when
+rule "Reset CompositeImage"  agenda-group "PaintCave" when
     $cin : CompositeImageName()
     not Cell( row == $cin.cell.row, col == $cin.cell.col)
 then
     retract( $cin );
 end    
 
-rule "Base Paint" when
+rule "Base Paint"  agenda-group "PaintCave" when
     $c : Cell()
     $cin : CompositeImageName( cell == $c )
 then
 end    
 
-rule "Paint Gold" extends "Base Paint" when
+rule "Paint Gold" extends "Base Paint" agenda-group "PaintCave" when
     Gold(row == $c.row, col == $c.col)  
 then
    modify( $cin ) { gold = "gold" };
 end
 
-rule "Paint Empty Gold" extends "Base Paint" when
+rule "Paint Empty Gold" extends "Base Paint" agenda-group "PaintCave"  when
     not Gold(row == $c.row, col == $c.col)  
 then
    modify( $cin ) { gold = "" };
 end
 
-rule "Paint Pit" extends "Base Paint" when
+rule "Paint Pit" extends "Base Paint" agenda-group "PaintCave"  when
     Pit(row == $c.row, col == $c.col)  
 then
    modify( $cin ) { pit = "pit" };
 end
 
-rule "Paint Wumpus Alive" extends "Base Paint" when
+rule "Paint Wumpus Alive" extends "Base Paint" agenda-group "PaintCave"  when
     Wumpus(alive == true, row == $c.row, col == $c.col)  
 then
    modify( $cin ) { wumpus = "wumpus_alive" };
 end
 
-rule "Paint Wumpus Dead" extends "Base Paint" when
+rule "Paint Wumpus Dead" extends "Base Paint" agenda-group "PaintCave"  when
     Wumpus(alive == false, row == $c.row, col == $c.col)  
 then
    modify( $cin ) { wumpus = "wumpus_dead" }
 end
 
-rule "Paint Hero Direction Up" extends "Base Paint" when 
+rule "Paint Hero Direction Up" extends "Base Paint" agenda-group "PaintCave"  when
     $h : Hero( direction == Direction.UP, row == $c.row, col == $c.col )
 then
      modify( $cin ) { hero = "hero_up" };
 end    
 
-rule "Paint Hero Direction Down" extends "Base Paint"  when
+rule "Paint Hero Direction Down" extends "Base Paint" agenda-group "PaintCave"   when
     $h : Hero( direction == Direction.DOWN, row == $c.row, col == $c.col  )
 then
     modify( $cin ) { hero = "hero_down" };
 end   
 
-rule "Paint Hero Direction Left" extends "Base Paint"  when
+rule "Paint Hero Direction Left" extends "Base Paint" agenda-group "PaintCave"   when
     $h : Hero( direction == Direction.LEFT, row == $c.row, col == $c.col  )
 then
     modify( $cin ) { hero = "hero_left" };
 end    
 
-rule "Paint Hero Direction Right" extends "Base Paint" when
+rule "Paint Hero Direction Right" extends "Base Paint"  agenda-group "PaintCave" when
     $h : Hero( direction == Direction.RIGHT, row == $c.row, col == $c.col  )
 then
     modify( $cin ) { hero = "hero_right" };
 end 
 
-rule "Paint Empty Hero" extends "Base Paint" when
+rule "Paint Empty Hero" extends "Base Paint"  agenda-group "PaintCave" when
     not Hero( row == $c.row, col == $c.col  )
 then
     modify( $cin ) { hero = "" };
 end   
 
-rule "Paint Hidden Room" when 
+rule "Paint Hidden Room" agenda-group "PaintCave" when
     $gui : GameUI( cavePanel != null && cavePanel.caveG != null  )
-    $cd : CaveDirty()
     $gv : GameView(showAllCells == false)
     $c : Cell(hidden == true) 
 then
    paintCaveCell( "hidden_room.png", $c, $gv, $gui);
-   modify( $cd ) { dirty = true };
 end
 
 
-rule "Paint Empty Room" when 
+rule "Paint Empty Room" agenda-group "PaintCave" when
    $gui : GameUI( cavePanel != null && cavePanel.caveG != null )
-    $cd : CaveDirty()   
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )      
    CompositeImageName( cell == $c, pit == "", wumpus == "", gold == "", hero == "" )
 then
    paintCaveCell( "empty_room.png", $c, $gv, $gui );
-   modify( $cd ) { dirty = true };
 end 
 
-rule "Paint Non Empty Room" when
+rule "Paint Non Empty Room" agenda-group "PaintCave" when
    $gui : GameUI( cavePanel != null && cavePanel.caveG != null )
-   $cd : CaveDirty()   
    ($gv : GameView(showAllCells == true) and $c : Cell() ) or
    ($gv : GameView(showAllCells == false) and $c : Cell(hidden == false) )    
    $cin : CompositeImageName( cell == $c, ( !(hero != "" && pit != "")  &&  // don't draw a hero on the same square as a pit or an alive wumpus, as the game is over
@@ -168,13 +152,4 @@ rule "Paint Non Empty Room" when
                                             !(pit == "" && wumpus == "" && gold == "" && hero == "") ) )
 then
     paintCaveCell( $cin.pit + $cin.wumpus + $cin.gold +  $cin.hero + ".png", $cin.cell, $gv, $gui );
-    modify( $cd ) { dirty = true };
-end
-
-rule "Redraw Cave" no-loop salience -100 when
-   $gui : GameUI() 
-   $cd : CaveDirty( dirty == true )
-then
-   $gui.updateCave();
-   modify( $cd ) { dirty = false };
 end
