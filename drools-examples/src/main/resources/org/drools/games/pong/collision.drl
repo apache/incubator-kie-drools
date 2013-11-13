@@ -6,7 +6,6 @@ import org.drools.games.pong.Player
 import org.drools.games.pong.PlayerId
 import org.drools.games.pong.PongGame
 import org.drools.games.pong.PointWin
-import org.drools.games.pong.KeyPressed
 import org.drools.games.pong.Collision
 import org.drools.games.pong.CollisionType
 
@@ -25,11 +24,11 @@ dialect "mvel"
 
 rule "Ball Side Line Collision" agenda-group "Collision" when
     not Collision()
-    ball : Ball( y <=  pconf.getPadding() + pconf.getSideLineWidth() )
+    ball : Ball( y <=  pconf.boundedTop )
     or
-    ball : Ball( y + width >=  pconf.tableHeight - pconf.getPadding() - pconf.getSideLineWidth() )
+    ball : Ball( y + width >=  pconf.boundedBottom )
 then
-    modify( ball ) { setDy( 0 - ball.getDy()) };
+    modify( ball ) { dy = 0 - ball.dy };
     insert( new Collision( null, CollisionType.SideLineTop ) );
 end
 
@@ -46,7 +45,7 @@ rule "Ball Bat Collision Top"  extends "Abstract Ball Bat Collision" agenda-grou
     eval( bat.y < ball.y+20 &&
           bat.y > ball.y+10 )
 then
-    modify( ball ) { dy = -6 };
+    modify( ball ) { dy = -1, speed = 6 };
     insert( new Collision( bat.player, CollisionType.BatTop ) );
 end
 
@@ -54,23 +53,23 @@ rule "Ball Bat Collision Bottom"  extends "Abstract Ball Bat Collision" agenda-g
     eval( bat.y+80 < ball.y+10 &&
           bat.y+80 > ball.y )
 then
-    modify( ball ) { dy = 6 };
+    modify( ball ) { dy = 1, speed = 6 };
     insert( new Collision( bat.player, CollisionType.BatBottom ) );
 end
 
 rule "Ball Bat Collision Upper"  extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
     eval( bat.y <= ball.y+(ball.width/2) &&
           bat.y + 38 > ball.y+(ball.width/2) )
-    if ( ball.dy < 0 ) do[increaseDx]
-    if ( ball.dy > 0 ) do[decreaseDx]
+    if ( ball.dy < 0 ) do[increase]
+    if ( ball.dy > 0 && ball.speed > 1 ) do[decrease]
 then
-    m = Math.ceil(((bat.y + 38) - (ball.y + (ball.width/2)))/10.0 );
-    modify( ball ) { dx = 0 - ball.dx, dy = 0 - m };
-    insert( new Collision( bat.player, CollisionType.BatUpper ) );
-then[increaseDx]
-    modify( ball ) { dx = ball.dx + 1 };
-then[decreaseDx]
-    modify( ball ) { dx = ball.dx - 1 };
+   m = Math.ceil(((bat.y + 38) - (ball.y + (ball.width/2)))/10.0 );
+   insert( new Collision( bat.player, CollisionType.BatUpper ) );
+   modify( ball ) { dx = 0 - ball.dx, dy = 0 - m };
+then[increase]
+    modify( ball ) { speed = ball.speed + 1 };
+then[decrease]
+    modify( ball ) { speed = ball.speed - 1 };
 end
 
 rule "Ball Bat Collision Middle" extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
@@ -84,29 +83,30 @@ end
 rule "Ball Bat Collision Lower" extends "Abstract Ball Bat Collision" agenda-group "Collision"  when
     eval( bat.y + 42 < ball.y+(ball.width/2) &&
           bat.y + 80 >= ball.y+(ball.width/2) )
-    if ( ball.dy > 0 ) do[increaseDx]
-    if ( ball.dy < 0 ) do[decreaseDx]
+    if ( ball.dy > 0 ) do[increase]
+    if ( ball.dy < 0 && ball.speed > 1 ) do[decrease]
 then
     m = Math.ceil( ( (ball.y + (ball.width/2)) - (bat.y+42))/10.0 );
-    modify( ball ) { dx = 0 - ball.dx, dy = m };
+    modify( ball ) { dx = 0 - ball.dx, dy = m  };
     insert( new Collision( bat.player, CollisionType.BatLower ) );
-then[increaseDx]
-    modify( ball ) { dx = ball.dx + 1 };
-then[decreaseDx]
-    modify( ball ) { dx = ball.dx - 1 };
+then[increase]
+    modify( ball ) { speed = ball.speed + 1 };
+then[decrease]
+    modify( ball ) { speed = ball.speed - 1 };
 end
 
+
 /**
- * This retracts the Collision once we've moved into a rectangle where we know no further collision is possible
- */
+* This retracts the Collision once we've moved into a rectangle where we know no further collision is possible
+*/
 rule "Retract Collision" agenda-group "Collision" when
     c    : Collision()
     ball : Ball() @watch( x, y )
     // use eval to avoid wasted alpha nodes evaluations
-    eval( ball.getX() > pconf.getPadding()  + pconf.getBatWidth() &&
-          ball.getX() < pconf.getTableWidth() - pconf.getPadding()  - pconf.getBatWidth() - ball.getWidth() &&
-          ball.getY() > pconf.getPadding()  +  pconf.getSideLineWidth() + pconf.getBatWidth() &&
-          ball.getY() < pconf.getTableHeight() - pconf.getPadding() -  pconf.getSideLineWidth() - ball.getWidth() )
+    eval( ball.x > pconf.boundedLeft + pconf.batWidth &&
+          ball.x < pconf.boundedRight  - pconf.batWidth - ball.width &&
+          ball.y > pconf.boundedTop &&
+          ball.y < pconf.boundedBottom - ball.width )
 then
     retract( c );
 end

@@ -186,6 +186,7 @@ public class GameUI {
                 Reset reset = new Reset();
                 reset.setResetScore( true );
                 gameView.getKsession().insert( reset );
+                gameView.getKsession().getAgenda().getAgendaGroup("Reset").setFocus();
                 gameView.getKsession().fireAllRules();
             }
         } );
