@@ -24,12 +24,11 @@ public class FibonacciExample {
 
     public static void main(final String[] args) {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
-        System.out.println(kc.verify().getMessages().toString());
         KieSession ksession = kc.newKieSession("FibonacciKS");
 
 //        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci.log");
 
-        ksession.insert( new Fibonacci( 10 ) );
+        ksession.insert( new Fibonacci( 50 ) );
         ksession.fireAllRules();
 
 //        logger.close();
