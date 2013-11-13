@@ -12,14 +12,14 @@ declare Score
 	@propertyReactive
 end	
     
-rule "Move -1" salience 100 when
-         $m : MoveCommand()
+rule "Move -1" salience 100 agenda-group "Score" when
+    $m : MoveCommand()
     $s : Score()
 then
     modify( $s) { value = $s.value  - 1 };  
 end 
 
-rule "Shoot Arrow -10" salience 100 when
+rule "Shoot Arrow -10" salience 100 agenda-group "Score" when
          ShootCommand()
     $s : Score()
 then
@@ -27,21 +27,21 @@ then
 end   
      
 
-rule "Gold Win +100" salience 100 when  
+rule "Gold Win +100" salience 100 agenda-group "Score" when
          GoldWin()
     $s : Score()
 then
     modify( $s ) { value = $s.value  + 100 };
 end     
    
-rule "Pit Death -1000" salience 100 when
+rule "Pit Death -1000" salience 100 agenda-group "Score" when
          PitDeath()
     $s : Score()
 then
     modify( $s) { value = $s.value  - 1000 };
 end 
 
-rule "Wumpus Death -1000" salience 100 when
+rule "Wumpus Death -1000" salience 100  agenda-group "Score" when
          WumpusDeath()
     $s : Score()
 then
