@@ -418,7 +418,8 @@ public class SegmentUtilities {
                     if (fromPrototype) {
                         ObjectSink[] nodes = ((RightInputAdapterNode) sink).getSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
-                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
+                            // check if the SegmentMemory has been already created by the BetaNode and if so avoid to build it twice
+                            if ( NodeTypeEnums.isLeftTupleSource(node) && wm.getNodeMemory((MemoryFactory) node).getSegmentMemory() == null )  {
                                 restoreSegmentFromPrototype(wm, (LeftTupleSource) node);
                             }
                         }
