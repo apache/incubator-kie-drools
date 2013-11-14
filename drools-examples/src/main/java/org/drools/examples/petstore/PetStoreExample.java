@@ -16,26 +16,36 @@
 
 package org.drools.examples.petstore;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumnModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
+
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 public class PetStoreExample {
 
@@ -47,15 +57,12 @@ public class PetStoreExample {
     }
 
     public void init(boolean exitOnClose) {
-        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-
-        kbuilder.add( ResourceFactory.newClassPathResource("PetStore.drl",
-                PetStoreExample.class),
-                              ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
+        // KieServices is the factory for all KIE services 
+        KieServices ks = KieServices.Factory.get();
+        
+        // From the kie services, a container is created from the classpath
+        KieContainer kc = ks.getKieClasspathContainer();
+        
         //RuleB
         Vector<Product> stock = new Vector<Product>();
         stock.add( new Product( "Gold Fish",
@@ -68,7 +75,7 @@ public class PetStoreExample {
         //The callback is responsible for populating working memory and
         // fireing all rules
         PetStoreUI ui = new PetStoreUI( stock,
-                                        new CheckoutCallback( kbase ) );
+                                        new CheckoutCallback( kc ) );
         ui.createAndShowGUI(exitOnClose);
     }
 
@@ -373,11 +380,11 @@ public class PetStoreExample {
      * for user interaction. It uses the ApplicationData feature for this.
      */
     public static class CheckoutCallback {
-        KnowledgeBase kbase;
+        KieContainer kcontainer;
         JTextArea     output;
 
-        public CheckoutCallback(KnowledgeBase kbase) {
-            this.kbase = kbase;
+        public CheckoutCallback(KieContainer kcontainer) {
+            this.kcontainer = kcontainer;
         }
 
         public void setOutput(JTextArea output) {
@@ -402,7 +409,10 @@ public class PetStoreExample {
 
             //add the JFrame to the ApplicationData to allow for user interaction
 
-            StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+            // From the container, a session is created based on  
+            // its definition and configuration in the META-INF/kmodule.xml file 
+            KieSession ksession = kcontainer.newKieSession("PetStoreKS");
+            
             ksession.setGlobal( "frame",
                                 frame );
             ksession.setGlobal( "textArea",

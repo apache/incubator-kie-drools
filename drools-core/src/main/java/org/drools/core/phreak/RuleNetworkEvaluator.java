@@ -268,7 +268,7 @@ public class RuleNetworkEvaluator {
 
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
                         // and may not yet be initialized
-                        if ( smem.isEmpty() && !NodeTypeEnums.isTerminalNode(node) ) {
+                        if ( smem.isEmpty() && !NodeTypeEnums.isTerminalNode(smem.getTipNode()) ) {
                             SegmentUtilities.createChildSegments( wm, smem, ((LeftTupleSource)smem.getTipNode()).getSinkPropagator() );
                         }
                         

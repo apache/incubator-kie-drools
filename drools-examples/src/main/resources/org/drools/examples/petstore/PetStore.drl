@@ -16,7 +16,7 @@
 
 package org.drools.examples.petstore
 
-import org.drools.WorkingMemory
+import org.kie.api.runtime.KieRuntime
 import org.drools.examples.petstore.PetStoreExample.Order
 import org.drools.examples.petstore.PetStoreExample.Purchase
 import org.drools.examples.petstore.PetStoreExample.Product
@@ -41,8 +41,8 @@ rule "Explode Cart"
         $item : Purchase() from $order.items
     then
         insert( $item );
-        drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
-        drools.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
+        kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "show items" ).setFocus();
+        kcontext.getKnowledgeRuntime().getAgenda().getAgendaGroup( "evaluate" ).setFocus();
 end
 
 
@@ -75,7 +75,7 @@ rule "Suggest Tank"
         ArrayList( $total : size > 5 ) from collect( Purchase( product.name == "Gold Fish" ) )
         $fishTank : Product( name == "Fish Tank" )
     then
-        requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total);
+        requireTank(frame, kcontext.getKieRuntime(), $order, $fishTank, $total);
 end
 
 rule "Show Items"
@@ -92,7 +92,7 @@ rule "do checkout"
         dialect "java"
     when
     then
-        doCheckout(frame, drools.getWorkingMemory());
+        doCheckout(frame, kcontext.getKieRuntime());
 end    
 
 rule "Gross Total"
@@ -128,7 +128,7 @@ rule "Apply 10% Discount"
         textArea.append( "discountedTotal total=" + $order.discountedTotal + "\n" );
 end
 
-function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
+function void doCheckout(JFrame frame, KieRuntime krt) {
         Object[] options = {"Yes",
                             "No"};
                             
@@ -142,11 +142,11 @@ function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
                                              options[0]);
 
        if (n == 0) {
-            workingMemory.setFocus( "checkout" );
+            krt.getAgenda().getAgendaGroup( "checkout" ).setFocus();
        }   
 }
 
-function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order order, Product fishTank, int total) {
+function boolean requireTank(JFrame frame, KieRuntime krt, Order order, Product fishTank, int total) {
         Object[] options = {"Yes",
                             "No"};
                             
@@ -164,7 +164,7 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
 
        if (n == 0) {
              Purchase purchase = new Purchase( order, fishTank );
-             workingMemory.insert( purchase );
+             krt.insert( purchase );
              order.addItem( purchase );
              System.out.println( "Yes" );
        } else {
