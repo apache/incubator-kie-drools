@@ -52,9 +52,6 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     // A map of FactTypes {factType, isCollection} to determine which Fact Types are Collections.
     protected Map<String, Boolean> projectCollectionTypes = new HashMap<String, Boolean>();
 
-    // List of available rule names
-    private Map<String, Collection<String>> projectRuleNames = new HashMap<String, Collection<String>>();
-
     // List of available package names
     private List<String> projectPackageNames = new ArrayList<String>();
 
@@ -111,12 +108,6 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public void addProjectCollectionTypes( final Map<String, Boolean> collectionTypes ) {
         this.projectCollectionTypes.putAll( collectionTypes );
-    }
-
-    @Override
-    public void addProjectRuleNames( final String packageName,
-                                     final Collection<String> ruleNames ) {
-        this.projectRuleNames.put( packageName, ruleNames );
     }
 
     @Override
@@ -177,16 +168,6 @@ public class ProjectDataModelOracleImpl implements ProjectDataModelOracle {
     @Override
     public Map<String, Boolean> getProjectCollectionTypes() {
         return this.projectCollectionTypes;
-    }
-
-    @Override
-    public Map<String, Collection<String>> getProjectRuleNamesMap() {
-        return this.projectRuleNames;
-    }
-
-    @Override
-    public Collection<String> getRuleNamesForPackage( final String packageName ) {
-        return this.projectRuleNames.get( packageName );
     }
 
     @Override

@@ -45,9 +45,6 @@ public interface ProjectDataModelOracle {
 
     void addProjectCollectionTypes( final Map<String, Boolean> collectionTypes );
 
-    void addProjectRuleNames( final String packageName,
-                              final Collection<String> ruleNames );
-
     void addProjectPackageNames( final List<String> packageNames );
 
     String getProjectName();
@@ -71,10 +68,6 @@ public interface ProjectDataModelOracle {
     Map<String, List<MethodInfo>> getProjectMethodInformation();
 
     Map<String, Boolean> getProjectCollectionTypes();
-
-    Map<String, Collection<String>> getProjectRuleNamesMap();
-
-    Collection<String> getRuleNamesForPackage( final String packageName );
 
     List<String> getProjectPackageNames();
 
