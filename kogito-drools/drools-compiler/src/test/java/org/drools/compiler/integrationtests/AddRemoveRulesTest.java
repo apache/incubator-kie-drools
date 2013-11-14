@@ -6,6 +6,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -185,15 +186,11 @@ public class AddRemoveRulesTest {
 
         System.out.println("Secondary remove");
         deleteRule("test6");
-
     }
 
-
-
     @Test
-    @Ignore
-    public void AddRemoveFromKB() {
-
+    public void testAddRemoveFromKB() {
+        // DROOLS-328
         String drl = "\n" +
                      "rule A\n" +
                      "  when\n" +
@@ -203,7 +200,7 @@ public class AddRemoveRulesTest {
                      "\n" +
                      "rule B\n" +
                      "  when\n" +
-                     "    Boolean() from entry-point \"BBB\"\n" +
+                     "    Boolean()\n" +
                      "    Float()\n" +
                      "  then\n" +
                      "  end\n" +
@@ -247,6 +244,37 @@ public class AddRemoveRulesTest {
 
         kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
+    }
+
+    @Test
+    public void testAddRemoveDeletingFact() {
+        // DROOLS-328
+        String drl = "\n" +
+                     "rule B\n" +
+                     "  when\n" +
+                     "    Boolean()\n" +
+                     "    Float()\n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        // Create kSession and initialize it
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        FactHandle fh = kSession.insert(new Float( 0.0f ) );
+        kSession.fireAllRules();
+
+        kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kSession.delete(fh);
     }
 
 

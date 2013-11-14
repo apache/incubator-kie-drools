@@ -328,7 +328,7 @@ public class RuleNetworkEvaluator {
                 break;
             }
 
-            stagedLeftTuples = getStagedLeftTuples(node, wm, smem);
+            stagedLeftTuples = getTargetStagedLeftTuples(node, wm, smem);
             LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
 
             trgTuples = new LeftTupleSetsImpl();
@@ -407,8 +407,8 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static LeftTupleSets getStagedLeftTuples(NetworkNode node, InternalWorkingMemory wm, SegmentMemory smem) {
-        if (node == smem.getTipNode() ) {
+    public static LeftTupleSets getTargetStagedLeftTuples(NetworkNode node, InternalWorkingMemory wm, SegmentMemory smem) {
+        if (node == smem.getTipNode()) {
             // we are about to process the segment tip, allow it to merge insert/update/delete clashes
             if ( smem.isEmpty() ) {
                 SegmentUtilities.createChildSegments(wm, smem, ((LeftTupleSource) node).getSinkPropagator() );
@@ -465,7 +465,7 @@ public class RuleNetworkEvaluator {
             stack.add(stackEntry);
 
             pQueryNode.doNode(qnode, (QueryElementNodeMemory) nodeMem, stackEntry, sink,
-                              wm, srcTuples, trgTuples, getStagedLeftTuples(node, wm, smems[smemIndex]));
+                              wm, srcTuples, trgTuples, getTargetStagedLeftTuples(node, wm, smems[smemIndex]));
 
             SegmentMemory qsmem = ((QueryElementNodeMemory) nodeMem).getQuerySegmentMemory();
             List<PathMemory> qpmems = qsmem.getPathMemories();
