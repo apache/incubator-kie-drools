@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 @XmlRootElement
 public class AbortWorkItemCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
 
     @XmlAttribute(name="id", required=true)
     private long workItemId;
