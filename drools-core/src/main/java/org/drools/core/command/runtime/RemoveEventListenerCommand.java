@@ -26,7 +26,7 @@ import org.kie.api.runtime.KieSession;
 
 public class RemoveEventListenerCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
 
     private RuleRuntimeEventListener   ruleRuntimeEventlistener = null;
     private AgendaEventListener        agendaEventListener        = null;
@@ -47,7 +47,7 @@ public class RemoveEventListenerCommand
         this.processEventListener = listener;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         if ( ruleRuntimeEventlistener != null ) {
             ksession.removeEventListener( ruleRuntimeEventlistener );

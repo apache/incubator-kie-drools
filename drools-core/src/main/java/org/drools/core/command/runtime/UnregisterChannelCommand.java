@@ -23,7 +23,7 @@ import org.kie.api.runtime.KieSession;
 
 public class UnregisterChannelCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
 
     private static final long serialVersionUID = 510l;
     
@@ -36,7 +36,7 @@ public class UnregisterChannelCommand
         this.name = name;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         ksession.unregisterChannel( name );
