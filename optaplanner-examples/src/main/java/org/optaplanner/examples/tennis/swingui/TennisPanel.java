@@ -104,7 +104,7 @@ public class TennisPanel extends SolutionPanel {
     private void fillDayCells(TennisSolution tennisSolution) {
         for (Team team : tennisSolution.getTeamList()) {
             timeTablePanel.addRowHeader(HEADER_COLUMN, team,
-                    createHeaderPanel(new JLabel(team.getName())));
+                    createHeaderPanel(new JLabel(team.getLabel())));
         }
         timeTablePanel.addRowHeader(HEADER_COLUMN, null,
                 createHeaderPanel(new JLabel("Unassigned")));

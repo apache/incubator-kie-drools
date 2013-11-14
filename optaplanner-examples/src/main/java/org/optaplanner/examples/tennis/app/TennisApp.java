@@ -38,7 +38,11 @@ public class TennisApp extends CommonApp {
     }
 
     public TennisApp() {
-        super("Tennis", "TODO", null);
+        super("Tennis club scheduling",
+                "Assign available spots to teams.\n\n" +
+                        "Each team must play an almost equal number of times.\n" +
+                        "Each team must play against each other team an almost equal number of times.",
+                null);
     }
 
     @Override

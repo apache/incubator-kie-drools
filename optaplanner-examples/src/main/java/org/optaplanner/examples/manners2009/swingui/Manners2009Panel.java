@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.manners2009.domain.HobbyPractician;
 import org.optaplanner.examples.manners2009.domain.Manners2009;
 import org.optaplanner.examples.manners2009.domain.Seat;
@@ -55,6 +56,7 @@ public class Manners2009Panel extends SolutionPanel {
     public void resetPanel(Solution solution) {
         removeAll();
         Manners2009 manners2009 = (Manners2009) solution;
+        TangoColorFactory tangoColorFactory = new TangoColorFactory();
         gridLayout.setColumns((int) Math.ceil(Math.sqrt(manners2009.getTableList().size())));
         Map<Seat, SeatPanel> seatPanelMap = new HashMap<Seat, SeatPanel>(manners2009.getSeatList().size());
         SeatPanel unassignedPanel = new SeatPanel(null);
@@ -95,6 +97,7 @@ public class Manners2009Panel extends SolutionPanel {
         }
         for (SeatDesignation seatDesignation : manners2009.getSeatDesignationList()) {
             SeatPanel seatPanel = seatPanelMap.get(seatDesignation.getSeat());
+            seatPanel.setBackground(tangoColorFactory.pickColor(seatDesignation.getGuestJobType()));
             seatPanel.addSeatDesignation(seatDesignation);
         }
     }

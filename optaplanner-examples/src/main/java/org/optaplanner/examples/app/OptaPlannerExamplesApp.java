@@ -51,6 +51,7 @@ import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
 import org.optaplanner.examples.projectjobscheduling.app.ProjectJobSchedulingApp;
 import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
+import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
@@ -121,6 +122,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new CloudBalancingApp()));
         panel.add(createExampleButton(new TspApp()));
         panel.add(createExampleButton(new Manners2009App()));
+        panel.add(createExampleButton(new TennisApp()));
         return panel;
     }
 

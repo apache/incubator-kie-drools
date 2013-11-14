@@ -40,4 +40,8 @@ public class Team extends AbstractPersistable {
         this.name = name;
     }
 
+    public String getLabel() {
+        return name;
+    }
+
 }

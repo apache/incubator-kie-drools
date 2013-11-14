@@ -89,7 +89,7 @@ public class TennisGenerator extends LoggingMain {
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(5), dayList.get(15)));
         tennisSolution.setUnavailabilityPenaltyList(unavailabilityPenaltyList);
 
-        File outputFile = new File(outputDir, "btc.xml");
+        File outputFile = new File(outputDir, "munich-7teams.xml");
         solutionDao.writeSolution(tennisSolution, outputFile);
     }
 
