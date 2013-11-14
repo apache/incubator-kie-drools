@@ -22,12 +22,12 @@ import java.util.Set;
 import org.drools.examples.sudoku.swing.AbstractSudokuGridModel;
 import org.drools.examples.sudoku.swing.SudokuGridEvent;
 import org.drools.examples.sudoku.swing.SudokuGridModel;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -42,8 +42,8 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
     private CellRow[]   rows = new CellRow[9];
     private CellCol[]   cols = new CellCol[9];
     
-    private KnowledgeBase kBase;
-    private StatefulKnowledgeSession session;
+    private KieContainer kc;
+    private KieSession session;
     private SudokuWorkingMemoryListener workingMemoryListener = new SudokuWorkingMemoryListener();
     private Counter counter;
     private Boolean explain = false;
@@ -55,8 +55,8 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
      * Constructor.
      * @param kBase a Knowledge Base with rules for solving Sudoku problems.
      */
-    public Sudoku(KnowledgeBase kBase) {
-        this.kBase = kBase;
+    public Sudoku(KieContainer kc) {
+        this.kc = kc;
         sudoku = this;
     }
     
@@ -189,7 +189,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         explain = false;
         session.setGlobal("explain", explain);
         if( steppingFactHandle != null ){
-            session.retract( steppingFactHandle );
+            session.delete( steppingFactHandle );
             steppingFactHandle = null;
             stepping = null;
         }
@@ -276,7 +276,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
             steppingFactHandle = null;
         }
         
-        this.session = kBase.newStatefulKnowledgeSession();
+        this.session = kc.newKieSession("SudokuKS");
         session.setGlobal("explain", explain);
         session.addEventListener(workingMemoryListener);
 
@@ -296,7 +296,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         }
         this.counter = new Counter(initial);
         this.session.insert(counter);
-        this.session.retract(fh000);
+        this.session.delete(fh000);
         this.session.fireUntilHalt();
     }
     

@@ -95,4 +95,9 @@
     <kbase name="PetStoreKB" packages="org.drools.examples.petstore">
         <ksession name="PetStoreKS"/>
     </kbase>
+    
+    <kbase name="SudokuKB" packages="org.drools.examples.sudoku">
+        <ksession name="SudokuKS"/>
+    </kbase>
+    
 </kmodule>
