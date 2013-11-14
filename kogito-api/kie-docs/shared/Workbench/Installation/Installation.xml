@@ -132,12 +132,20 @@
 
       <listitem>
         <para><emphasis role="bold"><literal>org.guvnor.m2repo.dir</literal></emphasis>: Place where maven repository
-        folder will be stored. Default: working directory</para>
+          folder will be stored. Default: working-directory/repositories/kie</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold"><literal>org.kie.example.repositories</literal></emphasis>: Folder from where demo
+          repositories will be cloned. The demo repositories need to have been obtained and placed in this folder. Demo
+          repositories can be obtained from the kie-wb-6.1.0-SNAPSHOT-example-repositories.zip artifact. This System
+          Property takes precedence over org.kie.demo and org.kie.example. Default: Not used.</para>
       </listitem>
 
       <listitem>
         <para><emphasis role="bold"><literal>org.kie.demo</literal></emphasis>: Enables external clone of a demo
-        application. Default: <literal>true</literal></para>
+          application from github. This System Property takes precedence over org.kie.example. Default:
+            <literal>true</literal></para>
       </listitem>
 
       <listitem>
