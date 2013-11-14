@@ -92,5 +92,7 @@
         <ksession name="Invaders6KS"/>
     </kbase>
 
-
+    <kbase name="PetStoreKB" packages="org.drools.examples.petstore">
+        <ksession name="PetStoreKS"/>
+    </kbase>
 </kmodule>
