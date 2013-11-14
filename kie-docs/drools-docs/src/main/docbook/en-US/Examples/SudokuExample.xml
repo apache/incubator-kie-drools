@@ -55,7 +55,7 @@
         <screenshot>
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku1.png"/>
+              <imagedata fileref="images/Examples/SudokuExample/sudoku1.png"/>
             </imageobject>
           </mediaobject>
         </screenshot>
@@ -68,7 +68,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku2.png" />
+              <imagedata fileref="images/Examples/SudokuExample/sudoku2.png" />
             </imageobject>
           </mediaobject>
         </screenshot></figure></para>
@@ -80,7 +80,7 @@
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku3.png" />
+              <imagedata fileref="images/Examples/SudokuExample/sudoku3.png" />
             </imageobject>
           </mediaobject>
         </screenshot></figure></para>
@@ -121,7 +121,7 @@ Row 8:    34       --- 9 ---     4 6 8   --- 7 ---  --- 1 ---   23456 8     3 56
       first row.<figure><title>Broken initial state</title><screenshot>         
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku4.png" />
+              <imagedata fileref="images/Examples/SudokuExample/sudoku4.png" />
             </imageobject>
           </mediaobject>
         </screenshot></figure></para>
@@ -144,7 +144,7 @@ Validation complete.
 
           <mediaobject>
             <imageobject>
-              <imagedata fileref="images/Chapter-Examples/SudokuExample/sudoku5.png" />
+              <imagedata fileref="images/Examples/SudokuExample/sudoku5.png" />
             </imageobject>
           </mediaobject>
         </screenshot></figure></para>
