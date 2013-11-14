@@ -13,9 +13,9 @@
   <para>The Artifact Repository is a full blown Maven repository. It follows the semantics of a Maven remote repository:
   all snapshots are timestamped. But it is often stored on the local hard drive.</para>
 
-  <para>By default the artifact repository is stored under <literal>$WORKING_DIRECTORY/repository</literal>, but it can be
-  overridden with the <link linkend="wb.systemProperties">system property</link>
-  <literal>-Dorg.guvnor.m2repo.dir</literal>. There is only 1 Maven repository per installation.</para>
+  <para>By default the artifact repository is stored under <literal>$WORKING_DIRECTORY/repositories/kie</literal>, but
+    it can be overridden with the <link linkend="wb.systemProperties">system property</link>
+    <literal>-Dorg.guvnor.m2repo.dir</literal>. There is only 1 Maven repository per installation.</para>
 
   <para>The Artifact Repository screen shows a list of the artifacts in the Maven repository:</para>
 

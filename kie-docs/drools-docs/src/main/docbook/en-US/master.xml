@@ -4,17 +4,15 @@
 ]>
 <book version="5.0"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-  xml:base="./" xmlns="http://docbook.org/ns/docbook"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude"
-  xmlns:ns="http://docbook.org/ns/docbook">
+  xml:base="./" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <info>
     <title>Drools Documentation</title>
     <releaseinfo>Version &project.version;</releaseinfo>
     <authorgroup>
       <author>
-        <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss Drools
-            team</link></orgname>
+        <orgname><link xlink:href="http://www.jboss.org/drools/team.html">The JBoss Drools team</link></orgname>
       </author>
     </authorgroup>
     <cover>
@@ -33,55 +31,71 @@
       </imageobject>
     </mediaobject>
   </preface>
-  
-  
+
+
   <part>
-    <title>Welcome</title> <!-- Maybe move some of the KIE intro here, combined with my old previous intro -->
-    <partintro><para>Part Intro</para></partintro>
+    <title>Welcome</title>
+    <!-- Maybe move some of the KIE intro here, combined with my old previous intro -->
+    <partintro>
+      <para>Part Intro</para>
+    </partintro>
     <xi:include href="ReleaseNotes.xml"/>
     <xi:include href="../../../../../shared/ReleaseInformation/CompatibilityMatrix.xml"/>
   </part>
-  
+
   <part>
     <title>KIE</title>
-    <partintro><para>KIE is the shared core for Drools and jBPM.It provides a unified methodology and programming model for building, 
-      deploying and utilizing resources.</para></partintro>
-      
+    <partintro>
+      <para>KIE is the shared core for Drools and jBPM.It provides a unified methodology and programming model for
+        building, deploying and utilizing resources.</para>
+    </partintro>
+
     <xi:include href="../../../../../shared/KIE/KIE.xml"/>
   </part>
-  
-  
+
+
   <part>
     <title>Drools Runtime and Language</title>
-    <partintro><para>Drools is a powerful Hybrid Reasoning System. </para></partintro>
+    <partintro>
+      <para>Drools is a powerful Hybrid Reasoning System. </para>
+    </partintro>
     <xi:include href="HybridReasoning.xml"/>
     <xi:include href="UserGuide.xml"/>
     <xi:include href="LanguageReference.xml"/>
     <xi:include href="ComplexEventProcessing.xml"/>
   </part>
-  
+
   <part>
     <title>Drools Integration</title>
-    <partintro><para>Integration Documentation</para></partintro>
+    <partintro>
+      <para>Integration Documentation</para>
+    </partintro>
     <xi:include href="../../../../../shared/Commands/Commands.xml"/>
-    <xi:include href="../../../../../shared/CDI/CDI.xml"/>    
+    <xi:include href="../../../../../shared/CDI/CDI.xml"/>
     <xi:include href="../../../../../shared/Spring/KieSpring.xml"/>
-    <xi:include href="../../../../../shared/Camel/Camel.xml"/>    
+    <xi:include href="../../../../../shared/Camel/Camel.xml"/>
     <xi:include href="../../../../../shared/DroolsServer/DroolsServer.xml"/>
     <xi:include href="../../../../../shared/RHQ/RHQ.xml"/>
   </part>
-  
+
   <part>
     <title>Drools Workbench</title>
-    <partintro><para>The Drools workbench is built with the UberFire framework and uses the Guvnor plugin. Drools provides an additional rich set of plugins for rule authoring metophres.</para></partintro>
-  <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
-  <xi:include href="Workbench/AuthoringAssets.xml"/>
+    <partintro>
+      <para>The Drools workbench is built with the UberFire framework and uses the Guvnor plugin. Drools provides an
+        additional rich set of plugins for rule authoring metaphors.</para>
+    </partintro>
+    <xi:include href="../../../../../shared/Workbench/Workbench.xml"/>
+    <xi:include href="Workbench/AuthoringAssets.xml"/>
+    <xi:include href="../../../../../shared/Workbench/WorkbenchIntegration.xml"/>
+    <xi:include href="../../../../../shared/Workbench/WorkbenchHighAvailability.xml"/>
   </part>
-    
+
   <part>
     <title>Drools Examples</title>
-    <partintro><para>Examples to help you learn Drools</para></partintro>
+    <partintro>
+      <para>Examples to help you learn Drools</para>
+    </partintro>
     <xi:include href="Examples.xml"/>
   </part>
-  
+
 </book>

@@ -6,6 +6,8 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Workbench Basics</title>
 
-  <!-- xi:include href="../../../../../../shared/Workbench/Workbench.xml"/-->
-
+  <!--xi:include href="../../../../../../shared/Workbench/Workbench.xml"/-->
+  <!--xi:include href="../../../../../../shared/Workbench/WorkbenchIntegration.xml"/-->
+  <!--xi:include href="../../../../../../shared/Workbench/WorkbenchHighAvailability.xml"/-->
+  
 </chapter>
