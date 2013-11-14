@@ -26,7 +26,7 @@ import org.kie.api.runtime.rule.AgendaFilter;
 
 public class FireUntilHaltCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
     private static final long serialVersionUID = 510l;
 
     private AgendaFilter agendaFilter = null;
@@ -38,7 +38,7 @@ public class FireUntilHaltCommand
         this.agendaFilter = agendaFilter;
     }
 
-    public Integer execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         final ReteooWorkingMemoryInterface session = ((StatefulKnowledgeSessionImpl)ksession).session;
         

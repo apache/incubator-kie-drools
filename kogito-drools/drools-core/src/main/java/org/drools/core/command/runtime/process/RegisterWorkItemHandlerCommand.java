@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemHandler;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
+public class RegisterWorkItemHandlerCommand implements GenericCommand<Void> {
 
     @XmlElement
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
@@ -63,7 +63,7 @@ public class RegisterWorkItemHandlerCommand implements GenericCommand<Object> {
         this.workItemName = workItemName;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
         return null;

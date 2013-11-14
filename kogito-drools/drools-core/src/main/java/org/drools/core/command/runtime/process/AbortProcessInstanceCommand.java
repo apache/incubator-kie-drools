@@ -26,7 +26,7 @@ import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class AbortProcessInstanceCommand implements GenericCommand<Object> {
+public class AbortProcessInstanceCommand implements GenericCommand<Void> {
 
     @XmlAttribute
     private Long processInstanceId;
@@ -39,7 +39,7 @@ public class AbortProcessInstanceCommand implements GenericCommand<Object> {
         this.processInstanceId = processInstanceId;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         if (processInstanceId == null) {
             return null;
