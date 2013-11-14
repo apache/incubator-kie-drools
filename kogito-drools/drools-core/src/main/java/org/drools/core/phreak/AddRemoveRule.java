@@ -8,6 +8,7 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.reteoo.AbstractTerminalNode;
 import org.drools.core.reteoo.AccumulateNode;
@@ -517,24 +518,10 @@ public class AddRemoveRule {
                         rightTuple = next;
                     }
 
-                    ObjectSource os = bn.getRightInput();
-                    while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
-                        os = os.getParentObjectSource();
-                    }
-                    ObjectTypeNode otn = (ObjectTypeNode) os;
-                    final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
-                    Iterator otnIt = omem.getObjectHashSet().iterator();
-
-                    for (ObjectEntry entry = (ObjectEntry) otnIt.next(); entry != null; entry = (ObjectEntry) otnIt.next()) {
-                        InternalFactHandle fh = (InternalFactHandle) entry.getValue();
-                        for (RightTuple childRt = fh.getFirstRightTuple(); childRt != null; ) {
-                            RightTuple next = childRt.getHandleNext();
-                            if ( childRt.getRightTupleSink() == bn ) {
-                                fh.removeRightTuple(childRt);
-                            }
-                            childRt = next;
-                        }
-                    }
+                    RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
+                    unlinkRightTuples(srcRightTuples.getInsertFirst());
+                    unlinkRightTuples(srcRightTuples.getUpdateFirst());
+                    unlinkRightTuples(srcRightTuples.getDeleteFirst());
                 } else {
                     deleteSubnetworkFacts(bn, wm);
                 }
@@ -543,6 +530,17 @@ public class AddRemoveRule {
                 return;
             }
             lts = ((LeftTupleSource) lts).getSinkPropagator().getFirstLeftTupleSink();
+        }
+    }
+
+    private static void unlinkRightTuples(RightTuple rightTuple) {
+        for (RightTuple rt = rightTuple; rt != null; ) {
+            RightTuple next = (RightTuple) rt.getStagedNext();
+            // this RightTuple could have been already unlinked by the former cycle
+            if (rt.getFactHandle() != null) {
+                rt.unlinkFromRightParent();
+            }
+            rt = next;
         }
     }
 
