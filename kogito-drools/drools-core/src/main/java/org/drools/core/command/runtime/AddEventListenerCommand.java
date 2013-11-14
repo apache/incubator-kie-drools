@@ -26,7 +26,7 @@ import org.kie.api.runtime.KieSession;
 
 public class AddEventListenerCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
 
     private RuleRuntimeEventListener   ruleRuntimeEventlistener = null;
     private AgendaEventListener        agendaEventlistener        = null;

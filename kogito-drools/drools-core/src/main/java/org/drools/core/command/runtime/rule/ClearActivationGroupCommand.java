@@ -21,7 +21,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
-public class ClearActivationGroupCommand implements GenericCommand<Object> {
+public class ClearActivationGroupCommand implements GenericCommand<Void> {
 
     private String name;
 

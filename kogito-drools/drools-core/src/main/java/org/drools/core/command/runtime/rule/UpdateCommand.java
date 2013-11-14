@@ -28,7 +28,7 @@ import org.kie.api.runtime.rule.FactHandle;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class UpdateCommand
-        implements GenericCommand<Object> {
+        implements GenericCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
     
@@ -45,7 +45,7 @@ public class UpdateCommand
         this.object = object;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         ksession.getEntryPoint( handle.getEntryPointId() ).update( handle, object );
@@ -68,4 +68,7 @@ public class UpdateCommand
         return "session.update( " + handle + ", " + object + " );";
     }
 
+    public Object getObject() { 
+        return object;
+    }
 }

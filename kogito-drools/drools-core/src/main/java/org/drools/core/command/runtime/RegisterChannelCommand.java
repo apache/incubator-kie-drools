@@ -24,7 +24,7 @@ import org.kie.api.runtime.KieSession;
 
 public class RegisterChannelCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
 
     private static final long serialVersionUID = 510l;
 
@@ -40,7 +40,7 @@ public class RegisterChannelCommand
         this.channel = channel;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         ksession.registerChannel( name,
