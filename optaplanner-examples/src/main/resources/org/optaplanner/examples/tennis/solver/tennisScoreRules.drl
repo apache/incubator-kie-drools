@@ -17,20 +17,20 @@
 package org.optaplanner.examples.tennis.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 
 import org.optaplanner.examples.tennis.domain.Team;
 import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 
-global HardSoftScoreHolder scoreHolder;
+global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
 // ############################################################################
 
-rule "oneMatchPerDate"
+rule "oneAssignmentPerDatePerTeam"
     when
         TeamAssignment($t : team, $d : day, $leftId : id)
         TeamAssignment(team == $t, day == $d, id > $leftId)
@@ -38,7 +38,7 @@ rule "oneMatchPerDate"
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
-rule "UnavailabilityPenalty"
+rule "unavailabilityPenalty"
     when
         UnavailabilityPenalty($t : team, $d : day)
         TeamAssignment(team == $t, day == $d)
@@ -46,7 +46,11 @@ rule "UnavailabilityPenalty"
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
 
-rule "fair"
+// ############################################################################
+// Medium constraints
+// ############################################################################
+
+rule "fairAssignmentCountPerTeam"
     when
         $t : Team()
         $total : Number() from accumulate(
@@ -54,10 +58,14 @@ rule "fair"
             count($a)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()) * 10000);
+        scoreHolder.addMediumConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
 end
 
-rule "playEvenlyAgainstEveryone"
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "playEvenlyAgainstAllOtherTeams"
     when
         $t1 : Team()
         $t2 : Team()
@@ -69,30 +77,3 @@ rule "playEvenlyAgainstEveryone"
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
 end
-
-
-//
-//rule "requiredNetworkBandwidthTotal"
-//    when
-//        $computer : CloudComputer($networkBandwidth : networkBandwidth)
-//        $requiredNetworkBandwidthTotal : Number(intValue > $networkBandwidth) from accumulate(
-//            CloudProcess(
-//                computer == $computer,
-//                $requiredNetworkBandwidth : requiredNetworkBandwidth),
-//            sum($requiredNetworkBandwidth)
-//        )
-//    then
-//        scoreHolder.addHardConstraintMatch(kcontext, $networkBandwidth - $requiredNetworkBandwidthTotal.intValue());
-//end
-//
-//// ############################################################################
-//// Soft constraints
-//// ############################################################################
-//
-//rule "computerCost"
-//    when
-//        $computer : CloudComputer($cost : cost)
-//        exists CloudProcess(computer == $computer)
-//    then
-//        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
-//end

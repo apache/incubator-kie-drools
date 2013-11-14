@@ -9,7 +9,7 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
     <scoreDrl>/org/optaplanner/examples/tennis/solver/tennisScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 

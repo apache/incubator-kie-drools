@@ -24,13 +24,14 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.solution.Solution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
 @XStreamAlias("TennisSolution")
-public class TennisSolution extends AbstractPersistable implements Solution<HardSoftScore> {
+public class TennisSolution extends AbstractPersistable implements Solution<HardMediumSoftScore> {
 
     private List<Team> teamList;
     private List<Day> dayList;
@@ -38,7 +39,7 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
 
     private List<TeamAssignment> teamAssignmentList;
 
-    private HardSoftScore score;
+    private HardMediumSoftScore score;
 
     @ValueRangeProvider(id = "teamRange")
     public List<Team> getTeamList() {
@@ -74,11 +75,11 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
         this.teamAssignmentList = teamAssignmentList;
     }
 
-    public HardSoftScore getScore() {
+    public HardMediumSoftScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardMediumSoftScore score) {
         this.score = score;
     }
 
