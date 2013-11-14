@@ -4651,5 +4651,54 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals(1, i.get());
     }
+
+    @Test
+    public void testRuleDoesNotRefireOnNewSession() {
+        // DROOLS-339
+        String drl = "\n" +
+                     "global java.util.List list\n" +
+                     "rule \"Insert Info\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insert( \"aaa\" );\n" +
+                     "    insert( new Integer( 12 ) );\n" +
+                     "    insert( new Double( 4.0 ) );\n" +
+                     "end\n" +
+                     "\n" +
+                     "\n" +
+                     "rule \"React\"\n" +
+                     "when\n" +
+                     "    Integer()\n" +
+                     "    accumulate (\n" +
+                     "                 $n : Double( ) and\n" +
+                     "                      Double(  ),\n" +
+                     "                 $x : count( $n )\n" +
+                     "               )\n" +
+                     "    String( )\n" +
+                     "then\n" +
+                     "    list.add(\"working\");\n" +
+                     "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List list = new ArrayList();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("working", list.get(0));
+        ksession.dispose();
+
+        ksession = kbase.newStatefulKnowledgeSession();
+
+        list.clear();
+        ksession.setGlobal("list", list);
+
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("working", list.get(0));
+        ksession.dispose();
+    }
 }
 
