@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class SignalEventCommand implements GenericCommand<Object> {
+public class SignalEventCommand implements GenericCommand<Void> {
 
     @XmlAttribute(name="process-instance-id")
     private long processInstanceId = -1;
@@ -84,7 +84,7 @@ public class SignalEventCommand implements GenericCommand<Object> {
         this.event = event;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         if (processInstanceId == -1) {

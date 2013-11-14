@@ -34,7 +34,7 @@ import org.kie.api.runtime.KieSession;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
-public class CompleteWorkItemCommand implements GenericCommand<Object> {
+public class CompleteWorkItemCommand implements GenericCommand<Void> {
 
     @XmlAttribute(name="id", required = true)
     private long workItemId;

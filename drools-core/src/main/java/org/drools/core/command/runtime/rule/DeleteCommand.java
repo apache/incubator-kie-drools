@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteCommand
-        implements GenericCommand<Object> {
+        implements GenericCommand<Void> {
 
     private DisconnectedFactHandle handle;
 
@@ -40,7 +40,7 @@ public class DeleteCommand
         this.handle = DisconnectedFactHandle.newFrom( handle );
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         ksession.getEntryPoint( handle.getEntryPointId() ).retract( handle );
         return null;

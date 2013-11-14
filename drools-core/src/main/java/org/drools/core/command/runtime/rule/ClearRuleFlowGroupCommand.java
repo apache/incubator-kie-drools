@@ -22,7 +22,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 
-public class ClearRuleFlowGroupCommand implements GenericCommand<Object> {
+public class ClearRuleFlowGroupCommand implements GenericCommand<Void> {
 
     private String name;
 

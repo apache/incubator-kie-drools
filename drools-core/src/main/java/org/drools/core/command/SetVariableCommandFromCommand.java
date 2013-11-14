@@ -23,7 +23,7 @@ import org.kie.internal.command.World;
 
 public class SetVariableCommandFromCommand
     implements
-    GenericCommand<Object> {
+    GenericCommand<Void> {
     private String identifier;
     private String contextName;
     private Command cmd;
