@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.kie.internal.command.Context;
 
@@ -86,9 +86,9 @@ public class FindVariableInstancesCommand extends AbstractHistoryLogCommand<List
 
     public String toString() {
         if( variableId == null || variableId.isEmpty() ) { 
-            return JPAAuditLogService.class.getSimpleName() + ".findVariableInstances("+ processInstanceId + ")";
+            return AuditLogService.class.getSimpleName() + ".findVariableInstances("+ processInstanceId + ")";
         } else { 
-            return JPAAuditLogService.class.getSimpleName() + ".findVariableInstances("+ processInstanceId + ", " + variableId + ")";
+            return AuditLogService.class.getSimpleName() + ".findVariableInstances("+ processInstanceId + ", " + variableId + ")";
         }
     }
 }

@@ -29,12 +29,6 @@ import org.kie.api.runtime.Environment;
  */
 public interface AuditLogService {
 
-    public void setEnvironment(Environment env);
-
-    public String getPersistenceUnitName();
-
-    public void setPersistenceUnitName(String persistenceUnitName);
-
     /**
      * Service methods
      * @return
@@ -58,9 +52,9 @@ public interface AuditLogService {
 
     public List<VariableInstanceLog> findVariableInstances(long processInstanceId, String variableId);
 
-    public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean activeProcesses);
+    public List<VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses);
     
-    public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean activeProcesses);
+    public List<VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
     
     public void clear();
 

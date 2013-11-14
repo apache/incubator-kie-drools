@@ -36,7 +36,6 @@ import javax.persistence.Persistence;
 import javax.transaction.Status;
 import javax.transaction.Transaction;
 
-import org.junit.Assert;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
@@ -44,12 +43,11 @@ import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowLogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.DroolsStreamUtils;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
-import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.bpmn2.test.RequireLocking;
+import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
@@ -59,7 +57,6 @@ import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.JPAAuditLogService;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
@@ -70,6 +67,7 @@ import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
@@ -683,7 +681,8 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     protected List<String> getCompletedNodes(long processInstanceId) { 
         List<String> names = new ArrayList<String>();
         if (sessionPersistence) {
-            List<NodeInstanceLog> logs = JPAProcessInstanceDbLog.findNodeInstances(processInstanceId);
+            AuditLogService auditLogService = new JPAAuditLogService(emf);
+            List<NodeInstanceLog> logs = auditLogService.findNodeInstances(processInstanceId);
             if (logs != null) {
                 for (NodeInstanceLog l : logs) {
                     names.add(l.getNodeId());

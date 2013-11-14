@@ -64,10 +64,9 @@ import org.slf4j.LoggerFactory;
  * <li>AuditLogService</li>
  * </ul>
  */
-public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
+public class CommandBasedAuditLogServiceTest extends AbstractAuditLogServiceTest {
 
     private HashMap<String, Object> context;
-    private static final Logger logger = LoggerFactory.getLogger(AuditLogServiceTest.class);
     
     private KieSession session;
     private AuditLogService auditLogService; 
@@ -98,7 +97,8 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
         AbstractAuditLogger dblogger = AuditLoggerFactory.newInstance(Type.JPA, session, null);
         assertNotNull(dblogger);
         assertTrue(dblogger instanceof JPAWorkingMemoryDbLogger);
-        auditLogService = new JPAAuditLogService(env);
+        
+        auditLogService = new CommandBasedAuditLogService(session);
     }
 
     @After

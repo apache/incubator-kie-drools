@@ -6,10 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Persistence;
+
 import org.drools.core.process.core.Work;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.HumanTaskNode;
@@ -165,7 +168,8 @@ public final class ChecklistItemFactory {
 		Map<String, ChecklistItem> result = new HashMap<String, ChecklistItem>();
 		Map<String, String> relevantNodes = new HashMap<String, String>();
 		getRelevantNodes(process, relevantNodes);
-		for (NodeInstanceLog log: JPAProcessInstanceDbLog.findNodeInstances(processInstanceId)) {
+		AuditLogService auditLogService = new JPAAuditLogService(Persistence.createEntityManagerFactory("org.jbpm.persistence.jpa"));
+		for (NodeInstanceLog log: auditLogService.findNodeInstances(processInstanceId)) {
 			String orderingNb = relevantNodes.get(log.getNodeId());
 			if (orderingNb != null) {
 				if (log.getType() == NodeInstanceLog.TYPE_EXIT) {

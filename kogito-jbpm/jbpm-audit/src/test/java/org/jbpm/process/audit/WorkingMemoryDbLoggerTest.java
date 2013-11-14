@@ -54,7 +54,6 @@ import bitronix.tm.TransactionManagerServices;
  * This class tests the following classes: 
  * <ul>
  * <li>WorkingMemoryDbLogger</li>
- * <li>ProcessInstanceDbLog</li>
  * </ul>
  */
 public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
@@ -73,6 +72,9 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
 
     @After
     public void tearDown() throws Exception {
+        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
+        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
+        
         cleanUp(context);
         logService.dispose();
     }
@@ -113,8 +115,7 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
         }
         logService.clear();
         
-        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
+
 	}
 
     @Test
@@ -149,9 +150,6 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
             assertEquals(6, nodeInstances.size());
         }
         logService.clear();
-        
-        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
 	}
 
     @Test
@@ -191,9 +189,6 @@ public class WorkingMemoryDbLoggerTest extends AbstractBaseTest {
         }
         assertEquals(14, nodeInstances.size());
         logService.clear();
-        
-        BitronixTransactionManager txm = TransactionManagerServices.getTransactionManager();
-        assertTrue("There is still a transaction running!", txm.getCurrentTransaction() == null );
 	}
 	
     private static RuleBase createKnowledgeBase() {

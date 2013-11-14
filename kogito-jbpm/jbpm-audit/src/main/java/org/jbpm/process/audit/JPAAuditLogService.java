@@ -67,10 +67,10 @@ public class JPAAuditLogService implements AuditLogService {
         this.env = env;
     }
     
-    /* (non-Javadoc)
-     * @see org.jbpm.process.audit.AuditLogService#setEnvironment(org.kie.api.runtime.Environment)
-     */
-    @Override
+    public JPAAuditLogService(EntityManagerFactory  emf){
+        this.emf = emf;
+    }
+    
     public void setEnvironment(Environment env) {
         this.env = env;
         if( this.emf != null ) { 
@@ -79,10 +79,6 @@ public class JPAAuditLogService implements AuditLogService {
         this.emf = null;
     }
 
-    /* (non-Javadoc)
-     * @see org.jbpm.process.audit.AuditLogService#getPersistenceUnitName()
-     */
-    @Override
     public String getPersistenceUnitName() {
         return persistenceUnitName;
     }
@@ -90,7 +86,6 @@ public class JPAAuditLogService implements AuditLogService {
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#setPersistenceUnitName(java.lang.String)
      */
-    @Override
     public void setPersistenceUnitName(String persistenceUnitName) {
         this.persistenceUnitName = persistenceUnitName;
     }

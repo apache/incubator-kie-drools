@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 
@@ -69,9 +69,9 @@ public class FindProcessInstancesCommand extends AbstractHistoryLogCommand<List<
 
     public String toString() {
         if( processId == null || processId.isEmpty() ) {
-            return JPAAuditLogService.class.getSimpleName() + ".findProcessInstances()";
+            return AuditLogService.class.getSimpleName() + ".findProcessInstances()";
         } else { 
-            return JPAAuditLogService.class.getSimpleName() + ".findProcessInstances("+ processId + ")";
+            return AuditLogService.class.getSimpleName() + ".findProcessInstances("+ processId + ")";
         }
     }
 }

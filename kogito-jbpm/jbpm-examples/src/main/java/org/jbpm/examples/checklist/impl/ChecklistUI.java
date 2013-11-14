@@ -29,17 +29,7 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -49,7 +39,8 @@ import org.jbpm.examples.checklist.ChecklistContextConstraint;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistItem.Status;
 import org.jbpm.examples.checklist.ChecklistManager;
-import org.jbpm.process.audit.JPAProcessInstanceDbLog;
+import org.jbpm.process.audit.AuditLogService;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.runtime.manager.impl.RuntimeEnvironmentBuilder;
 import org.jbpm.test.JBPMHelper;
 import org.kie.api.io.ResourceType;
@@ -120,7 +111,7 @@ public class ChecklistUI extends JFrame {
             .addAsset(ResourceFactory.newClassPathResource("checklist/travel.bpmn"), ResourceType.BPMN2)
             .get();
 		checklistManager = new DefaultChecklistManager(environment);
-		JPAProcessInstanceDbLog.setEnvironment(environment.getEnvironment());
+		AuditLogService auditLogService = new JPAAuditLogService(environment.getEnvironment());
     }
     
     private void initializeComponent() {
