@@ -78,15 +78,13 @@ including callbacks from within the rules
       that relate to rules and facts are shown below.</para>
 
       <example>
-        <title>Creating the PetStore RuleBase in PetStore.main</title>
+        <title>Creating the PetStore KieContainer in PetStore.main</title>
 
-        <programlisting language="java"><![CDATA[KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        <programlisting language="java"><![CDATA[// KieServices is the factory for all KIE services 
+KieServices ks = KieServices.Factory.get();
 
-kbuilder.add( ResourceFactory.newClassPathResource( "PetStore.drl",
-                                                    PetStore.class ),
-              ResourceType.DRL );
-KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+// From the kie services, a container is created from the classpath
+KieContainer kc = ks.getKieClasspathContainer();
 
 // Create the stock.
 Vector<Product> stock = new Vector<Product>();
@@ -97,20 +95,17 @@ stock.add( new Product( "Fish Food", 2 ) );
 // A callback is responsible for populating the
 // Working Memory and for firing all rules.
 PetStoreUI ui = new PetStoreUI( stock,
-                                new CheckoutCallback( kbase ) );
+                                new CheckoutCallback( kc ) );
 ui.createAndShowGUI();
 ]]></programlisting>
       </example>
 
-      <para>The code shown above loads the rules from a DRL file on the
-      classpath. Unlike other examples where the facts are asserted and
-      fired straight away, this example defers this step to later. The
-      way it does this is via the second last line where a
-      <code>PetStoreUI</code> object is created using a constructor 
-      accepting the <code>Vector</code> object <code>stock</code>
-      collecting our products, and an instance of
-      the <code>CheckoutCallback</code> class containing the Rule Base
-      that we have just loaded.</para>
+      <para>The code shown above create a <code>KieContainer</code> from the classpath and based on the definitions in
+    the <filename>kmodule.xml</filename> file. Unlike other examples where the facts are asserted and fired straight
+    away, this example defers this step to later. The way it does this is via the second last line where a
+      <code>PetStoreUI</code> object is created using a constructor accepting the <code>Vector</code> object
+      <code>stock</code> collecting our products, and an instance of the <code>CheckoutCallback</code> class containing
+    the Rule Base that we have just loaded.</para>
 
       <para>The Java code that fires the rules is within the 
       <code>CheckoutCallBack.checkout()</code> method. This is triggered
@@ -129,7 +124,10 @@ ui.createAndShowGUI();
 
     // Add the JFrame to the ApplicationData to allow for user interaction
 
-    StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    // From the container, a session is created based on  
+    // its definition and configuration in the META-INF/kmodule.xml file 
+    KieSession ksession = kcontainer.newKieSession("PetStoreKS");
+
     ksession.setGlobal( "frame", frame );
     ksession.setGlobal( "textArea", this.output );
 
@@ -168,25 +166,22 @@ ui.createAndShowGUI();
       pressed, this code copies the contents of the Swing
       <code>TableModel</code> into the Session's Working Memory.</para>
 
-      <para>Within this code, there are nine calls to the Working Memory.
-      The first of these creates a new Working Memory, as a Stateful
-      Knowledge Session from the Knowledge Base. Remember that we passed
-      in this Knowledge Base when we created the <code>CheckoutCallBack</code>
-      class in the <code>main()</code> method. The next two calls pass in
-      two objects that we will hold as global variables in the rules: the
-      Swing text area and the Swing frame used for writing messages.</para>
+      <para>Within this code, there are nine calls to the <code>KieSession</code>. The first of these creates a new
+      <code>KieSession</code> from the <code>KieContainer</code>. Remember that we passed in this
+      <code>KieContainer</code> when we created the <code>CheckoutCallBack</code> class in the <code>main()</code>
+    method. The next two calls pass in two objects that we will hold as global variables in the rules: the Swing text
+    area and the Swing frame used for writing messages.</para>
 
-      <para>More inserts put information on products into the Working Memory,
-      as well as the order list. The final call is the standard
-      <code>fireAllRules()</code>. Next, we look at what this method causes
-      to happen within the rules file.</para>
+      <para>More inserts put information on products into the <code>KieSession</code>, as well as the order list. The
+    final call is the standard <code>fireAllRules()</code>. Next, we look at what this method causes to happen within
+    the rules file.</para>
       
       <example>
         <title>Package, Imports, Globals and Dialect: extract from PetStore.drl</title>
 
         <programlisting language="java">package org.drools.examples
 
-import org.drools.core.WorkingMemory
+import org.kie.api.runtime.KieRuntime
 import org.drools.examples.petstore.PetStoreExample.Order
 import org.drools.examples.petstore.PetStoreExample.Purchase
 import org.drools.examples.petstore.PetStoreExample.Product
@@ -216,50 +211,51 @@ global javax.swing.JTextArea textArea</programlisting>
       <example>
         <title>Java Functions in the Rules: extract from PetStore.drl</title>
 
-        <programlisting language="java"><![CDATA[function void doCheckout(JFrame frame, WorkingMemory workingMemory) {
-    Object[] options = {"Yes",
-                        "No"};
+        <programlisting language="java"><![CDATA[function void doCheckout(JFrame frame, KieRuntime krt) {
+        Object[] options = {"Yes",
+                            "No"};
                             
-    int n = JOptionPane.showOptionDialog(frame,
-        "Would you like to checkout?",
-        "",
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]);
+        int n = JOptionPane.showOptionDialog(frame,
+                                             "Would you like to checkout?",
+                                             "",
+                                             JOptionPane.YES_NO_OPTION,
+                                             JOptionPane.QUESTION_MESSAGE,
+                                             null,
+                                             options,
+                                             options[0]);
 
-    if (n == 0) {
-        workingMemory.setFocus( "checkout" );
-    }   
+       if (n == 0) {
+            krt.getAgenda().getAgendaGroup( "checkout" ).setFocus();
+       }   
 }
 
-function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order order, Product fishTank, int total) {
-    Object[] options = {"Yes",
-                        "No"};
+function boolean requireTank(JFrame frame, KieRuntime krt, Order order, Product fishTank, int total) {
+        Object[] options = {"Yes",
+                            "No"};
                             
-    int n = JOptionPane.showOptionDialog(frame,
-        "Would you like to buy a tank for your " + total + " fish?",
-        "Purchase Suggestion",
-        JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE,
-        null,
-        options,
-        options[0]);
+        int n = JOptionPane.showOptionDialog(frame,
+                                             "Would you like to buy a tank for your " + total + " fish?",
+                                             "Purchase Suggestion",
+                                             JOptionPane.YES_NO_OPTION,
+                                             JOptionPane.QUESTION_MESSAGE,
+                                             null,
+                                             options,
+                                             options[0]);
                                              
-    System.out.print( "SUGGESTION: Would you like to buy a tank for your "
-                      + total + " fish? - " );
+       System.out.print( "SUGGESTION: Would you like to buy a tank for your "
+                           + total + " fish? - " );
 
-    if (n == 0) {
-        Purchase purchase = new Purchase( order, fishTank );
-        workingMemory.insert( purchase );
-        order.addItem( purchase );
-        System.out.println( "Yes" );
-    } else {
-        System.out.println( "No" );
-    }      
-    return true;
+       if (n == 0) {
+             Purchase purchase = new Purchase( order, fishTank );
+             krt.insert( purchase );
+             order.addItem( purchase );
+             System.out.println( "Yes" );
+       } else {
+            System.out.println( "No" );
+       }      
+       return true;
 }
+
 ]]></programlisting>
       </example>
   
@@ -274,10 +270,9 @@ function boolean requireTank(JFrame frame, WorkingMemory workingMemory, Order or
 
       <itemizedlist>
         <listitem>
-          <para><code>doCheckout()</code> displays a dialog asking users
-          whether they wish to checkout. If they do, focus is set to the
-          <code>checkOut</code> agenda-group, allowing rules in that group
-          to (potentially) fire.</para>
+          <para><code>doCheckout()</code> displays a dialog asking users whether they wish to checkout. If they do,
+        focus is set to the <code>checkout</code> agenda-group, allowing rules in that group to (potentially)
+        fire.</para>
         </listitem>
 
         <listitem>
@@ -406,7 +401,7 @@ when
     ArrayList( $total : size &gt; 5 ) from collect( Purchase( product.name == "Gold Fish" ) )
     $fishTank : Product( name == "Fish Tank" )
 then
-    requireTank(frame, drools.getWorkingMemory(), $order, $fishTank, $total); 
+    requireTank(frame, kcontext.getKieRuntime(), $order, $fishTank, $total); 
 end
 ]]></programlisting>
       </example>
@@ -462,7 +457,7 @@ end
     dialect "java"
     when
     then
-        doCheckout(frame, drools.getWorkingMemory());
+        doCheckout(frame, kcontext.getKieRuntime());
 end</programlisting>
       </example>
 
@@ -523,23 +518,19 @@ end
 
       <itemizedlist>
         <listitem>
-          <para>If we haven't already calculated the gross total,
-          <code>Gross Total</code> accumulates the product prices into a total,
-          puts this total into Working Memory, and displays it via the Swing
-          <code>JTextArea</code>, using the <code>textArea</code> global
-          variable yet again.</para>
+          <para>If we haven't already calculated the gross total, <code>Gross Total</code> accumulates the product
+        prices into a total, puts this total into the session, and displays it via the Swing <code>JTextArea</code>,
+        using the <code>textArea</code> global variable yet again.</para>
         </listitem>
 
         <listitem>
-          <para>If our gross total is between 10 and 20, 
-          <code>"Apply 5% Discount"</code> calculates the discounted total and
-          adds it to the Working Memory and displays it in the text area.</para>
+          <para>If our gross total is between 10 and 20, <code>"Apply 5% Discount"</code> calculates the discounted
+        total and adds it to the session and displays it in the text area.</para>
         </listitem>
 
         <listitem>
-          <para>If our gross total is not less than 20, 
-          <code>"Apply 10% Discount"</code> calculates the discounted total and
-          adds it to the Working Memory and displays it in the text area.</para>
+          <para>If our gross total is not less than 20, <code>"Apply 10% Discount"</code> calculates the discounted
+        total and adds it to the session and displays it in the text area.</para>
         </listitem>
       </itemizedlist>
       
@@ -560,7 +551,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/PetStoreExample/1-PetStore-Start-Screen.png" />
+            <imagedata fileref="images/Examples/PetStoreExample/1-PetStore-Start-Screen.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -593,7 +584,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/PetStoreExample/2-stock-added-to-order-list.png" />
+            <imagedata fileref="images/Examples/PetStoreExample/2-stock-added-to-order-list.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -636,7 +627,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/PetStoreExample/3-purchase-suggestion.png" />
+            <imagedata fileref="images/Examples/PetStoreExample/3-purchase-suggestion.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -669,7 +660,7 @@ end
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/PetStoreExample/4-Petstore-final-screen.png" />
+            <imagedata fileref="images/Examples/PetStoreExample/4-Petstore-final-screen.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -686,5 +677,5 @@ SUGGESTION: Would you like to buy a tank for your 6 fish? - Yes</programlisting>
       </example>
      
 
-      <!---<para>Todo : Add Audit and Agenda Views for this sample.</para>-->
+      <!-- <para>Todo : Add Audit and Agenda Views for this sample.</para> -->
     </section>
