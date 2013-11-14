@@ -13,7 +13,6 @@ import java.awt.event.MouseListener;
 public class GameUI {
     private GameConfiguration conf;
 
-    private JFrame     frame;
     private Canvas     canvas;
 
     KieSession ksession;
@@ -70,13 +69,12 @@ public class GameUI {
         });
 
 
-        frame = new JFrame();
+        JFrame frame = new JFrame();
         frame.setResizable(false);
         frame.setDefaultCloseOperation(conf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
         frame.setBackground(Color.BLACK);
         frame.add(canvas);
-        frame.revalidate();
         frame.pack();
         frame.setVisible(true);
         frame.setLocationRelativeTo(null); // Center in screen
