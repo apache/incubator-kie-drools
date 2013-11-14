@@ -33,10 +33,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import org.drools.examples.sudoku.rules.DroolsUtil;
 import org.drools.examples.sudoku.swing.SudokuGridSamples;
 import org.drools.examples.sudoku.swing.SudokuGridView;
-import org.kie.internal.KnowledgeBase;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
 
 /**
  * This example shows how Drools can be used to solve a 9x9 Sudoku Grid.
@@ -99,9 +99,8 @@ public class SudokuExample implements ActionListener {
         mainFrame.setJMenuBar(menuBar);
         sudokuGridView = new SudokuGridView();
 
-        KnowledgeBase kBase = DroolsUtil.readKnowledgeBase("/org/drools/examples/sudoku/sudoku.drl",
-                "/org/drools/examples/sudoku/validate.drl");
-        sudoku = new Sudoku( kBase );
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        sudoku = new Sudoku( kc );
 
         mainFrame.setLayout(borderLayout);
         mainFrame.add(BorderLayout.CENTER, sudokuGridView);
@@ -131,9 +130,11 @@ public class SudokuExample implements ActionListener {
 
     private void runFile(String path){
         Integer[][] values = new Integer[9][];
+        FileReader fr = null;
+        BufferedReader rdr = null;
         try {
-            FileReader fr = new FileReader( path );
-            BufferedReader rdr = new BufferedReader( fr );
+            fr = new FileReader( path );
+            rdr = new BufferedReader( fr );
             String line = rdr.readLine();
             for( int iRow = 0; iRow < 9;  iRow++ ){
                 values[iRow] = new Integer[9];
@@ -153,6 +154,14 @@ public class SudokuExample implements ActionListener {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if( rdr != null ) {
+                try {
+                    rdr.close();
+                } catch (IOException e) {
+                    // nothing to do
+                }
+            }
         }
     }
 
@@ -204,7 +213,6 @@ public class SudokuExample implements ActionListener {
             sudoku.setCellValues(SudokuGridSamples.getInstance().getSample(menuItem.getText()));
             sudoku.validate();
             buttonsActive(true);
-
         } else {
             //
         }
