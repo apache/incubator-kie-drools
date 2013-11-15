@@ -191,6 +191,10 @@ public class KieBuilderImpl
         return this;
     }
 
+    void updateKieModuleMetaInfo() {
+        writeKieModuleMetaInfo( generateKieModuleMetaInfo() );
+    }
+
     private KieModuleMetaInfo generateKieModuleMetaInfo() {
     	// TODO: I think this method is wrong because it is only inspecting packages that are included
     	// in at least one kbase, but I believe it should inspect all packages, even if not included in
