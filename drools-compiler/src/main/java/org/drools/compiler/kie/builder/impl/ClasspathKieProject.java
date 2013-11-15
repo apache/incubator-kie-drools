@@ -158,22 +158,10 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public static InternalKieModule createInternalKieModule(URL url, String fixedURL, KieModuleModel kieProject, ReleaseId releaseId, String rootPath) {
-        InternalKieModule kJar;
         File file = new File( rootPath );
-        if ( fixedURL.endsWith( ".jar" ) ) {
-            kJar = new ZipKieModule( releaseId,
-                                     kieProject,
-                                     file );
-        } else if ( file.isDirectory() ) {
-            kJar = new FileKieModule( releaseId,
-                                      kieProject,
-                                      file );
-        } else {
-            // if it's a file it must be zip and end with .jar, otherwise we log an error
-            log.error( "Unable to build index of kmodule.xml url=" + url.toExternalForm() + "\n" );
-            kJar = null;
-        }
-        return kJar;
+        return file.isDirectory() ?
+               new FileKieModule( releaseId, kieProject, file ) :
+               new ZipKieModule( releaseId, kieProject, file );
     }
 
     public static String getPomProperties(String urlPathToAdd) {
@@ -182,7 +170,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = urlPathToAdd.substring( rootPath.lastIndexOf( ':' ) + 1 );
         }
 
-        if ( urlPathToAdd.endsWith( ".jar" ) ) {
+        if ( urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
             File actualZipFile = new File( rootPath );
             if ( !actualZipFile.exists() ) {
                 log.error( "Unable to load pom.properties from" + urlPathToAdd + " as jarPath cannot be found\n" + rootPath );
@@ -343,11 +331,13 @@ public class ClasspathKieProject extends AbstractKieProject {
             if (isInJar) {
                 String jarName = urlString.substring(0, kModulePos);
                 jarName = jarName.substring(jarName.lastIndexOf('/')+1);
-                path = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
-                path += jarName;
+                String jarFolderPath = path.substring( 0, path.length() - ("contents/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
+                String jarPath = jarFolderPath + jarName;
+                path = new File(jarPath).exists() ? jarPath : jarFolderPath + "content";
             } else if (path.endsWith(KieModuleModelImpl.KMODULE_JAR_PATH)) {
                 path = path.substring( 0, path.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
             }
+
             log.info( "Virtual file physical path = " + path );
             return path;
         } catch (Exception e) {
