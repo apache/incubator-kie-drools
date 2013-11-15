@@ -81,7 +81,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     
     @Override
     public RuntimeEngine getRuntimeEngine(Context<?> context) {
-  
+    	if (isClosed()) {
+    		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
+    	}
         Object contextId = context.getContextId();
         KieSession ksession = null;
         Integer ksessionId = null;
@@ -116,6 +118,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void validate(KieSession ksession, Context<?> context) throws IllegalStateException {
+    	if (isClosed()) {
+    		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
+    	}
         if (context == null || context.getContextId() == null) {
             return;
         }
@@ -137,6 +142,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void disposeRuntimeEngine(RuntimeEngine runtime) {
+    	if (isClosed()) {
+    		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
+    	}
         removeLocalRuntime(runtime);
         if (runtime instanceof Disposable && environment.usePersistence()) {
             ((Disposable) runtime).dispose();

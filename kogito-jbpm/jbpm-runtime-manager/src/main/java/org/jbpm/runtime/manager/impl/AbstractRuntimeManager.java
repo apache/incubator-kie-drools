@@ -59,6 +59,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     
     protected String identifier;
     
+    protected boolean closed = false;
+    
     public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
         this.environment = environment;
         this.identifier = identifier;
@@ -110,6 +112,11 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         runtime.getKieSession().getEnvironment().set("RuntimeManager", this);
         runtime.getKieSession().getEnvironment().set("deploymentId", this.getIdentifier());
     }
+    
+    @Override
+    public boolean isClosed() {
+    	return this.closed;
+    }
 
     @Override
     public void close() {
@@ -130,6 +137,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
                 schedulerService.shutdown();
             }
         }
+        this.closed = true;
     }
 
     public org.kie.internal.runtime.manager.RuntimeEnvironment getEnvironment() {

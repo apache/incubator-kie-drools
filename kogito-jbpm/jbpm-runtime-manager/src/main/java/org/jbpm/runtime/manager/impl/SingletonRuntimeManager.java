@@ -99,7 +99,10 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public RuntimeEngine getRuntimeEngine(Context context) {        
+    public RuntimeEngine getRuntimeEngine(Context context) {  
+    	if (isClosed()) {
+    		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
+    	}
         // always return the same instance
         return this.singleton;
     }
@@ -107,6 +110,9 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
 
     @Override
     public void validate(KieSession ksession, Context<?> context) throws IllegalStateException {
+    	if (isClosed()) {
+    		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
+    	}
         if (this.singleton != null && this.singleton.getKieSession().getId() != ksession.getId()) {
             throw new IllegalStateException("Invalid session was used for this context " + context);
         }

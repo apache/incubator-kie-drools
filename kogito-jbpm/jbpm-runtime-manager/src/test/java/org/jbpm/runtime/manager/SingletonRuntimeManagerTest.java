@@ -87,9 +87,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
-        
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
     }
     
     @Test
@@ -121,9 +118,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
-        
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
     }
     
     @Test
@@ -156,9 +150,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
-        
         // recreate it once again to ensure it has right id
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
         assertNotNull(manager);
@@ -181,9 +172,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
-        
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
     }
     
     @Test
@@ -217,9 +205,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
-        
         // create another manager
         //-----------------------------------------
         RuntimeManager manager2 = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager2");        
@@ -243,9 +228,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         // close manager which will close session maintained by the manager
         manager2.close();
-        
-        runtime = manager2.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
         
         // recreate first manager
         //-----------------------------------------
@@ -271,9 +253,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         // close manager which will close session maintained by the manager
         manager.close();
         
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
-        
         // create another manager
         //-----------------------------------------
         manager2 = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment, "manager2");        
@@ -296,10 +275,7 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(sessionId, ksession.getId());
         
         // close manager which will close session maintained by the manager
-        manager2.close();
-        
-        runtime = manager2.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
+        manager2.close();        
     }
     
     @Test
@@ -499,8 +475,6 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
-        
-        runtime = manager.getRuntimeEngine(EmptyContext.get());
-        assertNull(runtime);
+ 
     }
 }

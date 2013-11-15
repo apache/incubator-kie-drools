@@ -167,6 +167,48 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
         assertNull(processInstance);
     }
     
+    @Test
+    public void testRunProcessWithAsyncHandlerDuplicatedRegister() throws Exception {
+
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.commands.PrintOutCommand"));
+                        return handlers;
+                    }
+                    
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        // important to register RuntimeManager in the registry as callbacks rely on it to move process forward
+        RuntimeManagerRegistry.get().addRuntimeManager(manager.getIdentifier(), manager);
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        Thread.sleep(3000);
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+        
+        manager.close();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        RuntimeManagerRegistry.get().addRuntimeManager(manager.getIdentifier(), manager);
+    }
+    
     private ExecutorService buildExecutorService() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
         EntityManager em = emf.createEntityManager();

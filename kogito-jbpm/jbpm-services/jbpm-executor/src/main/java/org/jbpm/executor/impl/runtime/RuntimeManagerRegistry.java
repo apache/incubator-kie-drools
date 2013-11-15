@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 
 /**
  * Registry for active <code>RuntimeManagers</code> that can be used from within executor service.
@@ -53,7 +54,9 @@ public class RuntimeManagerRegistry {
      * @param manager - RuntimeManager instance
      */
     public void addRuntimeManager(String id, RuntimeManager manager) {
-        if (registry.containsKey(id)) {
+        RuntimeManager cachedManager = registry.get(id);
+        // allow to register/override if there is no runtime manager or runtime manager is closed
+    	if (cachedManager != null && !((InternalRuntimeManager)cachedManager).isClosed()) {
             throw new IllegalStateException("RuntimeManager with id " + id + " is already registered");
         }
         
