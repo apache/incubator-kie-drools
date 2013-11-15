@@ -39,9 +39,9 @@ public class TravelingTournamentApp extends CommonApp {
     }
 
     public TravelingTournamentApp() {
-        super("Sport scheduling",
+        super("Traveling tournament",
                 "Official competition name: TTP - Traveling tournament problem\n\n" +
-                        "Assign sport matches to days.",
+                        "Assign sport matches to days. Minimize the distance travelled.",
                 null);
     }
 

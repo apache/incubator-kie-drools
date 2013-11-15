@@ -345,7 +345,7 @@
           </row>
 
           <row>
-            <entry><link linkend="travelingTournament">Sport scheduling</link></entry>
+            <entry><link linkend="travelingTournament">Traveling tournament</link></entry>
 
             <entry><itemizedlist>
                 <listitem>
@@ -1519,7 +1519,7 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
     </section>
 
     <section xml:id="travelingTournament">
-      <title>Sport scheduling (TTP - Traveling tournament problem)</title>
+      <title>Traveling tournament problem (TTP)</title>
 
       <section>
         <title>Problem statement</title>
