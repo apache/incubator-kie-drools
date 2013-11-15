@@ -167,7 +167,7 @@ public class UrlResource extends BaseResource
        return new FileInputStream(fi);
     }
 
-    private File getCacheFile()  {
+    File getCacheFile()  {
         try {
             return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
@@ -198,7 +198,7 @@ public class UrlResource extends BaseResource
     }
 
     private InputStream grabStream() throws IOException {
-        URLConnection con = this.url.openConnection();
+        URLConnection con = this.openURLConnection();
         con.setUseCaches( false );
 
         if ( con instanceof HttpURLConnection) {
@@ -215,6 +215,18 @@ public class UrlResource extends BaseResource
         return con.getInputStream();
     }
 
+    /**
+     * Opens URLConnection for the current {@link #url}.
+     * This method is intended to be overriden in unit tests.
+     * <p/>
+     * Default implementation calls <pre>this.url.openConnection()</pre>.
+     * 
+     * @return URLConnection that will be used to connect to the current url
+     */
+    protected URLConnection openURLConnection() throws IOException {
+        return this.url.openConnection();
+    }
+    
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
     }
@@ -280,7 +292,7 @@ public class UrlResource extends BaseResource
             File file = getFile();
             return file.lastModified();
         } else {
-            URLConnection conn = getURL().openConnection();
+            URLConnection conn = this.openURLConnection();
             if ( conn instanceof HttpURLConnection) {
                 ((HttpURLConnection) conn).setRequestMethod( "HEAD" );
                 if ("enabled".equalsIgnoreCase(basicAuthentication)) {
