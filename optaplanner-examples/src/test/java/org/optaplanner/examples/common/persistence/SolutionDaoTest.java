@@ -48,8 +48,10 @@ public abstract class SolutionDaoTest extends LoggingTest {
         fileList.addAll(
                 FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
         File solvedDataDir = new File(dataDir, "solved");
-        fileList.addAll(
-                FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+        if (solvedDataDir.exists()) {
+            fileList.addAll(
+                    FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
+        }
         Collections.sort(fileList, new ProblemFileComparator());
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
         for (File file : fileList) {
