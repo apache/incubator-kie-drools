@@ -194,7 +194,7 @@ public class RuleWorksheetParseTest {
         try {
             makeRuleSet();
             makeRuleTable();
-            makeRow( 11, "Condition", "CONDITION", "A", "BLURB", "P" );
+            makeRow( 11, "Condition", "CONDITION", "A", "SMURF", "P" );
             listener.finishSheet();
             fail( "should have failed" );
         } catch( DecisionTableParseException e ) {
