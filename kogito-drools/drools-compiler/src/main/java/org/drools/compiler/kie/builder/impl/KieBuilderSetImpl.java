@@ -121,6 +121,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                     kBuilder.undo();
                 } else {
                     KieServices.Factory.get().getRepository().addKieModule( kieModule );
+                    kieBuilder.updateKieModuleMetaInfo();
                 }
             }
         }

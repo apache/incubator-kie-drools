@@ -43,6 +43,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private final Map<String, TypeMetaInfo> typeMetaInfos = new HashMap<String, TypeMetaInfo>();
     private final Map<String, Set<String>> rulesByPackage = new HashMap<String, Set<String>>();
+    private final Set<String> packages = new HashSet<String>();
 
     private ProjectClassLoader classLoader;
 
@@ -77,7 +78,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     public Collection<String> getPackages() {
-        return classes.keySet();
+        return packages;
     }
 
     public Collection<String> getClasses(String packageName) {
@@ -136,6 +137,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             addArtifact(artifactResolver.resolveArtifact(dep.toString()));
         }
+        packages.addAll(classes.keySet());
+        packages.addAll(rulesByPackage.keySet());
     }
 
     private void addArtifact(Artifact artifact) {
