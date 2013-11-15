@@ -83,16 +83,41 @@
   <section>
     <title>jBPM Designer</title>
 
-    <para>jBPM designer has received a ton of small improvements and bug fixes, to further simplify the creation
-    of business processes, not just by developers but also by business analysts. This includes for example:</para>
+    <para>jBPM designer has been reimplemented and is fully integrated into the workbench. It easly
+      now integrates with many of the workbench services available. In addition following features
+      were added/improved on:</para>
     <itemizedlist>
-      <listitem>Support for any new BPMN2 constructs and properties.</listitem>
-      <listitem>Properties are now better organized, with the most important core properties (per node type)
-      in a separate category, and more complex, advanced properties categorized under extra properties.</listitem>
-      <listitem>Each node type now only shows the properties that are specific to that node only.</listitem>
-      <listitem>Visual validation now shows any validation errors on the process diagram itself and can be
-      turned on and off when necessary.</listitem>
-      <listitem>Forms can be generated for a process for the new graphical (WYSIWYG) Form Modeler</listitem>
+      <listitem><para>Improvement of jBPM Simulation engine and the UI. Added ability to specify simulation
+          properties on more node type and added more results graphs such as the the Total Cost
+          graph.</para></listitem>
+        <listitem><para>Many updates to the Designer Toolbar for usability purposes.</para></listitem>
+        <listitem><para>Visual Validation update - it now is a real-time visualization of issues done during process
+          modeling. </para></listitem>
+        <listitem>
+        <para>Ability to generate task forms for specific task node.</para>
+      </listitem>
+        <listitem>
+        <para>Integration with the jBPM Form Modeler for both task and process forms.</para>
+      </listitem>
+      <listitem>
+        <para>Update to process properties - added grouping of properties into sections making it
+          more user friendly to find properties.</para>
+      </listitem>
+      <listitem>
+        <para>Update to Object Library - added type specific tasks to pallete (rather than having to
+          morph to a certain type after adding a task to the canvas).</para>
+      </listitem>
+      <listitem>
+        <para>Save/Remove/CopyDelete feature have been added directly into Designer and integrate
+          with the workbench services for those operations.</para>
+      </listitem>
+      <listitem>
+        <para>Autosave - option for users to enable auto-saving of their business process during
+          modelling.</para>
+      </listitem>
+      <listitem>
+        <para>Two new default Service Tasks (Rest and WebServices)</para>
+      </listitem>
     </itemizedlist>
   </section>
   
