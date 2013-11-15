@@ -66,7 +66,7 @@ public class KieFunctionsTest {
         assertEquals(false, KieFunctions.contains("hello", null));
         assertEquals(false, KieFunctions.contains(null, "hello"));
 
-        assertEquals(true, KieFunctions.startsWith("welcome to jamaica", "well"));
+        assertEquals(true, KieFunctions.startsWith("welcome to jamaica", "wel"));
         assertEquals(false, KieFunctions.startsWith("welcome to jamaica", "Well"));
         assertEquals(true, KieFunctions.startsWith(null, null));
         assertEquals(false, KieFunctions.startsWith("hello", null));
