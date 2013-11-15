@@ -165,13 +165,15 @@ public class TimeTablePanel<XObject, YObject> extends JPanel implements Scrollab
     public static enum HeaderColumnKey {
         HEADER_COLUMN_GROUP2,
         HEADER_COLUMN_GROUP1,
-        HEADER_COLUMN;
+        HEADER_COLUMN,
+        TRAILING_HEADER_COLUMN;
     }
 
     public static enum HeaderRowKey {
         HEADER_ROW_GROUP2,
         HEADER_ROW_GROUP1,
-        HEADER_ROW;
+        HEADER_ROW,
+        TRAILING_HEADER_ROW;
     }
 
 }

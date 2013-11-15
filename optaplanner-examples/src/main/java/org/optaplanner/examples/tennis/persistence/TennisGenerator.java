@@ -17,11 +17,13 @@
 package org.optaplanner.examples.tennis.persistence;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.Team;
@@ -45,6 +47,13 @@ public class TennisGenerator extends LoggingMain {
     }
 
     public void generate() {
+        String inputId = "munich-7teams";
+        File outputFile = new File(outputDir, inputId + ".xml");
+        TennisSolution tennisSolution = createTennisSolution(inputId);
+        solutionDao.writeSolution(tennisSolution, outputFile);
+    }
+
+    private TennisSolution createTennisSolution(String inputId) {
         TennisSolution tennisSolution = new TennisSolution();
         tennisSolution.setId(0L);
 
@@ -64,16 +73,6 @@ public class TennisGenerator extends LoggingMain {
         }
         tennisSolution.setDayList(dayList);
 
-        List<TeamAssignment> teamAssignmentList = new ArrayList<TeamAssignment>();
-        long id = 0L;
-        for (Day day : dayList) {
-            for (int i = 0; i < 4; i++) {
-                teamAssignmentList.add(new TeamAssignment(id, day, i));
-                id++;
-            }
-        }
-        tennisSolution.setTeamAssignmentList(teamAssignmentList);
-
         List<UnavailabilityPenalty> unavailabilityPenaltyList = new ArrayList<UnavailabilityPenalty>();
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(0)));
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(6), dayList.get(1)));
@@ -89,8 +88,23 @@ public class TennisGenerator extends LoggingMain {
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(5), dayList.get(15)));
         tennisSolution.setUnavailabilityPenaltyList(unavailabilityPenaltyList);
 
-        File outputFile = new File(outputDir, "munich-7teams.xml");
-        solutionDao.writeSolution(tennisSolution, outputFile);
+        List<TeamAssignment> teamAssignmentList = new ArrayList<TeamAssignment>();
+        long id = 0L;
+        for (Day day : dayList) {
+            for (int i = 0; i < 4; i++) {
+                teamAssignmentList.add(new TeamAssignment(id, day, i));
+                id++;
+            }
+        }
+        tennisSolution.setTeamAssignmentList(teamAssignmentList);
+
+        BigInteger possibleSolutionSize = BigInteger.valueOf(teamList.size()).pow(
+                teamAssignmentList.size());
+        logger.info("Tennis {} has {} teams, {} days, {} unavailabilityPenalties and {} teamAssignments"
+                + " with a search space of {}.",
+                inputId, teamList.size(), dayList.size(), unavailabilityPenaltyList.size(), teamAssignmentList.size(),
+                AbstractSolutionImporter.getFlooredPossibleSolutionSize(possibleSolutionSize));
+        return tennisSolution;
     }
 
 }

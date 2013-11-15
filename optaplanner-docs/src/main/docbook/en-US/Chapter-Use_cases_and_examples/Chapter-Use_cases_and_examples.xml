@@ -139,6 +139,28 @@
           </row>
 
           <row>
+            <entry><link linkend="tennis">Tennis club scheduling</link></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>1 entity class</para>
+                </listitem>
+
+                <listitem>
+                  <para>1 variable</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry>&lt;= <literal>72</literal></entry>
+
+            <entry>&lt;= <literal>7</literal></entry>
+
+            <entry>&lt;= <literal>10^60</literal></entry>
+
+            <entry>Unrealistic</entry>
+          </row>
+
+          <row>
             <entry><link linkend="curriculumCourse">Course timetabling</link></entry>
 
             <entry><itemizedlist>
@@ -676,6 +698,51 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
 
         <programlisting>geoffrey1              has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.
 james1WithGenderChange has 18 jobs, 144 guests, 432 hobby practicians, 12 tables and 144 seats with a search space of 10^310.</programlisting>
+      </section>
+    </section>
+
+    <section xml:id="tennis">
+      <title>Tennis club scheduling</title>
+
+      <section>
+        <title>Problem statement</title>
+
+        <para>Every week the tennis club has 4 teams playing round robin against each other. Assign those 4 spots to the
+        teams fairly.</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Conflict: A team can only play once per day.</para>
+          </listitem>
+
+          <listitem>
+            <para>Unavailability: Some teams are unavailable on some dates.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Medium constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Fair assignment: All teams should play an (almost) equal number of times.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Evenly distributed: Each team should play against every other team an equal number of times.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Problem size</title>
+
+        <programlisting>munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssignments with a search space of 10^60.</programlisting>
       </section>
     </section>
   </section>

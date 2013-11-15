@@ -19,6 +19,8 @@ package org.optaplanner.examples.tennis.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -35,6 +37,7 @@ import org.optaplanner.examples.tennis.domain.Day;
 import org.optaplanner.examples.tennis.domain.Team;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
+import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
@@ -79,6 +82,7 @@ public class TennisPanel extends SolutionPanel {
         for (Day day : tennisSolution.getDayList() ) {
             timeTablePanel.defineColumnHeader(day, footprintWidth);
         }
+        timeTablePanel.defineColumnHeaderByKey(TRAILING_HEADER_COLUMN); // Assignment count
 
         timeTablePanel.defineRowHeaderByKey(HEADER_ROW);
         for (Team team : tennisSolution.getTeamList()) {
@@ -89,25 +93,56 @@ public class TennisPanel extends SolutionPanel {
 
     private void fillCells(TennisSolution tennisSolution) {
         timeTablePanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Team")));
-        fillRoomCells(tennisSolution);
         fillDayCells(tennisSolution);
+        fillTeamCells(tennisSolution);
+        fillUnavailabilityPenaltyCells(tennisSolution);
         fillLectureCells(tennisSolution);
     }
 
-    private void fillRoomCells(TennisSolution tennisSolution) {
+    private void fillDayCells(TennisSolution tennisSolution) {
         for (Day day : tennisSolution.getDayList()) {
             timeTablePanel.addColumnHeader(day, HEADER_ROW,
                     createHeaderPanel(new JLabel(day.getLabel(), SwingConstants.CENTER)));
         }
+        timeTablePanel.addCornerHeader(TRAILING_HEADER_COLUMN, HEADER_ROW,
+                createHeaderPanel(new JLabel("Day count")));
     }
 
-    private void fillDayCells(TennisSolution tennisSolution) {
+    private void fillTeamCells(TennisSolution tennisSolution) {
+        Map<Team, Integer> dayCountPerTeamMap = extractDayCountPerTeamMap(tennisSolution);
         for (Team team : tennisSolution.getTeamList()) {
             timeTablePanel.addRowHeader(HEADER_COLUMN, team,
                     createHeaderPanel(new JLabel(team.getLabel())));
+            timeTablePanel.addRowHeader(TRAILING_HEADER_COLUMN, team,
+                    createHeaderPanel(new JLabel(dayCountPerTeamMap.get(team) + " days")));
         }
         timeTablePanel.addRowHeader(HEADER_COLUMN, null,
                 createHeaderPanel(new JLabel("Unassigned")));
+    }
+
+    private Map<Team, Integer> extractDayCountPerTeamMap(TennisSolution tennisSolution) {
+        Map<Team, Integer> dayCountPerTeamMap = new HashMap<Team, Integer>(tennisSolution.getTeamList().size());
+        for (Team team : tennisSolution.getTeamList()) {
+            dayCountPerTeamMap.put(team, 0);
+        }
+        for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
+            Team team = teamAssignment.getTeam();
+            if (team != null) {
+                int count = dayCountPerTeamMap.get(team);
+                count++;
+                dayCountPerTeamMap.put(team, count);
+            }
+        }
+        return dayCountPerTeamMap;
+    }
+
+    private void fillUnavailabilityPenaltyCells(TennisSolution tennisSolution) {
+        for (UnavailabilityPenalty unavailabilityPenalty : tennisSolution.getUnavailabilityPenaltyList()) {
+            JPanel unavailabilityPanel = new JPanel();
+            unavailabilityPanel.setBackground(TangoColorFactory.ALUMINIUM_4);
+            timeTablePanel.addCell(unavailabilityPenalty.getDay(), unavailabilityPenalty.getTeam(),
+                    unavailabilityPanel);
+        }
     }
 
     private void fillLectureCells(TennisSolution tennisSolution) {
