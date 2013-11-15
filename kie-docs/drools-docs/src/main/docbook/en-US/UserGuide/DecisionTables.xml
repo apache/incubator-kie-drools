@@ -411,7 +411,15 @@ end
 
               <entry>A timer definition. See "Timers and Calendars".</entry>
             </row>
-
+            
+            <row>
+              <entry>ENABLED</entry>
+              
+              <entry>B</entry>
+              
+              <entry>A Boolean value. "true" enables the rule; "false" disables the rule.</entry>
+            </row>
+            
             <row>
               <entry>CALENDARS</entry>
 
