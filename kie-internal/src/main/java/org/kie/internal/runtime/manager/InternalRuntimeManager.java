@@ -39,4 +39,10 @@ public interface InternalRuntimeManager extends RuntimeManager {
      * @return
      */
     RuntimeEnvironment getEnvironment();
+    
+    /**
+     * Indicates if the runtime manager is closed. 
+     * @return true if runtime manager is closed (close method was invoked on it) otherwise false
+     */
+    boolean isClosed();
 }
