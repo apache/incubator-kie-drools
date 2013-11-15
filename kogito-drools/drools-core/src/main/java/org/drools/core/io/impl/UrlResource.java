@@ -144,6 +144,7 @@ public class UrlResource extends BaseResource
                 if (CACHE_DIR != null && (url.getProtocol().equals("http") || url.getProtocol().equals("https"))) {
                     //lets grab a copy and cache it in case we need it in future...
                     cacheStream();
+                    lastMod = getCacheFile().lastModified();
                 }
             }
             this.lastRead = lastMod;
