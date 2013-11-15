@@ -496,21 +496,21 @@ end</programlisting>
           <section xml:id="drools.GuidedDecisionTableEditorExecuteWorkItem">
             <title>Execute a Work Item</title>
 
-            <para>An Action invoking a jBPM Work Item Handler setting it's input parameters to bound Facts\Facts fields
+            <para>An Action invoking a jBPM Work Item Handler setting its input parameters to bound Facts\Facts fields
             values.</para>
           </section>
 
           <section xml:id="drools.GuidedDecisionTableEditorSetWorkItemParameter">
             <title>Set the value of a field with a Work Item parameter</title>
 
-            <para>An Action setting the value of a Fact's field to that of a jBPM Work Item Handlers result
+            <para>An Action setting the value of a Fact's field to that of a jBPM Work Item Handler's result
             parameter.</para>
           </section>
 
           <section xml:id="drools.GuidedDecisionTableEditorSetFactFromWorkItemParameter">
             <title>Set the value of a field on a new Fact with a Work Item parameter</title>
 
-            <para>An Action setting the value of a new Fact's field to that of a jBOM Work Item Handlers result
+            <para>An Action setting the value of a new Fact's field to that of a jBPM Work Item Handler's result
             parameter.</para>
           </section>
 
