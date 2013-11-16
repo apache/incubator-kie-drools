@@ -219,7 +219,7 @@ public class AddRemoveRule {
 
             SegmentMemory sm1 = smems[segmentPos];
             SegmentMemory sm2 = smems[segmentPos+1];
-            if ( sm1 != null ) {
+            if ( sm1 != null && sm2 != null ) {
                 if (sm1.getRootNode() == sm1.getTipNode() && NodeTypeEnums.LeftInputAdapterNode == sm1.getTipNode().getType()) {
                     sm1.setStagedTuples(sm2.getStagedLeftTuples());
                 } else if ( !sm2.getStagedLeftTuples().isEmpty() ) {
