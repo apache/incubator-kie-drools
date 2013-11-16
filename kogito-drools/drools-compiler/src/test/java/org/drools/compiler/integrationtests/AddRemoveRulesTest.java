@@ -16,8 +16,12 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 
@@ -275,6 +279,267 @@ public class AddRemoveRulesTest {
 
         kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kSession.delete(fh);
+    }
+
+    @Test
+    public void testAddRemoveWithPartialSharing() {
+        String drl = "package org.drools.test; \n" +
+                     "\n" +
+                     "declare A end \n" +
+                     "declare B end \n" +
+                     "declare C end \n" +
+                     "declare D end \n" +
+                     "" +
+                     "rule Init \n" +
+                     "  when\n" +
+                     "  then\n" +
+                     "    insert( new A() ); \n" +
+                     "    insert( new B() ); \n" +
+                     "  end\n" +
+                     "" +
+                     "rule One\n" +
+                     "  when\n" +
+                     "    A()\n" +
+                     "    B()\n" +
+                     "    C()\n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "rule Two\n" +
+                     "  when\n" +
+                     "    A()\n" +
+                     "    B()\n" +
+                     "    D()\n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        // Create kSession and initialize it
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        kSession.fireAllRules();
+
+        kSession.getKieBase().removeRule( "org.drools.test", "Two" );
+        kSession.fireAllRules();
+    }
+
+
+
+
+    private String simpleRuleInTestPackage = "package org.drools.test; \n" +
+                                             "global java.util.List list; \n" +
+                                             "rule \"Later\" " +
+                                             "when " +
+                                             "   $s : String( ) " +
+                                             "then " +
+                                             "   System.out.println( \"ok\" ); " +
+                                             "   list.add( \"ok\" ); \n" +
+                                             "end ";
+
+    private StatefulKnowledgeSession buildSessionInTwoSteps( String drl1, String drl2 ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        kSession.fireAllRules();
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kSession.getKieBase() );
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drl2.getBytes() ), ResourceType.DRL );
+        if ( kbuilder2.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        kSession.getKieBase().addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+
+        return kSession;
+    }
+
+    @Test
+    public void testAddRemoveWithReloadInSamePackage_4Rules() {
+        String drl = "package org.drools.test;\n" +
+
+                     "declare Fakt enabled : boolean end \n" +
+
+                     "rule Build1\n" +
+                     "when\n" +
+                     "    Fakt( enabled == true )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule Build2\n" +
+                     "when\n" +
+                     "    Fakt( enabled == true )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule Mark \n" +
+                     "salience 9999\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insertLogical( new Fakt( true ) );\n" +
+                     "end\n" +
+
+                     "rule Build3 \n" +
+                     "when\n" +
+                     "    Fakt( enabled == true ) \n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule Build4 \n" +
+                     "when\n" +
+                     "    Fakt( enabled == true )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "";
+
+        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( "go" );
+        knowledgeSession.fireAllRules();
+        assertEquals( Arrays.asList( "ok" ), list );
+
+    }
+
+    @Test
+    public void testAddRemoveWithReloadInSamePackage_3Rules() {
+        String drl = "package org.drools.test;\n" +
+
+                     "declare Fakt enabled : boolean end \n" +
+
+                     "rule Build1\n" +
+                     "when\n" +
+                     "    Fakt( enabled == true )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule Build2\n" +
+                     "when\n" +
+                     "    Fakt( enabled == true )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule Mark \n" +
+                     "salience 9999\n" +
+                     "when\n" +
+                     "then\n" +
+                     "    insertLogical( new Fakt( true ) );\n" +
+                     "end\n" +
+
+                     "rule Build3 \n" +
+                     "when\n" +
+                     "    Fakt( enabled == true ) \n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "";
+
+        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( "go" );
+        knowledgeSession.fireAllRules();
+        assertEquals( Arrays.asList( "ok" ), list );
+    }
+
+
+    @Test
+    public void testAddRemoveWithReloadInSamePackage_EntryPoints() {
+        String drl = "package org.drools.test; \n" +
+
+                     "rule \"Input_X\"\n" +
+                     "when\n" +
+                     "    Double() from entry-point \"A\"\n" +
+                     "    not String( )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule \"Input_Y\"\n" +
+                     "when\n" +
+                     "    Double() from entry-point \"A\"\n" +
+                     "    not Float( )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule \"OverrideInput_Temp\"\n" +
+                     "when\n" +
+                     "    Double() from entry-point \"A\"\n" +
+                     "    Float( )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule \"Zero\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "";
+        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( "go" );
+        knowledgeSession.fireAllRules();
+        assertEquals( Arrays.asList( "ok" ), list );
+    }
+
+    @Test
+    public void testAddRemoveWithReloadInSamePackage_EntryPointsVariety() {
+        String drl = "package org.drools.test; \n" +
+
+                     "rule \"Input_X\"\n" +
+                     "when\n" +
+                     "    Double() \n" +
+                     "    not String( )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule \"Input_Y\"\n" +
+                     "when\n" +
+                     "    Double() from entry-point \"A\"\n" +
+                     "    not Float( )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule \"OverrideInput_Temp\"\n" +
+                     "when\n" +
+                     "    Double() from entry-point \"A\"\n" +
+                     "    Float( )\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "rule \"Zero\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "end\n" +
+
+                     "";
+
+        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
+        List list = new ArrayList();
+        knowledgeSession.setGlobal( "list", list );
+
+        knowledgeSession.insert( "go" );
+        knowledgeSession.fireAllRules();
+        assertEquals( Arrays.asList( "ok" ), list );
+
     }
 
 
