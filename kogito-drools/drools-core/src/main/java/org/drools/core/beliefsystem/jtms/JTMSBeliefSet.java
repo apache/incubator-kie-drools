@@ -7,11 +7,6 @@ import org.drools.core.common.LogicalDependency;
 import org.drools.core.util.LinkedListEntry;
 
 public interface JTMSBeliefSet extends BeliefSet {
-    boolean isNegated();
-
-    boolean isUndecided();
-
-    boolean isPositive();
 
     void setNegativeFactHandle(InternalFactHandle insert);
 

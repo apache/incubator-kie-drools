@@ -12,6 +12,10 @@ public enum DefeasibilityStatus {
         this.id = id;
     }
 
+    public String getValue() {
+        return id;
+    }
+
     public static DefeasibilityStatus resolve( Object value ) {
         if ( value == null ) {
             return null;

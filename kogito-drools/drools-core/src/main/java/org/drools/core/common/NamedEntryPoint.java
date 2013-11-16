@@ -205,8 +205,8 @@ public class NamedEntryPoint
                     
                     if ( logical ) {  
                         if ( key != null && key.getStatus() == EqualityKey.STATED ) {
-                            // You cannot logically insert a previously stated equality equal object, so return null                            
-                            return null;
+                            // You cannot logically insert a previously stated equality equal object
+                            return key.getFactHandle();
                         }
                         
 

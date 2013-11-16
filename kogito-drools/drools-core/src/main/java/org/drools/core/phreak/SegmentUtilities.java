@@ -125,7 +125,7 @@ public class SegmentUtilities {
                         processTimerNode((TimerNode) tupleSource, wm, smem, nodePosMask);
                         break;
                     case NodeTypeEnums.QueryElementNode:
-                        processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem, nodePosMask);
+                        updateNodeBit = processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem, nodePosMask);
                         break;
                 }
             }
@@ -206,7 +206,7 @@ public class SegmentUtilities {
         return smem;
     }
 
-    private static void processQueryNode(QueryElementNode tupleSource, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem, long nodePosMask) {
+    private static boolean processQueryNode(QueryElementNode tupleSource, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem, long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         QueryElementNode queryNode = (QueryElementNode) tupleSource;
         SegmentMemory querySmem = getQuerySegmentMemory(wm, segmentRoot, queryNode);
@@ -214,6 +214,7 @@ public class SegmentUtilities {
         queryNodeMem.setNodePosMaskBit(nodePosMask);
         queryNodeMem.setQuerySegmentMemory(querySmem);
         queryNodeMem.setSegmentMemory(smem);
+        return ! queryNode.getQueryElement().isAbductive();
     }
 
     public static SegmentMemory getQuerySegmentMemory(InternalWorkingMemory wm, LeftTupleSource segmentRoot, QueryElementNode queryNode) {
