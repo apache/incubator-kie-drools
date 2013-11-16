@@ -190,7 +190,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
                 }
                 LeftTuple leftTuple = tupleSetsImpl.getInsertFirst();
                 last.setStagedNext( leftTuple );
-                leftTuple.setStagePrevious( leftTuple );
+                leftTuple.setStagePrevious( last );
                 insertSize = insertSize + tupleSetsImpl.insertSize();
             }
             tupleSetsImpl.insertSize = 0;
@@ -213,7 +213,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
                 }
                 LeftTuple leftTuple = tupleSets.getDeleteFirst();
                 last.setStagedNext( leftTuple );
-                leftTuple.setStagePrevious( leftTuple );
+                leftTuple.setStagePrevious( last );
                 deleteSize = deleteSize + tupleSetsImpl.deleteSize();
             }
             tupleSetsImpl.deleteFirst = null;
@@ -236,7 +236,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
                 }
                 LeftTuple leftTuple = tupleSetsImpl.getUpdateFirst();
                 last.setStagedNext( leftTuple );
-                leftTuple.setStagePrevious( leftTuple );
+                leftTuple.setStagePrevious( last );
                 updateSize = updateSize + tupleSetsImpl.updateSize();
             }
             tupleSetsImpl.updateFirst = null;
