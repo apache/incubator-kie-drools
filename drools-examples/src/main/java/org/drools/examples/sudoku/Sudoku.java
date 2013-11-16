@@ -297,7 +297,7 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
         this.counter = new Counter(initial);
         this.session.insert(counter);
         this.session.delete(fh000);
-        this.session.fireUntilHalt();
+        this.session.fireAllRules();
     }
     
     /*
