@@ -20,30 +20,37 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.phreak.StackEntry;
-import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.Query;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.Rule;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.runtime.rule.Variable;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -321,9 +328,10 @@ public class QueryElementNode extends LeftTupleSource
                              InternalWorkingMemory workingMemory) {
 
             QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
+            Query query = node.getQuery();
             Declaration[] decls = node.getDeclarations();
             DroolsQuery dquery = (DroolsQuery) this.factHandle.getObject();
-            Object[] objects = new Object[dquery.getElements().length];
+            Object[] objects = new Object[ determineResultSize( query, dquery ) ];
 
             Declaration decl;
             for ( int i = 0, length = this.variables.length; i < length; i++ ) {
@@ -338,14 +346,66 @@ public class QueryElementNode extends LeftTupleSource
             
             RightTuple rightTuple = createResultRightTuple(resultHandle, resultLeftTuple, dquery.isOpen());
 
-            LeftTupleSink sink = dquery.getLeftTupleSink();
-            LeftTuple childLeftTuple = sink.createLeftTuple( this.leftTuple, rightTuple, sink );
-            boolean stagedInsertWasEmpty = dquery.getResultLeftTupleSets().addInsert(childLeftTuple);
-            if ( stagedInsertWasEmpty ) {
-                dquery.getQueryNodeMemory().setNodeDirtyWithoutNotify();
+            boolean pass = true;
+            if ( query.isAbductive() ) {
+                int numArgs = dquery.getElements().length;
+                AbductiveQuery aq = (( AbductiveQuery) query );
+                for ( int j = 0; j < numArgs; j++ ) {
+                    if ( dquery.getElements()[ j ] != null ) {
+                        objects[ j ] = dquery.getElements()[ j ];
+                    }
+                }
+                Object abduced = aq.abduce( Arrays.copyOfRange( objects, 0, numArgs - 1 ) );
+                if ( abduced != null ) {
+                    EqualityKey key = ( (NamedEntryPoint) workingMemory.getEntryPoints().get( workingMemory.getEntryPointId() ) ).getTruthMaintenanceSystem().get( abduced );
+                    InternalFactHandle handle = null;
+                    if ( key != null ) {
+                        handle = key.getFactHandle();
+                        abduced = handle.getObject();
+                    } else {
+                        handle = (InternalFactHandle) ((InternalWorkingMemoryActions) workingMemory).insert( abduced,
+                                                                                                             aq.getValue(),
+                                                                                                             false,
+                                                                                                             true,
+                                                                                                             query,
+                                                                                                             (RuleTerminalNodeLeftTuple) resultLeftTuple );
+                    }
+                    BeliefSet bs = handle.getEqualityKey().getBeliefSet();
+                    if ( bs == null ) {
+                        abduced = handle.getObject();
+                    } else {
+                        if ( ! bs.isPositive() ) {
+                            pass = false;
+                        }
+                    }
+                } else {
+                    // query was successful, but nothing could be abduced.
+                }
+                objects[ objects.length - 1 ] = abduced;
+            }
+
+            if ( pass ) {
+                LeftTupleSink sink = dquery.getLeftTupleSink();
+                LeftTuple childLeftTuple = sink.createLeftTuple( this.leftTuple, rightTuple, sink );
+                boolean stagedInsertWasEmpty = dquery.getResultLeftTupleSets().addInsert(childLeftTuple);
+                if ( stagedInsertWasEmpty ) {
+                    dquery.getQueryNodeMemory().setNodeDirtyWithoutNotify();
+                }
             }
 
 
+        }
+
+        private int determineResultSize( Query query, DroolsQuery dquery ) {
+            if ( ! query.isAbductive() ) {
+                return dquery.getElements().length;
+            } else {
+                if ( (( AbductiveQuery ) query ).isReturnBound() ) {
+                    return dquery.getElements().length + 1;
+                } else {
+                    return dquery.getElements().length;
+                }
+            }
         }
 
         protected RightTuple createResultRightTuple( QueryElementFactHandle resultHandle, LeftTuple resultLeftTuple, boolean open ) {

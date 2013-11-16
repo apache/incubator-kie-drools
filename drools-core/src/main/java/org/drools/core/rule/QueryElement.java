@@ -37,6 +37,7 @@ public class QueryElement extends ConditionalElement
     private int[]         declIndexes;
     private int[]         variableIndexes;
     private boolean       openQuery;
+    private boolean       abductive;
 
     private Declaration[] requiredDeclarations;
 
@@ -50,7 +51,8 @@ public class QueryElement extends ConditionalElement
                         Declaration[] requiredDeclarations,
                         int[] declIndexes,
                         int[] variableIndexes, 
-                        boolean openQuery) {
+                        boolean openQuery,
+                        boolean abductive) {
         this.resultPattern = resultPattern;
         this.queryName = queryName;
         this.argTemplate = argTemplate;
@@ -58,7 +60,8 @@ public class QueryElement extends ConditionalElement
         this.declIndexes = declIndexes;
         this.variableIndexes = variableIndexes;
         this.openQuery = openQuery;
-    }     
+        this.abductive = abductive;
+    }
     
     
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -69,6 +72,7 @@ public class QueryElement extends ConditionalElement
        out.writeObject( this.declIndexes );
        out.writeObject( this.variableIndexes );
        out.writeBoolean( this.openQuery );
+        out.writeBoolean( this.abductive );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -85,6 +89,7 @@ public class QueryElement extends ConditionalElement
         this.declIndexes = ( int[] ) in.readObject();
         this.variableIndexes = ( int[] ) in.readObject();
         this.openQuery = in.readBoolean();
+        this.abductive = in.readBoolean();
     }
     
 
@@ -136,6 +141,10 @@ public class QueryElement extends ConditionalElement
         return openQuery;
     }
 
+    public boolean isAbductive() {
+        return abductive;
+    }
+
     /**
      * @inheritDoc
      */
@@ -145,7 +154,7 @@ public class QueryElement extends ConditionalElement
 
     @Override
     public QueryElement clone() {
-        return new QueryElement( resultPattern.clone(), queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery );
+        return new QueryElement( resultPattern.clone(), queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery, abductive );
     }
 
     @Override
@@ -154,6 +163,7 @@ public class QueryElement extends ConditionalElement
                    ", queryName=" + queryName + ", argTemplate=" + Arrays.toString( argTemplate ) + 
                    ", declIndexes=" + Arrays.toString( declIndexes ) + ", variableIndexes="+ Arrays.toString( variableIndexes ) + 
                    ", openQuery=" + openQuery + 
+                   ", abductive=" + abductive +
                    ", requiredDeclarations=" + Arrays.toString( requiredDeclarations ) + "]";
     }
 
@@ -164,6 +174,7 @@ public class QueryElement extends ConditionalElement
         result = prime * result + Arrays.hashCode( argTemplate );
         result = prime * result + Arrays.hashCode( declIndexes );
         result = prime * result + (openQuery ? 1231 : 1237);
+        result = prime * result + (abductive ? 1231 : 1237);
         result = prime * result + ((queryName == null) ? 0 : queryName.hashCode());
         result = prime * result + Arrays.hashCode( requiredDeclarations );
         result = prime * result + ((resultPattern == null) ? 0 : resultPattern.hashCode());
@@ -182,6 +193,7 @@ public class QueryElement extends ConditionalElement
         if ( !Arrays.equals( declIndexes,
                              other.declIndexes ) ) return false;
         if ( openQuery != other.openQuery ) return false;
+        if ( abductive != other.abductive ) return false;
         if ( queryName == null ) {
             if ( other.queryName != null ) return false;
         } else if ( !queryName.equals( other.queryName ) ) return false;

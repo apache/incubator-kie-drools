@@ -62,7 +62,22 @@ public class SimpleBeliefSet extends LinkedList implements BeliefSet {
 
     public void setWorkingMemoryAction(WorkingMemoryAction wmAction) {
         this.wmAction = wmAction;
-    }  
+    }
 
-    
+    @Override
+    public boolean isNegated() {
+        return false;
+    }
+
+    @Override
+    public boolean isUndecided() {
+        return false;
+    }
+
+    @Override
+    public boolean isPositive() {
+        return ! isEmpty();
+    }
+
+
 }
