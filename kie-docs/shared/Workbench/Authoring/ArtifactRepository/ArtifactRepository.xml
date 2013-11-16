@@ -32,6 +32,13 @@
       <para>Use the upload button and select a jar. If the jar contains a pom file under
       <literal>META-INF/maven</literal> (which every jar build by Maven has), no further information is needed.
       Otherwise, a groupId, artifactId and version need be given too.</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Workbench/Authoring/ArtifactRepository/mavenRepositoryUpload.png"/>
+        </imageobject>
+      </mediaobject>
+
     </listitem>
 
     <listitem>
@@ -39,6 +46,7 @@
       up.</para>
     </listitem>
   </itemizedlist>
+
 
   <note>
     <para>This remote Maven repository is relatively simple. It does not support proxying, mirroring, ... like Nexus or
