@@ -25,6 +25,7 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.MVELSafeHelper;
+import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
@@ -80,6 +81,34 @@ public class QueryElementBuilder
                                        0,
                                        argsObjectType,
                                        null );
+
+        if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) ) {
+            if ( query.isAbductive() ) {
+                Declaration declr = context.getDeclarationResolver().getDeclaration( query, patternDescr.getIdentifier() );
+                if ( declr != null && ! patternDescr.isUnification() ) {
+                    context.addError( new DescrBuildError( context.getParentDescr(),
+                                                           descr,
+                                                           null,
+                                                           "Duplicate declaration " + patternDescr.getIdentifier() +", unable to bind abducted value" ) );
+                }
+            } else {
+                context.addError( new DescrBuildError( context.getParentDescr(),
+                                                       descr,
+                                                       null,
+                                                       "Query binding is not supported by non-abductive queries : " + patternDescr.getIdentifier() ) );
+            }
+        }
+
+        boolean addAbductiveReturnArgument = query.isAbductive()
+                                             && ! StringUtils.isEmpty( patternDescr.getIdentifier() )
+                                             && args.size() < params.length;
+
+        if ( addAbductiveReturnArgument ) {
+            ExprConstraintDescr extraDescr = new ExprConstraintDescr( patternDescr.getIdentifier() );
+            extraDescr.setPosition( patternDescr.getConstraint().getDescrs().size() );
+            extraDescr.setType( ExprConstraintDescr.Type.POSITIONAL );
+            args.add( extraDescr );
+        }
 
         // Deal with the constraints, both positional and bindings
         for ( int i = 0, length = args.size(); i < length; i++ ) {
@@ -181,7 +210,8 @@ public class QueryElementBuilder
                                  declrsArray,
                                  declrIndexArray,
                                  varIndexesArray,
-                                 !patternDescr.isQuery() );
+                                 !patternDescr.isQuery(),
+                                 query.isAbductive() );
     }
 
     @SuppressWarnings("unchecked")
