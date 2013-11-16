@@ -135,7 +135,8 @@ public class Cell extends SetOfNine {
     }
 
     public String posAsString(){
-        return "[" + cellRow.getNumber() + "," + cellCol.getNumber() + "]";
+        return "[" + ( cellRow != null ? cellRow.getNumber() : "null" ) + "," + 
+                      ( cellCol != null ? cellCol.getNumber() : "null" ) + "]";
     }
 
 }

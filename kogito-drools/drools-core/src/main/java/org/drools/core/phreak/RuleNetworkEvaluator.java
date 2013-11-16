@@ -263,7 +263,7 @@ public class RuleNetworkEvaluator {
                     for ( int i = ++smemIndex, length = smems.length; i < length; i++ ) {
                         if (log.isTraceEnabled()) {
                             int offset = getOffset(node);
-                            log.trace("{} Skip Segment {}", indent(offset), smemIndex-1);
+                            log.trace("{} Skip Segment {}", indent(offset), i-1);
                         }
 
                         // this is needed for subnetworks that feed into a parent network that has no right inputs,
@@ -281,7 +281,9 @@ public class RuleNetworkEvaluator {
                         if ( !emptySrcTuples ||
                              smem.getDirtyNodeMask() != 0 ||
                              (NodeTypeEnums.isBetaNode(node) && ((BetaNode)node).isRightInputIsRiaNode() )) {
+                            // break if dirty or if we reach a subnetwork. It must break for subnetworks, so they can be searched.
                             foundDirty = true;
+                            smemIndex = i;
                             break;
                         }
                     }
