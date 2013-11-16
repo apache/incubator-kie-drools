@@ -50,6 +50,8 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 
 public class ExaminationPanel extends SolutionPanel {
 
+    public static final String LOGO_PATH = "/org/optaplanner/examples/examination/swingui/examinationLogo.png";
+
     private final TimeTablePanel<Room, Period> roomsPanel;
 
     public ExaminationPanel() {

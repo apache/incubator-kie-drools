@@ -42,7 +42,7 @@ public class CurriculumCourseApp extends CommonApp {
         super("Course timetabling",
                 "Official competition name: ITC 2007 track3 - Curriculum course scheduling\n\n" +
                         "Assign lectures to periods and rooms.",
-                null);
+                CurriculumCoursePanel.LOGO_PATH);
     }
 
     @Override

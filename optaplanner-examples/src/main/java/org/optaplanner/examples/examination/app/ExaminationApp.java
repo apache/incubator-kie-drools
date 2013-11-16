@@ -47,7 +47,7 @@ public class ExaminationApp extends CommonApp {
         super("Exam timetabling",
                 "Official competition name: ITC 2007 track1 - Examination timetabling\n\n" +
                         "Assign exams to timeslots and rooms.",
-                null);
+                ExaminationPanel.LOGO_PATH);
     }
 
     @Override
