@@ -210,7 +210,8 @@ public class SudokuExample implements ActionListener {
 
         } else if (ev.getSource() instanceof JMenuItem) {
             JMenuItem menuItem = (JMenuItem) ev.getSource();
-            sudoku.setCellValues(SudokuGridSamples.getInstance().getSample(menuItem.getText()));
+            Integer[][] sample = SudokuGridSamples.getInstance().getSample(menuItem.getText());
+            sudoku.setCellValues(sample);
             sudoku.validate();
             buttonsActive(true);
         } else {
