@@ -85,6 +85,11 @@ public interface KieServices {
     KieContainer getKieClasspathContainer();
 
     /**
+     * Creates a new KieContainer for the classpath, regardless if there's already an existing one
+     */
+    KieContainer newKieClasspathContainer();
+
+    /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      */
     KieContainer newKieContainer(ReleaseId releaseId);
