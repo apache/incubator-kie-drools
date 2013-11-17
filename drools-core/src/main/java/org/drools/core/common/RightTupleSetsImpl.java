@@ -188,7 +188,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
             }
             RightTuple rightTuple = tupleSetsImpl.getInsertFirst();
             last.setStagedNext( rightTuple );
-            rightTuple.setStagePrevious( rightTuple );
+            rightTuple.setStagePrevious( last );
             insertSize = insertSize + tupleSetsImpl.insertSize();
         }
     }
@@ -207,7 +207,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
             }
             RightTuple rightTuple = tupleSetsImpl.getDeleteFirst();
             last.setStagedNext( rightTuple );
-            rightTuple.setStagePrevious( rightTuple );
+            rightTuple.setStagePrevious( last );
             deleteSize = deleteSize + tupleSetsImpl.deleteSize();
         }
     }
@@ -226,7 +226,7 @@ public class RightTupleSetsImpl implements RightTupleSets {
             }
             RightTuple rightTuple = tupleSetsImpl.getUpdateFirst();
             last.setStagedNext( rightTuple );
-            rightTuple.setStagePrevious( rightTuple );
+            rightTuple.setStagePrevious( last );
             updateSize = updateSize + tupleSetsImpl.updateSize();
         }
     }
