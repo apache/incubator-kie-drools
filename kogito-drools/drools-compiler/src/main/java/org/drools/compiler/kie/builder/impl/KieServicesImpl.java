@@ -22,9 +22,7 @@ import org.kie.api.command.KieCommands;
 import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.internal.io.ResourceFactoryService;
-import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.io.KieResources;
 import org.kie.api.logger.KieLoggers;
@@ -43,8 +41,6 @@ public class KieServicesImpl implements KieServices {
     private volatile KieContainerImpl classpathKContainer;
     
     private final Object lock = new Object();
-
-    private KnowledgeBaseFactoryService factoryService;
 
     public ResourceFactoryService getResourceFactory() {
         if ( resourceFactory == null ) {
@@ -72,7 +68,11 @@ public class KieServicesImpl implements KieServices {
 
         return classpathKContainer;
     }
-    
+
+    public KieContainer newKieClasspathContainer() {
+        return new KieContainerImpl(new ClasspathKieProject(), null);
+    }
+
     public void nullKieClasspathContainer() {
         // used for testing only
         synchronized ( lock ) {
