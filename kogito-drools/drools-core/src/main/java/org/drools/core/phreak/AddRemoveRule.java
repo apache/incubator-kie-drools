@@ -186,8 +186,10 @@ public class AddRemoveRule {
                              if ( i < s ) {
                                  correctSegmentBeforeSplitOnRemove(wm, removedPmem, pmem, sm, p);
                              } else if ( i == s ) {
-                                 correctSegmentOnSplitOnRemove(wm,  sm, smems[i+1], pmem, removedPmem, p);
-                                 i++; // increase to skip merged segment
+                                 if (smems[i+1] != null) {
+                                     correctSegmentOnSplitOnRemove(wm,  sm, smems[i+1], pmem, removedPmem, p);
+                                     i++; // increase to skip merged segment
+                                 }
                              } else if (i > s) {
                                  correctSegmentAfterSplitOnRemove(wm, pmem, i, sm);
                              }
@@ -199,6 +201,9 @@ public class AddRemoveRule {
                      for ( PathMemory pmem : pathMems) {
                          SegmentMemory[] smems = previousSmems.get(p++);
                          for (int i = 0; i < pmem.getSegmentMemories().length; i++) {
+                             if ( smems[i] == null) {
+                                 continue;
+                             }
                              smems[i].getPathMemories().remove(removedPmem);
                              pmem.getSegmentMemories()[i] = smems[i];
                          }
