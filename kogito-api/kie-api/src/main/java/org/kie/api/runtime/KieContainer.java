@@ -90,6 +90,13 @@ public interface KieContainer {
     KieSession newKieSession(Environment environment);
 
     /**
+     * Creates the default KieSession for this KieContainer with the given configuration and Environment
+     * @throws RuntimeException if this KieContainer doesn't have any default KieSession
+     * @see org.kie.api.builder.model.KieSessionModel#setDefault(boolean)
+     */
+    KieSession newKieSession(Environment environment, KieSessionConfiguration conf);
+
+    /**
      * Creates the KieSession with the given name for this KieContainer
      * @throws RuntimeException if this KieContainer doesn't have any KieSession with the given name
      */
