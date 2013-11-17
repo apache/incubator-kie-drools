@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Deque;
-import java.util.List;
 import java.util.Map;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -306,6 +305,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 // iterate for peers segment memory
                 leftTuple = leftTuple.getPeer();
+                if (leftTuple == null) {
+                    break;
+                }
                 doDeleteSegmentMemory(leftTuple, context, lm, sm, wm, linkOrNotify);
             }
         }
