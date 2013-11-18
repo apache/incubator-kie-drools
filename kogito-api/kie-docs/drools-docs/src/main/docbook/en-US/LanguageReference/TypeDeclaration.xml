@@ -224,17 +224,6 @@
     has no required value, and so the parentheses and the value were
     omitted.:</para>
 
-    <para>@position can be used to declare the position of a field, overriding
-    the default declared order. This is used for positional constraints in
-    patterns.</para>
-
-    <programlisting>declare Cheese
-    name : String @position(1)
-    shop : String @position(2)
-    price : int @position(0)
-end
-</programlisting>
-
     <section>
       <title>Predefined class level annotations</title>
 
@@ -413,9 +402,9 @@ end
         <example>
           <title>@propertyChangeSupport</title>
 
-          <programlisting>declare Person
-  @propertyChangeSupport
-end</programlisting>
+          <programlisting><emphasis role="bold">declare</emphasis> Person
+  <emphasis role="italic">@propertyChangeSupport</emphasis>
+<emphasis role="bold">end</emphasis></programlisting>
         </example>
       </section>
 
@@ -456,11 +445,11 @@ end</programlisting>
         <example>
           <title>example of @key declarations for a type</title>
 
-          <programlisting>declare Person
+          <programlisting><emphasis role="bold">declare</emphasis> Person
     firstName : String @key
     lastName : String @key
     age : int
-end
+<emphasis role="bold">end</emphasis>
 </programlisting>
         </example>
 
@@ -480,55 +469,63 @@ end
 
       <section>
         <title>@position</title>
-
-        <para>Patterns support positional arguments on type
-        declarations.</para>
-
-        <para>Positional arguments are ones where you don't need to specify
-        the field name, as the position maps to a known named field. i.e.
-        Person( name == "mark" ) can be rewritten as Person( "mark"; ). The
-        semicolon ';' is important so that the engine knows that everything
-        before it is a positional argument. Otherwise we might assume it was a
-        boolean expression, which is how it could be interpreted after the
-        semicolon. You can mix positional and named arguments on a pattern by
-        using the semicolon ';' to separate them. Any variables used in a
-        positional that have not yet been bound will be bound to the field
-        that maps to that position.</para>
-
-        <programlisting>declare Cheese
+        <para>Patterns support positional arguments on type declarations.</para>
+        <para>Positional arguments are ones where you don't need to specify the field name, as the
+          position maps to a known named field. i.e. Person( name == "mark" ) can be rewritten as
+          Person( "mark"; ). The semicolon ';' is important so that the engine knows that everything
+          before it is a positional argument. Otherwise we might assume it was a boolean expression,
+          which is how it could be interpreted after the semicolon. You can mix positional and named
+          arguments on a pattern by using the semicolon ';' to separate them. Any variables used in
+          a positional that have not yet been bound will be bound to the field that maps to that
+          position.</para>
+        <programlisting><emphasis role="bold">declare</emphasis> Cheese
     name : String
     shop : String
     price : int
-end
+<emphasis role="bold">end</emphasis>
 </programlisting>
-
-        <para>The default order is the declared order, but this can be
-        overridden using @position</para>
-
-        <programlisting>declare Cheese
-    name : String @position(1)
-    shop : String @position(2)
-    price : int @position(0)
-end
+        <para>The default order is the declared order, but this can be overridden using
+          @position</para>
+        <programlisting><emphasis role="bold">declare</emphasis> Cheese
+    name : String <emphasis role="italic">@position(1)</emphasis>
+    shop : String <emphasis role="italic">@position(2)</emphasis>
+    price : int <emphasis role="italic">@position(0)</emphasis>
+<emphasis role="bold">end</emphasis>
 </programlisting>
-
-        <para>The @Position annotation, in the org.drools.definition.type
-        package, can be used to annotate original pojos on the classpath.
-        Currently only fields on classes can be annotated. Inheritance of
-        classes is supported, but not interfaces of methods yet.</para>
-
-        <para>Example patterns, with two constraints and a binding. Remember
-        semicolon ';' is used to differentiate the positional section from the
-        named argument section. Variables and literals and expressions using
-        just literals are supported in positional arguments, but not
-        variables.</para>
-
+        <para>The @Position annotation, in the org.drools.definition.type package, can be used to
+          annotate original pojos on the classpath. Currently only fields on classes can be
+          annotated. Inheritance of classes is supported, but not interfaces of methods yet.</para>
+        <para>Example patterns, with two constraints and a binding. Remember semicolon ';' is used
+          to differentiate the positional section from the named argument section. Variables and
+          literals and expressions using just literals are supported in positional arguments, but
+          not variables.</para>
         <programlisting>
 Cheese( "stilton", "Cheese Shop", p; )
 Cheese( "stilton", "Cheese Shop"; p : price )
 Cheese( "stilton"; shop == "Cheese Shop", p : price )
 Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
 </programlisting>
+        <para>@Position is inherited when beans extend each other; while not recommended, two fields
+          may have the same @position value, and not all consecutive values need be declared. If a
+          @position is repeated, the conflict is solved using inheritance (fields in the superclass
+          have the precedence) and the declaration order. If a @position value is missing, the first
+          field without an explicit @position (if any) is selected to fill the gap. As always,
+          conflicts are resolved by inheritance and declaration order.</para>
+          <programlisting><emphasis role="bold">declare</emphasis> Cheese
+    name : String 
+    shop : String <emphasis role="italic">@position(2)</emphasis>
+    price : int <emphasis role="italic">@position(0)</emphasis>
+<emphasis role="bold">end</emphasis>
+
+<emphasis role="bold">declare</emphasis> SeasonedCheese <emphasis role="bold">extends</emphasis> Cheese
+    year : Date <emphasis role="italic">@position(0)</emphasis>
+    origin : String <emphasis role="italic">@position(6)</emphasis>
+    country : String    
+<emphasis role="bold">end</emphasis></programlisting>
+         
+          <para>In the example, the field order would be : price (@position 0 in the superclass),
+            year (@position 0 in the subclass), name (first field with no @position), shop
+            (@position 2), country (second field without @position), origin.</para>
       </section>
     </section>
   </section>
@@ -579,11 +576,11 @@ Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
 
     <para>Example: for a declared type like the following:</para>
 
-    <programlisting>declare Person
-    firstName : String @key
-    lastName : String @key
+    <programlisting><emphasis role="bold">declare</emphasis> Person
+    firstName : String <emphasis role="italic">@key</emphasis>
+    lastName : String <emphasis role="italic">@key</emphasis>
     age : int
-end
+<emphasis role="bold">end</emphasis>
 </programlisting>
 
     <para>The compiler will implicitly generate 3 constructors: one without
@@ -706,19 +703,18 @@ int age = personType.get( bob, "age" );
     subtype, repeat the supertype in a declare statement without any
     fields.</para>
 
-    <programlisting>import org.people.Person
+    <programlisting>b org.people.Person
 
-declare Person
-end
+<emphasis role="bold">declare</emphasis> Person <emphasis role="bold">end</emphasis>
 
-declare Student extends Person
+<emphasis role="bold">declare</emphasis> Student <emphasis role="bold">extends</emphasis> Person
     school : String
-end
+<emphasis role="bold">end</emphasis>
 
-declare LongTermStudent extends Student
+<emphasis role="bold">declare</emphasis> LongTermStudent <emphasis role="bold">extends</emphasis> Student
     years : int
     course : String
-end</programlisting>
+<emphasis role="bold">end</emphasis></programlisting>
   </section>
 
   <section>
@@ -730,25 +726,28 @@ end</programlisting>
       be applied (and eventually removed) to an individual object at runtime. To create a trait
       rather than a traditional bean, one has to declare them explicitly as in the following
       example:</para>
-
-    <programlisting>declare trait GoldenCustomer
+    <example>
+    <programlisting><emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> GoldenCustomer
     // fields will map to getters/setters
     code     : String
     balance  : long
     discount : int
     maxExpense : long
-end</programlisting>
-
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>
+    
     <para>At runtime, this declaration results in an interface, which can be used to write patterns,
       but can not be instantiated directly. In order to apply a trait to an object, we provide the
       new don keyword, which can be used as simply as this:</para>
-
+    
+    <example>
     <programlisting>when
     $c : Customer()
 then
     GoldenCustomer gc = don( $c, GoldenCustomer.class );
 end</programlisting>
-
+    </example>
+    
     <para>when a core object dons a trait, a proxy class is created on the fly (one such class will
       be generated lazily for each core/trait class combination). The proxy instance, which wraps
       the core object and implements the trait interface, is inserted automatically and will
@@ -758,13 +757,15 @@ end</programlisting>
       any of those interfaces statically, also facilitating the use of legacy classes as cores. In
       fact, any object can don a trait, provided that they are declared as @Traitable. Notice that
       this annotation used to be optional, but now is mandatory.</para>
-
-    <programlisting>import org.drools.core.factmodel.traits.Traitable;
-declare Customer
-    @Traitable
+    
+    <example>
+    <programlisting><emphasis role="bold">import</emphasis> org.drools.core.factmodel.traits.Traitable;
+<emphasis role="bold">declare</emphasis> Customer
+    <emphasis role="italic">@Traitable</emphasis>
     code    : String
     balance : long
-end</programlisting>
+<emphasis role="bold">end</emphasis></programlisting>
+    </example>  
 
     <para>The only connection between core classes and trait interfaces is at the proxy level: a
       trait is not specifically tied to a core class. This means that the same trait can be applied
@@ -773,12 +774,14 @@ end</programlisting>
       the interface will be available, as usual. However, any field in the interface that
       corresponds to a core object field, will be mapped by the proxy class:</para>
 
+    <example>
     <programlisting>when
     $o: OrderItem( $p : price, $code : custCode )
     $c: GoldenCustomer( code == $code, $a : balance, $d: discount )
 then
     $c.setBalance( $a - $p*$d );
 end</programlisting>
+    </example>
 
     <para>In this case, the code and balance would be read from the underlying Customer object.
       Likewise, the setAccount will modify the underlying object, preserving a strongly typed access
@@ -788,21 +791,26 @@ end</programlisting>
       @org.drools.core.factmodel.traits.Alias allows to relax this restriction. If an @Alias is
       provided, its value string will be used to resolve mappings instead of the original field
       name. @Alias can be applied both to traits and core beans. </para>
+    
+    <example>
     <programlisting>import org.drools.core.factmodel.traits.*;
-declare trait GoldenCustomer
-    balance : long @Alias( "org.acme.foo.accountBalance" )
-end
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> GoldenCustomer
+    balance : long <emphasis role="italic">@Alias( "org.acme.foo.accountBalance" )</emphasis>
+<emphasis role="bold">end</emphasis>
 
-declare Person
+<emphasis role="bold">declare</emphasis> Person
+    <emphasis role="italic">@Traitable</emphasis>
     name : String
-    savings : long @Alias( "org.acme.foo.accountBalance" )
-end
+    savings : long <emphasis role="italic">@Alias( "org.acme.foo.accountBalance" )</emphasis>
+<emphasis role="bold">end</emphasis>
 
 when
     GoldenCustomer( balance > 1000 ) // will react to new Person( 2000 )
 then
 end
 </programlisting>
+    </example>
+    
     <para>More work is being done on reaxing this constraint (see the experimental section on
       "logical" traits later). Now, one might wonder what happens when a core class does NOT provide
       the implementation for a field defined in an interface. We call hard fields those trait fields
@@ -815,13 +823,18 @@ end
       "fields" Map can be used on a trait interface to access a hidden field. If the field can't be
       resolved, null will be returned. Notice that this feature is likely to change in the
       future.</para>
+    
+    <example>
     <programlisting>when
     $sc : GoldenCustomer( fields[ "age" ] > 18 )  // age is declared by the underlying core class, but not by GoldenCustomer
 then</programlisting>
+    </example>
+    
     <para>Soft fields, instead, are stored in a Map-like data structure that is specific to each
       core object and referenced by the proxy(es), so that they are effectively shared even when an
       object dons multiple traits.</para>
 
+    <example>
     <programlisting>when
     $sc : GoldenCustomer( $c : code, // hard getter
                           $maxExpense : maxExpense > 1000 // soft getter
@@ -829,6 +842,7 @@ then</programlisting>
 then
     $sc.setDiscount( ... ); // soft setter
 end</programlisting>
+    </example>
 
     <para>A core object also holds a reference to all its proxies, so that it is possible to track
       which type(s) have been added to an object, using a sort of dynamic "instanceof" operator,
@@ -836,59 +850,147 @@ end</programlisting>
       literals. In the latter case, the constraint is satisfied only if all the traits have been
       donned. </para>
 
+    <example>
     <programlisting>$sc : GoldenCustomer( $maxExpense : maxExpense > 1000,
                       this isA "SeniorCustomer", this isA [ NationalCustomer.class, OnlineCustomer.class ]
 )</programlisting>
+    </example>
 
     <para>Eventually, the business logic may require that a trait is removed from a wrapped object.
       To this end, we provide two options. The first is a "logical don", which will result in a
       logical insertion of the proxy resulting from the traiting operation. The TMS will ensure that
       the trait is removed when its logical support is removed in the first place.</para>
 
+    <example>
     <programlisting>then
-    don( $x, // core object
+    <emphasis role="bold">don</emphasis>( $x, // core object
          Customer.class, // trait class
          true // optional flag for logical insertion
     )
     </programlisting>
+    </example>
 
     <para>The second is the use of the "shed" keyword, which causes the removal of any type that is
       a subtype (or equivalent) of the one passed as an argument. Notice that, as of version 5.5,
       shed would only allow to remove a single specific trait.</para>
 
+    <example>
     <programlisting>then
-    Thing t = shed( $x, GoldenCustomer.class ) // also removes any trait that</programlisting>
+    Thing t = <emphasis role="bold">shed</emphasis>( $x, GoldenCustomer.class ) // also removes any trait that</programlisting>
+    </example>
 
     <para>This operation returns another proxy implementing the org.drools.core.factmodel.traits.Thing interface, where
       the getFields() and getCore()
       methods are defined. Internally, in fact, all declared traits are generated to extend this interface (in addition
-      to any others specified).
-      This allows to preserve the wrapper with the soft fields which would otherwise be lost.</para>
+      to any others specified).      This allows to preserve the wrapper with the soft fields which would otherwise be lost.</para>
     <para>A trait and its proxies are also correlated in another way. Starting from version 5.6,
       whenever a core object is "modified", its proxies are "modified" automatically as well, to
       allow trait-based patterns to react to potential changes in hard fields. Likewise, whenever a
-      trait proxy (matched by a trait pattern) is modified, the modification is propagated to the
+      trait proxy (mached by a trait pattern) is modified, the modification is propagated to the
       core class and the other traits. Morover, whenever a don operation is performed, the core
       object is also modified automatically, to reevaluate any "isA" operation which may be
       triggered.</para>
     <para>Potentially, this may result in a high number of modifications, impacting performance (and
-      correctness) heavily. So, two solutions are currently implemented. First, whenever a core
+      correctness) heavily. So two solutions are currently implemented. First, whenever a core
       object is modified, only the most specific traits (in the sense of inheritance between trait
       interfaces) are updated and an internal blocking mechanism is in place to ensure that each
       potentially matching pattern is evaluated once and only once. So, in the following
       situation:</para>
-    <programlisting>declare trait GoldenCustomer end
-declare trait NationalGoldenCustomer extends GoldenCustomer end
-declare trait SeniorGoldenCustomer extends GoldenCustomer end</programlisting>
+    <programlisting><emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> GoldenCustomer <emphasis role="bold">end</emphasis>
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> NationalGoldenustomer <emphasis role="bold">extends</emphasis> GoldenCustomer <emphasis role="bold">end</emphasis>
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> SeniorGoldenCustomer <emphasis role="bold">extends</emphasis> GoldenCustomer <emphasis role="bold">end</emphasis></programlisting>
+    
     <para>a modification of an object that is both a GoldenCustomer, a NationalGoldenCustomer and a
-      SeniorGoldenCustomer would cause only the latter two proxies to be actually modified. The
+      SeniorGoldenCustomer wold cause only the latter two proxies to be actually modified. The
       first would match any pattern for GoldenCustomer and NationalGoldenCustomer; the latter would
       instead be prevented from rematching GoldenCustomer, but would be allowed to match
       SeniorGoldenCustomer patterns. It is not necessary, instead, to modify the GoldenCustomer
-      proxy since it is already covered by at least one other more specific trait.</para>
-    <para>The second method, up to the user, is to mark traits as @PropertyReactive. Property
+      proxy since it is already covered by at least one other more specific trait.</para>    <para>The second method, up to the usr, is to mark traits as @PropertyReactive. Property
       reactivity is trait-enabled and takes into account the trait field mappings, so to block
       unnecessary propagations. </para>
+    
+    <section>
+      <title>Cascading traits</title>
+      <para><emphasis role="bold">WARNING</emphasis> : This feature is extremely experimental and
+        subject to changes</para>
+      <para>Normally, a hard field must be exposed with its original type by all traits donned by an
+        object, to prevent situations such as</para>
+     
+      <example>
+       <programlisting><emphasis role="bold">declare</emphasis> Person
+  @Traitable
+  name : String
+  id : String
+<emphasis role="bold">end</emphasis>
+
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> Customer
+  id : String
+<emphasis role="bold">end</emphasis>
+
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> Patient
+  id : long  // Person can't don Patient, or an exception will be thrown
+<emphasis role="bold">end</emphasis></programlisting>
+     </example>
+      
+      <para>Should a Person don both Customer and Patient, the type of the hard field id would be
+        ambiguous. However, consider the following example, where GoldenCustomers refer their best
+        friends so that they become Customers as well:</para>
+      
+      <example>
+        <programlisting><emphasis role="bold">declare</emphasis> Person
+  @Traitable( logical=true )
+  bestFriend : Person
+<emphasis role="bold">end</emphasis>
+
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> Customer <emphasis role="bold">end</emphasis>
+        
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> GoldenCustomer <emphasis role="bold">extends</emphasis> Customer
+  refers : Customer <emphasis role="italic">@Alias( "bestFriend" )</emphasis>
+<emphasis role="bold">end</emphasis>          </programlisting>
+
+      </example>
+      
+      <para>Aside from the @Alias, a Person-as-GoldenCustomer's best friend might be compatible with
+        the requirements of the trait GoldenCustomer, provided that they are some kind of Customer
+        themselves. Marking a Person as "logically traitable" - i.e. adding the annotation
+        @Traitable( logical = true ) - will instruct the engine to try and preserve the logical
+        consistency rather than throwing an exception due to a hard field with different type
+        declarations (Person vs Customer). The following operations would then work:</para>
+      <example>
+        <programlisting>Person p1 = new Person();
+Person p2 = new Person();
+p1.setBestFriend( p2 );
+...
+Customer c2 = don( p2, Customer.class );
+...
+GoldenCustomer gc1 = don( p1, GoldenCustomer.class );
+...
+p1.getBestFriend(); // returns p2
+gc1.getRefers(); // returns c2, a Customer proxy wrapping p2</programlisting> 
+      </example>
+      
+      <para>Notice that, by the time p1 becomes GoldenCustomer, p2 must have already become a
+        Customer themselves, otherwise a runtime exception will be thrown since the very definition
+        of GoldenCustomer would have been violated.</para>
+      <para>In some cases, however, one might want to infer, rather than verify, that p2 is a
+        Customer by virtue that p1 is a GoldenCustomer. This modality can be enabled by marking
+        Customer as "logical", using the annotation @org.drools.core.factmodel.traits.Trait( logical
+        = true ). In this case, should p2 not be a Customer by the time that p1 becomes a
+        GoldenCustomer, it will be automatically don the trait Customer to preserve the logical
+        integrity of the system.</para>
+      <para>Notice that the annotation on the core class enables the dynamic type management for its
+        fields, whereas the annotation on the traits determines whether they will be enforced as
+        integrity constraints or cascaded dynamically.</para>
+
+      <example>
+        <programlisting><emphasis role="bold">import</emphasis> org.drools.factmodel.traits.*;
+
+<emphasis role="bold">declare</emphasis> <emphasis role="bold">trait</emphasis> Customer
+    <emphasis role="italic">@Trait( logical = true )</emphasis>
+<emphasis role="bold">end</emphasis>        </programlisting>
+      </example>
+      
+    </section> 
   </section>
 
 </section>
