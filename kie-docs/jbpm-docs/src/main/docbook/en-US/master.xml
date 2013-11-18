@@ -36,16 +36,23 @@
   </preface>
 
   <part>
-    <title>Welcome</title>
+    <partintro>
+      <para>Welcome and Release Notes</para>
+    </partintro>
+    <xi:include href="../../../../../shared/Welcome.xml"/>
+    <xi:include href="ReleaseNotes.xml"/>  
+  </part>
+  
+  <part>
+    <title>Getting Started</title>       
     <partintro><para>Introduction and getting started with jBPM</para></partintro>
     
-  <xi:include href="Overview.xml"/>
-  <xi:include href="GettingStarted.xml"/>
-  <xi:include href="Installer.xml"/>
-  <xi:include href="Examples.xml"/>
-  <!--xi:include href="Quickstarts.xml"/-->
-  
-  </part>
+    <xi:include href="Overview.xml"/>
+    <xi:include href="GettingStarted.xml"/>
+    <xi:include href="Installer.xml"/>
+    <xi:include href="Examples.xml"/>
+    <!--xi:include href="Quickstarts.xml"/-->  
+  </part>  
   
   <part>
     <title>jBPM Core</title>
@@ -101,8 +108,6 @@
   <xi:include href="FlexibleProcesses.xml"/>
   <xi:include href="AsyncExecution.xml"/>
   
-  </part>
-  
-  <xi:include href="ReleaseNotes.xml"/>
+  </part>  
 
 </book>
