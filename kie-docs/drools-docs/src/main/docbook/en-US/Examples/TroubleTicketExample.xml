@@ -60,7 +60,7 @@ end    </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_view.png" />
+            <imagedata fileref="images/Examples/TroubleTicketExample/tt_audit_view.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -76,7 +76,7 @@ end    </programlisting>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_view.png" />
+            <imagedata fileref="images/Examples/TroubleTicketExample/tt_audit_view.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -172,7 +172,7 @@ Email : [Ticket [Customer D : Silver] : Escalate]
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Examples/TroubleTicketExample/tt_audit_firing.png" />
+            <imagedata fileref="images/Examples/TroubleTicketExample/tt_audit_firing.png" />
           </imageobject>
         </mediaobject>
       </figure>

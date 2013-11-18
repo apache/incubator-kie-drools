@@ -79,7 +79,7 @@ ksession.dispose();</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/NumberGuessExample/numberguess-ruleflow.png" width="100%"></imagedata>
+        <imagedata fileref="images/Examples/NumberGuessExample/numberguess-ruleflow.png" width="100%"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -100,7 +100,7 @@ ksession.dispose();</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/NumberGuessExample/numberguess-ruleflow-properties.png" width="100%"></imagedata>
+        <imagedata fileref="images/Examples/NumberGuessExample/numberguess-ruleflow-properties.png" width="100%"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -214,7 +214,7 @@ end</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/NumberGuessExample/numberguess-editconstraints.png"></imagedata>
+        <imagedata fileref="images/Examples/NumberGuessExample/numberguess-editconstraints.png"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -229,7 +229,7 @@ end</programlisting>
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/NumberGuessExample/numberguess-constraint-toohigh.png"></imagedata>
+        <imagedata fileref="images/Examples/NumberGuessExample/numberguess-constraint-toohigh.png"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
