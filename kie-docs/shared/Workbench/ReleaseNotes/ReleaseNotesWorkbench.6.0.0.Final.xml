@@ -13,7 +13,16 @@
     like he Workbench experience you can use UberFire today to build your own web based dashboard and console
     efforts.</para>
   <para>As well as the move to a UberFire the other biggest change is the move from JCR to GIT; there is an utility
-    project to help with migration.</para>
+    project to help with migration. GIT is the most scalable and powerful source repository bar none. JGIT provides a
+    solid OSS implementation for GIT. This addresses the continued performance problems with the various JCR
+    implementations, which would slow down once the number of files and number of versions become too high. There has
+    been a big "low tech" drive, to remove complexity. Everything is now stored as a file, including meta data. The
+    database is ony there to provide fast indexing and search. So importing and exporting is all standard GIT and
+    external sites, like GitHub, can be used to exchange repositories. </para>
+  <para>In 5.x developers would work with their own source repository and then push JCR, via the team provider. This
+    team provider was not full featured and not available outside eclipse. GIT enables our repository to work any
+    existing GIT tool or team provider. While not yet supported in the UI,  this will be added over time, it is possible
+    to connect to the repo and tag and branch and restore things.</para>
 
   <figure>
     <title>Workbench</title>
@@ -23,9 +32,31 @@
       </imageobject>
     </mediaobject>
   </figure>
-
-  <para>Guvnor has been renamed. It has essentially been completely re-write. </para>
-  <para>There are two primary distributions, the one you need to use depends upon your requirements:- <itemizedlist>
+  <para>The Guvnor brand leaked too much from it's intended role; such as the authoring metaphores, like Decision Tables,
+    being considered Guvnor components instead of Drools components. This wasn't helped by the monolithic projects
+    structure used in 5.x for Guvnor. In 6.0 Guvnor 's focus has been narrowed to encapsulates the set of UberFire
+    plugins that provide the basis for building a web based IDE. Such as Maven integration for building and deploying,
+    management of Maven repositories and activity notifications via inboxes. Drools and jBPM build workbench
+    distributions using Uberfire as the base and including a set of plugins, such as Guvnor, along with their own
+    plugins for things like decision tables, guided editors, bpm2 designer, human tasks. </para>
+  <para>The "Model Structure" diagram outlines the new project anatomy. The Drools workbench is called KIE-Drools-WB.
+    KIE-WB is the uber workbench that combines all the Guvnor, Drools and jBPM plugins. The jBPM-WB is ghosted out, as
+    it doesn't actually exist, being made redundant by KIE-WB.</para>
+  <figure>
+    <title>Module Structure</title>
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center" fileref="images/Workbench/ReleaseNotes/kie-structure.png" format="PNG"/>
+      </imageobject>
+    </mediaobject>
+  </figure>
+  <important>
+    <para>KIE Drools Workbench and KIE Workbench share a common set of components for generic workbench functionality
+      such as Project navigation, Project defintions, Maven based Projects, Maven Artifact Repository. These common
+      features are described in more detail throughout this documentation.</para>
+  </important>
+  <para/>
+  <para>The two primary distributions consist of:<itemizedlist>
       <listitem>
         <para>KIE Drools Workbench</para>
         <itemizedlist>
@@ -57,26 +88,10 @@
           </listitem>
         </itemizedlist>
       </listitem>
-    </itemizedlist><important>
-      <para>KIE Drools Workbench and KIE Workbench share a common set of components for generic workbench functionality
-        such as Project navigation, Project defintions, Maven based Projects, Maven Artifact Repository. These common
-        features are described in more detail throughout this documentation.</para>
-    </important></para>
-  <para>The following diagram illustrates the new module strucuture and how the Workbenchs fit into the larger
-    picture.</para>
-
-  <figure>
-    <title>Module Structure</title>
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center" fileref="images/Workbench/ReleaseNotes/kie-structure.png" format="PNG"/>
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  <para>Most notably: <itemizedlist>
+    </itemizedlist></para>
+  <para>Workbench highlights:<itemizedlist>
       <listitem>
-        <para>New flexible Workbench environment.</para>
+        <para>New flexible Workbench environment, with perspectives and panels.</para>
       </listitem>
       <listitem>
         <para>New packaging and build system following KIE API.</para>
@@ -85,7 +100,7 @@
             <para>Maven based projects.</para>
           </listitem>
           <listitem>
-            <para>Maven Artifact Repository replaces Global Area.</para>
+            <para>Maven Artifact Repository replaces Global Area, with full dependency support.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -108,9 +123,8 @@
       <listitem>
         <para>Incremental Build system showing, near real-time validation results of your project and assets.</para>
       </listitem>
-    </itemizedlist>
-  </para>
-  <para>The editors themselves are largely unchanged; however of note imports have moved from the package definition to
-    individual editors so you need only import types used for an asset and not the package as a whole.</para>
+    </itemizedlist> The editors themselves are largely unchanged; however of note imports have moved from the package
+    definition to individual editors so you need only import types used for an asset and not the package as a
+    whole.</para>
 
 </section>

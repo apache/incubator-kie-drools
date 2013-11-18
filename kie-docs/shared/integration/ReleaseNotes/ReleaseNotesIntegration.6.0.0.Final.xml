@@ -7,15 +7,41 @@
   <title>New and Noteworthy in Integration 6.0.0</title>
   <section>
     <title>CDI</title>
-    <para>xxxx</para>
+    <para>CDI is now tightly integrated into the KIE API. It can be used to inject versioned KieSession and KieBases.</para>
+    <figure>
+      <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+      <programlisting language="JAVA">@Inject
+@KSession("kbase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+private KieBase kbase1v10;
+
+@Inject
+@KBase("kbase1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+private KieBase kbase1v10;</programlisting>
+    </figure>
+    <figure>
+      <title>Side by side version loading for 'jar1.KBase1' KieBase</title>
+      <programlisting language="JAVA">@Inject
+@KSession("ksession1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.0")
+private KieSession ksessionv10;
+
+@Inject
+@KSession("ksession1") 
+@KReleaseId( groupId = "jar1", rtifactId = "art1", version = "1.1")
+private KieSession ksessionv11;</programlisting>
+    </figure>
   </section>
   <section>
     <title>Spring</title>
-    <para>xxxx</para>
+    <para>Spring has been revamped and now integrated with KIE. Spring can replace the 'kmodule.xml' with a more
+      powerful spring version. The aim is for consistency with kmodule.xml</para>
   </section>
   <section>
-    <title>Aries</title>
-    <para>xxxx</para>
+    <title>Aries Blueprints</title>
+    <para>Aries blueprints is now also supported, and follows the work done for spring. The aim is for consistency with
+      spring and kmodule.xml</para>
   </section>
   <section>
     <title>OSGi Ready</title>

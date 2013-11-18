@@ -7,8 +7,9 @@
   <title>New and Noteworthy in KIE API 6.0.0</title>
   <section>
     <title>New KIE name</title>
-    <para>KIE is the new umbrella name used to group together our related projects; as the family continues to grow. KIE is also used for the 
-      generic parts of unified API; such as build and loading. This replaces the droolsjbpm and knowledge keywords that would have been used before. </para>
+    <para>KIE is the new umbrella name used to group together our related projects; as the family continues to grow. KIE
+      is also used for the generic parts of unified API; such as building, deploying and loading. This replaces the
+      droolsjbpm and knowledge keywords that would have been used before. </para>
     <figure>
       <title>KIE Anatomy</title>
       <mediaobject>
@@ -23,21 +24,24 @@
     <para>One of the biggest complaints during the 5.x series was the lack of defined methodolgy for deployment. The
       mechanism used by Drools and jBPM was very flexible, but it was too flexible. A big focus for 6.0 was streamling
       the build, deploy and loading(utilization) aspects of the system. Building and deploying now align with Maven and
-      the utilization is now convention and configuration oriented, instead of programmatic, with sane default to
-      minimise the configuration.</para>
+      Maven repositories. The utilization for loadng rules and processess is now convention and configuration oriented,
+      instead of programmatic, with sane default to minimise the configuration.</para>
   </section>
   <section>
     <title>Configuration and convention based projects</title>
     <para>xxxx</para>
   </section>
+  <section>
+    <title>KieModules and KieContainer</title>
+    <para/>
+  </section>
 
   <section>
     <title>KieBase Inclusion</title>
 
-    <para>It is possible to include all the Kie artifacts belonging to a KieBase into a second KieBase.
-    This means that the second KieBase beyond all the rules, function and processes directly defined
-    into it will also contain the ones created in the included KieBase. This inclusion can be
-    done both declaratively in the kmodule.xml file</para>
+    <para>It is possible to include all the KIE artifacts belonging to a KieBase into a second KieBase. This means that
+      the second KieBase beyond all the rules, function and processes directly defined into it will also contain the
+      ones created in the included KieBase. This inclusion can be done both declaratively in the kmodule.xml file</para>
 
     <example>
       <title>Including a KieBase into another declaratively</title>
