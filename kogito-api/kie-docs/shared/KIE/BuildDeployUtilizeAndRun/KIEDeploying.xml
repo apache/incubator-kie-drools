@@ -9,35 +9,32 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Deploying</title>
 
+  <!--section>
+    <title>KieRepository</title>
+    <para>xxx</para>
+  </section-->
+  
   <section>
     <title>KieBase</title>
-
-    <para>The <code>KieBase</code> is a repository of all the
-    application's knowledge definitions. It will contain rules, processes,
-    functions, and type models. The <code>KieBase</code> itself does not contain
-    data; instead, sessions are created from the <code>KieBase</code>
-    into which data can be inserted and from which process instances may be
-    started. The <code>KieBase</code> can be obtained from the <code>KieContainer</code>
-    containing the <code>KieModule</code> where the <code>KieBase</code> has been defined.</para>
-
+    <para>The <code>KieBase</code> is a repository of all the application's knowledge definitions. It will contain
+      rules, processes, functions, and type models. The <code>KieBase</code> itself does not contain data; instead,
+      sessions are created from the <code>KieBase</code> into which data can be inserted and from which process
+      instances may be started. The <code>KieBase</code> can be obtained from the <code>KieContainer</code> containing
+      the <code>KieModule</code> where the <code>KieBase</code> has been defined.</para>
     <figure>
       <title>KieBase</title>
-
       <mediaobject>
         <imageobject>
           <imagedata fileref="images/kie/BuildDeployUtilizeAndRun/KieBase.png"/>
         </imageobject>
       </mediaobject>
     </figure>
-
-    <para>Sometimes, for instance in a OSGi environment, the <code>KieBase</code> needs to resolve
-    types that are not in the default class loader. In this case it will be necessary to create a
-    <code>KieBaseConfiguration</code> with an additional class loader and pass it to <code>KieContainer</code>
-    when creating a new <code>KieBase</code> from it.</para>
-
+    <para>Sometimes, for instance in a OSGi environment, the <code>KieBase</code> needs to resolve types that are not in
+      the default class loader. In this case it will be necessary to create a <code>KieBaseConfiguration</code> with an
+      additional class loader and pass it to <code>KieContainer</code> when creating a new <code>KieBase</code> from
+      it.</para>
     <example>
       <title>Creating a new KieBase with a custom ClassLoader</title>
-
       <programlisting language="java">KieServices kieServices = KieServices.Factory.get();
 KieBaseConfiguration kbaseConf = kieServices.newKieBaseConfiguration( null, MyType.class.getClassLoader() );
 KieBase kbase = kieContainer.newKieBase( kbaseConf );</programlisting>

@@ -29,9 +29,7 @@ end
 </programlisting>
 
     <warning>
-      <para>Drools also supports for backward compatibility the use of '#' for
-      single line comments, but this is deprecated and will be removed in
-      future releases.</para>
+      <para> '#' for comments has been removed.</para>
     </warning>
   </section>
 

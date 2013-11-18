@@ -83,15 +83,15 @@
       example we now issue bus passes, either a child or adult pass.</para>
 
       <programlisting>rule "Issue Child Bus Pass" when
-  $p : Person( age &lt; 16 )
+    $p : Person( age &lt; 16 )
 then
-  insert(new ChildBusPass( $p ) );
+    insert(new ChildBusPass( $p ) );
 end
  
 rule "Issue Adult Bus Pass" when
-  $p : Person( age &gt;= 16 )
+    $p : Person( age &gt;= 16 )
 then
-  insert(new AdultBusPass( $p ) );
+    insert(new AdultBusPass( $p ) );
 end</programlisting>
 
       <para>As before the above example is considered monolithic, leaky and
@@ -112,58 +112,40 @@ then
     insertLogical( new IsAdult( $p ) )
 end</programlisting>
 
-      <para>A "insertLogical" is part of the Drools Truth Maintenance System
-      (TMS). Here the fact is logically inserted, this fact is dependant on
-      the truth of the "when" clause. It means that when the rule becomes
-      false the fact is automatically retracted. This works particularly well
-      as the two rules are mutually exclusive. So in the above rules if the
-      person is under 16 it inserts an IsChild fact, once the person is 16 or
-      over the IsChild fact is automatically retracted and the IsAdult fact
-      inserted.</para>
+      <para>A "insertLogical" is part of the Drools Truth Maintenance System (TMS). When a fact is logically inserted,
+        this fact is dependant on the truth of the "when" clause. It means that when the rule becomes false the fact is
+        automatically retracted. This works particularly well as the two rules are mutually exclusive. So in the above
+        rules if the person is under 16 it inserts an IsChild fact, once the person is 16 or over the IsChild fact is
+        automatically retracted and the IsAdult fact inserted.</para>
 
-      <para>We can now bring back in the code to issue the passes, these two
-      can also be logically inserted, as the TMS supports chaining of logical
-      insertions for a cascading set of retracts.</para>
+      <para>Returning to the code to issue bus passes, these two rules can + logically insert the ChildBusPass and
+        AdultBusPass facts, as the TMS + supports chaining of logical insertions for a cascading set of retracts.</para>
 
       <programlisting>rule "Issue Child Bus Pass" when
-  $p : Person( )
-       IsChild( person == $p )
+    $p : Person( )
+         IsChild( person == $p )
 then
     insertLogical(new ChildBusPass( $p ) );
 end
  
 rule "Issue Adult Bus Pass" when
-  $p : Person( age &gt;= 16 )
-       IsAdult( person =$p )
+    $p : Person( age &gt;= 16 )
+         IsAdult( person =$p )
 then
     insertLogical(new AdultBusPass( $p ) );
 end</programlisting>
 
-      <para>Now when the person changes from being 15 to 16, not only is the
-      IsChild fact automatically retracted, so is the person's ChildBusPass
-      fact. For bonus points we can combine this with the 'not' conditional
-      element to handle notifications, in this situation a request for the
-      returning of the pass. So when the TMS automatically retracts the
-      ChildBusPass object, this rule triggers and sends a request to the
-      person:</para>
+      <para>Now when a person changes from being 15 to 16, not only is the IsChild fact automatically retracted, so is
+        the person's ChildBusPass fact. For bonus points we can combine this with the 'not' conditional element to
+        handle notifications, in this situation, a request for the returning of the pass. So when the TMS automatically
+        retracts the ChildBusPass object, this rule triggers and sends a request to the person:</para>
 
       <programlisting>rule "Return ChildBusPass Request "when
-  $p : Person( )
-       not( ChildBusPass( person == $p ) )
+    $p : Person( )
+         not( ChildBusPass( person == $p ) )
 then
     requestChildBusPass( $p );
 end</programlisting>
-    </section>
-
-    <section>
-      <title>Lazy Truth Maintenance</title>
-
-      <para>You no longer need to enable or disable truth maintenance, via the
-      kbase configuration. It is now handled automatically and turned on only
-      when needed. This was done along with the code changes so that all entry
-      points use the same code, previous to this the default entry point and
-      named entry points used different code, to avoid TMS overhead for event
-      processing.</para>
     </section>
 
     <section>

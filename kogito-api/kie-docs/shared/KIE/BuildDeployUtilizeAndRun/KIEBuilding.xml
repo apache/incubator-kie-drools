@@ -344,6 +344,35 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
     </example>
   </section>
 
+  <section xml:id="buildingWithMaven">
+    <title>Building with Maven</title>
+    <para>
+      The KIE plugin for maven ensures that artefact resources are validated and pre-compiled, it is recommended that this is used at all times. To use the plugin simple add it to the build
+      section of the Maven pom.xml
+     </para>
+    
+    <example>
+      <title>Adding the KIE plugin to a Maven pom.xml</title>
+      <programlisting language="XML">
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.kie&lt;/groupId&gt;
+        &lt;artifactId&gt;kie-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${project.version}&lt;/version&gt;
+        &lt;extensions&gt;true&lt;/extensions&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;        
+      </programlisting>
+    </example>
+    
+    <para>Building a KIE module without the Maven plugin will copy all the resources, as is, into the resulting JAR.
+      When that JAR is loaded by the runtime, it will attempt to build all the resources then.  If there are compilation
+      issues it will return a null KieContainer. It also pushes the compilation overhead to the runtime. In general this
+      is not recommended, and the Maven plugin should always be used. </para>
+  </section>
+  
   <section xml:id="definingAKieModuleProgrammatically">
     <title>Defining a KieModule programmatically</title>
 

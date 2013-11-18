@@ -12,12 +12,10 @@
   <section>
     <title>Bus Pass Example</title>
 
-    <para>Inference has a bad name these days, as something not relevant to
-    business use cases and just too complicated to be useful. It is true that
-    contrived and complicated examples occur with inference, but that should
-    not detract from the fact that simple and useful ones exist too. But more
-    than this, correct use of inference can crate more agile and less error
-    prone businesses with easier to maintain software.</para>
+    <para>Inference has a bad name these days, as something not relevant to business use cases and just too complicated
+      to be useful. It is true that contrived and complicated examples occur with inference, but that should not detract
+      from the fact that simple and useful ones exist too. But more than this, correct use of inference can crate more
+      agile and less error prone business rules, which are easier to maintain.</para>
 
     <para>So what is inference? Something is inferred when we gain knowledge
     of something from using previous knowledge. For example, given a Person

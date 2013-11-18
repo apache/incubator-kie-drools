@@ -7,7 +7,13 @@
 
   <title>New and Noteworthy in KIE Workbench 6.0.0</title>
 
-  <para>What's not new?</para>
+  <para>The workbench has had a big overhaul using a new base project called UberFire. UberFire is inspired by Eclipse
+    and provides a clean, extensible and flexible framework for the workebench. The end result is not only a richer
+    experience for our end users, but we can now develop more rapidly with a clean component based architecture. If you
+    like he Workbench experience you can use UberFire today to build your own web based dashboard and console
+    efforts.</para>
+  <para>As well as the move to a UberFire the other biggest change is the move from JCR to GIT; there is an utility
+    project to help with migration.</para>
 
   <figure>
     <title>Workbench</title>

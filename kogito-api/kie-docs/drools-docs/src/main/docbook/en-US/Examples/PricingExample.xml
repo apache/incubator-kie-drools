@@ -75,7 +75,7 @@ DISCOUNT IS: 20     </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata width="100%"
-                     fileref="images/Chapter-Examples/PricingExample/DT_Config.png" />
+                     fileref="images/Examples/PricingExample/DT_Config.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -108,7 +108,7 @@ DISCOUNT IS: 20     </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata width="100%"
-                     fileref="images/Chapter-Examples/PricingExample/DT_Table1.png" />
+                     fileref="images/Examples/PricingExample/DT_Table1.png" />
           </imageobject>
         </mediaobject>
       </figure>
@@ -126,7 +126,7 @@ DISCOUNT IS: 20     </programlisting>
         <mediaobject>
           <imageobject>
             <imagedata width="100%"
-                     fileref="images/Chapter-Examples/PricingExample/DT_Table2.png" />
+                     fileref="images/Examples/PricingExample/DT_Table2.png" />
           </imageobject>
         </mediaobject>
       </figure>

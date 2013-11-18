@@ -12,6 +12,4 @@
   <xi:include href="DecisionTables.xml" />
   <xi:include href="Logging.xml" />
 
- <!-- xi:include href="A_Little_More_Theory.xml" /-->
-
 </chapter>
