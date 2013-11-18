@@ -187,13 +187,7 @@ public class RuleNetworkEvaluator {
         SegmentMemory[] smems = entry.getSmems();
         int smemIndex = entry.getSmemIndex();
         Set<String> visitedRules = entry.getVisitedRules();
-        boolean processRian;
-        if (NodeTypeEnums.isBetaNode(node)) {
-            // queued beta nodes do not want their ria node evaluated, otherwise there is recursion
-            processRian = false;
-        } else {
-            processRian = true;
-        }
+        boolean processRian = entry.isProcessRian();
 
         long bit = entry.getBit();
         if (entry.isResumeFromNextNode()) {
@@ -342,6 +336,7 @@ public class RuleNetworkEvaluator {
                     break; // RiaNode exists and has placed StackEntry on the Stack
                 }
             } else {
+                boolean exitInnerEval = false;
                 switch (node.getType()) {
                     case NodeTypeEnums.EvalConditionNode: {
                         pEvalNode.doNode((EvalConditionNode) node, (EvalMemory) nodeMem, sink,
@@ -355,10 +350,7 @@ public class RuleNetworkEvaluator {
                         break;
                     }
                     case NodeTypeEnums.QueryElementNode: {
-                        boolean exitInnerEval =  evalQueryNode(liaNode, pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, srcTuples, sink);
-                        if ( exitInnerEval ) {
-                            break; // Queries exists and has placed StackEntry on the Stack
-                        }
+                        exitInnerEval =  evalQueryNode(liaNode, pmem, node, bit, nodeMem, smems, smemIndex, trgTuples, wm, stack, visitedRules, srcTuples, sink);
                         break;
                     }
                     case NodeTypeEnums.TimerConditionNode: {
@@ -370,6 +362,9 @@ public class RuleNetworkEvaluator {
                                            wm, srcTuples, trgTuples, stagedLeftTuples, executor);
                         break;
                     }
+                }
+                if ( exitInnerEval && trgTuples.isEmpty() ) {
+                    break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
                 }
             }
 
@@ -462,7 +457,7 @@ public class RuleNetworkEvaluator {
         if (!srcTuples.isEmpty()) {
             // only process the Query Node if there are src tuples
             StackEntry stackEntry = new StackEntry(liaNode, node, bit, sink, pmem, nodeMem, smems,
-                                                   smemIndex, trgTuples, visitedRules, true);
+                                                   smemIndex, trgTuples, visitedRules, true, true);
 
             stack.add(stackEntry);
 
@@ -499,7 +494,7 @@ public class RuleNetworkEvaluator {
                 trgTuples = smem.getStagedLeftTuples().takeAll();
                 stackEntry = new StackEntry(liaNode, node, bit, null, pmem,
                                             nodeMem, smems, smemIndex,
-                                            trgTuples, visitedRules, false);
+                                            trgTuples, visitedRules, false, true);
                 if (log.isTraceEnabled()) {
                     int offset = getOffset(stackEntry.getNode());
                     log.trace("{} ORQueue branch={} {} {}", indent(offset), i, stackEntry.getNode().toString(), trgTuples.toStringSizes());
@@ -596,7 +591,7 @@ public class RuleNetworkEvaluator {
 
         // Resume the node after the riaNode segment has been processed and the right input memory populated
         StackEntry stackEntry = new StackEntry(liaNode, betaNode, bm.getNodePosMaskBit(), sink, pmem, nodeMem, smems,
-                                               smemIndex, srcTuples, visitedRules, false);
+                                               smemIndex, srcTuples, visitedRules, false, false);
         stack.add(stackEntry);
         if (log.isTraceEnabled()) {
             int offset = getOffset(betaNode);
