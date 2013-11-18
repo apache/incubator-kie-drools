@@ -32,38 +32,38 @@
     in the following areas:</para>
     
     <itemizedlist>
-      <listitem>RuntimeManager: instantiating a ksession (and an associated task service) has been simplified
+      <listitem><para>RuntimeManager: instantiating a ksession (and an associated task service) has been simplified
       significantly, by introducing a runtime manager where you can simply ask for a reference to a ksession
       whenever you need it.  The Runtime manager is responsible for initialization, configuration and disposal
-      of the ksession (and task service), and three predefined strategies are available:
+      of the ksession (and task service), and three predefined strategies are available:</para>
         <itemizedlist>
-          <listitem>Singleton: the RuntimeManager reused the same ksession for all requests (and executes the
-          requests in sequence, one at a time)</listitem>
-          <listitem>Session per request: the RuntimeManager instantiates a new ksession per request that will
+          <listitem><para>Singleton: the RuntimeManager reused the same ksession for all requests (and executes the
+          requests in sequence, one at a time)</para></listitem>
+          <listitem><para>Session per request: the RuntimeManager instantiates a new ksession per request that will
           be used for executing that request and disposed at the end.  Each request will receive it's own ksession
-          and they can all be executed in parallel.</listitem>
-          <listitem>Session per process instance: the RuntimeManager reuses the same ksession for all requests
+          and they can all be executed in parallel.</para></listitem>
+          <listitem><para>Session per process instance: the RuntimeManager reuses the same ksession for all requests
           related to one specific process instance.  This might be necessary if you are storing data inside your
           session (for example for rule evaluations) that you need to be available later in the process as well.
           Note that the session is disposed after each command but stored in the database so it can be restored
-          whenever necessary.</listitem>
+          whenever necessary.</para></listitem>
         </itemizedlist> 
       </listitem>
-      <listitem>jBPM Services (CDI): To simplify integration of jBPM inside CDI-based applications, the
+      <listitem><para>jBPM Services (CDI): To simplify integration of jBPM inside CDI-based applications, the
       jbpm-services module contains various CDI services that you can configure and use inside your application
       simply by injecting the necessary services (like a RuntimeManager or TaskService for example) inside
-      your application, making integration easier than ever.</listitem>
-      <listitem>Timer service: a Quartz-based timer service is now available, that allows you to dispose your
+      your application, making integration easier than ever.</para></listitem>
+      <listitem><para>Timer service: a Quartz-based timer service is now available, that allows you to dispose your
       session at any point in time, and the timer service will be responsible for rehydrating a ksession whenever
       a timer should be fired.  This timer service also works in a clustered environment, where multiple nodes
-      can work together on sharing the work load but timers will only be fired once by one of the nodes.</listitem>
-      <listitem>Exception and compensation management: various improvements in this area allow you to use
+      can work together on sharing the work load but timers will only be fired once by one of the nodes.</para></listitem>
+      <listitem><para>Exception and compensation management: various improvements in this area allow you to use
       more BPMN2 constructs related to exception and compensation management in your processes, and various
-      strategies have been extended and documented to better handle exceptions in different ways.</listitem>
-      <listitem>Asynchronous handlers: asynchronous execution of interaction with external services can now
-      be implemented by reusing the asynchronous job executor.</listitem>
-      <listitem>Asynchronous auditing using JMS: audit logging can now also be done asynchronously by sending
-      the events to a JMS queue rather than persisting them as part of the engine transaction.</listitem>
+      strategies have been extended and documented to better handle exceptions in different ways.</para></listitem>
+      <listitem><para>Asynchronous handlers: asynchronous execution of interaction with external services can now
+        be implemented by reusing the asynchronous job executor.</para></listitem>
+      <listitem><para>Asynchronous auditing using JMS: audit logging can now also be done asynchronously by sending
+        the events to a JMS queue rather than persisting them as part of the engine transaction.</para></listitem>
     </itemizedlist>
 
     <para>The task service has been refactored significantly as well, and the TaskService APIs have been moved
@@ -168,21 +168,21 @@
     <para>A workbench application, based on the UberFire framework, now unifies all web-based editors and tools
     into one large, configurable web application.  It has many features, including:</para>
     <itemizedlist>
-      <listitem>Configurable workspace where you layout your own views by dragging and dropping</listitem>
-      <listitem>Unified login and role-based authentication, where what features you see depends on your role
-      (admin, analyst, developer, user, manager, etc.).</listitem>
-      <listitem>A new home screen that will guide you through the life cycle of your business processes
-      (authoring, deployment, execution, tasks and reporting).</listitem>
-      <listitem>Git-based repository that supports versioning and collaboration.</listitem>
-      <listitem>New project structure where artifacts (processes, rules, etc.) are combined into kjars (we removed
+      <listitem><para>Configurable workspace where you layout your own views by dragging and dropping</para></listitem>
+      <listitem><para>Unified login and role-based authentication, where what features you see depends on your role
+        (admin, analyst, developer, user, manager, etc.).</para></listitem>
+      <listitem><para>A new home screen that will guide you through the life cycle of your business processes
+      (authoring, deployment, execution, tasks and reporting).</para></listitem>
+      <listitem><para>Git-based repository that supports versioning and collaboration.</para></listitem>
+      <listitem><para>New project structure where artifacts (processes, rules, etc.) are combined into kjars (we removed
       the custom binary packages and replaced them with a normal jar, containing the source artifacts) when a 
       project is built.  These kjars now also include not only processes and rules, but also forms, configuration
       files, data models (Java classes), etc.  Kjars are maven artefacts themselves (they have a group, id and
       version) and exposed as a Maven repository.  When creating a ksession, Maven can be used to download the
-      necessary kjars for your project from this Maven repository.</listitem>
-      <listitem>Sample <code>playground</code> repositories are (optionally) installed when
+      necessary kjars for your project from this Maven repository.</para></listitem>
+      <listitem><para>Sample <code>playground</code> repositories are (optionally) installed when
       starting up the workbench the first time, to get you started quickly with some predefined
-      examples.</listitem>
+      examples.</para></listitem>
     </itemizedlist>
     <para>Check the Workbench Part for all the details.</para>
   </section>

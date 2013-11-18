@@ -35,10 +35,10 @@
 
   <part>
     <title>Welcome</title>
-    <!-- Maybe move some of the KIE intro here, combined with my old previous intro -->
     <partintro>
-      <para>Part Intro</para>
+      <para>Welcome and Release Notes</para>
     </partintro>
+    <xi:include href="../../../../../shared/Welcome.xml"/>
     <xi:include href="ReleaseNotes.xml"/>
     <xi:include href="../../../../../shared/ReleaseInformation/CompatibilityMatrix.xml"/>
   </part>
