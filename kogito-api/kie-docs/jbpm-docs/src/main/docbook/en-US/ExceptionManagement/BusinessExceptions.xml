@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+
+  <section> 
+    <title>Business Exceptions</title>
+    
+    <para>Business Exceptions are exceptions that are designed and managed in the BPMN2 specification of
+      a business process. In other words, Business Exceptions are exceptions which happen at the process 
+      or workflow level, and are not related to the technical components.</para>
+    
+    <para>Many of the elements in BPMN2 related to Business Exceptions are related to
+      <emphasis>Compensation</emphasis> and <emphasis>Business Transactions</emphasis>. Compensation, in
+      particular, is complexer than many other parts of the BPMN2 specfication.</para>
+    
+    <para>Full support for <emphasis>compensation</emphasis> and <emphasis>business
+      transactions</emphasis> is expected with the release of jBPM 6.1 or 6.2. Once that has been
+      implemented, this section will contain more information about using those BPMN2 features with 
+      jBPM.</para>
+    
+    <section> 
+      <title>Business Exceptions elements in BPMN2</title>
+      
+      <para>The following attempts to briefly describe Compensation and Business Transaction related 
+        elements in BPMN2.  For more complete information about these elements and their uses, see 
+        the BPMN2 specification, Bruce Silver's book <filename>BPMN Method and Style</filename> or any of 
+        the other available books about the use of BPMN2.</para>
+      
+      <table frame='all'>
+        <title>BPMN2 Exception Handling Elements</title>
+        <tgroup cols="2" align='left' rowsep='1' colsep='1'>
+          <thead>
+            <row>
+              <entry>BPMN2 Element types</entry>
+              <entry>Description</entry>
+            </row>
+          </thead><tbody valign='top'>
+            <row>
+              <entry>Errors</entry>
+              <entry><para>Error Events can be used to signal when a process has encountered an unexpected 
+                situation: signalling an error is often called <emphasis>throwing</emphasis> an error.</para>
+                <para>Boundary Error Events in a different part of the process can then be used to 
+                  <emphasis>catch</emphasis> the error and initiate a sequence of activities to handle the 
+                  exception.</para>
+                <para>Errors themselves can be extended with extra information that is passed from the 
+                  throwing to catching event. This is done with the use of an Item Definition.</para>
+              </entry>
+            </row>
+            <!-- add when Business Transactions have been implemented
+      <row>
+        <entry>Business Transactions</entry>
+        <entry><para>A Business Transaction in BPMN2 is a subprocess which can be used with
+        <emphasis>compensation</emphasis>. Grouping activities in a Business Transaction lets the
+        process designer easily add exception handling to specific activities in the 
+        subprocess.</para>
+        <para>Using a Business Transaction guarantees that all activities in the 
+        transaction will have completed successfully if the Business Transaction completes 
+        successfully.</para>
+        
+        <para>When a Business Transaction is interrupted or otherwise not completed successfully, 
+        there is a guarantee that all activities in the Business Transaction that have been initiated 
+        will be compensated if compensating activities are defined for those activities.
+        </para></entry>
+      </row>
+      -->
+            <row>
+              <entry>Compensation</entry>
+              <entry><para>Exception handling activities <emphasis>associated</emphasis> with the normal 
+                activies in a Business Transaction are triggered by <emphasis>Compensation 
+                  Events</emphasis>.</para>
+                <para>There are 3 types of compensation events: Intermediate (a.k.a. Boundary) (catch) events,
+                  Start (catch) events, and Intermediate or End (throw) events.</para>
+                <para>Compensation Boundary (catch) events may only be attached to activites (e.g. tasks) that could 
+                  cause an exception. These Boundary events are then <emphasis>associated</emphasis> (not linked!)
+                  with a Task that will be executed if the Boundary event catches a (thrown) Compensation signal.</para>
+                <!-- add when Business Transactions have been implemented 
+        If a Business Transaction fails, possibly because of the failure of one of the activities 
+        inside it, then the activities associated with Boundary (catch) events will be triggered. 
+        Only <emphasis>one</emphasis> activity or node may be associated with a Compensation Boundary
+        Event!</para> -->
+                <para>Start (catch) events are used when defining an <emphasis>Compensation Event SubProcess</emphasis>, 
+                  which requires them in order to be able to catch a (thrown) Compensation signal. </para>
+                <!-- add when Business Transactions have been implemented 
+        Compensation Event SubProcesses are often used when a subprocess is needed to compensate for the Business
+        Transaction as a whole (as opposed to defining compensating activities per node in the
+        Business Transaction). This subprocess is triggered when a Business Transaction fails, just
+        like activities attached to Compensation Boundary (catch) events.</para>
+        -->
+                <para>Compensation Intermediate and End events are used in order to throw Compensation Events. These events
+                  often follow decision nodes that determine whether the workflow executed up to that point has 
+                  succeeded. If not, the path including the Intermediate or End Event is chosen in order to trigger
+                  Compensatoin for the activities that did not succeed.</para>  
+                <!-- add when Business Transactions have been implemented
+         Often, logic in the Business Transaction subprocesses will determine whether or not the Business Transaction 
+         has succeeded or failed. If the subprocess has failed, then the process will proceed to an Intermediate or 
+         End Compensation Event in order to trigger compensation for the Business Transaction subprocess.
+         -->
+              </entry>
+            </row>
+            <!-- Add when Business Transactions (+ Cancel events) have been implemented
+      <row>
+        <entry>Cancel Events</entry>
+        <entry>
+        <para>Cancel Events trigger <emphasis>cancellation</emphasis> of a Business
+        Transaction and can thus only be used with a Business Transaction.</para>
+        <para>When a Cancel Event is thrown, this indicates that the Business Transaction should be
+        cancelled. Entities involved in the Business Transaction are then informed (via a 
+        <emphasis>TransactionProtocol Cancel Message</emphasis>) that the Business Transaction has
+        been cancelled.</para>
+        <para><emphasis>Cancellation</emphasis> of a Business Transaction implicitly triggers
+        <emphasis>compensation</emphasis> of the Business Transaction.</para>
+        <para>See the sources mentioned above for the differences between Error Events (abortion
+        of a process), Cancel Events (cancellation) and Compensate Events (compensation).</para> 
+        </entry>
+      </row>
+      -->
+          </tbody>
+        </tgroup>
+      </table>
+      
+      <para>BPMN2 contains a number of constructs to model exceptions in business processes. There are
+        several advantages to doing exception handling at the business process level (as opposed to 
+        handling it with code):
+        <itemizedlist>
+          <listitem><emphasis>Transparency</emphasis><itemizedlist>
+            <listitem>Being able to quickly see what happens in exceptional situations means that 
+              the results and performance of a process is more easily monitored and measured.</listitem>
+            <listitem>It also increases how easily a process can be implemented as well as how 
+              maintainable a process definition is.</listitem></itemizedlist>
+          </listitem>
+          <listitem><emphasis>Business Logic Isolation</emphasis><itemizedlist>
+            <listitem>Again, the idea behind using a business process is to isolate the business logic 
+              from the technical code. This simplifies the complexity of the system and increases how 
+              quickly you can create new business processes and change existing ones.</listitem>
+            <listitem>Implementing exception handling at a technical level often takes more time because
+              it's often complexer and specific to a system.</listitem></itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </para>
+      
+    </section>
+    
+    <section> 
+      <title>Designing a workflow with Business Exceptions</title>
+      
+      <para>Where are business exceptions likely to occur? There is academic research on this, but some 
+        possible examples are: 
+        <itemizedlist>
+          <listitem>When an interaction with an external party or 3rd party system does not go as planned</listitem>
+          <listitem>When you can not fully check the the input data in your process (like a client's address information, 
+            for example)</listitem>
+          <listitem>In general, if there are parts of your process that are particularly dependent on one of the following, 
+            a business exception will be a good idea: 
+            <itemizedlist>
+              <listitem>Company policy or policy governing certain (in-house) procedures</listitem> 
+              <listitem>Laws governing the business process (such as age requirements, for example)</listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </para>
+      
+    </section>
+    
+    <!-- TODO
+  <section> 
+    <title>Business Exception Examples</title>
+    
+    <orderedlist>
+       <listitem>using an error event</listitem>
+       <listitem>Using a compensation event</listitem>
+       <listitem>Using a compensation event with a business transaction</listitem>
+       <listitem>Using a cancel event with a business transaction</listitem>
+       <listitem>Using a cancel event and a compensation event with a bus trx</listitem>
+    </orderedlist>
+    
+  </section>
+-->
+  </section>
+  
+</section>
