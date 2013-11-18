@@ -19,7 +19,9 @@ package org.optaplanner.examples.tennis.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -44,13 +46,16 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 
 public class TennisPanel extends SolutionPanel {
 
-    private final TimeTablePanel<Day, Team> timeTablePanel;
+    private final TimeTablePanel<Day, Team> datesPanel;
+    private final TimeTablePanel<Team, Team> confrontationsPanel;
 
     public TennisPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        timeTablePanel = new TimeTablePanel<Day, Team>();
-        tabbedPane.add("Dates", new JScrollPane(timeTablePanel));
+        datesPanel = new TimeTablePanel<Day, Team>();
+        tabbedPane.add("Dates", new JScrollPane(datesPanel));
+        confrontationsPanel = new TimeTablePanel<Team, Team>();
+        tabbedPane.add("Confrontations", new JScrollPane(confrontationsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
     }
@@ -66,7 +71,8 @@ public class TennisPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution solution) {
-        timeTablePanel.reset();
+        datesPanel.reset();
+        confrontationsPanel.reset();
         TennisSolution tennisSolution = (TennisSolution) solution;
         defineGrid(tennisSolution);
         fillCells(tennisSolution);
@@ -78,69 +84,83 @@ public class TennisPanel extends SolutionPanel {
         footprint.setMargin(new Insets(0, 0, 0, 0));
         int footprintWidth = footprint.getPreferredSize().width;
 
-        timeTablePanel.defineColumnHeaderByKey(HEADER_COLUMN);
+        datesPanel.defineColumnHeaderByKey(HEADER_COLUMN);
         for (Day day : tennisSolution.getDayList() ) {
-            timeTablePanel.defineColumnHeader(day, footprintWidth);
+            datesPanel.defineColumnHeader(day, footprintWidth);
         }
-        timeTablePanel.defineColumnHeaderByKey(TRAILING_HEADER_COLUMN); // Assignment count
+        datesPanel.defineColumnHeaderByKey(TRAILING_HEADER_COLUMN); // Assignment count
 
-        timeTablePanel.defineRowHeaderByKey(HEADER_ROW);
+        datesPanel.defineRowHeaderByKey(HEADER_ROW);
         for (Team team : tennisSolution.getTeamList()) {
-            timeTablePanel.defineRowHeader(team);
+            datesPanel.defineRowHeader(team);
         }
-        timeTablePanel.defineRowHeader(null); // Unassigned
+        datesPanel.defineRowHeader(null); // Unassigned
+
+        confrontationsPanel.defineColumnHeaderByKey(HEADER_COLUMN);
+        for (Team team : tennisSolution.getTeamList()) {
+            confrontationsPanel.defineColumnHeader(team);
+        }
+        confrontationsPanel.defineRowHeaderByKey(HEADER_ROW);
+        for (Team team : tennisSolution.getTeamList()) {
+            confrontationsPanel.defineRowHeader(team);
+        }
     }
 
     private void fillCells(TennisSolution tennisSolution) {
-        timeTablePanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Team")));
+        datesPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createHeaderPanel(new JLabel("Team")));
         fillDayCells(tennisSolution);
         fillTeamCells(tennisSolution);
         fillUnavailabilityPenaltyCells(tennisSolution);
         fillLectureCells(tennisSolution);
+        fillConfrontationCells(tennisSolution);
     }
 
     private void fillDayCells(TennisSolution tennisSolution) {
         for (Day day : tennisSolution.getDayList()) {
-            timeTablePanel.addColumnHeader(day, HEADER_ROW,
+            datesPanel.addColumnHeader(day, HEADER_ROW,
                     createHeaderPanel(new JLabel(day.getLabel(), SwingConstants.CENTER)));
         }
-        timeTablePanel.addCornerHeader(TRAILING_HEADER_COLUMN, HEADER_ROW,
+        datesPanel.addCornerHeader(TRAILING_HEADER_COLUMN, HEADER_ROW,
                 createHeaderPanel(new JLabel("Day count")));
     }
 
     private void fillTeamCells(TennisSolution tennisSolution) {
-        Map<Team, Integer> dayCountPerTeamMap = extractDayCountPerTeamMap(tennisSolution);
+        Map<Team, Integer> teamToDayCountMap = extractTeamToDayCountMap(tennisSolution);
         for (Team team : tennisSolution.getTeamList()) {
-            timeTablePanel.addRowHeader(HEADER_COLUMN, team,
+            datesPanel.addRowHeader(HEADER_COLUMN, team,
                     createHeaderPanel(new JLabel(team.getLabel())));
-            timeTablePanel.addRowHeader(TRAILING_HEADER_COLUMN, team,
-                    createHeaderPanel(new JLabel(dayCountPerTeamMap.get(team) + " days")));
+            datesPanel.addRowHeader(TRAILING_HEADER_COLUMN, team,
+                    createHeaderPanel(new JLabel(teamToDayCountMap.get(team) + " days")));
+            confrontationsPanel.addColumnHeader(team, HEADER_ROW,
+                    createHeaderPanel(new JLabel(team.getLabel())));
+            confrontationsPanel.addRowHeader(HEADER_COLUMN, team,
+                    createHeaderPanel(new JLabel(team.getLabel())));
         }
-        timeTablePanel.addRowHeader(HEADER_COLUMN, null,
+        datesPanel.addRowHeader(HEADER_COLUMN, null,
                 createHeaderPanel(new JLabel("Unassigned")));
     }
 
-    private Map<Team, Integer> extractDayCountPerTeamMap(TennisSolution tennisSolution) {
-        Map<Team, Integer> dayCountPerTeamMap = new HashMap<Team, Integer>(tennisSolution.getTeamList().size());
+    private Map<Team, Integer> extractTeamToDayCountMap(TennisSolution tennisSolution) {
+        Map<Team, Integer> teamToDayCountMap = new HashMap<Team, Integer>(tennisSolution.getTeamList().size());
         for (Team team : tennisSolution.getTeamList()) {
-            dayCountPerTeamMap.put(team, 0);
+            teamToDayCountMap.put(team, 0);
         }
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
             Team team = teamAssignment.getTeam();
             if (team != null) {
-                int count = dayCountPerTeamMap.get(team);
+                int count = teamToDayCountMap.get(team);
                 count++;
-                dayCountPerTeamMap.put(team, count);
+                teamToDayCountMap.put(team, count);
             }
         }
-        return dayCountPerTeamMap;
+        return teamToDayCountMap;
     }
 
     private void fillUnavailabilityPenaltyCells(TennisSolution tennisSolution) {
         for (UnavailabilityPenalty unavailabilityPenalty : tennisSolution.getUnavailabilityPenaltyList()) {
             JPanel unavailabilityPanel = new JPanel();
             unavailabilityPanel.setBackground(TangoColorFactory.ALUMINIUM_4);
-            timeTablePanel.addCell(unavailabilityPenalty.getDay(), unavailabilityPenalty.getTeam(),
+            datesPanel.addCell(unavailabilityPenalty.getDay(), unavailabilityPenalty.getTeam(),
                     unavailabilityPanel);
         }
     }
@@ -149,8 +169,53 @@ public class TennisPanel extends SolutionPanel {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
             Color examColor = tangoColorFactory.pickColor(teamAssignment);
-            timeTablePanel.addCell(teamAssignment.getDay(), teamAssignment.getTeam(),
+            datesPanel.addCell(teamAssignment.getDay(), teamAssignment.getTeam(),
                     createButton(teamAssignment, examColor));
+        }
+    }
+
+    private void fillConfrontationCells(TennisSolution tennisSolution) {
+        List<Team> teamList = tennisSolution.getTeamList();
+        List<Day> dayList = tennisSolution.getDayList();
+        Map<Day, List<TeamAssignment>> dayToTeamAssignmentListMap = new HashMap<Day, List<TeamAssignment>>(
+                dayList.size());
+        for (Day day : dayList) {
+            dayToTeamAssignmentListMap.put(day, new ArrayList<TeamAssignment>());
+        }
+        for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
+            dayToTeamAssignmentListMap.get(teamAssignment.getDay()).add(teamAssignment);
+        }
+        // TODO replace by better collection of guava
+        Map<List<Team>, Integer> teamPairToConfrontationCountMap = new HashMap<List<Team>, Integer>();
+        for (Team left : teamList) {
+            for (Team right : teamList) {
+                if (left != right) {
+                    List<Team> teamPair = new ArrayList<Team>(2);
+                    teamPair.add(left);
+                    teamPair.add(right);
+                    teamPairToConfrontationCountMap.put(teamPair, 0);
+                }
+            }
+        }
+        for (List<TeamAssignment> teamAssignmentSubList : dayToTeamAssignmentListMap.values()) {
+            for (TeamAssignment left : teamAssignmentSubList) {
+                for (TeamAssignment right : teamAssignmentSubList) {
+                    if (left.getTeam() != right.getTeam()) {
+                        List<Team> teamPair = new ArrayList<Team>(2);
+                        teamPair.add(left.getTeam());
+                        teamPair.add(right.getTeam());
+                        int confrontationCount = teamPairToConfrontationCountMap.get(teamPair);
+                        confrontationCount++;
+                        teamPairToConfrontationCountMap.put(teamPair, confrontationCount);
+                    }
+                }
+            }
+        }
+        for (Map.Entry<List<Team>, Integer> teamPairToConfrontationCount : teamPairToConfrontationCountMap.entrySet()) {
+            List<Team> teamPair = teamPairToConfrontationCount.getKey();
+            int confrontationCount = teamPairToConfrontationCount.getValue();
+            confrontationsPanel.addCell(teamPair.get(0), teamPair.get(1),
+                    createHeaderPanel(new JLabel(Integer.toString(confrontationCount))));
         }
     }
 

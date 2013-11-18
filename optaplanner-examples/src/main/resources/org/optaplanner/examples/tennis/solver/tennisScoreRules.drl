@@ -65,7 +65,7 @@ end
 // Soft constraints
 // ############################################################################
 
-rule "playEvenlyAgainstAllOtherTeams"
+rule "evenlyConfrontationCount"
     when
         $t1 : Team()
         $t2 : Team()
