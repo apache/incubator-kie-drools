@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Building from source</title>
+
+  <section>
+    <title>Getting the sources</title>
+
+    <para>The source code of each maven artifact is available in the JBoss maven repository as a source jar. The same
+    source jars are also included in the download zips. However, if you want to build from source, it's highly
+    recommended to get our sources from our source control.</para>
+
+    <para>Drools and jBPM use <link xlink:href="http://git-scm.com/">Git</link> for source control. The blessed git
+    repositories are hosted on <link xlink:href="https://github.com">Github</link>:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><link xlink:href="https://github.com/droolsjbpm">https://github.com/droolsjbpm</link></para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Git allows you to fork our code, independently make personal changes on it, yet still merge in our latest
+    changes regularly and optionally share your changes with us. To learn more about git, read the free book <link
+    xlink:href="http://progit.org/book/">Git Pro</link>.</para>
+  </section>
+
+  <section>
+    <title>Building the sources</title>
+
+    <para>In essense, building from source is very easy, for example if you want to build the
+    <firstterm>guvnor</firstterm> project:</para>
+
+    <programlisting>$ git clone git@github.com:droolsjbpm/guvnor.git
+...
+$ cd guvnor
+$ mvn clean install -DskipTests -Dfull
+...</programlisting>
+
+    <para>However, <emphasis>there are a lot potential pitfalls</emphasis>, so if you're serious about building from
+    source and possibly contributing to the project, <emphasis role="bold">follow the instructions <link
+    xlink:href="https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md">in the README file in
+    droolsjbpm-build-bootstrap</link>. </emphasis></para>
+  </section>
+</section>
