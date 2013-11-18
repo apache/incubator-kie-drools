@@ -26,40 +26,74 @@
       the build, deploy and loading(utilization) aspects of the system. Building and deploying now align with Maven and
       Maven repositories. The utilization for loadng rules and processess is now convention and configuration oriented,
       instead of programmatic, with sane default to minimise the configuration.</para>
+    <para>Projects can be built with Maven and installed ot the local M2_REPO or remote Maven repositories. Maven is
+      then used to declare and build the classpath of dependencies, for KIE to access.</para>
   </section>
   <section>
     <title>Configuration and convention based projects</title>
-    <para>xxxx</para>
-  </section>
-  <section>
-    <title>KieModules and KieContainer</title>
-    <para/>
-  </section>
+    <para>The 'kmodule.xml' provides declarative configuration for KIE projects. Conventions and defaults ar used to
+      reduce the amount of configuration needed. </para>
+    <example>
+      <title>Declare KieBases and KieSessions</title>
+      <programlisting language="xml">&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+  &lt;kbase name="kbase1" packages="org.mypaackges&gt;
+    &lt;ksession name="ksession1"/&gt;
+  &lt;/kbase&gt;
+&lt;/kmodule&gt;</programlisting>
+    </example>
+    <example>
+      <title>Utilize the KieSession</title>
+      <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
+KieContainer kContainer = ks.getKieClasspathContainer();
 
+KieSession kSession = kContainer.newKieSession("ksession1");
+kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
+kSession.fireAllRules();</programlisting>
+    </example>
+  </section>
   <section>
     <title>KieBase Inclusion</title>
-
     <para>It is possible to include all the KIE artifacts belonging to a KieBase into a second KieBase. This means that
       the second KieBase beyond all the rules, function and processes directly defined into it will also contain the
       ones created in the included KieBase. This inclusion can be done both declaratively in the kmodule.xml file</para>
-
     <example>
       <title>Including a KieBase into another declaratively</title>
-
       <programlisting language="xml">&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
   &lt;kbase name="kbase2" includes="kbase1"&gt;
     &lt;ksession name="ksession2"/&gt;
   &lt;/kbase&gt;
 &lt;/kmodule&gt;</programlisting>
     </example>
-
     <para>or programmatically using the <code>KieModuleModel</code>.</para>
-
     <example>
       <title>Including a KieBase into another programmatically</title>
-
       <programlisting language="java">KieModuleModel kmodule = KieServices.Factory.get().newKieModuleModel();
 KieBaseModel kieBaseModel1 = kmodule.newKieBaseModel("KBase2").addInclude("KBase1");</programlisting>
+    </example>
+  </section>
+  <section>
+    <title>KieModules, KieContainer and KIE-CI</title>
+    <para>Any Maven  produce JAR with a 'kmodule.xml' in it is considered a KieModule. This can be loade from the
+      classpath or dynamically at runtime from a Resource location. If the kie-ci dependency is on the classpath it
+      embeds maven and all resolving is done automatically using Maven and can access local or remote repositories.
+      Settings.xml is obeyed for Maven configuration.</para>
+    <para>The KieContainer provides a runtime to utilize the KieModule, versioning is built in throughout, via Maven.
+      Kie-ci will create a classpath dynamically from all the Maven declared dependencies for the artefact being loaded.
+      Maven LATEST, SNAPSHOT, RELEASE an version ranges are supported.</para>
+    <example xmlns:ns2="http://www.w3.org/1998/Math/MathML">
+      <title>Utilize and Run - Java</title>
+      <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
+KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.mygroup", "myartefact", "1.0"));
+
+KieSession kSession = kContainer.newKieSession("ksession1");
+kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
+kSession.fireAllRules();</programlisting>
+    </example>
+    <para>KieContainers can be dynamically updated to a specifc verison, all resolved through Maven if KIE-CI is on the
+      classpath. For  stateful KieSessions the existing sessions are incrementally updated.</para>
+    <example xmlns:ns2="http://www.w3.org/1998/Math/MathML">
+      <title>Dynamically Update- Java</title>
+      <programlisting language="JAVA">KieContainer kContainer.updateToVersion( ks.newReleaseId("org.mygroup", "myartefact", "1.1") );</programlisting>
     </example>
   </section>
 
@@ -104,6 +138,13 @@ kScanner.start( 10000L );</programlisting>
       referencing betwen namespaces in DRL files; i.e. functions can only be used by the namespaces that declared them.
       The recommendation is to use static java methods in your project, which is visible to all namespaces; but those
       cannot  (like other classes on the root KieContainer ClassLoader). be dynamiccally updated.</para>
+  </section>
+  <section>
+    <title>Legacy API Adapter</title>
+    <para>The 5.x API for building and running with Drools and jBPM is still available through maven dependency
+      "knowledge-api-legacy5-adapter". Because the nature of deployment has significantly changed in 6.0, it was not
+      possible to provide an adapter bridge for the KnowledgeAgent. If any other methods are missing or problematic,
+      please open a JIRA, and we'll fix for 6.1</para>
   </section>
   <section>
     <title>KIE Documentation</title>

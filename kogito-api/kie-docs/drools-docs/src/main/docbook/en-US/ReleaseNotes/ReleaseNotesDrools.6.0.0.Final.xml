@@ -133,6 +133,11 @@ end</programlisting>
       now just calls setFocus. RuleFlowGroups and AgendaGroups when used together was a continued source of errors. It
       also aligns the codebase, towards PHREAK and the multi-core explotation that is planned in the future.</para>
   </section>
+  <section>
+    <title>Audit Log Viewer</title>
+    <para>Unfortunately for this release the eclipse Audit Log Viewer is broken, we will attempt to fix this in
+      6.1.</para>
+  </section>
 
   <!--section>
     <title>Pluggable Belief System</title>

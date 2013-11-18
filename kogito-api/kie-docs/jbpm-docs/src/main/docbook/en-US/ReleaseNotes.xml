@@ -6,8 +6,8 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Release Notes</title>
 
-  <xi:include href="ReleaseNotes/Release.6.0.0.Final.xml" />
   <xi:include href="../../../../../shared/KIE/ReleaseNotes/ReleaseNotesKIE.6.0.0.Final.xml" />
+  <xi:include href="ReleaseNotes/Release.6.0.0.Final.xml" />
   <xi:include href="../../../../../shared/Workbench/ReleaseNotes/ReleaseNotesWorkbench.6.0.0.Final.xml" />
   <xi:include href="../../../../../shared/integration/ReleaseNotes/ReleaseNotesIntegration.6.0.0.Final.xml" />
 
