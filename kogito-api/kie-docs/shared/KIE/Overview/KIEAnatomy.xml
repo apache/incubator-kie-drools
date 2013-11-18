@@ -29,16 +29,14 @@
     project is independant of Drools and jBPM and anyone can use it as a basis of building
     flexible and powerful workbenches. UbeFire will be used for console and workbench development
     throughout JBoss.</para>
-  <para>It was determined that the Guvnor brand leaked too much from it's intested role; such as
-    the authoring metaphores, like Decision Tables, being considered Guvnor components instead of
-    Drools components. This wasn't helped by the monolithic projects structure used in 5.x for
-    Guvnor. In 6.0 Guvnor 's focus has been narrowed to encapsulates the set of UberFire plugins
-    that provide the basis for building a web based IDE. Such as Maven integration for building
-    and deploying, management of Maven repositories and activity notifications via inboxes. Drools
-    and jBPM build workbench distributions using Uberfire as the base and including a set of
-    plugins, such as Guvnor, along with their own plugins for things like decision tables, guided
-    editors, bpm2 designer, human tasks. The Drools workbench is called Drools-WB. KIE-WB is the
-    uber workbench that combined all the Guvnor, Drools and jBPM plugins. The jBPM-WB is ghosted
-    out, as it doesn't actually exist, being made redundant by KIE-WB.</para>
+  <para>It was determined that the Guvnor brand leaked too much from it's intended role; such as the authoring
+    metaphores, like Decision Tables, being considered Guvnor components instead of Drools components. This wasn't
+    helped by the monolithic projects structure used in 5.x for Guvnor. In 6.0 Guvnor 's focus has been narrowed to
+    encapsulates the set of UberFire plugins that provide the basis for building a web based IDE. Such as Maven
+    integration for building and deploying, management of Maven repositories and activity notifications via inboxes.
+    Drools and jBPM build workbench distributions using Uberfire as the base and including a set of plugins, such as
+    Guvnor, along with their own plugins for things like decision tables, guided editors, bpm2 designer, human tasks.
+    The Drools workbench is called Drools-WB. KIE-WB is the uber workbench that combined all the Guvnor, Drools and jBPM
+    plugins. The jBPM-WB is ghosted out, as it doesn't actually exist, being made redundant by KIE-WB.</para>
   <para/>
 </section>
