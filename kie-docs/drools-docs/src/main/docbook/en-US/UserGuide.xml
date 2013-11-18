@@ -7,6 +7,7 @@
   <title>User Guide</title>
 
   <xi:include href="TheBasics.xml" />
+  <xi:include href="ExecutionControl.xml" />  
   <xi:include href="Inference.xml" />
   <xi:include href="TruthMaintenance.xml" />
   <xi:include href="DecisionTables.xml" />
