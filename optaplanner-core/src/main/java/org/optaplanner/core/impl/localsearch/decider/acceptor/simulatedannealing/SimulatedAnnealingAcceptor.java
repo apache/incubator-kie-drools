@@ -97,7 +97,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
     }
 
     @Override
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope stepScope) {
         super.stepEnded(stepScope);
         double timeGradient = stepScope.getTimeGradient();
         double reverseTimeGradient = 1.0 - timeGradient;

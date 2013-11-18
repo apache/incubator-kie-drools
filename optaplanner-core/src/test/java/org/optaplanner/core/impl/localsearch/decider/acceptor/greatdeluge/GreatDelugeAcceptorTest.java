@@ -21,6 +21,7 @@ import java.util.Random;
 import org.junit.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
@@ -33,7 +34,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.*;
 
-public class GreatDelugeAcceptorTest {
+public class GreatDelugeAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void testIsAccepted() {

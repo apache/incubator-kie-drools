@@ -3714,4 +3714,5 @@ Instead it has getConstraintPackage(), getConstraintName() and getScoreLevel().
 From 6.0.0.Final to 6.1.0.Alpha1
 --------------------------------
 
-Nothing yet
+[MINOR] Simulated Annealing now uses the time gradient of the current step instead of the time gradient of the last step.
+The impact of this change is negligible.

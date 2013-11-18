@@ -20,6 +20,7 @@ import java.util.Random;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptorTest;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchSolverPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -29,7 +30,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class LateSimulatedAnnealingAcceptorTest {
+public class LateSimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 
     @Test
     public void lateSimulatedAnnealingSize2() {
@@ -49,47 +50,47 @@ public class LateSimulatedAnnealingAcceptorTest {
 
         // lateScore = -1000, bestScore = -1000
         LocalSearchStepScope stepScope0 = new LocalSearchStepScope(phaseScope);
-        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope0, -500);
+        LocalSearchMoveScope moveScope0 = buildMoveScope(stepScope0, -500);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900)));
-        assertEquals(true, acceptor.isAccepted(moveScope1));
+        assertEquals(true, acceptor.isAccepted(moveScope0));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -800)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -2000)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -1000)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
-        stepScope0.setStep(moveScope1.getMove());
-        stepScope0.setScore(moveScope1.getScore());
-        solverScope.setBestScore(moveScope1.getScore());
+        stepScope0.setStep(moveScope0.getMove());
+        stepScope0.setScore(moveScope0.getScore());
+        solverScope.setBestScore(moveScope0.getScore());
         acceptor.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
 
         // lateScore = -1000, bestScore = -500
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
-        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, -700);
+        LocalSearchMoveScope moveScope1 = buildMoveScope(stepScope1, -700);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -900)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -2000)));
-        assertEquals(true, acceptor.isAccepted(moveScope2));
+        assertEquals(true, acceptor.isAccepted(moveScope1));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -1000)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, -1100)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope1, -1200)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -900))); // Repeated call
-        stepScope1.setStep(moveScope2.getMove());
-        stepScope1.setScore(moveScope2.getScore());
+        stepScope1.setStep(moveScope1.getMove());
+        stepScope1.setScore(moveScope1.getScore());
         // bestScore unchanged
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
         // lateScore = -500, bestScore = -500
         LocalSearchStepScope stepScope2 = new LocalSearchStepScope(phaseScope);
-        LocalSearchMoveScope moveScope4 = buildMoveScope(stepScope1, -400);
+        LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, -400);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -700)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -2000)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope2, -701)));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope2, -600)));
-        assertEquals(true, acceptor.isAccepted(moveScope4));
+        assertEquals(true, acceptor.isAccepted(moveScope2));
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope0, -700))); // Repeated call
-        stepScope2.setStep(moveScope4.getMove());
-        stepScope2.setScore(moveScope4.getScore());
-        solverScope.setBestScore(moveScope4.getScore());
+        stepScope2.setStep(moveScope2.getMove());
+        stepScope2.setScore(moveScope2.getScore());
+        solverScope.setBestScore(moveScope2.getScore());
         acceptor.stepEnded(stepScope2);
         phaseScope.setLastCompletedStepScope(stepScope2);
 
@@ -109,14 +110,6 @@ public class LateSimulatedAnnealingAcceptorTest {
         phaseScope.setLastCompletedStepScope(stepScope3);
 
         acceptor.phaseEnded(phaseScope);
-    }
-
-    private LocalSearchMoveScope buildMoveScope(LocalSearchStepScope stepScope, int score) {
-        LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
-        Move move = mock(Move.class);
-        moveScope.setMove(move);
-        moveScope.setScore(SimpleScore.valueOf(score));
-        return moveScope;
     }
 
 }
