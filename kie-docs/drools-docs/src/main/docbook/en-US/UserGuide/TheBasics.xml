@@ -12,10 +12,9 @@
   <section>
     <title>Stateless Knowledge Session</title>
 
-    <para>So where do we get started? There are so many use cases and so much
-    functionality in a rule engine such as Drools that it becomes beguiling.
-    Have no fear my intrepid adventurer, the complexity is layered and you can
-    ease yourself into with simple use cases.</para>
+    <para>So where do we get started? There are so many use cases and so much functionality in a rule engine such as
+      Drools that it becomes beguiling. Have no fear my intrepid adventurer, the complexity is layered and you can ease
+      yourself in with simple use cases.</para>
 
     <para>Stateless session, not utilising inference, forms the simplest use
     case. A stateless session can be called like a function passing it some
@@ -478,10 +477,9 @@ ksession.fireAllRules();</programlisting>
   <section>
     <title>Methods versus Rules</title>
 
-    <para>People often confuse methods and rules, and new rule users regular
-    ask, "How do I call a rule?" After the last section, you are now feeling
-    like a rule expert and the answer to that is obvious, but let's summarize
-    the differences nonetheless.</para>
+    <para>People often confuse methods and rules, and new rule users often ask, "How do I call a rule?" After the last
+      section, you are now feeling like a rule expert and the answer to that is obvious, but let's summarize the
+      differences nonetheless.</para>
 
     <programlisting language="java">public void helloWorld(Person person) {
     if ( person.getName().equals( "Chuck" ) ) {
@@ -503,12 +501,11 @@ ksession.fireAllRules();</programlisting>
       </listitem>
     </itemizedlist>
 
-    <programlisting>rule "Hello World"
-    when
-        Person( name == "Chuck" )
-    then
-        System.out.println( "Hello Chuck" );
-        end</programlisting>
+    <programlisting>rule "Hello World" when
+    Person( name == "Chuck" )
+then
+    System.out.println( "Hello Chuck" );
+end</programlisting>
 
     <itemizedlist>
       <listitem>
@@ -534,13 +531,11 @@ ksession.fireAllRules();</programlisting>
   <section>
     <title>Cross Products</title>
 
-    <para>Earlier the term "cross product" was mentioned, which is the result
-    of a join. Imagine for a moment that the data from the fire alarm example
-    were used in combination with the following rule where there ar no field
-    constraints:</para>
+    <para>Earlier the term "cross product" was mentioned, which is the result of a join. Imagine for a moment that the
+      data from the fire alarm example were used in combination with the following rule where there are no field
+      constraints:</para>
 
-    <programlisting>rule
-when
+    <programlisting>rule "Show Sprinklers" when
     $room : Room()
     $sprinkler : Sprinkler()
 then

@@ -7,7 +7,24 @@
   <title>New and Noteworthy in KIE API 6.0.0</title>
   <section>
     <title>New KIE name</title>
-    <para>xxxxx</para>
+    <para>KIE is the new umbrella name used to group together our related projects; as the family continues to grow. KIE is also used for the 
+      generic parts of unified API; such as build and loading. This replaces the droolsjbpm and knowledge keywords that would have been used before. </para>
+    <figure>
+      <title>KIE Anatomy</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/kie/Overview/kie.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>    
+  </section>
+  <section>
+    <title>Maven aligned projects and modules and Maven Deployment</title>
+    <para>One of the biggest complaints during the 5.x series was the lack of defined methodolgy for deployment. The
+      mechanism used by Drools and jBPM was very flexible, but it was too flexible. A big focus for 6.0 was streamling
+      the build, deploy and loading(utilization) aspects of the system. Building and deploying now align with Maven and
+      the utilization is now convention and configuration oriented, instead of programmatic, with sane default to
+      minimise the configuration.</para>
   </section>
   <section>
     <title>Configuration and convention based projects</title>
@@ -40,15 +57,6 @@
       <programlisting language="java">KieModuleModel kmodule = KieServices.Factory.get().newKieModuleModel();
 KieBaseModel kieBaseModel1 = kmodule.newKieBaseModel("KBase2").addInclude("KBase1");</programlisting>
     </example>
-  </section>
-
-  <section>
-    <title>Maven aligned projects and modules</title>
-    <para>xxxx</para>
-  </section>
-  <section>
-    <title>Maven based deployment</title>
-    <para>xxxx</para>
   </section>
 
   <section>
@@ -86,6 +94,18 @@ kScanner.start( 10000L );</programlisting>
 
   <section>
     <title>Hierarchical ClassLoader</title>
-    <para>xxxx</para>
+    <para>The CompositeClassLoader is no longer used; as it was a constant source of performance problems and bugs.
+      Traditional hierarchical classloaders are now used. The root classloader is at the KieContext level, there is then
+      one child ClassLoader per namespace. This makes it cleaner to add and remove rules, but there can now be no
+      referencing betwen namespaces in DRL files; i.e. functions can only be used by the namespaces that declared them.
+      The recommendation is to use static java methods in your project, which is visible to all namespaces; but those
+      cannot  (like other classes on the root KieContainer ClassLoader). be dynamiccally updated.</para>
+  </section>
+  <section>
+    <title>KIE Documentation</title>
+    <para> While a lot of new documentation has been added for working with the new KIE api, the entire documentation
+      has not yet been brought up to date. For this reason there will be continued references to old terminologies.
+      Apologies in adanced, and thank you for your patience. We hope those in the community will work with us to get the
+      documentation updated throughout, for 6.1</para>
   </section>
 </section>

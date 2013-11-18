@@ -42,22 +42,18 @@
     moved away from AI and towards more practical number-crunching super
     computers.</para>
 
-    <para>The 5th Generation Computer project was a USD 400 million project in
-    Japan to build a next generation computer. Valves (or Tubes) was the first generation, transistors
-    the second, integrated circuits the third and finally microprocessors was
-    the fourth. The fifth was intended to be a machine capable of effective Artificial Intelligence.
-    This project spurred an "arms" race with the UK and USA, that
-    caused much of the AI bubble. The 5GP would provide massive multi-cpu
-    parallel processing hardware along with powerful knowledge representation
-    and reasoning software via <firstterm>Prolog</firstterm>; a type of
-    <firstterm> expert system</firstterm>. By 1992 the project was considered
-    a failure and cancelled. It was the largest and most visible commercial
-    venture for Prolog, and many of the failures are pinned on the problems
-    of trying to run a logic based programming language concurrently on multi CPU
-    hardware with effective results. Some believe that the failure of the 5GP
-    project tainted Prolog and resigned it academia, see <link
-    xlink:href="http://www.dvorak.org/blog/whatever-happened-to-prolog/">"Whatever
-    Happened to Prolog"</link> by John C. Dvorak.</para>
+    <para>The 5th Generation Computer project was a USD 400 million project in Japan to build a next generation
+      computer. Valves (or Tubes) was the first generation, transistors the second, integrated circuits the third and
+      finally microprocessors was the fourth. The fifth was intended to be a machine capable of effective Artificial
+      Intelligence. This project spurred an "arms" race with the UK and USA, that caused much of the AI bubble. The 5GP
+      would provide massive multi-cpu parallel processing hardware along with powerful knowledge representation and
+      reasoning software via <firstterm>Prolog</firstterm>; a type of <firstterm> expert system</firstterm>. By 1992 the
+      project was considered a failure and cancelled. It was the largest and most visible commercial venture for Prolog,
+      and many of the failures are pinned on the problems of trying to run a logic based programming language
+      concurrently on multi CPU hardware with effective results. Some believe that the failure of the 5GP project
+      tainted Prolog and relegated it to academia, see <link
+        xlink:href="http://www.dvorak.org/blog/whatever-happened-to-prolog/">"Whatever Happened to Prolog"</link> by
+      John C. Dvorak.</para>
 
     <para>However while research funding dried up and the term AI became less
     used, many green shoots where planted and continued more quietly under
@@ -68,39 +64,35 @@
     commercial systems, such as expert systems in the <firstterm>Business
     Rules Management System</firstterm> (BRMS) market.</para>
 
-    <para><firstterm>Imperative</firstterm>, system based languages, languages
-    such as C, C++, Java and C#/.Net have dominated the last 20 years, enabled by
-    the practicality of the languages and ability to run with good performance
-    on commodity hardware. However many believe there is renaissance
-    underway in the field of AI, spurred by advances in hardware
-    capabilities and AI research. In 2005 Heather Havenstein authored <link
-    xlink:href="http://www.computerworld.com/s/article/99691/Spring_comes_to_AI_winter">"Spring
-    comes to AI winter"</link> which outlines a case for this resurgence,
-    which she refers to as a <firstterm>spring</firstterm>. Norvig and Russel
-    dedicate several pages to what factors allowed the industry to over come
-    it's problems and the research that came about as a result:</para>
+    <para><firstterm>Imperative</firstterm>, system based languages, languages such as C, C++, Java and C#/.Net have
+      dominated the last 20 years, enabled by the practicality of the languages and ability to run with good performance
+      on commodity hardware. However many believe there is a renaissance underway in the field of AI, spurred by
+      advances in hardware capabilities and AI research. In 2005 Heather Havenstein authored <link
+        xlink:href="http://www.computerworld.com/s/article/99691/Spring_comes_to_AI_winter">"Spring comes to AI
+        winter"</link> which outlines a case for this resurgence. Norvig and Russel dedicate several pages to what
+      factors allowed the industry to overcome it's problems and the research that came about as a result:</para>
+       
+      <blockquote>
+        <attribution>Artificial Intelligence: A Modern Approach</attribution>
+        <para>
+          Recent years have seen a revolution in both the content and
+          the methodology of work in artificial intelligence. It is now more common
+          to build on existing theories than to propose brand-new ones, to base
+          claims on rigorous theorems or hard experimental evidence rather than on
+          intuition, and to show relevance to real-world applications rather than
+          toy examples.          
+        </para>
+      </blockquote>    
 
-    <para><quote>Recent years have seen a revolution in both the content and
-    the methodology of work in artificial intelligence. It is now more common
-    to build on existing theories than to propose brand-new ones, to base
-    claims on rigorous theorems or hard experimental evidence rather than on
-    intuition, and to show relevance to real-world applications rather than
-    toy examples.</quote> (Artificial Intelligence: A Modern
-    Approach.)</para>
-
-    <para><firstterm>Computer vision</firstterm>, <firstterm>neural
-    networks</firstterm>, <firstterm>machine learning</firstterm> and
-    <firstterm>knowledge representation and reasoning</firstterm> (KRR) have
-    made great strides towards becoming practical in commercial environments. For
-    example, vision-based systems can now fully map out and navigate their
-    environments with strong recognition skills. As a result we now have self-driving
-    cars about to enter the commercial market.
-    <firstterm>Ontological</firstterm> research, based around description
-    logic, has provided very rich semantics to represent our world. Algorithms
-    such as the tableaux algorithm have made it possible to effectively use
-    those rich semantics in large complex ontologies. Early KRR systems, like
-    Prolog in 5GP, were dogged by the limited semantic capabilities and memory
-    restrictions on the size of those ontologies.</para>
+    <para><firstterm>Computer vision</firstterm>, <firstterm>neural networks</firstterm>, <firstterm>machine
+        learning</firstterm> and <firstterm>knowledge representation and reasoning</firstterm> (KRR) have made great
+      strides towards becoming practical in commercial environments. For example, vision-based systems can now fully map
+      out and navigate their environments with strong recognition skills. As a result we now have self-driving cars
+      about to enter the commercial market. <firstterm>Ontological</firstterm> research, based around description logic,
+      has provided very rich semantics to represent our world. Algorithms such as the tableaux algorithm have made it
+      possible to use those rich semantics effectively in large complex ontologies. Early KRR systems, like Prolog in
+      5GP, were dogged by the limited semantic capabilities and memory restrictions on the size of those
+      ontologies.</para>
   </section>
 
   <section>
@@ -110,21 +102,16 @@
     on Knowledge Representation and Reasoning (KRR) and also Expert Systems,
     I'll come back to Expert Systems later.</para>
 
-    <para>KRR is about how we represent our knowledge in symbolic form, i.e.
-    how we describe something. Reasoning is about how we go about the act of
-    thinking using this knowledge. System based object-oriented languages,
-    like C++, Java and C#, have data definitions called classes for describing
-    the composition and behaviour of modeled entities. In Java we call 
-    exemplars of these described things beans or instances. However those
-    classification systems are limited to ensure computational efficiency.
-    Over the years researchers have developed increasingly sophisticated ways
-    to represent our world. Many of you may already have heard of OWL (Web
-    Ontology Language). There is always a gap between what can be
-    theoretically represented and what can be used computationally in
-    practically timely manner, which is why OWL has different sub-languages
-    from Lite to Full. It is not believed that any reasoning system can
-    support OWL Full. Although each year algorithmic advances try to narrow
-    that gap and improve the expressiveness available to reasoning engines.</para>
+    <para>KRR is about how we represent our knowledge in symbolic form, i.e. how we describe something. Reasoning is
+      about how we go about the act of thinking using this knowledge. System based object-oriented languages, like C++,
+      Java and C#, have data definitions called classes for describing the composition and behaviour of modeled
+      entities. In Java we call exemplars of these described things beans or instances. However those classification
+      systems are limited to ensure computational efficiency. Over the years researchers have developed increasingly
+      sophisticated ways to represent our world. Many of you may already have heard of OWL (Web Ontology Language).
+      There is always a gap between what can be theoretically represented and what can be used computationally in
+      practically timely manner, which is why OWL has different sub-languages from Lite to Full. It is not believed that
+      any reasoning system can support OWL Full. However, algorithmic advances continue  to narrow that gap and improve
+      the expressiveness available to reasoning engines.</para>
 
     <para>There are also many approaches to how these systems go about
     thinking. You may have heard discussions comparing the merits of
@@ -159,9 +146,8 @@
   <section>
     <title>Rule Engines and Production Rule Systems (PRS)</title>
 
-    <para>We've now covered a brief history of AI and learnt that the core of
-    AI is formed around KRR. We've shown than KRR is vast and fascinating
-    subject which forms the bulk of the theory driving Drools R&amp;D.</para>
+    <para>We've now covered a brief history of AI and learnt that the core of AI is formed around KRR. We've shown than
+      KRR is a vast and fascinating subject which forms the bulk of the theory driving Drools R&amp;D.</para>
 
     <para>The rule engine is the computer program that delivers KRR
     functionality to the developer. At a high level it has three
@@ -187,15 +173,12 @@
     "thinking". The distinction between rules and ontologies blurs a little with
     OWL based ontologies, whose richness is rule based.</para>
 
-    <para>The term "rules engine" is quite ambiguous in that it can be any system
-    that uses rules, in any form, that can be applied to data to produce
-    outcomes. This includes simple systems like form validation and dynamic
-    expression engines. The book "How to Build a Business Rules Engine" (2004)
-    by Malcolm Chisholm exemplifies this ambiguity. The book is actually about
-    how to build and alter a database schema to hold validation rules. The
-    book then shows how to generate VB code from those validation rules to
-    validate data entry. While perfectly valid, this is very different to what
-    we are talking about.</para>
+    <para>The term "rules engine" is quite ambiguous in that it can be any system that uses rules, in any form, that can
+      be applied to data to produce outcomes. This includes simple systems like form validation and dynamic expression
+      engines. The book "How to Build a Business Rules Engine" (2004) by Malcolm Chisholm exemplifies this ambiguity.
+      The book is actually about how to build and alter a database schema to hold validation rules. The book then shows
+      how to generate Visual Basic code from those validation rules to validate data entry. While perfectly valid, this
+      is very different to what we are talking about.</para>
 
     <para>Drools started life as a specific type of rule engine called a
     Production Rule System (PRS) and was based around the Rete algorithm
@@ -211,39 +194,24 @@
 then
     &lt;actions&gt;;</programlisting>
 
-    <para>The process of matching the new or existing facts against Production
-    Rules is called <firstterm>pattern matching</firstterm><indexterm>
+    <para>The process of matching the new or existing facts against Production Rules is called <firstterm>pattern
+        matching</firstterm><indexterm>
         <primary>Pattern Matching</primary>
-      </indexterm>, which is performed by the <firstterm>inference
-    engine</firstterm><indexterm>
+      </indexterm>, which is performed by the <firstterm>inference engine</firstterm><indexterm>
         <primary>Inference Engine</primary>
-      </indexterm>. Actions execute in response to changes in data, like a
-    database trigger; we say this is a <firstterm>data
-    driven</firstterm><indexterm>
+      </indexterm>. Actions execute in response to changes in data, like a database trigger; we say this is a
+        <firstterm>data driven</firstterm><indexterm>
         <primary>data driven</primary>
-      </indexterm> approach to reasoning. The actions themselves can change
-    data, which in turn could match against other rules causing them to fire;
-    this is referred to as<indexterm>
+      </indexterm> approach to reasoning. The actions themselves can change data, which in turn could match against
+      other rules causing them to fire; this is referred to as <indexterm>
         <primary>forward chaining</primary>
       </indexterm>forward chaining</para>
 
-    <para>Drools implements and extends the <indexterm>
-        <primary>Rete</primary>
-      </indexterm> Rete algorithm;<indexterm>
-        <primary>Leaps</primary>
-      </indexterm>. The Drools <indexterm>
-        <primary>Rete</primary>
-      </indexterm> Rete implementation is called ReteOO, signifying that
-    Drools has an enhanced and optimized implementation of the Rete algorithm
-    for object oriented systems. Our more recent work goes well beyond Rete.
-    Other Rete based engines also have marketing terms for their proprietary
-    enhancements to Rete, like RetePlus and Rete III. The most common
-    enhancements are covered in "Production Matching for Large Learning
-    Systems" (1995) by Robert B. Doorenbos' thesis, which presents Rete/UL.
-    A PRS using another algorithm called "Leaps" used to be provided as well,
-    but was retired as it became unmaintained. The good news is that our 
-    research is close to producing an algorithm that merges
-    the benefits of Leaps with Rete.</para>
+    <para>Drools 5.x implements and extends the <firstterm>Rete</firstterm><indexterm><primary>Rete</primary></indexterm> algorithm. This extended Rete algorithm is named <firstterm>ReteOO</firstterm><indexterm><primary>ReteOO</primary></indexterm>, signifying that Drools has an enhanced and optimized implementation of the
+      Rete algorithm for object oriented systems. Other Rete based engines
+      also have marketing terms for their proprietary enhancements to Rete, like RetePlus and Rete III. The most common
+      enhancements are covered in "Production Matching for Large Learning Systems" (1995) by Robert B. Doorenbos'
+      thesis, which presents Rete/UL. Drools 6.x introduces a new lazy algorithm named <firstterm>PHREAK</firstterm><indexterm><primary>PHREAK</primary></indexterm>; which is covered in more detail in the PHEAK algorithm section.</para>
 
     <para>The Rules are stored in the <indexterm>
         <primary>Production Memory</primary>
@@ -274,7 +242,7 @@ then
     <title>Hybrid Reasoning Systems (HRS)</title>
 
     <para>You may have read discussions comparing the merits of forward
-    chaining (reactive and data driven) or backward chaining(passive query).
+    chaining (reactive and data driven) or backward chaining (passive query).
     Here is a quick explanation of these two main types of reasoning.</para>
 
     <para>Forward chaining is "data-driven" and thus reactionary, with facts
@@ -508,7 +476,7 @@ then
 
         <itemizedlist>
           <listitem>
-            <para>Paul Brown</para>
+            <para>Paul Browne</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -518,7 +486,7 @@ then
 
         <itemizedlist>
           <listitem>
-            <para>Michali Bali</para>
+            <para>Michal Bali</para>
           </listitem>
         </itemizedlist>
       </listitem>

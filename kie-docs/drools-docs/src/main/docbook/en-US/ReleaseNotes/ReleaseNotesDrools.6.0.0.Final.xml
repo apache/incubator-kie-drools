@@ -7,10 +7,20 @@
          xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>What is New and Noteworthy in Drools 6.0.0</title>
-
+      
   <section>
-    <title>Phreak</title>
-    <para>bar</para>
+    <title>PHREAK - Lazy rule matching algorithm</title>
+    <para>The main work done for Drools in 6.0 involves the new PREAK algorithm. This is a lazy algorithm that should
+      enable Drools to handle a larger number of rules and facts. AngendaGroups can now help improvement performance, as
+      rules are not evaluated until it attempts to fire them.</para>
+    <para>Sequential mode continues to be supported for PHREAK but now 'modify' is allowed. While there is no
+      'inference' with sequential configuration,  as rules are lazily evaluated, any rule not yet evaluated will see the
+      more recent data as a result of 'modify'. This is more inline with how people intuitively think sequential
+      works.</para>
+    <para>The conflict resolution order has been tweaked for PHREAK, and now is ordered by salience and then rule order;
+      based on the rule position in the file.. Prior to Drools 6.0.0, after salience, it was considered arbitrary. When
+      KieModules and updateToVersion are used for dynamic deployment, the rule order in the file is preserved via the
+      diff processing.</para>
   </section>
 
   <section>
@@ -118,10 +128,13 @@ end</programlisting>
 
   <section>
     <title>RuleFowGroup and AgendaGroups are merged</title>
-    <para>bar</para>
+    <para>These two groups have been merged and now RuleFlowGroup's behave the same as AgendaGroups. The get methods
+      have been left, for deprecation reasons, but both return the same underlying data. When jBPM activates a group it
+      now just calls setFocus. RuleFlowGroups and AgendaGroups when used together was a continued source of errors. It
+      also aligns the codebase, towards PHREAK and the multi-core explotation that is planned in the future.</para>
   </section>
 
-  <section>
+  <!--section>
     <title>Pluggable Belief System</title>
     <para>bar</para>
   </section>
@@ -134,5 +147,5 @@ end</programlisting>
   <section>
     <title>Defeasible</title>
     <para>bar</para>
-  </section>  
+  </section-->  
 </section>

@@ -7,16 +7,16 @@
   xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
-  
+
   <title>Data Modeller</title>
 
-  <xi:include href="FirstSteps.xml" />
-  <xi:include href="Entities.xml" />
-  <xi:include href="PropertiesRelationships.xml" />
-  <xi:include href="AddtionalOptions.xml" />
-  <xi:include href="GenerateCode.xml" />
-  <xi:include href="ExternalModels.xml" />
-  <xi:include href="ExternalChanges.xml" />
+  <xi:include href="sections/FirstSteps.xml" />
+  <xi:include href="sections/Entities.xml" />
+  <xi:include href="sections/PropertiesRelationships.xml" />
+  <xi:include href="sections/AddtionalOptions.xml" />
+  <xi:include href="sections/GenerateCode.xml" />
+  <xi:include href="sections/ExternalModels.xml" />
+  <xi:include href="sections/ExternalChanges.xml" />
 
 
 </section>
