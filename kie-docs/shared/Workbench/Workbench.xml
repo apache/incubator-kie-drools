@@ -8,6 +8,7 @@
   <title>Workbench</title>
 
   <xi:include href="Installation/Installation.xml"/>
+  <xi:include href="QuickStart/QuickStart.xml"/>
   <xi:include href="Configuration/Configuration.xml"/>
   <xi:include href="Administration/Administration.xml"/>
   <xi:include href="General/Introduction.xml"/>
