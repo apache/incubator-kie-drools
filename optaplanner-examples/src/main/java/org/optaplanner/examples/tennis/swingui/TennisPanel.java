@@ -168,9 +168,10 @@ public class TennisPanel extends SolutionPanel {
     private void fillLectureCells(TennisSolution tennisSolution) {
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
-            Color examColor = tangoColorFactory.pickColor(teamAssignment);
-            datesPanel.addCell(teamAssignment.getDay(), teamAssignment.getTeam(),
-                    createButton(teamAssignment, examColor));
+            Team team = teamAssignment.getTeam();
+            Color teamColor = team == null ? TangoColorFactory.SCARLET_1 : tangoColorFactory.pickColor(team);
+            datesPanel.addCell(teamAssignment.getDay(), team,
+                    createButton(teamAssignment, teamColor));
         }
     }
 

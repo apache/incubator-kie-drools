@@ -376,7 +376,7 @@
           </row>
 
           <row>
-            <entry>    <link linkend="lateSimulatedAnnealing">Late Simulated Annealing</link></entry>
+            <entry>    <link linkend="stepCountingHillClimbing">Step Counting Hill Climbing</link></entry>
 
             <entry>5/5</entry>
 
@@ -479,9 +479,9 @@
     <para>At this point <emphasis>the free lunch is over</emphasis>. The return on invested time lowers. The result is
     probably already more than good enough.</para>
 
-    <para>But you can do even better, at a lower return on invested time. Use the
-    <link linkend="benchmarkingAndTweaking">Benchmarker</link> and try a couple of
-    different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:</para>
+    <para>But you can do even better, at a lower return on invested time. Use the <link
+    linkend="benchmarkingAndTweaking">Benchmarker</link> and try a couple of different Tabu Search, Simulated Annealing
+    and Late Acceptance configurations, for example:</para>
 
     <orderedlist>
       <listitem>
