@@ -31,7 +31,7 @@
 
           <imageobject>
             <imagedata width="100%"
-                     align="center" fileref="images/Chapter-Examples/MannersExample/guests_at_table.png"
+                     align="center" fileref="images/Examples/MannersExample/guests_at_table.png"
                        format="PNG"/>
           </imageobject>
         </mediaobject>
@@ -102,7 +102,7 @@
           <mediaobject>
             <imageobject>
                <imagedata width="100%"
-                   align="center" fileref="images/Chapter-Examples/MannersExample/manners_activity_diagram.png"
+                   align="center" fileref="images/Examples/MannersExample/manners_activity_diagram.png"
                    format="PNG" />
             </imageobject>
           </mediaobject>
@@ -431,7 +431,7 @@ end</programlisting>
           <mediaobject>
 
             <imageobject>
-        <imagedata align="center" fileref="images/Chapter-Examples/MannersExample/make_path.png" format="PNG" />
+        <imagedata align="center" fileref="images/Examples/MannersExample/make_path.png" format="PNG" />
             </imageobject>
           </mediaobject>
         </figure>

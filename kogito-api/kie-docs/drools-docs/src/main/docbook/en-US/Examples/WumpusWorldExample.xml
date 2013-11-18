@@ -29,7 +29,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/WumpusWorldExample/wumpus1.png"/>
+        <imagedata fileref="images/Examples/WumpusWorldExample/wumpus1.png"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -39,7 +39,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/WumpusWorldExample/wumpus2.png"/>
+        <imagedata fileref="images/Examples/WumpusWorldExample/wumpus2.png"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -49,7 +49,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/WumpusWorldExample/wumpus3.png"/>
+        <imagedata fileref="images/Examples/WumpusWorldExample/wumpus3.png"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -59,7 +59,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/WumpusWorldExample/wumpus4.png"/>
+        <imagedata fileref="images/Examples/WumpusWorldExample/wumpus4.png"/>
       </imageobject>
     </mediaobject>
   </figure>
@@ -69,7 +69,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/WumpusWorldExample/wumpus5.png"/>
+        <imagedata fileref="images/Examples/WumpusWorldExample/wumpus5.png"/>
       </imageobject>
     </mediaobject>
   </figure>

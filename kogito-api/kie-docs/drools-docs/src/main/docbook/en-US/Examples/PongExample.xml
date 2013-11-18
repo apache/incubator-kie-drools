@@ -20,7 +20,7 @@
 
     <mediaobject>
       <imageobject>
-        <imagedata fileref="images/Chapter-Examples/PongExample/pong.png"/>
+        <imagedata fileref="images/Examples/PongExample/pong.png"/>
       </imageobject>
     </mediaobject>
   </figure>
