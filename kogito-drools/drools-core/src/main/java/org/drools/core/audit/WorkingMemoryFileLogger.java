@@ -60,8 +60,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
 
     /**
      * Creates a new WorkingMemoryFileLogger for the given working memory.
-     * 
-     * @param workingMemoryEventManager
      */
     public WorkingMemoryFileLogger(final WorkingMemory workingMemory) {
         super( workingMemory );
@@ -122,14 +120,13 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             fileWriter = new FileWriter( this.fileName + (this.nbOfFile == 0 ? ".log" : this.nbOfFile + ".log"),
                                          true );
             final XStream xstream = new XStream();
-            List<LogEvent> eventsToWrite = null;
+            WorkingMemoryLog log = null;
             synchronized ( this.events ) {
-                eventsToWrite = new ArrayList<LogEvent>( this.events );
+                log = new WorkingMemoryLog(new ArrayList<LogEvent>( this.events ),
+                                           isPhreak ? "PHREAK" : "RETEOO");
                 clear();
             }
-            for ( LogEvent event : eventsToWrite ) {
-                fileWriter.write( xstream.toXML( event ) + "\n" );
-            }
+            fileWriter.write( xstream.toXML( log ) + "\n" );
         } catch ( final FileNotFoundException exc ) {
             throw new RuntimeException( "Could not create the log file.  Please make sure that directory that the log file should be placed in does exist." );
         } catch ( final Throwable t ) {
@@ -199,9 +196,6 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
         this.maxEventsInMemory = maxEventsInMemory;
     }
 
-    /**
-     * @see org.kie.audit.WorkingMemoryLogger
-     */
     public void logEventCreated(final LogEvent logEvent) {
         synchronized ( this.events ) {
             this.events.add( logEvent );
