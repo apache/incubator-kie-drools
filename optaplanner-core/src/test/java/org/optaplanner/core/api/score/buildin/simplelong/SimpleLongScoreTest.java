@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.simplelong;
+package org.optaplanner.core.api.score.buildin.simplelong;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;

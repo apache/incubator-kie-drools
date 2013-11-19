@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
+package org.optaplanner.core.api.score.buildin.simplebigdecimal;
 
 import java.math.BigDecimal;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;

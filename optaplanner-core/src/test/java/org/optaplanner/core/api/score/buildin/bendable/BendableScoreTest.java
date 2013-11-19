@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.bendable;
+package org.optaplanner.core.api.score.buildin.bendable;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
+package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;

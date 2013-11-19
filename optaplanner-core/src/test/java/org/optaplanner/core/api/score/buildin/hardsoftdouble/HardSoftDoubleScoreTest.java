@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.buildin.hardsoftdouble;
+package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
-import org.optaplanner.core.impl.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.util.SerializationTestUtils;
 
 import static org.junit.Assert.*;
