@@ -42,6 +42,7 @@ public class ActivationLogEvent extends LogEvent {
     private String rule;
     private String declarations;
     private String ruleFlowGroup;
+    private String factHandleIds;
 
     public ActivationLogEvent() {
     }
@@ -60,12 +61,14 @@ public class ActivationLogEvent extends LogEvent {
                               final String activationId,
                               final String rule,
                               final String declarations,
-                              final String ruleFlowGroup) {
+                              final String ruleFlowGroup,
+                              final String factHandleIds) {
         super( type );
         this.activationId = activationId;
         this.rule = rule;
         this.declarations = declarations;
         this.ruleFlowGroup = ruleFlowGroup;
+        this.factHandleIds = factHandleIds;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -74,6 +77,7 @@ public class ActivationLogEvent extends LogEvent {
         rule    = (String)in.readObject();
         declarations    = (String)in.readObject();
         ruleFlowGroup    = (String)in.readObject();
+        factHandleIds    = (String)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -82,6 +86,7 @@ public class ActivationLogEvent extends LogEvent {
         out.writeObject(rule);
         out.writeObject(declarations);
         out.writeObject(ruleFlowGroup);
+        out.writeObject(factHandleIds);
     }
 
     /**
@@ -114,6 +119,10 @@ public class ActivationLogEvent extends LogEvent {
     
     public String getRuleFlowGroup() {
         return ruleFlowGroup;
+    }
+
+    public String getFactHandleIds() {
+        return factHandleIds;
     }
 
     public String toString() {
