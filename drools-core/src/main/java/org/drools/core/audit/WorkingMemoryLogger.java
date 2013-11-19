@@ -74,6 +74,7 @@ import org.drools.core.event.RuleFlowGroupDeactivatedEvent;
 import org.drools.core.event.WorkingMemoryEventListener;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
+import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -112,6 +113,8 @@ public abstract class WorkingMemoryLogger
 
     private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
 
+    protected boolean isPhreak;
+
     public WorkingMemoryLogger() {
     }
 
@@ -125,36 +128,41 @@ public abstract class WorkingMemoryLogger
         workingMemory.addEventListener( (AgendaEventListener) this );
         InternalProcessRuntime processRuntime = ((InternalWorkingMemory) workingMemory).getProcessRuntime();
         if (processRuntime != null) {
-            processRuntime.addEventListener( (ProcessEventListener) this );
+            processRuntime.addEventListener( this );
         }
         workingMemory.addEventListener( (RuleBaseEventListener) this );
     }
     
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
         if (session instanceof StatefulKnowledgeSessionImpl) {
-            WorkingMemoryEventManager eventManager = ((StatefulKnowledgeSessionImpl) session).session;
+            StatefulKnowledgeSessionImpl statefulSession = ((StatefulKnowledgeSessionImpl) session);
+            isPhreak = ((ReteooRuleBase)statefulSession.getRuleBase()).getConfig().isPhreakEnabled();
+            WorkingMemoryEventManager eventManager = statefulSession.session;
             eventManager.addEventListener( (WorkingMemoryEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             eventManager.addEventListener( (RuleBaseEventListener) this );
             InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).session.getProcessRuntime();
             if (processRuntime != null) {
-                processRuntime.addEventListener( (ProcessEventListener) this );
+                processRuntime.addEventListener( this );
             }
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
             StatelessKnowledgeSessionImpl statelessSession = ((StatelessKnowledgeSessionImpl) session);
+            isPhreak = ((ReteooRuleBase)statelessSession.getRuleBase()).getConfig().isPhreakEnabled();
             statelessSession.addWorkingMemoryEventListener( this );
             statelessSession.addAgendaEventListener( this );
             statelessSession.addEventListener( this );
             statelessSession.getRuleBase().addEventListener( this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
-            ReteooWorkingMemoryInterface eventManager =
-                ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession()).session;
+            StatefulKnowledgeSessionImpl statefulSession =
+                    ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession());
+            isPhreak = ((ReteooRuleBase)statefulSession.getRuleBase()).getConfig().isPhreakEnabled();
+            ReteooWorkingMemoryInterface eventManager = statefulSession.session;
             eventManager.addEventListener( (WorkingMemoryEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();
             eventManager.addEventListener( (RuleBaseEventListener) this );
             if (processRuntime != null) {
-                processRuntime.addEventListener( (ProcessEventListener) this );
+                processRuntime.addEventListener( this );
             }
         } else {
             throw new IllegalArgumentException("Not supported session in logger: " + session.getClass());
@@ -164,10 +172,12 @@ public abstract class WorkingMemoryLogger
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         filters = (List<ILogEventFilter>) in.readObject();
+        isPhreak = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(filters);
+        out.writeBoolean(isPhreak);
     }
 
     /**
@@ -230,7 +240,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.api.event.WorkingMemoryEventListener
+     * @see org.kie.api.event.rule.RuleRuntimeEventListener
      */
     public void objectInserted(final ObjectInsertedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.INSERTED,
@@ -239,7 +249,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.api.event.WorkingMemoryEventListener
+     * @see org.kie.api.event.rule.RuleRuntimeEventListener
      */
     public void objectUpdated(final ObjectUpdatedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.UPDATED,
@@ -248,7 +258,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.api.event.WorkingMemoryEventListener
+     * @see org.kie.api.event.rule.RuleRuntimeEventListener
      */
     public void objectRetracted(final ObjectRetractedEvent event) {
         filterLogEvent( new ObjectLogEvent( LogEvent.RETRACTED,
@@ -257,7 +267,7 @@ public abstract class WorkingMemoryLogger
     }
 
     /**
-     * @see org.kie.api.event.AgendaEventListener
+     * @see org.kie.api.event.rule.AgendaEventListener
      */
     public void activationCreated(final ActivationCreatedEvent event,
                                   final WorkingMemory workingMemory) {
@@ -265,43 +275,47 @@ public abstract class WorkingMemoryLogger
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
                                                 extractDeclarations( event.getActivation(), workingMemory ),
-                                                event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                event.getActivation().getRule().getRuleFlowGroup(),
+                                                extractFactHandleIds( event.getActivation() ) ) );
     }
 
     /**
-     * @see org.kie.api.event.AgendaEventListener
+     * @see org.kie.api.event.rule.AgendaEventListener
      */
     public void activationCancelled(final ActivationCancelledEvent event,
                                     final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.ACTIVATION_CANCELLED,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation(), workingMemory ),
-                                                event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                extractDeclarations(event.getActivation(), workingMemory),
+                                                event.getActivation().getRule().getRuleFlowGroup(),
+                                                extractFactHandleIds(event.getActivation()) ) );
     }
 
     /**
-     * @see org.kie.api.event.AgendaEventListener
+     * @see org.kie.api.event.rule.AgendaEventListener
      */
     public void beforeActivationFired(final BeforeActivationFiredEvent event,
                                       final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.BEFORE_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation(), workingMemory ),
-                                                event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                extractDeclarations(event.getActivation(), workingMemory),
+                                                event.getActivation().getRule().getRuleFlowGroup(),
+                                                extractFactHandleIds(event.getActivation()) ) );
     }
 
     /**
-     * @see org.kie.api.event.AgendaEventListener
+     * @see org.kie.api.event.rule.AgendaEventListener
      */
     public void afterActivationFired(final AfterActivationFiredEvent event,
                                      final WorkingMemory workingMemory) {
         filterLogEvent( new ActivationLogEvent( LogEvent.AFTER_ACTIVATION_FIRE,
                                                 getActivationId( event.getActivation() ),
                                                 event.getActivation().getRule().getName(),
-                                                extractDeclarations( event.getActivation(), workingMemory ),
-                                                event.getActivation().getRule().getRuleFlowGroup() ) );
+                                                extractDeclarations(event.getActivation(), workingMemory),
+                                                event.getActivation().getRule().getRuleFlowGroup(),
+                                                extractFactHandleIds(event.getActivation()) ) );
     }
 
     /**
@@ -320,14 +334,13 @@ public abstract class WorkingMemoryLogger
         final Map<?, ?> declarations = activation.getSubRule().getOuterDeclarations();
         for ( Iterator<?> it = declarations.values().iterator(); it.hasNext(); ) {
             final Declaration declaration = (Declaration) it.next();
-            final FactHandle handle = tuple.get( declaration );
-            if ( handle instanceof InternalFactHandle ) {
-                final InternalFactHandle handleImpl = (InternalFactHandle) handle;
-                if ( handleImpl.getId() == -1 ) {
+            final InternalFactHandle handle = tuple.get( declaration );
+            if ( handle != null ) {
+                if ( handle.getId() == -1 ) {
                     // This handle is now invalid, probably due to an fact retraction
                     continue;
                 }
-                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handleImpl.getObject() );
+                final Object value = declaration.getValue( (InternalWorkingMemory) workingMemory, handle.getObject() );
 
                 result.append( declaration.getIdentifier() );
                 result.append( "=" );
@@ -337,7 +350,7 @@ public abstract class WorkingMemoryLogger
                 } else {
                     result.append( value );
                     result.append( "(" );
-                    result.append( handleImpl.getId() );
+                    result.append( handle.getId() );
                     result.append( ")" );
                 }
             }
@@ -346,6 +359,29 @@ public abstract class WorkingMemoryLogger
             }
         }
         return result.toString();
+    }
+
+    private String extractFactHandleIds(Activation activation) {
+        InternalFactHandle activatingFact = (InternalFactHandle)activation.getPropagationContext().getFactHandleOrigin();
+        StringBuilder sb = new StringBuilder();
+        if (activatingFact != null) {
+            sb.append(activatingFact.getId());
+        }
+        InternalFactHandle[] factHandles = activation.getTuple().toFactHandles();
+        for (int i = 0; i < factHandles.length; i++) {
+            if (activatingFact != null) {
+                if (activatingFact.getId() == factHandles[i].getId()) {
+                    continue;
+                }
+                sb.append(",");
+            } else {
+                if (i > 0) {
+                    sb.append(",");
+                }
+            }
+            sb.append(factHandles[i].getId());
+        }
+        return sb.toString();
     }
 
     /**
