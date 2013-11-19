@@ -26,6 +26,16 @@ import static org.junit.Assert.*;
 public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
+    public void parseScore() {
+        assertEquals(SimpleDoubleScore.valueOf(-147.2), SimpleDoubleScore.parseScore("-147.2"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        SimpleDoubleScore.parseScore("-147.2hard/-258.3soft");
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleDoubleScore.valueOf(19.0),
                 SimpleDoubleScore.valueOf(20.0).add(

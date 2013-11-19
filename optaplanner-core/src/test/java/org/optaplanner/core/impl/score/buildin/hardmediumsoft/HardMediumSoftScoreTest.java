@@ -26,6 +26,17 @@ import static org.junit.Assert.*;
 public class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
+    public void parseScore() {
+        assertEquals(HardMediumSoftScore.valueOf(-147, -258, -369),
+                HardMediumSoftScore.parseScore("-147hard/-258medium/-369soft"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        HardMediumSoftScore.parseScore("-147");
+    }
+
+    @Test
     public void feasible() {
         assertScoreNotFeasible(
                 HardMediumSoftScore.valueOf(-5, -300, -4000)

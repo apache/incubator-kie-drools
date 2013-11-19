@@ -26,6 +26,17 @@ import static org.junit.Assert.*;
 public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
+    public void parseScore() {
+        assertEquals(HardSoftDoubleScore.valueOf(-147.2, -258.3),
+                HardSoftDoubleScore.parseScore("-147.2hard/-258.3soft"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        HardSoftDoubleScore.parseScore("-147.2");
+    }
+
+    @Test
     public void feasible() {
         assertScoreNotFeasible(
                 HardSoftDoubleScore.valueOf(-5.0, -300.0),

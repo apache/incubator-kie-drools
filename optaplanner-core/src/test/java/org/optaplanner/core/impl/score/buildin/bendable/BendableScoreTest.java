@@ -28,6 +28,17 @@ public class BendableScoreTest extends AbstractScoreTest {
     private BendableScoreDefinition scoreDefinitionHSS = new BendableScoreDefinition(1, 2);
 
     @Test
+    public void parseScore() {
+        assertEquals(scoreDefinitionHSS.createScore(-147, -258, -369),
+                scoreDefinitionHSS.parseScore("-147/-258/-369"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        scoreDefinitionHSS.parseScore("-147");
+    }
+
+    @Test
     public void feasibleHSS() {
         assertScoreNotFeasible(
                 scoreDefinitionHSS.createScore(-5, -300, -4000)

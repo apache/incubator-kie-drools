@@ -28,6 +28,17 @@ import static org.junit.Assert.*;
 public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
+    public void parseScore() {
+        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-147.2"), new BigDecimal("-258.3")),
+                HardSoftBigDecimalScore.parseScore("-147.2hard/-258.3soft"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        HardSoftBigDecimalScore.parseScore("-147.2");
+    }
+
+    @Test
     public void feasible() {
         assertScoreNotFeasible(
                 HardSoftBigDecimalScore.valueOf(new BigDecimal("-5"), new BigDecimal("-300")),

@@ -28,6 +28,17 @@ import static org.junit.Assert.*;
 public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
+    public void parseScore() {
+        assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("-147.2")),
+                SimpleBigDecimalScore.parseScore("-147.2"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        SimpleBigDecimalScore.parseScore("-147.2hard/-258.3soft");
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleBigDecimalScore.valueOf(new BigDecimal("19")),
                 SimpleBigDecimalScore.valueOf(new BigDecimal("20")).add(

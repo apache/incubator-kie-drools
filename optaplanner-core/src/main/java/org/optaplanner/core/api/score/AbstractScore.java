@@ -27,10 +27,9 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  * @see Score
  * @see HardSoftScore
  */
-public abstract class AbstractScore<S extends Score>
-        implements Score<S>, Serializable {
+public abstract class AbstractScore<S extends Score> implements Score<S>, Serializable {
 
-    public static String[] parseLevelStrings(String scoreString, int levelsSize) {
+    protected static String[] parseLevelStrings(String scoreString, int levelsSize) {
         String[] scoreTokens = scoreString.split("\\/");
         if (scoreTokens.length != levelsSize) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
@@ -41,7 +40,7 @@ public abstract class AbstractScore<S extends Score>
         return scoreTokens;
     }
 
-    public static String[] parseLevelStrings(String scoreString, String... levelSuffixes) {
+    protected static String[] parseLevelStrings(String scoreString, String... levelSuffixes) {
         String[] scoreTokens = scoreString.split("\\/");
         if (scoreTokens.length != levelSuffixes.length) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
@@ -62,7 +61,7 @@ public abstract class AbstractScore<S extends Score>
         return levelStrings;
     }
 
-    public static String buildScorePattern(int levelsSize) {
+    protected static String buildScorePattern(int levelsSize) {
         StringBuilder scorePattern = new StringBuilder(levelsSize * 4);
         boolean first = true;
         for (int i = 0; i < levelsSize; i++) {
@@ -76,7 +75,7 @@ public abstract class AbstractScore<S extends Score>
         return scorePattern.toString();
     }
 
-    public static String buildScorePattern(String... levelSuffixes) {
+    protected static String buildScorePattern(String... levelSuffixes) {
         StringBuilder scorePattern = new StringBuilder(levelSuffixes.length * 10);
         boolean first = true;
         for (String levelSuffix : levelSuffixes) {

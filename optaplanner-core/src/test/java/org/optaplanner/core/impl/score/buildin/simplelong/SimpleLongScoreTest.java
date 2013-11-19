@@ -26,6 +26,16 @@ import static org.junit.Assert.*;
 public class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
+    public void parseScore() {
+        assertEquals(SimpleLongScore.valueOf(-147L), SimpleLongScore.parseScore("-147"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseScoreIllegalArgument() {
+        SimpleLongScore.parseScore("-147hard/-258soft");
+    }
+
+    @Test
     public void add() {
         assertEquals(SimpleLongScore.valueOf(19L),
                 SimpleLongScore.valueOf(20L).add(
