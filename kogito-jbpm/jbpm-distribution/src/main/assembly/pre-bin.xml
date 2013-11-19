@@ -46,8 +46,6 @@
         <exclude>org.jbpm:jbpm-shared-services</exclude>
         <exclude>org.jbpm:jbpm-test</exclude>
         <exclude>org.jbpm:jbpm-runtime-manager</exclude>
-        <!-- Exclude docs -->
-        <exclude>org.jbpm:jbpm-docs</exclude>
         <exclude>org.jbpm:jbpm-examples</exclude>
         <exclude>*:war</exclude>
         <exclude>*:sources</exclude>

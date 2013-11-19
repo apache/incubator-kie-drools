@@ -228,11 +228,6 @@
     </dependency>
 
     <!-- Javadocs and documentation -->
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-docs</artifactId>
-      <type>jdocbook</type>
-    </dependency>
     <dependency><!-- Workaround for http://jira.codehaus.org/browse/MJAVADOC-340 -->
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.core</artifactId>
