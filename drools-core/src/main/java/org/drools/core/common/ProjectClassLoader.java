@@ -3,8 +3,10 @@ package org.drools.core.common;
 import org.kie.internal.utils.ClassLoaderUtil;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -122,6 +124,11 @@ public class ProjectClassLoader extends ClassLoader {
         if (CACHE_NON_EXISTING_CLASSES) {
             nonExistingClasses.remove(name);
         }
+    }
+
+    @Override
+    protected Enumeration<URL> findResources(String name) throws IOException {
+        return getParent().getResources(name);
     }
 
     @Override
