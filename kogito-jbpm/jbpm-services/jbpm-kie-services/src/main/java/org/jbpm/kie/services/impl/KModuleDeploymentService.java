@@ -2,6 +2,7 @@ package org.jbpm.kie.services.impl;
 
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.HashMap;
@@ -120,6 +121,10 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 } catch (UnsupportedEncodingException e) {
                     logger.warn("Unable to load content for form '{}' : {}", fileName, e);
                 }
+            } else if( fileName.matches(".+class$")) { 
+                String className = fileName.replaceAll(File.separator, ".");
+                className = className.substring(0, fileName.length() - ".class".length());
+                deployedUnit.addClassName(className);
             }
         }
 

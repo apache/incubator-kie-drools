@@ -3,7 +3,9 @@ package org.jbpm.kie.services.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbpm.kie.services.api.DeployedUnit;
 import org.jbpm.kie.services.api.DeploymentUnit;
@@ -16,6 +18,7 @@ public class DeployedUnitImpl implements DeployedUnit {
     private RuntimeManager manager;
     
     private Map<String, ProcessDesc> assets = new HashMap<String, ProcessDesc>();
+    private Set<String> classes = new HashSet<String>();
     
     public DeployedUnitImpl(DeploymentUnit unit) {
         this.unit = unit;
@@ -40,6 +43,10 @@ public class DeployedUnitImpl implements DeployedUnit {
         this.assets.put(assetId, processAsset);
     }
     
+    public void addClassName(String className) {
+        this.classes.add(className);
+    }
+    
     public void setRuntimeManager(RuntimeManager manager) {
         if (this.manager != null) {
             throw new IllegalStateException("RuntimeManager already exists");
@@ -52,4 +59,8 @@ public class DeployedUnitImpl implements DeployedUnit {
         return Collections.unmodifiableCollection(assets.values());
     }
 
+    @Override
+    public Collection<String> getDeployedClassNames() {
+        return Collections.unmodifiableCollection(classes);
+    }
 }

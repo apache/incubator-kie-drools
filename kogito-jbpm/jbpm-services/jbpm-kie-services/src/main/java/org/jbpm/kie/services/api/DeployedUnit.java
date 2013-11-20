@@ -13,5 +13,7 @@ public interface DeployedUnit {
     
     Collection<ProcessDesc> getDeployedAssets(); 
     
+    Collection<String> getDeployedClassNames(); 
+    
     RuntimeManager getRuntimeManager();
 }
