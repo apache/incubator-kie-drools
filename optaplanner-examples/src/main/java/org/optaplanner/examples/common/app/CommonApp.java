@@ -28,7 +28,6 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.optaplanner.examples.nurserostering.swingui.NurseRosteringPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +37,7 @@ public abstract class CommonApp extends LoggingMain {
 
     /**
      * Some examples are not compatible with every native LookAndFeel.
-     * For example, {@link NurseRosteringPanel} is incompatible with Mac.
+     * For example, NurseRosteringPanel is incompatible with Mac.
      */
     public static void fixateLookAndFeel() {
         String lookAndFeelName = "Metal"; // "Nimbus" is nicer but incompatible
