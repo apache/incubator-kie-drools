@@ -477,4 +477,32 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         manager.close();
  
     }
+    
+    @Test
+    public void testCreationOfSessionTaskServiceNotConfigured() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newEmptyBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        try {
+        	runtime.getTaskService();
+        	fail("Should fail as task service is not configured");
+        } catch (UnsupportedOperationException e) {
+        	assertEquals("TaskService was not configured", e.getMessage());
+        }
+        
+        // dispose session that should not have affect on the session at all
+        manager.disposeRuntimeEngine(runtime);
+        // close manager which will close session maintained by the manager
+        manager.close();
+    }
 }

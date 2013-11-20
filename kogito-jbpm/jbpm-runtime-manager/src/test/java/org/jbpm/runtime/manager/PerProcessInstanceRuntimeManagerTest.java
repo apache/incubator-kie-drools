@@ -474,4 +474,31 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ksession2Id, ksession2.getId());
         manager.close();
     }
+    
+    @Test
+    public void testCreationOfSessionTaskServiceNotConfigured() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newEmptyBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);
+        assertNotNull(manager);
+       
+        // ksession for process instance #1
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        try {
+        	runtime.getTaskService();
+        	fail("Should fail as task service is not configured");
+        } catch (UnsupportedOperationException e) {
+        	assertEquals("TaskService was not configured", e.getMessage());
+        }
+        manager.close();
+    }
 }

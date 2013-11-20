@@ -256,4 +256,31 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         
         System.clearProperty("jbpm.tm.jndi.lookup");
     }
+    
+    @Test
+    public void testCreationOfSessionTaskServiceNotConfigured() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+    			.newEmptyBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        try {
+        	runtime.getTaskService();
+        	fail("Should fail as task service is not configured");
+        } catch (UnsupportedOperationException e) {
+        	assertEquals("TaskService was not configured", e.getMessage());
+        }
+  
+        manager.disposeRuntimeEngine(runtime);     
+        manager.close();
+     
+    }
 }

@@ -62,6 +62,9 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         if (this.disposed) {
             throw new IllegalStateException("This runtime is already diposed");
         }
+        if (taskService == null) {
+        	throw new UnsupportedOperationException("TaskService was not configured");
+        }
         return this.taskService;
     }
 

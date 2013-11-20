@@ -30,6 +30,8 @@ import org.kie.internal.runtime.manager.Disposable;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RuntimeManager that is backed by "Singleton" strategy meaning only one <code>RuntimeEngine</code> instance will
@@ -53,6 +55,8 @@ import org.kie.internal.task.api.InternalTaskService;
  * will do the trick.
  */
 public class SingletonRuntimeManager extends AbstractRuntimeManager {
+	
+	private static final Logger logger = LoggerFactory.getLogger(SingletonRuntimeManager.class);
     
     private RuntimeEngine singleton;
     private SessionFactory factory;
@@ -130,7 +134,11 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         }
         super.close();
         // dispose singleton session only when manager is closing
-        removeRuntimeFromTaskService((InternalTaskService) this.singleton.getTaskService());
+        try {
+        	removeRuntimeFromTaskService((InternalTaskService) this.singleton.getTaskService());
+        } catch (UnsupportedOperationException e) {
+        	logger.debug("Exception while closing task service, was it initialized? {}", e.getMessage());
+        }
         if (this.singleton instanceof Disposable) {
             ((Disposable) this.singleton).dispose();
         }
