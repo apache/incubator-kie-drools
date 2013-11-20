@@ -2704,4 +2704,103 @@ public class Misc2Test extends CommonTestMethodBase {
         PatternDescr pd = (PatternDescr) r.getLhs().getDescrs().get( 0 );
         assertEquals( 1, pd.getConstraint().getDescrs().size() );
     }
+
+    @Test
+    public void testAddRemoveFromKB2() {
+        // DROOLS-328
+        String drl = "\n" +
+                     "rule B\n" +
+                     "  when\n" +
+                     "    Boolean()\n" +
+                     "    Float()\n" +
+                     "  then\n" +
+                     "    System.out.println( \"Hi\" ); " +
+                     "  end\n" +
+                     "\n" +
+                     "\n" +
+                     "";
+        String drl2 = "\n" +
+                     "" +
+                     "rule Z \n" +
+                     "  when \n" +
+                     "    Object() \n" +
+                     "    String() \n" +
+                     "  then \n" +
+                     "end \n" +
+                     "" +
+                     "rule B\n" +
+                     "  when\n" +
+                     "    String() \n" +
+                     "  then\n" +
+                     "  end\n" +
+                     "\n" +
+                     "\n" +
+                     "";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        // Create kSession and initialize it
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        FactHandle fh = kSession.insert(new Float( 0.0f ) );
+        kSession.fireAllRules();
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drl2.getBytes() ), ResourceType.DRL );
+        if ( kbuilder2.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+//        kSession.getKnowledgeBase().removeRule( "defaultpkg", "B" );
+
+        kSession.getKnowledgeBase().addKnowledgePackages( kbuilder2.getKnowledgePackages() );
+
+        kSession.insert( new Boolean( true ) );
+        kSession.fireAllRules();
+
+        kSession.retract(fh);
+
+        fh = kSession.insert( new Float( 1.0f ) );
+        kSession.fireAllRules();
+
+    }
+
+
+    @Test
+    public void testDateCoercionWithOr() {
+        // DROOLS-296
+        String drl = "import java.util.Date\n" +
+                     "global java.util.List list\n" +
+                     "declare DateContainer\n" +
+                     " date: Date\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when\n" +
+                     "then\n" +
+                     " insert(new DateContainer(new Date(0)));" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     " $container: DateContainer( date >= \"15-Oct-2013\" || date <= \"01-Oct-2013\" )\n" +
+                     "then\n" +
+                     " list.add(\"working\");\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("working", list.get(0));
+    }
+
 }
