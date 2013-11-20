@@ -27,7 +27,7 @@ import org.optaplanner.core.api.score.holder.AbstractScoreHolder;
  */
 public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
 
-    protected BigDecimal score;
+    protected BigDecimal score = null;
 
     public SimpleBigDecimalScoreHolder(boolean constraintMatchEnabled) {
         super(constraintMatchEnabled);
@@ -47,7 +47,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
     // ************************************************************************
 
     public void addConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
-        score = score.add(weight);
+        score = (score == null) ? weight : score.add(weight);
         registerBigDecimalConstraintMatch(kcontext, 0, weight, new Runnable() {
             public void run() {
                 score = score.subtract(weight);
@@ -56,7 +56,7 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     public Score extractScore() {
-        return SimpleBigDecimalScore.valueOf(score);
+        return SimpleBigDecimalScore.valueOf(score == null ? BigDecimal.ZERO : score);
     }
 
 }
