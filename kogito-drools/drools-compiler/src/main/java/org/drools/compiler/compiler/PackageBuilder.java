@@ -690,6 +690,7 @@ public class PackageBuilder
 
         try {
             this.results.addAll(processBuilder.addProcessFromXml(resource));
+            processBuilder.getErrors().clear();
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
