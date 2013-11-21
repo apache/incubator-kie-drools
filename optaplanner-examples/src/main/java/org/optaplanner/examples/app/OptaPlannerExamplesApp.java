@@ -17,7 +17,9 @@
 package org.optaplanner.examples.app;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -25,6 +27,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -155,14 +158,15 @@ public class OptaPlannerExamplesApp extends JFrame {
 
     private JButton createExampleButton(final CommonApp commonApp) {
         String iconResource = commonApp.getIconResource();
-        ImageIcon icon = iconResource == null ? null : new ImageIcon(getClass().getResource(iconResource));
+        Icon icon = iconResource == null ? new EmptyIcon() : new ImageIcon(getClass().getResource(iconResource));
         JButton button = new JButton(new AbstractAction(commonApp.getName(), icon) {
             public void actionPerformed(ActionEvent e) {
                 commonApp.init(OptaPlannerExamplesApp.this, false);
             }
         });
-        button.setHorizontalTextPosition(JButton.CENTER);
-        button.setVerticalTextPosition(JButton.BOTTOM);
+        button.setHorizontalAlignment(JButton.LEFT);
+        button.setHorizontalTextPosition(JButton.RIGHT);
+        button.setVerticalTextPosition(JButton.CENTER);
         button.addMouseListener(new MouseAdapter() {
 
             public void mouseEntered(MouseEvent e) {
@@ -191,6 +195,25 @@ public class OptaPlannerExamplesApp extends JFrame {
         descriptionPanel.add(new JScrollPane(descriptionTextArea,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         return descriptionPanel;
+    }
+
+    private static class EmptyIcon implements Icon {
+
+        @Override
+        public int getIconWidth() {
+            return 64;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return 64;
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            // Do nothing
+        }
+
     }
 
 }
