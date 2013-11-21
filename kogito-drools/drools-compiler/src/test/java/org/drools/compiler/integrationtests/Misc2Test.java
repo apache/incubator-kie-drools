@@ -4728,4 +4728,48 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     }
+
+    @Test @Ignore("Fixed with mvel 2.1.8.Final")
+    public void testTypeCheckInOr() {
+        // BZ-1029911
+        String str = "import org.drools.compiler.*;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "rule \"rule test\"\n" +
+                     "    dialect \"java\"\n" +
+                     "    \n" +
+                     "    when\n" +
+                     "        scenario: ScenarioType( this == ScenarioType.Set.ADD || this == ScenarioType.Set.EDIT  );\n" +
+                     "        \n" +
+                     "    then    \n" +
+                     "        System.out.println(\"Test\");\n" +
+                     "\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+    }
+
+    @Test @Ignore("Fixed with mvel 2.1.8.Final")
+    public void testDynamicNegativeSalienceWithSpace() {
+        // DROOLS-302
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "rule R\n" +
+                "salience - $age\n" +
+                "when\n" +
+                "  Person( $age : age )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person p1 = new Person("A", 31);
+        FactHandle fh1 = ksession.insert(p1);
+
+        ksession.fireAllRules();
+    }
 }
