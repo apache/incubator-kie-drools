@@ -4700,5 +4700,32 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals("working", list.get(0));
         ksession.dispose();
     }
-}
 
+    @Test
+    public void testWildcardImportForTypeField() throws Exception {
+        // DROOLS-348
+        String drl = "import java.util.*\n" +
+                     "declare MyType\n" +
+                     "    l : List\n" +
+                     "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+    }
+
+    @Test
+    public void testWildcardImportForTypeFieldOldApi() {
+        // DROOLS-348
+        String drl = "import java.util.*\n" +
+                     "declare MyType\n" +
+                     "    l : List\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    }
+}

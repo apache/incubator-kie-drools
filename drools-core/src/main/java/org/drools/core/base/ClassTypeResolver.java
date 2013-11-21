@@ -168,10 +168,8 @@ public class ClassTypeResolver
         if ( clazz == null ) {
             final Set<Class<?>> validClazzCandidates = new HashSet<Class<?>>();
 
-            final Iterator<String> it = this.imports.iterator();
-            while ( it.hasNext() ) {
-                clazz = importClass( (String) it.next(),
-                                     className );
+            for (String i : imports) {
+                clazz = importClass( i, className );
                 if ( clazz != null ) {
                     validClazzCandidates.add( clazz );
                 }

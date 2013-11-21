@@ -89,10 +89,13 @@ public class PackageRegistry {
     }
 
     public void addImport(ImportDescr importDescr) {
-        String importEntry = importDescr.getTarget();
+        registerImport( importDescr.getTarget() );
+        this.dialectCompiletimeRegistry.addImport( importDescr );
+    }
+
+    public void registerImport(String importEntry) {
         this.pkg.addImport( new ImportDeclaration( importEntry ) );
         this.typeResolver.addImport( importEntry );
-        this.dialectCompiletimeRegistry.addImport( importDescr );
     }
 
     public void addStaticImport(ImportDescr importDescr) {
