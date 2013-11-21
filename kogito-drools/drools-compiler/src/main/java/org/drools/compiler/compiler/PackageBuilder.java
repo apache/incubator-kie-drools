@@ -957,8 +957,7 @@ public class PackageBuilder
         compileAllRules(packageDescr, pkgRegistry);
     }
 
-    void compileAllRules(PackageDescr packageDescr,
-            PackageRegistry pkgRegistry) {
+    void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect(getPackageDialect(packageDescr));
 
         // only try to compile if there are no parse errors
@@ -985,7 +984,18 @@ public class PackageBuilder
         }
     }
 
-    PackageRegistry initPackageRegistry(PackageDescr packageDescr) {
+    PackageRegistry createPackageRegistry(PackageDescr packageDescr) {
+        PackageRegistry pkgRegistry = initPackageRegistry(packageDescr);
+        if (pkgRegistry == null) {
+            return null;
+        }
+        for (ImportDescr importDescr : packageDescr.getImports()) {
+            pkgRegistry.registerImport( importDescr.getTarget() );
+        }
+        return pkgRegistry;
+    }
+
+    private PackageRegistry initPackageRegistry(PackageDescr packageDescr) {
         if (packageDescr == null) {
             return null;
         }
@@ -1010,8 +1020,7 @@ public class PackageBuilder
         return pkgRegistry;
     }
 
-    private void compileRules(PackageDescr packageDescr,
-            PackageRegistry pkgRegistry) {
+    private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         List<FunctionDescr> functions = packageDescr.getFunctions();
         if (!functions.isEmpty()) {
 
@@ -1536,20 +1545,17 @@ public class PackageBuilder
             }
         }
 
-        PackageRegistry pkgRegistry = new PackageRegistry(this,
-                pkg);
+        PackageRegistry pkgRegistry = new PackageRegistry(this, pkg);
 
         // add default import for this namespace
         pkgRegistry.addImport(new ImportDescr(packageDescr.getNamespace() + ".*"));
 
-        this.pkgRegistryMap.put(packageDescr.getName(),
-                pkgRegistry);
+        this.pkgRegistryMap.put(packageDescr.getName(), pkgRegistry);
 
         return pkgRegistry;
     }
 
-    private void mergePackage(PackageRegistry pkgRegistry,
-            PackageDescr packageDescr) {
+    private void mergePackage(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for (final ImportDescr importDescr : packageDescr.getImports()) {
             pkgRegistry.addImport(importDescr);
         }
@@ -1562,8 +1568,7 @@ public class PackageBuilder
         processOtherDeclarations(pkgRegistry, packageDescr);
     }
 
-    void processOtherDeclarations(PackageRegistry pkgRegistry,
-            PackageDescr packageDescr) {
+    void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         processWindowDeclarations(pkgRegistry, packageDescr);
         processFunctions(pkgRegistry, packageDescr);
         processGlobals(pkgRegistry, packageDescr);
@@ -1578,8 +1583,7 @@ public class PackageBuilder
         }
     }
 
-    private void processGlobals(PackageRegistry pkgRegistry,
-            PackageDescr packageDescr) {
+    private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         for (final GlobalDescr global : packageDescr.getGlobals()) {
             final String identifier = global.getIdentifier();
             String className = global.getType();
@@ -3201,8 +3205,7 @@ public class PackageBuilder
      * @param pkgRegistry
      * @return
      */
-    private PriorityQueue<FieldDefinition> sortFields(Map<String, TypeFieldDescr> flds,
-            PackageRegistry pkgRegistry) {
+    private PriorityQueue<FieldDefinition> sortFields(Map<String, TypeFieldDescr> flds, PackageRegistry pkgRegistry) {
         PriorityQueue<FieldDefinition> queue = new PriorityQueue<FieldDefinition>(flds.size());
         int maxDeclaredPos = 0;
         int curr = 0;

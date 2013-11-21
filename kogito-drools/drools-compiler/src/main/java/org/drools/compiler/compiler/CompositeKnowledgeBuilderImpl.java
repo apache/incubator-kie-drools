@@ -296,7 +296,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
 
     private List<PackageBuilder.TypeDefinition> buildTypeDeclarations(CompositePackageDescr packageDescr, List<PackageBuilder.TypeDefinition> unresolvedTypes) {
         pkgBuilder.setAssetFilter(packageDescr.getFilter());
-        PackageRegistry pkgRegistry = pkgBuilder.initPackageRegistry(packageDescr);
+        PackageRegistry pkgRegistry = pkgBuilder.createPackageRegistry(packageDescr);
         if (pkgRegistry == null) {
             return null;
         }
