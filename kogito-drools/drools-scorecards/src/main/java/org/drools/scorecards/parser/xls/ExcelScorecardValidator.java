@@ -22,6 +22,7 @@ import org.dmg.pmml.pmml_4_1.descr.Characteristics;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.core.util.StringUtils;
 import org.drools.scorecards.ScorecardError;
+import org.drools.scorecards.ScoringStrategy;
 import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
@@ -46,6 +47,36 @@ class ExcelScorecardValidator {
         if (scorecard.isUseReasonCodes()){
             validator.validateReasonCodes();
             validator.validateBaselineScores();
+        }
+        if ( getScoringStrategy(scorecard).toString().startsWith("WEIGHTED")) {
+            validator.validateWeights();
+        }
+
+    }
+
+    private void validateWeights() {
+        for (Object obj :scorecard.getExtensionsAndCharacteristicsAndMiningSchemas()){
+            if (obj instanceof Characteristics){
+                Characteristics characteristics = (Characteristics)obj;
+                for (Characteristic characteristic : characteristics.getCharacteristics()){
+                    for (Attribute attribute : characteristic.getAttributes()){
+                        String newCellRef = createDataTypeCellRef(ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), "cellRef"),2);
+                        String weight = ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+                        if ( StringUtils.isEmpty(weight) || !isDouble(weight)){
+                            parseErrors.add(new ScorecardError(newCellRef, "Attribute is missing weight or specified weight is not a double."));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    protected boolean isDouble(String doubleStr){
+        try {
+            Double.parseDouble(doubleStr);
+            return true;
+        } catch (Exception e){
+            return  false;
         }
     }
 
@@ -137,5 +168,14 @@ class ExcelScorecardValidator {
     private String createDataTypeCellRef(String cellRef, int n) {
         int col = ((int)(cellRef.charAt(1)))+n;
         return "$"+((char)col)+cellRef.substring(cellRef.indexOf('$',1));
+    }
+
+    protected static ScoringStrategy getScoringStrategy(Scorecard scorecard) {
+        ScoringStrategy strategy = ScoringStrategy.AGGREGATE_SCORE;
+        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+        if ( !StringUtils.isEmpty(scoringStrategyName)) {
+            strategy = ScoringStrategy.valueOf(scoringStrategyName);
+        }
+        return strategy;
     }
 }

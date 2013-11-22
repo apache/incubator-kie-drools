@@ -20,11 +20,19 @@ import java.io.Serializable;
 public class PartialScore extends BaselineScore implements Serializable {
     protected String reasoncode;
     protected int position;
+    protected double baselineScore;
 
     public PartialScore(String scorecardName, String characteristic, double score, String reasoncode, int position) {
         super(scorecardName, characteristic, score);
         this.reasoncode = reasoncode;
         this.position = position;
+    }
+
+    public PartialScore(String scorecardName, String characteristic, double score, String reasoncode, double baselineScore, int position) {
+        super(scorecardName, characteristic, score);
+        this.reasoncode = reasoncode;
+        this.position = position;
+        this.baselineScore = baselineScore;
     }
 
     public PartialScore(String scorecardName, String characteristic, double score) {
@@ -44,5 +52,17 @@ public class PartialScore extends BaselineScore implements Serializable {
 
     public void setReasoncode(String reasoncode) {
         this.reasoncode = reasoncode;
+    }
+
+    public double getBaselineScore() {
+        return baselineScore;
+    }
+
+    public void setBaselineScore(double baselineScore) {
+        this.baselineScore = baselineScore;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

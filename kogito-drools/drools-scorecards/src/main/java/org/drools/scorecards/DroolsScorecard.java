@@ -56,35 +56,10 @@ public class DroolsScorecard implements Serializable {
         this.calculatedScore = calculatedScore;
     }
 
-    public void sortReasonCodes() {
-
-    }
-
-//    public void addPartialScore(int partialScore) {
-//        this.calculatedScore += partialScore;
-//    }
-//
-//    public void setInitialScore(int initialScore) {
-//        this.calculatedScore = initialScore;
-//    }
-
     public void setInitialScore(double initialScore) {
         this.calculatedScore = initialScore;
     }
 
-//    public void addPartialScore(double partialScore) {
-//        this.calculatedScore += partialScore;
-//    }
-//
-//    public void addPartialScore(String field, double partialScore, String reasonCode) {
-//        this.calculatedScore += partialScore;
-//        reasonCodes.add(reasonCode);
-//    }
-
-//    public void addReasonCode(String reasonCode){
-//        reasonCodes.add(reasonCode);
-//    }
-//
     public List<String> getReasonCodes() {
         return Collections.unmodifiableList(reasonCodes);
     }
@@ -93,26 +68,40 @@ public class DroolsScorecard implements Serializable {
         this.reasonCodes = reasonCodes;
     }
 
-    public void sortReasonCodes(List<PartialScore> partialScores) {
+    public void sortAndSetReasonCodes(List<PartialScore> partialScores) {
+        sortAndSetReasonCodes(reasonCodeAlgorithm, partialScores);
+    }
+
+    public void sortAndSetReasonCodes(int reasonCodeAlgorithm, List<PartialScore> partialScores) {
+        setReasonCodeAlgorithm(reasonCodeAlgorithm);
         TreeMap<Double, String> distanceMap = new TreeMap<Double, String>();
         for (PartialScore partialScore : partialScores ){
-            if (baselineScoreMap.get(partialScore.getCharacteristic()) != null ) {
-                double baseline = baselineScoreMap.get(partialScore.getCharacteristic());
-                double distance = 0;
-                if (getReasonCodeAlgorithm() == REASON_CODE_ALGORITHM_POINTSABOVE) {
-                    distance = (baseline - partialScore.getScore())+partialScore.getPosition();
+            double baseline = partialScore.getBaselineScore();
+            double distance = 0;
+            if (getReasonCodeAlgorithm() == REASON_CODE_ALGORITHM_POINTSABOVE) {
+                distance = (baseline - partialScore.getScore())+partialScore.getPosition();
+                if( distance >= baseline) {
                     distanceMap.put(distance, partialScore.getReasoncode());
-                } else if (getReasonCodeAlgorithm() == REASON_CODE_ALGORITHM_POINTSBELOW){
-                    distance = (partialScore.getScore()-baseline)+partialScore.getPosition();
+                }
+            } else if (getReasonCodeAlgorithm() == REASON_CODE_ALGORITHM_POINTSBELOW){
+                distance = (partialScore.getScore()-baseline)+partialScore.getPosition();
+                if( distance <= baseline) {
                     distanceMap.put(distance, partialScore.getReasoncode());
                 }
             }
         }
 
+        List<String> reasonCodes = new ArrayList<String>();
         for ( Double distance : distanceMap.descendingKeySet()) {
-            System.out.println(distance+"  "+distanceMap.get(distance));
+            reasonCodes.add(distanceMap.get(distance));
         }
+        while (reasonCodes.size() < partialScores.size()){
+            reasonCodes.add(reasonCodes.get(reasonCodes.size()-1));
+        }
+        setReasonCodes(reasonCodes);
     }
+
+
     public DroolsScorecard() {
     }
 }

@@ -99,11 +99,35 @@ public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
         }
         if ( !( reasonCodesField == null || reasonCodesField.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) && !( fieldName == null || fieldName.isEmpty() ) ) {
             Consequence consequence = new Consequence();
-            StringBuilder stringBuilder = new StringBuilder( "$" );
-            stringBuilder.append( fieldName ).append( "Var" ).append( ".set" ).append( Character.toUpperCase( reasonCodesField.charAt( 0 ) ) ).append( reasonCodesField.substring( 1 ) );
-            stringBuilder.append( "($reasons);" );
-            consequence.setSnippet( stringBuilder.toString() );
-            rule.addConsequence( consequence );
+            consequence.setSnippet("DroolsScorecard $sc = new DroolsScorecard();");
+            rule.addConsequence(consequence);
+
+            consequence = new Consequence();
+            if ("pointsAbove".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+                consequence.setSnippet("$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE);");
+            } else if ("pointsBelow".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+                consequence.setSnippet("$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW);");
+            }
+            rule.addConsequence(consequence);
+
+            consequence = new Consequence();
+            if (scorecard.getReasonCodeAlgorithm() != null) {
+                if ("pointsAbove".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+                    consequence.setSnippet("$sc.sortAndSetReasonCodes(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE, $partialScoresList);");
+                } else if ("pointsBelow".equalsIgnoreCase(scorecard.getReasonCodeAlgorithm())) {
+                    consequence.setSnippet("$sc.sortAndSetReasonCodes(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW, $partialScoresList);");
+                }
+                rule.addConsequence(consequence);
+            }
+//            consequence.setSnippet("$sc.sortAndSetReasonCodes($partialScoresList);");
+//            rule.addConsequence(consequence);
+
+            consequence = new Consequence();
+            StringBuilder stringBuilder = new StringBuilder("$");
+            stringBuilder.append(fieldName).append("Var").append(".set").append(Character.toUpperCase(reasonCodesField.charAt(0))).append(reasonCodesField.substring(1));
+            stringBuilder.append("($sc.getReasonCodes());");
+            consequence.setSnippet(stringBuilder.toString());
+            rule.addConsequence(consequence);
         }
 
     }
@@ -134,10 +158,19 @@ public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
         }
         if ( !( reasonCodesField == null || reasonCodesField.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) && !( fieldName == null || fieldName.isEmpty() ) ) {
             Condition condition = new Condition();
-            StringBuilder stringBuilder = new StringBuilder( "$" );
-            stringBuilder.append( fieldName ).append( "Var : " ).append( externalClassName ).append( "()" );
-            condition.setSnippet( stringBuilder.toString() );
-            rule.addCondition( condition );
+
+//            String objectClass = scorecard.getModelName().replaceAll(" ", "");
+//            StringBuilder stringBuilder = new StringBuilder("$sc:");
+//
+//            stringBuilder.append(objectClass).append("()");
+//            condition.setSnippet(stringBuilder.toString());
+//            rule.addCondition(condition);
+//
+//            condition = new Condition();
+            StringBuilder stringBuilder = new StringBuilder("$");
+            stringBuilder.append(fieldName).append("Var : ").append(externalClassName).append("()");
+            condition.setSnippet(stringBuilder.toString());
+            rule.addCondition(condition);
         }
 
     }
