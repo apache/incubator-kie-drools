@@ -178,4 +178,27 @@ public class MiscTest2 extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testTypeCheckInOr() {
+        // BZ-1029911
+        String str = "import org.drools.*;\n" +
+                     "import java.util.*;\n" +
+                     "\n" +
+                     "rule \"rule test\"\n" +
+                     "    dialect \"java\"\n" +
+                     "    \n" +
+                     "    when\n" +
+                     "        scenario: ScenarioType( this == ScenarioType.Set.ADD || this == ScenarioType.Set.EDIT  );\n" +
+                     "        \n" +
+                     "    then    \n" +
+                     "        System.out.println(\"Test\");\n" +
+                     "\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.fireAllRules();
+    }
 }
