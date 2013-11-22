@@ -32,7 +32,10 @@ public class PMMLExtensionNames {
     public static final String CHARACTERTISTIC_FACTTYPE = "factType";
     public static final String CHARACTERTISTIC_FIELD = "field";
     public static final String CHARACTERTISTIC_DATATYPE = "dataType";
+    public static final String CHARACTERTISTIC_WEIGHT = "weight";
+    public static final String CHARACTERTISTIC_DESCRIPTION = "description";
 
+    public static final String PREDICATE_SOLVER = "predicateResolver";
     public static final String DEFAULT_PREDICTED_FIELD = "scorecard__calculatedScore";
 
 }

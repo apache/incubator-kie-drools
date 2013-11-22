@@ -17,6 +17,7 @@
 package org.drools.scorecards.drl;
 
 import org.dmg.pmml.pmml_4_1.descr.*;
+import org.drools.scorecards.ScoringStrategy;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.drools.template.model.Condition;
@@ -89,10 +90,27 @@ public class DeclaredTypesDRLEmitter extends AbstractDRLEmitter{
     protected void addAdditionalSummationConsequence(Rule calcTotalRule, Scorecard scorecard) {
 
         Consequence consequence = new Consequence();
+        ScoringStrategy scoringStrategy = getScoringStrategy(scorecard);
+        switch (scoringStrategy) {
+            case AGGREGATE_SCORE:
+            case MINIMUM_SCORE:
+            case MAXIMUM_SCORE:
+            case AVERAGE_SCORE:
+            case WEIGHTED_AVERAGE_SCORE:
+            case WEIGHTED_MAXIMUM_SCORE:
+            case WEIGHTED_MINIMUM_SCORE:
+            case WEIGHTED_AGGREGATE_SCORE: {
+                consequence.setSnippet("double calculatedScore = $calculatedScore;");
+                break;
+            }
+        }
+
+        calcTotalRule.addConsequence(consequence);
+        consequence = new Consequence();
         if (scorecard.getInitialScore() > 0) {
-            consequence.setSnippet("$sc.setCalculatedScore(($calculatedScore+$initialScore));");
+            consequence.setSnippet("$sc.setCalculatedScore(calculatedScore+$initialScore);");
         } else {
-            consequence.setSnippet("$sc.setCalculatedScore($calculatedScore);");
+            consequence.setSnippet("$sc.setCalculatedScore(calculatedScore);");
         }
         calcTotalRule.addConsequence(consequence);
 

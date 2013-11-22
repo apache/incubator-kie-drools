@@ -17,6 +17,7 @@ package org.drools.scorecards.drl;
 
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.core.util.StringUtils;
+import org.drools.scorecards.ScoringStrategy;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 import org.drools.scorecards.pmml.PMMLExtensionNames;
 import org.drools.scorecards.pmml.PMMLOperators;
@@ -160,7 +161,7 @@ public abstract class AbstractDRLEmitter {
                             rule.setDescription( desc );
                         }
                         attributePosition++;
-                        populateLHS( rule, pmmlDocument, scorecard, c, scoreAttribute );
+                        populateLHS(rule, pmmlDocument, scorecard, c, scoreAttribute);
                         populateRHS( rule, pmmlDocument, scorecard, c, scoreAttribute, attributePosition );
                         ruleList.add( rule );
                     }
@@ -335,13 +336,20 @@ public abstract class AbstractDRLEmitter {
         String setter = "insertLogical(new PartialScore(\"";
         String field = ScorecardPMMLUtils.extractFieldNameFromCharacteristic( c );
 
-        stringBuilder.append( setter ).append( objectClass ).append( "\",\"" ).append( field ).append( "\"," ).append( scoreAttribute.getPartialScore() );
+        //stringBuilder.append( setter ).append( objectClass ).append( "\",\"" ).append( field ).append( "\"," ).append( scoreAttribute.getPartialScore() );
+        ScoringStrategy scoringStrategy = getScoringStrategy(scorecard);
+        if ( scoringStrategy.toString().startsWith("WEIGHTED")) {
+            String weight = ScorecardPMMLUtils.getExtensionValue(scoreAttribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+            stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",(").append(scoreAttribute.getPartialScore()).append("*").append(weight).append(")");
+        } else {
+            stringBuilder.append(setter).append(objectClass).append("\",\"").append(field).append("\",").append(scoreAttribute.getPartialScore());
+        }
         if ( scorecard.isUseReasonCodes() ) {
             String reasonCode = scoreAttribute.getReasonCode();
             if ( reasonCode == null || StringUtils.isEmpty( reasonCode ) ) {
                 reasonCode = c.getReasonCode();
             }
-            stringBuilder.append( ",\"" ).append( reasonCode ).append( "\", " ).append( position );
+            stringBuilder.append( ",\"" ).append( reasonCode ).append("\", ").append( position );
         }
         stringBuilder.append( "));" );
         consequence.setSnippet( stringBuilder.toString() );
@@ -354,7 +362,30 @@ public abstract class AbstractDRLEmitter {
         Rule calcTotalRule = new Rule( objectClass + "_calculateTotalScore", 1, 1 );
         StringBuilder stringBuilder = new StringBuilder();
         Condition condition = new Condition();
-        stringBuilder.append( "$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"" ).append( objectClass ).append( "\", $partialScore:score), sum($partialScore))" );
+        //stringBuilder.append( "$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"" ).append( objectClass ).append( "\", $partialScore:score), sum($partialScore))" );
+        ScoringStrategy strategy = getScoringStrategy(scorecard);
+        switch (strategy) {
+            case WEIGHTED_AGGREGATE_SCORE:
+            case AGGREGATE_SCORE: {
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), sum($partialScore))");
+                break;
+            }
+            case WEIGHTED_AVERAGE_SCORE:
+            case AVERAGE_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), average($partialScore))");
+                break;
+            }
+            case WEIGHTED_MAXIMUM_SCORE:
+            case MAXIMUM_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), max($partialScore))");
+                break;
+            }
+            case WEIGHTED_MINIMUM_SCORE:
+            case MINIMUM_SCORE:{
+                stringBuilder.append("$calculatedScore : Double() from accumulate (PartialScore(scorecardName ==\"").append(objectClass).append("\", $partialScore:score), min($partialScore))");
+                break;
+            }
+        }
         condition.setSnippet( stringBuilder.toString() );
         calcTotalRule.addCondition( condition );
         if ( scorecard.getInitialScore() > 0 ) {
@@ -385,32 +416,22 @@ public abstract class AbstractDRLEmitter {
         addAdditionalSummationConsequence( calcTotalRule, scorecard );
     }
 
-    protected abstract void addDeclaredTypeContents( PMML pmmlDocument,
-                                                     StringBuilder stringBuilder,
-                                                     Scorecard scorecard );
+    protected ScoringStrategy getScoringStrategy(Scorecard scorecard) {
+        ScoringStrategy strategy = ScoringStrategy.AGGREGATE_SCORE;
+        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+        if ( !StringUtils.isEmpty(scoringStrategyName)) {
+            strategy = ScoringStrategy.valueOf(scoringStrategyName);
+        }
+        return strategy;
+    }
 
-    protected abstract void internalEmitDRL( PMML pmml,
-                                             List<Rule> ruleList,
-                                             Package aPackage );
-
-    protected abstract void addLHSConditions( Rule rule,
-                                              PMML pmmlDocument,
-                                              Scorecard scorecard,
-                                              Characteristic c,
-                                              Attribute scoreAttribute );
-
-    protected abstract void addAdditionalReasonCodeConsequence( Rule rule,
-                                                                Scorecard scorecard );
-
-    protected abstract void addAdditionalReasonCodeCondition( Rule rule,
-                                                              Scorecard scorecard );
-
-    protected abstract void addAdditionalSummationConsequence( Rule rule,
-                                                               Scorecard scorecard );
-
-    protected abstract void addAdditionalSummationCondition( Rule rule,
-                                                             Scorecard scorecard );
-
-    protected abstract Condition createInitialRuleCondition( Scorecard scorecard,
-                                                             String objectClass );
+    protected abstract void addDeclaredTypeContents( PMML pmmlDocument, StringBuilder stringBuilder, Scorecard scorecard );
+    protected abstract void internalEmitDRL( PMML pmml, List<Rule> ruleList, Package aPackage );
+    protected abstract void addLHSConditions( Rule rule, PMML pmmlDocument, Scorecard scorecard,
+                                              Characteristic c, Attribute scoreAttribute );
+    protected abstract void addAdditionalReasonCodeConsequence( Rule rule, Scorecard scorecard );
+    protected abstract void addAdditionalReasonCodeCondition( Rule rule, Scorecard scorecard );
+    protected abstract void addAdditionalSummationConsequence( Rule rule, Scorecard scorecard );
+    protected abstract void addAdditionalSummationCondition( Rule rule, Scorecard scorecard );
+    protected abstract Condition createInitialRuleCondition( Scorecard scorecard, String objectClass );
 }
