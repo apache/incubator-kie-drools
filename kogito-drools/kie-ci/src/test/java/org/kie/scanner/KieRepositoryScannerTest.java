@@ -34,7 +34,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
-        kPom = createKPom(releaseId);
+        kPom = createKPom(fileManager, releaseId);
     }
 
     @After
@@ -137,7 +137,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         resetFileManager();
 
         InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, 2, 7);
-        repository.deployArtifact(releaseId1, kJar1, createKPom(releaseId1));
+        repository.deployArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
 
         KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
         KieSession ksession = kieContainer.newKieSession("KSession1");
@@ -146,18 +146,12 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
         InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, 3, 5);
-        repository.deployArtifact(releaseId2, kJar2, createKPom(releaseId1));
+        repository.deployArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId1));
 
         scanner.scanNow();
 
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, 15);
-    }
-
-    private File createKPom(ReleaseId releaseId) throws IOException {
-        File pomFile = fileManager.newFile("pom.xml");
-        fileManager.write(pomFile, getPom(releaseId));
-        return pomFile;
     }
 
     private File createMasterKPom() throws IOException {

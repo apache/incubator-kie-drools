@@ -112,17 +112,7 @@ public class KieContainerImpl
                 PackageBuilder pkgbuilder = kbuilder instanceof PackageBuilder ? ((PackageBuilder) kbuilder) : ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
                 int fileCount = 0;
-                
-                // remove resources first
-                for( ResourceChangeSet rcs : cs.getChanges().values() ) {
-                    if( rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
-                        String resourceName = rcs.getResourceName();
-                        if( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
-                            pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
-                        }
-                    }
-                }
-                
+
                 // then update and add new resources
                 for( ResourceChangeSet rcs : cs.getChanges().values() ) {
                     if( ! rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
@@ -132,8 +122,8 @@ public class KieContainerImpl
                             List<ResourceChange> changes = rcs.getChanges();
                             if( ! changes.isEmpty() ) {
                                 // we need to deal with individual parts of the resource
-                                fileCount += AbstractKieModule.updateResource( ckbuilder, 
-                                                                               newKM, 
+                                fileCount += AbstractKieModule.updateResource( ckbuilder,
+                                                                               newKM,
                                                                                resourceName,
                                                                                rcs ) ? 1 : 0;
                             } else {
@@ -141,9 +131,9 @@ public class KieContainerImpl
                                 if( rcs.getChangeType().equals( ChangeType.UPDATED ) ) {
                                     pkgbuilder.removeObjectsGeneratedFromResource( resource );
                                 }
-                                fileCount += AbstractKieModule.addFile( ckbuilder, 
-                                        newKM, 
-                                        resourceName ) ? 1 : 0;
+                                fileCount += AbstractKieModule.addFile( ckbuilder,
+                                                                        newKM,
+                                                                        resourceName ) ? 1 : 0;
                             }
                         }
                     }
@@ -158,8 +148,23 @@ public class KieContainerImpl
                     }
                 }
 
-                if( fileCount > 0 ) {
-                    ckbuilder.build();
+                pkgbuilder.startPackageUpdate();
+                try {
+                    // remove resources first
+                    for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
+                        if ( rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
+                            String resourceName = rcs.getResourceName();
+                            if ( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
+                                pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
+                            }
+                        }
+                    }
+
+                    if( fileCount > 0 ) {
+                        ckbuilder.build();
+                    }
+                } finally {
+                    pkgbuilder.completePackageUpdate();
                 }
             }
         }

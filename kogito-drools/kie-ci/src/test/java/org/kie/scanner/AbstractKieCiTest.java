@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.drools.core.util.FileManager;
 import org.kie.api.KieServices;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.KieBuilder;
@@ -14,6 +15,7 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
+import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertTrue;
@@ -203,4 +205,9 @@ public class AbstractKieCiTest {
         return km;
     }
 
+    protected File createKPom(FileManager fileManager, ReleaseId releaseId) throws IOException {
+        File pomFile = fileManager.newFile("pom.xml");
+        fileManager.write(pomFile, getPom(releaseId));
+        return pomFile;
+    }
 }
