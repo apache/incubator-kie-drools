@@ -318,6 +318,97 @@
   </section>
   
   <section>
+    <title>jBPM Maven Project Wizard</title>
+  
+    <para>The aim of the new Maven project wizard is to set up an executable
+    sample project to start using processes immediately (but not as normal Java project with
+    all jBPM dependencies added using a jBPM library but by using Maven (and thus a pom.xml)
+    to define your project's properties and dependencies. This wizard will set up a Maven project
+    using a pom.xml, and include a sample process and Java class to execute it.  To create a new
+    jBPM Maven project, in the "File" menu select "New" and then
+    "Project ..." and under the jBPM category, select "jBPM Project (Maven)".  Give your project
+    a name and click finish.  The result should be as shown below.</para>
+    
+    <figure>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/EclipseJBPM/WizardMavenProject.png"
+                     format="PNG"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    
+    <para>The pom.xml that is generated for your project contains the following:</para>
+    <programlisting>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"&gt;
+
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+  &lt;groupId&gt;com.sample&lt;/groupId&gt;
+  &lt;artifactId&gt;jbpm-example&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+
+  &lt;name&gt;jBPM :: Sample Maven Project&lt;/name&gt;
+  &lt;description&gt;A sample jBPM Maven project&lt;/description&gt;
+
+  &lt;properties&gt;
+    &lt;jbpm.version&gt;6.0.0.Final&lt;/jbpm.version&gt;
+  &lt;/properties&gt;
+
+  &lt;repositories&gt;
+    &lt;repository&gt;
+      &lt;id&gt;jboss-public-repository-group&lt;/id&gt;
+      &lt;name&gt;JBoss Public Repository Group&lt;/name&gt;
+      &lt;url&gt;http://repository.jboss.org/nexus/content/groups/public/&lt;/url&gt;
+      &lt;releases&gt;
+        &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;
+      &lt;/releases&gt;
+      &lt;snapshots&gt;
+        &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;updatePolicy&gt;daily&lt;/updatePolicy&gt;
+      &lt;/snapshots&gt;
+    &lt;/repository&gt;
+  &lt;/repositories&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;org.jbpm&lt;/groupId&gt;
+      &lt;artifactId&gt;jbpm-test&lt;/artifactId&gt;
+      &lt;version&gt;${jbpm.version}&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+&lt;/project&gt;</programlisting>
+
+  <para>In the properties section, you can specify which version of jBPM you would like to use
+  (by default it uses 6.0.0.Final).  It adds the JBoss Nexus Maven repository (where all the jBPM
+  jars and their dependencies are located) to your project and configures the dependencies.</para>
+  
+  <note><para>By default, only the jbpm-test jar is specified as a dependency, as this has transitive
+  dependencies to almost all of the core dependencies you will need.  You are free to update the
+  dependencies section however to include only the dependencies you need.</para></note>
+  
+  <para>The project also contains a sample process, under src/main/resources, in the com.sample
+  package, and a kmodule.xml configuration file under the META-INF folder.  The kmodule.xml defines
+  which resources (processes, rules, etc.) are to be loaded as part of your project.  In this case,
+  it is defining a kbase called "kbase" that will load all the resources in the com.sample folder:</para>
+  
+  <programlisting>&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+  &lt;kbase name="kbase" packages="com.sample"/&gt;
+&lt;/kmodule&gt;</programlisting>
+
+  <para>Finally, it also contains a Java class that can be used to execute the sample process.
+  It will first create a kbase called "kbase" (by inspecting the kmodule.xml file and thus
+  loading the <code>sample.bpmn</code> process) and then use a <code>RuntimeManager</code> to
+  get access to a <code>KieSession</code> and <code>TaskService</code>.  In this case, it is used
+  to start a process and then complete the tasks created by this process one by one.</para>
+  
+  </section>
+
+  <section>
     <title>Drools Eclipse plugin</title>
     
     <para>The Drools Eclipse Plugin, which is bundled as part of the same Eclipse Update Site

@@ -8,5 +8,6 @@
 
   <xi:include href="jBPMPlugin.xml" />
   <xi:include href="Debugging.xml" />
+  <xi:include href="Workbench.xml" />
   
 </chapter>

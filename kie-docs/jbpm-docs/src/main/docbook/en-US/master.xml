@@ -34,14 +34,6 @@
       </imageobject>
     </mediaobject>
   </preface>
-
-  <part>
-    <partintro>
-      <para>Welcome and Release Notes</para>
-    </partintro>
-    <xi:include href="../../../../../shared/Welcome.xml"/>
-    <xi:include href="ReleaseNotes.xml"/>  
-  </part>
   
   <part>
     <title>Getting Started</title>       
@@ -109,5 +101,7 @@
   <xi:include href="AsyncExecution.xml"/>
   
   </part>  
+
+  <xi:include href="ReleaseNotes.xml"/>  
 
 </book>
