@@ -160,9 +160,9 @@ public abstract class AbstractDRLEmitter {
                         if ( desc != null ) {
                             rule.setDescription( desc );
                         }
-                        attributePosition++;
                         populateLHS(rule, pmmlDocument, scorecard, c, scoreAttribute);
                         populateRHS( rule, pmmlDocument, scorecard, c, scoreAttribute, attributePosition );
+                        attributePosition++;
                         ruleList.add( rule );
                     }
                 }
@@ -181,7 +181,9 @@ public abstract class AbstractDRLEmitter {
             rule.setDescription( "set the initial score" );
 
             Condition condition = createInitialRuleCondition( scorecard, objectClass );
-            rule.addCondition( condition );
+            if ( condition != null) {
+                rule.addCondition(condition);
+            }
             if ( scorecard.getInitialScore() > 0 ) {
                 Consequence consequence = new Consequence();
                 //consequence.setSnippet("$sc.setInitialScore(" + scorecard.getInitialScore() + ");");
@@ -206,16 +208,16 @@ public abstract class AbstractDRLEmitter {
                         }
                     }
                 }
-                if ( scorecard.getReasonCodeAlgorithm() != null ) {
-                    Consequence consequence = new Consequence();
-                    if ( "pointsAbove".equalsIgnoreCase( scorecard.getReasonCodeAlgorithm() ) ) {
-                        //TODO: ReasonCode Algorithm
-                        consequence.setSnippet( "//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE);" );
-                    } else if ( "pointsBelow".equalsIgnoreCase( scorecard.getReasonCodeAlgorithm() ) ) {
-                        consequence.setSnippet( "//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW);" );
-                    }
-                    rule.addConsequence( consequence );
-                }
+//                if ( scorecard.getReasonCodeAlgorithm() != null ) {
+//                    Consequence consequence = new Consequence();
+//                    if ( "pointsAbove".equalsIgnoreCase( scorecard.getReasonCodeAlgorithm() ) ) {
+//                        //TODO: ReasonCode Algorithm
+//                        consequence.setSnippet( "//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE);" );
+//                    } else if ( "pointsBelow".equalsIgnoreCase( scorecard.getReasonCodeAlgorithm() ) ) {
+//                        consequence.setSnippet( "//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW);" );
+//                    }
+//                    rule.addConsequence( consequence );
+//                }
             }
             ruleList.add( rule );
         }
@@ -349,7 +351,8 @@ public abstract class AbstractDRLEmitter {
             if ( reasonCode == null || StringUtils.isEmpty( reasonCode ) ) {
                 reasonCode = c.getReasonCode();
             }
-            stringBuilder.append( ",\"" ).append( reasonCode ).append("\", ").append( position );
+            stringBuilder.append(",\"").append(reasonCode).append("\", ").append(c.getBaselineScore());
+            stringBuilder.append(",").append(position);
         }
         stringBuilder.append( "));" );
         consequence.setSnippet( stringBuilder.toString() );
@@ -403,7 +406,8 @@ public abstract class AbstractDRLEmitter {
             rule.setDescription( "collect and sort the reason codes as per the specified algorithm" );
             condition = new Condition();
             stringBuilder = new StringBuilder();
-            stringBuilder.append( "$reasons : List() from accumulate ( PartialScore(scorecardName == \"" ).append( objectClass ).append( "\", $reasonCode : reasoncode ); collectList($reasonCode) )" );
+            // stringBuilder.append("$reasons : List() from accumulate ( PartialScore(scorecardName == \"").append(objectClass).append("\", $reasonCode : reasoncode ); collectList($reasonCode) )");
+            stringBuilder.append("$partialScoresList : List() from collect ( PartialScore(scorecardName == \"").append(objectClass).append("\"))");
             condition.setSnippet( stringBuilder.toString() );
             rule.addCondition( condition );
             ruleList.add( rule );
