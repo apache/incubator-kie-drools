@@ -4114,6 +4114,18 @@ public class PackageBuilder
         return modified;
     }
 
+    public void startPackageUpdate() {
+        if (ruleBase != null) {
+            ruleBase.lock();
+        }
+    }
+
+    public void completePackageUpdate() {
+        if (ruleBase != null) {
+            ruleBase.unlock();
+        }
+    }
+
     public static interface AssetFilter {
         public static enum Action {
             DO_NOTHING, ADD, REMOVE, UPDATE;
