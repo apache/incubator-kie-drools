@@ -1,5 +1,8 @@
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.util.FileManager;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -8,7 +11,10 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotSame;
@@ -93,7 +99,7 @@ public class KieContainerTest {
         KieServices ks = KieServices.Factory.get();
         // Create an in-memory jar for version 1.0.0
         ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-delete", "1.0.0");
-        KieModule km = createAndDeployJar( ks, releaseId1, type, drl1, drl2 );
+        createAndDeployJar( ks, releaseId1, type, drl1, drl2 );
 
         KieContainer kieContainer = ks.newKieContainer(releaseId1);
         KieContainer kieContainer2 = ks.newKieContainer(releaseId1);
@@ -105,7 +111,7 @@ public class KieContainerTest {
         assertEquals( 2, ksession.fireAllRules() );
 
         ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-delete", "1.0.1");
-        km = createAndDeployJar( ks, releaseId2, type, null, drl2 );
+        createAndDeployJar( ks, releaseId2, type, null, drl2 );
 
         kieContainer.updateToVersion(releaseId2);
 
@@ -133,5 +139,59 @@ public class KieContainerTest {
         Object message = messageType.newInstance();
         messageType.set(message, "message", "Hello World");
         ksession.insert(message);
+    }
+
+
+    @Test(timeout = 10000)
+    public void testIncrementalCompilationSynchronization() throws Exception {
+        final KieServices kieServices = KieServices.Factory.get();
+
+        ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0.0");
+        createAndDeployJar( kieServices, releaseId, createDRL("rule0") );
+
+        final KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        KieSession kieSession = kieContainer.newKieSession();
+        List<String> list = new ArrayList<String>();
+        kieSession.setGlobal("list", list);
+        kieSession.fireAllRules();
+        kieSession.dispose();
+        assertEquals(1, list.size());
+
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 1; i < 10; i++) {
+                    ReleaseId releaseId = kieServices.newReleaseId("org.kie.test", "sync-scanner-test", "1.0." + i);
+                    createAndDeployJar( kieServices, releaseId, createDRL("rule" + i) );
+                    kieContainer.updateToVersion(releaseId);
+                }
+            }
+        });
+
+        t.setDaemon(true);
+        t.start();
+
+        while (true) {
+            kieSession = kieContainer.newKieSession();
+            list = new ArrayList<String>();
+            kieSession.setGlobal("list", list);
+            kieSession.fireAllRules();
+            kieSession.dispose();
+            assertEquals(1, list.size());
+            if (list.get(0).equals("rule9")) {
+                break;
+            }
+        }
+    }
+
+    private String createDRL(String ruleName) {
+        return "package org.kie.test\n" +
+               "global java.util.List list\n" +
+               "rule " + ruleName + "\n" +
+               "when\n" +
+               "then\n" +
+               "list.add( drools.getRule().getName() );\n" +
+               "end\n";
     }
 }
