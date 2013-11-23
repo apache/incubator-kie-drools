@@ -1,0 +1,49 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="double" name="fld1" optype="continuous"/>
+    <DataField dataType="double" name="fld2" optype="continuous"/>
+    <DataField dataType="string" name="fld3" optype="categorical">
+      <Value value="x"/>
+      <Value value="y"/>
+    </DataField>
+    <DataField dataType="string" name="fld4" optype="categorical">
+      <Value value="klassA"/>
+      <Value value="klassB"/>
+      <Value value="klassC"/>
+      <Value value="klassD"/>
+    </DataField>
+  </DataDictionary>
+  <RegressionModel algorithmName="linearRegression" functionName="classification" modelName="LinReg" normalizationMethod="softmax" targetFieldName="fld4">
+    <MiningSchema>
+      <MiningField name="fld1"/>
+      <MiningField name="fld2"/>
+      <MiningField name="fld3"/>
+      <MiningField name="fld4" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="RegOut" feature="predictedValue" targetField="fld4" />
+      <OutputField name="RegProb" feature="probability" targetField="fld4" />
+      <OutputField name="RegProbA" feature="probability" targetField="fld4" value="catA" />
+    </Output>
+    <RegressionTable intercept="0.1" targetCategory="catA">
+      <NumericPredictor coefficient="1" exponent="1" name="fld1"/>
+      <NumericPredictor coefficient="1" exponent="1" name="fld2"/>
+      <CategoricalPredictor coefficient="1" name="fld3" value="0"/>
+      <CategoricalPredictor coefficient="1" name="fld3" value="1"/>
+    </RegressionTable>
+    <RegressionTable intercept="0.2" targetCategory="catB">
+      <NumericPredictor coefficient="2" exponent="1" name="fld1"/>
+      <NumericPredictor coefficient="2" exponent="1" name="fld2"/>
+      <CategoricalPredictor coefficient="2" name="fld3" value="0"/>
+      <CategoricalPredictor coefficient="2" name="fld3" value="1"/>
+    </RegressionTable>
+    <RegressionTable intercept="0.3" targetCategory="catC">
+      <NumericPredictor coefficient="3" exponent="1" name="fld1"/>
+      <NumericPredictor coefficient="3" exponent="1" name="fld2"/>
+      <CategoricalPredictor coefficient="3" name="fld3" value="0"/>
+      <CategoricalPredictor coefficient="3" name="fld3" value="1"/>
+    </RegressionTable>
+    <RegressionTable intercept="5.0" targetCategory="catD"/>
+  </RegressionModel>
+</PMML>

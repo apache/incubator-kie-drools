@@ -1,0 +1,53 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+@comment{
+    Make sure that one and only one datafield of the same type exists
+
+   /**
+    * @param name        - common name of the class
+    * @param type        - type (int, string, double, ...)
+    * @param continuous  - flag for cont. datatypes
+    * @param ordinal     - flag for ordinal datatypes
+    * @param cyclic      - flag for cyclic datatypes
+    * @param categorical - flag for categorical datatypes
+    * @param fullName    - full, display name of the class (presentation purpose only, no effect)
+    */
+}
+@declare{'updateIOFieldRule'}
+
+rule "update_@{name}_@{context}"
+salience 2000
+
+when
+    $new : @{name}( $ctx : context == @if{context != null} @{format("string",context)} @else{} null @end{} )
+    $old : @{name}( context == $ctx, this before $new )
+then
+//    System.out.println(">>>>>>>>>>>>>> NEED TO KILL " + $old);
+    retract( $old );
+end
+
+@end{}
+
+
+
+@includeNamed{'updateIOFieldRule'}
+
+
+
+

@@ -1,0 +1,107 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'treeInit'}
+
+rule " Create tree @{context}"
+when
+    ModelMarker( "@{context}" ; enabled == true )
+then
+    TreeNode node;
+    java.util.Map count;
+    java.util.Map confs;
+
+    @foreach{ node : nodes }
+        count = new java.util.HashMap();
+            @foreach{ val : counts[ node.id ].keySet } count.put( @{format( tgtType, val ) }, @{ counts[ node.id ][ val ] } ); @end{}
+        confs = new java.util.HashMap();
+            @foreach{ val : confs[ node.id ].keySet } confs.put( @{format( tgtType, val ) }, @{ confs[ node.id ][ val ] } ); @end{}
+
+        node = new TreeNode( "@{context}",
+                             "@{node.id}",
+                             "@{parents[ node.id ]}",
+                             java.util.Arrays.asList( @foreach{ child : node.nodes } "@{ child.id }" @end{','} ),
+                             @{ format( tgtType, node.score) },
+                             @{ totals[ node.id ] },
+                             count,
+                             confs,
+                             "@{node.defaultChild}"
+                             );
+        insertLogical( node );
+    @end{}
+end
+
+
+rule "Ensure Tree Statistics are Filled"
+dialect "mvel"
+when
+    $node : TreeNode( $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
+
+    accumulate( TreeNode( id memberOf $children, counts.size() > 0, $sub : counts, $x : recordCount )
+                and $k : String() from $sub.keySet(),
+                          $keys : collectSet( $k );
+                          $keys.size() > 0 )
+    accumulate( TreeNode( id memberOf $children, $sub : counts, $x : recordCount > 0 ),
+                          $subs : collectList( $sub ),
+                          $num  : count( $sub ),
+                          $tot  : sum( $x );
+                          $num == $numChi
+                          )
+    $map : java.util.Map() from accumulate ( $kj : String() from $keys
+                 and accumulate( $m : Map() from $subs, $x : sum( $m[ $kj ] != null ? $m[ $kj ] : 0 ) ),
+        init( java.util.Map mapp = new java.util.HashMap() ),
+        action( mapp.put( $kj, $x ); ),
+        result( mapp )
+    )
+    $mpc : java.util.Map() from accumulate ( $kj : String() from $keys,
+        init( java.util.Map mapc = new java.util.HashMap() ),
+        action( mapc.put( $kj, $map[ $kj ] / $tot ); ),
+        result( mapc )
+    )
+then
+    modify ( $node ) {
+        getCounts().putAll( $map ),
+        getConfidence().putAll( $mpc ),
+        setRecordCount( $tot.intValue() );
+    }
+end
+
+
+
+rule "Ensure Tree Scores are Filled"
+dialect "mvel"
+when
+    $node : TreeNode( $id : id, outcome == null, confidence.size() > 0, $conf : confidence )
+    accumulate( $k : String() from $conf.keySet(),
+                     $maxConf : max( $conf[ $k ] ) )
+    java.util.Map.Entry( $best : key, value == $maxConf ) from $conf.entrySet()
+
+then
+    modify ( $node ) {
+        setOutcome( (@{mapDatatype( tgtType )}) $best );
+    }
+end
+
+@end{}
+@includeNamed{'treeInit'}

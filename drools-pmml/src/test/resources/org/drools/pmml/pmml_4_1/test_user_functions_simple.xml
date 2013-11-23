@@ -1,0 +1,28 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary>
+    <DataField dataType="double" name="Age" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+  </DataDictionary>
+  <TransformationDictionary>
+    <!--"*"-->
+    <DefineFunction dataType="double" name="myProd" optype="continuous">
+      <ParameterField dataType="double" name="A"/>
+      <ParameterField dataType="double" name="B"/>
+      <Apply function="*">
+        <FieldRef field="A"/>
+        <FieldRef field="B"/>
+      </Apply>
+    </DefineFunction>
+
+
+    <DerivedField dataType="double" name="UserAge" optype="continuous">
+        <Apply function="myProd">
+          <Constant dataType="double">10.0</Constant>
+          <FieldRef field="Age"/>
+        </Apply>
+    </DerivedField>
+
+  </TransformationDictionary>
+</PMML>

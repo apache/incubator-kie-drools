@@ -1,0 +1,118 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+
+@declare{'clusteringEvalDistance'}
+
+
+rule "Eval Clusters @{context}"
+when
+    $set : ClusterSet( $ctx : context == "@{context}", $clusters : clusters,
+                       $wgts : fieldWgts, misses : missingWgts, $scopes : fieldScopes )
+    $klu : Cluster( context == "@{context}",
+                    $lab : label, $klIndex : index, $center : center )
+    @foreach{ j : numFields }
+        @{ compactUpperCase( inputFields[j].field ) }( context == "@{context}", x@{j} : value, miss@{j} : missing, valid == true || missing == true )
+        @if{ inputFields[j].comparisons != null }
+            compare@{context}@{compactUpperCase( inputFields[j].field )}( x@{j}, center@{j}, tab@{j} ; )
+        @end{}
+    @end{}
+then
+
+    double[] delta = new double[ @{numFields} ];
+
+    @foreach{ j : numFields }
+        @if{ inputFields[j].comparisons == null }
+            delta[ @{j} ] = @{ mapComparisonFunction( inputFields[j].compareFunction != null ? inputFields[j].compareFunction : defaultCompareFunction,
+                                                      "x"+j,
+                                                      "$center["+j+"]",
+                                                      "$scopes["+j+"]",
+                                                      "tab"+j ) };
+        @else{}
+            delta[ @{j} ] = tab@{j}[ (int) Math.floor(x@{j}) ][ (int) Math.floor( $center[ @{j} ] ) ];
+        @end{}
+    @end{}
+
+
+    double adjNum = 0;
+    double adjDen = 0;
+
+    @foreach{ j : numFields }
+        adjNum += misses[ @{j} ];
+        adjDen += miss@{j} ? 0.0 : misses[@{j}] * x@{j};
+    @end{}
+
+    double adjust = adjNum / adjDen;
+
+    Double mu = Double.NaN;
+    @if{ msr.euclidean != null }
+        mu = 0.0;
+        @foreach{ j : numFields }
+            mu += miss@{j} ? 0.0 : delta[@{j}] * delta[@{j}] * $wgts@[@{j}];
+        @end{}
+        mu = Math.sqrt( mu * adjust );
+    @elseif{ msr.squaredEuclidean != null }
+        mu = 0.0;
+        @foreach{ j : numFields }
+            mu += miss@{j} ? 0.0 : delta[@{j}] * delta[@{j}] * $wgts[@{j}];
+        @end{}
+        mu *= adjust;
+    @elseif{ msr.chebychev != null }
+        mu = 0.0;
+        @foreach{ j : numFields }
+            mu = Math.max( mu, miss@{j} ? 0.0 : delta[@{j}] * $wgts[@{j}];
+        @end{}
+        mu *= adjust;
+    @elseif{ msr.cityBlock != null }
+        mu = 0.0;
+        @foreach{ j : numFields }
+            mu += miss@{j} ? 0.0 : delta[@{j}] * $wgts[@{j}];
+        @end{}
+        mu = Math.sqrt( mu * adjust );
+    @elseif{ msr.minkowski != null }
+        mu = 0.0;
+        @foreach{ j : numFields }
+            mu += miss@{j} ? 0.0 : Math.pow( delta[@{j}], @{msr.minkowski.pparameter} );
+        @end{}
+        mu = Math.pow( mu * adjust, 1.0 / @{msr.minkowski.pparameter} );
+    @end{}
+
+
+    Membership membership = new DistanceMembership(
+        "@{context}",
+        $lab,
+        $klIndex,
+        new double[] { @foreach{ j : numFields } x@{j} @end{','} },
+        mu
+    );
+    insertLogical( membership );
+
+end
+
+
+
+@end{}
+
+
+@includeNamed{'clusteringEvalDistance'}

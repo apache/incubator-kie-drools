@@ -1,0 +1,45 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+@comment{
+    This rule propagates a fields missing value into a derived field, missing itself
+    /**
+    * @param name        - derived field name
+    * @param origField   - name of the original field
+    */
+}
+
+
+@declare{'propagateMissingValuesRule'}
+rule "propagateMissing_@{name}"
+when
+  $src : @{origField}( missing == true, $ctx : context
+                       @if{ context != null } , context == @{context} @end{})
+then
+  @{name} x = new @{name}();
+    x.setValue(null);
+    x.setName(@{format("string",name)});
+    x.setMissing(true);
+    x.setValid(true);
+    x.setContext($ctx);
+    //x.setContinous();
+  insertLogical(x);
+end
+@end{}
+
+@includeNamed{'propagateMissingValuesRule'}

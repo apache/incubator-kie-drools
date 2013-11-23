@@ -1,0 +1,59 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+
+@comment{
+        Normalizes a neural layer using the max function
+}
+
+@declare{'neuralLayerSoftMaxNormalizationRule'}
+
+@code{ String ctx = format("string",model); }
+
+rule "LayerNormalization_@{model}_@{layerIndex}"
+salience 100
+when
+    accumulate (
+            $neur : Neuron( context == @{ctx},
+                    layerIndex == @{ layerIndex },
+                    normalized == false,
+                    $in : value != null
+                ) @watch( normalized, ! value ),
+            $list : collectList( $neur ),
+            $den  : sum( Math.exp( $in ) );
+            $list.size == @{ neurons.size }
+        )
+then
+    java.util.List list = new java.util.ArrayList( $list );
+    for ( int j = 0; j < list.size(); j++ ) {
+        Neuron s = (Neuron) list.get(j);
+        modify ( s ) {
+            setNormalized( true ),
+            setValue( Math.exp( s.getValue() ) / $den.doubleValue() );
+        }
+    }
+end
+
+@end{}
+
+
+@includeNamed{'neuralLayerSoftMaxNormalizationRule'}
+
+

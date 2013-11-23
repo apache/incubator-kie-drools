@@ -1,0 +1,282 @@
+package org.drools.pmml.pmml_4_1.compiler;
+
+import org.dmg.pmml.pmml_4_1.descr.*;
+import java.util.*;
+
+
+rule "TreeRoot"
+when
+    $tree : TreeModel()
+then
+    utils.applyTemplate( "treeDeclare.drlt", utils, registry, null, theory );
+end
+
+
+rule "visitTree_context"
+salience -9
+when
+    $tree : TreeModel( $name : modelName )
+then
+    utils.context = utils.compactUpperCase( $name );
+
+    HashMap map = new HashMap( 3 );
+        map.put( "name", utils.context );
+        map.put( "type","DecisionTree" );
+    utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+end
+
+query treeParent( Node $n, Node $par )
+    $n   := Node()
+    $par := Node( nodes contains $n )
+end
+
+
+rule "Tree Common Rules"
+salience -9
+when
+    $tree : TreeModel( $name : modelName, $info : extensionsAndNodesAndMiningSchemas )
+    MiningSchema( this memberOf $info, $mfs : miningFields )
+    MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $tgtName : name )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "model", utils.context );
+        map.put( "name", utils.compactUpperCase( $tgtName ) );
+    utils.applyTemplate( "treeCommon.drlt", utils, registry, map, theory );
+end
+
+rule "Init tree nodes"
+salience -10
+when
+    $net : TreeModel( $info : extensionsAndNodesAndMiningSchemas )
+    accumulate ( $n : Node( ),
+                 $nodes : collectList( $n );
+                 $nodes.size() > 0
+               )
+    $parents : java.util.Map() from accumulate (
+                 $n : Node( $nid : id ) and treeParent( $n, $par ; ),
+                 init( java.util.Map m = new java.util.HashMap(); ),
+                 action( m.put( $nid, $par.getId() ); ),
+                 result( m )
+               )
+    $totals  : java.util.Map() from accumulate (
+                 $n : Node( $nid : id, $tot : recordCount ),
+                 init( java.util.Map m = new java.util.HashMap(); ),
+                 action( m.put( $nid, $tot != null ? $tot.intValue() : 0 ); ),
+                 result( m )
+               )
+    $counts  : java.util.Map() from accumulate (
+                 $n : Node( $nid : id, $scores : scoreDistributions )
+                 and
+                 $rcounts : java.util.Map() from accumulate (
+                    ScoreDistribution( $val : value, $num : recordCount ) from $scores,
+                    init( java.util.Map n = new java.util.HashMap(); ),
+                    action( n.put( $val, $num ); ),
+                    result( n )
+                 ),
+                 init( java.util.Map m = new java.util.HashMap(); ),
+                 action( m.put( $nid, $rcounts ); ),
+                 result( m )
+               )
+    $confs   : java.util.Map() from accumulate (
+                 $n : Node( $nid : id, $scores : scoreDistributions )
+                 and
+                 $ccounts : java.util.Map() from accumulate (
+                    ScoreDistribution( $val : value, $num : confidence ) from $scores,
+                    init( java.util.Map n = new java.util.HashMap(); ),
+                    action( n.put( $val, $num ); ),
+                    result( n )
+                 ),
+                 init( java.util.Map m = new java.util.HashMap(); ),
+                 action( m.put( $nid, $ccounts ); ),
+                 result( m )
+               )
+    MiningSchema( this memberOf $info, $mfs : miningFields )
+    MiningField( this memberOf $mfs, usageType == FIELDUSAGETYPE.PREDICTED, $name : name )
+    TypeOfField( name == $name, $type : dataType )
+then
+    java.util.List orderedNodeList = new java.util.ArrayList( $nodes );
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "tgtType", $type );
+        map.put( "parents", $parents );
+        map.put( "nodes", $nodes );
+        map.put( "totals", $totals );
+        map.put( "counts", $counts );
+        map.put( "confs", $confs );
+    utils.applyTemplate( "treeInit.drlt", utils, registry, map, theory );
+end
+
+
+rule "Declare tree input"
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas, $miss : missingValueStrategy )
+    MiningSchema( $miningFields : miningFields, this memberOf $info )
+    accumulate( $mf : MiningField( usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields, $expNum : count( $mf ) )
+    $fields : java.util.Map( size == $expNum ) from accumulate (
+            MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields
+            and
+            TypeOfField( $n : name == $name, $type : dataType )
+         ,
+        init( java.util.Map map = new java.util.LinkedHashMap(); ),
+        action( map.put( utils.compactUpperCase( $n ), $type ); ),
+        result( map )
+    )
+    $root : Node( $rid : id, this memberOf $info)
+    MiningField( this memberOf $miningFields, usageType == FIELDUSAGETYPE.PREDICTED, $tgtName : name )
+    TypeOfField( name == $tgtName, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "fields", $fields );
+        map.put( "rootId", $rid );
+        map.put( "visitMode", $miss );
+        map.put( "targetField", utils.compactUpperCase( $tgtName ) );
+        map.put( "targetType", $tgtType );
+    utils.applyTemplate( "treeInputDeclare.drlt", utils, registry, map, theory );
+    utils.applyTemplate( "treeIOBinding.drlt", utils, registry, map, theory );
+end
+
+
+
+
+query treeNode( java.util.Collection $cll, String $id )
+    Node( $id := id, this memberOf $cll )
+    or
+    (
+        Node( this memberOf $cll, $children : nodes )
+        and
+        treeNode( $children, $id ; )
+    )
+end
+
+rule "Node Evaluation"
+salience -13
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas, $penalty : missingValuePenalty, $missStrat : missingValueStrategy )
+    Node( $id : id, $coll : extensionsAndSimplePredicatesAndCompoundPredicates )
+    ?treeNode( $info, $id ; )
+    compilePredicate( $coll, $pred, $src ; )
+    ?compilePredicateForMissing( $coll, $miss, $src ; )
+    MiningSchema( this memberOf $info, $fields : miningFields )
+    MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+    TypeOfField( name == $tgt, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "id", $id );
+        map.put( "constraints", $pred );
+        map.put( "missings", $miss );
+        map.put( "penalty", $penalty != null ? $penalty : 1.0 );
+        map.put( "name", utils.compactUpperCase( $tgt ) );
+        map.put( "tgtType", $tgtType );
+    utils.applyTemplate( "treeEval.drlt", utils, registry, map, theory );
+
+    if ( $missStrat.equals( MISSINGVALUESTRATEGY.AGGREGATE_NODES ) ) {
+        utils.applyTemplate( "treeAggregateEval.drlt", utils, registry, map, theory );
+    }
+
+    if ( $missStrat.equals( MISSINGVALUESTRATEGY.DEFAULT_CHILD ) ) {
+        utils.applyTemplate( "treeDefaultEval.drlt", utils, registry, map, theory );
+    }
+
+end
+
+
+
+rule "Missing Handler Aggregate Strategy"
+salience -13
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas, missingValueStrategy == MISSINGVALUESTRATEGY.AGGREGATE_NODES )
+    MiningSchema( this memberOf $info, $fields : miningFields )
+    MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+    TypeOfField( name == $tgt, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $tgt ) );
+        map.put( "tgtType", $tgtType );
+    utils.applyTemplate( "treeMissHandleAggregate.drlt", utils, registry, map, theory );
+end
+
+
+rule "Missing Handler Weighted Strategy"
+salience -13
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas, missingValueStrategy == MISSINGVALUESTRATEGY.WEIGHTED_CONFIDENCE )
+    MiningSchema( this memberOf $info, $fields : miningFields )
+    MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+    TypeOfField( name == $tgt, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $tgt ) );
+        map.put( "tgtType", $tgtType );
+    utils.applyTemplate( "treeMissHandleWeighted.drlt", utils, registry, map, theory );
+end
+
+rule "Missing Handler Last Prediction Strategy"
+salience -13
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas, missingValueStrategy == MISSINGVALUESTRATEGY.LAST_PREDICTION )
+    MiningSchema( this memberOf $info, $fields : miningFields )
+    MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+    TypeOfField( name == $tgt, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $tgt ) );
+        map.put( "tgtType", $tgtType );
+    utils.applyTemplate( "treeMissHandleLast.drlt", utils, registry, map, theory );
+end
+
+rule "Missing Handler Null Strategy"
+salience -13
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas, missingValueStrategy == MISSINGVALUESTRATEGY.NULL_PREDICTION )
+    MiningSchema( this memberOf $info, $fields : miningFields )
+    MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+    TypeOfField( name == $tgt, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $tgt ) );
+        map.put( "tgtType", $tgtType );
+    utils.applyTemplate( "treeMissHandleNull.drlt", utils, registry, map, theory );
+end
+
+
+rule "Missing Handler None Strategy"
+salience -13
+when
+    TreeModel( $info : extensionsAndNodesAndMiningSchemas,
+                       missingValueStrategy == MISSINGVALUESTRATEGY.NONE, noTrueChildStrategy == NOTRUECHILDSTRATEGY.RETURN_LAST_PREDICTION )
+    MiningSchema( this memberOf $info, $fields : miningFields )
+    MiningField( usageType != null && == FIELDUSAGETYPE.PREDICTED, $tgt : name )
+    TypeOfField( name == $tgt, $tgtType : dataType )
+then
+    HashMap map = new HashMap( 3 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $tgt ) );
+        map.put( "tgtType", $tgtType );
+    utils.applyTemplate( "treeMissHandleNone.drlt", utils, registry, map, theory );
+end
+
+
+
+rule "TreeNodes need an ID!"
+when
+    $tree : TreeModel( $name : modelName )
+    $node : Node( id == null )
+then
+    modify ( $node ) { setId( $name + utils.nextCount() ); }
+end
+
+rule "Tree_Cleanup"
+salience -20
+when
+    $tri : TreeModel( )
+then
+    utils.context = null;
+    retract( $tri );
+end
+
