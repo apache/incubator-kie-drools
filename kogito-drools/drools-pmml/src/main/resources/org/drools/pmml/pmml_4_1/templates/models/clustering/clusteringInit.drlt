@@ -1,0 +1,67 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'clusteringInit'}
+
+rule "Init Clusters @{context}"
+when
+    ModelMarker( "@{context}" ; enabled == true )
+then
+    java.util.List clusters = new java.util.ArrayList();
+    ClusterSet model = new ClusterSet(
+        "@{context}",
+        clusters,
+        @{ numClusters },
+        new double[] { @foreach{ w : fieldWeights } @{w} @end{ ',' } },
+        new double[] { @foreach{ s : fieldScopes } @{s} @end{ ',' } },
+        new double[] { @foreach{ w : missingWeights } @{w} @end{ ',' } }
+    );
+
+    @code{ boolean kohonen; }
+    @foreach{ j : numClusters }
+        @code{ kohonen = klusters[j].kohonenMap != null; }
+        Cluster cluster@{j} = new @if{ kohonen } KohonenCluster( @else{} Cluster( @end{}
+            "@{context}",
+            @{ j },
+            "@{ compactUpperCase( klusters[j].name ) }",
+            @{ numFields },
+            new double[] { @foreach{ c : tokenize( klusters[j].array.content ) } @{c} @end{ ',' } } @if{ kohonen } ,
+            new double[] {
+                            @{klusters[j].kohonenMap.coord1 != null ? klusters[j].kohonenMap.coord1 : -1 },
+                            @{klusters[j].kohonenMap.coord2 != null ? klusters[j].kohonenMap.coord2 : -1 },
+                            @{klusters[j].kohonenMap.coord3 != null ? klusters[j].kohonenMap.coord3 : -1 }
+                         } @end{}
+        );
+        clusters.add( cluster@{j} );
+        insertLogical( cluster@{j} );
+    @end{}
+
+    insertLogical( model );
+end
+
+
+@end{}
+
+
+@includeNamed{'clusteringInit'}

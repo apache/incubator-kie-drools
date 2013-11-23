@@ -1,0 +1,72 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss"/>
+  <DataDictionary numberOfFields="5">
+    <DataField dataType="double" name="Feat1" optype="continuous">
+      <Interval closure="closedOpen" leftMargin="0"/>
+    </DataField>
+    <DataField dataType="integer" name="Feat2" optype="continuous">
+      <Value property="missing" value="0"/>
+      <Value property="invalid" value="-1"/>
+      <Value property="valid" value="4"/>
+      <Value property="valid" value="5"/>
+      <Value property="valid" value="6"/>
+    </DataField>
+    <DataField dataType="double" name="Feat3" optype="continuous">
+      <Interval closure="closedClosed" leftMargin="7.5" rightMargin="9.5" />
+      <Value property="valid" value="4.0"/>
+    </DataField>
+    <DataField dataType="string" name="TargetVal1" optype="categorical">
+      <Value property="valid" value="ClassA"/>
+      <Value property="valid" value="ClassB"/>
+      <Value property="valid" value="ClassC"/>
+    </DataField>
+    <DataField dataType="double" name="TargetVal2" optype="continuous"/>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="logistic" algorithmName="Neural Net" functionName="classification" modelName="Test_MLP">
+    <Extension>
+      <Surveyable/>
+    </Extension>
+    <MiningSchema>
+      <MiningField highValue="6.9" invalidValueTreatment="asMissing" lowValue="1.0" missingValueReplacement="3.95" missingValueTreatment="asMedian" name="Feat1" outliers="asExtremeValues" usageType="active"/>
+      <MiningField highValue="6" invalidValueTreatment="asMissing" lowValue="4" missingValueReplacement="5" missingValueTreatment="asValue" name="Feat2" outliers="asExtremeValues" usageType="active"/>
+      <MiningField name="TargetVal1" usageType="predicted"/>
+      <MiningField name="TargetVal2" usageType="supplementary"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="out1" targetField="MockOutput1"/>
+      <OutputField name="out2" targetField="MockOutput2"/>
+    </Output>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="Feat2"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron id="1">
+        <Con from="0" weight="0.125"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer activationFunction="threshold" threshold="0.5">
+      <Neuron bias="1.0" id="2">
+        <Con from="1" weight="-1.0"/>
+      </Neuron>
+      <Neuron bias="0.0" id="3">
+        <Con from="1" weight="1.0"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="2">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="MockOutput1"/>
+        </DerivedField>
+      </NeuralOutput>
+      <NeuralOutput outputNeuron="3">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="MockOutput2"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

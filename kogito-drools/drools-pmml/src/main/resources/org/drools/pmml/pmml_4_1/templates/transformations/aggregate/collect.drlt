@@ -1,0 +1,52 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+@comment{
+    Collects a set of fields into a collection
+    /**
+    * @param name        - derived field name
+    * @param groupBy     - optional parameter, causes the aggregation to be performed
+    *                        conditionally on some constraint involving this datafield
+    * @param afield      - type of the datafields to aggregate
+    * @param constr      - groupby constraint
+    */
+}
+
+
+@declare{'collectRule'}
+rule "coll_@{name}"
+@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+when
+    @if{groupBy != null} @{groupBy}( valid == true, missing == false, $gval : value) @end{}
+    $agg : java.util.Collection() from collect (
+        @{afield}( valid == true, missing == false
+            @if{ context != null } , context == @{format("string",context)} @end{}
+            @if{groupBy != null && constr != null} , value @{constr} $gval @end{} )
+    )
+then
+    @{ name } x = new @{ name }();
+    x.setValue( $agg );
+    x.setMissing( false );
+    x.setValid( true );
+    x.setName( @{ format( "string", name ) } );
+  insertLogical( x );
+end
+@end{}
+
+
+@includeNamed{'collectRule'}

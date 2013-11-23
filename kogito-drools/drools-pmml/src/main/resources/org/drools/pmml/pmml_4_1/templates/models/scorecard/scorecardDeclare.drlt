@@ -1,0 +1,83 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+
+}
+
+@declare{'scorecardDeclare'}
+
+@comment{ The inner data structure collects the info from the datafield, and is used to be compatible with predicates,
+ as in decision trees. The containment is then used to update data and aggregate scores independently, preserving truth maintenance }
+
+declare ScoreCard
+@propertyReactive
+    modelName   : String @key
+    score       : double
+    holder      : ScoreCardData
+    enableRC    : boolean
+    pointsBelow : boolean
+    ranking     : java.util.Map
+end
+
+
+declare ScoreRank
+    scoreCard   : ScoreCard
+    rank        : java.util.Map
+end
+
+declare ScoreCardData
+@propertyReactive
+    modelName       : String @key
+end
+
+declare Score
+    scoreCard       : String    @key
+    value           : double    @key
+end
+
+declare InitialScore extends PartialScore
+end
+
+declare BaselineScore extends Score
+    characteristic  : String    @key
+end
+
+declare PartialScore extends Score
+    characteristic  : String    @key
+    reasonCode      : String
+end
+
+declare ScoreRow extends Score
+    characteristic  : String    @key
+    reasonCode      : String
+    id              : String
+end
+
+declare CodeScore
+    scoreCard       : ScoreCard @key
+    code            : String    @key
+    score           : double    @key
+end
+
+@end{}
+
+
+@includeNamed{'scorecardDeclare'}

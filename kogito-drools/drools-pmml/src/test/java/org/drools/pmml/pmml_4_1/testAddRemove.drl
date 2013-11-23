@@ -1,0 +1,12 @@
+
+package org.drools.pmml.pmml_4_1.test;
+
+
+declare ColdRisk end
+
+rule "Input_ColdRisk"
+when
+    $in : java.lang.Double() from entry-point "in_ColdRisk"
+    not ColdRisk(  )
+then
+end

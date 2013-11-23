@@ -1,0 +1,17 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="Jboss"/>
+  <DataDictionary>
+    <DataField dataType="integer" name="Age" optype="continuous">
+      <Value property="missing" value="-1"/>
+    </DataField>
+    <DataField dataType="integer" name="Limit" optype="continuous"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField dataType="double" name="Summa" optype="continuous">
+      <Aggregate field="Age" function="sum" groupField="Limit" sqlWhere=">"/>
+    </DerivedField>
+    <DerivedField dataType="double" name="Coll" optype="continuous">
+      <Aggregate field="Age" function="multiset" groupField="Limit" sqlWhere=">"/>
+    </DerivedField>
+  </TransformationDictionary>
+</PMML>

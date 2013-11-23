@@ -1,0 +1,121 @@
+<PMML version="4.1" xsi:schemaLocation="http://www.dmg.org/PMML-4_1 http://www.dmg.org/v4-1/pmml-4-1.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.dmg.org/PMML-4_1">
+  <Header copyright="JBoss" description="Mock Breast Cancer Model"/>
+  <DataDictionary numberOfFields="4">
+    <DataField dataType="string" displayName="Age of 1st menses" name="menses" optype="categorical">
+      <Value value="Unknown"/>
+      <Value value="7-11"/>
+      <Value value="12-13"/>
+      <Value value="14+"/>
+    </DataField>
+    <DataField dataType="string" displayName="1st level relatives with BC" name="relatives" optype="categorical">
+      <Value value="Unknown"/>
+      <Value value="0"/>
+      <Value value="1"/>
+      <Value value="2+"/>
+    </DataField>
+    <DataField dataType="string" displayName="Atypical Hyperplasia Biopsy" name="biopsy" optype="categorical">
+      <Value value="Unknown"/>
+      <Value value="No"/>
+      <Value value="Yes"/>
+    </DataField>
+    <DataField dataType="double" displayName="Breast Cancer Risk Factor" name="risk" optype="continuous"/>
+  </DataDictionary>
+  <NeuralNetwork activationFunction="identity" algorithmName="neuralNetwork" functionName="regression" modelName="MockBC">
+    <Extension>
+      <Surveyable/>
+    </Extension>
+    <MiningSchema>
+      <MiningField name="menses"/>
+      <MiningField name="relatives"/>
+      <MiningField name="biopsy"/>
+      <MiningField name="risk" usageType="predicted"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="BreastCancer" targetField="risk"/>
+    </Output>
+    <NeuralInputs>
+      <NeuralInput id="0">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="menses" value="Unknown"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="1">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="menses" value="7-11"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="2">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="menses" value="12-13"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="3">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="menses" value="14+"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="4">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="relatives" value="Unknown"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="5">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="relatives" value="0"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="6">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="relatives" value="1"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="7">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="relatives" value="2+"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="8">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="biopsy" value="Unknown"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="9">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="biopsy" value="No"/>
+        </DerivedField>
+      </NeuralInput>
+      <NeuralInput id="10">
+        <DerivedField dataType="double" optype="continuous">
+          <NormDiscrete field="biopsy" value="Yes"/>
+        </DerivedField>
+      </NeuralInput>
+    </NeuralInputs>
+    <NeuralLayer>
+      <Neuron bias="0.15" id="11">
+        <Con from="0" weight="0"/>
+        <Con from="1" weight="0.03"/>
+        <Con from="2" weight="0"/>
+        <Con from="3" weight="0.05"/>
+        <Con from="4" weight="0"/>
+        <Con from="5" weight="0"/>
+        <Con from="6" weight="0.1"/>
+        <Con from="7" weight="0.16"/>
+        <Con from="8" weight="0"/>
+        <Con from="9" weight="0"/>
+        <Con from="10" weight="0.18"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralLayer>
+      <Neuron bias="0.0" id="12">
+        <Con from="11" weight="1.0"/>
+      </Neuron>
+    </NeuralLayer>
+    <NeuralOutputs>
+      <NeuralOutput outputNeuron="12">
+        <DerivedField dataType="double" optype="continuous">
+          <FieldRef field="risk"/>
+        </DerivedField>
+      </NeuralOutput>
+    </NeuralOutputs>
+  </NeuralNetwork>
+</PMML>

@@ -1,0 +1,71 @@
+@comment{
+
+  Copyright 2011 JBoss Inc
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+}
+
+
+
+
+@comment{
+   Applies a function to one or more datafields.
+   The datafields values are first assigned to variables, then the latter are used to compute the function
+    /**
+    * @param name           - derived field name
+    * @param exprFieldList  - datafields involved as operands, as a name/variable map
+    * @param dataType       - type of the result datafields
+    * @param funExpr        - actual expression
+    */
+}
+
+@declare{ 'applyRule' }
+rule "fun_@{name}"
+when
+
+    @foreach{ field : exprFieldList }
+        @{ field }( valid == true, missing == false, @{ exprFieldMap.get( field ) } : value
+                  @if{ context != null } , context == @{ format( "string", context ) } @end{} )
+    @end{}
+
+    $ctx : String() from java.util.UUID.randomUUID().toString()
+
+//    @{funName} - @{ isBuiltIn( funName ) }
+
+    @foreach{ dep : dependencies}
+        ?@{ dep }
+    @end{}
+
+    @if{ ! isBuiltIn( funName ) }
+        ?@{ funName }( @foreach{ arg : funArgs } @{arg} @end{ ',' } , $ctx, $return ; )
+    @end{}
+then
+    System.out.println( "READY TO BUILD @{name} ");
+
+    @{name} x = new @{ name }();
+
+    @if{ isBuiltIn( funName ) }
+        x.setValue( ( @{ dataType } ) @{ mapFunction( funName, funArgs ) } );
+    @else{}
+        x.setValue( ( @{ dataType } ) $return );
+    @end{}
+
+    x.setMissing( false );
+    x.setValid( true );
+    x.setName( @{ format( "string", name ) } );
+    x.setContext( @{ context } );
+  insertLogical( x );
+end
+@end{}
+
+@includeNamed{ 'applyRule' }
