@@ -35,6 +35,7 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.common.BeliefSet;
 import org.drools.common.DefaultFactHandle;
+import org.drools.common.EqualityKey;
 import org.drools.common.InternalFactHandle;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.LogicalDependency;
@@ -1448,5 +1449,46 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertNotNull( ((DefaultFactHandle) handle).getEqualityKey() );
         session.dispose();
     }
+
+    @Test
+    public void testJustificationStateOverridingBySuperClass() {
+        String droolsSource =
+                "package org.drools.tms.test; \n" +
+                "" +
+                "declare Foo end \n" +
+                "declare Bar extends Foo end \n" +
+                "" +
+                "rule Justify_Sub \n" +
+                "when \n" +
+                "then \n" +
+                "   insertLogical( new Bar() ); \n" +
+                "   insertLogical( 42.0 ); \n" +
+                "end \n" +
+
+                "rule Justify_Sup \n" +
+                "when \n" +
+                " $d : Double() \n" +
+                "then \n" +
+                " insertLogical( new Foo() ); \n" +
+                "end \n" +
+                "" +
+                "" +
+                "rule Fuu when Foo() then end \n" +
+                "rule Bor when Bar() then end \n";
+
+        /////////////////////////////////////
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( droolsSource );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        session.fireAllRules();
+
+        for ( FactHandle fh : session.getFactHandles() ) {
+            InternalFactHandle ifh = (InternalFactHandle) fh;
+            assertEquals( EqualityKey.JUSTIFIED, ifh.getEqualityKey().getStatus() );
+        }
+
+    }
+
 
 }
