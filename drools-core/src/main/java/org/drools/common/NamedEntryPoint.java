@@ -845,7 +845,7 @@ public class NamedEntryPoint
     
             InternalFactHandle handle = (InternalFactHandle) holder.getValue();
             
-            if ( handle != null) {
+            if ( handle != null && handle.getEqualityKey() == null ) {
                 EqualityKey key = createEqualityKey(handle);
                 key.setStatus(EqualityKey.STATED);
                 this.wm.getTruthMaintenanceSystem().put(key);
