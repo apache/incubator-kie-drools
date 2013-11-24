@@ -631,6 +631,17 @@ end
  //******************************************************************************************************************
 
 
+rule "Inherit_Discretize_Datatype"
+salience 100
+when
+    $fld : DerivedField( $dx : discretize, $type : dataType )
+    $dsc : Discretize( this == $dx, $dataType : dataType == null )
+then
+    modify ( $dsc ) {
+        setDataType( $type );
+    }
+end
+
 
 rule "processDerivedField_Discretize_mapMissing"
 dialect "mvel"
@@ -682,12 +693,13 @@ when
     Discretize( this == $dx, $f : field , $d : defaultValue != null, $bins : discretizeBins, $dataType : dataType )
 then
     HashMap map = new HashMap(7);
-        map.put("context",utils.context);
-        map.put("name",utils.compactUpperCase($fld.name));
-        map.put("origField",utils.compactUpperCase($f));
-        map.put("bins",$bins);
-        map.put("target",utils.format($dataType,$d));
-    utils.applyTemplate("outOfBinningDefault.drlt", utils, registry, map, theory);
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "origField", utils.compactUpperCase( $f ) );
+        map.put( "bins", $bins );
+        map.put( "datatype", $dataType );
+        map.put( "target", $d );
+    utils.applyTemplate( "outOfBinningDefault.drlt", utils, registry, map, theory );
 end
 
 
@@ -696,17 +708,18 @@ rule "processDerivedField_Discretize_bin"
 dialect "mvel"
 when
     $fld : DerivedField( $dx : discretize )
-           Discretize( this == $dx, $f : field , $d : defaultValue != null, $bins : discretizeBins, $dataType : dataType )
+           Discretize( this == $dx, $f : field , $d : defaultValue, $bins : discretizeBins, $dataType : dataType )
     $bin : DiscretizeBin( $interval : interval, $x : binValue ) from $bins
 then
-    HashMap map = new HashMap(7);
-        map.put("context",utils.context);
-        map.put("name",utils.compactUpperCase($fld.name));
-        map.put("origField",utils.compactUpperCase($f));
-        map.put("intv",$interval);
-        map.put("index",utils.nextCount());
-        map.put("target",utils.format($dataType,$x));
-    utils.applyTemplate("intervalBinning.drlt", utils, registry, map, theory);
+    HashMap map = new HashMap( 11 );
+        map.put( "context", utils.context );
+        map.put( "name", utils.compactUpperCase( $fld.name ) );
+        map.put( "origField", utils.compactUpperCase( $f ) );
+        map.put( "intv", $interval );
+        map.put( "index", utils.nextCount() );
+        map.put( "datatype", $dataType );
+        map.put( "target", $x );
+    utils.applyTemplate( "intervalBinning.drlt", utils, registry, map, theory );
 end
 
 
@@ -1807,10 +1820,10 @@ end
 rule "Output_Type2"
 no-loop
 when
-    $of : OutputField( $name : name, dataType == null, $tgt : targetField )
+    $of : OutputField( $name : name, dataType == null, $feat : feature, $tgt : targetField )
     TypeOfField( name == $tgt, $dataType : dataType )
 then
-    insertLogical( new TypeOfField( $name, $dataType ) );
+    insertLogical( new TypeOfField( $name, utils.mapFeatureType( $dataType, $feat ) ) );
 end
 
 rule "Bind_FactField_Outputield"
@@ -1890,6 +1903,7 @@ when
                        feature == RESULTFEATURE.PREDICTED_DISPLAY_VALUE || == RESULTFEATURE.WARNING
                         || == RESULTFEATURE.PROBABILITY )
     $tf : TypeOfField( name == $name, $type : dataType )
+    $sf : TypeOfField( name == $tgt, $srcType : dataType )
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
@@ -1897,6 +1911,7 @@ then
         map.put( "name", utils.compactUpperCase( $name ) );
         map.put( "value", $val );
         map.put( "type", $type );
+        map.put( "srcType", $srcType );
         map.put( "feature", $feat );
     utils.applyTemplate( "addOutputFeature.drlt", utils, registry, map, theory );
 end

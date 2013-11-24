@@ -34,9 +34,9 @@ then
 
     @foreach{ node : nodes }
         count = new java.util.HashMap();
-            @foreach{ val : counts[ node.id ].keySet } count.put( @{format( tgtType, val ) }, @{ counts[ node.id ][ val ] } ); @end{}
+            @foreach{ val : counts[ node.id ].keySet() } count.put( @{format( tgtType, val ) }, @{ counts[ node.id ][ val ] } ); @end{}
         confs = new java.util.HashMap();
-            @foreach{ val : confs[ node.id ].keySet } confs.put( @{format( tgtType, val ) }, @{ confs[ node.id ][ val ] } ); @end{}
+            @foreach{ val : confs[ node.id ].keySet() } confs.put( @{format( tgtType, val ) }, @{ confs[ node.id ][ val ] } ); @end{}
 
         node = new TreeNode( "@{context}",
                              "@{node.id}",

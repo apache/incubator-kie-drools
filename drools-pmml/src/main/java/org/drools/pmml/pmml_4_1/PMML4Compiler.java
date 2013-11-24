@@ -17,6 +17,7 @@
 package org.drools.pmml.pmml_4_1;
 
 import org.dmg.pmml.pmml_4_1.descr.ClusteringModel;
+import org.dmg.pmml.pmml_4_1.descr.NaiveBayesModel;
 import org.dmg.pmml.pmml_4_1.descr.NeuralNetwork;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.RegressionModel;
@@ -172,6 +173,14 @@ public class PMML4Compiler implements PMMLCompiler {
             "models/svm/svmOutputVote1v1.drlt",
     };
 
+    protected static boolean naiveBayesLoaded = false;
+    protected static final String[] NAIVE_BAYES_TEMPLATES = new String[] {
+            "models/bayes/naiveBayesDeclare.drlt",
+            "models/bayes/naiveBayesEval.drlt",
+            "models/bayes/naiveBayesBuildCounts.drlt",
+            "models/bayes/naiveBayesBuildOuts.drlt",
+    };
+
     protected static boolean simpleRegLoaded = false;
     protected static final String[] SIMPLEREG_TEMPLATES = new String[] {
             "models/regression/regDeclare.drlt",
@@ -320,6 +329,16 @@ public class PMML4Compiler implements PMMLCompiler {
         String chosenKieBase = null;
 
         for ( Object o : pmml.getAssociationModelsAndBaselineModelsAndClusteringModels() ) {
+
+            if ( o instanceof NaiveBayesModel ) {
+                if ( ! naiveBayesLoaded ) {
+                    for ( String ntempl : NAIVE_BAYES_TEMPLATES ) {
+                        prepareTemplate( ntempl );
+                    }
+                    naiveBayesLoaded = true;
+                }
+                chosenKieBase = chosenKieBase == null ? "PMML-Bayes" : "PMML";
+            }
 
             if ( o instanceof NeuralNetwork ) {
                 if ( ! neuralLoaded ) {

@@ -27,7 +27,7 @@
 rule "Tree Input Link @{context}"
 when
     @foreach{ inputField : fields.keySet() }
-        @{inputField}( context == "@{context}", @{inputField} : value, m@{inputField} : missing, valid == true || ( valid == false && missing == true) )
+        @{inputField}( context == "@{context}", @{inputField} : value, m@{inputField} : missing, valid == true || ( valid == false && missing == true && value != null ) )
     @end{}
 then
 //    System.out.println( "Creating the tree token" );

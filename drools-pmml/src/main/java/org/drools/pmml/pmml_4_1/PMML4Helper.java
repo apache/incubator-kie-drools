@@ -1034,4 +1034,5 @@ public class PMML4Helper {
     public void reset() {
         definedModelBeans = new HashSet<String>();
     }
+
 }

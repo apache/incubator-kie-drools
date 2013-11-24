@@ -38,12 +38,12 @@ when
           @if{ context != null } , context == @{format("string",context)} @end{} )
 then
     @{name} x = new @{name}();
-    x.setValue(null);
-    x.setMissing(true);
-    x.setValid(true);
-    x.setName(@{format("string",name)});
-    x.setContext(@{context});
-  insertLogical(x);
+    x.setValue( null );
+    x.setMissing( true );
+    x.setValid( true );
+    x.setName( @{ format( "string", name ) } );
+    x.setContext( "@{context}" );
+  insertLogical( x );
 end
 @end{}
 
