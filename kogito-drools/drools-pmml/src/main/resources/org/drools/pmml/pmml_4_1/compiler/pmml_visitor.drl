@@ -854,3 +854,36 @@ when
 then
     insertLogical( $set );
 end
+
+
+//------------------------------------------------------------------------------------------------------------//
+
+rule "visitNaiveBayes"
+salience -10
+when
+    $nbm : NaiveBayesModel( $info : extensionsAndBayesOutputsAndBayesInputs, $name : modelName )
+    $o   : Object() from $info
+then
+    insertLogical( $o );
+end
+
+rule "visitBayesInputs"
+salience -11
+when
+    $bis : BayesInputs( $in : bayesInputs )
+    $bin : BayesInput() from $in
+then
+    insertLogical( $bin );
+end
+
+rule "visitBayesDerivedField"
+salience -11
+when
+    $bin : BayesInput( $dfld : derivedField != null, $fld : fieldName )
+then
+    if ( $dfld.getName() == null ) {
+        // only allowed derivation is discretization
+        $dfld.setName( $fld + "__Discrete" );
+    }
+    insertLogical( $dfld );
+end

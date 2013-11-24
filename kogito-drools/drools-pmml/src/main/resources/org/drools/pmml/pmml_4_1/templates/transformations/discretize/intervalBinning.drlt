@@ -33,15 +33,15 @@ rule "bin_@{name}_@{index}"
 when
     $in : @{origField}( valid == true, missing == false,
             value @if{intv.closure.startsWith("closed")}>=@else{}>@end{} @{intv.leftMargin} && value @if{intv.closure.endsWith("Closed")}<=@else{}<@end{} @{intv.rightMargin},
-            $ctx : context  @if{ context != null } , context == @{format("string",context)} @end{}
+            $ctx : context  @if{ context != null } , context == @{ format( "string", context ) } @end{}
           )
 then
   @{name} x = new @{name}();
-    x.setValue(@{target});
-    x.setMissing(false);
-    x.setValid(true);
-    x.setName(@{format("string",name)});
-    x.setContext($ctx);
+    x.setValue( @{ format( datatype, target ) } );
+    x.setMissing( false );
+    x.setValid( true );
+    x.setName( @{format( "string", name ) } );
+    x.setContext( @{ format( "string", context ) } );
   insertLogical(x);
 end
 @end{}

@@ -298,7 +298,7 @@ public class NeuralNetworkTest extends DroolsAbstractPMMLTest {
         Assert.assertEquals(6, getNumAssertedSynapses());
 
 
-        getKSession().getEntryPoint( "in_Feat2" ).insert(101);
+        getKSession().getEntryPoint( "in_PetalNum" ).insert(101);
         getKSession().getEntryPoint( "in_PetalWid" ).insert(2);
         getKSession().getEntryPoint( "in_Species" ).insert("virginica");
         getKSession().getEntryPoint( "in_SepalWid" ).insert(30);

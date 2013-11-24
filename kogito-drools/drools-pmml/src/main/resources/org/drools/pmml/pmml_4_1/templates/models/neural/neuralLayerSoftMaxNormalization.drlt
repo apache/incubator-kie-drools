@@ -38,7 +38,7 @@ when
                 ) @watch( normalized, ! value ),
             $list : collectList( $neur ),
             $den  : sum( Math.exp( $in ) );
-            $list.size == @{ neurons.size }
+            $list.size == @{ neurons.size() }
         )
 then
     java.util.List list = new java.util.ArrayList( $list );

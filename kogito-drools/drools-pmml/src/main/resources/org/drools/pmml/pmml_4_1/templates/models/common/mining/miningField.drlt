@@ -39,6 +39,22 @@ then
     x.setContext(@{format("string",model)});
   insertLogical(x);
 end
+
+
+rule "InitAsMissing_@{model}_@{name}"
+salience 1000
+when
+    ModelMarker( modelName == "@{model}", enabled == true )
+    not @{name}( context == null )
+then
+    @{name} input = new @{name}();
+        input.setName(@{format("string",name)});
+        input.setMissing(true);
+        input.setValid(false);
+        input.setContext( "@{model}" );
+    insertLogical( input );
+end
+
 @end{}
 
 

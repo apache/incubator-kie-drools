@@ -39,11 +39,11 @@ when
           )
 then
     @{name} x = new @{name}();
-    x.setValue(@{target});
-    x.setMissing(false);
-    x.setValid(true);
-    x.setName(@{format("string",name)});
-    x.setContext(@{context});
+    x.setValue( @{ format( datatype, target ) } );
+    x.setMissing( false );
+    x.setValid( true );
+    x.setName( @{ format( "string", name ) } );
+    x.setContext( @{ format( "string", context ) } );
   insertLogical(x);
 end
 @end{}

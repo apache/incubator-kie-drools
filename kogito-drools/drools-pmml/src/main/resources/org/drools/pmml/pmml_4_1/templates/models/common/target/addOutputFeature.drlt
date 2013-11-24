@@ -34,7 +34,7 @@ when
                            @if{ feature == "warning" } $x : displayValue, @end{}
                            @if{ feature == "probability" } $x : weight, @end{}
 
-                           $srcVal : value @if{ value != null } == @{format(type,value)} @end{}
+                           $srcVal : value @if{ value != null } == @{format(srcType,value)} @end{}
                     )
     @if{ value == null }
     not @{origField}( this != $src, weight > $wgt )
