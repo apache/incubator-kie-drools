@@ -97,6 +97,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -4180,12 +4181,12 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testInsertModifyInteractionsWithNoloop() {
+    public void testInsertModifyInteractionsWithLockOnActive() {
         String drl =
                 "package org.drools.compiler.integrationtests;\n" +
                 "import org.drools.compiler.Message;\n" +
                 "global Message m2;\n" +
-                "rule r1  no-loop\n" +
+                "rule r1 lock-on-active\n" +
                 "    when\n" +
                 "        m: Message()\n" +
                 "    then\n" +
@@ -4194,7 +4195,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        kcontext.getKnowledgeRuntime().setGlobal( 'm2', m2 ); \n" +
                 "        insert( m2 );\n" +
                 "end\n" +
-                "rule r2 no-loop salience 1000\n" +
+                "rule r2 lock-on-active salience 1000\n" +
                 "    when\n" +
                 "        m : Message()\n" +
                 "    then\n" +
@@ -4206,7 +4207,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         Message m1 = new Message( "msg1" );
         ksession.insert(m1);
-        assertEquals(4, ksession.fireAllRules());
+        assertEquals(2, ksession.fireAllRules());
 
         Message m2 = (Message) ksession.getGlobal( "m2" );
 
@@ -4216,7 +4217,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( "msg1", m2.getMessage() );
         assertEquals( "Two", m2.getMessage2() ); // r1 does not fire for m2
-        assertEquals( "msg3", m2.getMessage3() );
+        assertEquals( "Three", m2.getMessage3() );
     }
 
     @Test
@@ -4772,4 +4773,31 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testJoinNoLoop() {
+        // BZ-1034094
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "rule R no-loop\n" +
+                "when\n" +
+                "  String()\n" +
+                "  $p : Person( $age : age )\n" +
+                "then\n" +
+                "    modify($p) { setAge( $age + 1 ) }\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        Person mario = new Person("Mario", 38);
+
+        ksession.insert("a");
+        ksession.insert("b");
+        ksession.insert(mario);
+        ksession.fireAllRules();
+
+        assertEquals(40, mario.getAge());
+    }
 }
+
