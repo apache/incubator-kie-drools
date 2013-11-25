@@ -170,12 +170,20 @@ public class UrlResource extends BaseResource
         }
     }
 
+    private File getTemproralCacheFile()  {
+        try {
+            return new File(CACHE_DIR, URLEncoder.encode(this.url.toString(), "UTF-8") + "_tmp");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Save a copy in the local cache - in case remote source is not available in future.
      */
     private void cacheStream() {
         try {
-            File fi = getCacheFile();
+            File fi = getTemproralCacheFile();
             if (fi.exists()) fi.delete();
             FileOutputStream fout = new FileOutputStream(fi);
             InputStream in = grabStream();
@@ -187,6 +195,9 @@ public class UrlResource extends BaseResource
             fout.flush();
             fout.close();
             in.close();
+
+            File cacheFile = getCacheFile();
+            fi.renameTo(cacheFile);
         } catch (Exception e) {
             e.printStackTrace();
         }
