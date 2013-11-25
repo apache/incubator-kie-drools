@@ -24,7 +24,6 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.CompositeNode;
-import org.kie.api.definition.process.Connection;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.xml.sax.Attributes;
 
@@ -54,6 +53,7 @@ public class CompositeContextNodeHandler extends AbstractCompositeNodeHandler {
             xmlDump.append("isForCompensation=\"true\" ");
         }
 		xmlDump.append(">" + EOL);
+		writeScripts(compositeNode, xmlDump);
         // variables
 		VariableScope variableScope = (VariableScope) 
             compositeNode.getDefaultContext(VariableScope.VARIABLE_SCOPE);

@@ -524,6 +524,48 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
     
     @Test
+    public void testSubProcessWithEntryExitScripts() throws Exception {
+        KieBase kbase = createKnowledgeBase("subprocess/BPMN2-SubProcessWithEntryExitScripts.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);        
+        
+        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+
+        assertNodeTriggered(processInstance.getId(), "Task1");
+        Object var1 = getProcessVarValue(processInstance, "var1");
+        assertNotNull(var1);
+        assertEquals("10", var1.toString());
+        
+        assertNodeTriggered(processInstance.getId(), "Task2");
+        Object var2 = getProcessVarValue(processInstance, "var2");
+        assertNotNull(var2);
+        assertEquals("20", var2.toString());
+        
+        assertNodeTriggered(processInstance.getId(), "Task3");
+        Object var3 = getProcessVarValue(processInstance, "var3");
+        assertNotNull(var3);
+        assertEquals("30", var3.toString());
+
+        assertNodeTriggered(processInstance.getId(), "SubProcess");
+        Object var4 = getProcessVarValue(processInstance, "var4");
+        assertNotNull(var4);
+        assertEquals("40", var4.toString());
+
+        Object var5 = getProcessVarValue(processInstance, "var5");
+        assertNotNull(var5);
+        assertEquals("50", var5.toString());
+
+        
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceCompleted(processInstance);
+    }
+    
+    @Test
     public void testCallActivity() throws Exception {
         KieBase kbase = createKnowledgeBase("BPMN2-CallActivity.bpmn2",
                 "BPMN2-CallActivitySubProcess.bpmn2");
