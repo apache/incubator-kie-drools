@@ -3539,6 +3539,9 @@ public class PackageBuilder
 
     protected void resetProblems() {
         this.results.clear();
+        if (this.processBuilder != null) {
+        	this.processBuilder.getErrors().clear();
+        }
     }
 
     public String getDefaultDialect() {
