@@ -14,10 +14,12 @@ import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.io.ByteArrayInputStream;
+import java.io.StringReader;
 
 /**
  * This is a sample class to launch a rule.
@@ -43,6 +45,33 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         int count = ksession.fireAllRules();
          
+        assertEquals( 1, count );
+    }
+
+    @Test
+    public void testHelloWorldWithResource() throws Exception {
+        // DROOLS-351
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                "import " + Message.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "   $m : Message( message == \"Hello World\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write(
+                ks.getResources()
+                  .newReaderResource( new StringReader(drl) )
+                  .setResourceType(ResourceType.DRL)
+                  .setSourcePath("src/main/resources/r1.txt") );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        ksession.insert(new Message("Hello World"));
+
+        int count = ksession.fireAllRules();
+
         assertEquals( 1, count );
     }
 
