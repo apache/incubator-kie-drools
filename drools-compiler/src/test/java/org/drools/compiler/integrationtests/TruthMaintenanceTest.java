@@ -28,6 +28,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.compiler.YoungestFather;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
@@ -1544,7 +1545,47 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         assertEquals( 0, session.fireAllRules() );
     }
 
+    @Test
+    public void testJustificationStateOverridingBySuperClass() {
+        //DROOLS-352
+        String droolsSource =
+                "package org.drools.tms.test; \n" +
+                "" +
+                "declare Foo end \n" +
+                "declare Bar extends Foo end \n" +
+                "" +
+                "rule Justify_Sub \n" +
+                "when \n" +
+                "then \n" +
+                " insertLogical( new Bar() ); \n" +
+                " insertLogical( 42.0 ); \n" +
+                "end \n" +
 
+                "rule Justify_Sup \n" +
+                "when \n" +
+                " $d : Double() \n" +
+                "then \n" +
+                " insertLogical( new Foo() ); \n" +
+                "end \n" +
+                "" +
+                "" +
+                "rule Fuu when Foo() then end \n" +
+                "rule Bor when Bar() then end \n";
 
+        /////////////////////////////////////
+
+        KieBaseConfiguration kieConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kieConf.setOption( EqualityBehaviorOption.EQUALITY );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kieConf, droolsSource );
+        StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        session.fireAllRules();
+
+        for ( FactHandle fh : session.getFactHandles() ) {
+            InternalFactHandle ifh = (InternalFactHandle) fh;
+            assertEquals( EqualityKey.JUSTIFIED, ifh.getEqualityKey().getStatus() );
+        }
+
+    }
 }
 
