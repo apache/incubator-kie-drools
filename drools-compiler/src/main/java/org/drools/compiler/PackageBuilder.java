@@ -619,6 +619,7 @@ public class PackageBuilder {
 
         try {
             this.results.addAll( processBuilder.addProcessFromXml( resource ) );
+        	this.processBuilder.getErrors().clear();
         } catch (Exception e) {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
@@ -2804,6 +2805,9 @@ public class PackageBuilder {
 
     protected void resetProblems() {
         this.results.clear();
+        if (this.processBuilder != null) {
+        	this.processBuilder.getErrors().clear();
+        }
     }
 
     public String getDefaultDialect() {
