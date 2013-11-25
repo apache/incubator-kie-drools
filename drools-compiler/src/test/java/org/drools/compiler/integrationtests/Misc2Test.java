@@ -4772,4 +4772,20 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testResourceTypeWithUnconventionalFileExtensions() {
+        String drl = "rule Foo when then end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        kfs.write( "src/main/resources/test.foo", ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL ) );
+
+        KieBuilder kb = ks.newKieBuilder( kfs );
+        kb.buildAll();
+
+        KieSession kSession = ks.newKieContainer( kb.getKieModule().getReleaseId() ).newKieSession();
+        assertEquals( 1, kSession.fireAllRules() );
+    }
 }
