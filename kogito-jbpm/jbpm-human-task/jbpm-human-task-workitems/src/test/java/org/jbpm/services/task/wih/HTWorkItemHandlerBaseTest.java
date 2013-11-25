@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task.wih;
 
+import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,6 +32,10 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.type.DateFormats;
+import org.drools.core.type.DateFormatsImpl;
+import org.drools.core.util.DateUtils;
+import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.services.task.events.AfterTaskAddedEvent;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.test.MyObject;
@@ -625,7 +630,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
     }
     
     @Test
-    public void testTaskWitAutoClaimTaskWithGroupOnly() throws Exception {
+    public void testTaskWithAutoClaimTaskWithGroupOnly() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -655,6 +660,74 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
     }
 
+    @Test
+    public void testTaskWithDueDate() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("NodeName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("DueDate", "2013-11-25T10:35:00Z");
+        
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals(10, task.getProcessInstanceId());
+        
+        assertEquals(DateTimeUtils.parseDateTime("2013-11-25T10:35:00Z"), task.getExpirationTime().getTime());
+
+        taskService.start(task.getId(), "Darth Vader");
+        taskService.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
+    @Test
+    public void testTaskWithDelay() throws Exception {
+        TestWorkItemManager manager = new TestWorkItemManager();
+        ksession.setWorkItemManager(manager);
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setName("Human Task");
+        workItem.setParameter("NodeName", "TaskName");
+        workItem.setParameter("Comment", "Comment");
+        workItem.setParameter("Priority", "10");
+        workItem.setParameter("ActorId", "Darth Vader");
+        workItem.setParameter("Delay", "2d"); // Period 2 days
+        
+        workItem.setProcessInstanceId(10);
+        handler.executeWorkItem(workItem, manager);
+        long currentTime = new Date().getTime();
+        
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        assertEquals("TaskName", task.getName());
+        assertEquals(10, task.getPriority());
+        assertEquals("Comment", task.getDescription());
+        assertEquals(Status.Reserved, task.getStatus());
+        assertEquals("Darth Vader", task.getActualOwner().getId());
+        assertEquals(10, task.getProcessInstanceId());
+        
+        assertTrue( currentTime + DateTimeUtils.parseDuration("2d") > task.getExpirationTime().getTime());
+
+        taskService.start(task.getId(), "Darth Vader");
+        taskService.complete(task.getId(), "Darth Vader", null);
+
+        assertTrue(manager.waitTillCompleted(MANAGER_COMPLETION_WAIT_TIME));
+    }
+    
+    
     public void setHandler(WorkItemHandler handler) {
         this.handler = handler;
     }

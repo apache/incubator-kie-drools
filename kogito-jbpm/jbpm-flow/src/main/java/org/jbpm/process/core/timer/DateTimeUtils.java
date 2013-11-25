@@ -25,6 +25,11 @@ public class DateTimeUtils extends TimeUtils {
         return false;
     }
 
+    public static long parseDateTime(String dateTimeStr) {
+            DateTime dt = ISODateTimeFormat.dateTimeNoMillis().parseDateTime(dateTimeStr);
+            return dt.getMillis();
+    }
+    
     
     public static long parseDuration(String durationStr) {
         if (isPeriod(durationStr)) {

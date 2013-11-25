@@ -15,11 +15,18 @@
  */
 package org.jbpm.services.task.wih;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.util.DateUtils;
+import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
@@ -102,6 +109,10 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             }
         }
         task.setPriority(priority);
+        
+        
+        
+        
         InternalTaskData taskData = new TaskDataImpl();        
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
@@ -124,6 +135,21 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (createdBy != null && createdBy.trim().length() > 0) {
             taskData.setCreatedBy(new UserImpl(createdBy));            
         }
+        String dueDateString = (String) workItem.getParameter("DueDate");
+        Date date = null;
+        if(dueDateString != null && !dueDateString.isEmpty()){
+                date = new Date(DateTimeUtils.parseDateTime(dueDateString));
+        }else{
+            String delayString = (String) workItem.getParameter("Delay");
+            if(delayString != null && !delayString.isEmpty()){
+                Long longDateValue = DateTimeUtils.parseDateAsDuration(delayString);
+                date = new Date(System.currentTimeMillis() + longDateValue);
+            }
+        }
+        if(date != null){
+            taskData.setExpirationTime(date);
+        }
+        
         PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
         
