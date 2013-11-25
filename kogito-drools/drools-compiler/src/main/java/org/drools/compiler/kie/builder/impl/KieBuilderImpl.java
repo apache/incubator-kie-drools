@@ -33,6 +33,7 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.compiler.kproject.xml.PomModel;
+import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.KieModuleMetaInfo;
@@ -54,6 +55,8 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
@@ -98,7 +101,7 @@ public class KieBuilderImpl
     }
 
     public KieBuilder setDependencies(KieModule... dependencies) {
-        this.kieDependencies = Arrays.asList( dependencies );
+        this.kieDependencies = Arrays.asList(dependencies);
         return this;
     }
 
@@ -259,7 +262,7 @@ public class KieBuilderImpl
     private CompilationData.Builder createCompilationData() {
         // Create compilation data cache
         CompilationData.Builder _cdata = KieModuleCache.CompilationData.newBuilder()
-                .setDialect( "java" );
+                .setDialect("java");
         return _cdata;
     }
 
@@ -369,9 +372,14 @@ public class KieBuilderImpl
         }
     }
 
-    public static boolean filterFileInKBase(KieBaseModel kieBase,
-                                            String fileName) {
-        return FormatsManager.isKieExtension( fileName ) && isFileInKieBase( kieBase, fileName );
+    private static ResourceType getResourceType(InternalKieModule kieModule, String fileName) {
+        ResourceConfiguration conf = kieModule.getResourceConfiguration(fileName);
+        return conf instanceof ResourceConfigurationImpl ? ((ResourceConfigurationImpl)conf).getResourceType() : null;
+    }
+
+    public static boolean filterFileInKBase(InternalKieModule kieModule, KieBaseModel kieBase, String fileName) {
+        return isFileInKieBase( kieBase, fileName ) && (
+                FormatsManager.isKieExtension( fileName ) || getResourceType(kieModule, fileName) != null);
     }
 
     private static boolean isFileInKieBase(KieBaseModel kieBase,

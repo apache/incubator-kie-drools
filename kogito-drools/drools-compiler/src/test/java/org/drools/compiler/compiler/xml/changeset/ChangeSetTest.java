@@ -57,7 +57,6 @@ public class ChangeSetTest extends CommonTestMethodBase {
         assertEquals( 2,
                       changeSet.getResourcesAdded().size() );
         UrlResource resource = ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 0 );
-        assertNull( resource.getConfiguration() );
         assertEquals( "http://www.domain.com/test.drl",
                       resource.getURL().toString() );
         assertEquals( ResourceType.DRL,
@@ -119,7 +118,6 @@ public class ChangeSetTest extends CommonTestMethodBase {
         assertEquals( 1,
                       changeSet.getResourcesAdded().size() );
         UrlResource resource = ( UrlResource ) ((List)changeSet.getResourcesAdded()).get( 0 );
-        assertNull( resource.getConfiguration() );
         assertEquals( "http://localhost:8081/jboss-brms/org.kie.guvnor.Guvnor/package/defaultPackage/LATEST",
                       resource.getURL().toString() );
         assertEquals( "enabled", resource.getBasicAuthentication() );

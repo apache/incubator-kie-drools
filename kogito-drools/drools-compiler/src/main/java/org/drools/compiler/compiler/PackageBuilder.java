@@ -438,8 +438,8 @@ public class PackageBuilder
      * @throws IOException
      */
     public void addPackageFromDrl(final Reader reader,
-            final Resource sourceResource) throws DroolsParserException,
-            IOException {
+                                  final Resource sourceResource) throws DroolsParserException,
+                                                                        IOException {
         this.resource = sourceResource;
         final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         final PackageDescr pkg = parser.parse(sourceResource, reader);
@@ -455,17 +455,19 @@ public class PackageBuilder
     }
 
     public void addPackageFromDecisionTable(Resource resource,
-            ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
+                                            ResourceConfiguration configuration) throws DroolsParserException,
+                                                                                        IOException {
         this.resource = resource;
         addPackage(decisionTableToPackageDescr(resource, configuration));
         this.resource = null;
     }
 
     PackageDescr decisionTableToPackageDescr(Resource resource,
-            ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
-        DecisionTableConfiguration dtableConfiguration = (DecisionTableConfiguration) configuration;
+                                             ResourceConfiguration configuration) throws DroolsParserException,
+                                                                                         IOException {
+        DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
+                                                         (DecisionTableConfiguration) configuration :
+                                                         null;
         String string = DecisionTableFactory.loadFromInputStream(resource.getInputStream(), dtableConfiguration);
 
         DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
@@ -478,17 +480,19 @@ public class PackageBuilder
     }
 
     public void addPackageFromScoreCard(Resource resource,
-            ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
+                                        ResourceConfiguration configuration) throws DroolsParserException,
+                                                                                    IOException {
         this.resource = resource;
         addPackage(scoreCardToPackageDescr(resource, configuration));
         this.resource = null;
     }
 
     PackageDescr scoreCardToPackageDescr(Resource resource,
-            ResourceConfiguration configuration) throws DroolsParserException,
-            IOException {
-        ScoreCardConfiguration scardConfiguration = (ScoreCardConfiguration) configuration;
+                                         ResourceConfiguration configuration) throws DroolsParserException,
+                                                                                     IOException {
+        ScoreCardConfiguration scardConfiguration = configuration instanceof ScoreCardConfiguration ?
+                                                    (ScoreCardConfiguration) configuration :
+                                                    null;
         String string = ScoreCardFactory.loadFromInputStream(resource.getInputStream(), scardConfiguration);
 
         DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
@@ -501,7 +505,7 @@ public class PackageBuilder
     }
 
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
-            IOException {
+                                                            IOException {
         this.resource = resource;
         addPackage(drlToPackageDescr(resource));
         this.resource = null;
@@ -754,8 +758,8 @@ public class PackageBuilder
     }
 
     void addPackageForExternalType(Resource resource,
-            ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
+                                   ResourceType type,
+                                   ResourceConfiguration configuration) throws Exception {
         ResourceTypeBuilder builder = ResourceTypeBuilderRegistry.getInstance().getResourceTypeBuilder(type);
         if (builder != null) {
             builder.setPackageBuilder(this);
@@ -768,8 +772,8 @@ public class PackageBuilder
     }
 
     public void addPackageFromPMML(Resource resource,
-            ResourceType type,
-            ResourceConfiguration configuration) throws Exception {
+                                   ResourceType type,
+                                   ResourceConfiguration configuration) throws Exception {
         PMMLCompiler compiler = getPMMLCompiler();
         if (compiler != null) {
             if (compiler.getResults().isEmpty()) {
@@ -789,8 +793,8 @@ public class PackageBuilder
     }
 
     PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
-            Resource resource) throws DroolsParserException,
-            IOException {
+                                         Resource resource) throws DroolsParserException,
+                                                                   IOException {
         String theory = compiler.compile(resource.getInputStream(),
                 getPackageRegistry());
 
@@ -811,7 +815,7 @@ public class PackageBuilder
     }
 
     void addPackageFromXSD(Resource resource,
-            JaxbConfigurationImpl configuration) throws IOException {
+                           JaxbConfigurationImpl configuration) throws IOException {
         String[] classes = DroolsJaxbHelperProviderImpl.addXsdModel(resource,
                 this,
                 configuration.getXjcOpts(),

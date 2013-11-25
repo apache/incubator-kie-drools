@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -22,9 +21,9 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
+import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.StringUtils;
@@ -40,7 +39,6 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
@@ -70,6 +68,8 @@ public abstract class AbstractKieModule
     protected Map<String, Map<String, Map<String, byte[]>>> compilationCache = new HashMap<String, Map<String, Map<String, byte[]>>>();
 
     private Map<String, TypeMetaInfo> typesMetaInfo;
+
+    private Map<String, ResourceConfiguration> resourceConfigurationCache = new HashMap<String, ResourceConfiguration>();
 
     protected PomModel pomModel;
 
@@ -239,28 +239,31 @@ public abstract class AbstractKieModule
     }
 
     private static void addFiles(Map<String, InternalKieModule> assets,
-            KieBaseModel kieBaseModel,
-            InternalKieModule kieModule) {
+                                 KieBaseModel kieBaseModel,
+                                 InternalKieModule kieModule) {
         for (String fileName : kieModule.getFileNames()) {
-            if (filterFileInKBase(kieBaseModel, fileName) && !fileName.endsWith(".properties")) {
+            if (!fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
                 assets.put(fileName, kieModule);
             }
         }
     }
 
     public static boolean addFile(CompositeKnowledgeBuilder ckbuilder,
-            InternalKieModule kieModule,
-            String fileName) {
-        ResourceConfiguration conf = getResourceConfiguration(kieModule, fileName);
+                                  InternalKieModule kieModule,
+                                  String fileName) {
+        ResourceConfiguration conf = kieModule.getResourceConfiguration(fileName);
         Resource resource = kieModule.getResource(fileName);
         if (resource != null) {
             if (conf == null) {
                 ckbuilder.add(resource,
-                        ResourceType.determineResourceType(fileName));
+                              ResourceType.determineResourceType(fileName));
             } else {
+                ResourceType confType = conf instanceof ResourceConfigurationImpl ?
+                                        ((ResourceConfigurationImpl)conf).getResourceType() :
+                                        null;
                 ckbuilder.add(resource,
-                        ResourceType.determineResourceType(fileName),
-                        conf);
+                              confType != null ? confType : ResourceType.determineResourceType(fileName),
+                              conf);
             }
             return true;
         }
@@ -275,13 +278,16 @@ public abstract class AbstractKieModule
         return null;
     }
 
-    public static ResourceConfiguration getResourceConfiguration(InternalKieModule kieModule, String fileName) {
-        ResourceConfiguration conf = null;
-        if (kieModule.isAvailable(fileName + ".properties")) {
+    public ResourceConfiguration getResourceConfiguration(String fileName) {
+        ResourceConfiguration conf = resourceConfigurationCache.get(fileName);
+        if (conf != null) {
+            return conf;
+        }
+        if (isAvailable(fileName + ".properties")) {
             // configuration file available
             Properties prop = new Properties();
             try {
-                prop.load(new ByteArrayInputStream(kieModule.getBytes(fileName + ".properties")));
+                prop.load(new ByteArrayInputStream(getBytes(fileName + ".properties")));
             } catch (IOException e) {
                 log.error("Error loading resource configuration from file: " + fileName + ".properties");
             }
@@ -294,6 +300,7 @@ public abstract class AbstractKieModule
                 conf = ResourceTypeImpl.fromProperties(prop);
             }
         }
+        resourceConfigurationCache.put(fileName, conf);
         return conf;
     }
 
@@ -356,10 +363,10 @@ public abstract class AbstractKieModule
     }
 
     public static boolean updateResource(CompositeKnowledgeBuilder ckbuilder, 
-                                            InternalKieModule kieModule, 
-                                            String resourceName, 
-                                            ResourceChangeSet changes) {
-        ResourceConfiguration conf = getResourceConfiguration(kieModule, resourceName);
+                                         InternalKieModule kieModule,
+                                         String resourceName,
+                                         ResourceChangeSet changes) {
+        ResourceConfiguration conf = kieModule.getResourceConfiguration(resourceName);
         Resource resource = kieModule.getResource(resourceName);
         if (resource != null) {
             if (conf == null) {

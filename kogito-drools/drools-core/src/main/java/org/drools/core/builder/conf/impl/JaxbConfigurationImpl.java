@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.tools.xjc.Options;
 
-public class JaxbConfigurationImpl implements JaxbConfiguration {
+public class JaxbConfigurationImpl extends ResourceConfigurationImpl implements JaxbConfiguration {
     private final Logger logger = LoggerFactory.getLogger( JaxbConfigurationImpl.class ); 
     
     private Options xjcOpts;
@@ -99,7 +99,7 @@ public class JaxbConfigurationImpl implements JaxbConfiguration {
 
 
     public Properties toProperties() {
-        Properties prop = new Properties();
+        Properties prop = super.toProperties();
         prop.setProperty( "drools.jaxb.conf.systemId", systemId );
         prop.setProperty( "drools.jaxb.conf.classes", classes.toString() );
         if (xjcOpts != null) {
@@ -113,6 +113,7 @@ public class JaxbConfigurationImpl implements JaxbConfiguration {
     }
 
     public ResourceConfiguration fromProperties(Properties prop) {
+        super.fromProperties(prop);
         systemId = prop.getProperty( "drools.jaxb.conf.systemId", null );
         String classesStr = prop.getProperty( "drools.jaxb.conf.classes", "[]" );
         classesStr = classesStr.substring( 1, classesStr.length()-1 ).trim();

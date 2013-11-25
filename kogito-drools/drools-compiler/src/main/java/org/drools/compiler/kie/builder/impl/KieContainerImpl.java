@@ -1,6 +1,7 @@
 package org.drools.compiler.kie.builder.impl;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
 
 import java.util.ArrayList;
@@ -114,13 +115,13 @@ public class KieContainerImpl
                 int fileCount = 0;
 
                 // then update and add new resources
-                for( ResourceChangeSet rcs : cs.getChanges().values() ) {
-                    if( ! rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
+                for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
+                    if ( ! rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
                         String resourceName = rcs.getResourceName();
-                        if( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
+                        if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
                             Resource resource = currentKM.getResource( rcs.getResourceName() );
                             List<ResourceChange> changes = rcs.getChanges();
-                            if( ! changes.isEmpty() ) {
+                            if ( ! changes.isEmpty() ) {
                                 // we need to deal with individual parts of the resource
                                 fileCount += AbstractKieModule.updateResource( ckbuilder,
                                                                                newKM,
@@ -154,7 +155,7 @@ public class KieContainerImpl
                     for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
                         if ( rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
                             String resourceName = rcs.getResourceName();
-                            if ( KieBuilderImpl.filterFileInKBase( kieBaseModel, resourceName ) && ! resourceName.endsWith( ".properties" ) ) {
+                            if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
                                 pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
                             }
                         }

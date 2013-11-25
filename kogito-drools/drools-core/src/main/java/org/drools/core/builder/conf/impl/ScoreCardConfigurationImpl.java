@@ -23,7 +23,7 @@ import org.kie.internal.builder.ScoreCardConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ScoreCardConfigurationImpl implements ScoreCardConfiguration {
+public class ScoreCardConfigurationImpl extends ResourceConfigurationImpl implements ScoreCardConfiguration {
     public static final String DROOLS_SCARD_WORKSHEET = "drools.dt.worksheet";
     public static final String DROOLS_SCARD_USE_EXTERNAL_TYPES = "drools.sc.useExternalTypes";
     public static final String DROOLS_SCARD_INPUT_TYPE = "drools.sc.inputType";
@@ -65,7 +65,7 @@ public class ScoreCardConfigurationImpl implements ScoreCardConfiguration {
     }
 
     public Properties toProperties() {
-        Properties prop = new Properties();
+        Properties prop = super.toProperties();
         prop.setProperty( DROOLS_SCARD_WORKSHEET, worksheetName );
         prop.setProperty( DROOLS_SCARD_USE_EXTERNAL_TYPES, Boolean.toString(useExternalTypes));
         prop.setProperty( DROOLS_SCARD_INPUT_TYPE, inputType.toString());
@@ -73,6 +73,7 @@ public class ScoreCardConfigurationImpl implements ScoreCardConfiguration {
     }
 
     public ResourceConfiguration fromProperties(Properties prop) {
+        super.fromProperties(prop);
         worksheetName = prop.getProperty( DROOLS_SCARD_WORKSHEET, null );
         useExternalTypes = Boolean.getBoolean(prop.getProperty(DROOLS_SCARD_USE_EXTERNAL_TYPES, "false"));
         String inputTypeStr = prop.getProperty( DROOLS_SCARD_INPUT_TYPE, SCORECARD_INPUT_TYPE.EXCEL.toString() );

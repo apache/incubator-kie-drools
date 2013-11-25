@@ -155,8 +155,8 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         }
         Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(bytes).setSourcePath(resourceName);
 
-        if ( filterFileInKBase(kieBaseModel, resourceName) ) {
-            ResourceConfiguration conf = AbstractKieModule.getResourceConfiguration(kieModule, resourceName);
+        if ( filterFileInKBase(kieModule, kieBaseModel, resourceName) ) {
+            ResourceConfiguration conf = kieModule.getResourceConfiguration(resourceName);
             if ( conf == null ) {
                 ckbuilder.add( resource, ResourceType.determineResourceType(resourceName) );
             } else {
