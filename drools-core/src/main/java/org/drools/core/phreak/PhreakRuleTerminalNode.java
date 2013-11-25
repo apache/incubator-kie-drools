@@ -79,6 +79,10 @@ public class PhreakRuleTerminalNode {
         PropagationContext pctx = leftTuple.getPropagationContext();
         pctx = RuleTerminalNode.findMostRecentPropagationContext(leftTuple, pctx);
 
+        if ( rtnNode.getRule().isNoLoop() && rtnNode.equals(pctx.getTerminalNodeOrigin()) ) {
+            return;
+        }
+
         if ( salience != null ) {
             salienceInt = salience.getValue(new DefaultKnowledgeHelper((AgendaItem) leftTuple, wm),
                                             rtnNode.getRule(), wm);
@@ -157,6 +161,8 @@ public class PhreakRuleTerminalNode {
            if ( rtnLeftTuple.getBlockers() != null && !rtnLeftTuple.getBlockers().isEmpty() ) {
                blocked = true; // declarativeAgenda still blocking LeftTuple, so don't add back ot list
            }
+        } else {
+            blocked = rtnNode.getRule().isNoLoop() && rtnNode.equals(pctx.getTerminalNodeOrigin());
         }
 
         if ( salience != null ) {
