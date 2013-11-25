@@ -149,13 +149,14 @@ public class RuleBuilder {
     public void buildAttributes(final RuleBuildContext context) {
         final Rule rule = context.getRule();
         final RuleDescr ruleDescr = context.getRuleDescr();
-        boolean lockOnActive = false;
+        boolean enforceEager = false;
 
         for ( final AttributeDescr attributeDescr : ruleDescr.getAttributes().values() ) {
             final String name = attributeDescr.getName();
             if ( name.equals( "no-loop" ) ) {
                 rule.setNoLoop( getBooleanValue( attributeDescr,
                                                  true ) );
+                enforceEager = true;
             } else if ( name.equals( "auto-focus" ) ) {
                 rule.setAutoFocus( getBooleanValue( attributeDescr,
                                                     true ) );
@@ -169,8 +170,9 @@ public class RuleBuilder {
                 rule.setRuleFlowGroup( attributeDescr.getValue() );
                 rule.setAgendaGroup( attributeDescr.getValue() ); // assign AG to the same name as AG, as they are aliased to AGs anyway
             } else if ( name.equals( "lock-on-active" ) ) {
-                lockOnActive = getBooleanValue( attributeDescr, true );
+                boolean lockOnActive = getBooleanValue( attributeDescr, true );
                 rule.setLockOnActive( lockOnActive );
+                enforceEager |= lockOnActive;
             } else if ( name.equals( DroolsSoftKeywords.DURATION ) || name.equals( DroolsSoftKeywords.TIMER ) ) {
                 String duration = attributeDescr.getValue();
                 buildTimer( rule, duration, context);
@@ -213,7 +215,7 @@ public class RuleBuilder {
         }
 
         ann = ruleDescr.getAnnotation( "Eager" );
-        if ( lockOnActive || ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) ) {
+        if ( enforceEager || ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) ) {
             rule.setEager( true );
         }
 

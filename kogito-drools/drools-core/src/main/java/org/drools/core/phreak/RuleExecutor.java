@@ -381,8 +381,7 @@ public class RuleExecutor {
             LeftTuple leftTuple,
             PropagationContext pctx, AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
-        if ((!rule.isEffective(leftTuple, rtn, wm)) ||
-                (rule.isNoLoop() && rtn.equals(pctx.getTerminalNodeOrigin()))) {
+        if ( !rule.isEffective(leftTuple, rtn, wm) ) {
             return true;
         }
 
