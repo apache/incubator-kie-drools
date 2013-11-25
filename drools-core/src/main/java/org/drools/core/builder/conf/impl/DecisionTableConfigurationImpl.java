@@ -24,7 +24,7 @@ import org.kie.internal.builder.DecisionTableInputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DecisionTableConfigurationImpl implements DecisionTableConfiguration {
+public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl implements DecisionTableConfiguration {
     public static final String DROOLS_DT_TYPE = "drools.dt.type";
     public static final String DROOLS_DT_WORKSHEET = "drools.dt.worksheet";
 
@@ -54,13 +54,14 @@ public class DecisionTableConfigurationImpl implements DecisionTableConfiguratio
     }
     
     public Properties toProperties() {
-        Properties prop = new Properties();
+        Properties prop = super.toProperties();
         prop.setProperty( DROOLS_DT_TYPE, inputType.toString() );
         prop.setProperty( DROOLS_DT_WORKSHEET, worksheetName );
         return prop;
     }
 
     public ResourceConfiguration fromProperties(Properties prop) {
+        super.fromProperties(prop);
         inputType = DecisionTableInputType.valueOf( prop.getProperty( DROOLS_DT_TYPE, DecisionTableInputType.XLS.toString() ) );
         worksheetName = prop.getProperty( DROOLS_DT_WORKSHEET, null );
         return this;

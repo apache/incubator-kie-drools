@@ -16,6 +16,7 @@
 
 package org.drools.core.io.impl;
 
+import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -33,8 +34,8 @@ public abstract class BaseResource
         implements
         InternalResource,
         Externalizable {
-    private ResourceType          resourceType;
-    private ResourceConfiguration configuration;
+    private ResourceType              resourceType;
+    private ResourceConfigurationImpl configuration;
 
     private String                sourcePath;
     private String                targetPath;
@@ -45,7 +46,7 @@ public abstract class BaseResource
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         resourceType = (ResourceType) in.readObject();
-        configuration = (ResourceConfiguration) in.readObject();
+        configuration = (ResourceConfigurationImpl) in.readObject();
         sourcePath = (String) in.readObject();
         targetPath = (String) in.readObject();
         description = (String) in.readObject();
@@ -65,13 +66,21 @@ public abstract class BaseResource
         return configuration;
     }
 
-    public InternalResource setConfiguration(ResourceConfiguration configuration) {
-        this.configuration = configuration;
+    public InternalResource setConfiguration(ResourceConfiguration conf) {
+        if (this.configuration != null) {
+            this.configuration = this.configuration.merge((ResourceConfigurationImpl)conf);
+        } else {
+            this.configuration = (ResourceConfigurationImpl)conf;
+        }
         return this;
     }
 
     public InternalResource setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
+        if (this.configuration == null) {
+            this.configuration = new ResourceConfigurationImpl();
+        }
+        this.configuration.setResourceType(resourceType);
         return this;
     }
 

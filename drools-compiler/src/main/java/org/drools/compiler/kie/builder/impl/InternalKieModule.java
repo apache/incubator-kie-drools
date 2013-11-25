@@ -10,6 +10,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.definition.KnowledgePackage;
 
@@ -30,6 +31,8 @@ public interface InternalKieModule extends KieModule {
     byte[] getBytes( );  
     
     Resource getResource( String fileName );
+
+    ResourceConfiguration getResourceConfiguration( String fileName );
     
     Map<ReleaseId, InternalKieModule> getKieDependencies();
     
