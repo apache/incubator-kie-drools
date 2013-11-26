@@ -25,6 +25,8 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  * <p/>
  * Implementations are allowed to optionally implement Pareto comparison
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
+ * <p/>
+ * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
  * @see AbstractScore
  * @see HardSoftScore
  */

@@ -29,6 +29,8 @@ import org.optaplanner.core.impl.solution.Solution;
 /**
  * This class is injected as a global by {@link DroolsScoreDirector} into the Drools DRL.
  * Other {@link ScoreDirector} implementations do not use this class.
+ * <p/>
+ * An implementation must extend {@link AbstractScoreHolder} to ensure backwards compatibility in future versions.
  * @see AbstractScoreHolder
  */
 public interface ScoreHolder {
