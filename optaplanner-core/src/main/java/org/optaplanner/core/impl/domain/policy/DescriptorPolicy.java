@@ -17,7 +17,10 @@
 package org.optaplanner.core.impl.domain.policy;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.core.util.StringUtils;
@@ -78,6 +81,14 @@ public class DescriptorPolicy {
                     + ") with a " + ValueRangeProvider.class.getSimpleName()
                     + " annotation must not have the same id (" + id + ").");
         }
+    }
+
+    public Collection<String> getValueRangeProviderIds() {
+        List<String> valueRangeProviderIds = new ArrayList<String>(
+                fromSolutionValueRangeProviderMap.size() + fromEntityValueRangeProviderMap.size());
+        valueRangeProviderIds.addAll(fromSolutionValueRangeProviderMap.keySet());
+        valueRangeProviderIds.addAll(fromEntityValueRangeProviderMap.keySet());
+        return valueRangeProviderIds;
     }
 
 }

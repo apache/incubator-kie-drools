@@ -169,8 +169,11 @@ public class PlanningVariableDescriptor {
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + ") annotated property (" + variablePropertyAccessor.getName()
                     + ") with a valueRangeProviderRef (" + valueRangeProviderRef
-                    + ") that does not exist on an registered " + PlanningSolution.class.getSimpleName()
-                    + " or " + PlanningEntity.class.getSimpleName() + ".");
+                    + ") that does not exist on a registered " + PlanningSolution.class.getSimpleName()
+                    + " or " + PlanningEntity.class.getSimpleName() + ".\n"
+                    + "The valueRangeProviderRef (" + valueRangeProviderRef
+                    + ") does not appear in valueRangeProvideIds (" + descriptorPolicy.getValueRangeProviderIds()
+                    + ").");
         }
     }
 
