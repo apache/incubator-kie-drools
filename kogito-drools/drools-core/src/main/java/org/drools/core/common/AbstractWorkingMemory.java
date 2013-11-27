@@ -540,7 +540,8 @@ public class AbstractWorkingMemory
         }
 
         // TODO this is OTT, it shouldn't need to do this for ALL rules, just those rules that event stream inputs (mdp)
-        if( this.ruleBase.getConfiguration().getEventProcessingMode().equals(EventProcessingOption.STREAM) ) {
+        RuleBaseConfiguration conf = this.ruleBase.getConfiguration();
+        if( conf.isPhreakEnabled() && conf.getEventProcessingMode().equals(EventProcessingOption.STREAM) ) {
             lmem.linkNode(this);
             List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
             PathMemory pmm = pmems!=null && !pmems.isEmpty() ? pmems.get(0) : null;
