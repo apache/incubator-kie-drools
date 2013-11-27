@@ -10,14 +10,13 @@
         All calls are synchronous, that is, the call will only complete, including the possible return of a result, once the requested operation
         has succeeded.</para>
   <para>When using Java code to interface with the REST API, the classes used in POST operations or otherwise returned by various operations can be found 
-        in the <code>(org.kie.remote:)kie-services-client</code> jar.</para> 
+        in the <code>(org.kie.remote:)kie-services-client</code> JAR.</para> 
 
   <section>
     <title>Additional Information</title>
    
     <section>
       <title>Serialization: JAXB or JSON</title>
-      <para>Serialization (json/jaxb)</para>
       <para>Except for the <link linkend='remote.rest.execute' nextend='remote.rest.execute.title'>Execute calls</link>,  all other REST calls 
         described below can use either JAXB or JSON.</para>
       
@@ -145,7 +144,7 @@
       <title>Map query parameters</title>
 
       <para>If you're triggering an operation with a REST API call that would normally (e.g. when interacting the same operation on a local 
-        <code>KieSession</code> or <code>TaskService</code> instance) take an instance of a <code>java.util.Map</code> as one of it's parameters, 
+        <code>KieSession</code> or <code>TaskService</code> instance) take an instance of a <code>java.util.Map</code> as one of its parameters, 
         you can submit key-value pairs to the operation to simulate this behaviour by passing a query parameter whose name starts with 
         <code>map_</code>.</para>
         <example>

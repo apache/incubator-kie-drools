@@ -69,7 +69,7 @@ of the <filename>META-INF</filename> directory, for example, here:</para>
     <section>
       <title>Registering the work definition</title>
 
-<para>The jBPM eclipse editor uses the configuration mechanisms supplied by Drools to register work item definition 
+<para>The jBPM Eclipse editor uses the configuration mechanisms supplied by Drools to register work item definition 
 files. That means adding a <code>drools.workDefinitions</code> property to the
 <filename>drools.rulebase.conf</filename> file in the <filename>META-INF</filename>.</para>
 

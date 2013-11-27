@@ -10,7 +10,7 @@
     <title>Using the Remote Java RuntimeEngine API</title>
     
     <para>By using the <code>RemoteRestSessionFactory</code> or <code>RemoteJmsSessionFactory</code> classes provided by the <code>kie-services-client</code>
-      jar, you can create remote instances of the <code>RuntimeEngine</code> and thus also the <code>KieSession</code> and <code>TaskService</code>. 
+      JAR, you can create remote instances of the <code>RuntimeEngine</code> and thus also the <code>KieSession</code> and <code>TaskService</code>. 
       These instances  will allow you to interact with a remote workbench instance (i.e. KIE workbench or the jBPM Console) without having to deal with 
       the underlying transport and serialization details.</para>
     
@@ -63,7 +63,7 @@
             <row>
               <entry><code>user</code></entry>
               <entry><code>homer</code></entry>
-              <entry>This is the user needed for authentication for all rest calls.</entry>
+              <entry>This is the user needed for authentication for all REST calls.</entry>
             </row>
             <row>
               <entry><code>password</code></entry>

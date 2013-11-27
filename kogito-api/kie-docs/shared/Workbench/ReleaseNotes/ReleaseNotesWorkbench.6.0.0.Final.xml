@@ -12,16 +12,16 @@
     experience for our end users, but we can now develop more rapidly with a clean component based architecture. If you
     like he Workbench experience you can use UberFire today to build your own web based dashboard and console
     efforts.</para>
-  <para>As well as the move to a UberFire the other biggest change is the move from JCR to GIT; there is an utility
-    project to help with migration. GIT is the most scalable and powerful source repository bar none. JGIT provides a
-    solid OSS implementation for GIT. This addresses the continued performance problems with the various JCR
+  <para>As well as the move to a UberFire the other biggest change is the move from JCR to Git; there is an utility
+    project to help with migration. Git is the most scalable and powerful source repository bar none. JGit provides a
+    solid OSS implementation for Git. This addresses the continued performance problems with the various JCR
     implementations, which would slow down once the number of files and number of versions become too high. There has
     been a big "low tech" drive, to remove complexity. Everything is now stored as a file, including meta data. The
-    database is ony there to provide fast indexing and search. So importing and exporting is all standard GIT and
+    database is ony there to provide fast indexing and search. So importing and exporting is all standard Git and
     external sites, like GitHub, can be used to exchange repositories. </para>
   <para>In 5.x developers would work with their own source repository and then push JCR, via the team provider. This
-    team provider was not full featured and not available outside eclipse. GIT enables our repository to work any
-    existing GIT tool or team provider. While not yet supported in the UI,  this will be added over time, it is possible
+    team provider was not full featured and not available outside Eclipse. Git enables our repository to work any
+    existing Git tool or team provider. While not yet supported in the UI,  this will be added over time, it is possible
     to connect to the repo and tag and branch and restore things.</para>
 
   <figure>
@@ -32,13 +32,13 @@
       </imageobject>
     </mediaobject>
   </figure>
-  <para>The Guvnor brand leaked too much from it's intended role; such as the authoring metaphores, like Decision Tables,
+  <para>The Guvnor brand leaked too much from its intended role; such as the authoring metaphors, like Decision Tables,
     being considered Guvnor components instead of Drools components. This wasn't helped by the monolithic projects
     structure used in 5.x for Guvnor. In 6.0 Guvnor 's focus has been narrowed to encapsulates the set of UberFire
     plugins that provide the basis for building a web based IDE. Such as Maven integration for building and deploying,
     management of Maven repositories and activity notifications via inboxes. Drools and jBPM build workbench
     distributions using Uberfire as the base and including a set of plugins, such as Guvnor, along with their own
-    plugins for things like decision tables, guided editors, bpm2 designer, human tasks. </para>
+    plugins for things like decision tables, guided editors, BPMN2 designer, human tasks. </para>
   <para>The "Model Structure" diagram outlines the new project anatomy. The Drools workbench is called KIE-Drools-WB.
     KIE-WB is the uber workbench that combines all the Guvnor, Drools and jBPM plugins. The jBPM-WB is ghosted out, as
     it doesn't actually exist, being made redundant by KIE-WB.</para>
@@ -110,10 +110,10 @@
           and externally in your own applications.</para>
       </listitem>
       <listitem>
-        <para>Virtual File System replaces JCR with a default GIT based implementation.</para>
+        <para>Virtual File System replaces JCR with a default Git based implementation.</para>
         <itemizedlist>
           <listitem>
-            <para>Default GIT based implementation supports remote operations.</para>
+            <para>Default Git based implementation supports remote operations.</para>
           </listitem>
           <listitem>
             <para>External modifications appear within the Workbench.</para>

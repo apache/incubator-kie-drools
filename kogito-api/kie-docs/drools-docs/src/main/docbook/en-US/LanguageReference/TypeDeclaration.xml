@@ -297,7 +297,7 @@
         <para>Every event has an associated timestamp assigned to it. By default,
           the timestamp for a given event is read from the Session Clock and
           assigned to the event at the time the event is inserted into the working
-          memory. Although, sometimes, the event has the timestamp as one of it's
+          memory. Although, sometimes, the event has the timestamp as one of its
           own attributes. In this case, the user may tell the engine to use the
           timestamp from the event's attribute instead of reading it from the
           Session Clock.</para>

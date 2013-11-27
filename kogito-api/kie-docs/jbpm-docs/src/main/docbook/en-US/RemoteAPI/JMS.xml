@@ -209,7 +209,7 @@ import org.kie.services.client.serialization.jaxb.impl.JaxbExceptionResponse;
   }]]></programlisting>
       <calloutlist>
         <callout arearefs="jbpm.jms.imports">
-          <para>These classes can all be found in the (org.kie.remote:)kie-services-client jar.</para>
+          <para>These classes can all be found in the (org.kie.remote:)kie-services-client JAR.</para>
         </callout>
         <callout arearefs="jbpm.jms.commands">
           <para>The <code>JaxbCommandsRequest</code> instance is the "holder" object in which you can place all of the commands

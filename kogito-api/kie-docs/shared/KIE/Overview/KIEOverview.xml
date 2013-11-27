@@ -18,7 +18,7 @@
       workbench has been spun off into a standalone project called UberFire, so that anyone now can
       build high quality web based workbenches. In the longer term it will facilitate user
       customised Drools and jBPM installations.</para>
-    <para>GIT replaces JCR as the content repository, offering a fast and scalable back-end storage
+    <para>Git replaces JCR as the content repository, offering a fast and scalable back-end storage
       for content that has strong tooling support. There has been a refocus on simplicity away from
       databases with an aim of storing everythign as as text file, even meta data is just a file.
       The database is just there to provide fast indexing and search via Lucene. This will allow
@@ -29,13 +29,13 @@
       integrated into the new workbench.</para>
   </section>
   <section>
-    <title>KIE and KIE Sub Projects</title>
+    <title>KIE and KIE Subprojects</title>
   <para>The process of researching an integration knowledge solution for Drools and jBPM has simply
-      used the "droolsjbpm" group name. This name permeates github accounts and maven poms. As
+      used the "droolsjbpm" group name. This name permeates GitHub accounts and Maven POMs. As
       scopes broadened and new projects were spun KIE, an acronym for Knowledge Is Everything, was
       chosen as the new group name.  The KIE name is also used for the shared aspects of the system;
       such as the unified build, deploy and utilization.</para>
-  <para>KIE currently consists of the following sub projects:</para>
+  <para>KIE currently consists of the following subprojects:</para>
     <figure>
       <title>KIE Overview</title>
       <mediaobject>
@@ -55,17 +55,17 @@
     <para>UberFire is the new base workbench project, spun off from the ground up rewrite. UberFire
       provides Eclipse-like workbench capabilities, with panels and perspectives from plugins. The
       project is independant of Drools and jBPM and anyone can use it as a basis of building
-      flexible and powerful workbenches. UbeFire will be used for console and workbench development
+      flexible and powerful workbenches. UberFire will be used for console and workbench development
       throughout JBoss.</para>
-    <para>It was determined that the Guvnor brand leaked too much from it's intested role; such as
-      the authoring metaphores, like Decision Tables, being considered Guvnor components instead of
+    <para>It was determined that the Guvnor brand leaked too much from its intested role; such as
+      the authoring metaphors, like Decision Tables, being considered Guvnor components instead of
       Drools components. This wasn't helped by the monolithic projects structure used in 5.x for
-      Guvnor. In 6.0 Guvnor 's focus has been narrowed to encapsulates the set of UberFire plugins
+      Guvnor. In 6.0 Guvnor's focus has been narrowed to encapsulates the set of UberFire plugins
       that provide the basis for building a web based IDE. Such as Maven integration for building
       and deploying, management of Maven repositories and activity notifications via inboxes. Drools
       and jBPM build workbench distributions using Uberfire as the base and including a set of
       plugins, such as Guvnor, along with their own plugins for things like decision tables, guided
-      editors, bpm2 designer, human tasks. The Drools workbench is called Drools-WB. KIE-WB is the
+      editors, BPMN2 designer, human tasks. The Drools workbench is called Drools-WB. KIE-WB is the
       uber workbench that combined all the Guvnor, Drools and jBPM plugins. The jBPM-WB is ghosted
       out, as it doesn't actually exist, being made redundant by KIE-WB.</para>
   </section>
@@ -77,7 +77,7 @@
         <para><emphasis role="bold">Author</emphasis>
           <itemizedlist>
             <listitem>
-              <para>Authoring of knowledge using a UI metaphor, such as: drl, BPMN2, decision table,
+              <para>Authoring of knowledge using a UI metaphor, such as: DRL, BPMN2, decision table,
                 class models.</para>
             </listitem>
           </itemizedlist></para>
@@ -85,17 +85,17 @@
       <listitem>
         <para><emphasis role="bold">Build</emphasis><itemizedlist>
             <listitem>
-              <para>Builds the authored knowledge into deployable units. </para>
+              <para>Builds the authored knowledge into deployable units.</para>
             </listitem>
             <listitem>
-              <para>For KIE this unit is a jar.</para>
+              <para>For KIE this unit is a JAR.</para>
             </listitem>
           </itemizedlist></para>
       </listitem>
       <listitem>
         <para><emphasis role="bold">Test</emphasis><itemizedlist>
             <listitem>
-              <para>Test  KIE knowedge before it's deployed to the application.</para>
+              <para>Test KIE knowedge before it's deployed to the application.</para>
             </listitem>
           </itemizedlist></para>
       </listitem>
@@ -106,21 +106,21 @@
                 them.</para>
             </listitem>
             <listitem>
-              <para>KIE uses maven style repository.</para>
+              <para>KIE uses Maven style repository.</para>
             </listitem>
           </itemizedlist></para>
       </listitem>
       <listitem>
         <para><emphasis role="bold">Utilize</emphasis><itemizedlist>
             <listitem>
-              <para>The loading of a jar to provide a KIE session (KieSession), for which the
+              <para>The loading of a JAR to provide a KIE session (KieSession), for which the
                 application can interact with.</para>
             </listitem>
             <listitem>
-              <para>KIE exposes the jar at runtime via a KIE container (KieContainer),.</para>
+              <para>KIE exposes the JAR at runtime via a KIE container (KieContainer).</para>
             </listitem>
             <listitem>
-              <para>KieSessions, for the runtime's to interact with, are created from the
+              <para>KieSessions, for the runtimes to interact with, are created from the
                 KieContainer.</para>
             </listitem>
           </itemizedlist></para>
@@ -128,7 +128,7 @@
       <listitem>
         <para><emphasis role="bold">Run</emphasis><itemizedlist>
             <listitem>
-              <para>System interaction with the KieSession, via api.</para>
+              <para>System interaction with the KieSession, via API.</para>
             </listitem>
           </itemizedlist></para>
       </listitem>

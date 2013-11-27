@@ -137,7 +137,7 @@ end
 </programlisting>
 
   <para>Drools supports unification for derivation queries, in short this
-    means that arguments are optional. It is possible to call queries from java
+    means that arguments are optional. It is possible to call queries from Java
     leaving arguments unspecified using the static field
     org.drools.core.runtime.rule.Variable.v - note you must use 'v' and not an
     alternative instance of Variable. These are referred to as 'out' arguments.

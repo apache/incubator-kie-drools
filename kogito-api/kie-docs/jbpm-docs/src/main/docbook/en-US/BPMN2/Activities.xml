@@ -281,8 +281,8 @@
             <para><emphasis>Independent</emphasis> (by default true): If this property is true, the
             child process is started as an independent process, which means that the
             child process will not be terminated if this parent process is completed (or
-            this sub-process node is cancelled for some other reason);
-            otherwise the active sub-process will be cancelled on termination of the parent
+            this sub-process node is canceled for some other reason);
+            otherwise the active sub-process will be canceled on termination of the parent
             process (or cancellation of the sub-process node).  Note that you can only set
             independent to "false" only when "Wait for completion" is set to true.
             </para>

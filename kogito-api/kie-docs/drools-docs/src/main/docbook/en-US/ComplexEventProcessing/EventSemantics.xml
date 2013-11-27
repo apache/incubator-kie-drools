@@ -17,7 +17,7 @@
       happened, and the past can not be "changed", events are immutables. This
       constraint is an important requirement for the development of several
       optimizations and for the specification of the event lifecycle. This
-      does not mean that the java object representing the object must be
+      does not mean that the Java object representing the object must be
       immutable. Quite the contrary, the engine does not enforce immutability
       of the object model, because one of the most common use cases for rules
       is event data enrichment.</para>

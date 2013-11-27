@@ -79,7 +79,7 @@
       <title>Modes</title>
       <itemizedlist>
         <listitem>
-          <para>Online (default and recommended) - Connects to the git repository on startup using GIT server provided
+          <para>Online (default and recommended) - Connects to the Git repository on startup using Git server provided
             by the KIE Workbench. All changes are made locally and published to upstream when:</para>
           <itemizedlist>
             <listitem>

@@ -130,7 +130,7 @@ import org.drools.core.process.core.datatype.impl.type.StringDataType;
     folder as the extended configuration file (so it can be shown by the import wizard when browsing
     the repository).</listitem>
     <listitem>The dependencies property defines additional dependencies that are necessary to execute
-    this service.  This usually includes the handler implementation jar, but could also include
+    this service.  This usually includes the handler implementation JAR, but could also include
     additional external dependencies.  These dependencies should also be located on the repository
     on the given location (relative to the folder where the extended configuration file is located),
     so they can be downloaded by the import wizard when importing the service.</listitem>

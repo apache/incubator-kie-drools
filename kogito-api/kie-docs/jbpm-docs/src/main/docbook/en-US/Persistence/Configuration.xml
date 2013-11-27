@@ -23,14 +23,14 @@
     default.</para>
 
     <para>If you're using the Eclipse IDE and the jBPM Eclipse plugin, you should make sure
-    the necessary jars are added to your jBPM runtime directory.  You don't really need to do
+    the necessary JARs are added to your jBPM runtime directory.  You don't really need to do
     anything (as the necessary dependencies should already be there) if you are using the jBPM
     runtime that is configured by default when using the jBPM installer, or if you downloaded
     and unzipped the jBPM runtime artifact (from the downloads) and pointed the jBPM plugin to
     that directory.</para>
     
     <para>If you would like to manually add the necessary dependencies to your project, first of all,
-    you need the jar file <filename>jbpm-persistence-jpa.jar</filename>,
+    you need the JAR file <filename>jbpm-persistence-jpa.jar</filename>,
     as that contains code for saving the runtime state whenever necessary.
     Next, you also need various other dependencies, depending on the
     persistence solution and database you are using.  For the default

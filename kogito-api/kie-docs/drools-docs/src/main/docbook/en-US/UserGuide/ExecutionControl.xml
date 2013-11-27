@@ -13,7 +13,7 @@
     <title>Agenda</title>
 
     <para>The Agenda is a <emphasis>Rete</emphasis> feature. It maintains set
-    of rules that are able to execute, it's job is to schedule that execution
+    of rules that are able to execute, its job is to schedule that execution
     in a deterministic order.</para>
 
     <para>During actions on the <code>RuleRuntime</code>, rules may become fully matched and eligible for execution; a

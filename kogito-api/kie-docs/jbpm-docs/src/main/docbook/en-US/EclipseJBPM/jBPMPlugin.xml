@@ -123,7 +123,7 @@
     examples using the old jBPM 5.x API.  Note that you yourself are responsible for making sure that
     the code you generate can be understood by the runtime (for example, if you create an example using
     jBPM6 API but select a jBPM5 runtime, your sample will not compile).  Also note that, if you want
-    to execute a jBPM5 example on jBPM6, you will need to have the knowledge-api jar inside your
+    to execute a jBPM5 example on jBPM6, you will need to have the knowledge-api JAR inside your
     jBPM6 runtime, as this is responsible for the backwards compatibility of the jBPM5 API in jBPM6.
     </para>
 
@@ -154,7 +154,7 @@
     <para>The newly created project contains an example process file (sample.bpmn)
     in the src/main/resources directory and an example Java file (ProcessTest.java) that
     can be used to test the process in a jBPM engine. You'll find this in
-    the folder src/main/java, in the com.sample package. All the other jars that
+    the folder src/main/java, in the com.sample package. All the other JARs that
     are necessary during execution are also added to the classpath in a custom
     classpath container called jBPM Library.</para>
 
@@ -181,11 +181,11 @@
   <section>
     <title>jBPM Runtime</title>
     
-    <para>A jBPM runtime is a collection of jar files that represent one specific release of the
-    jBPM project jars. To create a runtime, download the binary distribution of the version of
+    <para>A jBPM runtime is a collection of JAR files that represent one specific release of the
+    jBPM project JARs. To create a runtime, download the binary distribution of the version of
     jBPM you want to use and unzip on your local file system.  You must then point the IDE to the 
-    release of your choice by selecting the folder where these jars are located. If you want to 
-    create a new runtime based on the latest jBPM project jars included in the plugin itself, you
+    release of your choice by selecting the folder where these JARs are located. If you want to 
+    create a new runtime based on the latest jBPM project JARs included in the plugin itself, you
     can also easily do that. You are required to specify a default jBPM runtime for your Eclipse
     workspace, but each individual project can override the default and select the appropriate runtime
     for that project specifically.</para>
@@ -227,7 +227,7 @@
 
       <orderedlist>
         <listitem>
-          <para>If you simply want to use the default jar files as included in
+          <para>If you simply want to use the default JAR files as included in
           the jBPM Eclipse plugin, you can create a new jBPM runtime
           automatically by clicking the "Create a new jBPM Runtime ..."
           button. A file browser will show up, asking you to select the folder
@@ -236,10 +236,10 @@
           specified folder.  Make sure to select a unique name for the newly
           created runtime and click "OK" to register this runtime.</para>
           
-          <tip><para>Note that creating a jBPM runtime from the default jar files
+          <tip><para>Note that creating a jBPM runtime from the default JAR files
           as included in the jBPM Eclipse plugin is only recommended to get you
           started the first time and for very simple use cases.  The runtime that is
-          created this way only contains the minimal set of jars, and therefore doesn't
+          created this way only contains the minimal set of JARs, and therefore doesn't
           support a significant set of features, including for example persistence.
           Make sure to create a full runtime (using the second approach) for real 
           development.</para></tip>
@@ -253,7 +253,7 @@
           the binary distribution and unzipping it on your local file system).
           Instead of creating a new jBPM runtime as explained above, give your
           runtime a unique name and click the "Browse ..." button to select the
-          location of this folder containing all the required jars.  Click "OK"
+          location of this folder containing all the required JARs.  Click "OK"
           to register this runtime.</para>
         </listitem>
       </orderedlist>
@@ -276,7 +276,7 @@
 
       <para>Whenever you create a jBPM project (using the New jBPM Project
       wizard or by converting an existing Java project to a jBPM project),
-      the plugin will automatically add all the required jars to the classpath
+      the plugin will automatically add all the required JARs to the classpath
       of your project.</para>
 
       <para>When creating a new jBPM project, the plugin will automatically
@@ -385,9 +385,9 @@
 
   <para>In the properties section, you can specify which version of jBPM you would like to use
   (by default it uses 6.0.0.Final).  It adds the JBoss Nexus Maven repository (where all the jBPM
-  jars and their dependencies are located) to your project and configures the dependencies.</para>
+  JARs and their dependencies are located) to your project and configures the dependencies.</para>
   
-  <note><para>By default, only the jbpm-test jar is specified as a dependency, as this has transitive
+  <note><para>By default, only the jbpm-test JAR is specified as a dependency, as this has transitive
   dependencies to almost all of the core dependencies you will need.  You are free to update the
   dependencies section however to include only the dependencies you need.</para></note>
   

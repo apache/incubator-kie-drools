@@ -83,7 +83,7 @@
     void disposeRuntimeEngine(RuntimeEngine runtime);
     
     /**
-     * Closes &lt;code&gt;RuntimeManager&lt;/code&gt; and releases it's resources. Shall always be called when
+     * Closes &lt;code&gt;RuntimeManager&lt;/code&gt; and releases its resources. Shall always be called when
      * runtime manager is not needed any more. Otherwise it will still be active and operational.
      */
     void close();
