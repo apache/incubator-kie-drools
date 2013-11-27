@@ -103,6 +103,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 
 /**
@@ -612,7 +613,7 @@ public class ReteooRuleBase
                             if ( typeDeclaration == null ) {
                                 String className = newDecl.getTypeClassName();
 
-                                byte [] def = runtime.getClassDefinition(JavaDialectRuntimeData.convertClassToResourcePath(className));
+                                byte [] def = runtime.getClassDefinition(convertClassToResourcePath(className));
                                 Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
                                 if ( definedKlass == null && typeDeclaration.isNovel() ) {

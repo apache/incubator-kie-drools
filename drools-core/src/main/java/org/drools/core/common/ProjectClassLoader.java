@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.drools.core.rule.JavaDialectRuntimeData.convertClassToResourcePath;
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 public class ProjectClassLoader extends ClassLoader {
 
@@ -26,6 +26,8 @@ public class ProjectClassLoader extends ClassLoader {
     private final Set<String> nonExistingClasses = new HashSet<String>();
 
     private ClassLoader droolsClassLoader;
+
+    private InternalTypesClassLoader typesClassLoader;
 
     private ProjectClassLoader(ClassLoader parent) {
         super(parent);
@@ -73,6 +75,14 @@ public class ProjectClassLoader extends ClassLoader {
 
     @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        try {
+            return internalLoadClass(name, resolve);
+        } catch (ClassNotFoundException e2) {
+            return loadType(name, resolve);
+        }
+    }
+
+    private Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
         if (CACHE_NON_EXISTING_CLASSES && nonExistingClasses.contains(name)) {
             throw dummyCFNE;
         }
@@ -84,20 +94,39 @@ public class ProjectClassLoader extends ClassLoader {
         }
         try {
             return super.loadClass(name, resolve);
-        } catch (ClassNotFoundException e1) {
+        } catch (ClassNotFoundException e) {
+            return Class.forName(name, resolve, getParent());
+        }
+    }
+
+    private Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
+        ClassNotFoundException cnfe = null;
+        if (typesClassLoader != null) {
             try {
-                return Class.forName(name, resolve, getParent());
-            } catch (ClassNotFoundException e2) {
-                byte[] bytecode = getBytecode(convertClassToResourcePath(name));
-                if (bytecode == null) {
-                    if (CACHE_NON_EXISTING_CLASSES) {
-                        nonExistingClasses.add(name);
-                    }
-                    throw e2;
-                }
-                return defineClass(name, bytecode, 0, bytecode.length);
+                return typesClassLoader.loadType(name, resolve);
+            } catch (ClassNotFoundException e) {
+                cnfe = e;
             }
         }
+        return tryDefineType(name, cnfe);
+    }
+
+    private Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
+        byte[] bytecode = getBytecode(convertClassToResourcePath(name));
+        if (bytecode == null) {
+            if (CACHE_NON_EXISTING_CLASSES) {
+                nonExistingClasses.add(name);
+            }
+            throw cnfe != null ? cnfe : new ClassNotFoundException(name);
+        }
+        return defineType(name, bytecode);
+    }
+
+    private Class<?> defineType(String name, byte[] bytecode) {
+        if (typesClassLoader == null) {
+            typesClassLoader = new InternalTypesClassLoader(this);
+        }
+        return typesClassLoader.defineClass(name, bytecode);
     }
 
     public Class<?> defineClass(String name, byte[] bytecode) {
@@ -106,17 +135,10 @@ public class ProjectClassLoader extends ClassLoader {
 
     public Class<?> defineClass(String name, String resourceName, byte[] bytecode) {
         storeClass(name, resourceName, bytecode);
-        return defineClass(name, bytecode, 0, bytecode.length);
+        return defineType(name, bytecode);
     }
 
     public void storeClass(String name, String resourceName, byte[] bytecode) {
-        int lastDot = name.lastIndexOf( '.' );
-        if (lastDot > 0) {
-            String pkgName = name.substring( 0, lastDot );
-            if (getPackage( pkgName ) == null) {
-                definePackage( pkgName, "", "", "", "", "", "", null );
-            }
-        }
         if (store == null) {
             store = new HashMap<String, byte[]>();
         }
@@ -173,5 +195,48 @@ public class ProjectClassLoader extends ClassLoader {
             store.putAll(other.store);
         }
         nonExistingClasses.addAll(other.nonExistingClasses);
+    }
+
+    private static class InternalTypesClassLoader extends ClassLoader {
+
+        private final ProjectClassLoader projectClassLoader;
+
+        private InternalTypesClassLoader(ProjectClassLoader projectClassLoader) {
+            this.projectClassLoader = projectClassLoader;
+        }
+
+        public Class<?> defineClass(String name, byte[] bytecode) {
+            int lastDot = name.lastIndexOf( '.' );
+            if (lastDot > 0) {
+                String pkgName = name.substring( 0, lastDot );
+                if (getPackage( pkgName ) == null) {
+                    definePackage( pkgName, "", "", "", "", "", "", null );
+                }
+            }
+            return defineClass(name, bytecode, 0, bytecode.length);
+        }
+
+        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+            try {
+                return loadType(name, resolve);
+            } catch (ClassNotFoundException cnfe) {
+                synchronized(projectClassLoader) {
+                    try {
+                        return projectClassLoader.internalLoadClass(name, resolve);
+                    } catch (ClassNotFoundException cnfe2) {
+                        return projectClassLoader.tryDefineType(name, cnfe);
+                    }
+                }
+            }
+        }
+
+        private Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
+            return super.loadClass(name, resolve);
+        }
+    }
+
+    public synchronized void reinitTypes() {
+        typesClassLoader = null;
+        nonExistingClasses.clear();
     }
 }
