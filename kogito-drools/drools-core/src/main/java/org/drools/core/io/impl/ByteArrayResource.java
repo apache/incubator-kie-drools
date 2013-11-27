@@ -68,7 +68,12 @@ public class ByteArrayResource extends BaseResource
     public Reader getReader() throws IOException {
         return new InputStreamReader( getInputStream() );
     }
-    
+
+    @Override
+    public byte[] getBytes() {
+        return bytes;
+    }
+
     public boolean hasURL() {
         return false;
     }

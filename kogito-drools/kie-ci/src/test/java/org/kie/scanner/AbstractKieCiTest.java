@@ -137,7 +137,7 @@ public class AbstractKieCiTest {
                 "end\n" +
                 "rule R1\n" +
                 "when\n" +
-                "   $b : Bean()\n" +
+                "   $b : Bean( value > 0 )\n" +
                 "then\n" +
                 "   list.add( $b.getValue() );\n" +
                 "end\n";

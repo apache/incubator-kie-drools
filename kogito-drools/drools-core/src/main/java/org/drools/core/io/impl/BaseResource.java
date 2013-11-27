@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+
 public abstract class BaseResource
         implements
         InternalResource,
@@ -134,6 +136,14 @@ public abstract class BaseResource
 
     public void addCategory(String tag) {
         getCategories().add( tag );
+    }
+
+    public byte[] getBytes() {
+        try {
+            return readBytesFromInputStream(getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

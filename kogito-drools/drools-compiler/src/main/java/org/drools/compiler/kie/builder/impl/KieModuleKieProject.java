@@ -1,7 +1,7 @@
 package org.drools.compiler.kie.builder.impl;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
-import static org.drools.core.rule.JavaDialectRuntimeData.convertResourceToClassName;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public class KieModuleKieProject extends AbstractKieProject {
     public KieModuleKieProject(InternalKieModule kieModule, ClassLoader parent) {
         this.kieModule = kieModule;
         if( parent == null ) {
-            ClassLoaderResolver resolver = null;
+            ClassLoaderResolver resolver;
             try {
                 resolver = ServiceRegistryImpl.getInstance().get(ClassLoaderResolver.class);
             } catch ( Exception cne ) {

@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.utils.ClassLoaderUtil;
 
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.junit.Assert.*;
 
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -51,8 +52,7 @@ public class ClassBuilderTest {
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
         byte[] d = builder.buildClass( classDef);
                      
-        data.write( JavaDialectRuntimeData.convertClassToResourcePath( classDef.getClassName() ),
-                       d );
+        data.write( convertClassToResourcePath(classDef.getClassName()), d );
         classLoader = new PackageClassLoader(data, ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         
         this.store = new ClassFieldAccessorStore();
