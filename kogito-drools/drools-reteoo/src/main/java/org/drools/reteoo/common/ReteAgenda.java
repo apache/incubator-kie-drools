@@ -351,7 +351,7 @@ public class ReteAgenda
     public void addItemToActivationGroup(final AgendaItem item) {
         String group = item.getRule().getActivationGroup();
         if ( group != null && group.length() > 0 ) {
-            ActivationGroup actgroup = (ActivationGroup) getActivationGroup( group );
+            ActivationGroup actgroup = getActivationGroup( group );
 
             actgroup.addActivation( item );
         }
