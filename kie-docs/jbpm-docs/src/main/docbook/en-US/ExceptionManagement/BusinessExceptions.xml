@@ -107,9 +107,9 @@
         <para>Cancel Events trigger <emphasis>cancellation</emphasis> of a Business
         Transaction and can thus only be used with a Business Transaction.</para>
         <para>When a Cancel Event is thrown, this indicates that the Business Transaction should be
-        cancelled. Entities involved in the Business Transaction are then informed (via a 
+        canceled. Entities involved in the Business Transaction are then informed (via a 
         <emphasis>TransactionProtocol Cancel Message</emphasis>) that the Business Transaction has
-        been cancelled.</para>
+        been canceled.</para>
         <para><emphasis>Cancellation</emphasis> of a Business Transaction implicitly triggers
         <emphasis>compensation</emphasis> of the Business Transaction.</para>
         <para>See the sources mentioned above for the differences between Error Events (abortion

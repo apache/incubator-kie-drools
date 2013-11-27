@@ -30,7 +30,7 @@ one of two ways:
     found in the <link linkend='sec.designer.workitems' endterm="sec.designer.workitems.title"/> 
     section in the <link linkend='ch.designer' endterm="ch.designer.title"/> chapter. Once this is
     done, a new service node will appear on the BPMN 2.0 palette.</listitem>
-    <listitem>If you're using the <emphasis>eclipse BPMN 2.0 modeler plugin</emphasis> (which can 
+    <listitem>If you're using the <emphasis>Eclipse BPMN 2.0 modeler plugin</emphasis> (which can 
     be found <ulink url="http://eclipse.org/bpmn2-modeler/">here</ulink>), then you'll can modify 
     the BPMN2 <code>&lt;task&gt;</code> or <code>&lt;task&gt;</code>-type element to work with 
     <code>WorkItemHandler</code> implementations. See the <link linkend='sec.eclipse.task-nodes' 
@@ -48,7 +48,7 @@ one of two ways:
 items. That also means that the class implements the <code>org.kie.runtime.instance.WorkItemHandler</code> 
 interface. While jBPM provides some custom <code>WorkItemHandler</code> instances (listed below), 
 a Java developer with a minimal knowledge of jBPM can easily create a new work item handler class 
-with it's own custom business logic.</para>
+with its own custom business logic.</para>
 
 <para>Among others, jBPM offers the following <code>WorkItemHandler</code> implementations:
   <itemizedlist>

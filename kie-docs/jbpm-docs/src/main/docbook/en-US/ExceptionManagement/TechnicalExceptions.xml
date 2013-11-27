@@ -164,7 +164,7 @@ instead.</para>
   <tip>
 <para>The code and BPMN2 process definition shown in the next section are available in the
 <filename>jbpm-examples</filename> module. See the
-<code>org.jbpm.examples.exceptions.ExceptionHandlingErrorExample</code> class for the java
+<code>org.jbpm.examples.exceptions.ExceptionHandlingErrorExample</code> class for the Java
 code. The BPMN2 process definition is available in the
 <filename>exceptions/ExceptionHandlingWithError.bpmn2</filename> file in the
 <filename>src/main/resources</filename> directory of the <filename>jbpm-examples</filename>

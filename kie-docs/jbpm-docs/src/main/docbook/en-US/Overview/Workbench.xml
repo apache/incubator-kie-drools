@@ -11,7 +11,7 @@
  <para>It supports the following:
       <itemizedlist>
         <listitem>A repository service to store your business processes and related artefacts,
-        using a GIT repository, which supports versioning, remote accessing (as a file system),
+        using a Git repository, which supports versioning, remote accessing (as a file system),
         and using REST services.</listitem>
         <listitem>A web-based user interface to manage your business processes, targeted towards
         business users; it also supports the visualization (and editing) of your artifacts (the web-based

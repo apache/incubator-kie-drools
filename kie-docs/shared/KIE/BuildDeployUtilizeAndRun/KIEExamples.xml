@@ -4,12 +4,12 @@
   xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns2="http://www.w3.org/1998/Math/MathML" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Build,  Deploy and Utilize Examples</title>
   <para>The best way to learn the new build system is by example. The source project
-    "drools-examples-api" contains a number of examples, and can be found at github:</para>
+    "drools-examples-api" contains a number of examples, and can be found at GitHub:</para>
   <para><link xlink:href="https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api"
       >https://github.com/droolsjbpm/drools/tree/6.0.x/drools-examples-api</link></para>
   <para>Each example is described below, the order starts with the simplest and most default working
-    it's way up to more complex use cases.</para>
-  <para>The Deploy use cases here all involve <code>mvn install</code>. Remote deployment of jars in
+    its way up to more complex use cases.</para>
+  <para>The Deploy use cases here all involve <code>mvn install</code>. Remote deployment of JARs in
     Maven is well covered is Maven literature. Utilize refers to the initial act loading the
     resources and providing access to the KIE runtimes. Where as Run refers to the act of
     interacting with those runtimes.</para>
@@ -43,7 +43,7 @@
     <para>ks.getKieClasspathContainer() returns the KieContainer that contains the KieBases deployed
       onto the environment classpath. kContainer.newKieSession() creates the default KieSession.
       Notice you no longer need to look up the KieBase, in orde to create the KieSession. The
-      KieSession knows which KieBase it's assocaited with, and ues that, which in this case is the
+      KieSession knows which KieBase it's associated with, and use that, which in this case is the
       default KieBase.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -268,7 +268,7 @@ private List&lt;Integer> useKieSession(String name) {
       <listitem>
         <para>Summary: The project does not contain a kmodule.xml, nor does the pom.xml have any
           dependencies for other KieModules. Instead the Java code demonstrates the loading of a
-          dynamic KieModule from a maven repository. </para>
+          dynamic KieModule from a Maven repository. </para>
       </listitem>
     </itemizedlist>
     <para>The pom.xml must include kie-ci as a depdency, to ensure Maven is available at runtime.
@@ -309,7 +309,7 @@ private List&lt;Integer> useKieSession(String name) {
       <title>Utilize and Run - Java</title>
       <programlisting language="JAVA">KieServices ks = KieServices.Factory.get();
 
-// Install example1 in the local maven repo before to do this
+// Install example1 in the local Maven repo before to do this
 KieContainer kContainer = ks.newKieContainer(ks.newReleaseId("org.drools", "named-kiesession", "6.0.0-SNAPSHOT"));
 
 KieSession kSession = kContainer.newKieSession("ksession1");
@@ -332,13 +332,13 @@ kSession.fireAllRules();</programlisting>
       </listitem>
     </itemizedlist>
     <para>No kmodue.xml file exists. The project 'default-kiesession' must be built first, so that
-      the resulting jar, in the target folder, be be reference as a File.</para>
+      the resulting JAR, in the target folder, can be referenced as a File.</para>
     <example>
       <title>Build and Install - Maven</title>
       <programlisting>mvn install</programlisting>
     </example>
     <para>Any KieModule can be loaded from a Resource location and added to the KieRepository. Once
-      in the KieRepository it can be resolved via it's ReleaseId. Note neither Maven or kie-ci are
+      in the KieRepository it can be resolved via its ReleaseId. Note neither Maven or kie-ci are
       needed here. It will not setup a transitive dependency parent classloader.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -369,13 +369,13 @@ kSession.fireAllRules();</programlisting>
       </listitem>
     </itemizedlist>
     <para>No kmodue.xml file exists. The project 'named-kiesession' must be built first, so that the
-      resulting jar, in the target folder, be be reference as a File.</para>
+      resulting JAR, in the target folder, can be referenced as a File.</para>
     <example>
       <title>Build and Install - Maven</title>
       <programlisting>mvn install</programlisting>
     </example>
     <para>Any KieModule can be loaded from a Resource location and added to the KieRepository. Once
-      in the KieRepository it can be resolved via it's ReleaseId. Note neither Maven or kie-ci are
+      in the KieRepository it can be resolved via its ReleaseId. Note neither Maven or kie-ci are
       needed here. It will not setup a transitive dependency parent classloader.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -406,7 +406,7 @@ kSession.fireAllRules();</programlisting>
       </listitem>
     </itemizedlist>
     <para>No kmodue.xml file exists. The projects 'named-kiesession' and 'kiebase-include' must be
-      built first, so that the resulting jars, in the target folders, be be reference as
+      built first, so that the resulting JARs, in the target folders, can be referenced as
       Files.</para>
     <example>
       <title>Build and Install - Maven</title>
@@ -414,7 +414,7 @@ kSession.fireAllRules();</programlisting>
     </example>
     <para>Creates two resources. One is for the main KieModule 'exRes1' the other is for the
       dependency 'exRes2'. Even though kie-ci is not present and thus Maven is not there to resolve
-      the dependencies, this shows how you can manually specify the dependency KieModuels, for the
+      the dependencies, this shows how you can manually specify the dependency KieModules, for the
       vararg.</para>
     <example>
       <title>Utilize and Run - Java</title>
@@ -446,7 +446,7 @@ kSession.fireAllRules();</programlisting>
         <para>Project: kiemoduelmodel-example</para>
       </listitem>
       <listitem>
-        <para>Summary: Programmaticaly buid a KieModule from just a single file. The pom and models
+        <para>Summary: Programmaticaly buid a KieModule from just a single file. The POM and models
           are all defaulted. This is the quickest out of the box approach, but should not be added
           to a Maven repository.</para>
       </listitem>
@@ -489,8 +489,8 @@ kSession.fireAllRules();</programlisting>
         <para>Project: kiemoduelmodel-example</para>
       </listitem>
       <listitem>
-        <para>Summary: Programmaticaly buid a KieModule, by creating it's kmodule.xml meta models
-          resources.. </para>
+        <para>Summary: Programmaticaly buid a KieModule, by creating its kmodule.xml meta models
+          resources. </para>
       </listitem>
     </itemizedlist>
     <example>

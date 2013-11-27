@@ -14,7 +14,7 @@ dealing with other technical systems.</para>
 items</emphasis>" or (custom) "<emphasis>service nodes</emphasis>". There are two separate aspects 
 to creating and using custom work items: 
   <itemizedlist>
-    <listitem>Adding a node with a custom work item to a process definition using the eclipse 
+    <listitem>Adding a node with a custom work item to a process definition using the Eclipse 
     editor or jBPM designer.</listitem>
     <listitem>Creating a custom <emphasis>work item handler</emphasis> that the jBPM engine will 
     use when executing the custom work item in a running process.</listitem>
@@ -36,7 +36,7 @@ should be:
     <listitem>declarative (what, not how)</listitem>
     <listitem>high-level (no code)</listitem>
 </itemizedlist>
-On the other hand, custom work item <emphasis>handlers</emphasis>, which are java classes, 
+On the other hand, custom work item <emphasis>handlers</emphasis>, which are Java classes, 
 should be:
 <itemizedlist>
     <listitem>procedural (how, not what)</listitem>

@@ -47,7 +47,7 @@
       </listitem>
       <listitem>
         <para>Add fields by type: this tab allows you to freely add fields to the form from the Field Types palette on the Form Modeler.
-          This fields won't be storing it's value on any Data Origin until they have a correct configuration on the "Input binding expression" and "Output binding expression" properties.
+          These fields won't be storing their values on any Data Origin until they have a correct configuration on the "Input binding expression" and "Output binding expression" properties.
           <figure>
             <title>Add field by type</title>
             <screenshot>

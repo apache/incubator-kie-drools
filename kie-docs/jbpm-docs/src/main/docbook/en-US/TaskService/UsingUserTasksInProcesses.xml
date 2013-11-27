@@ -41,7 +41,7 @@
                      name of the Task that can be used for other purposes.</para>
               </listitem>
               <listitem>
-                     <para>DataInputSet: all the input variables that the task will recieve to work on. Usually you will be interested in copying 
+                     <para>DataInputSet: all the input variables that the task will receive to work on. Usually you will be interested in copying 
                       variables from the scope of the process to the scope of the task. (Look at the data mappings section for an example)</para>
               </listitem>
               <listitem>

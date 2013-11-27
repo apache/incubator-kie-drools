@@ -237,13 +237,13 @@ Person( name == ( processInstance.getVariable("name") ) )
 
     <section>
       <title>Configure timer with process variables</title>
-      In addition to two configuration otpions above timers can be specified using process variable that can consists
+      In addition to two configuration options above timers can be specified using process variable that can consists
       of string representation of ether delay and period or ISO8601 date format. By specifying #{variable} engine will
       dynamically extract process variable and use it as timer expression.
     </section>
 
     <para>The timer service is responsible for making sure that timers get
-    triggered at the appropriate times.  Timers can also be cancelled, meaning
+    triggered at the appropriate times.  Timers can also be canceled, meaning
     that the timer will no longer be triggered.</para>
 
     <para>Timers can be used in two ways inside a process:</para>
@@ -251,7 +251,7 @@ Person( name == ( processInstance.getVariable("name") ) )
         <listitem><para>A Timer Event may be added to the process flow. Its activation
         starts the timer, and when it triggers, once or repeatedly, it activates the
         Timer node's successor. Subsequently, the outgoing connection of a
-        timer with a positive period is triggered multiple times. Cancelling a
+        timer with a positive period is triggered multiple times. Canceling a
         Timer node also cancels the associated timer, after which no more triggers
         will occur.</para></listitem>
         <listitem><para>Timers can be associated with a Sub-Process or tasks as a boundary event.

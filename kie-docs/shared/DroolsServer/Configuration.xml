@@ -18,7 +18,7 @@
 
       <itemizedlist>
         <listitem>
-          <para>Skeleton xml that imports knowledge-services.xml and
+          <para>Skeleton XML that imports knowledge-services.xml and
           camel-server.xml</para>
         </listitem>
       </itemizedlist>
@@ -153,7 +153,7 @@
     <section>
       <title>RESTful service endpoint creation</title>
 
-      <para>In the next xml snippet code we are creating a RESTful (JAX-RS)
+      <para>In the next XML snippet code we are creating a RESTful (JAX-RS)
       endpoint bound to /kservice/rest address and using
       org.drools.jax.rs.CommandExecutorImpl as the service implementer. This
       class is only used to instantiate the service endpoint because all the
@@ -266,7 +266,7 @@
 
       <para>The execution-node is a context or registered kbases and
       ksessions, here kbase1 and ksession1 are planed in the node1 context.
-      The kbase itself consists of 2 knowledge definitions, a drl and an xsd.
+      The kbase itself consists of two knowledge definitions, a DRL and an XSD.
       The Spring documentation contains a lot more information on configuring
       these knowledge services.</para>
     </section>
@@ -283,7 +283,7 @@
 
       <para>Under the hood the jsp invokes the Test.java class, this then
       calls out to Camel which is where the meet happens. The camel-client.xml
-      defines the client with just a few lines of xml:</para>
+      defines the client with just a few lines of XML:</para>
 
       <programlisting language="xml">&lt;!-- Leave this, as it's needed to make Camel "drools" aware --&gt;
 &lt;bean id="kiePolicy" class="org.kie.camel.component.KiePolicy" /&gt;
@@ -303,9 +303,9 @@
   &lt;/route&gt;
 &lt;/camelContext&gt;</programlisting>
 
-      <para>"direct://kservice" is just a named hook, allowing java to grab a
+      <para>"direct://kservice" is just a named hook, allowing Java to grab a
       reference and push data into it. In this example the data is already in
-      xml, so we don't need to add any DataFormat's to do the marshalling. The
+      XML, so we don't need to add any <code>DataFormat</code>s to do the marshalling. The
       KiePolicy adds some smarts to the route and you'll see it used on the
       server side too. If JAXB or XStream were used, it would inject custom
       paths and converters, it can also set the ClassLoader too on the server
@@ -313,7 +313,7 @@
       object.</para>
 
       <para>The rule itself can be found here: test.drl. Notice the type
-      Message is declared part of the drl and is thus not present on the
+      Message is declared part of the DRL and is thus not present on the
       Classpath.</para>
 
       <programlisting>declare Message
