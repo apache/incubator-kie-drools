@@ -2,12 +2,21 @@ package org.drools.reteoo.common;
 
 import org.drools.core.FactException;
 import org.drools.core.FactHandle;
+import org.drools.core.RuleBase;
 import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.ObjectStore;
+import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.rule.Rule;
+import org.drools.core.spi.Activation;
 import org.kie.api.runtime.ObjectFilter;
 
 import java.util.Collection;
 
-public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint {
+public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, InternalWorkingMemoryEntryPoint {
 
     private ReteWorkingMemory reteWm;
     private WorkingMemoryEntryPoint delegate;
@@ -92,5 +101,55 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint {
     @Override
     public void dispose() {
          delegate.dispose();
+    }
+
+    @Override
+    public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getObjectTypeConfigurationRegistry();
+    }
+
+    @Override
+    public RuleBase getRuleBase() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getRuleBase();
+    }
+
+    @Override
+    public void delete(FactHandle factHandle, Rule rule, Activation activation) throws FactException {
+        ((InternalWorkingMemoryEntryPoint)delegate).delete(factHandle, rule, activation);
+    }
+
+    @Override
+    public void update(org.kie.api.runtime.rule.FactHandle handle, Object object, long mask, Class<?> modifiedClass, Activation activation) throws FactException {
+        ((InternalWorkingMemoryEntryPoint)delegate).update(handle, object, mask, modifiedClass, activation);
+    }
+
+    @Override
+    public EntryPointId getEntryPoint() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getEntryPoint();
+    }
+
+    @Override
+    public InternalWorkingMemory getInternalWorkingMemory() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getInternalWorkingMemory();
+    }
+
+    @Override
+    public FactHandle getFactHandleByIdentity(Object object) {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getFactHandleByIdentity(object);
+    }
+
+    @Override
+    public void reset() {
+        ((InternalWorkingMemoryEntryPoint)delegate).reset();
+    }
+
+    @Override
+    public ObjectStore getObjectStore() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getObjectStore();
+    }
+
+    @Override
+    public EntryPointNode getEntryPointNode() {
+        return ((InternalWorkingMemoryEntryPoint)delegate).getEntryPointNode();
     }
 }
