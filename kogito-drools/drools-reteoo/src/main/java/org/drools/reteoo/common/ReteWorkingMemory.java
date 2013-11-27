@@ -54,7 +54,8 @@ public class ReteWorkingMemory extends AbstractWorkingMemory {
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
-        return new ReteWorkingMemoryEntryPoint( this, this.entryPoints.get(name) );
+        WorkingMemoryEntryPoint ep = this.entryPoints.get(name);
+        return ep != null ? new ReteWorkingMemoryEntryPoint( this, ep ) : null;
     }
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
