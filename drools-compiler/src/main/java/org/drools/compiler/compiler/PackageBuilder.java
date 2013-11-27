@@ -17,6 +17,7 @@
 package org.drools.compiler.compiler;
 
 import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 import java.beans.IntrospectionException;
 import java.io.Externalizable;
@@ -3186,7 +3187,7 @@ public class PackageBuilder
 
     private void buildClass(ClassDefinition def, String fullName, JavaDialectRuntimeData dialect, ClassBuilder cb) throws Exception {
         byte[] bytecode = cb.buildClass(def);
-        String resourceName = JavaDialectRuntimeData.convertClassToResourcePath(fullName);
+        String resourceName = convertClassToResourcePath(fullName);
         dialect.putClassDefinition(resourceName, bytecode);
         if (ruleBase != null) {
             ruleBase.registerAndLoadTypeDefinition(fullName, bytecode);
@@ -4127,6 +4128,28 @@ public class PackageBuilder
     public void completePackageUpdate() {
         if (ruleBase != null) {
             ruleBase.unlock();
+        }
+    }
+
+    public void setAllRuntimesDirty(Collection<String> packages) {
+        if (ruleBase != null) {
+            for (String pkgName : packages) {
+                Package pkg = ruleBase.getPackage(pkgName);
+                if (pkg != null) {
+                    pkg.getDialectRuntimeRegistry().getDialectData("java").setDirty(true);
+                }
+            }
+        }
+    }
+
+    public void rewireClassObjectTypes(Collection<String> packages) {
+        if (ruleBase != null) {
+            for (String pkgName : packages) {
+                Package pkg = ruleBase.getPackage(pkgName);
+                if (pkg != null) {
+                    pkg.getClassFieldAccessorStore().wire();
+                }
+            }
         }
     }
 

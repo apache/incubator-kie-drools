@@ -27,6 +27,8 @@ import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 import org.junit.Test;
 import org.kie.internal.utils.ClassLoaderUtil;
 
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+
 /**
  * @version $Id$
  */
@@ -47,8 +49,7 @@ public class InstancesHashcodedTest {
     private Class build(ClassBuilder builder, ClassDefinition classDef) throws Exception {
         byte[] d = builder.buildClass( classDef);
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
-        data.write( JavaDialectRuntimeData.convertClassToResourcePath( classDef.getClassName() ),
-                       d );
+        data.write( convertClassToResourcePath(classDef.getClassName()), d );
         ClassLoader classLoader = new PackageClassLoader(data, ClassLoaderUtil.getClassLoader( null, getClass(), false ));
         
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();

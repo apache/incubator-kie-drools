@@ -126,10 +126,6 @@ public class DialectRuntimeRegistry
         getLineMappings().putAll( newDatas.getLineMappings() );
     }
 
-    public boolean isDirty() {
-        return true;
-    }
-
     public void onBeforeExecute() {
         // Java dialect MUST be the first to be processed.
         DialectRuntimeData data = this.dialects.get( "java" );

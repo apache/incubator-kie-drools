@@ -3,27 +3,29 @@ package org.drools.compiler.kie.builder.impl;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilder;
-import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImp;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.rule.*;
-import org.drools.core.rule.Package;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -38,7 +40,6 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
@@ -112,14 +113,15 @@ public class KieContainerImpl
                 KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( (KnowledgeBase) kBaseEntry.getValue() );
                 PackageBuilder pkgbuilder = kbuilder instanceof PackageBuilder ? ((PackageBuilder) kbuilder) : ((KnowledgeBuilderImpl)kbuilder).getPackageBuilder();
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
+                List<String> modifiedClasses = new ArrayList<String>();
                 int fileCount = 0;
 
                 // then update and add new resources
                 for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
-                    if ( ! rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
+                    if ( rcs.getChangeType() != ChangeType.REMOVED ) {
                         String resourceName = rcs.getResourceName();
                         if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
-                            Resource resource = currentKM.getResource( rcs.getResourceName() );
+                            Resource resource = currentKM.getResource(resourceName);
                             List<ResourceChange> changes = rcs.getChanges();
                             if ( ! changes.isEmpty() ) {
                                 // we need to deal with individual parts of the resource
@@ -129,13 +131,16 @@ public class KieContainerImpl
                                                                                rcs ) ? 1 : 0;
                             } else {
                                 // the whole resource has to handled
-                                if( rcs.getChangeType().equals( ChangeType.UPDATED ) ) {
+                                if( rcs.getChangeType() == ChangeType.UPDATED ) {
                                     pkgbuilder.removeObjectsGeneratedFromResource( resource );
                                 }
                                 fileCount += AbstractKieModule.addFile( ckbuilder,
                                                                         newKM,
                                                                         resourceName ) ? 1 : 0;
                             }
+                        } else if ( resourceName.endsWith( ".class" ) ) {
+                            modifiedClasses.add(resourceName);
+                            fileCount++;
                         }
                     }
 
@@ -153,7 +158,7 @@ public class KieContainerImpl
                 try {
                     // remove resources first
                     for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
-                        if ( rcs.getChangeType().equals( ChangeType.REMOVED ) ) {
+                        if ( rcs.getChangeType() == ChangeType.REMOVED ) {
                             String resourceName = rcs.getResourceName();
                             if ( !resourceName.endsWith( ".properties" ) && filterFileInKBase(newKM, kieBaseModel, resourceName) ) {
                                 pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
@@ -162,7 +167,27 @@ public class KieContainerImpl
                     }
 
                     if( fileCount > 0 ) {
+                        Set<String> modifiedPackages = new HashSet<String>();
+                        if (!modifiedClasses.isEmpty()) {
+                            ClassLoader rootClassLoader = pkgbuilder.getRootClassLoader();
+                            if ( rootClassLoader instanceof ProjectClassLoader ) {
+                                ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
+                                projectClassLoader.reinitTypes();
+                                for (String resourceName : modifiedClasses) {
+                                    String className = convertResourceToClassName( resourceName );
+                                    byte[] bytes = newKM.getBytes(resourceName);
+                                    Class<?> clazz = projectClassLoader.defineClass(className, resourceName, bytes);
+                                    modifiedPackages.add(clazz.getPackage().getName());
+                                }
+                                pkgbuilder.setAllRuntimesDirty(modifiedPackages);
+                            }
+                        }
+
                         ckbuilder.build();
+
+                        if (!modifiedClasses.isEmpty()) {
+                            pkgbuilder.rewireClassObjectTypes(modifiedPackages);
+                        }
                     }
                 } finally {
                     pkgbuilder.completePackageUpdate();

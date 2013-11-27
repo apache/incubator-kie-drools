@@ -55,6 +55,9 @@ import org.drools.core.util.StringUtils;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.kie.internal.utils.FastClassLoader;
 
+import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+
 public class JavaDialectRuntimeData
                                    implements
                                    DialectRuntimeData,
@@ -707,32 +710,5 @@ public class JavaDialectRuntimeData
             };
         }
 
-    }
-
-    /**
-     * Please do not use - internal
-     * org/my/Class.xxx -> org.my.Class
-     */
-    public static String convertResourceToClassName( final String pResourceName ) {
-        return stripExtension( pResourceName ).replace( '/',
-                                                        '.' );
-    }
-
-    /**
-     * Please do not use - internal
-     * org.my.Class -> org/my/Class.class
-     */
-    public static String convertClassToResourcePath( final String pName ) {
-        return pName.replace( '.',
-                              '/' ) + ".class";
-    }
-
-    /**
-     * Please do not use - internal
-     * org/my/Class.xxx -> org/my/Class
-     */
-    public static String stripExtension( final String pResourceName ) {
-        final int i = pResourceName.lastIndexOf( '.' );
-        return pResourceName.substring( 0, i );
     }
 }
