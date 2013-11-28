@@ -20,12 +20,16 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.RuntimeDroolsException;
+import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -34,7 +38,9 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Restriction;
+import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * A predicate can be written as a top level constraint or be nested
@@ -200,7 +206,7 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public void wire(Object object) {
-        setPredicateExpression( (PredicateExpression) object );
+        setPredicateExpression( KiePolicyHelper.isPolicyEnabled() ? new SafePredicateExpression( (PredicateExpression) object ):(PredicateExpression) object );
         for ( PredicateConstraint clone : this.cloned ) {
             clone.wire( object );
         }
@@ -441,4 +447,34 @@ public class PredicateConstraint extends MutableTypeConstraint
         return null;
     }
 
+    public static class SafePredicateExpression implements PredicateExpression {
+        private PredicateExpression delegate;
+
+        public SafePredicateExpression(PredicateExpression delegate) {
+            this.delegate = delegate;
+        }
+
+        public Object createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return delegate.createContext();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public boolean evaluate(final Object object, 
+                final Tuple tuple, 
+                final Declaration[] previousDeclarations, 
+                final Declaration[] localDeclarations, 
+                final WorkingMemory workingMemory, 
+                final Object context) throws Exception {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                @Override
+                public Boolean run() throws Exception {
+                    return delegate.evaluate(object, tuple, previousDeclarations, localDeclarations, workingMemory, context);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+    }
 }

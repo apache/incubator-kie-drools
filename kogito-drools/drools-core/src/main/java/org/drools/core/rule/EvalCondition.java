@@ -20,6 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +34,7 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.EvalExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class EvalCondition extends ConditionalElement
     implements
@@ -89,7 +93,7 @@ public class EvalCondition extends ConditionalElement
     }
 
     public void wire(Object object) {
-        setEvalExpression( (EvalExpression) object );
+        setEvalExpression( KiePolicyHelper.isPolicyEnabled() ? new SafeEvalExpression((EvalExpression) object) : (EvalExpression) object );
         for ( EvalCondition clone : this.cloned ) {
             clone.wire( object );
         }
@@ -207,4 +211,43 @@ public class EvalCondition extends ConditionalElement
         return this.expression.toString();
     }
 
+    private static class SafeEvalExpression implements EvalExpression {
+        private EvalExpression delegate;
+        public SafeEvalExpression(EvalExpression delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Object createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return delegate.createContext();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        @Override
+        public boolean evaluate(final Tuple tuple, 
+                final Declaration[] requiredDeclarations, 
+                final WorkingMemory workingMemory, 
+                final Object context) throws Exception {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                @Override
+                public Boolean run() throws Exception {
+                    return delegate.evaluate(tuple, requiredDeclarations, workingMemory, context);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
+            delegate.replaceDeclaration(declaration, resolved);
+        }
+        
+        @Override
+        public SafeEvalExpression clone() {
+            return new SafeEvalExpression( this.delegate.clone() );
+        }
+    }
 }

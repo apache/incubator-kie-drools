@@ -37,8 +37,10 @@ import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Restriction;
 import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.ReturnValueExpression.SafeReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class ReturnValueRestriction
     implements
@@ -197,7 +199,7 @@ public class ReturnValueRestriction
     }
 
     public void wire(Object object) {
-        setReturnValueExpression( (ReturnValueExpression) object );
+        setReturnValueExpression( KiePolicyHelper.isPolicyEnabled() ? new SafeReturnValueExpression( (ReturnValueExpression) object ) : (ReturnValueExpression) object );
         for ( ReturnValueRestriction clone : this.cloned ) {
             clone.wire( object );
         }

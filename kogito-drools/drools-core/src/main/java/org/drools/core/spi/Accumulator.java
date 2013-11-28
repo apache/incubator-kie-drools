@@ -17,10 +17,14 @@
 package org.drools.core.spi;
 
 import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
+import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * Accumulator
@@ -121,5 +125,108 @@ public interface Accumulator
                             Tuple leftTuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception;
+    
+    
+    /**
+     * This class is used as a wrapper delegate when a security 
+     * policy is in place.
+     */
+    public static class SafeAccumulator implements Accumulator {
+        private Accumulator delegate;
+
+        public SafeAccumulator(Accumulator delegate) {
+            super();
+            this.delegate = delegate;
+        }
+
+        public Object createWorkingMemoryContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return delegate.createWorkingMemoryContext();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public Serializable createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Serializable>() {
+                @Override
+                public Serializable run() {
+                    return delegate.createContext();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public void init(final Object workingMemoryContext, 
+                final Object context, 
+                final Tuple leftTuple, 
+                final Declaration[] declarations, 
+                final WorkingMemory workingMemory) throws Exception {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    delegate.init(workingMemoryContext, context, leftTuple, declarations, workingMemory);
+                    return null;
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public void accumulate(final Object workingMemoryContext, 
+                final Object context, 
+                final Tuple leftTuple, 
+                final InternalFactHandle handle, 
+                final Declaration[] declarations, 
+                final Declaration[] innerDeclarations, 
+                final WorkingMemory workingMemory) throws Exception {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    delegate.accumulate(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
+                    return null;
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public boolean supportsReverse() {
+            // we have to secure even this call because it might run untrusted code 
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return delegate.supportsReverse();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public void reverse(final Object workingMemoryContext, 
+                final Object context, 
+                final Tuple leftTuple, 
+                final InternalFactHandle handle, 
+                final Declaration[] declarations, 
+                final Declaration[] innerDeclarations, 
+                final WorkingMemory workingMemory) throws Exception {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    delegate.reverse(workingMemoryContext, context, leftTuple, handle, declarations, innerDeclarations, workingMemory);
+                    return null;
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public Object getResult(final Object workingMemoryContext, 
+                final Object context, 
+                final Tuple leftTuple, 
+                final Declaration[] declarations, 
+                final WorkingMemory workingMemory) throws Exception {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    return delegate.getResult(workingMemoryContext, context, leftTuple, declarations, workingMemory);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+        
+        
+    }
 
 }

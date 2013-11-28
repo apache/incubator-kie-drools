@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.core.base.TypeResolver;
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
 import org.drools.workbench.models.testscenarios.backend.util.FieldTypeResolver;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
@@ -107,7 +108,7 @@ public class FactFieldValueVerifier {
 
                 Serializable compiled = MVEL.compileExpression(valueOfEnum,
                         pctx);
-                expectedResult = MVEL.executeExpression(compiled);
+                expectedResult = MVELSafeHelper.getEvaluator().executeExpression(compiled);
 
             } catch (ClassNotFoundException e) {
                 //Do nothing.
@@ -169,12 +170,12 @@ class ResultVerifier {
         String s = "__fact__." + currentField.getFieldName() + " " + currentField.getOperator() + " __expected__";
         CompiledExpression expression = new ExpressionCompiler(s).compile(parserContext);
 
-        return (Boolean) MVEL.executeExpression(expression,
+        return (Boolean) MVELSafeHelper.getEvaluator().executeExpression(expression,
                 variables);
     }
 
     protected String getActual(VerifyField currentField) {
-        Object actualValue = MVEL.executeExpression(new ExpressionCompiler("__fact__." + currentField.getFieldName()).compile(parserContext),
+        Object actualValue = MVELSafeHelper.getEvaluator().executeExpression(new ExpressionCompiler("__fact__." + currentField.getFieldName()).compile(parserContext),
                 variables);
 
         return (actualValue != null) ? actualValue.toString() : "";

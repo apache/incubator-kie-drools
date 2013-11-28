@@ -30,8 +30,10 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.ReturnValueExpression;
+import org.drools.core.spi.ReturnValueExpression.SafeReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * A Java accumulator function executor implementation
@@ -151,7 +153,7 @@ public class JavaAccumulatorFunctionExecutor
     }
 
     public void wire(Object object) {
-        setExpression( (ReturnValueExpression) object );
+        setExpression( KiePolicyHelper.isPolicyEnabled() ? new SafeReturnValueExpression((ReturnValueExpression) object ) : (ReturnValueExpression) object );
     }
 
     public void setExpression(ReturnValueExpression expression) {
@@ -184,5 +186,5 @@ public class JavaAccumulatorFunctionExecutor
             out.writeObject( reverseSupport );
         }
     }
-
+    
 }

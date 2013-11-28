@@ -16,8 +16,13 @@
 
 package org.drools.core.spi;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.rule.Declaration;
+import org.kie.internal.security.KiePolicyHelper;
 
 public interface ReturnValueExpression
     extends
@@ -35,4 +40,40 @@ public interface ReturnValueExpression
     public void replaceDeclaration(Declaration declaration,
                                    Declaration resolved);
 
+    public static class SafeReturnValueExpression implements ReturnValueExpression {
+        private ReturnValueExpression delegate;
+        public SafeReturnValueExpression(ReturnValueExpression delegate) {
+            this.delegate = delegate;
+        }
+
+        public Object createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return delegate.createContext();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public FieldValue evaluate(final Object object, 
+                final Tuple tuple, 
+                final Declaration[] previousDeclarations, 
+                final Declaration[] localDeclarations, 
+                final WorkingMemory workingMemory, 
+                final Object context) throws Exception {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<FieldValue>() {
+                @Override
+                public FieldValue run() throws Exception {
+                    return delegate.evaluate(object, tuple, previousDeclarations, localDeclarations, workingMemory, context);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
+            delegate.replaceDeclaration(declaration, resolved);
+        }
+
+    }
+
+    
 }

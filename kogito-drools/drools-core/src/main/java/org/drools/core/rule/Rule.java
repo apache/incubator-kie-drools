@@ -16,6 +16,19 @@
 
 package org.drools.core.rule;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.RuntimeDroolsException;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
@@ -27,22 +40,14 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Enabled;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.internal.security.KiePolicyHelper;
 
 /**
  * A <code>Rule</code> contains a set of <code>Test</code>s and a
@@ -591,16 +596,16 @@ public class Rule
 
     public void wire(Object object) {
         if ( object instanceof Consequence ) {
-            Consequence c = (Consequence) object;
+            Consequence c = KiePolicyHelper.isPolicyEnabled() ? new SafeConsequence((Consequence) object) : (Consequence) object;
             if ( DEFAULT_CONSEQUENCE_NAME.equals( c.getName() ) ) {
                 setConsequence( c );
             } else {
                 addNamedConsequence(c.getName(), c);
             }
         } else if ( object instanceof Salience ) {
-            setSalience( (Salience) object );
+            setSalience( KiePolicyHelper.isPolicyEnabled() ? new SafeSalience((Salience) object) : (Salience) object );
         } else if ( object instanceof Enabled ) {
-            setEnabled( (Enabled) object );
+            setEnabled( KiePolicyHelper.isPolicyEnabled() ? new SafeEnabled((Enabled) object) : (Enabled) object );
         }
     }
 
@@ -837,5 +842,82 @@ public class Rule
 
     public ConsequenceMetaData getConsequenceMetaData() {
         return consequenceMetaData;
+    }
+    
+    private static class SafeConsequence implements Consequence {
+        private final Consequence delegate;
+        public SafeConsequence( Consequence delegate ) {
+            this.delegate = delegate;
+        }
+        
+        @Override
+        public String getName() {
+            return this.delegate.getName();
+        }
+
+        @Override
+        public void evaluate(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) throws Exception {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Object>() {
+                @Override
+                public Object run() throws Exception {
+                    delegate.evaluate(knowledgeHelper, workingMemory);
+                    return null;
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+    }
+    
+    private static class SafeSalience implements Salience {
+        private static final long serialVersionUID = 1L;
+        private final Salience delegate;
+        public SafeSalience( Salience delegate ) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public int getValue(final KnowledgeHelper khelper, 
+                final org.kie.api.definition.rule.Rule rule, 
+                final WorkingMemory workingMemory) {
+            return AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return delegate.getValue(khelper, rule, workingMemory);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        @Override
+        public int getValue() {
+            // no need to secure calls to static values 
+            return delegate.getValue();
+        }
+
+        @Override
+        public boolean isDynamic() {
+            // no need to secure calls to static values 
+            return delegate.isDynamic();
+        }
+    }
+    
+    private static class SafeEnabled implements Enabled {
+        private static final long serialVersionUID = -8361753962814039574L;
+        private final Enabled delegate;
+        public SafeEnabled( Enabled delegate ) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public boolean getValue(final Tuple tuple, 
+                final Declaration[] declrs, 
+                final Rule rule, 
+                final WorkingMemory workingMemory) {
+            return AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return delegate.getValue(tuple, declrs, rule, workingMemory);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+        
     }
 }
