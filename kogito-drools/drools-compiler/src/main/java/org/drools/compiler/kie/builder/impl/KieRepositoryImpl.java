@@ -258,13 +258,12 @@ public class KieRepositoryImpl
                 return kieModule;
             }
 
-            if (versionRange.upperBound == null) {
-                return artifactMap.lastEntry().getValue();
-            }
-
-            Map.Entry<ComparableVersion, KieModule> entry = versionRange.upperInclusive ?
-                    artifactMap.ceilingEntry(new ComparableVersion(versionRange.upperBound)) :
-                    artifactMap.lowerEntry(new ComparableVersion(versionRange.upperBound));
+            Map.Entry<ComparableVersion, KieModule> entry =
+                    versionRange.upperBound == null ?
+                            artifactMap.lastEntry() :
+                            versionRange.upperInclusive ?
+                                    artifactMap.floorEntry(new ComparableVersion(versionRange.upperBound)) :
+                                    artifactMap.lowerEntry(new ComparableVersion(versionRange.upperBound));
 
             if ( entry == null ) {
                 return null;
@@ -274,8 +273,8 @@ public class KieRepositoryImpl
                 return entry.getValue();
             }
 
-            int versionComparison = entry.getKey().compareTo(new ComparableVersion(versionRange.lowerBound));
-            return versionComparison > 0 || (versionComparison == 0 && versionRange.lowerInclusive) ? entry.getValue() : null;
+            int comparison = entry.getKey().compareTo(new ComparableVersion(versionRange.lowerBound));
+            return comparison > 0 || (comparison == 0 && versionRange.lowerInclusive) ? entry.getValue() : null;
         }
     }
 

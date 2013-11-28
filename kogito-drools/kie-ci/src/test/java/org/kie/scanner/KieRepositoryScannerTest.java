@@ -81,6 +81,40 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     }
 
     @Test @Ignore
+    public void testKScannerWithRange() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "scanner-test", "1.0.1");
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "scanner-test", "1.0.2");
+        ReleaseId releaseRange = ks.newReleaseId("org.kie", "scanner-test", "[1.0.0,)");
+
+        InternalKieModule kJar1 = createKieJar(ks, releaseId1, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseRange);
+
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId1, kJar1, kPom);
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+
+        // create a new kjar
+        InternalKieModule kJar2 = createKieJar(ks, releaseId2, "rule2", "rule3");
+
+        // deploy it on maven
+        repository.deployArtifact(releaseId2, kJar2, kPom);
+
+        // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        // scan the maven repo to get the new kjar version and deploy it on the kcontainer
+        scanner.scanNow();
+
+        // create a ksesion and check it works as expected
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession2, "rule2", "rule3");
+    }
+
+    @Test @Ignore
     public void testKScannerWithKJarContainingClasses() throws Exception {
         testKScannerWithType(false);
     }

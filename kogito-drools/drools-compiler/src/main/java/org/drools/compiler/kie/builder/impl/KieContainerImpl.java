@@ -72,15 +72,25 @@ public class KieContainerImpl
 
     private final KieRepository        kr;
 
-    public KieContainerImpl(KieProject kProject,
-                            KieRepository kr) {
+    private ReleaseId containerReleaseId;
+
+    public KieContainerImpl(KieProject kProject, KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
         kProject.init();
     }
 
+    public KieContainerImpl(KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
+        this(kProject, kr);
+        this.containerReleaseId = containerReleaseId;
+    }
+
     public ReleaseId getReleaseId() {
         return kProject.getGAV();
+    }
+
+    public ReleaseId getContainerReleaseId() {
+        return containerReleaseId != null ? containerReleaseId : getReleaseId();
     }
 
     public void updateToVersion(ReleaseId newReleaseId) {

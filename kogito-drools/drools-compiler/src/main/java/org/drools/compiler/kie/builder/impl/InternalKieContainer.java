@@ -1,5 +1,6 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.runtime.KieContainer;
@@ -40,4 +41,6 @@ public interface InternalKieContainer extends KieContainer {
      * Returns the KieSessionModel for the KieSession with the given name
      */
     KieSessionModel getKieSessionModel(String kSessionName);
+
+    ReleaseId getContainerReleaseId();
 }
