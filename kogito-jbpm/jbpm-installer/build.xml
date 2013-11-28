@@ -463,8 +463,7 @@
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
-      <arg value="-Dorg.jbpm.console.demo=true" />
-      <arg value="-Dorg.kie.wb.demo=true" />
+      <arg value="-Dorg.kie.demo=true" />
     </exec>
     <property name="jboss.full.path.linux" location="${jboss.home}/bin/standalone.sh" />
     <exec executable="${jboss.full.path.linux}" spawn="yes" osfamily="unix">
@@ -472,8 +471,7 @@
       <arg value="-b" />
       <arg value="${jboss.bind.address}" />
       <arg value="--server-config=standalone-full.xml" />
-      <arg value="-Dorg.jbpm.console.demo=true" />
-      <arg value="-Dorg.kie.wb.demo=true" />
+      <arg value="-Dorg.kie.demo=true" />
     </exec>
     <waitfor maxwait="5" maxwaitunit="minute" checkevery="10"
              checkeveryunit="second" timeoutproperty="jboss.timeout">
