@@ -86,7 +86,7 @@ public class KieServicesImpl implements KieServices {
             throw new RuntimeException("Cannot find KieModule: " + releaseId);
         }
         KieProject kProject = new KieModuleKieProject( kieModule );
-        return new KieContainerImpl( kProject, getRepository() );
+        return new KieContainerImpl( kProject, getRepository(), releaseId );
     }
     
 
