@@ -48,6 +48,7 @@ import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -74,6 +75,7 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -976,6 +978,78 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 .startProcess("ServiceProcess", params);
         assertProcessInstanceFinished(processInstance, ksession);
         assertEquals("Hello john!", processInstance.getVariable("s"));
+    }
+    
+    @Test
+    public void testServiceTaskWithTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                new ServiceTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "JoHn");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("ServiceProcess", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertEquals("hello john!", processInstance.getVariable("s"));
+    }
+    
+    @Test
+    public void testServiceTaskWithMvelTransformation() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithMvelTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                new ServiceTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "JoHn");
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("ServiceProcess", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertEquals("hello john!", processInstance.getVariable("s"));
+    }
+    
+    @Test
+    public void testServiceTaskWithCustomTransformation() throws Exception {
+    	DataTransformerRegistry.get().register("http://custom/transformer", new DataTransformer() {
+			
+			@Override
+			public Object transform(Object expression, Map<String, Object> parameters) {
+				// support only single object
+				String value = parameters.values().iterator().next().toString();
+				Object result = null;
+				if ("caplitalizeFirst".equals(expression)) {
+					String first = value.substring(0, 1);
+					String main = value.substring(1, value.length());
+					
+					result = first.toUpperCase() + main;
+				} else if ("caplitalizeLast".equals(expression)) {
+					String last = value.substring(value.length()-1);
+					String main = value.substring(0, value.length()-1);
+					
+					result = main + last.toUpperCase();
+				} else {
+					throw new IllegalArgumentException("Unknown expression " + expression);
+				}
+				return result;
+			}
+			
+			@Override
+			public Object compile(String expression) {
+				// compilation not supported
+				return expression;
+			}
+		});
+        KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-ServiceProcessWithCustomTransformation.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task",
+                new ServiceTaskHandler());
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john doe");
+       
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
+                .startProcess("ServiceProcess", params);
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertEquals("John doE", processInstance.getVariable("s"));
     }
     
     @Test

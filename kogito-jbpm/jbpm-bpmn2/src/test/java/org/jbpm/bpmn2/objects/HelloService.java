@@ -21,6 +21,10 @@ public class HelloService {
     public String hello(String name) {
         return "Hello " + name + "!";
     }
+    
+    public String helloEcho(String name) {
+        return name;
+    }
 
     public String helloException(String name) {
         throw new RuntimeException("Hello Exception " + name + "!");
