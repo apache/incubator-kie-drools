@@ -3,6 +3,7 @@ package org.drools.workbench.models.testscenarios.backend;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.api.runtime.rule.FactHandle;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -85,6 +86,11 @@ public class ScenarioRunner4JUnit extends Runner {
                             builder.append( message ).append( "\n" );
                         }
                         eachNotifier.addFailedAssumption( new AssumptionViolatedException( builder.toString() ) );
+                    }
+
+                    // FLUSSSSSH!
+                    for (FactHandle factHandle : ksession.getFactHandles()) {
+                        ksession.delete(factHandle);
                     }
                 }
             } catch ( Throwable t ) {
