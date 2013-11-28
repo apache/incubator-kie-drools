@@ -98,7 +98,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             } else if (fileName.matches(".+ftl$")) {
                 try {
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    Pattern regex = Pattern.compile("(.{0}|.*/)([^/]*?)\\.ftl");
+                    Pattern regex = Pattern.compile("(.{0}|.*" + File.separator + ")([^" + File.separator + "]*?)\\.ftl");
                     Matcher m = regex.matcher(fileName);
                     String key = fileName;
                     while (m.find()) {
@@ -111,7 +111,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             } else if (fileName.matches(".+form$")) {
                 try {
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    Pattern regex = Pattern.compile("(.{0}|.*/)([^/]*?)\\.form");
+                    Pattern regex = Pattern.compile("(.{0}|.*" + File.separator + ")([^" + File.separator + "]*?)\\.form");
                     Matcher m = regex.matcher(fileName);
                     String key = fileName;
                     while (m.find()) {

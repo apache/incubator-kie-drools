@@ -10,43 +10,41 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
     private String version;
     private String kbaseName;
     private String ksessionName;
-    
+
     private RuntimeStrategy strategy = RuntimeStrategy.SINGLETON;
-    
+
     
     public KModuleDeploymentUnit(String groupId, String artifactId, String version) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
     }
-    
-    public KModuleDeploymentUnit(String groupId, String artifactId, 
-            String version, String kbaseName, String ksessionName) {
-        this.artifactId = artifactId;
-        this.groupId = groupId;
-        this.version = version;
+
+    public KModuleDeploymentUnit(String groupId, String artifactId, String version, String kbaseName, String ksessionName) {
+        this(groupId, artifactId, version);
         this.kbaseName = kbaseName;
         this.ksessionName = ksessionName;
     }
 
-    public KModuleDeploymentUnit(String groupId, String artifactId, 
-            String version, String kbaseName, String ksessionName, String strategy) {
-        this.artifactId = artifactId;
-        this.groupId = groupId;
-        this.version = version;
-        this.kbaseName = kbaseName;
-        this.ksessionName = ksessionName;
+    public KModuleDeploymentUnit(String groupId, String artifactId, String version, String kbaseName, String ksessionName,
+            String strategy) {
+        this(groupId, artifactId, version, kbaseName, ksessionName);
         this.strategy = RuntimeStrategy.valueOf(strategy);
     }
 
     @Override
     public String getIdentifier() {
-        String id = getGroupId()+":"+getArtifactId()+":"+getVersion();
-        if (!StringUtils.isEmpty(kbaseName)) {
-            id = id.concat(":" + kbaseName);
-        }
-        if (!StringUtils.isEmpty(ksessionName)) {
-            id = id.concat(":" + ksessionName);
+        String id = getGroupId() + ":" + getArtifactId() + ":" + getVersion();
+        boolean kbaseFilled = !StringUtils.isEmpty(kbaseName);
+        boolean ksessionFilled = !StringUtils.isEmpty(ksessionName);
+        if( kbaseFilled || ksessionFilled) {
+            id = id.concat(":");
+            if( kbaseFilled ) {
+                id = id.concat(kbaseName);
+            }
+            if( ksessionFilled ) {
+                id = id.concat(":" + ksessionName);
+            }
         }
         return id;
     }
@@ -59,7 +57,7 @@ public class KModuleDeploymentUnit implements DeploymentUnit {
     public void setStrategy(RuntimeStrategy strategy) {
         this.strategy = strategy;
     }
-    
+
     public String getArtifactId() {
         return artifactId;
     }
