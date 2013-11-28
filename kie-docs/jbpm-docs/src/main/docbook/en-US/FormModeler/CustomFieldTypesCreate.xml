@@ -16,7 +16,7 @@
     Basically a Custom Field Type is a Java class that implements the
     <emphasis>org.jbpm.formModeler.core.fieldTypes.CustomFieldType</emphasis>
     interface and is
-    packaged inside inside a jar file that is placed on the Application Server classpath or inside the application War.
+    packaged inside inside a JAR file that is placed on the Application Server classpath or inside the application WAR.
   </para>
   <para>
     Lets take a look at<emphasis>org.jbpm.formModeler.core.fieldTypes.CustomFieldType</emphasis>:

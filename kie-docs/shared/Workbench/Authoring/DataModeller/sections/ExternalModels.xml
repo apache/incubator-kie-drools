@@ -164,11 +164,11 @@
     <section>
       <title>Provide a GAV for the uploaded file (optional).</title>
 
-      <para>If the uploaded file is not a valid maven JAR (don't have a pom.xml file) the system will prompt the user in
+      <para>If the uploaded file is not a valid Maven JAR (don't have a pom.xml file) the system will prompt the user in
         order to provide a GAV for the file to be installed. </para>
 
       <figure>
-        <title>Not valid pom.</title>
+        <title>Not valid POM.</title>
         <screenshot>
           <mediaobject>
             <imageobject>

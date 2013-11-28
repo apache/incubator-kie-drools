@@ -16,7 +16,7 @@
         <listitem>
             <para>Prerequisites:</para>
 
-            <para>This guide assumes you have Java JDK 1.6 (set as JAVA_HOME), a GIT
+            <para>This guide assumes you have Java JDK 1.6 (set as JAVA_HOME), a Git
                 client and Maven 3.0.5+ (set as MAVEN_HOME) in your system. The
                 <emphasis>java</emphasis>
                 and
@@ -41,7 +41,7 @@
 
             <para>This command compiles, builds and runs the application. This
                 procedure will take a few minutes (but only for the first time) because
-                of the maven build process needs to download a lot of third-party
+                of the Maven build process needs to download a lot of third-party
                 libraries.
             </para>
 

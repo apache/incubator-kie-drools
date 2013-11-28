@@ -9,9 +9,9 @@
   <section>
     <title>Introduction</title>
     <para><link xlink:href="http://www.cdi-spec.org">CDI</link>, Contexts and  Dependency Injection,
-      is java specification that provides declarative controls and strucutres to an application. KIE
+      is Java specification that provides declarative controls and strucutres to an application. KIE
       can use it to automatically instantiate and bind things, without the need to use the
-      programmatic api. </para>
+      programmatic API. </para>
   </section>
   <section>
     <title>Annotations</title>
@@ -192,7 +192,7 @@ public void go(PrintStream out) {
     kSession.fireAllRules();
 }</programlisting>
     </figure>
-    <para>This is less code and more declarative than the api approach.</para>  
+    <para>This is less code and more declarative than the API approach.</para>  
     
     <figure>
       <title>API equivalent example for a named KieSession</title>

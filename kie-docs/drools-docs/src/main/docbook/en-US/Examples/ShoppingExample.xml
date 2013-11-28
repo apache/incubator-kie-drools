@@ -9,7 +9,7 @@
     <programlisting><emphasis role="bold">Name:</emphasis>Shopping Example
 <emphasis role="bold">Main class:</emphasis> org.drools.examples.shopping.ShoppingExample
 <emphasis role="bold">Module:</emphasis> drools-examples
-<emphasis role="bold">Type:</emphasis> java application
+<emphasis role="bold">Type:</emphasis> Java application
 <emphasis role="bold">Rules file:</emphasis> Shopping.drl
 <emphasis role="bold">Objective:</emphasis> demonstrate truth maintenance, accumulate
 </programlisting>
@@ -41,7 +41,7 @@ session.fireAllRules();      </programlisting>
 
       <para>Referring the the above listing, we can see there is a Customer ("mark"), and there are 2 Products ("shoes" and "hat") which are available for Purchase. In this case, a Purchase combines a customer with a product (and a product has a price attribute).</para>
 
-      <para>Note that after we fireAllRules(), we then retract the purchase of a hat (but leave the purchase of shoes in). Running the example as a java application should see the following output:</para>
+      <para>Note that after we fireAllRules(), we then retract the purchase of a hat (but leave the purchase of shoes in). Running the example as a Java application should see the following output:</para>
 
       <programlisting>Customer mark just purchased hat
 Customer mark just purchased shoes

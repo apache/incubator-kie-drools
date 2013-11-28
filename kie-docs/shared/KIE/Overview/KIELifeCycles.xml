@@ -9,7 +9,7 @@
       <para><emphasis role="bold">Author</emphasis>
         <itemizedlist>
           <listitem>
-            <para>Authoring of knowledge using a UI metaphor, such as: drl, BPMN2, decision table,
+            <para>Authoring of knowledge using a UI metaphor, such as: DRL, BPMN2, decision table,
               class models.</para>
           </listitem>
         </itemizedlist></para>
@@ -20,14 +20,14 @@
           <para>Builds the authored knowledge into deployable units. </para>
         </listitem>
         <listitem>
-          <para>For KIE this unit is a jar.</para>
+          <para>For KIE this unit is a JAR.</para>
         </listitem>
       </itemizedlist></para>
     </listitem>
     <listitem>
       <para><emphasis role="bold">Test</emphasis><itemizedlist>
         <listitem>
-          <para>Test  KIE knowedge before it's deployed to the application.</para>
+          <para>Test KIE knowedge before it's deployed to the application.</para>
         </listitem>
       </itemizedlist></para>
     </listitem>
@@ -38,18 +38,18 @@
             them.</para>
         </listitem>
         <listitem>
-          <para>KIE uses maven style repository.</para>
+          <para>KIE uses Maven style repository.</para>
         </listitem>
       </itemizedlist></para>
     </listitem>
     <listitem>
       <para><emphasis role="bold">Utilize</emphasis><itemizedlist>
         <listitem>
-          <para>The loading of a jar to provide a KIE session (KieSession), for which the
+          <para>The loading of a JAR to provide a KIE session (KieSession), for which the
             application can interact with.</para>
         </listitem>
         <listitem>
-          <para>KIE exposes the jar at runtime via a KIE container (KieContainer),.</para>
+          <para>KIE exposes the JAR at runtime via a KIE container (KieContainer).</para>
         </listitem>
         <listitem>
           <para>KieSessions, for the runtime's to interact with, are created from the
@@ -60,7 +60,7 @@
     <listitem>
       <para><emphasis role="bold">Run</emphasis><itemizedlist>
         <listitem>
-          <para>System interaction with the KieSession, via api.</para>
+          <para>System interaction with the KieSession, via API.</para>
         </listitem>
       </itemizedlist></para>
     </listitem>

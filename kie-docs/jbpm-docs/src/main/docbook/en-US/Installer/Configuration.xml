@@ -10,7 +10,7 @@
       <title>Playgrounds</title>
       
       <para>The workbench by default brings two sample playground repositories (by cloning the jbpm-playground
-      repository hosted on github). In cases where this is not wanted (access to internet might not be available
+      repository hosted on GitHub). In cases where this is not wanted (access to Internet might not be available
       or there might be a need to start with a completely clean installation of the workbench) this default behavior
       can be turned off. To do so, change the following system property in the start.jboss target to false
       in the build.xml:
@@ -29,7 +29,7 @@
       <title>Workbench Authentication</title>
       
       <para>The workbench web application is using the "default" security domain for authenticating
-      and authorizing users (as specified in the WEB-INF/jboss-web.xml inside the wars).</para>
+      and authorizing users (as specified in the WEB-INF/jboss-web.xml inside the WARs).</para>
       
       <para>The application server is configured by default to use properties files for specifying
       users.  Note that this is for demo purposes only (as passwords and roles are stored in simple
@@ -156,7 +156,7 @@
         </itemizedlist>
       </para>
   
-      <para><quote>persistent entities</quote> in this context, are java classes that represent information in the database.</para>
+      <para><quote>persistent entities</quote> in this context, are Java classes that represent information in the database.</para>
     </section>
   
     <section>
@@ -229,7 +229,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
           <para><filename>standalone.xml</filename>:</para>
           <para>This file is the configuration for the standalone JBoss application server. When the 
           installer installs the demo, it copies these files to the <code>standalone/configuration</code>
-          directory in the jboss server directory.</para>
+          directory in the JBoss server directory.</para>
           <para>We need to change the datasource configuration in <code>standalone.xml</code>
           so that the jBPM process engine can use our MySQL database</para>
           <para>The original file contains the following lines:</para>
@@ -270,7 +270,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
           <para><filename>Starting the demo</filename></para>
           <para>We've modified all the necessary files at this point. Now would be a good time to make sure
           your database is started up as well!</para>
-          <para>The installer script copies this file into the jbpm-console war before the war is installed
+          <para>The installer script copies this file into the jbpm-console WAR before the WAR is installed
           on the server. If you have already run the installer, it is recommended to stop the installer and clean
           it first using <programlisting>ant stop.demo</programlisting> and <programlisting>ant clean.demo</programlisting>
           before continuing.</para>
@@ -307,13 +307,13 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
               <listitem>
               <link
   xlink:href="https://community.jboss.org/wiki/DataSourceConfigurationinAS7#Installing_a_JDBC_driver_as_a_module">
-              Install</link> the driver jar as a <emphasis>module</emphasis>, which is what
+              Install</link> the driver JAR as a <emphasis>module</emphasis>, which is what
               the install script does. 
               </listitem>
               <listitem><link
   xlink:href="https://community.jboss.org/wiki/DataSourceConfigurationinAS7#Installing_a_JDBC_driver_as_a_deployment">
-                Otherwise, you can modify and install</link> the downloaded jar as a <emphasis>deployment</emphasis>.
-                In this case you will have to copy the jar yourself to the <code>standalone/deployments</code>
+                Otherwise, you can modify and install</link> the downloaded JAR as a <emphasis>deployment</emphasis>.
+                In this case you will have to copy the JAR yourself to the <code>standalone/deployments</code>
                 directory.
               </listitem>
             </itemizedlist>
@@ -338,7 +338,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
               </programlisting>
               </listitem>
               <listitem>Change the <code>db.name</code> property in <code>build.properties</code>
-              to the name of the downloaded jdbc driver jar you placed in <code>db/drivers</code>.
+              to the name of the downloaded jdbc driver JAR you placed in <code>db/drivers</code>.
               </listitem>
               <listitem>Change the <code>&lt;driver&gt;</code> information in
               the <code>&lt;datasource&gt;</code> section of <code>standalone.xml</code> so 
@@ -374,7 +374,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
                 <listitem>Change the name of the <emphasis>module</emphasis> to match the 
                           <code>db.driver.module.prefix</code> property above</listitem>
                 <listitem>Change the name of the module resource to the name of the JDBC driver 
-                          jar that was downloaded.</listitem>
+                          JAR that was downloaded.</listitem>
               </itemizedlist>
               The top of the original file looks like this: 
               <programlisting>&lt;module xmlns="urn:jboss:module:1.0" name="com.mysql"&gt;
@@ -398,7 +398,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
   <section>
     <title>jBPM data base schema scripts (DDL scripts)</title>
 
-    <para>By default the demo setup makes use of Hibernate auto ddl generation capabilities to build up 
+    <para>By default the demo setup makes use of Hibernate auto DDL generation capabilities to build up 
     the complete data base schema, including all tables, sequences, etc. This might not always be welcomed
     (by your database administrator) and thus the installer provides DDL scripts for most popular databases.
     </para>
@@ -503,7 +503,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>clean.db</entry>
-            <entry>cleans up data base used by jBPM demo (applies only to H2 data base)</entry>
+            <entry>cleans up data base used by jBPM demo (applies only to H2 database)</entry>
           </row>
         </tbody>
         <tbody>
@@ -515,13 +515,13 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>clean.demo.noeclipse</entry>
-            <entry>same as clean.demo but does not remove eclipse</entry>
+            <entry>same as clean.demo but does not remove Eclipse</entry>
           </row>
         </tbody>
         <tbody>
           <row>
             <entry>clean.eclipse</entry>
-            <entry>removes eclipse and its workspace</entry>
+            <entry>removes Eclipse and its workspace</entry>
           </row>
         </tbody>
         <tbody>
@@ -539,7 +539,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>clean.jboss.repository</entry>
-            <entry>removes repository content for demo setup (guvnor maven repo, niogit, etc)</entry>
+            <entry>removes repository content for demo setup (guvnor Maven repo, niogit, etc)</entry>
           </row>
         </tbody>
         <tbody>
@@ -551,7 +551,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>download.db.driver</entry>
-            <entry>downloads db driver configured in build.properties</entry>
+            <entry>downloads DB driver configured in build.properties</entry>
           </row>
         </tbody>
         <tbody>
@@ -563,19 +563,19 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>download.droolsjbpm.eclipse</entry>
-            <entry>downloads drools and jbpm eclipse plugin</entry>
+            <entry>downloads Drools and jBPM Eclipse plugin</entry>
           </row>
         </tbody>
         <tbody>
           <row>
             <entry>download.eclipse</entry>
-            <entry>downloads eclipse distribution</entry>
+            <entry>downloads Eclipse distribution</entry>
           </row>
         </tbody>
         <tbody>
           <row>
             <entry>download.jboss</entry>
-            <entry>downloads Jboss Application Server</entry>
+            <entry>downloads JBoss Application Server</entry>
           </row>
         </tbody>
         <tbody>
@@ -599,7 +599,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>install.db.files</entry>
-            <entry>installs db driver as JBoss module</entry>
+            <entry>installs DB driver as JBoss module</entry>
           </row>
         </tbody>
         <tbody>
@@ -617,25 +617,25 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>install.demo.noeclipse</entry>
-            <entry>similar to install.demo but skips eclipse installation</entry>
+            <entry>similar to install.demo but skips Eclipse installation</entry>
           </row>
         </tbody>
         <tbody>
           <row>
             <entry>install.dependencies</entry>
-            <entry>installs custom libraries (such as work item handlers, etc) into the jbpm console</entry>
+            <entry>installs custom libraries (such as work item handlers, etc) into the jBPM console</entry>
           </row>
         </tbody>
         <tbody>
           <row>
             <entry>install.droolsjbpm-eclipse.into.eclipse</entry>
-            <entry>installs droolsjbpm eclipse plugin into eclipse</entry>
+            <entry>installs droolsjbpm Eclipse plugin into Eclipse</entry>
           </row>
         </tbody>
         <tbody>
           <row>
             <entry>install.eclipse</entry>
-            <entry>install eclipse IDE</entry>
+            <entry>install Eclipse IDE</entry>
           </row>
         </tbody>
         <tbody>
@@ -660,7 +660,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
       <tbody>
         <row>
           <entry>install.modeler.into.eclipse</entry>
-          <entry>installs BPMN2 eclipse modeler into eclipse</entry>
+          <entry>installs BPMN2 eclipse modeler into Eclipse</entry>
         </row>
       </tbody>
       <tbody>
@@ -672,31 +672,31 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
       <tbody>
         <row>
           <entry>remove.db.files</entry>
-          <entry>removes db driver module from JBoss AS</entry>
+          <entry>removes DB driver module from JBoss AS</entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>start.demo</entry>
-          <entry>starts complete demo environment including JBoss AS and eclipse</entry>
+          <entry>starts complete demo environment including JBoss AS and Eclipse</entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>start.demo.eclipse</entry>
-          <entry>starts eclipse with demo setup</entry>
+          <entry>starts Eclipse with demo setup</entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>start.demo.noeclipse</entry>
-          <entry>starts demo with Jboss AS only (no eclipse)</entry>
+          <entry>starts demo with Jboss AS only (no Eclipse)</entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>start.h2</entry>
-          <entry>starts H2 data base server</entry>
+          <entry>starts H2 database server</entry>
         </row>
       </tbody>
       <tbody>
@@ -708,19 +708,19 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
       <tbody>
         <row>
           <entry>stop.demo</entry>
-          <entry>Stops all components of the demo setup (JBoss AS, H2)</entry>
+          <entry>stops all components of the demo setup (JBoss AS, H2)</entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>stop.eclipse</entry>
-          <entry>stops H2 server that is used by demo in eclipse</entry>
+          <entry>stops H2 server that is used by demo in Eclipse</entry>
         </row>
       </tbody>
       <tbody>
         <row>
           <entry>stop.h2</entry>
-          <entry>stops H2 db server</entry>
+          <entry>stops H2 DB server</entry>
         </row>
       </tbody>
       <tbody>

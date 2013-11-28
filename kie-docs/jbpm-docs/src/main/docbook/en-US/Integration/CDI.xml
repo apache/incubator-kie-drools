@@ -219,7 +219,7 @@
 
       <section>
         <para>Service that provides access to process details stored as part
-        of BPMN2 xml. </para>
+        of BPMN2 XML. </para>
 
         <note>
           <para>Before using any method that provides information, <emphasis

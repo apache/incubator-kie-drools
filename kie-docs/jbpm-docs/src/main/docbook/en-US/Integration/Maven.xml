@@ -30,8 +30,8 @@
       <para>Since version 6, jBPM provides simplified and complete deployment
       mechanism that is based entirely on Apache Maven artifacts. These
       artifacts also known as <emphasis role="bold">kjars</emphasis> are
-      simple jar files that include a descriptor for KIE system to prodice
-      KieBase and KieSession. Descriptor of the kjar is represented as xml
+      simple JAR files that include a descriptor for KIE system to produce
+      KieBase and KieSession. Descriptor of the kjar is represented as XML
       file named kmodule.xml and it can be:</para>
 
       <itemizedlist>
@@ -162,7 +162,7 @@
   </section>
 
   <section>
-    <title>Use maven for dependency management</title>
+    <title>Use Maven for dependency management</title>
 
     <para>When building systems that embed jBPM as wrokflow engine the
     simplest way is to configure all dependencies required by jBPM via Apache

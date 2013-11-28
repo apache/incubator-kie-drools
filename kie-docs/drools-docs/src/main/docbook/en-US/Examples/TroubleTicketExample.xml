@@ -145,7 +145,7 @@ end   </programlisting>
   sendEscalationEmail( customer, ticket );
 end     </programlisting>
 
-      <para>In this case, the action is to call a function which sends an email (the function is defined down the bottom of the drl file). This rule reacts to the rules which update the ticket and set its status to escalate.</para>
+      <para>In this case, the action is to call a function which sends an email (the function is defined down the bottom of the DRL file). This rule reacts to the rules which update the ticket and set its status to escalate.</para>
 
       <para>In the code that launches the example, we have a "sleep" to make sure all this happens (and print out the results). Note also that after the rules are fired, we modify the status of the Customer "C" to "Done" - and then tell the engine. This causes it to evaluate and fire the rule that looks for "tickets" that are "Done" (in which is just logs a message).</para>
 

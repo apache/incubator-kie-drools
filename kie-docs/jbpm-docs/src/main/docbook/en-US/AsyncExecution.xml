@@ -240,7 +240,7 @@
  * &lt;/ul&gt;
  * When executed as part of the process (work item handler) additional data can be expected:
  * &lt;ul&gt;
- *  &lt;li&gt;workItem - the actual work item that is being executed with all it's parameters&lt;/li&gt;
+ *  &lt;li&gt;workItem - the actual work item that is being executed with all its parameters&lt;/li&gt;
  *  &lt;li&gt;processInstanceId - id of the process instance that triggered this work&lt;/li&gt;
  *  &lt;li&gt;deploymentId - if given process instance is part of an active deployment&lt;/li&gt;
  * &lt;/ul&gt;

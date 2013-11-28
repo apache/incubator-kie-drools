@@ -7,7 +7,7 @@
   <title>Interacting with the Task Service</title>
        <para>
             In order to get access to the Task Service API it is recommended to let the Runtime Manager to make sure that 
-            everything is setup correctly. Look at the Runtime Manager section for more inforamtion. 
+            everything is setup correctly. Look at the Runtime Manager section for more information. 
             From the API perspective you should be doing something like this:
        </para>
       

@@ -11,8 +11,8 @@
           is returned by every calls to allow after the REST API call was performed to request the job status and verify whether the job finished 
           successfully. Parameters of these calls are provided in the form of JSON entities. </para>
      <para>When using Java code to interface with the REST API, the classes used in POST operations
-          or otherwise returned by various operations can be found in the <code>(org.kie.workbench.services:)kie-wb-common-services</code> jar. All 
-          of the classes mentioned below can be found in the <code>org.kie.workbench.common.services.shared.rest</code> package in that jar.</para> 
+          or otherwise returned by various operations can be found in the <code>(org.kie.workbench.services:)kie-wb-common-services</code> JAR. All 
+          of the classes mentioned below can be found in the <code>org.kie.workbench.common.services.shared.rest</code> package in that JAR.</para> 
      
      <section>
           <title>Job calls</title>
