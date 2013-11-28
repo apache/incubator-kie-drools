@@ -1,5 +1,6 @@
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieContainer;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.ReleaseId;
@@ -48,7 +49,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
 
     public void setKieContainer(KieContainer kieContainer) {
         this.kieContainer = kieContainer;
-        ReleaseId releaseId = kieContainer.getReleaseId();
+        ReleaseId releaseId = ((InternalKieContainer)kieContainer).getContainerReleaseId();
         if (releaseId == null) {
             throw new RuntimeException("The KieContainer's ReleaseId cannot be null. Are you using a KieClasspathContainer?");
         }
@@ -200,8 +201,6 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
         for (Artifact artifact : updatedArtifacts) {
             DependencyDescriptor depDescr = new DependencyDescriptor(artifact);
-            usedDependencies.remove(depDescr);
-            usedDependencies.add(depDescr);
             updateKieModule(artifact, depDescr.getGav());
         }
         log.info("The following artifacts have been updated: " + updatedArtifacts);
