@@ -285,9 +285,9 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.externalId=:externalId
+        log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=:processId AND nil.externalId=:externalId 
                     GROUP BY nil.nodeInstanceId
-                    HAVING count(nil.nodeInstanceId) = 1)
+                    HAVING sum(nil.type) = 0)
         and log.type = 0  
         and log.processInstanceId=:processId          
       order by
@@ -313,9 +313,9 @@
       from
         NodeInstanceLog log
       where
-        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.externalId=:externalId
+        log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.externalId=:externalId AND nid.type = 1 
         						GROUP BY nid.nodeInstanceId
-                    			HAVING count(nid.nodeInstanceId) = 2) 
+                    			HAVING sum(nid.type) &gt;= 1) 
        	and log.type = 1 
        	and log.processInstanceId=:processId  
       ORDER BY 
