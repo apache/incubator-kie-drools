@@ -20,12 +20,21 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.WorkingMemory;
 import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
 
 public class From extends ConditionalElement
     implements
@@ -57,7 +66,7 @@ public class From extends ConditionalElement
     }
     
     public void wire(Object object) {
-        this.dataProvider = ( DataProvider ) object;
+        this.dataProvider = KiePolicyHelper.isPolicyEnabled() ? new SafeDataProvider(( DataProvider ) object) : ( DataProvider ) object;
     }
 
     public DataProvider getDataProvider() {
@@ -97,6 +106,51 @@ public class From extends ConditionalElement
     
     public Pattern getResultPattern() {
         return this.resultPattern;
+    }
+    
+    private static class SafeDataProvider implements DataProvider {
+        private DataProvider delegate;
+        public SafeDataProvider(DataProvider delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        public Declaration[] getRequiredDeclarations() {
+            return delegate.getRequiredDeclarations();
+        }
+
+        @Override
+        public Object createContext() {
+            return AccessController.doPrivileged(new PrivilegedAction<Object>() {
+                @Override
+                public Object run() {
+                    return delegate.createContext();
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        @Override
+        public Iterator getResults(final Tuple tuple, 
+                final WorkingMemory wm, 
+                final PropagationContext ctx, 
+                final Object providerContext) {
+            return AccessController.doPrivileged(new PrivilegedAction<Iterator>() {
+                @Override
+                public Iterator run() {
+                    return delegate.getResults(tuple, wm, ctx, providerContext);
+                }
+            }, KiePolicyHelper.getAccessContext());
+        }
+
+        @Override
+        public void replaceDeclaration(Declaration declaration, Declaration resolved) {
+            delegate.replaceDeclaration(declaration, resolved);
+        }
+        
+        @Override
+        public SafeDataProvider clone() {
+            return new SafeDataProvider( delegate.clone() );
+        }
     }
 
 }

@@ -66,7 +66,7 @@ public class EnumFieldPopulator extends FieldPopulator {
 
                 Serializable compiled = MVEL.compileExpression( valueOfEnum,
                                                                 pctx );
-                value = MVEL.executeExpression( compiled );
+                value = org.drools.core.util.MVELSafeHelper.getEvaluator().executeExpression( compiled );
 
             } catch ( ClassNotFoundException e ) {
                 // This is a Guvnor enum type
