@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
+import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.ContextInstance;
@@ -116,7 +117,7 @@ public class ForEachNodeInstance extends CompositeContextNodeInstance {
             collection = variableScopeInstance.getVariable(collectionExpression);
         } else {
             try {
-                collection = MVEL.eval(collectionExpression, new NodeInstanceResolverFactory(this));
+                collection = MVELSafeHelper.getEvaluator().eval(collectionExpression, new NodeInstanceResolverFactory(this));
             } catch (Throwable t) {
                 throw new IllegalArgumentException(
                     "Could not find collection " + collectionExpression);

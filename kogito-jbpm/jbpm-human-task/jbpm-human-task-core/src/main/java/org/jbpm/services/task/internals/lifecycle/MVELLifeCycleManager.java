@@ -64,6 +64,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
+import org.kie.internal.security.MVELSafeHelper;
 import org.kie.internal.task.api.TaskContentService;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.kie.internal.task.api.TaskQueryService;
@@ -525,9 +526,9 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         Serializable s = MVEL.compileExpression(str.trim(), context);
 
         if (vars != null) {
-            return MVEL.executeExpression(s, vars);
+            return MVELSafeHelper.getEvaluator().executeExpression(s, vars);
         } else {
-            return MVEL.executeExpression(s);
+            return MVELSafeHelper.getEvaluator().executeExpression(s);
         }
     }
 

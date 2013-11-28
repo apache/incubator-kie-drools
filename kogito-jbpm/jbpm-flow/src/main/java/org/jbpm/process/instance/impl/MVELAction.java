@@ -23,6 +23,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
+import org.jbpm.flow.util.MVELSafeHelper;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessContext;
 import org.mvel2.MVEL;
@@ -106,7 +107,7 @@ public class MVELAction
 //            factory.setNextFactory( data.getFunctionFactory() );
 //        }
 //        
-        MVEL.executeExpression( this.expr,
+        MVELSafeHelper.getEvaluator().executeExpression( this.expr,
                                 null,
                                 factory );
 

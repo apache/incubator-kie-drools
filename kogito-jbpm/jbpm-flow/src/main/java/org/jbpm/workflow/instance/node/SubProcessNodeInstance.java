@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.RuntimeDroolsException;
+import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -90,7 +91,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 parameterValue = variableScopeInstance.getVariable(mapping.getSources().get(0));
             } else {
             	try {
-            		parameterValue = MVEL.eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
+            		parameterValue = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new NodeInstanceResolverFactory(this));
             	} catch (Throwable t) {
             	    logger.error("Could not find variable scope for variable {}", mapping.getSources().get(0));
             	    logger.error("when trying to execute SubProcess node {}", getSubProcessNode().getName());
@@ -120,7 +121,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	                replacements.put(paramName, variableValueString);
                 } else {
                 	try {
-                		Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+                		Object variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new NodeInstanceResolverFactory(this));
 	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
 	                	replacements.put(paramName, variableValueString);
                 	} catch (Throwable t) {
@@ -259,7 +260,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 		        	Object value = subProcessVariableScopeInstance.getVariable(mapping.getSources().get(0));
 		        	if (value == null) {
 		        		try {
-		            		value = MVEL.eval(mapping.getSources().get(0), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
+		            		value = MVELSafeHelper.getEvaluator().eval(mapping.getSources().get(0), new VariableScopeResolverFactory(subProcessVariableScopeInstance));
 		            	} catch (Throwable t) {
 		            		// do nothing
 		            	}

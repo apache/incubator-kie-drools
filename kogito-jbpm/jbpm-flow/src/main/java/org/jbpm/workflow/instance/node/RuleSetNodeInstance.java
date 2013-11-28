@@ -26,6 +26,7 @@ import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
+import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -146,7 +147,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                         Object value = objects.get(association.getSources().get(0));
                         if (value == null) {
                             try {
-                                value = MVEL.eval(association.getSources().get(0), new MapVariableResolverFactory(objects));
+                                value = MVELSafeHelper.getEvaluator().eval(association.getSources().get(0), new MapVariableResolverFactory(objects));
                             } catch (Throwable t) {
                                 // do nothing
                             }
@@ -181,7 +182,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
                 } else {
                     try {
-                        parameterValue = MVEL.eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
+                        parameterValue = MVELSafeHelper.getEvaluator().eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
                     } catch (Throwable t) {
                         logger.error("Could not find variable scope for variable {}", association.getSources().get(0));
                         logger.error("when trying to execute RuleSetNode {}", ruleSetNode.getName());
@@ -224,7 +225,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                     }
                 } else {
                     try {
-                        Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+                        Object variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new NodeInstanceResolverFactory(this));
                         if (variableValue != null) {
                             return variableValue;
                         }

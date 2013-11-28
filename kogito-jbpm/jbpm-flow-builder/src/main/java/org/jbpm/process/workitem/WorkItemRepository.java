@@ -12,6 +12,7 @@ import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.datatype.DataType;
 import org.drools.core.process.core.impl.ParameterDefinitionImpl;
 import org.drools.core.util.ConfFileUtils;
+import org.kie.internal.security.MVELSafeHelper;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +98,7 @@ public class WorkItemRepository {
 			return new ArrayList<Map<String, Object>>();
 		}
 		try {
-			List<Map<String, Object>> result = (List<Map<String, Object>>) MVEL.eval(content, new HashMap());
+			List<Map<String, Object>> result = (List<Map<String, Object>>) MVELSafeHelper.getEvaluator().eval(content, new HashMap());
 			for (Map<String, Object> wid: result) {
 				wid.put("path", parentPath + "/" + file);
 				wid.put("file", file + ".wid");

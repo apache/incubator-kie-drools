@@ -31,6 +31,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.rule.impl.InternalAgenda;
 import org.drools.core.spi.Activation;
 import org.drools.core.time.TimeUtils;
+import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
@@ -214,7 +215,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	                replacements.put(paramName, variableValueString);
                 } else {
                 	try {
-                		Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+                		Object variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new NodeInstanceResolverFactory(this));
 	                	String variableValueString = variableValue == null ? "" : variableValue.toString();
 	                	replacements.put(paramName, variableValueString);
                 	} catch (Throwable t) {

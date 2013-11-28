@@ -30,6 +30,7 @@ import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.drools.core.spi.ProcessContext;
+import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -161,7 +162,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                     parameterValue = variableScopeInstance.getVariable(association.getSources().get(0));
                 } else {
                     try {
-                        parameterValue = MVEL.eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
+                        parameterValue = MVELSafeHelper.getEvaluator().eval(association.getSources().get(0), new NodeInstanceResolverFactory(this));
                     } catch (Throwable t) {
                         logger.error("Could not find variable scope for variable {}", association.getSources().get(0));
                         logger.error("when trying to execute Work Item {}", work.getName());
@@ -194,7 +195,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                             replacements.put(paramName, variableValueString);
                         } else {
                             try {
-                                Object variableValue = MVEL.eval(paramName, new NodeInstanceResolverFactory(this));
+                                Object variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new NodeInstanceResolverFactory(this));
                                 String variableValueString = variableValue == null ? "" : variableValue.toString();
                                 replacements.put(paramName, variableValueString);
                             } catch (Throwable t) {
@@ -238,7 +239,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         Object value = workItem.getResult(association.getSources().get(0));
                         if (value == null) {
                             try {
-                                value = MVEL.eval(association.getSources().get(0), new WorkItemResolverFactory(workItem));
+                                value = MVELSafeHelper.getEvaluator().eval(association.getSources().get(0), new WorkItemResolverFactory(workItem));
                             } catch (Throwable t) {
                                 // do nothing
                             }

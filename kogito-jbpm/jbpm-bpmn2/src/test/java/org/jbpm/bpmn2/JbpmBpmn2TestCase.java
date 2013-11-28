@@ -100,6 +100,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.kie.internal.security.MVELSafeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.slf4j.Logger;
@@ -865,7 +866,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
         context.addPackageImport("java.util");
 
         vars.put("now", new Date());
-        return MVEL.executeExpression(MVEL.compileExpression(str, context),
+        return MVELSafeHelper.getEvaluator().executeExpression(MVEL.compileExpression(str, context),
                 vars);
     }
     

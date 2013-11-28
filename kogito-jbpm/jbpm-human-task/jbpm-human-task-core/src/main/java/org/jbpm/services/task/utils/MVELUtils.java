@@ -48,6 +48,7 @@ import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.command.Command;
 import org.kie.api.task.model.Status;
+import org.kie.internal.security.MVELSafeHelper;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.AllowedToDelegate;
@@ -144,10 +145,10 @@ public class MVELUtils {
         Serializable s = MVEL.compileExpression(str.trim(), context);
 
         if( vars != null ) { 
-        return MVEL.executeExpression(s, vars);
+        return MVELSafeHelper.getEvaluator().executeExpression(s, vars);
     }
         else { 
-            return MVEL.executeExpression(s);
+            return MVELSafeHelper.getEvaluator().executeExpression(s);
         }
     }
     public static String toString(Reader reader) throws IOException {
