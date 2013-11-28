@@ -1518,7 +1518,7 @@ Cheese( name == "stilton"; shop == "Cheese Shop", p : price )
 
       <para>By default this feature is off in order to make the behavior of the rule engine backward compatible with the
       former releases. When you want to activate it on a specific bean you have to annotate it with @propertyReactive.
-      This annotation works both on drl type declarations:</para>
+      This annotation works both on DRL type declarations:</para>
 
       <programlisting>declare Person
 @propertyReactive

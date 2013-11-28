@@ -56,7 +56,7 @@ KieBase kbase = kieContainer.newKieBase( kbaseConf );</programlisting>
   <section>
     <title>KieScanner</title>
 
-    <para>The <code>KieScanner</code> allows to continously monitoring your maven repository
+    <para>The <code>KieScanner</code> allows to continously monitoring your Maven repository
     to check if a new release of a Kie project has been installed and if so deploying it in
     the <code>KieContainer</code> wrapping that project. The use of the <code>KieScanner</code>
     requires kie-ci.jar to be on the classpath.</para>
@@ -82,14 +82,14 @@ ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "myartifact", "1.0-S
 KieContainer kContainer = kieServices.newKieContainer( releaseId );
 KieScanner kScanner = kieServices.newKieScanner( kContainer );
 
-// Start the KieScanner polling the maven repository every 10 seconds
+// Start the KieScanner polling the Maven repository every 10 seconds
 kScanner.start( 10000L );</programlisting>
     </example>
 
     <para>In this example the <code>KieScanner</code> is configured to run with a fixed
     time interval, but it is also possible to run it on demand by invoking the
     <code>scanNow()</code> method on it. If the <code>KieScanner</code> finds in the
-    maven repository an updated version of the Kie project used by that <code>KieContainer</code>
+    Maven repository an updated version of the Kie project used by that <code>KieContainer</code>
     it automatically downloads the new version and triggers an incremental build of the new
     project. From this moment all the new <code>KieBase</code>s and <code>KieSession</code>s
     created from that <code>KieContainer</code> will use the new project version.</para>

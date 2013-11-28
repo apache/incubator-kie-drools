@@ -15,7 +15,7 @@
        <para>
               Users can plug in any human task service implementation, such as the one that's provided by jBPM, 
               or they may register their own implementation. In the next paragraphs, we will describe the human 
-              task servcie implementation provided by jBPM.
+              task service implementation provided by jBPM.
        </para>
        <para>
               The jBPM project provides a default implementation of a human task service based on the WS-HumanTask 

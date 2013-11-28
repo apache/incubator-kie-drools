@@ -22,10 +22,10 @@
   <section xml:id="creatingAndBuildingAKieProject">
     <title>Creating and building a Kie Project</title>
 
-    <para>A Kie Project has the structure of a normal maven project with the only peculiarity
+    <para>A Kie Project has the structure of a normal Maven project with the only peculiarity
     of including a kmodule.xml file defining in a declaratively way the <code>KieBase</code>s
     and <code>KieSession</code>s that can be created from it. This file has to be placed in the
-    resources/META-INF folder of the maven project while all the other Kie artifacts, such as
+    resources/META-INF folder of the Maven project while all the other Kie artifacts, such as
     DRL or a Excel files, must be stored in the resources folder or in any other subfolder under it.</para>
 
     <para>Since meaningful defaults have been provided for all configuration aspects, the simplest
@@ -76,7 +76,7 @@ KieContainer kContainer = kieServices.getKieClasspathContainer();</programlistin
       </mediaobject>
     </figure>
 
-    <para>In this way all the java sources and the Kie resources are compiled and deployed into
+    <para>In this way all the Java sources and the Kie resources are compiled and deployed into
     the KieContainer which makes its contents available for use at runtime.</para>
   </section>
 
@@ -330,7 +330,7 @@ KieBase kBase1 = kContainer.getKieBase(); // returns KBase1
 KieSession kieSession1 = kContainer.newKieSession(); // returns KSession2_1</programlisting>
     </example>
 
-    <para>Since a Kie project is also a maven project the groupId, artifactId and version declared
+    <para>Since a Kie project is also a Maven project the groupId, artifactId and version declared
     in the pom.xml file are also used to generate a <code>ReleaseId</code> that uniquely identify
     this project inside your application. This also allows to create a new KieContainer from that
     project by simply passing its <code>ReleaseId</code> to the <code>KieServices</code>.</para>
@@ -347,7 +347,7 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
   <section xml:id="buildingWithMaven">
     <title>Building with Maven</title>
     <para>
-      The KIE plugin for maven ensures that artefact resources are validated and pre-compiled, it is recommended that this is used at all times. To use the plugin simple add it to the build
+      The KIE plugin for Maven ensures that artefact resources are validated and pre-compiled, it is recommended that this is used at all times. To use the plugin simple add it to the build
       section of the Maven pom.xml
      </para>
     
@@ -412,7 +412,7 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
 
     <para>To do this in practice it is necessary to create a <code>KieModuleModel</code> from the
     <code>KieServices</code>, configure it with the desired <code>KieBase</code>s and
-    <code>KieSession</code>s, convert it in xml and add the xml to the <code>KieFileSystem</code>.
+    <code>KieSession</code>s, convert it in XML and add the XML to the <code>KieFileSystem</code>.
     This process is shown by the following example:</para>
 
     <example>
@@ -436,7 +436,7 @@ KieFileSystem kfs = kieServices.newKieFileSystem();</programlisting>
 
     <para>At this point it is also necessary to add to the <code>KieFileSystem</code>, through its
     fluent API, all others Kie artifacts composing your project. These artifacts have to be added
-    in the same position of a corresponding usual maven project.</para>
+    in the same position of a corresponding usual Maven project.</para>
 
     <example>
       <title>Adding Kie artifacts to a KieFileSystem</title>

@@ -10,7 +10,7 @@
   <title>PHREAK Algorithm</title>
   
   <para>Drools 6 introduces a new algorithm, that attempts to address some of the core issues of RETE. The algorithm is
-    not a rewrite form scratch and incorporates all of the existing code from ReteOO, and all it's enhancements. While
+    not a rewrite form scratch and incorporates all of the existing code from ReteOO, and all its enhancements. While
     PHREAK is an evolution of the RETE algorithm, it is no longer classified as a RETE implementation. In the same way
     that once an animal evolves beyond a certain point and key characteristics are changed, the animal becomes
     classified as new species. There are two key RETE characteristics that strongly identify any derivative strains,
@@ -50,7 +50,7 @@
     delays the evaluation and firing of the other rules. Only once a rule has all right inputs populated will the rule
     be considered linked in, although no work is yet done. Instead a goal is created, that represents the rule, and
     placed into a priority queue; which is ordered by salience. Each queue itself is associated with an AgendaGroup.
-    Only the active AgendaGroup will inspect it's queue, popping the goal for the rule with the highest salience and
+    Only the active AgendaGroup will inspect its queue, popping the goal for the rule with the highest salience and
     submitting it for evaluation. So the work done shifts from the insert, update, delete phase to the fireAllRules
     phase. Only the rule for which the goal was created is evaluated, other potential rule evaluations from those facts
     are delayed. While individual rules are evaluated, node sharing is still achieved through the process of
@@ -72,7 +72,7 @@
     is built segments are created for nodes that are shared by the same set of rules. A rule itself is made up from a
     path of segments, although if there is no sharing that will be a single segment. A bit-mask offset is assigned to
     each node in the segment. Also another bit mask (the layering) is assigned to each segment in the rule's path. When
-    there is at least one input (data propagation) the node's bit is set to on. When each node has it's bit set to on
+    there is at least one input (data propagation) the node's bit is set to on. When each node has its bit set to on
     the segment's bit is also set to on. Conversely if any node's bit is set to off, the segment is then also set to
     off. If each segment in the rule's path is set to on, the rule is said to be linked in and a goal is created to
     schedule the rule for evaluation. The same bit-mask technique is used to also track dirty node, segments and rules;
@@ -106,7 +106,7 @@
       </imageobject>
     </mediaobject>
   </figure>
-  <para>Example 2 demonstrates what happens when another rule is added that shares the pattern A. A is placed in it's
+  <para>Example 2 demonstrates what happens when another rule is added that shares the pattern A. A is placed in its
     own segment, resulting in two segments per rule. Those two segments form a path, for their respective rules. The
     first segment is shared by both paths. When A is linked the segment becomes linked, it then iterates each path the
     segment is shared by, setting the bit 1 to on. If B and C are later turned on, the second segment for path R1 is

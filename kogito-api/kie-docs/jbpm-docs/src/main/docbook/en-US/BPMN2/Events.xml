@@ -69,7 +69,7 @@
             the entire process or just the path. When a process instance is
             terminated, it means its state is set to completed and all other nodes 
             that might still be active (on parallel paths) in this
-            process instance are cancelled. Non-terminating end events are simply end
+            process instance are canceled. Non-terminating end events are simply end
             for this path (execution of this branch will end here), but other parallel
             paths can still continue.  A process instance will automatically complete
             if there are no more active paths inside that process instance (for example,
@@ -151,8 +151,8 @@
         should have one incoming connection and one outgoing connection.  The timer
         delay specifies how long the timer should wait before
         triggering the first time.  When a Timer Event is reached in the process, it will
-        start the associated timer.  The timer is cancelled if the timer node is
-        cancelled (e.g., by completing or aborting the enclosing process instance). Consult the
+        start the associated timer.  The timer is canceled if the timer node is
+        canceled (e.g., by completing or aborting the enclosing process instance). Consult the
         section <quote><link linkend='sec.timers' endterm="sec.timers.title"/></quote>
         for more information. The Timer Event contains the
         following properties:</para>

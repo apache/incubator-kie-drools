@@ -41,12 +41,12 @@
        </mediaobject>
        
        <para>The main idea here is to have a separate project that contains the workItems
-              implementations, for example: CreateCustomerWorkItemHandler , you will need to compile
-              this project with maven and install the produced jar file inside the KIE-WB
+              implementations, for example: CreateCustomerWorkItemHandler, you will need to compile
+              this project with Maven and install the produced JAR file inside the KIE-WB
               application. In order to do that you just copy the
               customer-services-workitems-1.0-SNAPSHOT.jar into the WEB-INF/lib directory of the
               kie-wb.war app. On this example the workItemHandler implementations interacts with a
-              public web service that you can check here , so you will require internet connection
+              public web service that you can check here, so you will require Internet connection
               in order to try this example. </para>
        <para>Notice also that inside the customer-relationship project there are some high level
               mappings of the Domain Specific Tasks that can be used inside our Customer

@@ -8,9 +8,9 @@
 <para>Some common issues are explained below.</para>
 
     <para>Q: What if the installer complains it cannot download component X?</para>
-    <para>A: Are you connected to the internet? Do you have a firewall turned on? Do you require a proxy?  It might be possible that one of the locations we're downloading the components from is temporarily offline.  Try downloading the components manually (possibly from alternate locations) and put them in the jbpm-installer/lib folder.</para>
+    <para>A: Are you connected to the Internet? Do you have a firewall turned on? Do you require a proxy?  It might be possible that one of the locations we're downloading the components from is temporarily offline.  Try downloading the components manually (possibly from alternate locations) and put them in the jbpm-installer/lib folder.</para>
 
-    <para>Q: What if the installer complains it cannot extract / unzip a certain jar/war/zip?</para>
+    <para>Q: What if the installer complains it cannot extract / unzip a certain JAR/WAR/zip?</para>
     <para>A: If your download failed while downloading a component, it is possible that the installer is trying to use an incomplete file.  Try deleting the component in question from the jbpm-installer/lib folder and reinstall, so it will be downloaded again.</para>
 
     <para>Q: What if I have been changing my installation (and it no longer works) and I want to start over again with a clean installation?</para>

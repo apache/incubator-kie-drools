@@ -30,10 +30,10 @@
 
     <note>
       <para>The differences between these <literal>war</literal> files are superficial only, to allow out-of-the-box
-      deployment. For example, some jars might be excluded if the application server already supplies them.</para>
+      deployment. For example, some JARs might be excluded if the application server already supplies them.</para>
     </note>
 
-    <para>To use the workbench on a different application server (Websphere, Weblogic, ...), use the
+    <para>To use the workbench on a different application server (WebSphere, WebLogic, ...), use the
     <literal>tomcat7</literal> war and tailor it to your application server's version.</para>
   </section>
 
@@ -131,7 +131,7 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold"><literal>org.guvnor.m2repo.dir</literal></emphasis>: Place where maven repository
+        <para><emphasis role="bold"><literal>org.guvnor.m2repo.dir</literal></emphasis>: Place where Maven repository
           folder will be stored. Default: working-directory/repositories/kie</para>
       </listitem>
 
@@ -144,7 +144,7 @@
 
       <listitem>
         <para><emphasis role="bold"><literal>org.kie.demo</literal></emphasis>: Enables external clone of a demo
-          application from github. This System Property takes precedence over org.kie.example. Default:
+          application from GitHub. This System Property takes precedence over org.kie.example. Default:
             <literal>true</literal></para>
       </listitem>
 

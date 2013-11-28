@@ -75,7 +75,7 @@ KieBaseModel kieBaseModel1 = kmodule.newKieBaseModel("KBase2").addInclude("KBase
     <title>KieModules, KieContainer and KIE-CI</title>
     <para>Any Maven  produce JAR with a 'kmodule.xml' in it is considered a KieModule. This can be loade from the
       classpath or dynamically at runtime from a Resource location. If the kie-ci dependency is on the classpath it
-      embeds maven and all resolving is done automatically using Maven and can access local or remote repositories.
+      embeds Maven and all resolving is done automatically using Maven and can access local or remote repositories.
       Settings.xml is obeyed for Maven configuration.</para>
     <para>The KieContainer provides a runtime to utilize the KieModule, versioning is built in throughout, via Maven.
       Kie-ci will create a classpath dynamically from all the Maven declared dependencies for the artefact being loaded.
@@ -100,8 +100,8 @@ kSession.fireAllRules();</programlisting>
   <section>
     <title>KieScanner</title>
 
-    <para>The <code>KieScanner</code> is a maven-oriented replacement of the KnowledgeAgent
-    present in Drools 5. In fact it allows to continously monitoring your maven repository
+    <para>The <code>KieScanner</code> is a Maven-oriented replacement of the KnowledgeAgent
+    present in Drools 5. In fact it allows to continously monitoring your Maven repository
     to check if a new release of a Kie project has been installed and if so deploying it in
     the <code>KieContainer</code> wrapping that project. The use of the <code>KieScanner</code>
     requires kie-ci.jar to be on the classpath.</para>
@@ -117,14 +117,14 @@ ReleaseId releaseId = kieServices.newReleaseId( "org.acme", "myartifact", "1.0-S
 KieContainer kContainer = kieServices.newKieContainer( releaseId );
 KieScanner kScanner = kieServices.newKieScanner( kContainer );
 
-// Start the KieScanner polling the maven repository every 10 seconds
+// Start the KieScanner polling the Maven repository every 10 seconds
 kScanner.start( 10000L );</programlisting>
     </example>
 
     <para>In this example the <code>KieScanner</code> is configured to run with a fixed
     time interval, but it is also possible to run it on demand by invoking the
     <code>scanNow()</code> method on it. If the <code>KieScanner</code> finds in the
-    maven repository an updated version of the Kie project used by that <code>KieContainer</code>
+    Maven repository an updated version of the Kie project used by that <code>KieContainer</code>
     it automatically downloads the new version and triggers an incremental build of the new
     project. From this moment all the new <code>KieBase</code>s and <code>KieSession</code>s
     created from that <code>KieContainer</code> will use the new project version.</para>
@@ -136,19 +136,19 @@ kScanner.start( 10000L );</programlisting>
       Traditional hierarchical classloaders are now used. The root classloader is at the KieContext level, there is then
       one child ClassLoader per namespace. This makes it cleaner to add and remove rules, but there can now be no
       referencing betwen namespaces in DRL files; i.e. functions can only be used by the namespaces that declared them.
-      The recommendation is to use static java methods in your project, which is visible to all namespaces; but those
-      cannot  (like other classes on the root KieContainer ClassLoader). be dynamiccally updated.</para>
+      The recommendation is to use static Java methods in your project, which is visible to all namespaces; but those
+      cannot (like other classes on the root KieContainer ClassLoader) be dynamically updated.</para>
   </section>
   <section>
     <title>Legacy API Adapter</title>
-    <para>The 5.x API for building and running with Drools and jBPM is still available through maven dependency
+    <para>The 5.x API for building and running with Drools and jBPM is still available through Maven dependency
       "knowledge-api-legacy5-adapter". Because the nature of deployment has significantly changed in 6.0, it was not
       possible to provide an adapter bridge for the KnowledgeAgent. If any other methods are missing or problematic,
       please open a JIRA, and we'll fix for 6.1</para>
   </section>
   <section>
     <title>KIE Documentation</title>
-    <para> While a lot of new documentation has been added for working with the new KIE api, the entire documentation
+    <para> While a lot of new documentation has been added for working with the new KIE API, the entire documentation
       has not yet been brought up to date. For this reason there will be continued references to old terminologies.
       Apologies in adanced, and thank you for your patience. We hope those in the community will work with us to get the
       documentation updated throughout, for 6.1</para>

@@ -9,12 +9,12 @@
   <section>
     <title>Getting the sources</title>
 
-    <para>The source code of each maven artifact is available in the JBoss maven repository as a source jar. The same
-    source jars are also included in the download zips. However, if you want to build from source, it's highly
+    <para>The source code of each Maven artifact is available in the JBoss Maven repository as a source JAR. The same
+    source JARs are also included in the download zips. However, if you want to build from source, it's highly
     recommended to get our sources from our source control.</para>
 
     <para>Drools and jBPM use <link xlink:href="http://git-scm.com/">Git</link> for source control. The blessed git
-    repositories are hosted on <link xlink:href="https://github.com">Github</link>:</para>
+    repositories are hosted on <link xlink:href="https://github.com">GitHub</link>:</para>
 
     <itemizedlist>
       <listitem>

@@ -7,7 +7,7 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Artifact Repository</title>
 
-  <para>Projects often need external artifacts in their classpath in order to build, for example a domain model jars.
+  <para>Projects often need external artifacts in their classpath in order to build, for example a domain model JARs.
     The artifact repository holds those artifacts.</para>
 
   <para>The Artifact Repository is a full blown Maven repository. It follows the semantics of a Maven remote repository:
@@ -25,12 +25,12 @@
     </imageobject>
   </mediaobject>
 
-  <para>To add a new artifact to that maven repository, either:</para>
+  <para>To add a new artifact to that Maven repository, either:</para>
 
   <itemizedlist>
     <listitem>
-      <para>Use the upload button and select a jar. If the jar contains a pom file under
-      <literal>META-INF/maven</literal> (which every jar build by Maven has), no further information is needed.
+      <para>Use the upload button and select a JAR. If the JAR contains a POM file under
+      <literal>META-INF/maven</literal> (which every JAR build by Maven has), no further information is needed.
       Otherwise, a groupId, artifactId and version need be given too.</para>
 
       <mediaobject>

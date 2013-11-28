@@ -22,7 +22,7 @@
   <section>
     <title>Sign up to jboss.org</title>
 
-    <para>Signing to jboss.org will give you access to the JBoss wiki, forums and Jira. Go to 
+    <para>Signing to jboss.org will give you access to the JBoss wiki, forums and JIRA. Go to 
     <link xlink:href="http://www.jboss.org/">http://www.jboss.org/</link> and click "Register".</para>
 
     <mediaobject>
@@ -80,14 +80,14 @@
   </section>
 
   <section>
-    <title>Fork Github</title>
+    <title>Fork GitHub</title>
 
     <para>With the contributor agreement signed and your requests submitted to
-    jira you should now be ready to code :) Create a github account and fork
-    any of the drools, jbpm or guvnor sub modules. The fork will create a copy
-    in your own github space which you can work on at your own pace. If you
-    make a mistake, don't worry blow it away and fork again. Note each github
-    repository provides you the clone (checkout) URL, github will provide you
+    JIRA you should now be ready to code :) Create a GitHub account and fork
+    any of the Drools, jBPM or Guvnor repositories. The fork will create a copy
+    in your own GitHub space which you can work on at your own pace. If you
+    make a mistake, don't worry blow it away and fork again. Note each GitHub
+    repository provides you the clone (checkout) URL, GitHub will provide you
     URLs specific to your fork.</para>
 
     <para><link
@@ -104,9 +104,9 @@
     <title>Writing Tests</title>
 
     <para>When writing tests, try and keep them minimal and self contained. We
-    prefer to keep the drl fragments within the test, as it makes for quicker
+    prefer to keep the DRL fragments within the test, as it makes for quicker
     reviewing. If their are a large number of rules then using a String is not
-    practical so then by all means place them in separate drl files instead to
+    practical so then by all means place them in separate DRL files instead to
     be loaded from the classpath. If your tests need to use a model, please
     try to use those that already exist for other unit tests; such as Person,
     Cheese or Order. If no classes exist that have the fields you need, try
@@ -153,8 +153,8 @@
     <title>Submit Pull Requests</title>
 
     <para>With your code rebased from original master and pushed to your
-    personal github area, you can now submit your work as a pull request. If
-    you look at the top of the page in github for your work area their will be
+    personal GitHub area, you can now submit your work as a pull request. If
+    you look at the top of the page in GitHub for your work area their will be
     a "Pull Request" button. Selecting this will then provide a gui to
     automate the submission of your pull request.</para>
 
@@ -165,7 +165,7 @@
     provide helpful suggestions for improvements, and allows for us to leave
     inline comments on specific parts of the code. Don't be disheartened if we
     don't merge straight away, it can often take several revisions before we
-    accept a pull request. Luckily github makes it very trivial to go back to
+    accept a pull request. Luckily GitHub makes it very trivial to go back to
     your code, do some more commits and then update your pull request to your
     latest and greatest.</para>
 

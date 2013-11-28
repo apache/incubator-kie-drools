@@ -22,7 +22,7 @@
     <title>Home screen</title>
     
     <para>After logging in, the home screen shows. The actual content of the home screen depends on the workbench
-      variant (drools, jbpm, ...).</para>
+      variant (Drools, jBPM, ...).</para>
     
     <mediaobject>
       <imageobject>
@@ -61,7 +61,7 @@
   <section xml:id="wb.InitialLayout">
     <title>Initial layout</title>
     
-  <para>The Workbench consists of three main sections to begin; however it's layout and content can
+  <para>The Workbench consists of three main sections to begin; however its layout and content can
     be changed.</para>
 
   <figure>

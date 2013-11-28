@@ -112,7 +112,7 @@
 
               <para>Once you open the Project Editor, you will see on the top right corner of the
                      panel the button called Build &amp; Deploy. This button will allow you to
-                     create a new Jar artifact that will be deployed to the Runtime environment as a
+                     create a new JAR artifact that will be deployed to the Runtime environment as a
                      new Deployment Unit. </para>
               <mediaobject>
                      <imageobject>

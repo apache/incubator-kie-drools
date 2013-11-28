@@ -16,7 +16,7 @@
     workbench has been spun off into a standalone project called UberFire, so that anyone now can
     build high quality web based workbenches. In the longer term it will facilitate user
     customised Drools and jBPM installations.</para>
-  <para>GIT replaces JCR as the content repository, offering a fast and scalable back-end storage
+  <para>Git replaces JCR as the content repository, offering a fast and scalable back-end storage
     for content that has strong tooling support. There has been a refocus on simplicity away from
     databases with an aim of storing everythign as as text file, even meta data is just a file.
     The database is just there to provide fast indexing and search via Lucene. This will allow

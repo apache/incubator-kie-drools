@@ -11,7 +11,7 @@
   <title>OSGi Integration</title>
 
   <para>OSGi is a dynamic module system for declarative services. So what does
-  that mean? Each jar in OSGi is called a bundle and has it's own ClassLoader.
+  that mean? Each JAR in OSGi is called a bundle and has its own ClassLoader.
   Each bundle specifies the packages it exports (makes publicly available) and
   which packages it imports (external dependencies). OSGi will use this
   information to wire the ClassLoaders of different bundles together; the key
@@ -25,7 +25,7 @@
   need initialisation, which can cause ordering problems - how do you make
   sure you don't consume a service before its registered? OSGi has a number of
   features to help with service composition and ordering. The two main ones
-  are the programmatic ServiceTracker and the xml based Declarative Services.
+  are the programmatic ServiceTracker and the XML based Declarative Services.
   There are also other projects that help with this; Spring DM, iPOJO,
   Gravity.</para>
 

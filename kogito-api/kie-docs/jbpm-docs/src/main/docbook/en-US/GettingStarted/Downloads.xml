@@ -16,7 +16,7 @@
 
   <itemizedlist>
     <listitem>
-      <para>bin: all the jBPM binaries (jars) and their dependencies</para>
+      <para>bin: all the jBPM binaries (JARs) and their dependencies</para>
     </listitem>
 
     <listitem>
@@ -44,13 +44,13 @@
   </itemizedlist>
 
   <!-- section>
-    <title>Use with Maven, Gradle, Ivy, Buildr or ANT</title>
+    <title>Use with Maven, Gradle, Ivy, Buildr or Ant</title>
 
-      <para>The jars are also available in <link
+      <para>The JARs are also available in <link
       xlink:href="http://search.maven.org/#search|ga|1|org.jbpm">the central
-      maven repository</link> (and also in <link
+      Maven repository</link> (and also in <link
       xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.jbpm~~~~">the
-      JBoss maven repository</link>).</para>
+      JBoss Maven repository</link>).</para>
 
       <para>If you use Maven, add KIE and jBPM dependencies in your project's
       pom.xml like this:</para>
@@ -80,10 +80,10 @@
   &lt;dependencies&gt;</programlisting>
 
       <para>This is similar for Gradle, Ivy and Buildr. To identify the latest
-      version, check the maven repository.</para>
+      version, check the Maven repository.</para>
 
-      <para>If you're still using ANT (without Ivy), copy all the jars from
+      <para>If you're still using Ant (without Ivy), copy all the JARs from
       the download zip's binaries directory and manually verify that your
-      classpath doesn't contain duplicate jars.</para>
+      classpath doesn't contain duplicate JARs.</para>
   </section-->
 </section>

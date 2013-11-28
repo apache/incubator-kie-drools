@@ -7,7 +7,7 @@
     <title>Insurance Company Risk Factor and Policy price (using BRMS)</title>
 
     <screen><emphasis role="bold">Name:</emphasis> drools-insurance
-<emphasis role="bold">Type:</emphasis> java web application
+<emphasis role="bold">Type:</emphasis> Java web application
 <emphasis role="bold">Rules file:</emphasis> exported repository from brms, repository_export.xml
 <emphasis role="bold">Objective:</emphasis> Demonstrates how to use, organize, deploy and execute a rulebase from BRMS</screen>
 

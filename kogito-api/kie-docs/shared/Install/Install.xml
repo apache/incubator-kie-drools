@@ -19,24 +19,24 @@
   be) and the IDE (also known as the Rule Workbench) is just a convenience. People have integrated the rule engine in
   many ways, there is no "one size fits all".</para>
 
-  <para>Alternatively, you can download the binary distribution, and include the relevant jars in your projects
+  <para>Alternatively, you can download the binary distribution, and include the relevant JARs in your projects
   classpath.</para>
 
   <section>
-    <title>Dependencies and jars</title>
+    <title>Dependencies and JARs</title>
 
     <para>Drools is broken down into a few modules, some are required during rule development/compiling, and some are
     required at runtime. In many cases, people will simply want to include all the dependencies at runtime, and this is
     fine. It allows you to have the most flexibility. However, some may prefer to have their "runtime" stripped down to
     the bare minimum, as they will be deploying rules in binary form - this is also possible. The core runtime engine
-    can be quite compact, and only requires a few 100 kilobytes across 3 jar files.</para>
+    can be quite compact, and only requires a few 100 kilobytes across 3 JAR files.</para>
 
     <para>The following is a description of the important libraries that make up JBoss Drools</para>
 
     <itemizedlist>
       <listitem>
         <para>knowledge-api.jar - this provides the interfaces and factories. It also helps clearly show what is
-        intended as a user api and what is just an engine api.</para>
+        intended as a user API and what is just an engine API.</para>
       </listitem>
 
       <listitem>
@@ -76,16 +76,16 @@
     then you can switch to the janino compiler. Set the system property "drools.compiler": For example:
     -Ddrools.compiler=JANINO.</para>
 
-    <para>For up to date info on dependencies in a release, consult the released poms, which can be found on the maven
+    <para>For up to date info on dependencies in a release, consult the released POMs, which can be found on the Maven
     repository.</para>
   </section>
 
   <section>
-    <title>Use with Maven, Gradle, Ivy, Buildr or ANT</title>
+    <title>Use with Maven, Gradle, Ivy, Buildr or Ant</title>
 
-    <para>The jars are also available in <link xlink:href="http://search.maven.org/#search|ga|1|org.drools">the central
-    maven repository</link> (and also in <link
-    xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools~~~~">the JBoss maven
+    <para>The JARs are also available in <link xlink:href="http://search.maven.org/#search|ga|1|org.drools">the central
+    Maven repository</link> (and also in <link
+    xlink:href="https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.drools~~~~">the JBoss Maven
     repository</link>).</para>
 
     <para>If you use Maven, add KIE and Drools dependencies in your project's <filename>pom.xml</filename> like
@@ -116,11 +116,11 @@
     ...
   &lt;dependencies&gt;</programlisting>
 
-    <para>This is similar for Gradle, Ivy and Buildr. To identify the latest version, check the maven repository.</para>
+    <para>This is similar for Gradle, Ivy and Buildr. To identify the latest version, check the Maven repository.</para>
 
-    <para>If you're still using ANT (without Ivy), copy all the jars from the download zip's
+    <para>If you're still using Ant (without Ivy), copy all the JARs from the download zip's
     <filename>binaries</filename> directory and manually verify that your classpath doesn't contain duplicate
-    jars.</para>
+    JARs.</para>
   </section>
 
   <section>
@@ -177,7 +177,7 @@
       <title>Installing GEF from zip file</title>
 
       <para>To install from the zip file, download and unzip the file. Inside the zip you will see a plug-in directory,
-      and the plug-in jar itself. You place the plug-in jar into your Eclipse applications plug-in directory, and
+      and the plug-in JAR itself. You place the plug-in JAR into your Eclipse applications plug-in directory, and
       restart Eclipse.</para>
     </section>
 
@@ -185,7 +185,7 @@
       <title>Installing Drools plug-in from zip file</title>
 
       <para>Download the Drools Eclipse IDE plugin from the link below. Unzip the downloaded file in your main eclipse
-      folder (do not just copy the file there, extract it so that the feature and plugin jars end up in the features and
+      folder (do not just copy the file there, extract it so that the feature and plugin JARs end up in the features and
       plugin directory of eclipse) and (re)start Eclipse.</para>
 
       <para><ulink
@@ -207,9 +207,9 @@
     <section>
       <title>Drools Runtimes</title>
 
-      <para>A Drools runtime is a collection of jars on your file system that represent one specific release of the
-      Drools project jars. To create a runtime, you must point the IDE to the release of your choice. If you want to
-      create a new runtime based on the latest Drools project jars included in the plugin itself, you can also easily do
+      <para>A Drools runtime is a collection of JARs on your file system that represent one specific release of the
+      Drools project JARs. To create a runtime, you must point the IDE to the release of your choice. If you want to
+      create a new runtime based on the latest Drools project JARs included in the plugin itself, you can also easily do
       that. You are required to specify a default Drools runtime for your Eclipse workspace, but each individual project
       can override the default and select the appropriate runtime for that project specifically.</para>
 
@@ -241,7 +241,7 @@
 
         <orderedlist>
           <listitem>
-            <para>If you simply want to use the default jars as included in the Drools Eclipse plugin, you can create a
+            <para>If you simply want to use the default JARs as included in the Drools Eclipse plugin, you can create a
             new Drools runtime automatically by clicking the "Create a new Drools 5 runtime ..." button. A file browser
             will show up, asking you to select the folder on your file system where you want this runtime to be created.
             The plugin will then automatically copy all required dependencies to the specified folder. After selecting
@@ -252,7 +252,7 @@
             <para>If you want to use one specific release of the Drools project, you should create a folder on your file
             system that contains all the necessary Drools libraries and dependencies. Instead of creating a new Drools
             runtime as explained above, give your runtime a name and select the location of this folder containing all
-            the required jars.</para>
+            the required JARs.</para>
           </listitem>
         </orderedlist>
 
@@ -293,7 +293,7 @@
         <para>Whenever you create a Drools project (using the New Drools Project wizard or by converting an existing
         Java project to a Drools project using the "Convert to Drools Project" action that is shown when you are in the
         Drools perspective and you right-click an existing Java project), the plugin will automatically add all the
-        required jars to the classpath of your project.</para>
+        required JARs to the classpath of your project.</para>
 
         <para>When creating a new Drools project, the plugin will automatically use the default Drools runtime for that
         project, unless you specify a project-specific one. You can do this in the final step of the New Drools Project

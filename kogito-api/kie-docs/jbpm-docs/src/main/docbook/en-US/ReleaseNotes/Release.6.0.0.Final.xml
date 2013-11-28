@@ -10,7 +10,7 @@
   <title>New and Noteworthy in jBPM 6.0.0</title>
 
   <section>
-    <title>KIE api</title>
+    <title>KIE API</title>
 
     <para>A new public API has been created for interacting with the core engine (shared between jBPM and
     Drools).  This not only handles runtime operations to start processes, etc. but also instantiating
@@ -20,9 +20,9 @@
     public API, the new RuntimeManager was introduced and a lot of related interfaces and classes were added
     as well.</para>
     
-    <para>For backwards compatibility with v5, a knowledge-api jar has been constructed, that implements the old
-    v5 knowledge-api interfaces on top of the v6 engine.  Make sure to include this jar in your classpath
-    if you want to keep using the v5 api.</para>
+    <para>For backwards compatibility with v5, a knowledge-api JAR has been constructed, that implements the old
+    v5 knowledge-api interfaces on top of the v6 engine.  Make sure to include this JAR in your classpath
+    if you want to keep using the v5 API.</para>
   </section>
   
   <section>
@@ -40,7 +40,7 @@
           <listitem><para>Singleton: the RuntimeManager reused the same ksession for all requests (and executes the
           requests in sequence, one at a time)</para></listitem>
           <listitem><para>Session per request: the RuntimeManager instantiates a new ksession per request that will
-          be used for executing that request and disposed at the end.  Each request will receive it's own ksession
+          be used for executing that request and disposed at the end.  Each request will receive its own ksession
           and they can all be executed in parallel.</para></listitem>
           <listitem><para>Session per process instance: the RuntimeManager reuses the same ksession for all requests
           related to one specific process instance.  This might be necessary if you are storing data inside your
@@ -104,7 +104,7 @@
           more user friendly to find properties.</para>
       </listitem>
       <listitem>
-        <para>Update to Object Library - added type specific tasks to pallete (rather than having to
+        <para>Update to Object Library - added type specific tasks to palette (rather than having to
           morph to a certain type after adding a task to the canvas).</para>
       </listitem>
       <listitem>
@@ -113,10 +113,10 @@
       </listitem>
       <listitem>
         <para>Autosave - option for users to enable auto-saving of their business process during
-          modelling.</para>
+          modeling.</para>
       </listitem>
       <listitem>
-        <para>Two new default Service Tasks (Rest and WebServices)</para>
+        <para>Two new default Service Tasks (REST and Web Services)</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -134,7 +134,7 @@
     <title>Form Modeler</title>
 
     <para>A new web-based form modeler is integrated in the workbench, which allows non-technical users to
-    create forms (for starting processes and/or completing human task).  The form modeler is a WYSIWIG editor
+    create forms (for starting processes and/or completing human task).  The form modeler is a WYSIWYG editor
     where you can drag and drop form elements (text boxes, labels, etc.), link it to data that is expected
     as input or output of the form, customize properties of each element and the layout, etc.  These forms
     are then shown when starting the process or completing a task, integrated into the appropriate runtime
@@ -175,9 +175,9 @@
       (authoring, deployment, execution, tasks and reporting).</para></listitem>
       <listitem><para>Git-based repository that supports versioning and collaboration.</para></listitem>
       <listitem><para>New project structure where artifacts (processes, rules, etc.) are combined into kjars (we removed
-      the custom binary packages and replaced them with a normal jar, containing the source artifacts) when a 
+      the custom binary packages and replaced them with a normal JAR, containing the source artifacts) when a 
       project is built.  These kjars now also include not only processes and rules, but also forms, configuration
-      files, data models (Java classes), etc.  Kjars are maven artefacts themselves (they have a group, id and
+      files, data models (Java classes), etc.  Kjars are Maven artefacts themselves (they have a group, id and
       version) and exposed as a Maven repository.  When creating a ksession, Maven can be used to download the
       necessary kjars for your project from this Maven repository.</para></listitem>
       <listitem><para>Sample <code>playground</code> repositories are (optionally) installed when
@@ -195,7 +195,7 @@
     using REST or JMS, so commands can be sent to the remote execution server for processing and the results
     are returned.  See the chapter on Business Activity Monitoring for all the details.</para>
     
-    <para>Guvnor also provides a REST api to access the various repositories, projects and artifacts inside
+    <para>Guvnor also provides a REST API to access the various repositories, projects and artifacts inside
     these projects and manage and build them.</para>
   </section>
 
