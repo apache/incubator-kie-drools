@@ -277,7 +277,10 @@ public class PhreakTimerNode {
                                LeftTupleSets trgLeftTuples,
                                LeftTupleSets stagedLeftTuples,
                                Trigger trigger) {
-        DefaultJobHandle jobHandle;
+        if ( trigger.hasNextFireTime() == null ) {
+            return;
+        }
+
         if ( trigger.hasNextFireTime().getTime() <= timestamp ) {
             // first execution is straight away, so void Scheduling
             if ( log.isTraceEnabled() ) {
@@ -298,7 +301,7 @@ public class PhreakTimerNode {
             TimerNodeJob job = new TimerNodeJob();
             TimerNodeJobContext jobCtx = new TimerNodeJobContext( timerNode.getId(), trigger, leftTuple, tm, sink, pmem, wm );
 
-            jobHandle = (DefaultJobHandle) timerService.scheduleJob( job, jobCtx, trigger );
+            DefaultJobHandle jobHandle = (DefaultJobHandle) timerService.scheduleJob( job, jobCtx, trigger );
             leftTuple.setObject( jobHandle );
 
             if ( log.isTraceEnabled() ) {
