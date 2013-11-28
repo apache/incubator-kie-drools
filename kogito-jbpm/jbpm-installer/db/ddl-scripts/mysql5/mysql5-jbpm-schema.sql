@@ -1,6 +1,5 @@
-
-    create table Attachment (
-        AttachmentId bigint not null auto_increment,
+ create table Attachment (
+        id bigint not null auto_increment,
         accessType integer,
         attachedAt datetime,
         attachmentContentId bigint not null,
@@ -9,11 +8,11 @@
         attachment_size integer,
         attachedBy_id varchar(255),
         TaskData_Attachments_Id bigint,
-        primary key (AttachmentId)
+        primary key (id)
     );
 
     create table BAMTaskSummary (
-        BAMTaskId bigint not null auto_increment,
+        pk bigint not null auto_increment,
         createdDate datetime,
         duration bigint,
         endDate datetime,
@@ -23,7 +22,7 @@
         taskId bigint not null,
         taskName varchar(255),
         userId varchar(255),
-        primary key (BAMTaskId)
+        primary key (pk)
     );
 
     create table BooleanExpression (
@@ -97,11 +96,11 @@
 
     create table EventTypes (
         InstanceId bigint not null,
-        eventTypes varchar(255)
+        element varchar(255)
     );
 
     create table I18NText (
-        I18NTextId bigint not null auto_increment,
+        id bigint not null auto_increment,
         language varchar(255),
         shortText varchar(255),
         text longtext,
@@ -114,7 +113,7 @@
         Notification_Documentation_Id bigint,
         Notification_Descriptions_Id bigint,
         Deadline_Documentation_Id bigint,
-        primary key (I18NTextId)
+        primary key (id)
     );
 
     create table NodeInstanceLog (
@@ -135,10 +134,10 @@
 
     create table Notification (
         DTYPE varchar(31) not null,
-        NotificationId bigint not null auto_increment,
+        id bigint not null auto_increment,
         priority integer not null,
         Escalation_Notifications_Id bigint,
-        primary key (NotificationId)
+        primary key (id)
     );
 
     create table Notification_BAs (
@@ -152,10 +151,10 @@
     );
 
     create table Notification_email_header (
-        Notification_NotificationId bigint not null,
+        Notification_id bigint not null,
         emailHeaders_id bigint not null,
         mapkey varchar(255) not null,
-        primary key (Notification_NotificationId, mapkey)
+        primary key (Notification_id, mapkey)
     );
 
     create table OrganizationalEntity (
@@ -254,7 +253,7 @@
     );
 
     create table Task (
-        TaskId bigint not null auto_increment,
+        id bigint not null auto_increment,
         archived smallint,
         allowedToDelegate varchar(255),
         formName varchar(255),
@@ -287,14 +286,14 @@
         taskInitiator_id varchar(255),
         actualOwner_id varchar(255),
         createdBy_id varchar(255),
-        primary key (TaskId)
+        primary key (id)
     );
 
     create table TaskDef (
-        TaskDefId bigint not null auto_increment,
+        id bigint not null auto_increment,
         name varchar(255),
         priority integer not null,
-        primary key (TaskDefId)
+        primary key (id)
     );
 
     create table TaskEvent (
@@ -359,7 +358,7 @@
         add index FK1C9354333CA892A (TaskData_Attachments_Id), 
         add constraint FK1C9354333CA892A 
         foreign key (TaskData_Attachments_Id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table BooleanExpression 
         add index FKE3D208C06C97C90E (Escalation_Constraints_Id), 
@@ -377,13 +376,13 @@
         add index FK21DF3E78A9FE0EF4 (Deadlines_StartDeadLine_Id), 
         add constraint FK21DF3E78A9FE0EF4 
         foreign key (Deadlines_StartDeadLine_Id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table Deadline 
         add index FK21DF3E78695E4DDB (Deadlines_EndDeadLine_Id), 
         add constraint FK21DF3E78695E4DDB 
         foreign key (Deadlines_EndDeadLine_Id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table Delegation_delegates 
         add index FK47485D5772B3A123 (entity_id), 
@@ -395,7 +394,7 @@
         add index FK47485D57786553A5 (task_id), 
         add constraint FK47485D57786553A5 
         foreign key (task_id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table ErrorInfo 
         add index FK8B1186B6724A467 (REQUEST_ID), 
@@ -419,19 +418,19 @@
         add index FK2349686BF4ACCD69 (Task_Subjects_Id), 
         add constraint FK2349686BF4ACCD69 
         foreign key (Task_Subjects_Id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table I18NText 
         add index FK2349686B424B187C (Task_Names_Id), 
         add constraint FK2349686B424B187C 
         foreign key (Task_Names_Id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table I18NText 
         add index FK2349686BAB648139 (Task_Descriptions_Id), 
         add constraint FK2349686BAB648139 
         foreign key (Task_Descriptions_Id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table I18NText 
         add index FK2349686BB340A2AA (Reassignment_Documentation_Id), 
@@ -443,25 +442,25 @@
         add index FK2349686BF0CDED35 (Notification_Subjects_Id), 
         add constraint FK2349686BF0CDED35 
         foreign key (Notification_Subjects_Id) 
-        references Notification (NotificationId);
+        references Notification (id);
 
     alter table I18NText 
         add index FK2349686BCC03ED3C (Notification_Names_Id), 
         add constraint FK2349686BCC03ED3C 
         foreign key (Notification_Names_Id) 
-        references Notification (NotificationId);
+        references Notification (id);
 
     alter table I18NText 
         add index FK2349686B77C1C08A (Notification_Documentation_Id), 
         add constraint FK2349686B77C1C08A 
         foreign key (Notification_Documentation_Id) 
-        references Notification (NotificationId);
+        references Notification (id);
 
     alter table I18NText 
         add index FK2349686B18DDFE05 (Notification_Descriptions_Id), 
         add constraint FK2349686B18DDFE05 
         foreign key (Notification_Descriptions_Id) 
-        references Notification (NotificationId);
+        references Notification (id);
 
     alter table I18NText 
         add index FK2349686B78AF072A (Deadline_Documentation_Id), 
@@ -485,7 +484,7 @@
         add index FK2DD68EE093F2090B (task_id), 
         add constraint FK2DD68EE093F2090B 
         foreign key (task_id) 
-        references Notification (NotificationId);
+        references Notification (id);
 
     alter table Notification_Recipients 
         add index FK98FD214E72B3A123 (entity_id), 
@@ -497,7 +496,7 @@
         add index FK98FD214E93F2090B (task_id), 
         add constraint FK98FD214E93F2090B 
         foreign key (task_id) 
-        references Notification (NotificationId);
+        references Notification (id);
 
     alter table Notification_email_header 
         add constraint UK_F30FE3446CEA0510 unique (emailHeaders_id);
@@ -509,10 +508,10 @@
         references email_header (id);
 
     alter table Notification_email_header 
-        add index FKF30FE344DD2D7416 (Notification_NotificationId), 
-        add constraint FKF30FE344DD2D7416 
-        foreign key (Notification_NotificationId) 
-        references Notification (NotificationId);
+        add index FKF30FE3443E3E97EB (Notification_id), 
+        add constraint FKF30FE3443E3E97EB 
+        foreign key (Notification_id) 
+        references Notification (id);
 
     alter table PeopleAssignments_BAs 
         add index FK9D8CF4EC72B3A123 (entity_id), 
@@ -524,7 +523,7 @@
         add index FK9D8CF4EC786553A5 (task_id), 
         add constraint FK9D8CF4EC786553A5 
         foreign key (task_id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table PeopleAssignments_ExclOwners 
         add index FKC77B97E472B3A123 (entity_id), 
@@ -536,7 +535,7 @@
         add index FKC77B97E4786553A5 (task_id), 
         add constraint FKC77B97E4786553A5 
         foreign key (task_id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table PeopleAssignments_PotOwners 
         add index FK1EE418D72B3A123 (entity_id), 
@@ -548,7 +547,7 @@
         add index FK1EE418D786553A5 (task_id), 
         add constraint FK1EE418D786553A5 
         foreign key (task_id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table PeopleAssignments_Recipients 
         add index FKC6F615C272B3A123 (entity_id), 
@@ -560,7 +559,7 @@
         add index FKC6F615C2786553A5 (task_id), 
         add constraint FKC6F615C2786553A5 
         foreign key (task_id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table PeopleAssignments_Stakeholders 
         add index FK482F79D572B3A123 (entity_id), 
@@ -572,7 +571,7 @@
         add index FK482F79D5786553A5 (task_id), 
         add constraint FK482F79D5786553A5 
         foreign key (task_id) 
-        references Task (TaskId);
+        references Task (id);
 
     alter table Reassignment 
         add index FK724D056062A1E871 (Escalation_Reassignments_Id), 
@@ -620,4 +619,4 @@
         add index FK61F475A5F510CB46 (TaskData_Comments_Id), 
         add constraint FK61F475A5F510CB46 
         foreign key (TaskData_Comments_Id) 
-        references Task (TaskId);
+        references Task (id);

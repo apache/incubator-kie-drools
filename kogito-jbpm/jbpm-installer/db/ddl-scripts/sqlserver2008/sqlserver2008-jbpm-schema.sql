@@ -1,6 +1,5 @@
-
-    create table Attachment (
-        AttachmentId bigint identity not null,
+create table Attachment (
+        id bigint identity not null,
         accessType int,
         attachedAt datetime2,
         attachmentContentId bigint not null,
@@ -9,11 +8,11 @@
         attachment_size int,
         attachedBy_id varchar(255),
         TaskData_Attachments_Id bigint,
-        primary key (AttachmentId)
+        primary key (id)
     );
 
     create table BAMTaskSummary (
-        BAMTaskId bigint identity not null,
+        pk bigint identity not null,
         createdDate datetime2,
         duration bigint,
         endDate datetime2,
@@ -23,7 +22,7 @@
         taskId bigint not null,
         taskName varchar(255),
         userId varchar(255),
-        primary key (BAMTaskId)
+        primary key (pk)
     );
 
     create table BooleanExpression (
@@ -97,11 +96,11 @@
 
     create table EventTypes (
         InstanceId bigint not null,
-        eventTypes varchar(255)
+        element varchar(255)
     );
 
     create table I18NText (
-        I18NTextId bigint identity not null,
+        id bigint identity not null,
         language varchar(255),
         shortText varchar(255),
         text varchar(MAX),
@@ -114,7 +113,7 @@
         Notification_Documentation_Id bigint,
         Notification_Descriptions_Id bigint,
         Deadline_Documentation_Id bigint,
-        primary key (I18NTextId)
+        primary key (id)
     );
 
     create table NodeInstanceLog (
@@ -135,10 +134,10 @@
 
     create table Notification (
         DTYPE varchar(31) not null,
-        NotificationId bigint identity not null,
+        id bigint identity not null,
         priority int not null,
         Escalation_Notifications_Id bigint,
-        primary key (NotificationId)
+        primary key (id)
     );
 
     create table Notification_BAs (
@@ -152,10 +151,10 @@
     );
 
     create table Notification_email_header (
-        Notification_NotificationId bigint not null,
+        Notification_id bigint not null,
         emailHeaders_id bigint not null,
         mapkey varchar(255) not null,
-        primary key (Notification_NotificationId, mapkey)
+        primary key (Notification_id, mapkey)
     );
 
     create table OrganizationalEntity (
@@ -254,7 +253,7 @@
     );
 
     create table Task (
-        TaskId bigint identity not null,
+        id bigint identity not null,
         archived smallint,
         allowedToDelegate varchar(255),
         formName varchar(255),
@@ -287,14 +286,14 @@
         taskInitiator_id varchar(255),
         actualOwner_id varchar(255),
         createdBy_id varchar(255),
-        primary key (TaskId)
+        primary key (id)
     );
 
     create table TaskDef (
-        TaskDefId bigint identity not null,
+        id bigint identity not null,
         name varchar(255),
         priority int not null,
-        primary key (TaskDefId)
+        primary key (id)
     );
 
     create table TaskEvent (
@@ -483,8 +482,8 @@
         references email_header;
 
     alter table Notification_email_header 
-        add constraint FKF30FE344DD2D7416 
-        foreign key (Notification_NotificationId) 
+        add constraint FKF30FE3443E3E97EB 
+        foreign key (Notification_id) 
         references Notification;
 
     alter table PeopleAssignments_BAs 
