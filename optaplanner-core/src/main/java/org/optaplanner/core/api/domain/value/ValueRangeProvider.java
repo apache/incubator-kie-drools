@@ -27,10 +27,10 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Provides the planning values can be used for a planning variable.
- * This is specified on a getter of a java bean property which returns the value range.
+ * Provides the planning values that can be used for a planning variable.
+ * This is specified on a getter of a java bean property which returns a {@link Collection} or {@link ValueRange}.
  * <p/>
- * The value range must be a {@link Collection}.
+ * A {@link Collection} is implicitly converted to a {@link ValueRange}.
  */
 @Target({METHOD})
 @Retention(RUNTIME)

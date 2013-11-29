@@ -82,6 +82,19 @@ public class PlannerAssert extends Assert {
         verify(lifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
     }
 
+    public static <O> void assertElementsOfIterator(Iterator<Integer> iterator, int... elements) {
+        assertNotNull(iterator);
+        for (int element : elements) {
+            assertTrue(iterator.hasNext());
+            assertEquals(element, iterator.next().intValue());
+        }
+    }
+
+    public static <O> void assertAllElementsOfIterator(Iterator<Integer> iterator, int... elements) {
+        assertElementsOfIterator(iterator, elements);
+        assertFalse(iterator.hasNext());
+    }
+
     // ************************************************************************
     // CodeAssertable methods
     // ************************************************************************
