@@ -20,8 +20,7 @@ public enum FieldAccessorsAndMutators {
 
     MUTATOR,
     ACCESSOR,
-    BOTH,
-    NONE;
+    BOTH;
 
     public static boolean compare( final FieldAccessorsAndMutators field1,
                                    final FieldAccessorsAndMutators field2 ) {
