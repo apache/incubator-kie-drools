@@ -56,7 +56,6 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
-import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.marshalling.impl.ProcessInstanceResolverStrategy;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.AuditLoggerFactory;
@@ -295,7 +294,6 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     protected KieBase createKnowledgeBase(String... process) throws Exception {
         List<Resource> resources = new ArrayList<Resource>();
         for (int i = 0; i < process.length; ++i) {
-            String p = process[i];
             resources.addAll(buildAndDumpBPMN2Process(process[i]));
         }
         return createKnowledgeBaseFromResources(resources.toArray(new Resource[resources.size()]));
