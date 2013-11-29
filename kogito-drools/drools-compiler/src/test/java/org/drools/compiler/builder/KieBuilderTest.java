@@ -187,8 +187,9 @@ public class KieBuilderTest extends CommonTestMethodBase {
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
         createAndTestKieContainer(releaseId, createKieBuilder(kfs), null );
-    }      
-    
+    }
+
+    @Test
     public void testNoPomAndProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         

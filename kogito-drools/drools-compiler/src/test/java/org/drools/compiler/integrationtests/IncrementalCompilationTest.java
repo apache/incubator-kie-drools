@@ -1,7 +1,9 @@
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.compiler.CommonTestMethodBase;
@@ -12,7 +14,6 @@ import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.kie.api.definition.rule.Rule;
-import org.junit.Ignore;
 
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -21,15 +22,15 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.internal.builder.KieBuilderSet;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -628,6 +629,82 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
             ret.put( rule.getName(), rule );
         }
         return ret;
-    }    
-    
+    }
+
+    @Test
+    public void testIncrementalCompilationWithSnapshots() throws Exception {
+        // DROOLS-358
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.0-SNAPSHOT" );
+        testIncrementalCompilation(releaseId, releaseId);
+    }
+
+    @Test
+    public void testIncrementalCompilationWithFixedVersions() throws Exception {
+        // DROOLS-358
+        ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.1" );
+        ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.2" );
+        testIncrementalCompilation(releaseId1, releaseId2);
+    }
+
+    private void testIncrementalCompilation(ReleaseId releaseId1, ReleaseId releaseId2) {
+        String drl1 = "package org.drools.compiler\n" +
+                      "global java.util.List list\n" +
+                      "rule R0 when then list.add( \"000\" ); end \n" +
+                      "" +
+                      "rule R1 when\n" +
+                      " $s : String() " +
+                      "then\n" +
+                      " list.add( \"a\" + $s );" +
+                      "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                      "global java.util.List list\n" +
+                      "rule R2 when\n" +
+                      " $s : String() \n" +
+                      "then\n" +
+                      " list.add( \"b\" + $s );" +
+                      "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( releaseId1 );
+        kfs.write( "src/main/resources/drl1.drl", drl1 );
+
+        kieBuilder.buildAll();
+        KieModule kieModule = kieBuilder.getKieModule();
+        assertEquals(releaseId1, kieModule.getReleaseId());
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+
+        KieSession ksession = kc.newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.insert("Foo");
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.containsAll(asList("000", "aFoo")));
+        list.clear();
+
+        kfs.generateAndWritePomXML( releaseId2 );
+        kfs.write( "src/main/resources/drl2.drl", drl2 );
+
+        KieBuilderSet kbSet = ((InternalKieBuilder) kieBuilder).createFileSet( "src/main/resources/drl2.drl" );
+        IncrementalResults results = kbSet.build();
+        assertEquals(0, results.getAddedMessages().size());
+
+        kieModule = kieBuilder.getKieModule();
+        assertEquals(releaseId2, kieModule.getReleaseId());
+
+        kc.updateToVersion( releaseId2 );
+
+        ksession.insert( "Bar" );
+        ksession.fireAllRules();
+
+        assertEquals(3, list.size());
+        assertTrue(list.containsAll(asList("bBar", "bFoo", "aBar")));
+    }
 }

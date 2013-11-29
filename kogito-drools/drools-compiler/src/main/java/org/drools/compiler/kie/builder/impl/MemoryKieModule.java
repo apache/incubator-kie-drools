@@ -11,7 +11,9 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
 import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.internal.builder.KnowledgeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +30,9 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     public MemoryKieModule(ReleaseId releaseId,
-                           KieModuleModel kieProject,
+                           KieModuleModel kModuleModel,
                            MemoryFileSystem mfs) {
-        super( releaseId, kieProject );
+        super( releaseId, kModuleModel );
         this.mfs = mfs;
     }
 
@@ -65,5 +67,16 @@ public class MemoryKieModule extends AbstractKieModule
 
     public String toString() {
         return "MemoryKieModule[ ReleaseId=" + getReleaseId() + "]";
+    }
+
+    MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+        MemoryKieModule clone = new MemoryKieModule(releaseId, kModuleModel, newFs);
+        for (InternalKieModule dep : getKieDependencies().values()) {
+            clone.addKieDependency(dep);
+        }
+        for (KieBaseModel kBaseModel : getKieModuleModel().getKieBaseModels().values()) {
+            clone.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), getKnowledgeBuilderForKieBase( kBaseModel.getName() ));
+        }
+        return clone;
     }
 }

@@ -92,12 +92,10 @@ public class KieBuilderImpl
 
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
-        init();
     }
 
     public KieBuilderImpl(KieFileSystem kieFileSystem) {
         srcMfs = ((KieFileSystemImpl) kieFileSystem).asMemoryFileSystem();
-        init();
     }
 
     public KieBuilder setDependencies(KieModule... dependencies) {
@@ -165,6 +163,8 @@ public class KieBuilderImpl
     }
 
     public KieBuilder buildAll() {
+        init();
+
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
         if ( !isBuilt() && kModuleModel != null ) {
             trgMfs = new MemoryFileSystem();
@@ -359,6 +359,12 @@ public class KieBuilderImpl
         } else {
             trgMfs.remove( fileName );
         }
+    }
+
+    void cloneKieModuleForIncrementalCompilation() {
+        trgMfs = trgMfs.clone();
+        init();
+        kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
     }
 
     private void addMetaInfBuilder() {

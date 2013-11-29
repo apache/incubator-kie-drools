@@ -485,5 +485,11 @@ public class MemoryFileSystem
         return null;
     }
 
-    
+    public MemoryFileSystem clone() {
+        MemoryFileSystem clone = new MemoryFileSystem();
+        for (Map.Entry<String, byte[]> entry : fileContents.entrySet()) {
+            clone.write(entry.getKey(), entry.getValue());
+        }
+        return clone;
+    }
 }
