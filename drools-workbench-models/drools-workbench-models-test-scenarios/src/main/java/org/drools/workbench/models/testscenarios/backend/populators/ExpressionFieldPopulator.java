@@ -16,9 +16,9 @@
 
 package org.drools.workbench.models.testscenarios.backend.populators;
 
-import static org.mvel2.MVEL.eval;
-
 import java.util.Map;
+
+import org.drools.core.util.MVELSafeHelper;
 
 public class ExpressionFieldPopulator extends FieldPopulator {
 
@@ -34,8 +34,8 @@ public class ExpressionFieldPopulator extends FieldPopulator {
 
     @Override
     public void populate(Map<String, Object> populatedData) {
-        populateField( eval( expression,
-                             populatedData ),
+        populateField( MVELSafeHelper.getEvaluator().eval(expression,
+                                                          populatedData),
                        populatedData );
     }
 }
