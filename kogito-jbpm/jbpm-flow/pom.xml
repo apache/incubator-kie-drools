@@ -30,6 +30,7 @@
             </Import-Package>
             <Private-Package></Private-Package>
             <Export-Package>
+                org.jbpm.flow.util.*,
                 org.jbpm.marshalling.*,
             	org.jbpm.process.*,
             	org.jbpm.ruleflow.*,
