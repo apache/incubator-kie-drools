@@ -7,17 +7,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentUnit;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.internal.deployment.DeployedAsset;
+import org.kie.internal.deployment.DeployedUnit;
+import org.kie.internal.deployment.DeploymentUnit;
 
 public class DeployedUnitImpl implements DeployedUnit {
     
     private DeploymentUnit unit;
     private RuntimeManager manager;
     
-    private Map<String, ProcessDesc> assets = new HashMap<String, ProcessDesc>();
+    private Map<String, DeployedAsset> assets = new HashMap<String, DeployedAsset>();
     private Set<String> classes = new HashSet<String>();
     
     public DeployedUnitImpl(DeploymentUnit unit) {
@@ -39,7 +40,7 @@ public class DeployedUnitImpl implements DeployedUnit {
         return this.manager;
     }
     
-    public void addAssetLocation(String assetId, ProcessDesc processAsset) {
+    public void addAssetLocation(String assetId, ProcessAssetDesc processAsset) {
         this.assets.put(assetId, processAsset);
     }
     
@@ -55,7 +56,7 @@ public class DeployedUnitImpl implements DeployedUnit {
     }
 
     @Override
-    public Collection<ProcessDesc> getDeployedAssets() {
+    public Collection<DeployedAsset> getDeployedAssets() {
         return Collections.unmodifiableCollection(assets.values());
     }
 

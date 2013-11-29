@@ -35,11 +35,12 @@ import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
 import org.jbpm.kie.services.impl.event.Undeploy;
 import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.kie.services.impl.model.VariableStateDesc;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.internal.deployment.DeployedAsset;
 
 
 /**
@@ -53,33 +54,37 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     @Inject
     private JbpmServicesPersistenceManager pm;
     
-    private Set<ProcessDesc> availableProcesses = new HashSet<ProcessDesc>();
+    private Set<ProcessAssetDesc> availableProcesses = new HashSet<ProcessAssetDesc>();
     
     public void setPm(JbpmServicesPersistenceManager pm) {
         this.pm = pm;
     }
     
     public void indexOnDeploy(@Observes@Deploy DeploymentEvent event) {
-        Collection<ProcessDesc> assets = event.getDeployedUnit().getDeployedAssets();
-        availableProcesses.addAll(assets);
+        Collection<DeployedAsset> assets = event.getDeployedUnit().getDeployedAssets();
+        for( DeployedAsset asset : assets ) { 
+            if( asset instanceof ProcessAssetDesc ) { 
+                availableProcesses.add((ProcessAssetDesc) asset);
+            }
+        }
     }
     
     public void removeOnUnDeploy(@Observes@Undeploy DeploymentEvent event) {
-        Collection<ProcessDesc> outputCollection = new HashSet<ProcessDesc>();
+        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(event.getDeploymentId()), outputCollection);
         
         availableProcesses.removeAll(outputCollection);
     }
 
-    public Collection<ProcessDesc> getProcessesByDeploymentId(String deploymentId) {
-        Collection<ProcessDesc> outputCollection = new HashSet<ProcessDesc>();
+    public Collection<ProcessAssetDesc> getProcessesByDeploymentId(String deploymentId) {
+        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId), outputCollection);
         
         return Collections.unmodifiableCollection(outputCollection);
     }
     
-    public ProcessDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
-        Collection<ProcessDesc> outputCollection = new HashSet<ProcessDesc>();
+    public ProcessAssetDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
+        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId), outputCollection);
         
         if (!outputCollection.isEmpty()) {
@@ -88,15 +93,15 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return null; 
     }
     
-    public Collection<ProcessDesc> getProcessesByFilter(String filter) {
-        Collection<ProcessDesc> outputCollection = new HashSet<ProcessDesc>();
+    public Collection<ProcessAssetDesc> getProcessesByFilter(String filter) {
+        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new RegExPredicate("^.*"+filter+".*$"), outputCollection);
         return Collections.unmodifiableCollection(outputCollection);
     }
 
-    public ProcessDesc getProcessById(String processId){
+    public ProcessAssetDesc getProcessById(String processId){
         
-        Collection<ProcessDesc> outputCollection = new HashSet<ProcessDesc>();
+        Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new ByProcessIdPredicate(processId), outputCollection);
         if (!outputCollection.isEmpty()) {
             return outputCollection.iterator().next();
@@ -104,7 +109,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         return null;   
     }
     
-    public Collection<ProcessDesc> getProcesses() {
+    public Collection<ProcessAssetDesc> getProcesses() {
         return Collections.unmodifiableCollection(availableProcesses);
     }
 
@@ -258,8 +263,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
         @Override
         public boolean evaluate(Object object) {
-            if (object instanceof ProcessDesc) {
-                ProcessDesc pDesc = (ProcessDesc) object;
+            if (object instanceof ProcessAssetDesc) {
+                ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
                 
                 if (pDesc.getId().matches(pattern) 
                         || pDesc.getName().matches(pattern)) {
@@ -280,8 +285,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
         @Override
         public boolean evaluate(Object object) {
-            if (object instanceof ProcessDesc) {
-                ProcessDesc pDesc = (ProcessDesc) object;
+            if (object instanceof ProcessAssetDesc) {
+                ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
                 
                 if (pDesc.getDeploymentId().equals(deploymentId)) {
                     return true;
@@ -301,8 +306,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
         @Override
         public boolean evaluate(Object object) {
-            if (object instanceof ProcessDesc) {
-                ProcessDesc pDesc = (ProcessDesc) object;
+            if (object instanceof ProcessAssetDesc) {
+                ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
                 
                 if (pDesc.getId().equals(processId)) {
                     return true;
@@ -324,8 +329,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         
         @Override
         public boolean evaluate(Object object) {
-            if (object instanceof ProcessDesc) {
-                ProcessDesc pDesc = (ProcessDesc) object;
+            if (object instanceof ProcessAssetDesc) {
+                ProcessAssetDesc pDesc = (ProcessAssetDesc) object;
                 
                 if (pDesc.getId().equals(processId) && pDesc.getDeploymentId().equals(depoymentId)) {
                     return true;

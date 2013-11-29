@@ -1,7 +1,7 @@
 package org.jbpm.kie.services.impl;
 
 import org.drools.core.util.StringUtils;
-import org.jbpm.kie.services.api.DeploymentUnit;
+import org.kie.internal.deployment.DeploymentUnit;
 
 public class KModuleDeploymentUnit implements DeploymentUnit {
 

@@ -18,12 +18,11 @@ import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.core.util.StringUtils;
-import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.IdentityProvider;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
 import org.kie.api.KieBase;
@@ -32,6 +31,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.internal.deployment.DeploymentUnit;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
         Collection<String> files = module.getFileNames();
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
-                ProcessDesc process;
+                ProcessAssetDesc process;
                 try {
                     String processString = new String(module.getBytes(fileName), "UTF-8");
                     process = bpmn2Service.findProcessId(processString, kieContainer.getClassLoader());

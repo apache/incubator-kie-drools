@@ -19,11 +19,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.internal.deployment.DeployedAsset;
+
 /**
  *
- * @author salaboy
  */
-public class ProcessDesc implements Serializable {
+public class ProcessAssetDesc implements Serializable, DeployedAsset {
     
     private static final long serialVersionUID = -9059086115873165296L;
     
@@ -39,11 +40,11 @@ public class ProcessDesc implements Serializable {
     private String encodedProcessSource;
     private Map<String, String> forms = new HashMap<String, String>();
 
-    public ProcessDesc() {
+    public ProcessAssetDesc() {
     }
 
     
-    public ProcessDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String deploymentId) {
+    public ProcessAssetDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String deploymentId) {
         this.id = id;
         this.name = name;
         this.version = version;
@@ -129,7 +130,7 @@ public class ProcessDesc implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ProcessDesc other = (ProcessDesc) obj;
+        final ProcessAssetDesc other = (ProcessAssetDesc) obj;
         if ((this.id == null) ? (other.id != null) : !this.id.equals(other.id)) {
             return false;
         }

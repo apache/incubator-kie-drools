@@ -13,9 +13,6 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
@@ -28,6 +25,9 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.deployment.DeployedUnit;
+import org.kie.internal.deployment.DeploymentService;
+import org.kie.internal.deployment.DeploymentUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

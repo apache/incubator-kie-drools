@@ -36,8 +36,6 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
@@ -50,6 +48,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.internal.deployment.DeploymentService;
+import org.kie.internal.deployment.DeploymentUnit;
 import org.kie.scanner.MavenRepository;
 
 /**

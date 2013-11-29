@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.InternalTask;
 
@@ -17,7 +17,7 @@ public class InMemoryFormProvider extends FreemakerFormProvider {
     private static final String DEFAULT_TASK = "DefaultTask";
 
     @Override
-    public String render(String name, ProcessDesc process, Map<String, Object> renderContext) {
+    public String render(String name, ProcessAssetDesc process, Map<String, Object> renderContext) {
         InputStream template = null;
         if (process.getForms().containsKey(process.getId())) {
             template = new ByteArrayInputStream(process.getForms().get(process.getId()).getBytes());
@@ -33,7 +33,7 @@ public class InMemoryFormProvider extends FreemakerFormProvider {
     }
 
     @Override
-    public String render(String name, Task task, ProcessDesc process, Map<String, Object> renderContext) {
+    public String render(String name, Task task, ProcessAssetDesc process, Map<String, Object> renderContext) {
         InputStream template = null;
         if(task != null && process != null){
             String lookupName = "";

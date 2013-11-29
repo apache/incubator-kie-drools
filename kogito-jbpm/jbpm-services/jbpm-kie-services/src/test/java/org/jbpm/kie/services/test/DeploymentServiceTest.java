@@ -1,8 +1,6 @@
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -22,13 +20,10 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
@@ -41,6 +36,9 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.deployment.DeployedUnit;
+import org.kie.internal.deployment.DeploymentService;
+import org.kie.internal.deployment.DeploymentUnit;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.scanner.MavenRepository;
 
@@ -185,7 +183,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(deployed.getRuntimeManager());
         
         assertNotNull(runtimeDataService);
-        Collection<ProcessDesc> processes = runtimeDataService.getProcesses();
+        Collection<ProcessAssetDesc> processes = runtimeDataService.getProcesses();
         assertNotNull(processes);
         assertEquals(5, processes.size());
         
@@ -197,7 +195,7 @@ public class DeploymentServiceTest extends AbstractBaseTest {
         assertNotNull(processes);
         assertEquals(5, processes.size());
         
-        ProcessDesc process = runtimeDataService.getProcessById("customtask");
+        ProcessAssetDesc process = runtimeDataService.getProcessById("customtask");
         
         RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
         assertNotNull(manager);

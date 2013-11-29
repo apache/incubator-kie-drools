@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.jbpm.kie.services.impl.model.NodeInstanceDesc;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.kie.services.impl.model.VariableStateDesc;
 
@@ -39,11 +39,11 @@ public interface RuntimeDataService {
 
     Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states);
 
-    Collection<ProcessDesc> getProcessesByDeploymentId(String deploymentId);   
+    Collection<ProcessAssetDesc> getProcessesByDeploymentId(String deploymentId);   
     
-    Collection<ProcessDesc> getProcessesByFilter(String filter);
+    Collection<ProcessAssetDesc> getProcessesByFilter(String filter);
 
-    Collection<ProcessDesc> getProcesses();
+    Collection<ProcessAssetDesc> getProcesses();
     
     ProcessInstanceDesc getProcessInstanceById(long processId);
     
@@ -63,7 +63,7 @@ public interface RuntimeDataService {
 
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId);
 
-    ProcessDesc getProcessById(String processId);
+    ProcessAssetDesc getProcessById(String processId);
     
-    ProcessDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId);
+    ProcessAssetDesc getProcessesByDeploymentIdProcessId(String deploymentId, String processId);
 }

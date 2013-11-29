@@ -29,8 +29,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.jbpm.kie.services.api.DeploymentService;
-import org.jbpm.kie.services.api.DeploymentUnit;
 import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.KnowledgeAdminDataService;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
@@ -47,6 +45,8 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.deployment.DeploymentService;
+import org.kie.internal.deployment.DeploymentUnit;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.scanner.MavenRepository;

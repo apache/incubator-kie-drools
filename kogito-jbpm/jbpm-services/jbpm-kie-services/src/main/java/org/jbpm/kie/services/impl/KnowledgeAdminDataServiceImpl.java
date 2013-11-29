@@ -17,8 +17,9 @@ package org.jbpm.kie.services.impl;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.jbpm.kie.services.api.KnowledgeAdminDataService;
+
 import org.jboss.seam.transaction.Transactional;
+import org.jbpm.kie.services.api.KnowledgeAdminDataService;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 
 /**

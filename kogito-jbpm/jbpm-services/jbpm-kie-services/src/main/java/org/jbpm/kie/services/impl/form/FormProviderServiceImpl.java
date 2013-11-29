@@ -28,17 +28,17 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.drools.core.util.StringUtils;
-import org.jbpm.kie.services.api.DeployedUnit;
-import org.jbpm.kie.services.api.DeploymentService;
 import org.jbpm.kie.services.api.FormProviderService;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.form.model.InputData;
 import org.jbpm.kie.services.impl.form.model.OutputData;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
+import org.kie.internal.deployment.DeployedUnit;
+import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
@@ -86,7 +86,7 @@ public class FormProviderServiceImpl implements FormProviderService {
 
     @Override
     public String getFormDisplayProcess(String deploymentId, String processId) {
-        ProcessDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(deploymentId, processId);
+        ProcessAssetDesc processDesc = dataService.getProcessesByDeploymentIdProcessId(deploymentId, processId);
         Map<String, String> processData = bpmn2Service.getProcessData(processId);
 
         if (processData == null) {
@@ -112,7 +112,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     public String getFormDisplayTask(long taskId) {
         Task task = queryService.getTaskInstanceById(taskId);
         String name = task.getNames().get(0).getText();
-        ProcessDesc processDesc = dataService.getProcessById(task.getTaskData().getProcessId());
+        ProcessAssetDesc processDesc = dataService.getProcessById(task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
 
         ContentMarshallerContext marshallerContext = getMarshallerContext(task);

@@ -31,7 +31,7 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -154,7 +154,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public ProcessDesc getProcessDesc(String processId){
+    public ProcessAssetDesc getProcessDesc(String processId){
         if (processId == null || "".equals(processId)) {
             throw new IllegalStateException("The Process id cannot be Empty!");
         }
@@ -179,7 +179,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
     @Override
-    public ProcessDesc findProcessId(final String bpmn2Content, ClassLoader classLoader) {
+    public ProcessAssetDesc findProcessId(final String bpmn2Content, ClassLoader classLoader) {
         if (bpmn2Content == null || "".equals(bpmn2Content)) {
             return null;
         }
@@ -210,7 +210,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
         KnowledgePackage pckg = kbuilder.getKnowledgePackages().iterator().next();
         
         org.kie.api.definition.process.Process process = pckg.getProcesses().iterator().next();
-        return new ProcessDesc(process.getId(), process.getName(), process.getVersion()
+        return new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
                 , process.getPackageName(), process.getType(), process.getKnowledgeType().name(),
                 process.getNamespace(), "");
     }

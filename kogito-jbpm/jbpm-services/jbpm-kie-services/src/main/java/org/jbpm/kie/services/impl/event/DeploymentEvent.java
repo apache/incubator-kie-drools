@@ -1,6 +1,6 @@
 package org.jbpm.kie.services.impl.event;
 
-import org.jbpm.kie.services.api.DeployedUnit;
+import org.kie.internal.deployment.DeployedUnit;
 
 public class DeploymentEvent {
     

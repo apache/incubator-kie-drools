@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.jbpm.kie.services.impl.model.ProcessDesc;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.services.task.impl.model.TaskDefImpl;
 
 /**
@@ -28,7 +28,7 @@ import org.jbpm.services.task.impl.model.TaskDefImpl;
  */
 public class ProcessDescRepoHelper {
 
-    private ProcessDesc process;
+    private ProcessAssetDesc process;
     private Map<String, TaskDefImpl> tasks = new HashMap<String, TaskDefImpl>();
     private Map<String, Map<String, String>> taskInputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, Map<String, String>> taskOutputMappings = new HashMap<String, Map<String, String>>();
@@ -41,12 +41,12 @@ public class ProcessDescRepoHelper {
     public ProcessDescRepoHelper() {
     }
 
-    public void setProcess(ProcessDesc process) {
+    public void setProcess(ProcessAssetDesc process) {
         this.process = process;
     }
 
 
-    public ProcessDesc getProcess() {
+    public ProcessAssetDesc getProcess() {
         return process;
     }
 
