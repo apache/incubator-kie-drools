@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.drools.core.base.TypeResolver;
+import org.drools.core.util.MVELSafeHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -66,7 +67,7 @@ public class EnumFieldPopulator extends FieldPopulator {
 
                 Serializable compiled = MVEL.compileExpression( valueOfEnum,
                                                                 pctx );
-                value = org.drools.core.util.MVELSafeHelper.getEvaluator().executeExpression( compiled );
+                value = MVELSafeHelper.getEvaluator().executeExpression( compiled );
 
             } catch ( ClassNotFoundException e ) {
                 // This is a Guvnor enum type
