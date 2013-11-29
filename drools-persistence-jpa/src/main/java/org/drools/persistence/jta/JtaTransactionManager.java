@@ -152,8 +152,21 @@ public class JtaTransactionManager
             return tsrObject;
         } catch ( NamingException ex ) {
             logger.debug( "No JTA TransactionSynchronizationRegistry found at default JNDI location [{}]",
-                          jndiName,
-                          ex );
+                    jndiName,
+                    ex );
+            String customJndiLocation = System.getProperty("jbpm.tsr.jndi.lookup", "java:jboss/TransactionSynchronizationRegistry");
+            try {
+
+                Object tsrObject =  InitialContext.doLookup(customJndiLocation);
+                logger.debug( "JTA TransactionSynchronizationRegistry found at default JNDI location [{}]",
+                        customJndiLocation );
+
+                return tsrObject;
+            } catch (Exception e1) {
+                logger.debug( "No JTA TransactionSynchronizationRegistry found at default JNDI location [{}]",
+                        customJndiLocation,
+                        ex );
+            }
         }
         // Check whether the UserTransaction or TransactionManager implements it...
         if ( transactionSynchronizationRegistryClass.isInstance( ut ) ) {
