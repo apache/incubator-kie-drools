@@ -7,7 +7,7 @@ import org.kie.api.io.Resource;
 
 public interface ProcessBuilder {
 
-    List<DroolsError> addProcessFromXml(Resource resource) throws IOException;
+    List<BaseKnowledgeBuilderResultImpl> addProcessFromXml(Resource resource) throws IOException;
 
-    List<DroolsError> getErrors();
+    List<BaseKnowledgeBuilderResultImpl> getErrors();
 }
