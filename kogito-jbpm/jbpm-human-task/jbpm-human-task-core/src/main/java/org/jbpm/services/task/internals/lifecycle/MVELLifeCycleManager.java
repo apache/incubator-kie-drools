@@ -19,6 +19,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.services.task.annotations.Internal;

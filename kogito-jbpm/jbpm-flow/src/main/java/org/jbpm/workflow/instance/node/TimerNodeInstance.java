@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.jbpm.flow.util.MVELSafeHelper;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.Timer;
@@ -34,7 +34,6 @@ import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
-import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

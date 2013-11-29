@@ -16,6 +16,12 @@
 
 package org.jbpm.process.instance.impl;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.common.InternalWorkingMemory;
@@ -24,19 +30,12 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.GlobalResolver;
-import org.jbpm.flow.util.MVELSafeHelper;
+import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.runtime.process.ProcessContext;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.api.runtime.process.ProcessContext;
-import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
 
 public class MVELReturnValueEvaluator
     implements

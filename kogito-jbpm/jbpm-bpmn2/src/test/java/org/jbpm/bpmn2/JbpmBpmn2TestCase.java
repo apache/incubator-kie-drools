@@ -15,7 +15,10 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import static org.kie.api.runtime.EnvironmentName.*;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import static org.kie.api.runtime.EnvironmentName.OBJECT_MARSHALLING_STRATEGIES;
+import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
+import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,6 +47,7 @@ import org.drools.core.audit.event.RuleFlowLogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.MVELSafeHelper;
 import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.jbpm.bpmn2.test.RequireLocking;

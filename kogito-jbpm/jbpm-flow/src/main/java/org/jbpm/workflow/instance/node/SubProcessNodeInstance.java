@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.RuntimeDroolsException;
-import org.jbpm.flow.util.MVELSafeHelper;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -51,7 +51,6 @@ import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
-import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
