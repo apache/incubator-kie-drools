@@ -158,9 +158,9 @@ public abstract class AbstractKieModule
     }
 
     @SuppressWarnings("deprecation")
-    static KnowledgeBuilder buildKnowledgePackages(KieBaseModelImpl kBaseModel,
-            KieProject kieProject,
-            ResultsImpl messages) {
+    static KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel,
+                                                    KieProject kieProject,
+                                                    ResultsImpl messages ) {
         AbstractKieModule kModule = (AbstractKieModule) kieProject.getKieModuleForKBase(kBaseModel.getName());
 
         PackageBuilderConfiguration pconf = new PackageBuilderConfiguration(kieProject.getClonedClassLoader());
