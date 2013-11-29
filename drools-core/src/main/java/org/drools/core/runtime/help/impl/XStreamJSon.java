@@ -1187,6 +1187,12 @@ public class XStreamJSon {
             writer.startNode( "process-id" );
             writer.setValue( cmd.getProcessId() );
             writer.endNode();
+            
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
+                writer.endNode();
+            }
 
             for ( Entry<String, Object> entry : cmd.getParameters().entrySet() ) {
                 writeItem( new ParameterContainer( entry.getKey(),
@@ -1202,20 +1208,30 @@ public class XStreamJSon {
             String processId = reader.getValue();
             reader.moveUp();
 
+            String outIdentifier = null;
             HashMap<String, Object> params = new HashMap<String, Object>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                ParameterContainer parameterContainer = (ParameterContainer) readItem( reader,
-                                                                                       context,
-                                                                                       null );
-                params.put( parameterContainer.getIdentifier(),
-                            parameterContainer.getObject() );
+                if ( "parameters".equals( reader.getNodeName() ) ) {
+                    ParameterContainer parameterContainer = (ParameterContainer) readItem( reader,
+                                                                                           context,
+                                                                                           null );
+                    params.put( parameterContainer.getIdentifier(),
+                                parameterContainer.getObject() );
+                } else if ( "out-identifier".equals( reader.getNodeName() ) ) {
+                    outIdentifier = reader.getValue();
+                } else {
+                    throw new IllegalArgumentException( "start-process does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
+                }
                 reader.moveUp();
             }
 
             StartProcessCommand cmd = new StartProcessCommand();
             cmd.setProcessId( processId );
             cmd.setParameters( params );
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
+            }
 
             return cmd;
         }
