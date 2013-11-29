@@ -1978,6 +1978,69 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals(1,constraint.getConstraintValueType());
     }
 
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1009385")
+    public void testCompositeFactPatternNot() throws Exception {
+        String drl = "" +
+                "rule \"NOT\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    not\n" +
+                " then\n" +
+                "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+        assertEquals(1,
+                m.lhs.length);
+        assertTrue(m.lhs[0] instanceof CompositeFactPattern);
+        CompositeFactPattern not = (CompositeFactPattern) m.lhs[0];
+        assertEquals("not", not.getType());
+
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1009385")
+    public void testCompositeFactPatternExists() throws Exception {
+        String drl = "" +
+                "rule \"EXISTS\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    exists\n" +
+                " then\n" +
+                "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+        assertEquals(1,
+                m.lhs.length);
+        assertTrue(m.lhs[0] instanceof CompositeFactPattern);
+        CompositeFactPattern not = (CompositeFactPattern) m.lhs[0];
+        assertEquals("exists", not.getType());
+
+    }
+
+    @Test
+    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1009385")
+    public void testCompositeFactPatternAnyOfTheFollowingAreTrue() throws Exception {
+        String drl = "" +
+                "rule \"EXISTS\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    ()\n" +
+                " then\n" +
+                "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                dmo);
+        assertEquals(1,
+                m.lhs.length);
+        assertTrue(m.lhs[0] instanceof CompositeFactPattern);
+        CompositeFactPattern not = (CompositeFactPattern) m.lhs[0];
+        assertEquals("or", not.getType());
+
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
