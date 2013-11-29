@@ -62,9 +62,10 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
     @Override
     public IncrementalResults build() {
-        if ( files == null ) {
+        if ( files == null || files.length == 0 ) {
             return new IncrementalResultsImpl();
         }
+        kieBuilder.cloneKieModuleForIncrementalCompilation();
         for (String file : files) {
             kieBuilder.copySourceToTarget(file);
         }
