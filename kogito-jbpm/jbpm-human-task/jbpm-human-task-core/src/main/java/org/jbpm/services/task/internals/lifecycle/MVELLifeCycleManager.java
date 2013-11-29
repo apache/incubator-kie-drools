@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import org.drools.core.util.MVELSafeHelper;
 import org.jboss.seam.transaction.Transactional;
-import org.jbpm.flow.util.MVELSafeHelper;
 import org.jbpm.services.task.annotations.Internal;
 import org.jbpm.services.task.annotations.Mvel;
 import org.jbpm.services.task.events.*;
