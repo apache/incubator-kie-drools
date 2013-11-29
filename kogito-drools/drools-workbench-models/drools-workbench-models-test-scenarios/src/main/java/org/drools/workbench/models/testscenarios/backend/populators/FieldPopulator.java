@@ -16,10 +16,10 @@
 
 package org.drools.workbench.models.testscenarios.backend.populators;
 
-import static org.mvel2.MVEL.eval;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.util.MVELSafeHelper;
 
 public abstract class FieldPopulator {
 
@@ -44,8 +44,8 @@ public abstract class FieldPopulator {
             vars.put( "__fact__",
                       factObject );
 
-            eval( "__fact__." + fieldName + "= __val__",
-                  vars );
+            MVELSafeHelper.getEvaluator().eval("__fact__." + fieldName + "= __val__",
+                    vars);
 
         } catch ( NumberFormatException e ) {
             if ( value instanceof String && ((String) value).isEmpty() ) {

@@ -15,10 +15,9 @@
  */
 package org.drools.workbench.models.testscenarios.backend.populators;
 
-import static org.mvel2.MVEL.eval;
-
 import java.util.Map;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.FieldData;
 
@@ -50,7 +49,7 @@ public class CollectionFieldPopulator extends FieldPopulator {
 
     @Override
     public void populate(Map<String, Object> populatedData) {
-        populateField(eval(expression,
+        populateField(MVELSafeHelper.getEvaluator().eval(expression,
                 populatedData),
                 populatedData);
     }

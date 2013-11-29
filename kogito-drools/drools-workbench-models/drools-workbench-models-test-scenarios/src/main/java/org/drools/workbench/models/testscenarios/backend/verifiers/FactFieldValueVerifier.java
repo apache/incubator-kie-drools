@@ -16,8 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.backend.verifiers;
 
-import static org.mvel2.MVEL.eval;
-
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -92,7 +90,7 @@ public class FactFieldValueVerifier {
     private Object getExpectedResult() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Object expectedResult = currentField.getExpected().trim();
         if (currentField.getExpected().startsWith("=")) {
-            expectedResult = eval(currentField.getExpected().substring(1),
+            expectedResult = MVELSafeHelper.getEvaluator().eval(currentField.getExpected().substring(1),
                     this.populatedData);
         } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
             try {

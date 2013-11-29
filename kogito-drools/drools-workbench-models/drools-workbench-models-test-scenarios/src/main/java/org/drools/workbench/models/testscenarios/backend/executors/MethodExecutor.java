@@ -16,11 +16,11 @@
 
 package org.drools.workbench.models.testscenarios.backend.executors;
 
-import static org.mvel2.MVEL.eval;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.shared.CallFieldValue;
 import org.drools.workbench.models.testscenarios.shared.CallMethod;
 
@@ -80,9 +80,9 @@ public class MethodExecutor {
 
     public Object executeMethod(CallMethod callMethod) {
         Map<String, Object> vars = initVars(callMethod);
-        eval(
-                build(callMethod, vars),
-                vars);
+        MVELSafeHelper.getEvaluator().eval(
+                                        build(callMethod, vars),
+                                        vars);
 
         return populatedData.get(callMethod.getVariable());
     }
