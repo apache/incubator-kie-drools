@@ -24,10 +24,11 @@ import java.util.Map;
 
 import javax.xml.parsers.FactoryConfigurationError;
 
+import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
-import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.compiler.DroolsParserException;
+import org.drools.compiler.compiler.DuplicateProcess;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -37,6 +38,7 @@ import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.ProcessDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
 import org.drools.core.RuntimeDroolsException;
+import org.drools.core.io.internal.InternalResource;
 import org.jbpm.compiler.xml.ProcessSemanticModule;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
@@ -86,7 +88,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
     private static final Logger logger = LoggerFactory.getLogger(ProcessBuilderImpl.class);
     
     private PackageBuilder                packageBuilder;
-    private final List<DroolsError>       errors                         = new ArrayList<DroolsError>();
+    private final List<BaseKnowledgeBuilderResultImpl>       errors                         = new ArrayList<BaseKnowledgeBuilderResultImpl>();
 
     public ProcessBuilderImpl(PackageBuilder packageBuilder) {
         this.packageBuilder = packageBuilder;
@@ -100,14 +102,14 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
     }
 
-    public List<DroolsError> getErrors() {
+    public List<BaseKnowledgeBuilderResultImpl> getErrors() {
         return errors;
     }
 
     public void buildProcess(final Process process, Resource resource) {
-//        if ( resource != null && ((InternalResource)resource).hasURL() ) {
-//            ((org.jbpm.process.core.Process) process).setResource( resource );
-//        }
+        if ( resource != null && ((InternalResource) resource).hasURL()) {
+            ((org.jbpm.process.core.Process) process).setResource(resource);
+        }
         boolean hasErrors = false;
         ProcessValidator validator = ProcessValidatorRegistry.getInstance().getValidator(process, resource);
         if (validator == null) {
@@ -168,6 +170,20 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
 			            if (process instanceof WorkflowProcess) {
 			            	buildNodes( (WorkflowProcess) process, buildContext );
 			            }
+	            	}
+	            	Process duplicateProcess = p.getRuleFlows().get(process.getId());
+	            	if (duplicateProcess != null) {
+	                    Resource duplicatedResource = duplicateProcess.getResource();
+	                    if (resource == null || duplicatedResource == null || duplicatedResource.getSourcePath() == null ||
+	                            duplicatedResource.getSourcePath().equals(resource.getSourcePath())) {
+	                        this.errors.add(new DuplicateProcess(process,
+	                                this.packageBuilder.getPackageBuilderConfiguration()));
+	                    } else {
+		            		this.errors.add( new ParserError( resource,
+	                            "Process with same id already exists: " + process.getId(),
+	                            -1,
+	                            -1 ) );
+		            	}
 	            	}
 		            p.addProcess( process );
 		            if (validator.compilationSupported()) {
@@ -243,7 +259,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
         }
     }
 
-    public List<DroolsError> addProcessFromXml(final Resource resource) throws IOException {
+    public List<BaseKnowledgeBuilderResultImpl> addProcessFromXml(final Resource resource) throws IOException {
     	Reader reader = resource.getReader();
         PackageBuilderConfiguration configuration = packageBuilder.getPackageBuilderConfiguration();
         XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules(), packageBuilder.getRootClassLoader() );
