@@ -374,8 +374,6 @@ public class AbstractWorkingMemory
         }
         this.agenda.setWorkingMemory(this);
 
-        initManagementBeans();
-
         if ( initInitFactHandle ) {
             initInitialFact(ruleBase, null);
         }
@@ -1770,6 +1768,7 @@ public class AbstractWorkingMemory
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
         this.processRuntime = createProcessRuntime();
+        initManagementBeans();
     }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
