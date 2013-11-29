@@ -121,23 +121,18 @@ public class DeclaredTypesDRLEmitter extends AbstractDRLEmitter{
 
     protected void createEmptyScorecardCondition(Rule rule, Scorecard scorecard) {
         String objectClass = scorecard.getModelName().replaceAll(" ", "");
-        StringBuilder stringBuilder = new StringBuilder();
         String var = "$sc";
 
-        stringBuilder.append(var).append(" : ").append(objectClass).append("()");
-
         Condition condition = new Condition();
-        condition.setSnippet(stringBuilder.toString());
+        condition.setSnippet(var + " : " + objectClass + "()");
         rule.addCondition(condition);
     }
 
     protected Condition createInitialRuleCondition(Scorecard scorecard, String objectClass) {
         String var = "$sc";
-        StringBuilder stringBuilder = new StringBuilder();
 
-        stringBuilder.append(var).append(" : ").append(objectClass).append("()");
         Condition condition = new Condition();
-        condition.setSnippet(stringBuilder.toString());
+        condition.setSnippet(var + " : " + objectClass + "()");
         return condition;
     }
 }

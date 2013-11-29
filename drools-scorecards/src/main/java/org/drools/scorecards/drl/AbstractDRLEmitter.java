@@ -94,8 +94,7 @@ public abstract class AbstractDRLEmitter {
         internalEmitDRL( pmml, ruleList, aPackage );
 
         aPackage.renderDRL( drlOutput );
-        String drl = drlOutput.getDRL();
-        return drl;
+        return drlOutput.getDRL();
     }
 
     private void addImports( PMML pmml,
@@ -161,7 +160,7 @@ public abstract class AbstractDRLEmitter {
                             rule.setDescription( desc );
                         }
                         populateLHS(rule, pmmlDocument, scorecard, c, scoreAttribute);
-                        populateRHS( rule, pmmlDocument, scorecard, c, scoreAttribute, attributePosition );
+                        populateRHS(rule, pmmlDocument, scorecard, c, scoreAttribute, attributePosition);
                         attributePosition++;
                         ruleList.add( rule );
                     }
@@ -208,16 +207,6 @@ public abstract class AbstractDRLEmitter {
                         }
                     }
                 }
-//                if ( scorecard.getReasonCodeAlgorithm() != null ) {
-//                    Consequence consequence = new Consequence();
-//                    if ( "pointsAbove".equalsIgnoreCase( scorecard.getReasonCodeAlgorithm() ) ) {
-//                        //TODO: ReasonCode Algorithm
-//                        consequence.setSnippet( "//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSABOVE);" );
-//                    } else if ( "pointsBelow".equalsIgnoreCase( scorecard.getReasonCodeAlgorithm() ) ) {
-//                        consequence.setSnippet( "//$sc.setReasonCodeAlgorithm(DroolsScorecard.REASON_CODE_ALGORITHM_POINTSBELOW);" );
-//                    }
-//                    rule.addConsequence( consequence );
-//                }
             }
             ruleList.add( rule );
         }

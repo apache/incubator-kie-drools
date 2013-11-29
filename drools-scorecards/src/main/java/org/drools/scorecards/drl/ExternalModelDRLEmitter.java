@@ -123,10 +123,7 @@ public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
 //            rule.addConsequence(consequence);
 
             consequence = new Consequence();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(fieldName).append("Var").append(".set").append(Character.toUpperCase(reasonCodesField.charAt(0))).append(reasonCodesField.substring(1));
-            stringBuilder.append("($sc.getReasonCodes());");
-            consequence.setSnippet(stringBuilder.toString());
+            consequence.setSnippet("$" + fieldName + "Var" + ".set" + Character.toUpperCase(reasonCodesField.charAt(0)) + reasonCodesField.substring(1) + "($sc.getReasonCodes());");
             rule.addConsequence(consequence);
         }
 
@@ -167,9 +164,7 @@ public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
 //            rule.addCondition(condition);
 //
 //            condition = new Condition();
-            StringBuilder stringBuilder = new StringBuilder("$");
-            stringBuilder.append(fieldName).append("Var : ").append(externalClassName).append("()");
-            condition.setSnippet(stringBuilder.toString());
+            condition.setSnippet("$" + fieldName + "Var : " + externalClassName + "()");
             rule.addCondition(condition);
         }
 
@@ -222,9 +217,7 @@ public class ExternalModelDRLEmitter extends AbstractDRLEmitter {
         }
         if ( !( fieldName == null || fieldName.isEmpty() ) && !( externalClassName == null || externalClassName.isEmpty() ) ) {
             Condition condition = new Condition();
-            StringBuilder stringBuilder = new StringBuilder( "$" );
-            stringBuilder.append( fieldName ).append( "Var : " ).append( externalClassName ).append( "()" );
-            condition.setSnippet( stringBuilder.toString() );
+            condition.setSnippet("$" + fieldName + "Var : " + externalClassName + "()");
             calcTotalRule.addCondition( condition );
         }
     }
