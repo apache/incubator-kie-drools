@@ -8,6 +8,7 @@
   </DataDictionary>
   <NeuralNetwork activationFunction="identity" algorithmName="neuralNetwork" functionName="regression" modelName="MockCold">
     <MiningSchema>
+      <Extension name="adapter" value="TRAIT" />
       <MiningField name="temp"/>
       <MiningField name="coldRisk" usageType="predicted"/>
     </MiningSchema>

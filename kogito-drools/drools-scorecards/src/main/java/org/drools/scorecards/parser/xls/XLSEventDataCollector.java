@@ -19,9 +19,10 @@ package org.drools.scorecards.parser.xls;
 import org.apache.poi.hssf.util.CellReference;
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.core.util.StringUtils;
+import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.ScorecardError;
 import org.drools.scorecards.parser.ScorecardParseException;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
+import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 
 import java.lang.reflect.Method;
@@ -131,7 +132,7 @@ class XLSEventDataCollector {
 
         } else if (XLSKeywords.SCORECARD_SCORING_STRATEGY.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+            extension.setName( ScorecardPMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
             scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
             addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, null);
 
@@ -142,19 +143,19 @@ class XLSEventDataCollector {
 
         } else if (XLSKeywords.SCORECARD_RESULTANT_SCORE_CLASS.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS);
+            extension.setName( PMMLExtensionNames.EXTERNAL_CLASS );
             scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
             addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, null);
 
         } else if (XLSKeywords.SCORECARD_RESULTANT_SCORE_FIELD.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_FIELD);
+            extension.setName( ScorecardPMMLExtensionNames.SCORECARD_RESULTANT_SCORE_FIELD);
             scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
             addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, null);
 
         } else if (XLSKeywords.SCORECARD_RESULTANT_REASONCODES_FIELD.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD);
+            extension.setName( ScorecardPMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD);
             scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
             addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, null);
 
@@ -171,13 +172,13 @@ class XLSEventDataCollector {
 
         } else if (XLSKeywords.SCORECARD_IMPORTS.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_IMPORTS);
+            extension.setName( PMMLExtensionNames.MODEL_IMPORTS);
             scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
             addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, null);
 
         } else if (XLSKeywords.SCORECARD_PACKAGE.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_PACKAGE);
+            extension.setName( PMMLExtensionNames.MODEL_PACKAGE);
             scorecard.getExtensionsAndCharacteristicsAndMiningSchemas().add(extension);
             addExpectation(currentRowCtr, currentColCtr + 1, "value", extension, "Scorecard Package is missing");
 
@@ -187,19 +188,19 @@ class XLSEventDataCollector {
             addExpectation(currentRowCtr + 1, currentColCtr, "name", _characteristic, "Characteristic (Property) Display Name is missing.");
 
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.SCORECARD_CELL_REF);
+            extension.setName( ScorecardPMMLExtensionNames.SCORECARD_CELL_REF);
             addExpectation(currentRowCtr + 1, currentColCtr, "value", extension, null);
             _characteristic.getExtensions().add(extension);
 
         } else if (XLSKeywords.SCORECARD_CHARACTERISTIC_EXTERNAL_CLASS.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.CHARACTERTISTIC_EXTERNAL_CLASS);
+            extension.setName( PMMLExtensionNames.EXTERNAL_CLASS );
             addExpectation(currentRowCtr + 1, currentColCtr, "value", extension, null);
             _characteristic.getExtensions().add(extension);
 
         } else if (XLSKeywords.SCORECARD_CHARACTERISTIC_DATATYPE.equalsIgnoreCase(stringCellValue)) {
             Extension extension = new Extension();
-            extension.setName(PMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
+            extension.setName( ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
             _characteristic.getExtensions().add(extension);
             addExpectation(currentRowCtr + 1, currentColCtr, "value", extension, "Characteristic (Property) Data Type is missing.");
 
@@ -245,7 +246,7 @@ class XLSEventDataCollector {
 
                     if ( indexOfValue != -1){
                         Extension extension = new Extension();
-                        extension.setName(PMMLExtensionNames.CHARACTERTISTIC_FIELD);
+                        extension.setName( ScorecardPMMLExtensionNames.CHARACTERTISTIC_FIELD);
                         attribute.getExtensions().add(extension);
                         addExpectation(currentRowCtr + indexOfValue, currentColCtr, "value", extension, "Characteristic (Property) Name is missing.");
 
@@ -266,7 +267,7 @@ class XLSEventDataCollector {
 
                     if ( indexOfWeight != -1) {
                         Extension extension = new Extension();
-                        extension.setName(PMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+                        extension.setName( ScorecardPMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
                         attribute.getExtensions().add(extension);
                         extension.setValue("1");
                         addExpectation(r, currentColCtr + indexOfWeight, "value", extension, "Characteristic (Weight) Value is missing.");

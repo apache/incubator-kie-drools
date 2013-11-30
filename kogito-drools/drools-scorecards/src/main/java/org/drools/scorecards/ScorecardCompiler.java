@@ -17,11 +17,12 @@
 package org.drools.scorecards;
 
 import org.dmg.pmml.pmml_4_1.descr.PMML;
-import org.drools.scorecards.drl.DeclaredTypesDRLEmitter;
-import org.drools.scorecards.drl.ExternalModelDRLEmitter;
+import org.drools.pmml.pmml_4_1.PMML4Compiler;
 import org.drools.scorecards.parser.AbstractScorecardParser;
 import org.drools.scorecards.parser.ScorecardParseException;
 import org.drools.scorecards.parser.xls.XLSScorecardParser;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,10 +30,17 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.List;
 
 public class ScorecardCompiler {
+
+    private PMML4Compiler compiler = new PMML4Compiler();
 
     private PMML pmmlDocument = null;
     public static final String DEFAULT_SHEET_NAME = "scorecards";
@@ -103,19 +111,8 @@ public class ScorecardCompiler {
 
     /* This is a temporary workaround till drools-chance is fully integrated. */
     public boolean compileFromPMML(final InputStream stream) {
-        try {
-            // create a JAXBContext for the PMML class
-            JAXBContext ctx = JAXBContext.newInstance(PMML.class);
-            Unmarshaller unmarshaller = ctx.createUnmarshaller();
-            pmmlDocument = (PMML) unmarshaller.unmarshal(stream);
-            if ( pmmlDocument == null) {
-                return false;
-            }
-        } catch (JAXBException e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
-        return true;
+        pmmlDocument = compiler.loadModel( PMML.class.getPackage().getName(), stream  );
+        return pmmlDocument != null;
     }
 
 
@@ -128,33 +125,20 @@ public class ScorecardCompiler {
         if (pmmlDocument == null ) {
             return null;
         }
-        // create a JAXBContext for the PMML class
-        JAXBContext ctx = null;
-        try {
-            ctx = JAXBContext.newInstance(PMML.class);
-            Marshaller marshaller = ctx.createMarshaller();
-            // the property JAXB_FORMATTED_OUTPUT specifies whether or not the
-            // marshalled XML data is formatted with linefeeds and indentation
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            // marshal the data in the Java content tree
-            StringWriter stringWriter = new StringWriter();
-            marshaller.marshal(pmmlDocument, stringWriter);
-            return stringWriter.toString();
-        } catch (JAXBException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PMML4Compiler.dumpModel( pmmlDocument, baos );
+        return new String( baos.toByteArray() );
     }
 
     public String getDRL(){
-        if (pmmlDocument != null) {
-            if (drlType == DrlType.INTERNAL_DECLARED_TYPES) {
-                return new DeclaredTypesDRLEmitter().emitDRL(pmmlDocument);
-            } else if (drlType == DrlType.EXTERNAL_OBJECT_MODEL) {
-                return new ExternalModelDRLEmitter().emitDRL(pmmlDocument);
+        String drl = compiler.generateTheory( pmmlDocument );
+        if ( ! compiler.getResults().isEmpty() ) {
+            for ( KnowledgeBuilderResult res : compiler.getResults() ) {
+                logger.error( res.getMessage() );
             }
+            compiler.clearResults();
         }
-        return null;
+        return drl;
     }
 
     /* convienence method for use from Guvnor*/

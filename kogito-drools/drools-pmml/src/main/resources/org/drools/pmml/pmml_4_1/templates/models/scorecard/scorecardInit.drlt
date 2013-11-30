@@ -33,7 +33,7 @@ then
     insertLogical( data );
     insertLogical( card );
 
-    @if{ zero != null } insertLogical( new InitialScore( "@{context}", @{ zero }, null, null ) ); @end{}
+    @if{ zero != null } insertLogical( new InitialScore( "@{context}", @{ zero } ) ); @end{}
 end
 
 

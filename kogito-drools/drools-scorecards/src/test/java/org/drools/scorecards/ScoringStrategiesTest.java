@@ -3,21 +3,21 @@ package org.drools.scorecards;
 import org.dmg.pmml.pmml_4_1.descr.Extension;
 import org.dmg.pmml.pmml_4_1.descr.PMML;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
+import org.drools.pmml.pmml_4_1.extensions.AggregationStrategy;
+import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.ScoreCardConfiguration;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.io.InputStream;
 
@@ -44,9 +44,9 @@ public class ScoringStrategiesTest {
                 if (serializable instanceof Scorecard){
                     Scorecard scorecard = (Scorecard)serializable;
                     assertEquals("Sample Score",scorecard.getModelName());
-                    Extension extension = ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+                    Extension extension = ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
                     assertNotNull(extension);
-                    assertEquals(extension.getValue(), ScoringStrategy.AGGREGATE_SCORE.toString());
+                    assertEquals( extension.getValue(), AggregationStrategy.AGGREGATE_SCORE.toString() );
                     return;
                 }
             }
@@ -194,7 +194,7 @@ public class ScoringStrategiesTest {
     private double executeAndFetchScore(String sheetName) throws Exception {
 
         ScorecardCompiler scorecardCompiler = new ScorecardCompiler(INTERNAL_DECLARED_TYPES);
-        InputStream inputStream = PMMLDocumentTest.class.getResourceAsStream("/scoremodel_scoring_strategies.xls");
+        InputStream inputStream = PMMLDocumentTest.class.getResourceAsStream( "/scoremodel_scoring_strategies.xls" );
         boolean compileResult = scorecardCompiler.compileFromExcel(inputStream, sheetName);
         if (!compileResult) {
             for(ScorecardError error : scorecardCompiler.getScorecardParseErrors()){
@@ -203,27 +203,29 @@ public class ScoringStrategiesTest {
             return -999999;
         }
         String drl = scorecardCompiler.getDRL();
-        //System.out.println(drl);
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        for (KnowledgeBuilderError error : kbuilder.getErrors()){
-            System.out.println(error.getMessage());
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ks.getResources().newByteArrayResource( drl.getBytes() )
+                           .setSourcePath( "scoremodel_scoring_strategies.drl" )
+                           .setResourceType( ResourceType.DRL ) );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        Results res = kieBuilder.buildAll().getResults();
+        if ( res.hasMessages( Message.Level.ERROR ) ) {
+            System.out.println( res.getMessages() );
         }
-        assertFalse( kbuilder.hasErrors() );
+        assertEquals( 0, res.getMessages( Message.Level.ERROR ).size() );
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        assertNotNull(kbase);
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        KieContainer kieContainer = ks.newKieContainer( kieBuilder.getKieModule().getReleaseId() );
 
-        //NEW WORKING MEMORY
-        StatelessKieSession session = kbase.newStatelessKnowledgeSession();
+        KieBase kbase = kieContainer.getKieBase();
+        StatelessKieSession session = kbase.newStatelessKieSession();
+
         FactType scorecardType = kbase.getFactType( "org.drools.scorecards.example","SampleScore" );
-        DroolsScorecard scorecard = (DroolsScorecard) scorecardType.newInstance();
+        Object scorecard = scorecardType.newInstance();
         scorecardType.set(scorecard, "age", 10);
         session.execute(scorecard);
-
-        return scorecard.getCalculatedScore();
-
+        return (Double) scorecardType.get( scorecard, "scorecard__calculatedScore" );
     }
 
 }

@@ -4,29 +4,52 @@ import org.dmg.pmml.pmml_4_1.descr.*;
 import java.util.*;
 
 
-
-
-rule "Scorecard Root"
-when
-    $sc : Scorecard()
-then
-    utils.applyTemplate( "scorecardDeclare.drlt", utils, registry, null, theory );
-    utils.applyTemplate( "scorecardScoring.drlt", utils, registry, null, theory );
+query weight( Attribute $attr, String $wgt )
+    $attr := Attribute( $ext : extensions )
+    and
+    (
+        Extension( name == "weight", $wgt := value ) from $ext
+        or
+        not Extension( name == "weight" ) from $ext
+    )
 end
 
+query aggregator( Scorecard $sco, String $agg )
+    $sco := Scorecard( $ext : extensionsAndCharacteristicsAndMiningSchemas )
+    and
+    (
+        Extension( name == "scoringStrategy", $agg := value ) from $ext
+        or
+        not Extension( name == "scoringStrategy" ) from $ext
+    )
+end
+
+
+
+rule "Scorecard Declare"
+when
+    exists $sc : Scorecard( )
+then
+    utils.applyTemplate( "scorecardDeclare.drlt", utils, registry, null, theory );
+end
 
 
 rule "Scorecard_context"
 salience -9
 when
-    $svm : Scorecard( $name : modelName )
+    $sco : Scorecard( $name : modelName )
+    ?aggregator( $sco, $agg ; )
 then
     utils.context = utils.compactUpperCase( $name );
 
     HashMap map = new HashMap( 3 );
         map.put( "name", utils.context );
-        map.put( "type","Scorecard" );
+        map.put( "type", "Scorecard" );
+        map.put( "aggregator", utils.mapWeightStrategy( $agg ) );
+        map.put( "weighted", utils.isWeighted( $agg ) );
+
     utils.applyTemplate( "modelMark.drlt", null, registry, map, theory );
+    utils.applyTemplate( "scorecardScoring.drlt", utils, registry, map, theory );
 end
 
 rule "Inherit baseline score"
@@ -60,13 +83,14 @@ when
     $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $simple : simplePredicate != null )
     $mock   : List() from collect( SimplePredicate() from $simple )
     compilePredicate( $mock, $pred, $simple ; )
-//    ?compilePredicateForMissing( $mock, $miss, $src ; )
+    ?weight( $attr, $w ; )
 then
     HashMap map = new HashMap( 7 );
         map.put( "name", utils.context );
         map.put( "char", $char );
         map.put( "attr", $attr );
         map.put( "predicate", $pred );
+        map.put( "weight", $w );
     utils.applyTemplate( "scorecardPartialScore.drlt", utils, registry, map, theory );
 end
 
@@ -77,13 +101,14 @@ when
     $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $comp : compoundPredicate != null )
     $mock   : List() from collect( CompoundPredicate() from $comp )
     compilePredicate( $mock, $pred, $comp ; )
-//    ?compilePredicateForMissing( $mock, $miss, $src ; )
+    ?weight( $attr, $w ; )
 then
     HashMap map = new HashMap( 7 );
         map.put( "name", utils.context );
         map.put( "char", $char );
         map.put( "attr", $attr );
         map.put( "predicate", $pred );
+        map.put( "weight", $w );
     utils.applyTemplate( "scorecardPartialScore.drlt", utils, registry, map, theory );
 end
 
@@ -94,13 +119,14 @@ when
     $attr   : Attribute( this memberOf $attz, $code : reasonCode, $score : partialScore, $set : simpleSetPredicate != null )
     $mock   : List() from collect( SimpleSetPredicate() from $set )
     compilePredicate( $mock, $pred, $set ; )
-//    ?compilePredicateForMissing( $mock, $miss, $src ; )
+    ?weight( $attr, $w ; )
 then
     HashMap map = new HashMap( 7 );
         map.put( "name", utils.context );
         map.put( "char", $char );
         map.put( "attr", $attr );
         map.put( "predicate", $pred );
+        map.put( "weight", $w );
     utils.applyTemplate( "scorecardPartialScore.drlt", utils, registry, map, theory );
 end
 
@@ -184,7 +210,7 @@ then
         map.put( "origField", utils.compactUpperCase( $tgt ) );
         map.put( "name", utils.compactUpperCase( $name ) );
         map.put( "index", $index );
-        map.put( "target", $name );
+        map.put( "target", utils.compactUpperCase( $name ) );
     utils.applyTemplate( "scorecardOutputRankCode.drlt", utils, registry, map, theory );
 end
 

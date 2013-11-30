@@ -16,19 +16,15 @@
 
 package org.drools.scorecards.pmml;
 
-public class PMMLExtensionNames {
+public class ScorecardPMMLExtensionNames {
 
-    public static final String SCORECARD_PACKAGE = "scorecardPackage";
 
     public static final String SCORECARD_SCORING_STRATEGY = "scoringStrategy";
 
     public static final String SCORECARD_CELL_REF = "cellRef";
     public static final String SCORECARD_RESULTANT_SCORE_FIELD = "final";
     public static final String SCORECARD_RESULTANT_REASONCODES_FIELD = "reasonCodeField";
-    public static final String SCORECARD_RESULTANT_SCORE_CLASS = "externalClass";
-    public static final String SCORECARD_IMPORTS = "importsFromDelimitedString";
 
-    public static final String CHARACTERTISTIC_EXTERNAL_CLASS = "externalClass";
     public static final String CHARACTERTISTIC_FACTTYPE = "factType";
     public static final String CHARACTERTISTIC_FIELD = "field";
     public static final String CHARACTERTISTIC_DATATYPE = "dataType";

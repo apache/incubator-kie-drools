@@ -15,6 +15,7 @@
  */
 package org.drools.pmml.pmml_4_1.compiler;
 
+import org.drools.pmml.pmml_4_1.extensions.*;
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.pmml.pmml_4_1.ModelMarker;
 
@@ -95,7 +96,7 @@ rule "processHeaderImports"
 salience 9995
 when
     $h : Header( $xt : extensions )
-    Extension( name == "importsFromDelimitedString", $val : value ) from $xt
+    Extension( name == PMMLExtensionNames.MODEL_IMPORTS, $val : value ) from $xt
 then
     HashMap map = new HashMap( 3 );
         map.put( "imports", utils.tokenize( $val, "," ) );
@@ -108,7 +109,7 @@ rule "processHeaderPackage"
 salience 9999
 when
     $h : Header( $xt : extensions )
-    Extension( name == "package", $val : value ) from $xt
+    Extension( name == PMMLExtensionNames.MODEL_PACKAGE, $val : value ) from $xt
 then
     HashMap map = new HashMap( 3 );
         map.put( "pack", $val );
@@ -119,7 +120,7 @@ rule "processHeaderNoPackage"
 salience 9999
 when
     $h : Header( $xt : extensions )
-    not Extension( name == "package" ) from $xt
+    not Extension( name == PMMLExtensionNames.MODEL_PACKAGE ) from $xt
 then
     HashMap map = new HashMap( 3 );
         map.put( "pack", utils.getPack() );
@@ -209,7 +210,7 @@ dialect "mvel"
 salience -10
 when
     DataField( $fieldName : name, $xt : extensions )
-    Extension( name == "externalClass", $type : value ) from $xt
+    Extension( name == PMMLExtensionNames.EXTERNAL_CLASS, $type : value ) from $xt
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
@@ -1037,11 +1038,10 @@ then
         $deps.add(  utils.mapFunctionAsQuery( $f2, $args ) );
     }
 
-
 //    System.out.println("Built bit for fun " + $f2 + " with expr " + bit + ", result for " + $bag + " using parentes " + $deps );
 
     insertLogical( new FunctionResult( bit, $a, $bag, false, $deps ) );
-    //System.err.println("Kill " + $f2 + "and its children results");
+    //System.err.println("Remove " + $f2 + "and its children results");
 end
 
 
@@ -1439,7 +1439,7 @@ query formatArray( Array $arr, String $out )
     $out := String() from accumulate (
         $s : String() from utils.tokenize( $content ),
         init( String x = ""; ),
-        action( x = ( "".equals(x) ? ", " : "" ) + utils.format( $type, $s ) + x; ),
+        action( x += ( "".equals(x) ? "" : ", " ) + utils.format( $type, $s ); ),
         result( x )
     )
 end
@@ -1576,26 +1576,39 @@ then
     utils.applyTemplate( "miningField.drlt", utils, registry, map, theory );
 end
 
-rule "Create IO Trait"
+rule "Create Input Structures"
 dialect "mvel"
 salience -10
 when
-    MiningSchema( $miningFields : miningFields )
-    accumulate( $mf : MiningField( usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields, $expNum : count( $mf ) )
+    $mns : MiningSchema( $miningFields : miningFields, $ext : extensions )
+    Extension( name == PMMLExtensionNames.IO_ADAPTER, $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
+    accumulate( $mf : MiningField( usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields, $expNum : count( $mf ); $expNum > 0 )
+    accumulate( $pf : MiningField( usageType == FIELDUSAGETYPE.PREDICTED ) from $miningFields, $expPNum : count( $pf ) )
     $fields : java.util.Map( size == $expNum ) from accumulate (
             MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.ACTIVE ) from $miningFields
             and
             TypeOfField( $n : name == $name, $type : dataType )
          ,
         init( java.util.Map map = new java.util.LinkedHashMap(); ),
-        action( map.put( utils.compactUpperCase( $n ), $type ); ),
+        action( map.put( utils.compact( $n ), $type ); ),
+        result( map )
+    )
+    $predFields : java.util.Map( size == $expPNum ) from accumulate (
+            MiningField( this memberOf $miningFields, $name : name, usageType == FIELDUSAGETYPE.PREDICTED ) from $miningFields
+            and
+            TypeOfField( $n : name == $name, $type : dataType )
+         ,
+        init( java.util.Map map = new java.util.LinkedHashMap(); ),
+        action( map.put( utils.compact( $n ), $type ); ),
         result( map )
     )
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
         map.put( "fields", $fields );
-    utils.applyTemplate( "ioTrait.drlt", utils, registry, map, theory );
+        map.put( "predFields", $predFields );
+        map.put( "traitMode", PMMLIOAdapterMode.TRAIT.name().equals( $mode ) );
+    utils.applyTemplate( "inputBean.drlt", utils, registry, map, theory );
 end
 
 
@@ -1604,7 +1617,7 @@ dialect "mvel"
 salience -10
 when
     MiningField( $fieldName : name, usageType == FIELDUSAGETYPE.ACTIVE, $xt : extensions )
-    Extension( name == "externalClass", $type : value ) from $xt
+    Extension( name == PMMLExtensionNames.EXTERNAL_CLASS, $type : value ) from $xt
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
@@ -1812,7 +1825,7 @@ end
 
 rule "Output_Type"
 when
-     $of : OutputField( $name : name, $dataType : dataType != null )
+     $of : OutputField( $name : name != null && != "", $dataType : dataType != null )
 then
     insertLogical( new TypeOfField( $name, $dataType ) );
 end
@@ -1820,7 +1833,7 @@ end
 rule "Output_Type2"
 no-loop
 when
-    $of : OutputField( $name : name, dataType == null, $feat : feature, $tgt : targetField )
+    $of : OutputField( $name : name != null && != "" , dataType == null, $feat : feature, $tgt : targetField )
     TypeOfField( name == $tgt, $dataType : dataType )
 then
     insertLogical( new TypeOfField( $name, utils.mapFeatureType( $dataType, $feat ) ) );
@@ -1829,8 +1842,8 @@ end
 rule "Bind_FactField_Outputield"
 dialect "mvel"
 when
-    OutputField( $fieldName : name, $xt : extensions )
-    Extension( name == "externalClass", $type : value ) from $xt
+    OutputField( $fieldName : name != null && != "", $xt : extensions, targetField != null )
+    Extension( name == PMMLExtensionNames.EXTERNAL_CLASS, $type : value ) from $xt
 then
     HashMap map = new HashMap( 7 );
         map.put( "context", utils.context );
@@ -1846,7 +1859,7 @@ rule "DeclareOutput"
 dialect "mvel"
 salience 1
 when
-    $of  : OutputField( $name : name, $tgt : targetField, $feat : feature )
+    $of  : OutputField( $name : name != null && != "", $tgt : targetField, $feat : feature )
            TypeOfField( name == $tgt, $tgtType : dataType != null )
     $tf  : TypeOfField( name == $name )
     $mod : OutputParentModel( field == $of, $mt : modelType )
@@ -1867,7 +1880,7 @@ end
 
 rule "Output_Expose"
 when
-    $of : OutputField( $name : name, targetField != null )
+    $of : OutputField( $name : name != null && != "", targetField != null )
 then
     insert( new QueryMarker( $name, utils.context ) );
 end
@@ -1878,7 +1891,7 @@ end
 rule "SimpleValueOutput"
 dialect "mvel"
 when
-    $of : OutputField( $tgt : targetField != null, $val : value, $name : name,
+    $of : OutputField( $tgt : targetField != null, $val : value, $name : name != null && != "",
                        feature == null || feature == RESULTFEATURE.PREDICTED_VALUE )
     $tf : TypeOfField( name == $name, $type : dataType )
     $md : OutputParentModel( field == $of, $mt : modelType, $mf : miningFunc )
@@ -1898,7 +1911,7 @@ end
 rule "SimpleFeatureOutput"
 dialect "mvel"
 when
-    $of : OutputField( $tgt : targetField, $val : value, $name : name,
+    $of : OutputField( $tgt : targetField, $val : value, $name : name != null && != "",
                        feature != null, $feat : feature.value(),
                        feature == RESULTFEATURE.PREDICTED_DISPLAY_VALUE || == RESULTFEATURE.WARNING
                         || == RESULTFEATURE.PROBABILITY )
@@ -1919,7 +1932,7 @@ end
 rule "RelativeFeatureOutput"
 dialect "mvel"
 when
-    $of : OutputField( $tgt : targetField, $val : value != null, $name : name,
+    $of : OutputField( $tgt : targetField, $val : value != null, $name : name != null && != "",
                        feature != null, $feat : feature.value(),
                        feature == RESULTFEATURE.RESIDUAL )
     $tf : TypeOfField( name == $name, $type : dataType )
@@ -1935,6 +1948,35 @@ then
         map.put( "classifier", "classification".equals( $mf ) );
     utils.applyTemplate( "addRelOutputFeature.drlt", utils, registry, map, theory );
 end
+
+
+
+
+rule "Create Output Structures"
+no-loop
+salience -20
+when
+    $ot : Output( $outs : outputFields, $ext : extensions )
+    Extension( name == PMMLExtensionNames.IO_ADAPTER, $mode : value == PMMLIOAdapterMode.TRAIT.name() || == PMMLIOAdapterMode.BEAN.name() ) from $ext
+    accumulate( $of : OutputField() from $outs, $expOuts : count( 1 ); $expOuts > 0 )
+    $outFields : java.util.Map( size == $expOuts ) from accumulate (
+            OutputField( this memberOf $outs, $name : name )
+            and
+            TypeOfField( $n : name == $name, $type : dataType )
+         ,
+        init( java.util.Map map = new java.util.LinkedHashMap(); ),
+        action( map.put( utils.compact( $n ), $type ); ),
+        result( map )
+    )
+then
+    HashMap map = new HashMap( 7 );
+        map.put( "context", utils.context );
+        map.put( "fields", $outFields );
+        map.put( "traitMode", "trait".equals( $mode ) );
+    map.put( "traitMode", PMMLIOAdapterMode.TRAIT.name().equals( $mode ) );
+    utils.applyTemplate( "outputBean.drlt", utils, registry, map, theory );
+end
+
 
 
 

@@ -53,7 +53,7 @@ declare Score
     value           : double    @key
 end
 
-declare InitialScore extends PartialScore
+declare InitialScore extends Score
 end
 
 declare BaselineScore extends Score
@@ -63,6 +63,7 @@ end
 declare PartialScore extends Score
     characteristic  : String    @key
     reasonCode      : String
+    weight          : Double
 end
 
 declare ScoreRow extends Score

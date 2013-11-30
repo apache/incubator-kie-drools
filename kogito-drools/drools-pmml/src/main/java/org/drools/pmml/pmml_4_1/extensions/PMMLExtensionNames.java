@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.scorecards;
+package org.drools.pmml.pmml_4_1.extensions;
 
-public enum ScoringStrategy {
-    AGGREGATE_SCORE, AVERAGE_SCORE, MAXIMUM_SCORE, MINIMUM_SCORE,
-    WEIGHTED_AGGREGATE_SCORE, WEIGHTED_AVERAGE_SCORE, WEIGHTED_MAXIMUM_SCORE, WEIGHTED_MINIMUM_SCORE
+public class PMMLExtensionNames {
+
+    public static final String MODEL_PACKAGE = "modelPackage";
+    public static final String MODEL_IMPORTS = "importsFromDelimitedString";
+    public static final String IO_ADAPTER = "adapter";
+
+    public static final String EXTERNAL_CLASS = "externalClass";
 
 }

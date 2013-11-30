@@ -24,17 +24,18 @@
 
 @declare{'scorecardScoring'}
 
-rule "Score Card"
+rule "Score Card @{name}"
 salience -10  // after data are stable
 when
-    $card : ScoreCard( $ctx : modelName, $curr : score )
+    $card : ScoreCard( $ctx : modelName )
+    InitialScore( scoreCard == $ctx, $zero : value )
     accumulate(
-        PartialScore( scoreCard == $ctx, $val : value ),
-        $tot : sum ( $val );
-        $tot.doubleValue != $curr )
+        PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
+        $tot : @{aggregator}( $val @if{ weighted } * $wgt @end{} );
+        $tot.doubleValue() + $zero != $card.getScore() )
 then
     modify ( $card ) {
-        setScore( $tot.doubleValue() );
+        setScore( $zero + $tot.doubleValue() );
     }
 end
 

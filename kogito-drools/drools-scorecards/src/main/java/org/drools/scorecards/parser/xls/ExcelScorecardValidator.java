@@ -21,10 +21,11 @@ import org.dmg.pmml.pmml_4_1.descr.Characteristic;
 import org.dmg.pmml.pmml_4_1.descr.Characteristics;
 import org.dmg.pmml.pmml_4_1.descr.Scorecard;
 import org.drools.core.util.StringUtils;
+import org.drools.pmml.pmml_4_1.extensions.AggregationStrategy;
+import org.drools.pmml.pmml_4_1.PMML4Helper;
 import org.drools.scorecards.ScorecardError;
-import org.drools.scorecards.ScoringStrategy;
 import org.drools.scorecards.StringUtil;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
+import org.drools.scorecards.pmml.ScorecardPMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 
 import java.util.List;
@@ -61,7 +62,7 @@ class ExcelScorecardValidator {
                 for (Characteristic characteristic : characteristics.getCharacteristics()){
                     for (Attribute attribute : characteristic.getAttributes()){
                         String newCellRef = createDataTypeCellRef(ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), "cellRef"),2);
-                        String weight = ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
+                        String weight = ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_WEIGHT);
                         if ( StringUtils.isEmpty(weight) || !isDouble(weight)){
                             parseErrors.add(new ScorecardError(newCellRef, "Attribute is missing weight or specified weight is not a double."));
                         }
@@ -122,7 +123,7 @@ class ExcelScorecardValidator {
             if (obj instanceof Characteristics){
                 Characteristics characteristics = (Characteristics)obj;
                 for (Characteristic characteristic : characteristics.getCharacteristics()){
-                    String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
+                    String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
                     String newCellRef = createDataTypeCellRef(ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), "cellRef"),1);
                     if ( dataType == null || StringUtils.isEmpty(dataType)) {
                         parseErrors.add(new ScorecardError(newCellRef, "Missing Data Type!"));
@@ -170,12 +171,8 @@ class ExcelScorecardValidator {
         return "$"+((char)col)+cellRef.substring(cellRef.indexOf('$',1));
     }
 
-    protected static ScoringStrategy getScoringStrategy(Scorecard scorecard) {
-        ScoringStrategy strategy = ScoringStrategy.AGGREGATE_SCORE;
-        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
-        if ( !StringUtils.isEmpty(scoringStrategyName)) {
-            strategy = ScoringStrategy.valueOf(scoringStrategyName);
-        }
-        return strategy;
+    protected static AggregationStrategy getScoringStrategy( Scorecard scorecard ) {
+        String scoringStrategyName = ScorecardPMMLUtils.getExtensionValue(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_SCORING_STRATEGY);
+        return PMML4Helper.resolveAggregationStrategy( scoringStrategyName );
     }
 }
