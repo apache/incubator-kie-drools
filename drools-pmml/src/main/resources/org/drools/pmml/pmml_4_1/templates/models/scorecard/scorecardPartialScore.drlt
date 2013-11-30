@@ -31,7 +31,8 @@ when
     $sc : @{name}ScoreCardData( @{predicate} )
 then
 //    System.out.println( "PARTIALLY SCORING SC " + $val + " " + $char );
-    insertLogical( new PartialScore( "@{name}", $val, $char, $code ) );
+// weigth is @{weight}
+    insertLogical( new PartialScore( "@{name}", $val, $char, $code, @if{ weight != null } @{ weight } @else{} 1.0 @end{} ) );
 end
 
 @end{}

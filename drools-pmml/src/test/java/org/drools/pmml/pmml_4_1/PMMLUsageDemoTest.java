@@ -4,6 +4,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -67,14 +69,14 @@ public class PMMLUsageDemoTest extends DroolsAbstractPMMLTest {
                           // don an object with the default input trait ( modelName + "Input" )
                           // both soft and hard fields will be used to feed data into the model
                           "" +
-                          "   MockColdInput input = don( o, MockColdInput.class ); " +
+                          "   MockColdTrait input = don( o, MockColdTrait.class ); " +
                           "   modify( input ) { " +
                           "       setTemp( 22.0 );" +
                           "   } " +
                           "end " +
                           "" +
                           "" +
-                          "rule Log when $x : MockColdInput() then System.out.println( \"IN \" + $x ); end " +
+                          "rule Log when $x : MockColdTrait() then System.out.println( \"IN \" + $x ); end " +
                           "rule Log2 when $x : Cold() then System.out.println( \"OUT \" + $x ); end "
                 ;
 
@@ -84,12 +86,18 @@ public class PMMLUsageDemoTest extends DroolsAbstractPMMLTest {
         kfs.write( "src/main/resources/" + pmmlSource.replace( ".xml", ".pmml" ), ResourceFactory.newClassPathResource( pmmlSource ).setResourceType( ResourceType.PMML ) );
         kfs.write( "src/main/resources/" + "extra.drl", ResourceFactory.newByteArrayResource( extraDrl.getBytes() ).setResourceType( ResourceType.DRL ) );
 
-        ks.newKieBuilder( kfs ).buildAll();
+        Results res = ks.newKieBuilder( kfs ).buildAll().getResults();
+        if ( res.hasMessages( Message.Level.ERROR ) ) {
+            System.out.println( res.getMessages( Message.Level.ERROR ) );
+        }
+        assertEquals( 0, res.getMessages( Message.Level.ERROR ).size() );
 
         KieSession kSession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
         kSession.insert( "trigger" );
         kSession.fireAllRules();
+
+        System.out.println( reportWMObjects( kSession ) );
 
         QueryResults qrs = kSession.getQueryResults( "Cold", "MockCold", Variable.v );
         assertTrue( qrs.iterator().hasNext() );

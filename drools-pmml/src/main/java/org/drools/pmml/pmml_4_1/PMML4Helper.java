@@ -23,6 +23,7 @@ import org.dmg.pmml.pmml_4_1.descr.REGRESSIONNORMALIZATIONMETHOD;
 import org.dmg.pmml.pmml_4_1.descr.RESULTFEATURE;
 import org.dmg.pmml.pmml_4_1.descr.Value;
 import org.drools.core.base.TypeResolver;
+import org.drools.pmml.pmml_4_1.extensions.AggregationStrategy;
 import org.mvel2.templates.CompiledTemplate;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
@@ -356,52 +357,52 @@ public class PMML4Helper {
             return val;
     }
 
-    public String format(String type, Number val) {
-        if (type == null)
+    public String format( String type, Number val ) {
+        if (type == null) {
             return val.toString();
-        if ("Integer".endsWith(type) || "int".equalsIgnoreCase(type) )
+        } else if ( val == null ) {
+            return null;
+        } else if ("Integer".endsWith(type) || "int".equalsIgnoreCase(type) ) {
             return ""+val.intValue();
-        else if ("Float".endsWith(type) || "float".equalsIgnoreCase(type))
+        } else if ("Float".endsWith(type) || "float".equalsIgnoreCase(type)) {
             return ""+val.floatValue();
-        else if ("Double".endsWith(type) || "double".equalsIgnoreCase(type))
+        } else if ("Double".endsWith(type) || "double".equalsIgnoreCase(type)) {
             return ""+val.doubleValue();
-        else if ("Boolean".endsWith(type)  || "boolean".equalsIgnoreCase(type)) {
+        } else if ("Boolean".endsWith(type)  || "boolean".equalsIgnoreCase(type)) {
             if (val.doubleValue() == 1.0)
                 return "true";
             if (val.doubleValue() == 0.0)
                 return "false";
             throw new NumberFormatException("Boolean expected, found " + val);
-        }
-        else if ("String".endsWith(type))
+        } else if ("String".endsWith(type)) {
             return "\""+val.toString()+"\"";
-
-
-        else if ("Date".endsWith(type))
+        } else if ("Date".endsWith(type)) {
             return "\""+ (new SimpleDateFormat().format(new Date(val.longValue())) )+"\"";
-        else if ("Time".endsWith(type))
+        } else if ("Time".endsWith(type)) {
             return "\""+val.toString()+"\"";
-        else if ("DateTime".endsWith(type))
+        } else if ("DateTime".endsWith(type)) {
             return "\""+ (new SimpleDateFormat().format(new Date(val.longValue())) )+"\"";
-        else if ("DateDaysSince[0]".equalsIgnoreCase(type))
+        } else if ("DateDaysSince[0]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateDaysSince[1960]".equalsIgnoreCase(type))
+        } else if ("DateDaysSince[1960]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateDaysSince[1970]".equalsIgnoreCase(type))
+        } else if ("DateDaysSince[1970]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateDaysSince[1980]".equalsIgnoreCase(type))
+        } else if ("DateDaysSince[1980]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("TimeSeconds".equalsIgnoreCase(type))
+        } else if ("TimeSeconds".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateTimeSecondsSince[0]".equalsIgnoreCase(type))
+        } else if ("DateTimeSecondsSince[0]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateTimeSecondsSince[1960]".equalsIgnoreCase(type))
+        } else if ("DateTimeSecondsSince[1960]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateTimeSecondsSince[1970]".equalsIgnoreCase(type))
+        } else if ("DateTimeSecondsSince[1970]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else if ("DateTimeSecondsSince[1980]".equalsIgnoreCase(type))
+        } else if ("DateTimeSecondsSince[1980]".equalsIgnoreCase(type)) {
             throw new UnsupportedOperationException("TODO");
-        else
+        } else {
             return val.toString();
+        }
     }
 
 
@@ -411,35 +412,35 @@ public class PMML4Helper {
     }
 
     public String zeroForDatatype( String type ) {
-            if (type == null)
-                return "null";
-            if (Integer.class.getName().equals(type)
-                    || "Integer".equalsIgnoreCase(type) || "int".equalsIgnoreCase(type) )
-                return "0";
-            else if (Float.class.getName().equals(type)
-                    || "Float".equalsIgnoreCase(type) || "float".equalsIgnoreCase(type) )
-                return "0.0f";
-            else if (Double.class.getName().equalsIgnoreCase(type)
-                    || "Double".equalsIgnoreCase(type) || "double".equalsIgnoreCase(type) )
-                return "0.0";
-            else if (Long.class.getName().equalsIgnoreCase(type)
-                    || "Long".equalsIgnoreCase(type) || "long".equalsIgnoreCase(type) )
-                return "0L";
-            else if (Short.class.getName().equalsIgnoreCase(type)
-                    || "Short".equalsIgnoreCase(type) || "short".equalsIgnoreCase(type) )
-                return "0";
-            else if (Byte.class.getName().equalsIgnoreCase(type)
-                    || "Byte".equalsIgnoreCase(type) || "byte".equalsIgnoreCase(type) )
-                return "0";
-            else if (Boolean.class.getName().equalsIgnoreCase(type)
-                    || "Boolean".equalsIgnoreCase(type) || "boolean".equalsIgnoreCase(type) )
-                return "false";
-            else if (String.class.getName().equalsIgnoreCase(type)
-                    || "String".equalsIgnoreCase(type))
-                return "null";
-            else
-                return "null";
-        }
+        if (type == null) {
+            return "null";
+        } if (Integer.class.getName().equals(type)
+              || "Integer".equalsIgnoreCase(type) || "int".equalsIgnoreCase(type) ) {
+            return "0";
+        } else if (Float.class.getName().equals(type)
+                   || "Float".equalsIgnoreCase(type) || "float".equalsIgnoreCase(type) ) {
+            return "0.0f";
+        } else if (Double.class.getName().equalsIgnoreCase(type)
+                   || "Double".equalsIgnoreCase(type) || "double".equalsIgnoreCase(type) ) {
+            return "0.0";
+        } else if (Long.class.getName().equalsIgnoreCase(type)
+                   || "Long".equalsIgnoreCase(type) || "long".equalsIgnoreCase(type) ) {
+            return "0L";
+        } else if (Short.class.getName().equalsIgnoreCase(type)
+                   || "Short".equalsIgnoreCase(type) || "short".equalsIgnoreCase(type) ) {
+            return "0";
+        } else if (Byte.class.getName().equalsIgnoreCase(type)
+                   || "Byte".equalsIgnoreCase(type) || "byte".equalsIgnoreCase(type) ) {
+            return "0";
+        } else if (Boolean.class.getName().equalsIgnoreCase(type)
+                   || "Boolean".equalsIgnoreCase(type) || "boolean".equalsIgnoreCase(type) ) {
+            return "false";
+        } else if (String.class.getName().equalsIgnoreCase(type)
+                   || "String".equalsIgnoreCase(type)) {
+            return "null";
+        } else
+            return "null";
+    }
 
 
     public String numberFromNumber( String obj, String datatype ) {
@@ -807,14 +808,36 @@ public class PMML4Helper {
         java.util.StringTokenizer tok = new java.util.StringTokenizer(s);
         StringBuilder sb = new StringBuilder();
 
-        while (tok.hasMoreTokens())
-            sb.append(capitalize(tok.nextToken()));
+        while ( tok.hasMoreTokens() ) {
+            sb.append( capitalize( tok.nextToken() ) );
+        }
 
         String out = sb.toString();
         if( out.matches( "\\d.*" ) )
             out = "DF_" + out;
         return out;
 
+    }
+
+    public String compact(String s) {
+        java.util.StringTokenizer tok = new java.util.StringTokenizer(s);
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+
+        while ( tok.hasMoreTokens() ) {
+            sb.append( first ? lowerCase( tok.nextToken() ) : capitalize( tok.nextToken() ) );
+            first = false;
+        }
+
+        String out = sb.toString();
+        if( out.matches( "\\d.*" ) )
+            out = "DF_" + out;
+        return out;
+
+    }
+
+    public String lowerCase(String s) {
+        return s.substring(0, 1).toLowerCase() + s.substring(1);
     }
 
     public String capitalize(String s) {
@@ -1035,4 +1058,20 @@ public class PMML4Helper {
         definedModelBeans = new HashSet<String>();
     }
 
+
+    public static AggregationStrategy resolveAggregationStrategy( String strat ) {
+        if ( strat == null || strat.isEmpty() ) {
+            return AggregationStrategy.AGGREGATE_SCORE;
+        }
+        AggregationStrategy agg = AggregationStrategy.valueOf( strat );
+        return agg != null ? agg : AggregationStrategy.AGGREGATE_SCORE;
+    }
+
+    public boolean isWeighted( String strat ) {
+        return resolveAggregationStrategy( strat ).isWeighted();
+    }
+
+    public String mapWeightStrategy( String strat ) {
+        return resolveAggregationStrategy( strat ).getAggregator();
+    }
 }

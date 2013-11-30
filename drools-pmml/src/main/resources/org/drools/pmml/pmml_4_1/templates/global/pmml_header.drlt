@@ -32,7 +32,7 @@
 
 
 
-package @{pack};
+@if{ pack != null }package @{pack};@end{}
 
 import org.drools.pmml.pmml_4_1.ModelMarker;
 import org.drools.pmml.pmml_4_1.PMML4AbstractField;

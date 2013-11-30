@@ -2,7 +2,7 @@ package org.drools.scorecards;
 
 import junit.framework.Assert;
 import org.dmg.pmml.pmml_4_1.descr.*;
-import org.drools.scorecards.pmml.PMMLExtensionNames;
+import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
 import org.drools.scorecards.pmml.ScorecardPMMLUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,8 +34,8 @@ public class PMMLDocumentTest {
     public void testHeader() throws Exception {
         Header header = pmmlDocument.getHeader();
         assertNotNull(header);
-        assertNotNull(ScorecardPMMLUtils.getExtensionValue(header.getExtensions(), PMMLExtensionNames.SCORECARD_PACKAGE));
-        assertNotNull(ScorecardPMMLUtils.getExtensionValue(header.getExtensions(), PMMLExtensionNames.SCORECARD_IMPORTS));
+        assertNotNull(ScorecardPMMLUtils.getExtensionValue(header.getExtensions(), PMMLExtensionNames.MODEL_PACKAGE));
+        assertNotNull(ScorecardPMMLUtils.getExtensionValue(header.getExtensions(), PMMLExtensionNames.MODEL_IMPORTS));
     }
 
     @Test
@@ -229,8 +229,8 @@ public class PMMLDocumentTest {
             if (serializable instanceof Scorecard){
                 Scorecard scorecard = (Scorecard)serializable;
                 assertEquals("Sample Score",scorecard.getModelName());
-//                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_OBJECT_CLASS));
-//                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_BOUND_VAR_NAME));
+//                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_OBJECT_CLASS));
+//                assertNotNull(ScorecardPMMLUtils.getExtension(scorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_BOUND_VAR_NAME));
                 return;
             }
         }

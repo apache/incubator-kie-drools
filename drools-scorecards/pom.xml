@@ -28,25 +28,18 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-templates</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-pmml</artifactId>
+      <!-- TODO Remove once configured appropriately -->
+      <version>${drools.version}</version>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>

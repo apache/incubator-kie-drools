@@ -15,21 +15,23 @@
   limitations under the License.
 }
 
-@declare{'ioTraitRule'}
+@declare{'inputBeanRule'}
 
- declare trait @{context}Input
+ declare @if{ traitMode }trait@end{} @{context}@if{ traitMode }Trait@end{}
+ @propertyReactive
 
      @foreach{ fldName : fields.keySet() }
+        @{fldName}   :  @{mapDatatype(fields.get(fldName))}
+     @end{}
+     @foreach{ fldName : predFields.keySet() }
         @{fldName}   :  @{mapDatatype(fields.get(fldName))}
      @end{}
 
  end
 
-
- rule "Link @{context}Input"
- dialect "mvel"
+ rule "Link @{context} @if{ traitMode }Trait@end{} Bean Input"
  when
-    @{context}Input(
+    @{context}@if{ traitMode }Trait@end{}(
        @foreach{ fldName : fields.keySet() }
           _@{fldName}   :  @{fldName}
        @end{','}
@@ -40,9 +42,23 @@
     @end{}
  end
 
+
+ @foreach{ fieldName : predFields.keySet() }
+
+ rule "Link @{context} @if{ traitMode }Trait@end{} Predicted Fields @{fieldName} "
+ when
+     @{compactUpperCase(fieldName)}( $val : value)
+     $x : @{context}@if{ traitMode }Trait@end{}( @{fieldName} != $val )
+ then
+     modify ( $x ) { set@{compactUpperCase(fieldName)}( $val ); }
+ end
+
+ @end{}
+
+
 @end{}
 
 
 
-@includeNamed{'ioTraitRule'}
+@includeNamed{'inputBeanRule'}
 

@@ -18,6 +18,8 @@ package org.drools.scorecards.pmml;
 
 import org.dmg.pmml.pmml_4_1.descr.*;
 import org.drools.core.util.StringUtils;
+import org.drools.pmml.pmml_4_1.extensions.PMMLExtensionNames;
+import org.drools.pmml.pmml_4_1.extensions.PMMLIOAdapterMode;
 import org.drools.scorecards.StringUtil;
 import org.drools.scorecards.parser.xls.XLSKeywords;
 
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PMMLGenerator {
+public class ScorecardPMMLGenerator {
 
     public PMML generateDocument(Scorecard pmmlScorecard) {
         //first clean up the scorecard
@@ -38,11 +40,11 @@ public class PMMLGenerator {
         createAndSetOutput(pmmlScorecard);
         repositionExternalClassExtensions(pmmlScorecard);
 
-        Extension scorecardPackage = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_PACKAGE);
+        Extension scorecardPackage = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.MODEL_PACKAGE );
         if ( scorecardPackage != null) {
             pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().remove(scorecardPackage);
         }
-        Extension importsExt = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_IMPORTS);
+        Extension importsExt = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.MODEL_IMPORTS );
         if ( importsExt != null) {
             pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().remove(importsExt);
         }
@@ -75,12 +77,16 @@ public class PMMLGenerator {
         for (Object obj : pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
             if ( obj instanceof MiningSchema ) {
                 MiningSchema schema = (MiningSchema)obj;
+                    Extension adapter = new Extension();
+                        adapter.setName( PMMLExtensionNames.IO_ADAPTER );
+                        adapter.setValue( PMMLIOAdapterMode.BEAN.name() );
+                    schema.getExtensions().add( adapter );
                 for (MiningField miningField : schema.getMiningFields()) {
                     String fieldName = miningField.getName();
                     for (Characteristic characteristic : characteristics.getCharacteristics()){
                         String characteristicName = ScorecardPMMLUtils.extractFieldNameFromCharacteristic(characteristic);
                         if (fieldName.equalsIgnoreCase(characteristicName)){
-                            Extension extension = ScorecardPMMLUtils.getExtension(characteristic.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_EXTERNAL_CLASS);
+                            Extension extension = ScorecardPMMLUtils.getExtension(characteristic.getExtensions(), PMMLExtensionNames.EXTERNAL_CLASS );
                             if ( extension != null ) {
                                 characteristic.getExtensions().remove(extension);
                                 miningField.getExtensions().add(extension);
@@ -89,17 +95,15 @@ public class PMMLGenerator {
                     }
                 }
                 MiningField targetField = new MiningField();
-                targetField.setName( PMMLExtensionNames.DEFAULT_PREDICTED_FIELD );
+                targetField.setName( ScorecardPMMLExtensionNames.DEFAULT_PREDICTED_FIELD );
                 targetField.setUsageType( FIELDUSAGETYPE.PREDICTED );
                 schema.getMiningFields().add( targetField );
             } else if ( obj instanceof Output ) {
-                for ( OutputField of : ((Output) obj).getOutputFields() ) {
-                    //TODO FIXME : is "calculatedScore" a constant name?
-                    // or is there always one outputfield?
-                    if ( "calculatedScore".equals( of.getName() ) ) {
-                        of.setTargetField( PMMLExtensionNames.DEFAULT_PREDICTED_FIELD );
-                    }
-                }
+                Extension adapter = new Extension();
+                adapter.setName( PMMLExtensionNames.IO_ADAPTER );
+                adapter.setValue( PMMLIOAdapterMode.BEAN.name() );
+                ( (Output) obj ).getExtensions().add( adapter );
+
             }
         }
     }
@@ -110,7 +114,7 @@ public class PMMLGenerator {
                 Characteristics characteristics = (Characteristics) obj;
                 for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
                     for (Attribute attribute : characteristic.getAttributes()) {
-                        Extension fieldExtension = ScorecardPMMLUtils.getExtension(attribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_FIELD);
+                        Extension fieldExtension = ScorecardPMMLUtils.getExtension(attribute.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_FIELD);
                         if ( fieldExtension != null ) {
                             attribute.getExtensions().remove(fieldExtension);
                             //break;
@@ -132,9 +136,9 @@ public class PMMLGenerator {
                 for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
 
                     DataField dataField = new DataField();
-                    Extension dataTypeExtension = ScorecardPMMLUtils.getExtension(characteristic.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
+                    Extension dataTypeExtension = ScorecardPMMLUtils.getExtension(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
                     String dataType = dataTypeExtension.getValue();
-                    String factType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_FACTTYPE);
+                    String factType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_FACTTYPE);
 
                     if ( factType != null ){
                         Extension extension = new Extension();
@@ -156,7 +160,7 @@ public class PMMLGenerator {
                     String field = "";
                     for (Attribute attribute : characteristic.getAttributes()) {
                         for (Extension extension : attribute.getExtensions()) {
-                            if (PMMLExtensionNames.CHARACTERTISTIC_FIELD.equalsIgnoreCase(extension.getName())) {
+                            if ( ScorecardPMMLExtensionNames.CHARACTERTISTIC_FIELD.equalsIgnoreCase(extension.getName())) {
                                 field = extension.getValue();
                                 break;
                             }//
@@ -170,7 +174,7 @@ public class PMMLGenerator {
             }
         }
         DataField targetField = new DataField();
-        targetField.setName( PMMLExtensionNames.DEFAULT_PREDICTED_FIELD );
+        targetField.setName( ScorecardPMMLExtensionNames.DEFAULT_PREDICTED_FIELD );
         targetField.setDataType( DATATYPE.DOUBLE );
         targetField.setOptype( OPTYPE.CONTINUOUS );
         dataDictionary.getDataFields().add( targetField );
@@ -178,32 +182,47 @@ public class PMMLGenerator {
     }
 
     private void createAndSetOutput(Scorecard pmmlScorecard) {
-        Extension classExtension = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_CLASS);
-        Extension fieldExtension = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_RESULTANT_SCORE_FIELD);
-        Extension reasonCodeExtension = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD);
+        Extension classExtension = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), PMMLExtensionNames.EXTERNAL_CLASS);
+        Extension fieldExtension = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_RESULTANT_SCORE_FIELD);
+        Extension reasonCodeExtension = ScorecardPMMLUtils.getExtension(pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas(), ScorecardPMMLExtensionNames.SCORECARD_RESULTANT_REASONCODES_FIELD);
         for (Object obj : pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas()) {
             if (obj instanceof Output) {
                 Output output = (Output)obj;
+
                 OutputField outputField = new OutputField();
                 outputField.setDataType(DATATYPE.DOUBLE);
+                outputField.setFeature(RESULTFEATURE.PREDICTED_VALUE);
                 outputField.setDisplayName("Final Score");
                 if ( fieldExtension != null ) {
                     pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().remove(fieldExtension);
                     outputField.setName(fieldExtension.getValue());
                 } else {
-                    outputField.setName("calculatedScore");
+                    outputField.setName( "calculatedScore" );
                 }
+
                 if ( classExtension != null ) {
                     pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().remove(classExtension);
-                    outputField.getExtensions().add(classExtension);
+                    outputField.getExtensions().add( classExtension );
                 }
                 output.getOutputFields().add(outputField);
-                outputField.setFeature(RESULTFEATURE.PREDICTED_VALUE);
-                if ( reasonCodeExtension != null ) {
-                    pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().remove(reasonCodeExtension);
-                    //TODO: Add output field for reason codes.
-                    outputField.getExtensions().add(reasonCodeExtension);
+
+                if ( pmmlScorecard.isUseReasonCodes() ) {
+                    OutputField reasonCodeField = new OutputField();
+                    reasonCodeField.setDataType( DATATYPE.STRING );
+                    reasonCodeField.setFeature( RESULTFEATURE.REASON_CODE );
+                    reasonCodeField.setDisplayName( "Principal Reason Code" );
+
+                    if ( reasonCodeExtension != null ) {
+                        pmmlScorecard.getExtensionsAndCharacteristicsAndMiningSchemas().remove(reasonCodeExtension);
+                        reasonCodeField.getExtensions().add( classExtension );
+                        reasonCodeField.setName( reasonCodeExtension.getValue() );
+                    } else {
+                        reasonCodeField.setName( "reasonCode" );
+                    }
+                    output.getOutputFields().add( reasonCodeField );
                 }
+
+
                 break;
             }
         }
@@ -214,11 +233,11 @@ public class PMMLGenerator {
             if (obj instanceof Characteristics) {
                 Characteristics characteristics = (Characteristics) obj;
                 for (org.dmg.pmml.pmml_4_1.descr.Characteristic characteristic : characteristics.getCharacteristics()) {
-                    String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
+                    String dataType = ScorecardPMMLUtils.getExtensionValue(characteristic.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_DATATYPE);
                     Extension predicateExtension = null;
                     for (Attribute attribute : characteristic.getAttributes()) {
                         String predicateAsString = "";
-                        String field = ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), PMMLExtensionNames.CHARACTERTISTIC_FIELD);
+                        String field = ScorecardPMMLUtils.getExtensionValue(attribute.getExtensions(), ScorecardPMMLExtensionNames.CHARACTERTISTIC_FIELD);
                         for (Extension extension : attribute.getExtensions()) {
                             if ("predicateResolver".equalsIgnoreCase(extension.getName())) {
                                 predicateAsString = extension.getValue();

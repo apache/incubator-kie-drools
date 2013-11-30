@@ -86,7 +86,8 @@ public class PMML4Compiler implements PMMLCompiler {
             "global/dataDefinition/ioTypeDeclare.drlt",
             "global/dataDefinition/updateIOField.drlt",
             "global/dataDefinition/inputFromEP.drlt",
-            "global/dataDefinition/ioTrait.drlt",
+            "global/dataDefinition/inputBean.drlt",
+            "global/dataDefinition/outputBean.drlt",
 
             "global/manipulation/confirm.drlt",
             "global/manipulation/mapMissingValues.drlt",
@@ -242,6 +243,8 @@ public class PMML4Compiler implements PMMLCompiler {
 
     private static List<KnowledgeBuilderResult> visitorBuildResults = new ArrayList<KnowledgeBuilderResult>();
     private List<KnowledgeBuilderResult> results;
+    private Schema schema;
+
 
     private PMML4Helper helper;
 
@@ -251,6 +254,15 @@ public class PMML4Compiler implements PMMLCompiler {
         this.results = new ArrayList<KnowledgeBuilderResult>();
         helper = new PMML4Helper();
             helper.setPack( "org.drools.pmml.pmml_4_1.test" );
+
+        SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
+
+        try {
+            schema = sf.newSchema( Thread.currentThread().getContextClassLoader().getResource( SCHEMA_PATH ) );
+        } catch ( SAXException e ) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -259,6 +271,7 @@ public class PMML4Compiler implements PMMLCompiler {
 
     public String generateTheory( PMML pmml ) {
         StringBuilder sb = new StringBuilder();
+        //dumpModel( pmml, System.out );
 
         KieBase visitor;
         try {
@@ -284,7 +297,7 @@ public class PMML4Compiler implements PMMLCompiler {
 
         visitorSession.dispose();
 
-        System.out.print( modelEvaluatingRules );
+        //System.out.println( modelEvaluatingRules );
         return modelEvaluatingRules;
 	}
 
@@ -499,15 +512,9 @@ public class PMML4Compiler implements PMMLCompiler {
 	 */
 	public PMML loadModel( String model, InputStream source ) {
 		try {
-            SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
-            Schema schema = null;
-            try {
-                schema = sf.newSchema( Thread.currentThread().getContextClassLoader().getResource( SCHEMA_PATH ) );
-            } catch ( SAXException e ) {
-                e.printStackTrace();
-                visitorBuildResults.add( new PMMLWarning( ResourceFactory.newInputStreamResource( source ), "Could not validate PMML document :" + e.getMessage() ) );
+            if ( schema == null ) {
+                visitorBuildResults.add( new PMMLWarning( ResourceFactory.newInputStreamResource( source ), "Could not validate PMML document, schema not available" ) );
             }
-
             JAXBContext jc = JAXBContext.newInstance( model );
 			Unmarshaller unmarshaller = jc.createUnmarshaller();
             if ( schema != null ) {
