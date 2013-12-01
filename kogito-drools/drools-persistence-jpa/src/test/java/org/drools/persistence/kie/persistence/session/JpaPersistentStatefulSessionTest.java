@@ -22,6 +22,7 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
+import org.drools.core.factmodel.traits.Traitable;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
@@ -476,6 +477,42 @@ public class JpaPersistentStatefulSessionTest {
         }
     }
 
+    @Test
+    public void testTraitsSerialization() throws Exception {
+        String drl = "package org.drools.persistence.kie.persistence.session\n" +
+                     "\n" +
+                     "import java.util.List\n" +
+                     "\n" +
+                     "import org.drools.persistence.kie.persistence.session.JpaPersistentStatefulSessionTest.Door\n" +
+                     "\n" +
+                     "declare trait WoodenDoor\n" +
+                     "    from : String\n" +
+                     "    to : String\n" +
+                     "    wood : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"wooden door\"\n" +
+                     "    no-loop\n" +
+                     "    when\n" +
+                     "        $door : Door()\n" +
+                     "    then\n" +
+                     "        WoodenDoor woodenDoor = don( $door, WoodenDoor.class );\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        Resource drlResource = ks.getResources().newByteArrayResource( drl.getBytes() );
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drlResource );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
+        KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+
+        ksession.insert(new Door());
+        ksession.fireAllRules();
+    }
+
+    @Traitable
     public static class Door implements Serializable {
 
         private static final long serialVersionUID = 4173662501120948262L;
