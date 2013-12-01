@@ -489,10 +489,12 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
             mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
 
-            mv.visitVarInsn( ALOAD, 1 );
-            mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( Map.class ) );
-            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
+            if ( core.isFullTraiting() ) {
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( Map.class ) );
+                mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectOutput.class ), "writeObject", "(" + Type.getDescriptor( Object.class ) + ")V" );
+            }
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 0 );
@@ -521,11 +523,13 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
             mv.visitTypeInsn( CHECKCAST, Type.getInternalName( Map.class ) );
             mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.TRAITSET_FIELD_NAME, Type.getDescriptor( Map.class ) );
 
-            mv.visitVarInsn( ALOAD, 0 );
-            mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectInput.class ), "readObject", "()" + Type.getDescriptor( Object.class ) );
-            mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFieldTMS.class ) );
-            mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+            if ( core.isFullTraiting() ) {
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitVarInsn( ALOAD, 1 );
+                mv.visitMethodInsn( INVOKEINTERFACE, Type.getInternalName( ObjectInput.class ), "readObject", "()" + Type.getDescriptor( Object.class ) );
+                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFieldTMS.class ) );
+                mv.visitFieldInsn( PUTFIELD, BuildUtils.getInternalType( wrapperName ), TraitableBean.FIELDTMS_FIELD_NAME, Type.getDescriptor( TraitFieldTMS.class ) );
+            }
 
             mv.visitInsn( RETURN );
             mv.visitMaxs( 0, 0 );
