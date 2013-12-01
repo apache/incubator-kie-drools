@@ -911,6 +911,7 @@ declare FunctionResult
     fields          : Collection
     simple          : boolean       = false
     parents         : List
+    index           : int
 end
 
 query isInFunction( Apply $a )
@@ -933,6 +934,59 @@ query isLocalToFunction( Apply $a, boolean $ans )
       and
       $ans := Boolean() from Boolean.FALSE
     )
+end
+
+
+
+rule "Nested Applys"
+salience -5
+when
+    $a  : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
+    $a2 : Apply( this memberOf $expr, $f2 : this.function, $arity : constantsAndFieldRevesAndNormContinuouses.size() )
+    accumulate (
+            $res : FunctionResult( father == $a2 ),
+            $subs : collectList( $res );
+            $subs.size() == $arity
+    )
+    $funx : List( size() == $arity, ! this.contains( "x" ) ) from accumulate (
+        $res : FunctionResult( father == $a2, $x : expr, $fs : fields, $index : index ),
+        init( ArrayList funs = new ArrayList( $arity ); for ( int j = 0; j < $arity; j++ ) { funs.add( "x" ); } ),
+        action( funs.set( $index, $res ); ),
+        result( funs )
+    )
+    $args : List( size() == $arity, ! this.contains( "x" ) ) from accumulate (
+        $res : FunctionResult( father == $a2, $x : expr, $fs : fields, $index : index ),
+        init( ArrayList args = new ArrayList( $arity ); for ( int j = 0; j < $arity; j++ ) { args.add( "x" ); } ),
+        action( args.set( $index, $x ); ),
+        result( args )
+    )
+    $deps : List() from accumulate (
+        $res : FunctionResult( father == $a2, $x : expr, $fs : fields, $anc : parents != null, simple == false ) from $funx,
+        init( List deps = new ArrayList() ),
+        action( deps.addAll( $anc ); ),
+        result( deps )
+    )
+    $bag : Set() from accumulate (
+        $res : FunctionResult( father == $a2, $x : expr, $fs : fields != null ) from $funx,
+        init( Set bag = new LinkedHashSet() ),
+        action( bag.addAll( $fs ); ),
+        result( bag )
+    )
+then
+    //System.err.println("Got fun args " + $args );
+
+    String expr = utils.mapFunction( $f2, $args );
+    String bit = expr;
+    if ( ! utils.isBuiltIn( $f2 ) ) {
+        // saving one rule
+        bit = "$" + $f2 + "_return";
+        $deps.add(  utils.mapFunctionAsQuery( $f2, $args ) );
+    }
+
+    //System.out.println("Built bit for fun " + $f2 + " with expr " + expr + ", result for " + $bag + " using parentes " + $funx );
+
+    insertLogical( new FunctionResult( bit, $a, $bag, false, $deps, $expr.indexOf( $a2  ) ) );
+
 end
 
 
@@ -988,7 +1042,7 @@ when
     $a : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
     $c : Constant( this memberOf $expr, $x : value )
 then
-    insertLogical( new FunctionResult( $x, $a, Collections.emptySet(), true, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( $x, $a, Collections.emptySet(), true, Collections.emptyList(), $expr.indexOf( $c ) ) );
 end
 
 rule "NestedRef"
@@ -1001,48 +1055,9 @@ then
     if (! fld2var.containsKey($x)) {
         fld2var.put( $x, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult( (String) fld2var.get( $x ), $a, Arrays.asList( $x ), true, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( (String) fld2var.get( $x ), $a, Arrays.asList( $x ), true, Collections.emptyList(), $expr.indexOf( $fr ) ) );
 end
 
-
-
-rule "Nested Applys"
-dialect "mvel"
-salience -5
-when
-    $a  : Apply( $expr : constantsAndFieldRevesAndNormContinuouses, $f : this.function )
-    $a2 : Apply( this memberOf $expr, $f2 : this.function, $arity : constantsAndFieldRevesAndNormContinuouses.size() )
-    accumulate (
-        $res : FunctionResult( father == $a2, $x : expr, $fs : fields ),
-        $args : collectList( $x );
-        $args.size() == $arity
-    )
-    $deps : List() from accumulate (
-        $res : FunctionResult( father == $a2, $x : expr, $fs : fields, $anc : parents != null, simple == false ),
-        init( Set deps = new LinkedList() ),
-        action( deps.addAll( $anc ); ),
-        result( deps )
-    )
-    $bag : Set() from accumulate (
-        $res : FunctionResult( father == $a2, $x : expr, $fs : fields != null ),
-        init( Set bag = new LinkedHashSet() ),
-        action( bag.addAll( $fs ); ),
-        result( bag )
-    )
-then
-    String expr = utils.mapFunction( $f2, $args );
-    String bit = expr;
-    if ( ! utils.isBuiltIn( $f2 ) ) {
-        // saving one rule
-        bit = "$" + $f2 + "_return";
-        $deps.add(  utils.mapFunctionAsQuery( $f2, $args ) );
-    }
-
-//    System.out.println("Built bit for fun " + $f2 + " with expr " + bit + ", result for " + $bag + " using parentes " + $deps );
-
-    insertLogical( new FunctionResult( bit, $a, $bag, false, $deps ) );
-    //System.err.println("Remove " + $f2 + "and its children results");
-end
 
 
 
@@ -1067,7 +1082,7 @@ then
     if ( ! fld2var.containsKey( name ) ) {
         fld2var.put( name, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList(), $expr.indexOf( $agg ) ) );
 end
 
 
@@ -1091,7 +1106,7 @@ then
     if ( ! fld2var.containsKey( name ) ) {
         fld2var.put( name, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult((String) fld2var.get(name), $a, Arrays.asList( name ), false, Collections.emptyList() ) );
+    insertLogical( new FunctionResult((String) fld2var.get(name), $a, Arrays.asList( name ), false, Collections.emptyList(), $expr.indexOf( $agg ) ) );
 end
 
 
@@ -1114,7 +1129,7 @@ then
     if ( ! fld2var.containsKey( name ) ) {
         fld2var.put( name, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList(), $expr.indexOf( $map ) ) );
 end
 
 
@@ -1137,7 +1152,7 @@ then
     if ( ! fld2var.containsKey( name ) ) {
         fld2var.put( name, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList(), $expr.indexOf( $dix ) ) );
 end
 
 
@@ -1160,7 +1175,7 @@ then
     if ( ! fld2var.containsKey( name ) ) {
         fld2var.put( name, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList(), $expr.indexOf( $nct ) ) );
 end
 
 
@@ -1184,7 +1199,7 @@ then
     if ( ! fld2var.containsKey( name ) ) {
         fld2var.put( name, "$var" + fld2var.size() );
     }
-    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList() ) );
+    insertLogical( new FunctionResult( (String) fld2var.get( name ), $a, Arrays.asList( name ), false, Collections.emptyList(), $expr.indexOf( $ndx ) ) );
 end
 
 
@@ -1201,8 +1216,7 @@ end
 
 
 rule "User_Defined_Function_Constant"
-salience -1
-no-loop
+salience -4
 when
     $df  : DefineFunction( $funName : name, $paramFields : parameterFields,
                           $retType : dataType, $a : apply != null )

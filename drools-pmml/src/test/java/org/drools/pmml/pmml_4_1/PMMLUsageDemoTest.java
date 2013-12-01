@@ -83,8 +83,10 @@ public class PMMLUsageDemoTest extends DroolsAbstractPMMLTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write( "src/main/resources/" + pmmlSource.replace( ".xml", ".pmml" ), ResourceFactory.newClassPathResource( pmmlSource ).setResourceType( ResourceType.PMML ) );
-        kfs.write( "src/main/resources/" + "extra.drl", ResourceFactory.newByteArrayResource( extraDrl.getBytes() ).setResourceType( ResourceType.DRL ) );
+        kfs.write( ResourceFactory.newClassPathResource( pmmlSource ).setResourceType( ResourceType.PMML ) );
+        kfs.write( ResourceFactory.newByteArrayResource( extraDrl.getBytes() )
+                           .setSourcePath( "rules.drl" )
+                           .setResourceType( ResourceType.DRL ) );
 
         Results res = ks.newKieBuilder( kfs ).buildAll().getResults();
         if ( res.hasMessages( Message.Level.ERROR ) ) {

@@ -406,9 +406,11 @@ rule "visitApply"
 salience 0
 when
     Apply( $args : constantsAndFieldRevesAndNormContinuouses, $fun : this.function )
-    $arg : Object() from $args
 then
-    insertLogical( $arg );
+    // ensure insertion in order
+    for ( int j = 0; j < $args.size(); j++ ) {
+        insertLogical( $args.get( j ) );
+    }
 end
 
 

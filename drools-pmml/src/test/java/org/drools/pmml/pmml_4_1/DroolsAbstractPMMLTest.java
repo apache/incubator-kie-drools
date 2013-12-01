@@ -86,14 +86,15 @@ public abstract class DroolsAbstractPMMLTest {
 
         for ( int j = 0; j < pmmlSources.length; j++ ) {
             Resource res = ResourceFactory.newClassPathResource( pmmlSources[ j ] ).setResourceType( ResourceType.PMML );
-            kfs.write( "src/main/resources/" + pmmlSources[ j ].replace( ".xml", ".pmml" ) , res );
+            kfs.write( res );
         }
 
         KieModuleModel model = ks.newKieModuleModel();
         KieBaseModel kbModel = model.newKieBaseModel( DEFAULT_KIEBASE )
                 .setDefault( true )
                 .addPackage( BASE_PACK )
-                .setEventProcessingMode( EventProcessingOption.STREAM );
+                .setEventProcessingMode( EventProcessingOption.STREAM )
+                ;
 
         kfs.writeKModuleXML( model.toXML() );
 
@@ -183,7 +184,7 @@ public abstract class DroolsAbstractPMMLTest {
                 queue.add("\t " + efh.getStartTimestamp() + "\t" + efh.getObject().toString() + "\n");
             } else {
                 o = ((DefaultFactHandle) fh).getObject();
-                queue.add("\t " + o.toString() + "\n");
+                queue.add("\t " + o.toString() + " >> " + System.identityHashCode( o.getClass() ) + "\n");
             }
 
         }

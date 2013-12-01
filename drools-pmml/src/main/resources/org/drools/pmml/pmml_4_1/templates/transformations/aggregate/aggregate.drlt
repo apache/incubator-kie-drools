@@ -32,7 +32,7 @@
 
 @declare{'aggregateRule'}
 rule "aggr_@{name}"
-@if{ isInnerFieldName( name ) } @@activationListener('direct') @end{}
+@if{ isInnerFieldName( name ) } @@Direct @end{}
 when
     @if{groupBy != null} @{groupBy}( valid == true, missing == false, $gval : value ) @end{}
     accumulate (

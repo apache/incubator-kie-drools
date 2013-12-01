@@ -17,7 +17,6 @@
 package org.drools.pmml.pmml_4_1.global;
 
 
-import junit.framework.Assert;
 import org.drools.core.common.EventFactHandle;
 import org.drools.pmml.pmml_4_1.DroolsAbstractPMMLTest;
 import org.junit.After;
@@ -28,6 +27,8 @@ import org.kie.api.runtime.ClassObjectFilter;
 
 import java.util.Collection;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 
 public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
@@ -53,7 +54,7 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
     public void testContinuousDomainIntervals() throws Exception {
 
         FactType ivals = getKbase().getFactType(packageName,"Intervalled");
-            Assert.assertNotNull(ivals);
+            assertNotNull( ivals );
 
         Object data1 = ivals.newInstance();
             ivals.set(data1,"value",-0.4);
@@ -83,14 +84,14 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        Assert.assertEquals(false, ivals.get(data1, "valid"));
-        Assert.assertEquals(true, ivals.get(data2, "valid"));
-        Assert.assertEquals(false, ivals.get(data3, "valid"));
-        Assert.assertEquals(true, ivals.get(data4, "valid"));
-        Assert.assertEquals(false, ivals.get(data5, "valid"));
-        Assert.assertEquals(false, ivals.get(data6, "valid"));
-        Assert.assertEquals(true, ivals.get(data7, "valid"));
-        Assert.assertEquals(false, ivals.get(data8, "valid"));
+        assertEquals( false, ivals.get( data1, "valid" ) );
+        assertEquals( true, ivals.get( data2, "valid" ) );
+        assertEquals( false, ivals.get( data3, "valid" ) );
+        assertEquals( true, ivals.get( data4, "valid" ) );
+        assertEquals( false, ivals.get( data5, "valid" ) );
+        assertEquals( false, ivals.get( data6, "valid" ) );
+        assertEquals( true, ivals.get( data7, "valid" ) );
+        assertEquals( false, ivals.get( data8, "valid" ) );
 
     }
 
@@ -105,19 +106,19 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
         getKSession().fireAllRules();
 
         Collection<EventFactHandle> fact1 = getKSession().getFactHandles(new ClassObjectFilter(getKbase().getFactType(packageName, "Vallued").getFactClass()));
-            Assert.assertEquals(1, fact1.size());
+            assertEquals( 1, fact1.size() );
         //assertEquals(true, getKbase().getFactType(packageName, "Vallued").get(fact1.iterator().next().getObject(), "continuous"));
 
         Collection<EventFactHandle> fact2 = getKSession().getFactHandles(new ClassObjectFilter(getKbase().getFactType(packageName, "Intervalled").getFactClass()));
-            Assert.assertEquals(1, fact2.size());
+            assertEquals( 1, fact2.size() );
         //assertEquals(true, getKbase().getFactType(packageName,"Intervalled").get(fact2.iterator().next().getObject(),"continuous"));
 
         Collection<EventFactHandle> fact3 = getKSession().getFactHandles(new ClassObjectFilter(getKbase().getFactType(packageName, "Cat").getFactClass()));
-            Assert.assertEquals(1, fact3.size());
+            assertEquals( 1, fact3.size() );
         //assertEquals(true, getKbase().getFactType(packageName,"Cat").get(fact3.iterator().next().getObject(),"categorical"));
 
         Collection<EventFactHandle> fact4 = getKSession().getFactHandles(new ClassObjectFilter(getKbase().getFactType(packageName, "Sort").getFactClass()));
-            Assert.assertEquals(1, fact4.size());
+            assertEquals( 1, fact4.size() );
         //assertEquals(true, getKbase().getFactType(packageName,"Sort").get(fact4.iterator().next().getObject(),"ordinal"));
 
     }
@@ -128,7 +129,7 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
 
 
         FactType vals = getKbase().getFactType(packageName,"Vallued");
-            Assert.assertNotNull(vals);
+            assertNotNull( vals );
 //        FactType defval = getKbase().getFactType(packageName,"DefaultValid");
 //            assertNotNull(vals);
 //        FactType definv = getKbase().getFactType(packageName,"DefaultInvalid");
@@ -154,20 +155,20 @@ public class ConstrainedDataDictionaryTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
-        Assert.assertEquals(true, vals.get(data1, "valid"));
-        Assert.assertEquals(false, vals.get(data1, "missing"));
+        assertEquals( true, vals.get( data1, "valid" ) );
+        assertEquals( false, vals.get( data1, "missing" ) );
 
-        Assert.assertEquals(true, vals.get(data2, "valid"));
-        Assert.assertEquals(false, vals.get(data2, "missing"));
+        assertEquals( true, vals.get( data2, "valid" ) );
+        assertEquals( false, vals.get( data2, "missing" ) );
 
-        Assert.assertEquals(false, vals.get(data3, "valid"));
-        Assert.assertEquals(false, vals.get(data3, "missing"));
+        assertEquals( false, vals.get( data3, "valid" ) );
+        assertEquals( false, vals.get( data3, "missing" ) );
 
-        Assert.assertEquals(false, vals.get(data0, "valid"));
-        Assert.assertEquals(true, vals.get(data0, "missing"));
+        assertEquals( false, vals.get( data0, "valid" ) );
+        assertEquals( true, vals.get( data0, "missing" ) );
 
-        Assert.assertEquals(false, vals.get(data99, "valid"));
-        Assert.assertEquals(false, vals.get(data99, "missing"));
+        assertEquals( false, vals.get( data99, "valid" ) );
+        assertEquals( false, vals.get( data99, "missing" ) );
 
     }
 
