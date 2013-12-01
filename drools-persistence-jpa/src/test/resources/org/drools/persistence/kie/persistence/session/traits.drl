@@ -1,0 +1,20 @@
+package org.drools.persistence.kie.persistence.session
+
+import java.util.List
+
+import org.drools.persistence.kie.persistence.session.JpaPersistentStatefulSessionTest.Door
+
+declare trait WoodenDoor
+    from : String
+    to : String
+    wood : String
+end
+
+rule "wooden door"
+    no-loop
+    when
+        $door : Door()
+    then
+        WoodenDoor woodenDoor = don( $door, WoodenDoor.class );
+        update(woodenDoor)
+end

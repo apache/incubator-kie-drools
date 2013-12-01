@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.drools.core.factmodel.traits.Traitable;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
@@ -438,6 +439,22 @@ public class JpaPersistentStatefulSessionTest {
         ksession.fireAllRules();
     }
 
+    @Test
+    @Ignore
+    public void testTraitsSerialization() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+
+        Resource drlResource = ks.getResources().newClassPathResource("traits.drl", JpaPersistentStatefulSessionTest.class);
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drlResource );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
+        KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+
+        ksession.insert(new Door());
+        ksession.fireAllRules();
+    }
+    
     public static class ListHolder implements Serializable {
 
         private static final long serialVersionUID = -3058814255413392428L;
@@ -476,6 +493,7 @@ public class JpaPersistentStatefulSessionTest {
         }
     }
 
+    @Traitable
     public static class Door implements Serializable {
 
         private static final long serialVersionUID = 4173662501120948262L;
@@ -507,7 +525,7 @@ public class JpaPersistentStatefulSessionTest {
 
         public void setToLocation(String toLocation) {
             this.toLocation = toLocation;
-        }
+        }        
     }
 
     public static class Edible implements Serializable {
