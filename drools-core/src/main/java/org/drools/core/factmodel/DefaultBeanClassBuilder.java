@@ -163,16 +163,18 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                                     "writeObject",
                                     "(Ljava/lang/Object;)V" );
 
-                mv.visitVarInsn( ALOAD, 1 );
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitFieldInsn( Opcodes.GETFIELD,
-                                   BuildUtils.getInternalType( classDef.getClassName() ),
-                                   TraitableBean.FIELDTMS_FIELD_NAME,
-                                   Type.getDescriptor( TraitFieldTMS.class ) );
-                mv.visitMethodInsn( INVOKEINTERFACE,
-                                    "java/io/ObjectOutput",
-                                    "writeObject",
-                                    "(Ljava/lang/Object;)V" );
+                if ( classDef.isFullTraiting() ) {
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitFieldInsn( Opcodes.GETFIELD,
+                                       BuildUtils.getInternalType( classDef.getClassName() ),
+                                       TraitableBean.FIELDTMS_FIELD_NAME,
+                                       Type.getDescriptor( TraitFieldTMS.class ) );
+                    mv.visitMethodInsn( INVOKEINTERFACE,
+                                        "java/io/ObjectOutput",
+                                        "writeObject",
+                                        "(Ljava/lang/Object;)V" );
+                }
             }
 
             mv.visitInsn(RETURN);
@@ -226,17 +228,19 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                                    TraitableBean.TRAITSET_FIELD_NAME,
                                    Type.getDescriptor( Map.class ) );
 
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitVarInsn( ALOAD, 1 );
-                mv.visitMethodInsn( INVOKEINTERFACE,
-                                    "java/io/ObjectInput",
-                                    "readObject",
-                                    "()Ljava/lang/Object;");
-                mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFieldTMS.class ) );
-                mv.visitFieldInsn( Opcodes.PUTFIELD,
-                                   BuildUtils.getInternalType( classDef.getClassName() ),
-                                   TraitableBean.FIELDTMS_FIELD_NAME,
-                                   Type.getDescriptor( TraitFieldTMS.class ) );
+                if ( classDef.isFullTraiting() ) {
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitVarInsn( ALOAD, 1 );
+                    mv.visitMethodInsn( INVOKEINTERFACE,
+                                        "java/io/ObjectInput",
+                                        "readObject",
+                                        "()Ljava/lang/Object;");
+                    mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitFieldTMS.class ) );
+                    mv.visitFieldInsn( Opcodes.PUTFIELD,
+                                       BuildUtils.getInternalType( classDef.getClassName() ),
+                                       TraitableBean.FIELDTMS_FIELD_NAME,
+                                       Type.getDescriptor( TraitFieldTMS.class ) );
+                }
             }
 
             mv.visitInsn( RETURN );
