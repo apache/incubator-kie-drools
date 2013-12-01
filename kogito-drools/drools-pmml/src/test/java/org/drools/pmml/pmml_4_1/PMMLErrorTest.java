@@ -85,7 +85,10 @@ public class PMMLErrorTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write( "src/main/resources/pmlm.pmml", ResourceFactory.newByteArrayResource( pmlm.getBytes() ).setResourceType( ResourceType.PMML ) );
+        kfs.write( ResourceFactory.newByteArrayResource( pmlm.getBytes() )
+                           .setResourceType( ResourceType.PMML )
+                           .setSourcePath( "pmlm.pmml" )
+        );
 
         KieBuilder kb = ks.newKieBuilder( kfs );
         kb.buildAll();
@@ -97,7 +100,10 @@ public class PMMLErrorTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write( "src/main/resources/pmml.pmml", ResourceFactory.newByteArrayResource( pmml.getBytes() ).setResourceType( ResourceType.PMML ) );
+        kfs.write( ResourceFactory.newByteArrayResource( pmml.getBytes() )
+                           .setResourceType( ResourceType.PMML )
+                           .setSourcePath( "pmml.pmml" )
+        );
 
         KieBuilder kb = ks.newKieBuilder( kfs );
         kb.buildAll();

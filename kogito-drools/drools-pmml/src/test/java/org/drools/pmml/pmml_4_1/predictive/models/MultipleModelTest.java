@@ -23,14 +23,17 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.Message;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -44,10 +47,10 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
 
     private static final boolean VERBOSE = true;
-    private static final String source1 = "org/drools/pmml/pmml_4_1//mock_ptsd.xml";
-    private static final String source2 = "org/drools/pmml/pmml_4_1//mock_cold.xml";
-    private static final String source3 = "org/drools/pmml/pmml_4_1//mock_breastcancer.xml";
-    private static final String source4 = "org/drools/pmml/pmml_4_1//test_svm.xml";
+    private static final String source1 = "org/drools/pmml/pmml_4_1/mock_ptsd.xml";
+    private static final String source2 = "org/drools/pmml/pmml_4_1/mock_cold.xml";
+    private static final String source3 = "org/drools/pmml/pmml_4_1/mock_breastcancer.xml";
+    private static final String source4 = "org/drools/pmml/pmml_4_1/test_svm.xml";
 
     private static final String packageName = "org.drools.pmml.pmml_4_1.test";
 
@@ -56,8 +59,8 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write( "src/main/resources/" + source1.replace( ".xml", ".pmml" ), ResourceFactory.newClassPathResource( source1 ).setResourceType( ResourceType.PMML ) );
-        kfs.write( "src/main/resources/" + source2.replace( ".xml", ".pmml" ), ResourceFactory.newClassPathResource( source2 ).setResourceType( ResourceType.PMML ) );
+        kfs.write( ResourceFactory.newClassPathResource( source1 ).setResourceType( ResourceType.PMML ) );
+        kfs.write( ResourceFactory.newClassPathResource( source2 ).setResourceType( ResourceType.PMML ) );
 
         KieBuilder kb = ks.newKieBuilder( kfs );
         kb.buildAll();
@@ -77,23 +80,24 @@ public class MultipleModelTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testIncrementalBuilding() throws Exception {
+        ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.0-SNAPSHOT" );
+
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-
-        kfs.write( "src/main/resources/" + source1.replace( ".xml", ".pmml" ), ResourceFactory.newClassPathResource( source1 ).setResourceType( ResourceType.PMML ) );
-
         KieBuilder kb = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( releaseId1 );
+        kfs.write( ResourceFactory.newClassPathResource( source1 ).setResourceType( ResourceType.PMML ) );
         kb.buildAll();
 
-        KieContainer kc = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
+        KieContainer kc = ks.newKieContainer( releaseId1 );
         KieSession kSession = kc.newKieSession();
+        kSession.fireAllRules();
 
 
-        String source2Path = "src/main/resources/" + source2.replace( ".xml", ".pmml" );
-        kfs.write( source2Path, ResourceFactory.newClassPathResource( source2 ).setResourceType( ResourceType.PMML ) );
-        (( InternalKieBuilder ) kb ).createFileSet( source2Path ).build();
-
-
+        kfs.write( ResourceFactory.newClassPathResource( source2 ).setResourceType( ResourceType.PMML ) );
+        IncrementalResults results = (( InternalKieBuilder ) kb ).incrementalBuild();
+        kc.updateToVersion( releaseId1 );
 
         kSession.fireAllRules();
 

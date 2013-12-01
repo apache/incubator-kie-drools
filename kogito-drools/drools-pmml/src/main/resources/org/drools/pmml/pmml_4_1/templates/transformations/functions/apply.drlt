@@ -30,7 +30,7 @@
 }
 
 @declare{ 'applyRule' }
-rule "fun_@{name}"
+rule "Fun_@{name}"
 when
 
     @foreach{ field : exprFieldList }
@@ -43,14 +43,14 @@ when
 //    @{funName} - @{ isBuiltIn( funName ) }
 
     @foreach{ dep : dependencies}
-        ?@{ dep }
+        @{ dep }
     @end{}
 
     @if{ ! isBuiltIn( funName ) }
-        ?@{ funName }( @foreach{ arg : funArgs } @{arg} @end{ ',' } , $ctx, $return ; )
+        @{ funName }( @foreach{ arg : funArgs } @{arg} @end{ ',' } , $ctx, $return ; )
     @end{}
 then
-    System.out.println( "READY TO BUILD @{name} ");
+    //System.out.println( "READY TO BUILD @{name} ");
 
     @{name} x = new @{ name }();
 
@@ -64,8 +64,26 @@ then
     x.setValid( true );
     x.setName( @{ format( "string", name ) } );
     x.setContext( @{ context } );
-  insertLogical( x );
+  insert( x );
 end
+
+
+@if{ ! exprFieldList.empty }
+rule "Clear Fun_@{name}"
+@Direct
+when
+    $x : @{name}( $ctx : context )
+
+    not (
+    @foreach{ field : exprFieldList }
+        @{ field }( valid == true, missing == false, context == $ctx )
+    @end{'and'}
+    )
+then
+    delete( $x );
+end
+@end{}
+
 @end{}
 
 @includeNamed{ 'applyRule' }

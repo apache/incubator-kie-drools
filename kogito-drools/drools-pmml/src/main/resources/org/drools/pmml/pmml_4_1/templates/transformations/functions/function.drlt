@@ -31,57 +31,72 @@
 
 @code{ String fld; }
 
-query @{name}( @foreach{ param : params } @{ mapDatatype( param.dataType ) } @{ param.name }  @end{','} , String $ctx, @{ mapDatatype( dataType, true ) } $return )
+declare @{ compactUpperCase( name ) }Goal
+    @foreach{ param : params } @{ param.name } : @{ mapDatatype( param.dataType ) } @end{'\n'}
+    ctx : String
+end
 
+
+
+query @{ compactUpperCase( name ) }_Goal( @foreach{ param : params } @{ mapDatatype( param.dataType ) } @{ param.name }  @end{','} , String $ctx )
+    @Abductive( target = @{ compactUpperCase( name ) }Goal.class )
+end
+
+query @{name}( @foreach{ param : params } @{ mapDatatype( param.dataType ) } @{ param.name }  @end{','} , String $ctx, @{ mapDatatype( dataType, true ) } $return )
+        @{ compactUpperCase( name ) }_Goal( @foreach{ param : params } @{ param.name }  @end{','} , $ctx ; )
         @foreach{ field : innerFields }
             @code{ if ( isInnerFieldName( field ) ) { fld = field; } else { fld = compactUpperCase( name ) + "_" + compactUpperCase( field ); } }
+            // @{ field }
+            // @{ exprFieldMap }
             @{ fld  }( valid == true, missing == false, $ctx := context, @{ exprFieldMap.get( field ) } : value )
         @end{}
 
         @foreach{ dep : dependencies}
-            ?@{ dep }
+            @{ dep }
         @end{}
 
        $return := @{ mapDatatype( dataType, true ) }() from @{ expr }
 end
 
-rule "@{name}_Goal"
+rule "@{name} Goal React"
 @code{ int j = 0; }
-@@activationListener('direct')
+@@Direct
 when
-    $q : org.drools.core.base.DroolsQuery( name == "@{name}", @foreach{ param : params } @{ param.name } : elements[@{j++}] @end{ ', ' }, $ctx : elements[@{j++}] )
+    $q :  @{ compactUpperCase( name ) }Goal( @foreach{ param : params } @{ param.name } : @{ param.name } @end{ ', ' }, $ctx : ctx )
 then
-   System.out.println( "QUERY @{name} SIDE EFFECT triggered by " + $q );
+   //System.err.println( "QUERY @{name} SIDE EFFECT triggered by " + $q );
 
     @code{ String pn; }
     @foreach{ param : params }
         @code{ pn = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
-        @{ pn } _@{pn} = new @{pn}( (@{ mapDatatype( param.dataType, true ) }) @{ param.name }, $ctx.toString() );
+        @{ pn } _@{pn} = new @{pn}( @{ param.name }, $ctx );
         _@{pn}.setValid( true );
         insert( _@{pn} );
     @end{}
 
+    retract( $q );
 end
+
 
 
 @code{ String pn2; }
 rule "@{name}_Clean"
 @code{ int k = 0; }
+salience -9999
 when
     @foreach{ param : params }
     @code{ pn2 = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
         var@{k++} : @{pn2}(  $ctx := context )
     @end{}
-    not org.drools.core.base.DroolsQuery( name == "@{name}", $ctx memberOf elements )
+    not @{ compactUpperCase( name ) }Goal( $ctx := ctx )
 then
-//    System.out.println( "Now I can Cleanup @{name}" );
+    //System.err.println( "Now I can Cleanup @{name}" );
     @code{ k = 0; }
     @foreach{ param : params }
     @code{ pn2 = compactUpperCase( name ) + "_" + compactUpperCase( param.name ); }
         retract( var@{k++} );
     @end{}
 end
-
 
 
 @end{}

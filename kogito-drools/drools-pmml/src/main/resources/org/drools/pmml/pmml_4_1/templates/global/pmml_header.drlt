@@ -36,3 +36,4 @@
 
 import org.drools.pmml.pmml_4_1.ModelMarker;
 import org.drools.pmml.pmml_4_1.PMML4AbstractField;
+import org.drools.core.factmodel.traits.Traitable;

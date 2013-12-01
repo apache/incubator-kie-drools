@@ -50,9 +50,32 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         FactType userAge1 = getKbase().getFactType( packageName, "UserAge" );
 
-        getKSession().getEntryPoint( "in_Age" ).insert( 10 );
+        getKSession().getEntryPoint( "in_Age" ).insert( 2.2 );
 
         getKSession().fireAllRules();
+
+        System.out.println( reportWMObjects( getKSession() ) );
+
+        checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 22.0 );
+    }
+
+    @Test
+    public void testFunctions0Overwrite() throws Exception {
+
+        setKSession( getModelSession( source0, VERBOSE ) );
+        setKbase( getKSession().getKieBase() );
+
+        FactType userAge1 = getKbase().getFactType( packageName, "UserAge" );
+
+        getKSession().getEntryPoint( "in_Age" ).insert( 8.4 );
+
+        getKSession().fireAllRules();
+
+        getKSession().getEntryPoint( "in_Age" ).insert( 2.2 );
+
+        getKSession().fireAllRules();
+
+        System.out.println( reportWMObjects( getKSession() ) );
 
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 22.0 );
     }
@@ -101,6 +124,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
+        System.err.println( reportWMObjects( getKSession() ) );
+
         checkFirstDataFieldOfTypeStatus( userAge3, true, false, null, 10 );
 
     }
@@ -116,6 +141,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         getKSession().getEntryPoint( "in_Age" ).insert( 10 );
 
         getKSession().fireAllRules();
+
+        System.err.println( reportWMObjects( getKSession() ) );
 
         checkFirstDataFieldOfTypeStatus( userAge4, true, false, null, 24 );
 
@@ -164,6 +191,8 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
 
         getKSession().fireAllRules();
 
+        System.out.println( reportWMObjects( getKSession() ) );
+
         checkFirstDataFieldOfTypeStatus( userAge1, true, false, null, 130.0 );
 
     }
@@ -209,8 +238,10 @@ public class UserDefinedFunctionsTest extends DroolsAbstractPMMLTest {
         FactType age = getKbase().getFactType( packageName, "Age" );
         Object aged = getKSession().getObjects( new ClassObjectFilter( age.getFactClass() ) ).iterator().next();
 
-        getKSession().retract( getKSession().getFactHandle( aged ) );
+        getKSession().delete( getKSession().getFactHandle( aged ) );
         getKSession().fireAllRules();
+
+        System.err.println( reportWMObjects( getKSession() ) );
 
         assertEquals( 0, getKSession().getFactCount() );
 
