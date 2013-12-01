@@ -20,6 +20,7 @@ import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
 import static org.junit.Assert.*;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,6 +43,8 @@ import org.drools.command.CommandFactory;
 import org.drools.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.command.impl.FireAllRulesInterceptor;
 import org.drools.command.impl.LoggingInterceptor;
+import org.drools.definition.type.Position;
+import org.drools.factmodel.traits.Traitable;
 import org.drools.io.ResourceFactory;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.JPAKnowledgeService;
@@ -390,4 +393,82 @@ public class JpaPersistentStatefulSessionTest {
 
         assertEquals("com.example.CustomJPAProcessInstanceManagerFactory", sessionConfig.getProcessInstanceManagerFactory());
     }
+
+
+    @Test
+    public void testTraitsSerialization() throws Exception {
+        String drl = "package org.drools.persistence.kie.persistence.session\n" +
+                     "\n" +
+                     "import java.util.List\n" +
+                     "\n" +
+                     "import org.drools.persistence.session.JpaPersistentStatefulSessionTest.Door\n" +
+                     "\n" +
+                     "declare trait WoodenDoor\n" +
+                     "    from : String\n" +
+                     "    to : String\n" +
+                     "    wood : String\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"wooden door\"\n" +
+                     "    no-loop\n" +
+                     "    when\n" +
+                     "        $door : Door()\n" +
+                     "    then\n" +
+                     "        WoodenDoor woodenDoor = don( $door, WoodenDoor.class );\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
+                      ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+
+        ksession.insert(new Door());
+        ksession.fireAllRules();
+    }
+
+    @Traitable
+    public static class Door implements Serializable {
+
+        private static final long serialVersionUID = 4173662501120948262L;
+        @Position(0)
+        private String fromLocation;
+        @Position(1)
+        private String toLocation;
+
+        public Door() {
+            this(null, null);
+        }
+
+        public Door(String fromLocation, String toLocation) {
+            this.fromLocation = fromLocation;
+            this.toLocation = toLocation;
+        }
+
+        public String getFromLocation() {
+            return fromLocation;
+        }
+
+        public void setFromLocation(String fromLocation) {
+            this.fromLocation = fromLocation;
+        }
+
+        public String getToLocation() {
+            return toLocation;
+        }
+
+        public void setToLocation(String toLocation) {
+            this.toLocation = toLocation;
+        }
+    }
+
+
+
 }
