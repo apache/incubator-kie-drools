@@ -197,7 +197,7 @@ public abstract class AbstractKieModule
             }
         } else {
             for (Map.Entry<String, InternalKieModule> entry : assets.entrySet()) {
-                addFile(ckbuilder, entry.getValue(), entry.getKey());
+                entry.getValue().addResourceToCompiler(ckbuilder, entry.getKey());
             }
         }
 
@@ -248,11 +248,9 @@ public abstract class AbstractKieModule
         }
     }
 
-    public static boolean addFile(CompositeKnowledgeBuilder ckbuilder,
-                                  InternalKieModule kieModule,
-                                  String fileName) {
-        ResourceConfiguration conf = kieModule.getResourceConfiguration(fileName);
-        Resource resource = kieModule.getResource(fileName);
+    public boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, String fileName) {
+        ResourceConfiguration conf = getResourceConfiguration(fileName);
+        Resource resource = getResource(fileName);
         if (resource != null) {
             if (conf == null) {
                 ckbuilder.add(resource,

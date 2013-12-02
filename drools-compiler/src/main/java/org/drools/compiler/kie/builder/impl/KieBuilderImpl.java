@@ -58,10 +58,12 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
 
 import com.google.protobuf.ByteString;
+import org.kie.internal.io.ResourceTypeImpl;
 
 public class KieBuilderImpl
         implements
@@ -170,6 +172,7 @@ public class KieBuilderImpl
             trgMfs = new MemoryFileSystem();
             writePomAndKModule();
             addKBasesFilesToTrg();
+            markSource();
 
             kModule = new MemoryKieModule( releaseId,
                                            kModuleModel,
@@ -192,6 +195,14 @@ public class KieBuilderImpl
             }
         }
         return this;
+    }
+
+    void markSource() {
+        srcMfs.mark();
+    }
+
+    Collection<String> getModifiedResourcesSinceLastMark() {
+        return srcMfs.getModifiedResourcesSinceLastMark();
     }
 
     void updateKieModuleMetaInfo() {
@@ -348,17 +359,30 @@ public class KieBuilderImpl
             return;
         }
         byte[] bytes = srcMfs.getBytes( fileName );
-        fileName = fileName.substring( RESOURCES_ROOT.length() - 1 );
+        String trgFileName = fileName.substring( RESOURCES_ROOT.length() - 1 );
         if ( bytes != null ) {
-            FormatConverter formatConverter = FormatsManager.get().getConverterFor( fileName );
-            if ( formatConverter == null ) {
-                return;
+            FormatConverter formatConverter = FormatsManager.get().getConverterFor( trgFileName );
+            if ( formatConverter != null ) {
+                FormatConversionResult result = formatConverter.convert( trgFileName, bytes );
+                trgMfs.write( result.getConvertedName(), result.getContent(), true );
+            } else if ( getResourceType( fileName ) != null ) {
+                trgMfs.write( trgFileName, bytes, true );
             }
-            FormatConversionResult result = formatConverter.convert( fileName, bytes );
-            trgMfs.write( result.getConvertedName(), result.getContent(), true );
         } else {
-            trgMfs.remove( fileName );
+            trgMfs.remove( trgFileName );
         }
+    }
+
+    private ResourceType getResourceType(String fileName) {
+        if (srcMfs.isAvailable(fileName + ".properties")) {
+            // configuration file available
+            Properties prop = new Properties();
+            try {
+                prop.load(new ByteArrayInputStream(srcMfs.getBytes(fileName + ".properties")));
+                return getResourceType( ResourceTypeImpl.fromProperties(prop) );
+            } catch (IOException e) { }
+        }
+        return null;
     }
 
     void cloneKieModuleForIncrementalCompilation() {
@@ -379,7 +403,10 @@ public class KieBuilderImpl
     }
 
     private static ResourceType getResourceType(InternalKieModule kieModule, String fileName) {
-        ResourceConfiguration conf = kieModule.getResourceConfiguration(fileName);
+        return getResourceType(kieModule.getResourceConfiguration(fileName));
+    }
+
+    private static ResourceType getResourceType(ResourceConfiguration conf) {
         return conf instanceof ResourceConfigurationImpl ? ((ResourceConfigurationImpl)conf).getResourceType() : null;
     }
 
@@ -674,5 +701,9 @@ public class KieBuilderImpl
             kieBuilderSet = new KieBuilderSetImpl( this );
         }
         return kieBuilderSet.setFiles( files );
+    }
+
+    public IncrementalResults incrementalBuild() {
+        return new KieBuilderSetImpl( this ).build();
     }
 }
