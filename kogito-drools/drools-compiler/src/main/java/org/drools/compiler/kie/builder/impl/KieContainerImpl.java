@@ -16,7 +16,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilder;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -144,9 +143,7 @@ public class KieContainerImpl
                                 if( rcs.getChangeType() == ChangeType.UPDATED ) {
                                     pkgbuilder.removeObjectsGeneratedFromResource( resource );
                                 }
-                                fileCount += AbstractKieModule.addFile( ckbuilder,
-                                                                        newKM,
-                                                                        resourceName ) ? 1 : 0;
+                                fileCount += newKM.addResourceToCompiler(ckbuilder, resourceName) ? 1 : 0;
                             }
                         } else if ( resourceName.endsWith( ".class" ) ) {
                             modifiedClasses.add(resourceName);

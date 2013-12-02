@@ -1,23 +1,14 @@
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Collection;
 
 import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.Header;
-import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.protobuf.ExtensionRegistry;
 
 public class MemoryKieModule extends AbstractKieModule
         implements
@@ -53,6 +44,14 @@ public class MemoryKieModule extends AbstractKieModule
 
     public MemoryFileSystem getMemoryFileSystem() {
         return this.mfs;
+    }
+
+    public void mark() {
+        mfs.mark();
+    }
+
+    public Collection<String> getModifiedResourcesSinceLastMark() {
+        return mfs.getModifiedResourcesSinceLastMark();
     }
 
     @Override

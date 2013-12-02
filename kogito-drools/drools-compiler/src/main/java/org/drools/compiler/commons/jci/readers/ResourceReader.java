@@ -18,6 +18,7 @@
 package org.drools.compiler.commons.jci.readers;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * A ResourceReader provide access to resource like e.g. source code
@@ -26,6 +27,8 @@ public interface ResourceReader {
 
     boolean isAvailable( final String pResourceName );
     byte[] getBytes( final String pResourceName );
-    public Collection<String> getFileNames();
+    Collection<String> getFileNames();
 
+    void mark();
+    Collection<String> getModifiedResourcesSinceLastMark();
 }

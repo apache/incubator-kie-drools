@@ -1,5 +1,6 @@
 package org.drools.compiler.integrationtests;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.IncrementalResults;
@@ -671,7 +673,10 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieBuilder kieBuilder = ks.newKieBuilder( kfs );
 
         kfs.generateAndWritePomXML( releaseId1 );
-        kfs.write( "src/main/resources/drl1.drl", drl1 );
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader(drl1) )
+                     .setResourceType(ResourceType.DRL)
+                     .setSourcePath("drl1.txt") );
 
         kieBuilder.buildAll();
         KieModule kieModule = kieBuilder.getKieModule();
@@ -690,10 +695,12 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         list.clear();
 
         kfs.generateAndWritePomXML( releaseId2 );
-        kfs.write( "src/main/resources/drl2.drl", drl2 );
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader(drl2) )
+                     .setResourceType(ResourceType.DRL)
+                     .setSourcePath("drl2.txt") );
 
-        KieBuilderSet kbSet = ((InternalKieBuilder) kieBuilder).createFileSet( "src/main/resources/drl2.drl" );
-        IncrementalResults results = kbSet.build();
+        IncrementalResults results = ((InternalKieBuilder) kieBuilder).incrementalBuild();
         assertEquals(0, results.getAddedMessages().size());
 
         kieModule = kieBuilder.getKieModule();

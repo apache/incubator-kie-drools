@@ -11,8 +11,6 @@ import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceConfiguration;
-import org.kie.api.io.ResourceType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 public class KieBuilderSetImpl implements KieBuilderSet {
@@ -62,14 +61,18 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
     @Override
     public IncrementalResults build() {
-        if ( files == null || files.length == 0 ) {
+        Collection<String> filesToBuild = files != null ? asList(files) : kieBuilder.getModifiedResourcesSinceLastMark();
+        if ( filesToBuild.isEmpty() ) {
             return new IncrementalResultsImpl();
         }
         kieBuilder.cloneKieModuleForIncrementalCompilation();
-        for (String file : files) {
+        for (String file : filesToBuild) {
             kieBuilder.copySourceToTarget(file);
         }
-        return buildChanges();
+        IncrementalResults result = buildChanges(filesToBuild);
+        files = null;
+        kieBuilder.markSource();
+        return result;
     }
 
     private Set<String> findResourcesWithErrors(KnowledgeBuilder kBuilder) {
@@ -83,7 +86,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         return Collections.emptySet();
     }
 
-    private IncrementalResults buildChanges() {
+    private IncrementalResults buildChanges(Collection<String> filesToBuild) {
         List<KnowledgeBuilderError> currentErrors = new ArrayList<KnowledgeBuilderError>();
 
         InternalKieModule kieModule = (InternalKieModule) kieBuilder.getKieModuleIgnoringErrors();
@@ -99,7 +102,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                 modified = addResource(ckbuilder, kBaseModel, kieModule, resourceName) || modified;
             }
 
-            for (String file : files) {
+            for (String file : filesToBuild) {
                 String resourceName = file.startsWith(KieBuilderImpl.RESOURCES_ROOT) ?
                         file.substring(KieBuilderImpl.RESOURCES_ROOT.length()) :
                         file;
@@ -126,7 +129,6 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                 }
             }
         }
-        files = null;
 
         IncrementalResultsImpl results = getIncrementalResults(currentErrors);
         previousErrors = currentErrors;
@@ -150,20 +152,8 @@ public class KieBuilderSetImpl implements KieBuilderSet {
                                  KieBaseModel kieBaseModel,
                                  InternalKieModule kieModule,
                                  String resourceName ) {
-        byte[] bytes = kieModule.getBytes(resourceName);
-        if (bytes == null || bytes.length == 0) {
-            return false;
-        }
-        Resource resource = KieServices.Factory.get().getResources().newByteArrayResource(bytes).setSourcePath(resourceName);
-
-        if ( filterFileInKBase(kieModule, kieBaseModel, resourceName) ) {
-            ResourceConfiguration conf = kieModule.getResourceConfiguration(resourceName);
-            if ( conf == null ) {
-                ckbuilder.add( resource, ResourceType.determineResourceType(resourceName) );
-            } else {
-                ckbuilder.add( resource, ResourceType.determineResourceType(resourceName), conf );
-            }
-            return true;
+        if ( !resourceName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, resourceName) ) {
+            return kieModule.addResourceToCompiler(ckbuilder, resourceName);
         }
         return false;
     }
