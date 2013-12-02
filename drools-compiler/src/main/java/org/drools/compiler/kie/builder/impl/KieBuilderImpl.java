@@ -354,23 +354,25 @@ public class KieBuilderImpl
         }
     }
 
-    void copySourceToTarget(String fileName) {
+    String copySourceToTarget(String fileName) {
         if ( !fileName.startsWith(RESOURCES_ROOT) ) {
-            return;
+            return null;
         }
         byte[] bytes = srcMfs.getBytes( fileName );
-        String trgFileName = fileName.substring( RESOURCES_ROOT.length() - 1 );
+        String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
         if ( bytes != null ) {
             FormatConverter formatConverter = FormatsManager.get().getConverterFor( trgFileName );
             if ( formatConverter != null ) {
                 FormatConversionResult result = formatConverter.convert( trgFileName, bytes );
-                trgMfs.write( result.getConvertedName(), result.getContent(), true );
+                trgFileName = result.getConvertedName();
+                trgMfs.write( trgFileName, result.getContent(), true );
             } else if ( getResourceType( fileName ) != null ) {
                 trgMfs.write( trgFileName, bytes, true );
             }
         } else {
             trgMfs.remove( trgFileName );
         }
+        return trgFileName;
     }
 
     private ResourceType getResourceType(String fileName) {
