@@ -101,7 +101,7 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> status, boolean union);
+            List<Status> status, List<String> language, boolean union);
     
     List<TaskSummary> getTasksByVariousFields( Map<String, List<?>> parameters, boolean union);
     
@@ -112,4 +112,5 @@ public interface TaskQueryService {
     static String POTENTIAL_OWNER_ID_LIST = "potential owner id list";
     static String ACTUAL_OWNER_ID_LIST = "task owner id list";
     static String STATUS_LIST = "status list";
+    static String LANGUAGE = "language";
 }
