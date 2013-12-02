@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.value.buildin;
+package org.optaplanner.core.api.domain.value.buildin.primint;
 
-import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.Test;
+import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -32,6 +32,7 @@ public class IntValueRangeTest {
         assertEquals(10L, new IntValueRange(0, 10).getSize());
         assertEquals(20L, new IntValueRange(100, 120).getSize());
         assertEquals(40L, new IntValueRange(-15, 25).getSize());
+        assertEquals(0L, new IntValueRange(7, 7).getSize());
         assertEquals(Integer.MAX_VALUE + 900L, new IntValueRange(-1000, Integer.MAX_VALUE - 100).getSize());
         // IncrementUnit
         assertEquals(5L, new IntValueRange(0, 10, 2).getSize());
@@ -55,6 +56,7 @@ public class IntValueRangeTest {
         assertAllElementsOfIterator(new IntValueRange(0, 7).createOriginalIterator(), 0, 1, 2, 3, 4, 5, 6);
         assertAllElementsOfIterator(new IntValueRange(100, 104).createOriginalIterator(), 100, 101, 102, 103);
         assertAllElementsOfIterator(new IntValueRange(-4, 3).createOriginalIterator(), -4, -3, -2, -1, 0, 1, 2);
+        assertAllElementsOfIterator(new IntValueRange(7, 7).createOriginalIterator());
         // IncrementUnit
         assertAllElementsOfIterator(new IntValueRange(0, 10, 2).createOriginalIterator(), 0, 2, 4, 6, 8);
         assertAllElementsOfIterator(new IntValueRange(100, 120, 5).createOriginalIterator(), 100, 105, 110, 115);
@@ -68,6 +70,7 @@ public class IntValueRangeTest {
         assertElementsOfIterator(new IntValueRange(0, 7).createRandomIterator(workingRandom), 3, 0);
         assertElementsOfIterator(new IntValueRange(100, 104).createRandomIterator(workingRandom), 103, 100);
         assertElementsOfIterator(new IntValueRange(-4, 3).createRandomIterator(workingRandom), -1, -4);
+        assertElementsOfIterator(new IntValueRange(7, 7).createRandomIterator(workingRandom));
         // IncrementUnit
         assertElementsOfIterator(new IntValueRange(0, 10, 2).createRandomIterator(workingRandom), 6, 0);
         assertElementsOfIterator(new IntValueRange(100, 120, 5).createRandomIterator(workingRandom), 115, 100);

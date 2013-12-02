@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.optaplanner.core.api.domain.value.buildin.IntValueRange;
+import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -49,7 +49,7 @@ public interface ValueRange<T> {
      *
      * @return never null
      */
-    Iterator createOriginalIterator();
+    Iterator<T> createOriginalIterator();
 
     /**
      *
@@ -57,6 +57,6 @@ public interface ValueRange<T> {
      * so {@link EnvironmentMode#REPRODUCIBLE} works correctly
      * @return never null
      */
-    Iterator createRandomIterator(Random workingRandom);
+    Iterator<T> createRandomIterator(Random workingRandom);
 
 }

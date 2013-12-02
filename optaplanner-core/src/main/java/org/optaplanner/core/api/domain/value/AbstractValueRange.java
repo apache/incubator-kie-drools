@@ -18,7 +18,7 @@ package org.optaplanner.core.api.domain.value;
 
 import java.io.Serializable;
 
-import org.optaplanner.core.api.domain.value.buildin.IntValueRange;
+import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 
 /**
  * Abstract superclass for {@link ValueRange}.

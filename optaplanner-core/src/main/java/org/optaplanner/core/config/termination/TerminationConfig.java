@@ -266,7 +266,7 @@ public class TerminationConfig implements Cloneable {
         try {
             clone = (TerminationConfig) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new IllegalStateException("Impossible exception because TerminationConfig implements Cloneable.", e);
+            throw new IllegalStateException("Impossible state because TerminationConfig implements Cloneable.", e);
         }
         // Deep clone terminationConfigList
         if (terminationConfigList != null) {

@@ -1,4 +1,4 @@
-package org.optaplanner.core.api.domain.value.buildin;
+package org.optaplanner.core.api.domain.value.buildin.primint;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -63,11 +63,11 @@ public class IntValueRange extends AbstractValueRange<Integer> {
     }
 
     @Override
-    public Iterator createOriginalIterator() {
+    public Iterator<Integer> createOriginalIterator() {
         return new OriginalIntValueRangeIterator();
     }
 
-    private class OriginalIntValueRangeIterator extends ValueRangeIterator {
+    private class OriginalIntValueRangeIterator extends ValueRangeIterator<Integer> {
 
         private int upcoming = from;
 
@@ -77,7 +77,7 @@ public class IntValueRange extends AbstractValueRange<Integer> {
         }
 
         @Override
-        public Object next() {
+        public Integer next() {
             int next = upcoming;
             upcoming += incrementUnit;
             return next;
@@ -86,11 +86,11 @@ public class IntValueRange extends AbstractValueRange<Integer> {
     }
 
     @Override
-    public Iterator createRandomIterator(Random workingRandom) {
+    public Iterator<Integer> createRandomIterator(Random workingRandom) {
         return new RandomIntValueRangeIterator(workingRandom);
     }
 
-    private class RandomIntValueRangeIterator extends ValueRangeIterator {
+    private class RandomIntValueRangeIterator extends ValueRangeIterator<Integer> {
 
         private final Random workingRandom;
         private final long size = getSize();
@@ -105,9 +105,9 @@ public class IntValueRange extends AbstractValueRange<Integer> {
         }
 
         @Override
-        public Object next() {
-            long sizeIndex = RandomUtils.nextLong(workingRandom, size);
-            return (int) (sizeIndex * incrementUnit + from);
+        public Integer next() {
+            long index = RandomUtils.nextLong(workingRandom, size);
+            return (int) (index * incrementUnit + from);
         }
 
     }

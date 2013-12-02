@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.value.buildin;
+package org.optaplanner.core.api.domain.value.buildin.collection;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
 import org.junit.Test;
+import org.optaplanner.core.api.domain.value.buildin.collection.ListValueRange;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -50,6 +51,7 @@ public class ListValueRangeTest {
         assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createOriginalIterator(), 100, 120, 5, 7, 8);
         assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).createOriginalIterator(), -15, 25, 0);
         assertAllElementsOfIterator(new ListValueRange<String>(Arrays.asList("b", "z", "a")).createOriginalIterator(), "b", "z", "a");
+        assertAllElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createOriginalIterator());
     }
 
     @Test
@@ -61,6 +63,7 @@ public class ListValueRangeTest {
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createRandomIterator(workingRandom), 5, 100);
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).createRandomIterator(workingRandom), 0, -15);
         assertElementsOfIterator(new ListValueRange<String>(Arrays.asList("b", "z", "a")).createRandomIterator(workingRandom), "a", "b");
+        assertElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createRandomIterator(workingRandom));
     }
 
 }
