@@ -17,13 +17,10 @@ package org.jbpm.services.task.wih;
 
 import java.util.Date;
 
-import org.jboss.solder.core.Veto;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.manager.Context;
-import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
@@ -57,13 +54,12 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  */
-@Veto
 public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(NonManagedLocalHTWorkItemHandler.class);
     private KieSession ksession;
     private TaskService taskService;
-    private ExternalTaskEventListener listener;
+    private TaskLifeCycleEventListener listener;
     private boolean initialized = false;
    
     public NonManagedLocalHTWorkItemHandler() {
@@ -79,10 +75,9 @@ public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler 
     public void init() {
         if(!initialized) {
             
-            listener = new ExternalTaskEventListener();
-            listener.setRuntimeManager(new FakeRuntimeManager(ksession, taskService));
+            listener = new NonManagedTaskEventListener(this.ksession, this.taskService);
             if (taskService instanceof EventService) {
-                ((EventService)taskService).registerTaskLifecycleEventListener(listener);
+                ((EventService)taskService).registerTaskEventListener(listener);
             }
             initialized = true;
         }
@@ -91,7 +86,7 @@ public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler 
     @SuppressWarnings({ "rawtypes" })
     public void close() {
         if (taskService instanceof EventService) {
-            ((EventService)taskService).clearTaskLifecycleEventListeners();
+            ((EventService)taskService).clearTaskEventListeners();
         }
     }
    
@@ -150,47 +145,5 @@ public class NonManagedLocalHTWorkItemHandler extends AbstractHTWorkItemHandler 
 
     public void setTaskService(TaskService taskService) {
         this.taskService = taskService;
-    }
-    
-    private static class FakeRuntimeManager implements RuntimeManager {
-
-        private final KieSession ksession;
-        private final TaskService taskService;
-        
-        public FakeRuntimeManager(KieSession ksession, TaskService taskService) {
-            this.ksession = ksession;
-            this.taskService = taskService;
-        }
-
-        @Override
-        public RuntimeEngine getRuntimeEngine(Context<?> context) {
-            return new RuntimeEngine() {
-                
-                @Override
-                public TaskService getTaskService() {
-                    return taskService;
-                }
-                
-                @Override
-                public KieSession getKieSession() {
-                    return ksession;
-                }
-            };
-        }
-
-        @Override
-        public String getIdentifier() {
-            return "NonManagedRuntimeManager-" + ksession.getId();
-        }
-
-        @Override
-        public void disposeRuntimeEngine(RuntimeEngine runtime) {
-            // no-op
-        }
-
-        @Override
-        public void close() {
-            
-        }
     }
 }

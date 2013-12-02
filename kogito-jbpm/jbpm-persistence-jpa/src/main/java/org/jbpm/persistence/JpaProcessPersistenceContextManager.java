@@ -1,5 +1,6 @@
 package org.jbpm.persistence;
 
+
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -19,7 +20,7 @@ public class JpaProcessPersistenceContextManager extends JpaPersistenceContextMa
         }
         
         boolean useJTA = true; 
-        return new JpaProcessPersistenceContext( getInternalCommandScopedEntityManager(), useJTA, locking );
+        return new JpaProcessPersistenceContext( getCommandScopedEntityManager(), useJTA, locking );
     }
 
 }

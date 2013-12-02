@@ -14,9 +14,11 @@ import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-task-by-owner-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetTasksOwnedCommand extends TaskCommand<List<TaskSummary>> {
+public class GetTasksOwnedCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-    @XmlElement
+	private static final long serialVersionUID = -1763215272466075367L;
+
+	@XmlElement
     @XmlSchemaType(name="string")
 	private String language;
     
@@ -55,13 +57,8 @@ public class GetTasksOwnedCommand extends TaskCommand<List<TaskSummary>> {
 
 	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	if (status == null) {
-        		return context.getTaskService().getTasksOwned(userId, language);
-        	} else {
-        		return context.getTaskService().getTasksOwnedByStatus(userId, status, language);
-        	}
-        }
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
         if (status == null) {
         	return context.getTaskQueryService().getTasksOwned(userId, language);
         } else {

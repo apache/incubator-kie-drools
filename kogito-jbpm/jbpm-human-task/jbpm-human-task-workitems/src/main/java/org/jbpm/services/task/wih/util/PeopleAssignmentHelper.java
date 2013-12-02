@@ -19,13 +19,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -82,7 +83,7 @@ public class PeopleAssignmentHelper {
         if (potentialOwners.size() > 0 && taskData.getCreatedBy() == null) {
         	
         	OrganizationalEntity firstPotentialOwner = potentialOwners.get(0);
-        	taskData.setCreatedBy((UserImpl) firstPotentialOwner);
+        	taskData.setCreatedBy((User) firstPotentialOwner);
 
         }
         
@@ -102,9 +103,11 @@ public class PeopleAssignmentHelper {
 		String businessAdministratorIds = (String) workItem.getParameter(BUSINESSADMINISTRATOR_ID);
         List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
         if (!hasAdminAssigned(businessAdministrators)) {
-            UserImpl administrator = new UserImpl("Administrator");        
+            User administrator = TaskModelProvider.getFactory().newUser();
+        	((InternalOrganizationalEntity) administrator).setId("Administrator");        
             businessAdministrators.add(administrator);
-            GroupImpl adminGroup = new GroupImpl("Administrators");        
+            Group adminGroup = TaskModelProvider.getFactory().newGroup();
+        	((InternalOrganizationalEntity) adminGroup).setId("Administrators");        
             businessAdministrators.add(adminGroup);
         }
         processPeopleAssignments(businessAdministratorIds, businessAdministrators, true);
@@ -155,9 +158,12 @@ public class PeopleAssignmentHelper {
                 if (!exists) {
                     OrganizationalEntity organizationalEntity = null;
                     if (user) {
-                        organizationalEntity = new UserImpl(id);
+                    	organizationalEntity = TaskModelProvider.getFactory().newUser();
+                    	((InternalOrganizationalEntity) organizationalEntity).setId(id);
+                        
                     } else {
-                        organizationalEntity = new GroupImpl(id);
+                    	organizationalEntity = TaskModelProvider.getFactory().newGroup();
+                    	((InternalOrganizationalEntity) organizationalEntity).setId(id);
                     }
                     organizationalEntities.add(organizationalEntity);
 
@@ -172,7 +178,7 @@ public class PeopleAssignmentHelper {
         
         if (peopleAssignments == null) {
         	
-        	peopleAssignments = new PeopleAssignmentsImpl();
+        	peopleAssignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
         	peopleAssignments.setPotentialOwners(new ArrayList<OrganizationalEntity>());
         	peopleAssignments.setBusinessAdministrators(new ArrayList<OrganizationalEntity>());
         	peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());

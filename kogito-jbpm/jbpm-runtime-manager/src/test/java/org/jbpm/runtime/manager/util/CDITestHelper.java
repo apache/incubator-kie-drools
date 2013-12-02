@@ -1,27 +1,23 @@
 package org.jbpm.runtime.manager.util;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
 
 import org.jbpm.runtime.manager.impl.cdi.InjectableRegisterableItemsFactory;
+import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
+import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
+import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.cdi.qualifier.PerProcessInstance;
@@ -60,26 +56,7 @@ public class CDITestHelper {
         
         return this.emf;
     }
-    
-    @Produces
-    @ApplicationScoped
-    public EntityManager getEntityManager() {
-        final EntityManager em = produceEntityManagerFactory().createEntityManager();
-        EntityManager emProxy = (EntityManager) 
-                Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{EntityManager.class}, new EmInvocationHandler(em));
-        return emProxy;
-    }
 
-    @ApplicationScoped
-    public void commitAndClose(@Disposes EntityManager em) {
-        try {
-            
-            em.close();
-        } catch (Exception e) {
-
-        }
-    }
-    
     @Produces
     public UserGroupCallback getUserGroupCallback() {
         Properties properties= new Properties();
@@ -88,30 +65,13 @@ public class CDITestHelper {
         return new JBossUserGroupCallbackImpl(properties);
     }
     
-    private class EmInvocationHandler implements InvocationHandler {
-
-        private EntityManager delegate;
-        
-        EmInvocationHandler(EntityManager em) {
-            this.delegate = em;
-        }
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args)
-                throws Throwable {
-            joinTransactionIfNeeded();
-            return method.invoke(delegate, args);
-        }
-        
-        private void joinTransactionIfNeeded() {
-            try {
-                UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-                if (ut.getStatus() == Status.STATUS_ACTIVE) {
-                    delegate.joinTransaction();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        
+    @Produces
+    public TaskService produceTaskService() {
+    	return HumanTaskServiceFactory.newTaskServiceConfigurator()
+		.entityManagerFactory(produceEntityManagerFactory())
+		.listener(new JPATaskLifeCycleEventListener())
+		.listener(new BAMTaskEventListener())
+		.getTaskService();
     }
+    
 }

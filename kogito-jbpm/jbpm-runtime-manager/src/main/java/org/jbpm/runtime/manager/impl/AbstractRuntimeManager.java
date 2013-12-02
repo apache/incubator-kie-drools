@@ -18,16 +18,16 @@ package org.jbpm.runtime.manager.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.time.TimerService;
+import org.drools.persistence.OrderedTransactionSynchronization;
+import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.runtime.manager.api.SchedulerProvider;
-import org.jbpm.runtime.manager.impl.tx.ExtendedJTATransactionManager;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
@@ -36,6 +36,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 
@@ -54,7 +55,7 @@ import org.kie.internal.task.api.InternalTaskService;
  */
 public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 
-    protected volatile static List<String> activeManagers = new CopyOnWriteArrayList<String>();
+    protected RuntimeManagerRegistry registry = RuntimeManagerRegistry.get();
     protected RuntimeEnvironment environment;
     
     protected String identifier;
@@ -64,7 +65,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
         this.environment = environment;
         this.identifier = identifier;
-        if (activeManagers.contains(identifier)) {
+        if (registry.isRegistered(identifier)) {
             throw new IllegalStateException("RuntimeManager with id " + identifier + " is already active");
         }
         
@@ -98,13 +99,15 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     }
     
     protected void registerDisposeCallback(RuntimeEngine runtime, TransactionSynchronization sync) {
-        // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT
-        // TODO is there better way to register transaction synchronization?
-        JtaTransactionManager tm = new ExtendedJTATransactionManager(null, null, null);
+    	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+    		return;
+    	}
+        // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
+        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            tm.registerTransactionSynchronization(sync);
+            TransactionManagerHelper.registerTransactionSyncInContainer(tm, (OrderedTransactionSynchronization) sync);
         }
     }
     
@@ -125,7 +128,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     
     public void close(boolean removeJobs) {
         environment.close();
-        activeManagers.remove(identifier);
+        registry.remove(identifier);
         TimerService timerService = TimerServiceRegistry.getInstance().remove(getIdentifier() + TimerServiceRegistry.TIMER_SERVICE_SUFFIX);
         if (timerService != null) {
             if (removeJobs && timerService instanceof GlobalTimerService) {
@@ -172,7 +175,10 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     
 
     protected boolean canDestroy() {
-        JtaTransactionManager tm = new ExtendedJTATransactionManager(null, null, null);
+    	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+    		return false;
+    	}
+        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
         if (tm.getStatus() == JtaTransactionManager.STATUS_NO_TRANSACTION ||
                 tm.getStatus() == JtaTransactionManager.STATUS_ACTIVE) {
             return true;
@@ -180,4 +186,11 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         return false;
     }
 
+    protected boolean hasEnvironmentEntry(String name, Object value) {
+    	Object envEntry = environment.getEnvironment().get(name);
+    	if (value == null) {
+    		return envEntry == null;
+    	}
+    	return value.equals(envEntry);
+    }
 }

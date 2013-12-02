@@ -15,10 +15,6 @@
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-shared-services</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
@@ -31,19 +27,6 @@
       <artifactId>kie-api</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.jboss.seam.transaction</groupId>
-      <artifactId>seam-transaction</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
@@ -75,31 +58,6 @@
     </dependency>
 
     <!-- test -->
-    <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-impl</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.solder</groupId>
-      <artifactId>solder-logging</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -124,23 +82,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.container</groupId>
-      <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.core</groupId>
-      <artifactId>arquillian-core-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -157,11 +100,6 @@
           <groupId>logkit</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -186,6 +124,11 @@
       <version>0.9.9-RC1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+	  <groupId>org.jbpm</groupId>
+	  <artifactId>jbpm-human-task-jpa</artifactId>
+	  <scope>test</scope>
+	</dependency>
   </dependencies>
 
   <build>

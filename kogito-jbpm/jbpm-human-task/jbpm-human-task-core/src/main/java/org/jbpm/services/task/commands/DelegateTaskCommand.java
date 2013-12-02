@@ -15,21 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskDelegatedEvent;
-import org.jbpm.services.task.events.BeforeTaskDelegatedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
 *Operation.Delegate 
@@ -48,10 +38,14 @@ import org.kie.internal.task.api.model.InternalTaskData;
                 exec = Operation.Claim
             } ],
  */
-@Transactional
 @XmlRootElement(name="delegate-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class DelegateTaskCommand extends TaskCommand<Void> {
+public class DelegateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5656199063761548979L;
 
 	public DelegateTaskCommand() {
 	}
@@ -64,48 +58,11 @@ public class DelegateTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().delegate(taskId, userId, targetEntityId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        OrganizationalEntity targetEntity = context.getTaskIdentityService()
-                                                    .getOrganizationalEntityById(targetEntityId);
-        
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskDelegatedEvent>() {
-        }).fire(task);
-        // CHeck for potential Owner allowed (decorator?)
-        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
-        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getPotentialOwners());
-        boolean ownerAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
-        if (!adminAllowed && !potOwnerAllowed && !ownerAllowed) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task " + task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-        if (potOwnerAllowed || adminAllowed ) {
-            if (task.getTaskData().getStatus().equals(Status.Ready)) {
-
-            	((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
-                if ( !task.getPeopleAssignments().getPotentialOwners().contains(targetEntity)) {
-                    task.getPeopleAssignments().getPotentialOwners().add(targetEntity);
-                }
-
-            }
-        }
-        if (ownerAllowed || adminAllowed) {
-            if (task.getTaskData().getStatus().equals(Status.Reserved)
-                    || task.getTaskData().getStatus().equals(Status.InProgress)) {
-            	((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
-                if ( !task.getPeopleAssignments().getPotentialOwners().contains(targetEntity)) {
-                    task.getPeopleAssignments().getPotentialOwners().add(targetEntity);
-                }
-            }
-        }
-
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskDelegatedEvent>() {
-        }).fire(task);
-
-        return null;
+        doCallbackUserOperation(userId, context);
+        doCallbackUserOperation(targetEntityId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().delegate(taskId, userId, targetEntityId);
+    	return null;
+           
     }
 }

@@ -90,6 +90,7 @@ public class ClassloaderKModuleDeploymentServiceTest extends AbstractBaseTest {
                 
                 .addPackage("org.jbpm.kie.services.api")
                 .addPackage("org.jbpm.kie.services.impl")
+                .addPackage("org.jbpm.kie.services.cdi.producer")
                 .addPackage("org.jbpm.kie.services.api.bpmn2")
                 .addPackage("org.jbpm.kie.services.impl.bpmn2")
                 .addPackage("org.jbpm.kie.services.impl.event.listeners")

@@ -39,12 +39,11 @@ import org.jbpm.runtime.manager.api.EventListenerProducer;
 import org.jbpm.runtime.manager.api.WorkItemHandlerProducer;
 import org.jbpm.runtime.manager.api.qualifiers.Agenda;
 import org.jbpm.runtime.manager.api.qualifiers.Process;
+import org.jbpm.runtime.manager.api.qualifiers.Task;
 import org.jbpm.runtime.manager.api.qualifiers.WorkingMemory;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
-import org.jbpm.services.task.annotations.External;
-import org.jbpm.services.task.wih.ExternalTaskEventListener;
-import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -87,9 +86,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     private static final String DEFAULT_KIE_SESSION = "defaultKieSession";
     private static final Logger logger = LoggerFactory.getLogger(InjectableRegisterableItemsFactory.class);
     
-    @Inject
-    @External
-    private ExternalTaskEventListener taskListener; 
     // optional injections
     @Inject
     @Any
@@ -103,6 +99,9 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     @Inject
     @WorkingMemory
     private Instance<EventListenerProducer<RuleRuntimeEventListener>> wmListenerProducer;
+    @Inject
+    @Task
+    private Instance<EventListenerProducer<TaskLifeCycleEventListener>> taskListenerProducer;
     @Inject
     private Instance<ExecutorService> executorService;
     
@@ -146,7 +145,7 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
             try {
 
                 CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession(), parameters);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 // use fallback mechanism
                 CDIHelper.wireListnersAndWIHs(ksessionModel, runtime.getKieSession());
             }
@@ -162,17 +161,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
         
         return handler;
     }
-    
-    protected WorkItemHandler getHTWorkItemHandler(RuntimeEngine runtime) {
-        
-        RuntimeManager manager = ((RuntimeEngineImpl)runtime).getManager();
-        taskListener.addMappedManger(manager.getIdentifier(), manager);
-        
-        LocalHTWorkItemHandler humanTaskHandler = new LocalHTWorkItemHandler();
-        humanTaskHandler.setRuntimeManager(manager);
-
-        return humanTaskHandler;
-    }  
     
 
     @Override

@@ -13,7 +13,9 @@ import org.kie.internal.command.Context;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTaskByWorkItemIdCommand extends TaskCommand<Task> {
 
-    @XmlElement
+	private static final long serialVersionUID = 6296898155907765061L;
+
+	@XmlElement
     @XmlSchemaType(name="long")
 	private Long workItemId;
 	
@@ -34,9 +36,7 @@ public class GetTaskByWorkItemIdCommand extends TaskCommand<Task> {
 
 	public Task execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	return context.getTaskService().getTaskByWorkItemId(workItemId);
-        }
+
         return context.getTaskQueryService().getTaskByWorkItemId(workItemId);
     }
 

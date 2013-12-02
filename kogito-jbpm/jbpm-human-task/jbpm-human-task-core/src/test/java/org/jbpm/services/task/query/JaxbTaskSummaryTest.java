@@ -9,13 +9,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.drools.core.command.assertion.AssertEquals;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
@@ -26,7 +26,9 @@ public class JaxbTaskSummaryTest extends Assert {
         Marshaller marshaller = JAXBContext.newInstance(TaskSummaryImpl.class).createMarshaller();
         StringWriter stringWriter = new StringWriter();
         
-        User user = new UserImpl("og");
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("og");
+        
         TaskSummary taskSummary = new TaskSummaryImpl(
                 1l, 2l, 
                 "a", "b", "c", 

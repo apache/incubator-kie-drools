@@ -14,12 +14,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.I18NTextImpl;
-import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.services.task.impl.model.TaskDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.adapter.I18NTextXmlAdapter;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
@@ -28,6 +22,11 @@ import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalI18NText;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 @XmlRootElement(name="task")
@@ -145,56 +144,75 @@ public class JaxbTask implements Task {
     }
 
     public Task getTask() { 
-        TaskImpl taskImpl = new TaskImpl();
+        Task taskImpl = TaskModelProvider.getFactory().newTask();
         List<I18NText> names = new ArrayList<I18NText>();
         for (I18NText n: this.getNames()) {
-            names.add(new I18NTextImpl(n.getLanguage(), n.getText()));
+        	I18NText text = TaskModelProvider.getFactory().newI18NText();
+        	((InternalI18NText) text).setLanguage(n.getLanguage());
+        	((InternalI18NText) text).setText(n.getText());
+            names.add(text);
         }
-        taskImpl.setNames(names);
+        ((InternalTask)taskImpl).setNames(names);
         List<I18NText> descriptions = new ArrayList<I18NText>();
         for (I18NText n: this.getDescriptions()) {
-            descriptions.add(new I18NTextImpl(n.getLanguage(), n.getText()));
+        	I18NText text = TaskModelProvider.getFactory().newI18NText();
+        	((InternalI18NText) text).setLanguage(n.getLanguage());
+        	((InternalI18NText) text).setText(n.getText());
+            names.add(text);
         }
-        taskImpl.setDescriptions(descriptions);
+        ((InternalTask)taskImpl).setDescriptions(descriptions);
         List<I18NText> subjects = new ArrayList<I18NText>();
         for (I18NText n: this.getSubjects()) {
-            subjects.add(new I18NTextImpl(n.getLanguage(), n.getText()));
+        	I18NText text = TaskModelProvider.getFactory().newI18NText();
+        	((InternalI18NText) text).setLanguage(n.getLanguage());
+        	((InternalI18NText) text).setText(n.getText());
+            names.add(text);
         }
-        taskImpl.setSubjects(subjects);
-        taskImpl.setPriority(this.getPriority());
-        InternalTaskData taskData = new TaskDataImpl();
+        ((InternalTask)taskImpl).setSubjects(subjects);
+        ((InternalTask)taskImpl).setPriority(this.getPriority());
+        InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
         taskData.setWorkItemId(this.getTaskData().getWorkItemId());
         taskData.setProcessInstanceId(this.getTaskData().getProcessInstanceId());
         taskData.setProcessId(this.getTaskData().getProcessId());
         taskData.setProcessSessionId(this.getTaskData().getProcessSessionId());
         taskData.setSkipable(this.getTaskData().isSkipable());
-        PeopleAssignmentsImpl peopleAssignments = new PeopleAssignmentsImpl();
+        PeopleAssignments peopleAssignments = TaskModelProvider.getFactory().newPeopleAssignments();
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         for (OrganizationalEntity e: this.getPeopleAssignments().getPotentialOwners()) {
             if (e instanceof User) {
-                potentialOwners.add(new UserImpl(e.getId()));
+            	User user = TaskModelProvider.getFactory().newUser();
+            	((InternalOrganizationalEntity) user).setId(e.getId());
+                potentialOwners.add(user);
             } else if (e instanceof Group) {
-                potentialOwners.add(new GroupImpl(e.getId()));
+            	Group group = TaskModelProvider.getFactory().newGroup();
+            	((InternalOrganizationalEntity) group).setId(e.getId());
+                potentialOwners.add(group);
             }
         }
-        peopleAssignments.setPotentialOwners(potentialOwners);
+        ((InternalPeopleAssignments)peopleAssignments).setPotentialOwners(potentialOwners);
         List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
         for (OrganizationalEntity e: this.getPeopleAssignments().getBusinessAdministrators()) {
             if (e instanceof User) {
-                businessAdmins.add(new UserImpl(e.getId()));
+            	User user = TaskModelProvider.getFactory().newUser();
+            	((InternalOrganizationalEntity) user).setId(e.getId());
+                businessAdmins.add(user);
             } else if (e instanceof Group) {
-                businessAdmins.add(new GroupImpl(e.getId()));
+            	Group group = TaskModelProvider.getFactory().newGroup();
+            	((InternalOrganizationalEntity) group).setId(e.getId());
+                businessAdmins.add(group);
             }
         }
         if (this.getPeopleAssignments().getTaskInitiator() != null) {
-            peopleAssignments.setTaskInitiator(new UserImpl(this.getPeopleAssignments().getTaskInitiator().getId()));
+        	User user = TaskModelProvider.getFactory().newUser();
+        	((InternalOrganizationalEntity) user).setId(this.getPeopleAssignments().getTaskInitiator().getId());
+        	((InternalPeopleAssignments)peopleAssignments).setTaskInitiator(user);
         }
-        peopleAssignments.setBusinessAdministrators(businessAdmins);
-        peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());
-        peopleAssignments.setRecipients(new ArrayList<OrganizationalEntity>());
-        peopleAssignments.setTaskStakeholders(new ArrayList<OrganizationalEntity>());
-        taskImpl.setPeopleAssignments(peopleAssignments);        
-        taskImpl.setTaskData(taskData);
+        ((InternalPeopleAssignments)peopleAssignments).setBusinessAdministrators(businessAdmins);
+        ((InternalPeopleAssignments)peopleAssignments).setExcludedOwners(new ArrayList<OrganizationalEntity>());
+        ((InternalPeopleAssignments)peopleAssignments).setRecipients(new ArrayList<OrganizationalEntity>());
+        ((InternalPeopleAssignments)peopleAssignments).setTaskStakeholders(new ArrayList<OrganizationalEntity>());
+        ((InternalTask)taskImpl).setPeopleAssignments(peopleAssignments);        
+        ((InternalTask)taskImpl).setTaskData(taskData);
        
         return taskImpl;
     }

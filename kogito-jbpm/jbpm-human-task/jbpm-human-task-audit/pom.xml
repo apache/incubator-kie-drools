@@ -112,5 +112,10 @@
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+        	<groupId>org.jbpm</groupId>
+        	<artifactId>jbpm-human-task-jpa</artifactId>
+        	<scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

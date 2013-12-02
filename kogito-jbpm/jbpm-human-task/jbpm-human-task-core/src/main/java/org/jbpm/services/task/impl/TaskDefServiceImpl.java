@@ -6,42 +6,46 @@ package org.jbpm.services.task.impl;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.task.api.TaskDefService;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.TaskDef;
 
 /**
  *
  */
-
-@Transactional
-@ApplicationScoped
 public class TaskDefServiceImpl implements TaskDefService{
     
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
 
-    public TaskDefServiceImpl() {
+    private TaskPersistenceContext persistenceContext;
+
+	public TaskDefServiceImpl() {
     }
+	
+	public TaskDefServiceImpl(TaskPersistenceContext persistenceContext) {
+		this.persistenceContext = persistenceContext;
+	}
+	
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+		this.persistenceContext = persistenceContext;
+	}
 
     public void deployTaskDef(TaskDef def) {
-        pm.persist(def);    
+    	persistenceContext.persist(def);    
     }
 
     public List<TaskDef> getAllTaskDef(String filter) {
-        List<TaskDef> resultList = (List<TaskDef>) pm.queryStringInTransaction("select td from TaskDef td"); 
+        List<TaskDef> resultList = persistenceContext.queryStringInTransaction("select td from TaskDef td",
+        		ClassUtil.<List<TaskDef>>castClass(List.class)); 
         return resultList;
     }
 
-    public TaskDefImpl getTaskDefById(String name) {
+    public TaskDef getTaskDefById(String name) {
         //TODO: FIX LOGIC
         
-        List<TaskDefImpl> resultList =  (List<TaskDefImpl>)pm.queryStringWithParametersInTransaction("select td from TaskDef td where td.name = :name", pm.addParametersToMap("name", name));
+        List<TaskDef> resultList = persistenceContext.queryStringWithParametersInTransaction("select td from TaskDef td where td.name = :name", 
+        		persistenceContext.addParametersToMap("name", name),
+        		ClassUtil.<List<TaskDef>>castClass(List.class));
                                  
         
         if(resultList.size() > 0){
@@ -52,8 +56,8 @@ public class TaskDefServiceImpl implements TaskDefService{
     }
     
     public void undeployTaskDef(String name) {
-        TaskDefImpl taskDef = getTaskDefById(name);
-        pm.remove(taskDef);    
+        TaskDef taskDef = getTaskDefById(name);
+        persistenceContext.remove(taskDef);    
     }
     
 }

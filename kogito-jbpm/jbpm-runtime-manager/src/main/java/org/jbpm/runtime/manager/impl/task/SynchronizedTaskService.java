@@ -19,11 +19,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.event.Event;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.task.model.Attachment;
@@ -42,7 +40,6 @@ import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.NotificationEvent;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
@@ -53,7 +50,7 @@ import org.kie.internal.task.api.model.TaskEvent;
  *
  */
 public class SynchronizedTaskService 
-            implements InternalTaskService, EventService<JbpmServicesEventListener<NotificationEvent>,JbpmServicesEventListener<Task>> {
+            implements InternalTaskService, EventService<TaskLifeCycleEventListener> {
 	
 	
 	private Object ksession;
@@ -308,7 +305,7 @@ public class SynchronizedTaskService
     public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId,
             List<String> groupIds, String language) {
         synchronized (ksession) {
-            return  taskService.getTasksAssignedAsExcludedOwner(userId, language);
+            return  taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, language);
         }
     }
 
@@ -822,53 +819,35 @@ public class SynchronizedTaskService
 
     @SuppressWarnings("unchecked")
     @Override
-    public void registerTaskLifecycleEventListener(JbpmServicesEventListener<Task> taskLifecycleEventListener) {
+    public void registerTaskEventListener(TaskLifeCycleEventListener taskLifecycleEventListener) {
         synchronized (ksession) {
-            ((EventService<Task, JbpmServicesEventListener<Task>>)taskService)
-            .registerTaskLifecycleEventListener(taskLifecycleEventListener);
+            ((EventService<TaskLifeCycleEventListener>)taskService).registerTaskEventListener(taskLifecycleEventListener);
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void registerTaskNotificationEventListener(JbpmServicesEventListener<NotificationEvent> notificationEventListener) {
+    public List<TaskLifeCycleEventListener> getTaskEventListeners() {
         synchronized (ksession) {
-            ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>)taskService)
-            	.registerTaskNotificationEventListener(notificationEventListener);
+            return ((EventService<TaskLifeCycleEventListener>) taskService).getTaskEventListeners();
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Event<Task> getTaskLifecycleEventListeners() {
+    public void clearTaskEventListeners() {
         synchronized (ksession) {
-            return ((EventService<Task, JbpmServicesEventListener<Task>>) taskService).getTaskLifecycleEventListeners();
+            ((EventService<TaskLifeCycleEventListener>) taskService).clearTaskEventListeners();
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Event<NotificationEvent> getTaskNotificationEventListeners() {
-        synchronized (ksession) {
-            return ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>) taskService).getTaskNotificationEventListeners();
+	@SuppressWarnings("unchecked")
+	@Override
+	public void removeTaskEventListener(TaskLifeCycleEventListener listener) {
+		synchronized (ksession) {
+            ((EventService<TaskLifeCycleEventListener>) taskService).removeTaskEventListener(listener);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void clearTaskLifecycleEventListeners() {
-        synchronized (ksession) {
-            ((EventService<Task, JbpmServicesEventListener<Task>>) taskService).clearTaskLifecycleEventListeners();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void clearTasknotificationEventListeners() {
-        synchronized (ksession) {
-            ((EventService<JbpmServicesEventListener<NotificationEvent>, ?>) taskService).clearTasknotificationEventListeners();
-        }
-    }
+	}
 
 	@Override
 	public <T> T execute(Command<T> command) {
@@ -957,5 +936,6 @@ public class SynchronizedTaskService
             return null;
         }
 	}
+
 
 }

@@ -9,12 +9,13 @@ import java.util.Collections;
 
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.services.task.impl.model.LanguageImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.EmailNotification;
 import org.kie.internal.task.api.model.EmailNotificationHeader;
+import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.Reassignment;
 
@@ -245,7 +246,9 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new LanguageImpl("en-UK"));
+		Language lang = TaskModelProvider.getFactory().newLanguage();
+		lang.setMapkey("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(lang);
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -285,7 +288,9 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new LanguageImpl("en-UK"));
+		Language lang = TaskModelProvider.getFactory().newLanguage();
+		lang.setMapkey("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(lang);
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -324,7 +329,9 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new LanguageImpl("en-UK"));
+		Language lang = TaskModelProvider.getFactory().newLanguage();
+		lang.setMapkey("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(lang);
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -346,7 +353,9 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 		
 		emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		header = emailNotification.getEmailHeaders().get(new LanguageImpl("en-UK"));
+		lang = TaskModelProvider.getFactory().newLanguage();
+		lang.setMapkey("en-UK");
+		header = emailNotification.getEmailHeaders().get(lang);
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertEquals("And here is the body", header.getBody());
@@ -394,7 +403,9 @@ public class HumanTaskHandlerHelperTest extends AbstractBaseTest {
 		
 		EmailNotification emailNotification = (EmailNotification) notification;
 		assertEquals(1, emailNotification.getEmailHeaders().size());
-		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(new LanguageImpl("en-UK"));
+		Language lang = TaskModelProvider.getFactory().newLanguage();
+		lang.setMapkey("en-UK");
+		EmailNotificationHeader header = emailNotification.getEmailHeaders().get(lang);
 		assertNotNull(header);
 		assertEquals("Test of notification", header.getSubject());
 		assertTrue((header.getBody().indexOf("http://localhost:8080/taskserver-url") != -1));

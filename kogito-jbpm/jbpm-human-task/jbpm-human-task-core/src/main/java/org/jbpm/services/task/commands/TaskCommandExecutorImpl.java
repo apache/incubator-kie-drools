@@ -15,30 +15,64 @@
  */
 package org.jbpm.services.task.commands;
 
-import javax.inject.Inject;
-
+import org.drools.core.command.CommandService;
+import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.GenericCommand;
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.annotations.CommandBased;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.kie.api.command.Command;
-import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.runtime.Environment;
 import org.kie.internal.command.Context;
 
 
-/**
- *
- */
-@CommandBased @Transactional
-public class TaskCommandExecutorImpl implements CommandExecutor {
-    @Inject
-    private TaskContext context;
 
-    public <T> T execute(Command<T> command) {
-    	if (command instanceof TaskCommand) {
-    		return (T)((GenericCommand) command).execute((Context)context);
-    	} else {
-    		throw new IllegalArgumentException("Task service can only execute task commands");
-    	}
+public class TaskCommandExecutorImpl implements CommandService {
+	
+	private Environment environment;
+	private TaskEventSupport taskEventSupport;
+	private CommandService commandService = new SelfExecutionCommandService(this);
+	
+	public TaskCommandExecutorImpl(Environment environment, TaskEventSupport taskEventSupport) {
+		this.environment = environment;
+		this.taskEventSupport = taskEventSupport;
+	}
+    
+	public <T> T execute(Command<T> command) {
+    	return this.commandService.execute(command);
     }
+	
+	public void addInterceptor(Interceptor interceptor) {
+        interceptor.setNext( this.commandService );
+        this.commandService = interceptor;
+    }
+
+	@Override
+	public Context getContext() {
+		if (this.commandService.equals(this)) {
+			return new TaskContext();
+		}
+		return new TaskContext(commandService.getContext(), environment, taskEventSupport);
+	}
+	
+	private class SelfExecutionCommandService implements CommandService {
+		private TaskCommandExecutorImpl owner;
+		
+		SelfExecutionCommandService(TaskCommandExecutorImpl owner) {
+			this.owner = owner;
+		}
+		@Override
+		public <T> T execute(Command<T> command) {
+			if (command instanceof TaskCommand) {
+	    		return (T)((GenericCommand<T>) command).execute(getContext());
+	    	} else {
+	    		throw new IllegalArgumentException("Task service can only execute task commands");
+	    	}
+		}
+
+		@Override
+		public Context getContext() {
+			return owner.getContext();
+		}
+		
+	}
     
 }

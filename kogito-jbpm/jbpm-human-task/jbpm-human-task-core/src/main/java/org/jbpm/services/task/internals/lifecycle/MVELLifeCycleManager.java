@@ -13,26 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
 import org.drools.core.util.MVELSafeHelper;
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.annotations.Internal;
-import org.jbpm.services.task.annotations.Mvel;
-import org.jbpm.services.task.events.*;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.jbpm.services.task.exception.TaskException;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.FaultDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
@@ -41,11 +26,14 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskContentService;
-import org.kie.internal.task.api.TaskIdentityService;
-import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.TaskPersistenceContext;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Operation;
+import org.kie.internal.task.exception.TaskException;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
@@ -56,45 +44,34 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-@Mvel
-@ApplicationScoped
-@Transactional
+
 public class MVELLifeCycleManager implements LifeCycleManager {
     
     private static final Logger logger = LoggerFactory.getLogger(MVELLifeCycleManager.class);
-    
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
-    @Inject
-    private TaskQueryService taskQueryService;
-    @Inject
-    private TaskIdentityService taskIdentityService;
-    @Inject
+
+    private TaskPersistenceContext persistenceContext;
+
     private TaskContentService taskContentService;
-    @Inject
-    private Event<Task> taskEvents;
-    @Inject
-    @Internal
-    private TaskLifeCycleEventListener eventListener;
-    private Map<Operation, List<OperationCommand>> operations;
+    private TaskEventSupport taskEventSupport;
+    private static Map<Operation, List<OperationCommand>> operations = initMVELOperations();
 
     public MVELLifeCycleManager() {
     }
-
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
-    }
     
-    public void setTaskEvents(Event<Task> taskEvents) {
-        this.taskEvents = taskEvents;
-    }
-    
-    public void setTaskQueryService(TaskQueryService taskQueryService) {
-        this.taskQueryService = taskQueryService;
+    public MVELLifeCycleManager(TaskPersistenceContext persistenceContext, TaskContentService contentService,
+    		TaskEventSupport taskEventSupport) {
+    	this.persistenceContext = persistenceContext;
+    	this.taskContentService = contentService;
+    	this.taskEventSupport = taskEventSupport;
+    	
     }
 
-    public void setTaskIdentityService(TaskIdentityService taskIdentityService) {
-        this.taskIdentityService = taskIdentityService;
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+        this.persistenceContext = persistenceContext;
+    }
+    
+    public void setTaskEventSupport(TaskEventSupport taskEventSupport) {
+        this.taskEventSupport = taskEventSupport;
     }
 
     public void setTaskContentService(TaskContentService taskContentService) {
@@ -244,7 +221,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         if (command.getExec() != null) {
             switch (command.getExec()) {
                 case Claim: {
-                    taskData.setActualOwner((UserImpl) targetEntity);
+                    taskData.setActualOwner((User) targetEntity);
                     // @TODO: Ical stuff
                     // Task was reserved so owner should get icals
 //                    SendIcal.getInstance().sendIcalForTask(task, service.getUserinfo());
@@ -264,88 +241,75 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         try {
             final List<OperationCommand> commands = operations.get(operation);
 
-            Task task = taskQueryService.getTaskInstanceById(taskId);
-            User user = taskIdentityService.getUserById(userId);
+            Task task = persistenceContext.findTask(taskId);
+            User user = persistenceContext.findUser(userId);
             OrganizationalEntity targetEntity = null;
             if (targetEntityId != null && !targetEntityId.equals("")) {
-                targetEntity = taskIdentityService.getOrganizationalEntityById(targetEntityId);
+                targetEntity = persistenceContext.findOrgEntity(targetEntityId);
             }
 
             switch (operation) {    
                 case Activate: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskActivatedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskActivated(task, persistenceContext);
                     break;
                 }
                 case Claim: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskClaimedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskClaimed(task, persistenceContext);
                     break;
                 }
                 case Complete: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskCompletedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskCompleted(task, persistenceContext);
                     break;
                 }
                 case Delegate: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskDelegatedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskDelegated(task, persistenceContext);
                     break;
                 }
                 case Exit: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskExitedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskExited(task, persistenceContext);
                     break;
                 }
 
                 case Fail: {
                     if (data != null) {
 
-                        FaultDataImpl faultData = ContentMarshallerHelper.marshalFault(data, null);
-                        ContentImpl content = new ContentImpl();
-                        content.setContent(faultData.getContent());
-                        pm.persist(content);
+                        FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
+                        Content content = TaskModelProvider.getFactory().newContent();
+                        ((InternalContent)content).setContent(faultData.getContent());
+                        persistenceContext.persistContent(content);
                         ((InternalTaskData) task.getTaskData()).setFault(content.getId(), faultData);
 
 
                     }
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskFailedEvent>() {
-                    }).fire(task);
+                    taskEventSupport.fireBeforeTaskFailed(task, persistenceContext);
                     break;
                 }
                 case Forward: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskForwardedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskForwarded(task, persistenceContext);
                     break;
                 }
                 case Release: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskReleasedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskReleased(task, persistenceContext);
                     break;
                 }
                 case Resume: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskResumedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskResumed(task, persistenceContext);
                     break;
                 }
                 case Skip: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskSkippedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskSkipped(task, persistenceContext);
                     break;
                 }
                 case Start: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskStartedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskStarted(task, persistenceContext);
                     break;
                 }
                 case Stop: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskStoppedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskStopped(task, persistenceContext);
                     break;
                 }
                 case Suspend: {
-                    taskEvents.select(new AnnotationLiteral<BeforeTaskSuspendedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireBeforeTaskSuspended(task, persistenceContext);
                     break;
                 }
 
@@ -355,13 +319,11 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
             switch (operation) {
                 case Activate: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskActivatedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskActivated(task, persistenceContext);
                     break;
                 }
                 case Claim: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskClaimedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskClaimed(task, persistenceContext);
                     break;
                 }
                 case Complete: {
@@ -371,59 +333,48 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                         
                     }
 
-                    taskEvents.select(new AnnotationLiteral<AfterTaskCompletedEvent>() {
-                    }).fire(task);
+                    taskEventSupport.fireAfterTaskCompleted(task, persistenceContext);
                     break;
                 }
                 case Delegate: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskDelegatedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskDelegated(task, persistenceContext);
                     // This is a really bad hack to execut the correct behavior
                     ((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved);
                 }
                 case Exit: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskExitedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskExited(task, persistenceContext);
                     break;
                 }
                 case Fail: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskFailedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskFailed(task, persistenceContext);
                     break;
                 }
                 case Forward: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskForwardedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskForwarded(task, persistenceContext);
                     break;
                 }   
                 case Release: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskReleasedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskReleased(task, persistenceContext);
                     break;
                 }
                 case Resume: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskResumedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskResumed(task, persistenceContext);
                     break;
                 }
                 case Start: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskStartedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskStarted(task, persistenceContext);
                     break;
                 }
                 case Skip: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskSkippedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskSkipped(task, persistenceContext);
                     break;
                 }
                 case Stop: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskStoppedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskStopped(task, persistenceContext);
                     break;
                 }    
                 case Suspend: {
-                    taskEvents.select(new AnnotationLiteral<AfterTaskSuspendedEvent>() {
-                    }).fire(task);
+                	taskEventSupport.fireAfterTaskSuspended(task, persistenceContext);
                     break;
                 }
             }
@@ -434,15 +385,15 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
     }
 
-    @PostConstruct
-    public void initMVELOperations() {
+    
+    public static Map<Operation, List<OperationCommand>> initMVELOperations() {
 
         Map<String, Object> vars = new HashMap<String, Object>();
 
         // Search operations-dsl.mvel, if necessary using superclass if TaskService is subclassed
         InputStream is = null;
         // for (Class<?> c = getClass(); c != null; c = c.getSuperclass()) {
-        is = getClass().getResourceAsStream("/operations-dsl.mvel");
+        is = MVELLifeCycleManager.class.getResourceAsStream("/operations-dsl.mvel");
 //            if (is != null) {
 //                break;
 //            }
@@ -452,7 +403,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
         }
         Reader reader = new InputStreamReader(is);
         try {
-            operations = (Map<Operation, List<OperationCommand>>) eval(toString(reader), vars);
+            return (Map<Operation, List<OperationCommand>>) eval(toString(reader), vars);
         } catch (IOException e) {
             throw new RuntimeException("Unable To initialise TaskService, could not load Operations DSL");
         }
@@ -508,8 +459,8 @@ public class MVELLifeCycleManager implements LifeCycleManager {
     }
 
     public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-        final TaskImpl task = pm.find(TaskImpl.class, taskId);
-        final UserImpl user = pm.find(UserImpl.class, userId);
+        final Task task = persistenceContext.findTask(taskId);
+        final User user = persistenceContext.findUser(userId);
         if (isAllowed(user, null, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators())) {
 
 

@@ -20,10 +20,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.seam.transaction</groupId>
-      <artifactId>seam-transaction</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
     </dependency>
@@ -119,27 +115,7 @@
             </fileset>
           </filesets>
         </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>btm-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <classifier>btm</classifier>
-              <includes>
-                <include>org/jbpm/shared/services/impl/tx/*</include>
-              </includes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      </plugin>      
 
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -153,7 +129,7 @@
             <Private-Package>
             </Private-Package>
             <Export-Package>
-              !org.jbpm.shared.services.impl.tx.*,org.jbpm.shared.services*
+              org.jbpm.shared.services*
             </Export-Package>
           </instructions>
         </configuration>

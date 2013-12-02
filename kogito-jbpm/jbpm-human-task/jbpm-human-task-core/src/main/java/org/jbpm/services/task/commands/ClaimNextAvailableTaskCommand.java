@@ -15,27 +15,24 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.jboss.seam.transaction.Transactional;
-import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
 /**
 
  */
-@Transactional
 @XmlRootElement(name="claim-next-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
+public class ClaimNextAvailableTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 
-    @XmlElement
+	private static final long serialVersionUID = 5483896114601268607L;
+	
+	@XmlElement
     @XmlSchemaType(name="string")
     private String language;
     
@@ -57,14 +54,9 @@ public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().claimNextAvailable(userId, language);
-        	return null;
-        }
-        List<TaskSummary> tasks = context.getTaskQueryService().getTasksAssignedAsPotentialOwner(userId, language);
-        if(tasks.size() > 0){
-            new ClaimTaskCommand(tasks.get(0).getId(), userId).execute(cntxt);
-        }    
-        return null;
+        doCallbackUserOperation(userId, context);
+    	context.getTaskInstanceService().claimNextAvailable(userId, language);
+    	return null;
+
     }
 }

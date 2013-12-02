@@ -1,59 +1,38 @@
 package org.jbpm.services.task;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.Before;
-import org.junit.runner.RunWith;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-@RunWith(Arquillian.class)
+import org.junit.After;
+import org.junit.Before;
+import org.kie.internal.task.api.InternalTaskService;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
+
+
 public class TaskQueryServiceLocalTest extends TaskQueryServiceBaseTest {
 
-    @Deployment()
-    public static Archive<?> createDeployment() {
-        return ShrinkWrap
-                .create(JavaArchive.class, "jbpm-human-task-cdi.jar")
-                .addPackage("org.jboss.seam.transaction")
-                // seam-persistence
-                .addPackage("org.jbpm.shared.services.api")
-                .addPackage("org.jbpm.shared.services.impl")
-                .addPackage("org.jbpm.services.task")
-                .addPackage("org.jbpm.services.task.annotations")
-                .addPackage("org.jbpm.services.task.api")
-                .addPackage("org.jbpm.services.task.impl")
-                .addPackage("org.jbpm.services.task.impl.model")
-                .addPackage("org.jbpm.services.task.events")
-                .addPackage("org.jbpm.services.task.exception")
-                .addPackage("org.jbpm.services.task.identity")
-                .addPackage("org.jbpm.services.task.factories")
-                .addPackage("org.jbpm.services.task.internals")
-                .addPackage("org.jbpm.services.task.internals.lifecycle")
-                .addPackage("org.jbpm.services.task.lifecycle.listeners")
-                .addPackage("org.jbpm.services.task.query")
-                .addPackage("org.jbpm.services.task.util")
-                .addPackage("org.jbpm.services.task.deadlines")
-                // deadlines
-                .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
-                .addPackage("org.jbpm.services.task.subtask")
-                .addPackage("org.jbpm.services.task.rule")
-                .addPackage("org.jbpm.services.task.rule.impl")
-                // .addPackage("org.jbpm.services.task.commands") // This should not be
-                // required here
-                .addAsManifestResource("META-INF/persistence.xml",
-                        ArchivePaths.create("persistence.xml"))
-                .addAsManifestResource("META-INF/Taskorm.xml",
-                        ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("META-INF/beans.xml",
-                        ArchivePaths.create("beans.xml"));
+	private PoolingDataSource pds;
+	private EntityManagerFactory emf;
+	
+	@Before
+	public void setup() {
+		pds = setupPoolingDataSource();
+		emf = Persistence.createEntityManagerFactory( "org.jbpm.services.task" );
 
-    }
-
-    @Override
-    @Before
-    public void setUp() {
-        super.setUp();
-    }
+		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
+												.entityManagerFactory(emf)
+												.getTaskService();
+	}
+	
+	@After
+	public void clean() {
+		super.tearDown();
+		if (emf != null) {
+			emf.close();
+		}
+		if (pds != null) {
+			pds.close();
+		}
+	}
 }

@@ -32,20 +32,16 @@ import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNExtensionsSemanticModule;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.task.api.model.TaskDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/**
- *
- * @author salaboy
- */
 @ApplicationScoped
 public class BPMN2DataServiceImpl implements BPMN2DataService {
     
@@ -111,7 +107,7 @@ public class BPMN2DataServiceImpl implements BPMN2DataService {
     }
 
 
-    public Collection<TaskDefImpl> getAllTasksDef(String processId){
+    public Collection<TaskDef> getAllTasksDef(String processId){
         if (processId == null || "".equals(processId)) {
             throw new IllegalStateException("The Process id cannot be Empty!");
         }

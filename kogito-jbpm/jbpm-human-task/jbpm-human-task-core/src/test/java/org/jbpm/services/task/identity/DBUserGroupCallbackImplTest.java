@@ -31,7 +31,7 @@ public class DBUserGroupCallbackImplTest {
         Properties dsProps = loadDataSourceProperties();
 
         pds = new PoolingDataSource();
-        pds.setUniqueName("jdbc/taskDS");
+        pds.setUniqueName("jdbc/jbpm-ds");
         pds.setClassName(dsProps.getProperty("className"));
         pds.setMaxPoolSize(Integer.parseInt(dsProps.getProperty("maxPoolSize")));
         pds.setAllowLocalTransactions(Boolean.parseBoolean(dsProps.getProperty("allowLocalTransactions")));
@@ -45,7 +45,7 @@ public class DBUserGroupCallbackImplTest {
         prepareDb();
 
         props = new Properties();
-        props.setProperty(DBUserGroupCallbackImpl.DS_JNDI_NAME, "jdbc/taskDS");
+        props.setProperty(DBUserGroupCallbackImpl.DS_JNDI_NAME, "jdbc/jbpm-ds");
         props.setProperty(DBUserGroupCallbackImpl.PRINCIPAL_QUERY, "select userId from Users where userId = ?");
         props.setProperty(DBUserGroupCallbackImpl.ROLES_QUERY, "select groupId from Groups where groupId = ?");
         props.setProperty(DBUserGroupCallbackImpl.USER_ROLES_QUERY, "select groupId from Groups where userId = ?");

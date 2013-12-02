@@ -15,23 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskClaimedEvent;
-import org.jbpm.services.task.events.BeforeTaskClaimedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Claim 
@@ -42,11 +30,11 @@ import org.kie.internal.task.api.model.InternalTaskData;
                 newStatus = Status.Reserved
             } ],
  */
-
-@Transactional
 @XmlRootElement(name="claim-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class ClaimTaskCommand extends TaskCommand<Void> {
+public class ClaimTaskCommand extends UserGroupCallbackTaskCommand<Void> {
+
+	private static final long serialVersionUID = 3457622878127569389L;
 
 	public ClaimTaskCommand() {
 	}
@@ -58,29 +46,11 @@ public class ClaimTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().claim(taskId, userId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskClaimedEvent>() {}).fire(task);
-        // CHeck for potential Owner allowed (decorator?)
-        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners());
-        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators());
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().claim(taskId, userId);
+    	return null;
         
-        if (!potOwnerAllowed && !adminAllowed) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task "+task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-        if (task.getTaskData().getStatus().equals(Status.Ready)) {
-            
-        	((InternalTaskData) task.getTaskData()).setStatus(Status.Reserved);
-        	((InternalTaskData) task.getTaskData()).setActualOwner(user);
-        }
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskClaimedEvent>() {}).fire(task);
-
-        return null;
     }
 
    

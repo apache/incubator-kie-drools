@@ -32,11 +32,7 @@
     <class>org.jbpm.services.task.impl.model.TaskImpl</class>
     <class>org.jbpm.services.task.impl.model.TaskDataImpl</class>
     <class>org.jbpm.services.task.impl.model.UserImpl</class>
-    
-    <!--BAM for task service -->
-    <class>org.jbpm.services.task.impl.model.BAMTaskSummaryImpl</class>
-    
-   
+       
     <properties>
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
       <property name="hibernate.connection.autocommit" value="false" />
@@ -44,18 +40,19 @@
       <property name="hibernate.max_fetch_depth" value="3" />
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
       <property name="hibernate.show_sql" value="false" />
-
+	  <!--
       <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
       <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
       <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
       <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+       -->
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
       <property name="hibernate.id.new_generator_mappings" value="false" />            
 
-      <!-- needed for JTA testing 
+      <!-- needed for JTA testing  -->
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
-        -->
+       
     </properties>
   </persistence-unit>
 

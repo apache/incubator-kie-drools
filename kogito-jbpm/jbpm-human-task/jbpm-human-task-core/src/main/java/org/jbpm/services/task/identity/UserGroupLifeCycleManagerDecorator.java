@@ -7,43 +7,42 @@ package org.jbpm.services.task.identity;
 import java.util.List;
 import java.util.Map;
 
-import javax.decorator.Decorator;
-import javax.decorator.Delegate;
-import javax.inject.Inject;
-
-import org.jbpm.services.task.annotations.Mvel;
-import org.jbpm.services.task.exception.TaskException;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.task.api.model.Operation;
+import org.kie.internal.task.exception.TaskException;
 
 /**
  *
  */
-@Decorator
-public class UserGroupLifeCycleManagerDecorator extends AbstractUserGroupCallbackDecorator implements LifeCycleManager {
+public class UserGroupLifeCycleManagerDecorator implements LifeCycleManager {
 
-
-    @Inject
-    @Delegate
-    @Mvel
-    private LifeCycleManager manager;
+	private UserGroupCallback userGroupCallback;
+	private LifeCycleManager manager;
 
     public UserGroupLifeCycleManagerDecorator() {
+    }
+    
+    public UserGroupLifeCycleManagerDecorator(UserGroupCallback callback, LifeCycleManager manager) {
+    	this.userGroupCallback = callback;
+    	this.manager = manager;
     }
 
     public void setManager(LifeCycleManager manager) {
         this.manager = manager;
     }
 
-   
+    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
+		this.userGroupCallback = userGroupCallback;
+	}
 
     public LifeCycleManager getManager() {
         return manager;
     }
 
     public void taskOperation(Operation operation, long taskId, String userId, String targetEntityId, Map<String, Object> data, List<String> groupIds) throws TaskException {
-        groupIds = doUserGroupCallbackOperation(userId, groupIds);
-        doCallbackUserOperation(targetEntityId);
+        groupIds = userGroupCallback.getGroupsForUser(userId, groupIds, null);
+
         manager.taskOperation(operation, taskId, userId, targetEntityId, data, groupIds);
 
     }

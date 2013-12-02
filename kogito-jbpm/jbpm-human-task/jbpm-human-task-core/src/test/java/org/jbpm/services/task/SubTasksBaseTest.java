@@ -21,7 +21,6 @@ import java.io.StringReader;
 import java.util.HashMap;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.TaskImpl;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
@@ -41,7 +40,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         parentTaskstr += "names = [ new I18NText( 'en-UK', 'This is my task Parent name')] })";
         // By default the task will contain a SubTask SubTasksStrategy.NoAction
 
-        TaskImpl parentTask = TaskFactory.evalTask(new StringReader(parentTaskstr));
+        Task parentTask = TaskFactory.evalTask(new StringReader(parentTaskstr));
         taskService.addTask(parentTask, new HashMap<String, Object>());
 
         long taskParentId = parentTask.getId();
@@ -57,7 +56,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ],businessAdministrators = [ new User('Administrator') ], }),";
         child1Taskstr += "names = [ new I18NText( 'en-UK', 'This is my task Child 1 name')] })";
 
-        TaskImpl child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
+        Task child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
         taskService.addTask(child1Task, new HashMap<String, Object>());
 
         long child1TaskId = child1Task.getId();
@@ -103,7 +102,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         parentTaskstr += "names = [ new I18NText( 'en-UK', 'This is my task Parent name')] })";
         // By default the task will contain a SubTask SubTasksStrategy.NoAction
 
-        TaskImpl parentTask = TaskFactory.evalTask(new StringReader(parentTaskstr));
+        Task parentTask = TaskFactory.evalTask(new StringReader(parentTaskstr));
         taskService.addTask(parentTask, new HashMap<String, Object>());
 
         long taskParentId = parentTask.getId();
@@ -119,7 +118,7 @@ public abstract class SubTasksBaseTest extends HumanTaskServicesBaseTest{
         child1Taskstr += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader')  ],businessAdministrators = [ new User('Administrator') ], }),";
         child1Taskstr += "names = [ new I18NText( 'en-UK', 'This is my task Child 1 name')] })";
 
-        TaskImpl child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
+        Task child1Task = TaskFactory.evalTask(new StringReader(child1Taskstr));
         taskService.addTask(child1Task, new HashMap<String, Object>());
 
         long child1TaskId = child1Task.getId();

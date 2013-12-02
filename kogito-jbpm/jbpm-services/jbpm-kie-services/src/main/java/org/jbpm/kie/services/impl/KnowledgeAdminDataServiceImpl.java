@@ -18,29 +18,25 @@ package org.jbpm.kie.services.impl;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.kie.services.api.KnowledgeAdminDataService;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.UpdateStringCommand;
 
-/**
- *
- * @author salaboy
- */
-@Transactional
+
 @ApplicationScoped
 public class KnowledgeAdminDataServiceImpl implements KnowledgeAdminDataService{
     @Inject 
-    private JbpmServicesPersistenceManager pm;
+    private TransactionalCommandService commandService;
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
     
     public int removeAllData() {
         int deleted = 0;
-        deleted += pm.executeUpdateString("delete from  NodeInstanceLog nid");
-        deleted += pm.executeUpdateString("delete from  ProcessInstanceLog pid");        
-        deleted += pm.executeUpdateString("delete from  VariableInstanceLog vsd");
+        deleted += commandService.execute(new UpdateStringCommand("delete from  NodeInstanceLog nid"));
+        deleted += commandService.execute(new UpdateStringCommand("delete from  ProcessInstanceLog pid"));        
+        deleted += commandService.execute(new UpdateStringCommand("delete from  VariableInstanceLog vsd"));
         return deleted;
     }
     

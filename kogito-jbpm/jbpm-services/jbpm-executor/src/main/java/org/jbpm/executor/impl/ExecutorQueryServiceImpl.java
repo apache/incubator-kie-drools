@@ -17,15 +17,19 @@
 package org.jbpm.executor.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.drools.core.command.impl.GenericCommand;
+import org.jbpm.shared.services.impl.JpaPersistenceContext;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.FindObjectCommand;
+import org.jbpm.shared.services.impl.commands.QueryNameCommand;
+import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.RequestInfo;
@@ -39,39 +43,35 @@ import org.kie.internal.executor.api.STATUS;
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
     @Inject
-    private JbpmServicesPersistenceManager pm;
+    private TransactionalCommandService commandService;
    
     public ExecutorQueryServiceImpl() {
     }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
-    }
-    
-    @PostConstruct
-    public void init() {
-        // make sure it has tx manager as it runs as background thread - no request scope available
-        if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
-            ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
-        }
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getPendingRequests() {
-        return (List<RequestInfo>)pm.queryWithParametersInTransaction("PendingRequests", pm.addParametersToMap("now", new Date()));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("now", new Date());
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("PendingRequests", params));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getPendingRequestById(Long id) {
-        return (List<RequestInfo>)pm.queryWithParametersInTransaction("PendingRequestById", pm.addParametersToMap("id", id));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("id", id);
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("PendingRequestById", params));
     }
 
     /**
@@ -79,107 +79,114 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
      */
     @Override
     public RequestInfo getRequestById(Long id) {
-    	return pm.find(org.jbpm.executor.entities.RequestInfo.class, id);
+    	return commandService.execute(new FindObjectCommand<org.jbpm.executor.entities.RequestInfo>(id, org.jbpm.executor.entities.RequestInfo.class));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getRunningRequests() {
-        return (List<RequestInfo>)pm.queryInTransaction("RunningRequests");
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("RunningRequests"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getQueuedRequests() {
-        return (List<RequestInfo>)pm.queryInTransaction("QueuedRequests");
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("QueuedRequests"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getFutureQueuedRequests() {
-        return (List<RequestInfo>)pm.queryWithParametersInTransaction("FutureQueuedRequests", pm.addParametersToMap("now", new Date()));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("now", new Date());
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("FutureQueuedRequests", params));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getCompletedRequests() {
-        return (List<RequestInfo>)pm.queryInTransaction("CompletedRequests");
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("CompletedRequests"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getInErrorRequests() {
-        return (List<RequestInfo>)pm.queryInTransaction("InErrorRequests");
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("InErrorRequests"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getCancelledRequests() {
-        return (List<RequestInfo>)pm.queryInTransaction("CancelledRequests");
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("CancelledRequests"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<ErrorInfo> getAllErrors() {
-    	return (List<ErrorInfo>)pm.queryInTransaction("GetAllErrors");
+    	return commandService.execute(new QueryNameCommand<List<ErrorInfo>>("GetAllErrors"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<ErrorInfo> getErrorsByRequestId(Long requestId) {
-    	return (List<ErrorInfo>)pm.queryWithParametersInTransaction("GetErrorsByRequestId", pm.addParametersToMap("id", requestId));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("id", requestId);
+    	return commandService.execute(new QueryNameCommand<List<ErrorInfo>>("GetErrorsByRequestId", params));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getAllRequests() {
-    	return (List<RequestInfo>)pm.queryInTransaction("GetAllRequests");
+    	return commandService.execute(new QueryNameCommand<List<RequestInfo>>("GetAllRequests"));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
-    	return (List<RequestInfo>)pm.queryWithParametersInTransaction("GetRequestsByStatus",pm.addParametersToMap("statuses", statuses));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("statuses", statuses);
+    	return commandService.execute(new QueryNameCommand<List<RequestInfo>>("GetRequestsByStatus",params));
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    
     @Override
     public List<RequestInfo> getRequestByBusinessKey(String businessKey) {
-        
-        return (List<RequestInfo>)pm.queryWithParametersInTransaction("GetRequestsByBusinessKey", pm.addParametersToMap("businessKey", businessKey));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("businessKey", businessKey);
+        return commandService.execute(new QueryNameCommand<List<RequestInfo>>("GetRequestsByBusinessKey", params));
     }
 
     /**
@@ -187,29 +194,38 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
      */
     @Override
     public RequestInfo getRequestForProcessing() {
-        RequestInfo request = null;
-        boolean txOwner = pm.beginTransaction();
-        try {
-            // need to do the lock here to avoid many executor services fetch the same element
-            request = (RequestInfo) pm.queryAndLockWithParametersInTransaction("PendingRequestsForProcessing", 
-                                                    pm.addParametersToMap("now", new Date(), "firstResult", 0, "maxResults", 1), true);
-
-            
-            if (request != null) {
-                request.setStatus(STATUS.RUNNING);
-                pm.merge(request);
-            }
-            pm.endTransaction(txOwner);
-        } catch(NoResultException e) {
-            // no result is considered ok here so end transaction normally
-            pm.endTransaction(txOwner);
-        } catch(Exception e) {
-            
-            pm.rollBackTransaction(txOwner);
-        }
+        
+        // need to do the lock here to avoid many executor services fetch the same element
+    	RequestInfo request = commandService.execute(new LockAndUpdateRequestInfoCommand());
         
         return request;
     }
 
+    private class LockAndUpdateRequestInfoCommand implements GenericCommand<RequestInfo> {
+
+		private static final long serialVersionUID = 8670412133363766161L;
+
+		@Override
+		public RequestInfo execute(Context context) {
+			Map<String, Object> params = new HashMap<String, Object>();
+	    	params.put("now", new Date());
+	    	params.put("firstResult", 0);
+	    	params.put("maxResults", 1);
+	    	RequestInfo request = null;
+	    	try {
+				JpaPersistenceContext ctx = (JpaPersistenceContext) context;
+				request = ctx.queryAndLockWithParametersInTransaction("PendingRequestsForProcessing",params, true, RequestInfo.class);
+				
+				if (request != null) {
+	                request.setStatus(STATUS.RUNNING);
+	                ctx.merge(request);
+	            }
+	    	} catch (NoResultException e) {
+	    		
+	    	}
+			return request;
+		}
+    	
+    }
 
 }

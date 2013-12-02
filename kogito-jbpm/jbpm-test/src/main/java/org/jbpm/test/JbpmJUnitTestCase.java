@@ -31,7 +31,6 @@ import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -522,8 +521,7 @@ public abstract class JbpmJUnitTestCase extends AbstractBaseTest {
 
     public TaskService getService() {
         return (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
-        		.transactionManager(new JbpmJTATransactionManager())
-        		.userGroupCallback(new MvelUserGroupCallbackImpl())
+        		.userGroupCallback(new MvelUserGroupCallbackImpl(true))
                 .entityManagerFactory(emf)
                 .getTaskService();
     }

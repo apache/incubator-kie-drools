@@ -6,73 +6,70 @@ package org.jbpm.services.task.impl;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskPersistenceContext;
 
 /**
  *
  */
 
-@Transactional
-@ApplicationScoped
 public class TaskIdentityServiceImpl implements TaskIdentityService {
 
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
+    private TaskPersistenceContext persistenceContext;
 
     public TaskIdentityServiceImpl() {
     }
+    
+    public TaskIdentityServiceImpl(TaskPersistenceContext persistenceContext) {
+    	this.persistenceContext = persistenceContext;
+    }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+        this.persistenceContext = persistenceContext;
     }
     
     public void addUser(User user) {
-        pm.persist(user);
+        persistenceContext.persistUser(user);
  
     }
 
     public void addGroup(Group group) {
-        pm.persist(group);
+        persistenceContext.persistGroup(group);
     }
 
     public void removeGroup(String groupId) {
-        GroupImpl group = pm.find(GroupImpl.class, groupId);
-        pm.remove(group);
+        Group group = persistenceContext.findGroup(groupId);
+        persistenceContext.remove(group);
     }
     
     public void removeUser(String userId) {
-        UserImpl user = pm.find(UserImpl.class, userId);
-        pm.remove(user);
+        User user = persistenceContext.findUser(userId);
+        persistenceContext.remove(user);
     }
 
     public List<User> getUsers() {
-        return (List<User>) pm.queryStringInTransaction("from User");
+        return persistenceContext.queryStringInTransaction("from User", 
+        		ClassUtil.<List<User>>castClass(List.class));
     }
 
     public List<Group> getGroups() {
-        return (List<Group>) pm.queryStringInTransaction("from Group");
+        return persistenceContext.queryStringInTransaction("from Group",
+        		ClassUtil.<List<Group>>castClass(List.class));
     }
 
     public User getUserById(String userId) {
-        return pm.find(UserImpl.class, userId);
+        return persistenceContext.findUser(userId);
     }
 
     public Group getGroupById(String groupId) {
-        return pm.find(GroupImpl.class, groupId);
+        return persistenceContext.findGroup(groupId);
     }
 
     public OrganizationalEntity getOrganizationalEntityById(String entityId) {
-        return pm.find(OrganizationalEntityImpl.class, entityId);
+        return persistenceContext.findOrgEntity(entityId);
     }
 }

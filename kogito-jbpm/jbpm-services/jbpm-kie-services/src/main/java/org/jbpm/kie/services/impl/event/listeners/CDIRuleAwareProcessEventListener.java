@@ -1,28 +1,26 @@
 package org.jbpm.kie.services.impl.event.listeners;
 
+import java.util.Collection;
+
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jbpm.kie.services.impl.event.NodeInstanceLeftEvent;
 import org.jbpm.kie.services.impl.event.NodeInstanceTriggeredEvent;
-import org.jboss.seam.transaction.Transactional;
+import org.jbpm.kie.services.impl.event.ProcessInstanceCompletedEvent;
+import org.jbpm.kie.services.impl.event.ProcessInstanceStartedEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 
-import javax.enterprise.context.ApplicationScoped;
-import java.util.Collection;
-import org.jbpm.kie.services.impl.event.ProcessInstanceCompletedEvent;
-import org.jbpm.kie.services.impl.event.ProcessInstanceStartedEvent;
-
-import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.KieSession;
-
 @ApplicationScoped // This should be something like DomainScoped
-@Transactional
 public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
     
 
@@ -50,7 +48,7 @@ public class CDIRuleAwareProcessEventListener implements ProcessEventListener {
         FactHandle handle = getProcessInstanceFactHandle(event.getProcessInstance().getId(), event.getKieRuntime());
         
         if (handle != null) {
-            event.getKieRuntime().retract(handle);
+            event.getKieRuntime().delete(handle);
         }
     }
 

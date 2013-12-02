@@ -40,7 +40,6 @@ import org.jbpm.kie.services.api.Kjar;
 import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.runtime.manager.util.TestUtil;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
@@ -51,6 +50,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.deployment.DeploymentUnit;
+import org.kie.internal.task.api.model.TaskDef;
 import org.kie.scanner.MavenRepository;
 
 /**
@@ -102,6 +102,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
                 .addPackage("org.jbpm.shared.services.impl.tx")
                 
                 .addPackage("org.jbpm.kie.services.api")
+                .addPackage("org.jbpm.kie.services.cdi.producer")
                 .addPackage("org.jbpm.kie.services.impl")
                 .addPackage("org.jbpm.kie.services.api.bpmn2")
                 .addPackage("org.jbpm.kie.services.impl.bpmn2")
@@ -178,7 +179,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         String processId = "org.jbpm.writedocument";
         
 
-        Collection<TaskDefImpl> processTasks = bpmn2Service.getAllTasksDef(processId);
+        Collection<TaskDef> processTasks = bpmn2Service.getAllTasksDef(processId);
         
         assertEquals(3, processTasks.size());
         Map<String, String> processData = bpmn2Service.getProcessData(processId);
@@ -212,7 +213,7 @@ public class BPMN2DataServicesTest extends AbstractBaseTest {
         String processId = "hiring";
         
 
-        Collection<TaskDefImpl> processTasks = bpmn2Service.getAllTasksDef(processId);
+        Collection<TaskDef> processTasks = bpmn2Service.getAllTasksDef(processId);
         
         assertEquals(4, processTasks.size());
         Map<String, String> processData = bpmn2Service.getProcessData(processId);

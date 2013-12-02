@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.kie.services.api.RuntimeDataService;
 import org.jbpm.kie.services.impl.event.Deploy;
 import org.jbpm.kie.services.impl.event.DeploymentEvent;
@@ -39,25 +38,21 @@ import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.model.ProcessInstanceDesc;
 import org.jbpm.kie.services.impl.model.VariableStateDesc;
 import org.jbpm.process.audit.NodeInstanceLog;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.internal.deployment.DeployedAsset;
 
 
-/**
- *
- * @author salaboy
- */
 @ApplicationScoped
-@Transactional
 public class RuntimeDataServiceImpl implements RuntimeDataService {
 
-    @Inject
-    private JbpmServicesPersistenceManager pm;
-    
     private Set<ProcessAssetDesc> availableProcesses = new HashSet<ProcessAssetDesc>();
     
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    @Inject 
+    private TransactionalCommandService commandService;
+
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
     
     public void indexOnDeploy(@Observes@Deploy DeploymentEvent event) {
@@ -114,7 +109,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     }
 
     public Collection<ProcessInstanceDesc> getProcessInstances() { 
-        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>) pm.queryInTransaction("getProcessInstances");
+        List<ProcessInstanceDesc> processInstances =  commandService.execute(
+        				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstances"));
+        		
 
         return processInstances;
     }
@@ -126,11 +123,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         params.put("states", states);
         if (initiator == null) {
 
-            processInstances = (List<ProcessInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstancesByStatus", params);
+            processInstances = commandService.execute(
+    				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByStatus", params));
         } else {
 
             params.put("initiator", initiator);
-            processInstances = (List<ProcessInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstancesByStatusAndInitiator", params); 
+            processInstances = commandService.execute(
+    				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByStatusAndInitiator", params)); 
         }
         
         return processInstances;
@@ -138,23 +137,34 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
     }
 
     public Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states) {
-        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryWithParametersInTransaction("getProcessInstancesByDeploymentId",
-                pm.addParametersToMap("externalId", deploymentId, "states", states));
+    	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("externalId", deploymentId);
+        params.put("states", states);
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByDeploymentId",
+                params));
 
         return processInstances;
     }
 
 
     public Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId){
-      List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryWithParametersInTransaction("getProcessInstancesByProcessDefinition",
-              pm.addParametersToMap("processDefId", processDefId));
+    	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processDefId", processDefId);
+    	List<ProcessInstanceDesc> processInstances = commandService.execute(
+				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessDefinition",
+              params));
 
         return processInstances;
     }
     
     public ProcessInstanceDesc getProcessInstanceById(long processId) {
-        List<ProcessInstanceDesc> processInstances = (List<ProcessInstanceDesc>)pm.queryWithParametersInTransaction("getProcessInstanceById", 
-                pm.addParametersToMap("processId", processId, "maxResults", 1));
+    	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processId", processId);
+        params.put("maxResults", 1);
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstanceById", 
+                params));
 
         return processInstances.get(0);
    }
@@ -170,11 +180,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         params.put("processId", processId +"%");
         if (initiator == null) {
   
-            processInstances = (List<ProcessInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstancesByProcessIdAndStatus", params);
+            processInstances = commandService.execute(
+    				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessIdAndStatus", params));
         } else {
             params.put("initiator", initiator);
             
-            processInstances = (List<ProcessInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstancesByProcessIdAndStatusAndInitiator", params);
+            processInstances = commandService.execute(
+    				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessIdAndStatusAndInitiator", params));
         }
         return processInstances;
 
@@ -190,11 +202,13 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
         params.put("processName", processName +"%");
         if (initiator == null) {
   
-            processInstances = (List<ProcessInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstancesByProcessNameAndStatus", params);
+            processInstances = commandService.execute(
+    				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessNameAndStatus", params));
         } else {
             params.put("initiator", initiator);
             
-            processInstances = (List<ProcessInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstancesByProcessNameAndStatusAndInitiator", params);
+            processInstances = commandService.execute(
+    				new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByProcessNameAndStatusAndInitiator", params));
         }
         return processInstances;
     }    
@@ -205,51 +219,72 @@ public class RuntimeDataServiceImpl implements RuntimeDataService {
 
 
     public Collection<NodeInstanceDesc> getProcessInstanceHistory(String deploymentId, long processId, boolean completed) {
-        HashMap<String, Object> params = pm.addParametersToMap("processId", processId, "externalId", deploymentId);                
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("processId", processId);
+    	params.put("externalId", deploymentId);              
         if (completed) {
             params.put("type", NodeInstanceLog.TYPE_EXIT);
         } else {
             params.put("type", NodeInstanceLog.TYPE_ENTER);
         }
 
-        List<NodeInstanceDesc> nodeInstances = (List<NodeInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstanceHistory", params);
+        List<NodeInstanceDesc> nodeInstances = commandService.execute(
+				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceHistory", params));
 
         return nodeInstances;
     }
 
     public Collection<NodeInstanceDesc> getProcessInstanceFullHistory(String deploymentId, long processId) {
-        List<NodeInstanceDesc> nodeInstances = (List<NodeInstanceDesc>)pm.queryWithParametersInTransaction("getProcessInstanceFullHistory", 
-                pm.addParametersToMap("processId", processId, "externalId", deploymentId));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("processId", processId);
+    	params.put("externalId", deploymentId);
+        List<NodeInstanceDesc> nodeInstances = commandService.execute(
+				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceFullHistory", 
+                params));
 
         return nodeInstances;
     }
 
     public Collection<NodeInstanceDesc> getProcessInstanceActiveNodes(String deploymentId, long processId) {
-        
-        List<NodeInstanceDesc> activeNodeInstances = (List<NodeInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstanceActiveNodes", 
-                pm.addParametersToMap("processId", processId, "externalId", deploymentId));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("processId", processId);
+    	params.put("externalId", deploymentId);
+        List<NodeInstanceDesc> activeNodeInstances = commandService.execute(
+				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceActiveNodes", 
+                params));
         
         return activeNodeInstances;
     }
     
 
     public Collection<NodeInstanceDesc> getProcessInstanceCompletedNodes(String deploymentId, long processId) {
-        List<NodeInstanceDesc> completedNodeInstances = (List<NodeInstanceDesc>) pm.queryWithParametersInTransaction("getProcessInstanceCompletedNodes", 
-                pm.addParametersToMap("processId", processId, "externalId", deploymentId));
+    	Map<String, Object> params = new HashMap<String, Object>();
+    	params.put("processId", processId);
+    	params.put("externalId", deploymentId);
+        List<NodeInstanceDesc> completedNodeInstances = commandService.execute(
+				new QueryNameCommand<List<NodeInstanceDesc>>("getProcessInstanceCompletedNodes", 
+                params));
 
         return completedNodeInstances;
         
     }
     
     public Collection<VariableStateDesc> getVariablesCurrentState(long processInstanceId) {
-        List<VariableStateDesc> variablesState = (List<VariableStateDesc>) pm.queryWithParametersInTransaction("getVariablesCurrentState", pm.addParametersToMap("processInstanceId", processInstanceId));
+    	Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+        List<VariableStateDesc> variablesState = commandService.execute(
+				new QueryNameCommand<List<VariableStateDesc>>("getVariablesCurrentState", params));
 
         return variablesState;
     }
     
     public Collection<VariableStateDesc> getVariableHistory(long processInstanceId, String variableId) {
-        List<VariableStateDesc> variablesState = (List<VariableStateDesc>) pm.queryWithParametersInTransaction("getVariableHistory", 
-                pm.addParametersToMap("processInstanceId", processInstanceId,"variableId", variableId));                
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+        params.put("variableId", variableId);
+    	List<VariableStateDesc> variablesState = commandService.execute(
+				new QueryNameCommand<List<VariableStateDesc>>("getVariableHistory", 
+                params));                
 
         return variablesState;
     }

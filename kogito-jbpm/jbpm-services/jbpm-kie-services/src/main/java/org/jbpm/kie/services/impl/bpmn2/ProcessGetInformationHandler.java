@@ -16,14 +16,13 @@
 package org.jbpm.kie.services.impl.bpmn2;
 
 import javax.inject.Inject;
+
 import org.drools.core.xml.ExtensibleXmlParser;
-import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.bpmn2.xml.ProcessHandler;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-@Transactional
 public class ProcessGetInformationHandler extends ProcessHandler {
 
     @Inject

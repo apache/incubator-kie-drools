@@ -34,6 +34,11 @@ public class MockUserInfo implements UserInfo {
     private Map<OrganizationalEntity, String> languages = new HashMap<OrganizationalEntity, String>();
 
     private Map<OrganizationalEntity, String> displayNames = new HashMap<OrganizationalEntity, String>();
+    
+    //no no-arg constructor to prevent cdi from auto deploy
+    public MockUserInfo(boolean activate) {
+    	
+    }
 
     public Map<Group, List<OrganizationalEntity>> getGroups() {
         return groups;

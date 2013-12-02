@@ -3,7 +3,6 @@ package org.jbpm.services.task.impl.model.xml;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

@@ -17,9 +17,6 @@ package org.jbpm.services.task.wih;
 
 import java.util.Date;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.utils.OnErrorAction;
 import org.kie.api.runtime.KieSession;
@@ -35,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-@ApplicationScoped
-@Transactional
 public class LocalHTWorkItemHandler extends AbstractHTWorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalHTWorkItemHandler.class);

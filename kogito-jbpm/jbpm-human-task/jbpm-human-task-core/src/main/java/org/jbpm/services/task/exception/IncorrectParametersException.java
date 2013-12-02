@@ -16,6 +16,8 @@
 
 package org.jbpm.services.task.exception;
 
+import org.kie.internal.task.exception.TaskException;
+
 /**
  * Exception that is thrown when the parameters to a query are incorrect, with regard to either the number or type. 
  *

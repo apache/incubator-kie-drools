@@ -17,10 +17,7 @@ package org.jbpm.services.task.deadlines;
 
 import org.kie.internal.task.api.model.NotificationEvent;
 
-/**
- *
-
- */
 public interface NotificationListener {
-    public void onNotification(NotificationEvent event);
+    
+	void onNotification(NotificationEvent event);
 }

@@ -15,34 +15,26 @@
  */
 package org.jbpm.services.task.wih;
 
-import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
-import javax.inject.Inject;
-
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.drools.core.type.DateFormats;
-import org.drools.core.type.DateFormatsImpl;
-import org.drools.core.util.DateUtils;
 import org.jbpm.process.core.timer.DateTimeUtils;
-import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.test.MyObject;
 import org.jbpm.services.task.test.TestStatefulKnowledgeSession;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.OnErrorAction;
-import org.jbpm.shared.services.impl.events.JbpmServicesEventListener;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -51,6 +43,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.EventService;
+import org.kie.internal.task.api.TaskEvent;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalTaskData;
 
@@ -64,11 +58,9 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
     private WorkItemHandler handler;
     protected TestStatefulKnowledgeSession ksession;
 
-    @Inject
     protected TaskService taskService; 
     
-    @Inject
-    protected AddedTaskListener listenr;
+    
  
     @Test
     public void testTask() throws Exception {
@@ -474,11 +466,14 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
     }
     
     
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testTaskCreateFailedWithLog() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
         ((AbstractHTWorkItemHandler)handler).setAction(OnErrorAction.LOG);
-        listenr.setThrowException(true);
+        TaskLifeCycleEventListener listener = new AddedTaskListener(true);
+        ((EventService<TaskLifeCycleEventListener>) taskService).registerTaskEventListener(listener);
+        
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setName("Human Task");
@@ -491,11 +486,15 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         
         handler.executeWorkItem(workItem, manager);
         assertFalse(manager.isAborted());
+        ((EventService<TaskLifeCycleEventListener>) taskService).removeTaskEventListener(listener);
     }
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testTaskCreateFailedWithAbort() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        listenr.setThrowException(true);
+        TaskLifeCycleEventListener listener = new AddedTaskListener(true);
+        ((EventService<TaskLifeCycleEventListener>) taskService).registerTaskEventListener(listener);
+        
         ((AbstractHTWorkItemHandler)handler).setAction(OnErrorAction.ABORT);
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -509,11 +508,15 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         
         handler.executeWorkItem(workItem, manager);
         assertTrue(manager.isAborted());
+        ((EventService<TaskLifeCycleEventListener>) taskService).removeTaskEventListener(listener);
     }
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void testTaskCreateFailedWithRethrow() throws Exception {
         TestWorkItemManager manager = new TestWorkItemManager();
-        listenr.setThrowException(true);
+        TaskLifeCycleEventListener listener = new AddedTaskListener(true);
+        ((EventService<TaskLifeCycleEventListener>) taskService).registerTaskEventListener(listener);
+        
         ((AbstractHTWorkItemHandler)handler).setAction(OnErrorAction.RETHROW);
         ksession.setWorkItemManager(manager);
         WorkItemImpl workItem = new WorkItemImpl();
@@ -531,6 +534,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
             // do nothing
             
         }
+        ((EventService<TaskLifeCycleEventListener>) taskService).removeTaskEventListener(listener);
     }
 
     
@@ -801,10 +805,14 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         }
     }
     
-    @ApplicationScoped
-    public static class AddedTaskListener extends JbpmServicesEventListener<Task> {
+    
+    public static class AddedTaskListener extends DefaultTaskEventListener {
         public AddedTaskListener() {
             
+        }
+        
+        public AddedTaskListener(boolean throwException) {
+            this.throwException = throwException;
         }
         
         private boolean throwException = false;
@@ -816,8 +824,8 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         public void setThrowException(boolean throwException) {
             this.throwException = throwException;
         }
-        
-        public void listen(@Observes(notifyObserver = Reception.IF_EXISTS) @AfterTaskAddedEvent Task task) {
+        @Override
+        public void afterTaskAddedEvent(TaskEvent event) {
             if (isThrowException()) {
                 throw new RuntimeException("test exception");
             }

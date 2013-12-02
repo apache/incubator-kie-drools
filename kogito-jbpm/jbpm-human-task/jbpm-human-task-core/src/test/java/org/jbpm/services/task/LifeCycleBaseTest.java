@@ -30,18 +30,19 @@ import java.util.Map;
 
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
 
@@ -99,7 +100,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet') ],businessAdministrators = [ new User('Administrator') ], }),";
         str += "names = [ new I18NText( 'en-UK', 'This is my task name')] })";
 
-        ContentDataImpl data = ContentMarshallerHelper.marshal("content", null);
+        ContentData data = ContentMarshallerHelper.marshal("content", null);
 
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, data);
@@ -133,7 +134,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         variablesMap.put("key1", "value1");
         variablesMap.put("key2", null);
         variablesMap.put("key3", "value3");
-        ContentDataImpl data = ContentMarshallerHelper.marshal(variablesMap, null);
+        ContentData data = ContentMarshallerHelper.marshal(variablesMap, null);
         
         Task task = ( Task )  TaskFactory.evalTask( new StringReader( str ));
         taskService.addTask( task, data );
@@ -187,7 +188,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         variablesMap.put("key1", "value1");
         variablesMap.put("key2", null);
         variablesMap.put("key3", "value3");
-        ContentDataImpl data = ContentMarshallerHelper.marshal(variablesMap, null);
+        ContentData data = ContentMarshallerHelper.marshal(variablesMap, null);
         
         Task task = ( Task )  TaskFactory.evalTask( new StringReader( str ));
         taskService.addTask( task, data );
@@ -269,7 +270,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
             largeContent += i + "xxxxxxxxx";
         }
 
-        ContentDataImpl data = ContentMarshallerHelper.marshal(largeContent, null);
+        ContentData data = ContentMarshallerHelper.marshal(largeContent, null);
 
         Task task = (Task) TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, data);
@@ -1089,8 +1090,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Darth Vader")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Tony Stark")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Tony Stark", task2.getTaskData().getActualOwner().getId());
         // this was checking for ready, but it should be reserved.. it was an old bug
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
@@ -1128,8 +1133,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Darth Vader")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Tony Stark")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Tony Stark", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
@@ -1168,8 +1177,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertNotNull("Should get permissed denied exception", denied);
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Darth Vader")));
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Tony Stark")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
@@ -1232,8 +1245,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Darth Vader")));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Tony Stark")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertNull(task2.getTaskData().getActualOwner());
         assertEquals(Status.Ready, task2.getTaskData().getStatus());
     }
@@ -1278,8 +1295,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Darth Vader")));
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Tony Stark")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
@@ -1638,7 +1659,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            businessAdmins.add(new UserImpl("Administrator"));
+            User user = TaskModelProvider.getFactory().newUser();
+            ((InternalOrganizationalEntity) user).setId("Administrator");
+            businessAdmins.add(user);
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
         }
@@ -1672,7 +1695,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(((InternalPeopleAssignments) task1.getPeopleAssignments()).getRecipients().contains(new UserImpl("Bobba Fet")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        assertTrue(((InternalPeopleAssignments) task1.getPeopleAssignments()).getRecipients().contains(user));
     }
 
     /**
@@ -1700,7 +1725,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         try {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-            potentialOwners.add(new UserImpl("Bobba Fet"));
+            User user = TaskModelProvider.getFactory().newUser();
+            ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+            potentialOwners.add(user);
             taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
             fail("Shouldn't be successful");
@@ -1713,8 +1740,12 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         //shouldn't affect the assignments
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Darth Vader")));
-        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(new UserImpl("Bobba Fet")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(user));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(user));
     }
 
     @Test
@@ -1734,7 +1765,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         try {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
-            potentialOwners.add(new UserImpl("Jabba Hutt"));
+            User user = TaskModelProvider.getFactory().newUser();
+            ((InternalOrganizationalEntity) user).setId("Jabba Hutt");
+            potentialOwners.add(user);
             taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
             fail("Shouldn't be successful");
@@ -1747,7 +1780,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         //shouldn't affect the assignments
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getBusinessAdministrators().contains(new UserImpl("Bobba Fet")));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        assertTrue(task1.getPeopleAssignments().getBusinessAdministrators().contains(user));
         assertEquals(task1.getTaskData().getStatus(), Status.Created);
     }
 
@@ -1767,7 +1802,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
-        potentialOwners.add(new UserImpl("Jabba Hutt"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Jabba Hutt");
+        potentialOwners.add(user);
         taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
 
@@ -1795,7 +1832,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         List<OrganizationalEntity> potentialGroups = new ArrayList<OrganizationalEntity>();
-        potentialGroups.add(new GroupImpl( "Knights Templer" ));
+        Group group = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) group).setId("Knights Templer");
+        potentialGroups.add(group);
         taskService.nominate(taskId, "Darth Vader", potentialGroups);
 
 
@@ -1803,7 +1842,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(new GroupImpl("Knights Templer")));
+        assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(group));
         assertEquals(task1.getTaskData().getStatus(), Status.Ready);
     }
 
@@ -1875,7 +1914,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            businessAdmins.add(new UserImpl("Administrator"));
+            User user = TaskModelProvider.getFactory().newUser();
+            ((InternalOrganizationalEntity) user).setId("Administrator");
+            businessAdmins.add(user);
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
         }

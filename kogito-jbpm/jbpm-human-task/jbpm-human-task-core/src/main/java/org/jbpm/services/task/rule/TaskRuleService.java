@@ -15,8 +15,8 @@
  */
 package org.jbpm.services.task.rule;
 
-import org.jbpm.services.task.exception.TaskException;
 import org.kie.api.task.model.Task;
+import org.kie.internal.task.exception.TaskException;
 
 public interface TaskRuleService {
     

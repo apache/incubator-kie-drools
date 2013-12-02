@@ -24,7 +24,6 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.shared.services.cdi.BootOnLoad;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.ErrorInfo;
@@ -42,7 +41,6 @@ import org.kie.internal.executor.api.STATUS;
  */
 @BootOnLoad
 @ApplicationScoped
-@Transactional
 public class ExecutorServiceImpl implements ExecutorService {
     @Inject
     private Executor executor;

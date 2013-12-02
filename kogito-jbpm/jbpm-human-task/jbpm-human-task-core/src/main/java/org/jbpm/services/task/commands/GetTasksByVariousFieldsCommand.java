@@ -1,9 +1,19 @@
 package org.jbpm.services.task.commands;
 
-import static org.kie.internal.task.api.TaskQueryService.*;
+import static org.kie.internal.task.api.TaskQueryService.ACTUAL_OWNER_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.BUSINESS_ADMIN_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.LANGUAGE;
+import static org.kie.internal.task.api.TaskQueryService.POTENTIAL_OWNER_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.PROCESS_INST_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.STATUS_LIST;
+import static org.kie.internal.task.api.TaskQueryService.TASK_ID_LIST;
+import static org.kie.internal.task.api.TaskQueryService.WORK_ITEM_ID_LIST;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,9 +27,11 @@ import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-task-by-various-fields-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetTasksByVariousFieldsCommand extends TaskCommand<List<TaskSummary>> {
+public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-    @XmlElement
+	private static final long serialVersionUID = -4894264083829084547L;
+
+	@XmlElement
     private List<Long> workItemIds;
     
     @XmlElement
@@ -71,6 +83,7 @@ public class GetTasksByVariousFieldsCommand extends TaskCommand<List<TaskSummary
 		this.language = language;
     }
 	
+	@SuppressWarnings("unchecked")
 	public GetTasksByVariousFieldsCommand(Map<String, List<?>> params, boolean union) { 
 	    this.union = union;
 	    
@@ -89,9 +102,9 @@ public class GetTasksByVariousFieldsCommand extends TaskCommand<List<TaskSummary
 
 	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	return context.getTaskService().getTasksByVariousFields(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, statuses, language, union);
-        }
+        
+        potOwners = populateOrganizationalEntityWithGroupInfo(potOwners, context);
+    	busAdmins = populateOrganizationalEntityWithGroupInfo(busAdmins, context);
         return context.getTaskQueryService().getTasksByVariousFields(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, statuses, language, union);
     }
 
@@ -165,6 +178,28 @@ public class GetTasksByVariousFieldsCommand extends TaskCommand<List<TaskSummary
 
     public void setUnion(Boolean union) {
         this.union = union;
+    }
+    
+    /**
+     * Populates given list with group information taken from UserGroupCallback implementation
+     * to allow proper query for tasks based on user assignments.
+     * @param entities - "raw" list of organizational entities 
+     * @return if list is not null and not empty returns list of org entities populated with group info, otherwise same as argument
+     */
+    protected List<String> populateOrganizationalEntityWithGroupInfo(List<String> entities, TaskContext context) {
+    	if (entities != null && entities.size() > 0) {
+    		Set<String> groupIds = new HashSet<String>();
+    		for (String userId : entities) {
+    			List<String> tmp = doUserGroupCallbackOperation(userId, null, context);
+    			if (tmp != null) {
+    				groupIds.addAll(tmp);
+    			}
+    		}
+    		groupIds.addAll(entities);
+    		return new ArrayList<String>(groupIds);
+    	}
+    	
+    	return entities;
     }
 
 }

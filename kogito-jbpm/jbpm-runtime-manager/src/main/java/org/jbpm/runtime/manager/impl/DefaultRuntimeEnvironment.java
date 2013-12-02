@@ -56,7 +56,7 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
         this.schedulerService = globalSchedulerService;
         this.usePersistence = true;
         // TODO is this the right one to be default?
-        this.userGroupCallback = new MvelUserGroupCallbackImpl();
+        this.userGroupCallback = new MvelUserGroupCallbackImpl(true);
     }
     
     public DefaultRuntimeEnvironment(EntityManagerFactory emf, boolean usePersistence) {
@@ -64,7 +64,7 @@ public class DefaultRuntimeEnvironment extends SimpleRuntimeEnvironment {
         this.usePersistence = usePersistence;
         this.emf = emf;
         // TODO is this the right one to be default?
-        this.userGroupCallback = new MvelUserGroupCallbackImpl();
+        this.userGroupCallback = new MvelUserGroupCallbackImpl(true);
     }
     
     public void init() {

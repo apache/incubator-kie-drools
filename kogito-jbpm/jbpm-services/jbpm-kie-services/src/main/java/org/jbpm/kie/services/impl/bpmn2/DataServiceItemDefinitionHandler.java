@@ -23,10 +23,6 @@ import org.jbpm.bpmn2.xml.ItemDefinitionHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-/**
- *
- * @author salaboy
- */
 @ApplicationScoped
 public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
 

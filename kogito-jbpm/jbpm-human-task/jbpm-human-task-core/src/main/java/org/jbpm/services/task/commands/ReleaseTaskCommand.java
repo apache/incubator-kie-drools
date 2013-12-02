@@ -15,24 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskReleasedEvent;
-import org.jbpm.services.task.events.BeforeTaskReleasedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.kie.api.task.model.Group;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Release 
@@ -43,12 +30,12 @@ import org.kie.internal.task.api.model.InternalTaskData;
                 newStatus = Status.Ready
             } ],    
  */
-
-@Transactional
 @XmlRootElement(name="release-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class ReleaseTaskCommand extends TaskCommand<Void> {
+public class ReleaseTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 	
+	private static final long serialVersionUID = -9094809920345727802L;
+
 	public ReleaseTaskCommand() {
 	}
 
@@ -59,46 +46,11 @@ public class ReleaseTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().release(taskId, userId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskReleasedEvent>() {}).fire(task);
-        // CHeck for potential Owner allowed (decorator?)
-        boolean ownerAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
-        
-        boolean adminAllowed = isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
-        
-        
-        if (!ownerAllowed && !adminAllowed) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task "+task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-        
-        if (task.getTaskData().getStatus().equals(Status.Reserved) || 
-                        task.getTaskData().getStatus().equals(Status.InProgress)) {
-            
-        	((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
-        	((InternalTaskData) task.getTaskData()).setActualOwner(null);
-        }
- 
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskReleasedEvent>() {}).fire(task);
-
-        return null;
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().release(taskId, userId);
+    	return null;
+       
     }
 
-    private boolean isAllowed(final User user, final List<String> groupIds, final List<OrganizationalEntity> entities) {
-        // for now just do a contains, I'll figure out group membership later.
-        for (OrganizationalEntity entity : entities) {
-            if (entity instanceof User && entity.equals(user)) {
-                return true;
-            }
-            if (entity instanceof Group && groupIds != null && groupIds.contains(entity.getId())) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

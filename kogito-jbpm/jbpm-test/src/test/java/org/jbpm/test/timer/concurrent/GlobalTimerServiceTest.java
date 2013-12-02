@@ -21,8 +21,6 @@ import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.test.timer.TimerBaseTest;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -36,13 +34,17 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,9 +103,17 @@ public class GlobalTimerServiceTest extends TimerBaseTest {
         RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
         TaskService taskService = engine.getTaskService();
         
-        ((InternalTaskService)taskService).addGroup(new GroupImpl("HR"));
-        ((InternalTaskService)taskService).addUser(new UserImpl("mary"));
-        ((InternalTaskService)taskService).addUser(new UserImpl("john"));
+        Group grouphr = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) grouphr).setId("HR");
+        
+        User mary = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) mary).setId("mary");
+        User john = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) john).setId("john");
+        
+        ((InternalTaskService)taskService).addGroup(grouphr);
+        ((InternalTaskService)taskService).addUser(mary);
+        ((InternalTaskService)taskService).addUser(john);
         
         manager.disposeRuntimeEngine(engine);
  

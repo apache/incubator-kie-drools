@@ -1,15 +1,14 @@
 package org.jbpm.kie.services.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -27,7 +26,6 @@ import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
@@ -41,14 +39,10 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.manager.RuntimeEngine;
-import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.deployment.DeployedUnit;
 import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.deployment.DeploymentUnit;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +96,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractBaseTest {
                 
                 .addPackage("org.jbpm.kie.services.api")
                 .addPackage("org.jbpm.kie.services.impl")
+                .addPackage("org.jbpm.kie.services.cdi.producer")
                 .addPackage("org.jbpm.kie.services.api.bpmn2")
                 .addPackage("org.jbpm.kie.services.impl.bpmn2")
                 .addPackage("org.jbpm.kie.services.impl.event.listeners")

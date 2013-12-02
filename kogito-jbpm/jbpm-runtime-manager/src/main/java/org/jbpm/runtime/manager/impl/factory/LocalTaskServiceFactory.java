@@ -17,10 +17,9 @@ package org.jbpm.runtime.manager.impl.factory;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jboss.solder.core.Veto;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.services.task.HumanTaskServiceFactory;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
+import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.task.TaskService;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
@@ -32,7 +31,6 @@ import org.kie.internal.runtime.manager.TaskServiceFactory;
  * for transaction management, this is mandatory as it must participate in already active
  * transaction if such exists.
  */
-@Veto
 public class LocalTaskServiceFactory implements TaskServiceFactory {
 
     private RuntimeEnvironment runtimeEnvironment;
@@ -45,9 +43,10 @@ public class LocalTaskServiceFactory implements TaskServiceFactory {
         EntityManagerFactory emf = ((SimpleRuntimeEnvironment)runtimeEnvironment).getEmf();
         if (emf != null) {
             
-            TaskService internalTaskService =   HumanTaskServiceFactory.newTaskServiceConfigurator()
-            .transactionManager(new JbpmJTATransactionManager())
-            .entityManagerFactory(emf)
+            TaskService internalTaskService = HumanTaskServiceFactory.newTaskServiceConfigurator()
+    		.environment(runtimeEnvironment.getEnvironment())
+    		.entityManagerFactory(emf)
+            .listener(new JPATaskLifeCycleEventListener())                     
             .userGroupCallback(runtimeEnvironment.getUserGroupCallback())
             .getTaskService();
                                   

@@ -15,7 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl.tx;
 
-import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.OrderedTransactionSynchronization;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 
@@ -24,12 +24,13 @@ import org.kie.api.runtime.manager.RuntimeManager;
  * afterCompletion phase.
  *
  */
-public class DisposeSessionTransactionSynchronization implements TransactionSynchronization {
+public class DisposeSessionTransactionSynchronization extends OrderedTransactionSynchronization {
 
 	private RuntimeEngine runtime;
 	private RuntimeManager manager;
 	
 	public DisposeSessionTransactionSynchronization(RuntimeManager manager, RuntimeEngine runtime) {
+		super(10);
 		this.manager = manager;
 	    this.runtime = runtime;
 	}

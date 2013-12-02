@@ -22,7 +22,12 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jbpm.test.util.TestUtil;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @RunWith(Arquillian.class)
 public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
@@ -46,5 +51,17 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
                 .addAsManifestResource("META-INF/Executor-orm.xml", ArchivePaths.create("Executor-orm.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
 
+    }
+    
+    private static PoolingDataSource pds;
+    
+    @BeforeClass
+    public static void beforeClass() {
+    	pds = TestUtil.setupPoolingDataSource();
+    }
+    
+    @AfterClass
+    public static void afterClass() {
+    	pds.close();
     }
 }

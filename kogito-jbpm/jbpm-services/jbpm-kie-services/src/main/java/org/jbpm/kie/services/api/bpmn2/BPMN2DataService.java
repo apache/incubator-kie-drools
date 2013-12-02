@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
+import org.kie.internal.task.api.model.TaskDef;
 
 public interface BPMN2DataService {
     Map<String, String> getAssociatedEntities(String processId);
     List<String> getAssociatedDomainObjects(String processId);
     Map<String, String> getProcessData(String processId);
     List<String> getAssociatedForms(String processId);
-    Collection<TaskDefImpl> getAllTasksDef(String processId);
+    Collection<TaskDef> getAllTasksDef(String processId);
     ProcessAssetDesc getProcessDesc(String processId);
     Map<String, String> getTaskInputMappings(String processId, String taskName);
     Map<String, String> getTaskOutputMappings(String processId, String taskName);

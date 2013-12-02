@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.enterprise.inject.Alternative;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -47,8 +46,6 @@ import org.slf4j.LoggerFactory;
  * </ul>
  *
  */
-
-@Alternative
 public class DBUserGroupCallbackImpl implements UserGroupCallback {
 
 	private static final Logger logger = LoggerFactory.getLogger(DBUserGroupCallbackImpl.class);
@@ -63,8 +60,8 @@ public class DBUserGroupCallbackImpl implements UserGroupCallback {
     private Properties config;
     private DataSource ds; 
     
-    
-    public DBUserGroupCallbackImpl() {
+    //no no-arg constructor to prevent cdi from auto deploy
+    public DBUserGroupCallbackImpl(boolean activate) {
         String propertiesLocation = System.getProperty("jbpm.usergroup.callback.properties");
         
         if (propertiesLocation == null) {

@@ -17,25 +17,15 @@ package org.jbpm.services.task.commands;
 
 import java.util.List;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskNominatedEvent;
-import org.jbpm.services.task.events.BeforeTaskNominatedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.model.xml.adapter.OrganizationalEntityXmlAdapter;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalPeopleAssignments;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Skip : [ new OperationCommand().{ status = [ Status.Created ],
@@ -47,13 +37,13 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ], newStatus =
  * Status.Obsolete, skipable = true } ],
  */
-@Transactional
-
 @XmlRootElement(name="nominate-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class NominateTaskCommand extends TaskCommand<Void> {
+public class NominateTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 
-    @XmlElement(name="potential-owner")
+	private static final long serialVersionUID = 1874781422343631410L;
+
+	@XmlElement(name="potential-owner")
     @XmlJavaTypeAdapter(value=OrganizationalEntityXmlAdapter.class)
     private List<OrganizationalEntity> potentialOwners;
     
@@ -72,31 +62,12 @@ public class NominateTaskCommand extends TaskCommand<Void> {
 
 	public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().nominate(taskId, userId, potentialOwners);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskNominatedEvent>() {
-        }).fire(task);
-        
-        if (CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators())) {
-
-
-            ((InternalTaskData) task.getTaskData()).assignOwnerAndStatus(potentialOwners);
-            if (task.getTaskData().getStatus() == Status.Ready) {
-                ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
-            }
-
-        } else {
-            throw new PermissionDeniedException("User " + userId + " is not allowed to perform Nominate on Task " + taskId);
-        }
-
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskNominatedEvent>() {
-        }).fire(task);
-
-        return null;
+        doCallbackUserOperation(userId, context);
+        doCallbackOperationForPotentialOwners(potentialOwners, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().nominate(taskId, userId, potentialOwners);
+    	return null;
+       
     }
 
     public List<OrganizationalEntity> getPotentialOwners() {

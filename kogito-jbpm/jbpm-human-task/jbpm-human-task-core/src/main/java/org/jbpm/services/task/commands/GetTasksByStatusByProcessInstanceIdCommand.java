@@ -16,13 +16,19 @@ import org.kie.internal.command.Context;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List<TaskSummary>> {
 
-    @XmlElement(name="process-instance-id")
+	private static final long serialVersionUID = -6059681013108594344L;
+
+	@XmlElement(name="process-instance-id")
     @XmlSchemaType(name="long")
 	private Long processInstanceId;
 	
     @XmlElement
     @XmlSchemaType(name="string")
 	private String language;
+    
+    @XmlElement
+    @XmlSchemaType(name="string")
+    private String taskName;
 	
     @XmlElement
 	private List<Status> status;
@@ -34,6 +40,13 @@ public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List
 		this.processInstanceId = processInstanceId;
 		this.language = language;
 		this.status = status;
+    }
+	
+	public GetTasksByStatusByProcessInstanceIdCommand(long processInstanceId, String language, List<Status> status, String taskName) {
+		this.processInstanceId = processInstanceId;
+		this.language = language;
+		this.status = status;
+		this.taskName = taskName;
     }
 
     public Long getProcessInstanceId() {
@@ -62,10 +75,11 @@ public class GetTasksByStatusByProcessInstanceIdCommand extends TaskCommand<List
 
 	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-    		return context.getTaskService().getTasksByStatusByProcessInstanceId(processInstanceId, status, language);
+        if (taskName != null) {
+        	return context.getTaskQueryService().getTasksByStatusByProcessInstanceIdByTaskName(processInstanceId, status, taskName, language);
+        } else {
+        	return context.getTaskQueryService().getTasksByStatusByProcessInstanceId(processInstanceId, status, language);
         }
-    	return context.getTaskQueryService().getTasksByStatusByProcessInstanceId(processInstanceId, status, language);
     }
 
 }

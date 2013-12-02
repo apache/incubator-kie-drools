@@ -19,7 +19,7 @@ import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
-import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.OrderedTransactionSynchronization;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
@@ -28,11 +28,11 @@ import org.kie.internal.command.Context;
  * in beforeCompletion call to be executed as part of current transaction.
  *
  */
-public class DestroySessionTransactionSynchronization implements
-        TransactionSynchronization {
+public class DestroySessionTransactionSynchronization extends OrderedTransactionSynchronization {
 
     private KieSession ksession;
     public DestroySessionTransactionSynchronization(KieSession ksession) {
+    	super(5);
         this.ksession = ksession;
     }
 

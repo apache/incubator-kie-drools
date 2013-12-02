@@ -2,11 +2,11 @@ package org.jbpm.services.task.impl.model.xml.adapter;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 
 public class OrganizationalEntityXmlAdapter extends XmlAdapter<String, OrganizationalEntity> {
 
@@ -15,10 +15,14 @@ public class OrganizationalEntityXmlAdapter extends XmlAdapter<String, Organizat
     
     @Override
     public OrganizationalEntity unmarshal(String v) throws Exception {
-        if( v.startsWith(USER_PREFIX) ) { 
-            return new UserImpl(v.substring(2, v.length()));
+        if( v.startsWith(USER_PREFIX) ) {
+        	User user = TaskModelProvider.getFactory().newUser();
+        	((InternalOrganizationalEntity) user).setId(v.substring(2, v.length()));
+            return user;
         } else if( v.startsWith(GROUP_PREFIX) ) { 
-           return new GroupImpl(v.substring(2, v.length()));
+        	Group group = TaskModelProvider.getFactory().newGroup();
+        	((InternalOrganizationalEntity) group).setId(v.substring(2, v.length()));
+        	return group;
         } else { 
             throw new IllegalStateException("Unknown prefix '" + v.substring(0,2) + "' (" + v + ")" );
         }

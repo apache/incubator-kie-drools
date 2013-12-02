@@ -8,8 +8,6 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.wih.ExternalTaskEventListener;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.After;
@@ -20,7 +18,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.api.task.model.User;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.slf4j.Logger;
@@ -31,8 +31,8 @@ public class LocalTasksServiceTest extends JbpmJUnitBaseTestCase {
     private static final Logger logger = LoggerFactory.getLogger(LocalTasksServiceTest.class);
     
     private EntityManagerFactory emfTasks;
-    protected Map<String, UserImpl> users;
-    protected Map<String, GroupImpl> groups;
+    protected Map<String, User> users;
+    protected Map<String, Group> groups;
     
     protected Properties conf;
     

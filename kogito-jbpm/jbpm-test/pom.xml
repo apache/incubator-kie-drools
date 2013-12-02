@@ -115,6 +115,11 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
     </dependency>
+    <dependency>
+        <groupId>org.subethamail</groupId>
+        <artifactId>subethasmtp</artifactId>
+        <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>

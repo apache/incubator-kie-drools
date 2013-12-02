@@ -19,17 +19,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
 
-/**
- *
- * @author salaboy
- */
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.kie.internal.task.api.model.TaskDef;
+
 public class ProcessDescRepoHelper {
 
     private ProcessAssetDesc process;
-    private Map<String, TaskDefImpl> tasks = new HashMap<String, TaskDefImpl>();
+    private Map<String, TaskDef> tasks = new HashMap<String, TaskDef>();
     private Map<String, Map<String, String>> taskInputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, Map<String, String>> taskOutputMappings = new HashMap<String, Map<String, String>>();
     private Map<String, String> inputs = new HashMap<String, String>();
@@ -50,7 +47,7 @@ public class ProcessDescRepoHelper {
         return process;
     }
 
-    public Map<String, TaskDefImpl> getTasks() {
+    public Map<String, TaskDef> getTasks() {
         return tasks;
     }
 

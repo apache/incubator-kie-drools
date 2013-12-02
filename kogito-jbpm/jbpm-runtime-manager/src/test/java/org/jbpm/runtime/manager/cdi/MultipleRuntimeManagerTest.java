@@ -49,9 +49,6 @@ public class MultipleRuntimeManagerTest extends AbstractBaseTest {
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "jbpm-runtime-manager.jar")
 
-                .addPackage("org.jboss.seam.transaction") //seam-persistence
-                .addPackage("org.jbpm.shared.services.api")
-                .addPackage("org.jbpm.shared.services.impl")
                 .addPackage("org.jbpm.kie.services.impl.util")
                 .addPackage("org.jbpm.services.task")
                 .addPackage("org.jbpm.services.task.annotations")

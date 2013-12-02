@@ -27,6 +27,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -67,7 +68,7 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
     private byte[] requestData;
     @Lob
     private byte[] responseData;
-    @OneToMany(cascade= CascadeType.ALL, mappedBy="requestInfo")
+    @OneToMany(cascade= CascadeType.ALL, mappedBy="requestInfo", fetch=FetchType.EAGER)
     private List<ErrorInfo> errorInfo = new ArrayList<ErrorInfo>();
 
     public RequestInfo() {
@@ -170,7 +171,7 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
         this.responseData = responseData;
     }
 
-    @Override
+	@Override
     public String toString() {
         return "RequestInfo{" + "id=" + id + ", time=" + time + ", status=" + status + ", commandName=" + commandName + ", message=" + message + ", key=" + key + ", requestData=" + requestData + ", responseData=" + responseData + ", error=" + errorInfo + '}';
     }

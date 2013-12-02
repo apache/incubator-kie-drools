@@ -1,5 +1,6 @@
 package org.jbpm.services.task.identity;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,26 +8,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DefaultUserInfo implements UserInfo {
     
+	private static final Logger logger = LoggerFactory.getLogger(DefaultUserInfo.class);
     protected Map<String, Map<String, Object>> registry = new HashMap<String, Map<String,Object>>();
 
-    public DefaultUserInfo() {
+    //no no-arg constructor to prevent cdi from auto deploy
+    public DefaultUserInfo(boolean activate) {
         try {
-        Properties registryProps = new Properties();
-        // BZ-1037445: Obtain the properties file from the webapp classload (current thread classloader).
-        // If not, when deploying the app into EAP static modules will fail.
-        registryProps.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/userinfo.properties"));
-        buildRegistry(registryProps);
+	        Properties registryProps = new Properties();
+	        // BZ-1037445: Obtain the properties file from the webapp classload (current thread classloader).
+	        // If not, when deploying the app into EAP static modules will fail.
+	        InputStream in = this.getClass().getResourceAsStream("/userinfo.properties");
+	        if (in == null) {
+	        	in = Thread.currentThread().getContextClassLoader().getResourceAsStream("/userinfo.properties");
+	        }
+	        registryProps.load(in);
+	        buildRegistry(registryProps);
         } catch (Exception e) {
-            throw new IllegalStateException("Problem loading userinfo properties", e);
+            logger.warn("Problem loading userinfo properties {}", e.getMessage());
         }
     }
     
@@ -118,9 +128,11 @@ public class DefaultUserInfo implements UserInfo {
                     }
                     String[] members = memberList.split(",");
                     
-                    List<OrganizationalEntityImpl> membersList = new ArrayList<OrganizationalEntityImpl>();
+                    List<OrganizationalEntity> membersList = new ArrayList<OrganizationalEntity>();
                     for (String member : members) {
-                        membersList.add(new UserImpl(member));
+                    	User user = TaskModelProvider.getFactory().newUser();
+                        ((InternalOrganizationalEntity) user).setId(member);
+                        membersList.add(user);
                     }
                     entityInfo.put("members", membersList);
                 }

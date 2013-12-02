@@ -15,20 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskStartedEvent;
-import org.jbpm.services.task.events.BeforeTaskStartedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Start : [ new OperationCommand().{ status = [ Status.Ready ],
@@ -36,11 +27,11 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.InProgress }, new OperationCommand().{ status = [ Status.Reserved ],
  * allowed = [ Allowed.Owner ], newStatus = Status.InProgress } ], *
  */
-
-@Transactional
 @XmlRootElement(name="start-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class StartTaskCommand extends TaskCommand<Void> {
+public class StartTaskCommand extends UserGroupCallbackTaskCommand<Void> {
+
+	private static final long serialVersionUID = 6034478381015990133L;
 
 	public StartTaskCommand() {
 	}
@@ -52,31 +43,11 @@ public class StartTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().start(taskId, userId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskStartedEvent>() {}).fire(task);
-        // CHeck for potential Owner allowed (decorator?)
-        boolean operationAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getPotentialOwners());
-        if (!operationAllowed) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task "+task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-        if (task.getTaskData().getStatus().equals(Status.Ready)) {
-            
-        	((InternalTaskData) task.getTaskData()).setStatus(Status.InProgress);
-        	((InternalTaskData) task.getTaskData()).setActualOwner(user);
-        }
-
-        if (task.getTaskData().getStatus().equals(Status.Reserved)) {
-        	((InternalTaskData) task.getTaskData()).setStatus(Status.InProgress);
-        }
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskStartedEvent>() {}).fire(task);
-
-        return null;
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().start(taskId, userId);
+    	return null;
+       
     }
 
    

@@ -8,15 +8,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-tasks-assigned-bus-admin-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetTaskAssignedAsBusinessAdminCommand extends TaskCommand<List<TaskSummary>> {
+public class GetTaskAssignedAsBusinessAdminCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-    @XmlElement
+	private static final long serialVersionUID = -128903115964900028L;
+
+	@XmlElement
     @XmlSchemaType(name="string")
 	private String language;
 	
@@ -38,9 +39,8 @@ public class GetTaskAssignedAsBusinessAdminCommand extends TaskCommand<List<Task
 
 	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	return context.getTaskService().getTasksAssignedAsBusinessAdministrator(userId, language);
-        }
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
         return context.getTaskQueryService().getTasksAssignedAsBusinessAdministrator(userId, language);
     }
 

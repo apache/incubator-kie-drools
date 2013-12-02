@@ -97,9 +97,9 @@ public class ErrorInfo implements org.kie.internal.executor.api.ErrorInfo, Seria
 
     public void setRequestInfo(RequestInfo requestInfo) {
         this.requestInfo = requestInfo;
-    }
+    }   
 
-    @Override
+	@Override
     public String toString() {
         return "ErrorInfo{" + "id=" + id + ", time=" + time + ", message=" + message + ", stacktrace=" + stacktrace + ", requestInfo=" + requestInfo.getId() + '}';
     }

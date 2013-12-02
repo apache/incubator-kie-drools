@@ -18,9 +18,6 @@ package org.jbpm.services.task.rule.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-
 import org.jbpm.services.task.rule.RuleContextProvider;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.KieBase;
@@ -30,8 +27,18 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
-@ApplicationScoped
+
 public class RuleContextProviderImpl implements RuleContextProvider {
+	
+	private static RuleContextProviderImpl INSTANCE = new RuleContextProviderImpl();
+	
+	private RuleContextProviderImpl() {		
+		initialize();
+	}
+	
+	public static RuleContextProviderImpl get() {
+		return INSTANCE;
+	}
     
     private static final String DEFAULT_ADD_TASK_RULES = "default-add-task.drl";
     private static final String DEFAULT_COMPLETE_TASK_RULES = "default-complete-task.drl";
@@ -39,7 +46,6 @@ public class RuleContextProviderImpl implements RuleContextProvider {
     private Map<String, KieBase> kieBases = new HashMap<String, KieBase>();
     private Map<String, Map<String, Object>> globals = new HashMap<String, Map<String,Object>>();
     
-    @PostConstruct
     public void initialize() {
         try {
             Resource addTask = ResourceFactory.newClassPathResource(DEFAULT_ADD_TASK_RULES);

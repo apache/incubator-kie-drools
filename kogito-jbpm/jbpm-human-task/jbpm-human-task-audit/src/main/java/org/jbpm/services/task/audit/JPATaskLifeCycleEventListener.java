@@ -5,173 +5,258 @@
 package org.jbpm.services.task.audit;
 
 import java.util.Date;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskActivatedEvent;
-import org.jbpm.services.task.events.AfterTaskAddedEvent;
-import org.jbpm.services.task.events.AfterTaskClaimedEvent;
-import org.jbpm.services.task.events.AfterTaskCompletedEvent;
-import org.jbpm.services.task.events.AfterTaskDelegatedEvent;
-import org.jbpm.services.task.events.AfterTaskExitedEvent;
-import org.jbpm.services.task.events.AfterTaskFailedEvent;
-import org.jbpm.services.task.events.AfterTaskForwardedEvent;
-import org.jbpm.services.task.events.AfterTaskReleasedEvent;
-import org.jbpm.services.task.events.AfterTaskResumedEvent;
-import org.jbpm.services.task.events.AfterTaskSkippedEvent;
-import org.jbpm.services.task.events.AfterTaskStartedEvent;
-import org.jbpm.services.task.events.AfterTaskStoppedEvent;
-import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.api.TaskEvent;
+import org.kie.internal.task.api.TaskPersistenceContext;
 
 /**
  *
  */
-
-@ApplicationScoped
-@Transactional
 public class JPATaskLifeCycleEventListener implements TaskLifeCycleEventListener{
 
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
-    
+   
     public JPATaskLifeCycleEventListener() {
     }
-
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
-    }
-
+    
     @Override
-    public void afterTaskStartedEvent(@Observes @AfterTaskStartedEvent Task ti) {
+    public void afterTaskStartedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.STARTED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STARTED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskActivatedEvent(@Observes @AfterTaskActivatedEvent Task ti) {
+    public void afterTaskActivatedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.ACTIVATED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ACTIVATED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskClaimedEvent(@Observes @AfterTaskClaimedEvent Task ti) {
+    public void afterTaskClaimedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.CLAIMED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.CLAIMED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskSkippedEvent(@Observes @AfterTaskSkippedEvent Task ti) {
+    public void afterTaskSkippedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.SKIPPED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SKIPPED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskStoppedEvent(@Observes @AfterTaskStoppedEvent Task ti ) {
+    public void afterTaskStoppedEvent(TaskEvent event ) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.STOPPED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.STOPPED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskCompletedEvent(@Observes @AfterTaskCompletedEvent Task ti) {
+    public void afterTaskCompletedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.COMPLETED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.COMPLETED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskFailedEvent(@Observes @AfterTaskFailedEvent Task ti) {
+    public void afterTaskFailedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.FAILED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FAILED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskAddedEvent(@Observes @AfterTaskAddedEvent Task ti) {
+    public void afterTaskAddedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
         
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.ADDED, userId , new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, userId , new Date()));
     }
 
     @Override
-    public void afterTaskExitedEvent(@Observes @AfterTaskExitedEvent Task ti) {
+    public void afterTaskExitedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.EXITED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.EXITED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskReleasedEvent(@Observes @AfterTaskReleasedEvent Task ti) {
+    public void afterTaskReleasedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.RELEASED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RELEASED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskResumedEvent(@Observes @AfterTaskResumedEvent Task ti) {
+    public void afterTaskResumedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.RESUMED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.RESUMED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskSuspendedEvent(@Observes @AfterTaskSuspendedEvent Task ti) {
+    public void afterTaskSuspendedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.SUSPENDED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.SUSPENDED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskForwardedEvent(@Observes @AfterTaskForwardedEvent Task ti) {
+    public void afterTaskForwardedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.FORWARDED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.FORWARDED, userId, new Date()));
     }
 
     @Override
-    public void afterTaskDelegatedEvent(@Observes @AfterTaskDelegatedEvent Task ti) {
+    public void afterTaskDelegatedEvent(TaskEvent event) {
         String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = event.getTaskContext().getPersistenceContext();
         if(ti.getTaskData().getActualOwner() != null){
             userId = ti.getTaskData().getActualOwner().getId();
         }
-        pm.persist(new TaskEventImpl(ti.getId(), TaskEvent.TaskEventType.DELEGATED, userId, new Date()));
+        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.DELEGATED, userId, new Date()));
     }
+
+	@Override
+	public void beforeTaskActivatedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskClaimedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskSkippedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskStartedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskStoppedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskCompletedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskFailedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskAddedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskExitedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskReleasedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskResumedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskSuspendedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskForwardedEvent(TaskEvent event) {
+		
+		
+	}
+
+	@Override
+	public void beforeTaskDelegatedEvent(TaskEvent event) {
+		
+		
+	}
     
 }

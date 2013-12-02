@@ -13,12 +13,6 @@ import org.jbpm.examples.checklist.ChecklistContextConstraint;
 import org.jbpm.examples.checklist.ChecklistItem;
 import org.jbpm.examples.checklist.ChecklistManager;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.I18NTextImpl;
-import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.services.task.impl.model.TaskDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -27,11 +21,18 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
+import org.kie.api.task.model.Group;
 import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.RuntimeManagerFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalI18NText;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -129,20 +130,22 @@ public class DefaultChecklistManager implements ChecklistManager {
 	public ChecklistItem addTask(String userId, String[] actorIds, String[] groupIds, String name, String orderingId, long processInstanceId) {
 		RuntimeEngine runtime = getRuntime();
 		
-		InternalTask task = new TaskImpl();
+		InternalTask task = (InternalTask) TaskModelProvider.getFactory().newTask();;
         setTaskName(task, name);
         setTaskDescription(task, orderingId);
         //task.setPriority(priority);
-        InternalTaskData taskData = new TaskDataImpl();
+        InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData(); 
         taskData.setProcessInstanceId(processInstanceId);
         // taskData.setProcessSessionId(sessionId);
         taskData.setSkipable(false);
-        taskData.setCreatedBy(new UserImpl(userId));
+        User cuser = TaskModelProvider.getFactory().newUser();
+    	((InternalOrganizationalEntity) cuser).setId(userId); 
+        taskData.setCreatedBy(cuser);
         task.setTaskData(taskData);
         
         InternalPeopleAssignments peopleAssignments = (InternalPeopleAssignments) task.getPeopleAssignments();
         if (peopleAssignments == null) {
-        	peopleAssignments = new PeopleAssignmentsImpl();
+        	peopleAssignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
         	peopleAssignments.setPotentialOwners(new ArrayList<OrganizationalEntity>());
         	peopleAssignments.setBusinessAdministrators(new ArrayList<OrganizationalEntity>());
         	peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());
@@ -153,14 +156,20 @@ public class DefaultChecklistManager implements ChecklistManager {
 
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
         for (String actorId: actorIds) {
-        	potentialOwners.add(new UserImpl(actorId));
+        	User user = TaskModelProvider.getFactory().newUser();
+        	((InternalOrganizationalEntity) user).setId(actorId); 
+        	potentialOwners.add(user);
         }
         for (String groupId: groupIds) {
-        	potentialOwners.add(new GroupImpl(groupId));
+        	Group group = TaskModelProvider.getFactory().newGroup();
+        	((InternalOrganizationalEntity) group).setId(groupId);
+        	potentialOwners.add(group);
         }
         setTaskPotentialOwners(task, potentialOwners);
         List<OrganizationalEntity> businessAdministrators = peopleAssignments.getBusinessAdministrators();
-        businessAdministrators.add(new UserImpl("Administrator"));
+        User administrator = TaskModelProvider.getFactory().newUser();
+    	((InternalOrganizationalEntity) administrator).setId("Administrator"); 
+        businessAdministrators.add(administrator);
         
         TaskService taskService = runtime.getTaskService();
 		long taskId = taskService.addTask(task, (Map<String, Object>) null);
@@ -171,31 +180,46 @@ public class DefaultChecklistManager implements ChecklistManager {
 	public void updateTaskName(long taskId, String name) {
 		RuntimeEngine runtime = getRuntime();
 		List<I18NText> names = new ArrayList<I18NText>();
-		names.add(new I18NTextImpl("en-UK", name));
+		I18NText text = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) text).setLanguage("en-UK");
+        ((InternalI18NText) text).setText(name);
+		names.add(text);
 		((InternalTaskService) runtime.getTaskService()).setTaskNames(taskId, names);
 		manager.disposeRuntimeEngine(runtime);
 	}
 	
 	private void setTaskName(InternalTask task, String name) {
 		List<I18NText> names = new ArrayList<I18NText>();
-        names.add(new I18NTextImpl("en-UK", name));
+		I18NText text = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) text).setLanguage("en-UK");
+        ((InternalI18NText) text).setText(name);
+        names.add(text);
         task.setNames(names);
 		List<I18NText> subjects = new ArrayList<I18NText>();
-		subjects.add(new I18NTextImpl("en-UK", name));
+		text = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) text).setLanguage("en-UK");
+        ((InternalI18NText) text).setText(name);
+		subjects.add(text);
         task.setSubjects(subjects);
 	}
 
 	public void updateTaskDescription(long taskId, String description) {
 		RuntimeEngine runtime = getRuntime();
 		List<I18NText> descriptions = new ArrayList<I18NText>();
-		descriptions.add(new I18NTextImpl("en-UK", description));
+		I18NText text = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) text).setLanguage("en-UK");
+        ((InternalI18NText) text).setText(description);
+		descriptions.add(text);
 		((InternalTaskService) runtime.getTaskService()).setDescriptions(taskId, descriptions);
 		manager.disposeRuntimeEngine(runtime);
 	}
 	
 	private void setTaskDescription(InternalTask task, String description) {
 		List<I18NText> descriptions = new ArrayList<I18NText>();
-        descriptions.add(new I18NTextImpl("en-UK", description));
+		I18NText text = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) text).setLanguage("en-UK");
+        ((InternalI18NText) text).setText(description);
+        descriptions.add(text);
         task.setDescriptions(descriptions);
 	}
 

@@ -15,23 +15,27 @@
  */
 package org.jbpm.services.task.wih.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.TaskDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTask;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 
 public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
@@ -56,8 +60,8 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		assertTrue(organizationalEntities.size() == 2);
 		organizationalEntities.contains("drbug");
 		organizationalEntities.contains("espiegelberg");
-		assertTrue(organizationalEntities.get(0) instanceof UserImpl);
-		assertTrue(organizationalEntities.get(1) instanceof UserImpl);
+		assertTrue(organizationalEntities.get(0) instanceof User);
+		assertTrue(organizationalEntities.get(1) instanceof User);
 		
 		ids = null;
 		organizationalEntities = new ArrayList<OrganizationalEntity>();
@@ -76,14 +80,14 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		assertTrue(organizationalEntities.size() == 0);		
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, false);
 		assertTrue(organizationalEntities.size() == 1);
-		assertTrue(organizationalEntities.get(0) instanceof GroupImpl);
+		assertTrue(organizationalEntities.get(0) instanceof Group);
 		
 		// Test that a duplicate is not added; only 1 of the 2 passed in should be added
 		ids = "Software Developer,Project Manager";
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, false);
 		assertTrue(organizationalEntities.size() == 2);
-		assertTrue(organizationalEntities.get(0) instanceof GroupImpl);
-		assertTrue(organizationalEntities.get(1) instanceof GroupImpl);
+		assertTrue(organizationalEntities.get(0) instanceof Group);
+		assertTrue(organizationalEntities.get(1) instanceof Group);
 		
 	}
 	
@@ -92,8 +96,8 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		
 		String actorId = "espiegelberg";
 		
-		TaskImpl task = new TaskImpl();
-		TaskDataImpl taskData = new TaskDataImpl();
+		Task task = TaskModelProvider.getFactory().newTask();
+		InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -101,7 +105,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		
 		peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
-		assertTrue(organizationalEntity1 instanceof UserImpl);
+		assertTrue(organizationalEntity1 instanceof User);
 		assertEquals(actorId, organizationalEntity1.getId());		
 		assertEquals(actorId, taskData.getCreatedBy().getId());
 		
@@ -130,8 +134,8 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         peopleAssignmentHelper = new PeopleAssignmentHelper();
         String actorId = "user1;user2";
         
-        TaskImpl task = new TaskImpl();
-        TaskDataImpl taskData = new TaskDataImpl();
+        Task task = TaskModelProvider.getFactory().newTask();
+		InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
         PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
         
         WorkItem workItem = new WorkItemImpl();     
@@ -139,12 +143,12 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         
         peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
         OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
-        assertTrue(organizationalEntity1 instanceof UserImpl);
+        assertTrue(organizationalEntity1 instanceof User);
         assertEquals("user1", organizationalEntity1.getId());       
         assertEquals("user1", taskData.getCreatedBy().getId());
         
         OrganizationalEntity organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
-        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertTrue(organizationalEntity2 instanceof User);
         assertEquals("user2", organizationalEntity2.getId());       
         
         workItem = new WorkItemImpl();
@@ -156,7 +160,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertEquals("user1", organizationalEntity1.getId());       
         assertEquals("user1", taskData.getCreatedBy().getId());
         organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
-        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertTrue(organizationalEntity2 instanceof User);
         assertEquals("user2", organizationalEntity2.getId()); 
         OrganizationalEntity organizationalEntity3 = peopleAssignments.getPotentialOwners().get(2);
         assertEquals("drbug", organizationalEntity3.getId());
@@ -174,8 +178,8 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         peopleAssignmentHelper = new PeopleAssignmentHelper(":");
         String actorId = "user1:user2";
         
-        TaskImpl task = new TaskImpl();
-        TaskDataImpl taskData = new TaskDataImpl();
+        Task task = TaskModelProvider.getFactory().newTask();
+		InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
         PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
         
         WorkItem workItem = new WorkItemImpl();     
@@ -183,12 +187,12 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         
         peopleAssignmentHelper.assignActors(workItem, peopleAssignments, taskData);
         OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
-        assertTrue(organizationalEntity1 instanceof UserImpl);
+        assertTrue(organizationalEntity1 instanceof User);
         assertEquals("user1", organizationalEntity1.getId());       
         assertEquals("user1", taskData.getCreatedBy().getId());
         
         OrganizationalEntity organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
-        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertTrue(organizationalEntity2 instanceof User);
         assertEquals("user2", organizationalEntity2.getId());       
         
         workItem = new WorkItemImpl();
@@ -200,7 +204,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertEquals("user1", organizationalEntity1.getId());       
         assertEquals("user1", taskData.getCreatedBy().getId());
         organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
-        assertTrue(organizationalEntity2 instanceof UserImpl);
+        assertTrue(organizationalEntity2 instanceof User);
         assertEquals("user2", organizationalEntity2.getId()); 
         OrganizationalEntity organizationalEntity3 = peopleAssignments.getPotentialOwners().get(2);
         assertEquals("drbug", organizationalEntity3.getId());
@@ -217,7 +221,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 	
 		String businessAdministratorId = "espiegelberg";
 		
-		TaskImpl task = new TaskImpl();
+		Task task = TaskModelProvider.getFactory().newTask();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -226,15 +230,15 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		peopleAssignmentHelper.assignBusinessAdministrators(workItem, peopleAssignments);
 		assertEquals(3, peopleAssignments.getBusinessAdministrators().size());
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getBusinessAdministrators().get(0);
-		assertTrue(organizationalEntity1 instanceof UserImpl);
+		assertTrue(organizationalEntity1 instanceof User);
 		assertEquals("Administrator", organizationalEntity1.getId());
 
 		OrganizationalEntity organizationalEntity2 = peopleAssignments.getBusinessAdministrators().get(1);        
-        assertTrue(organizationalEntity2 instanceof GroupImpl);              
+        assertTrue(organizationalEntity2 instanceof Group);              
         assertEquals("Administrators", organizationalEntity2.getId());
 
         OrganizationalEntity organizationalEntity3 = peopleAssignments.getBusinessAdministrators().get(2);      
-        assertTrue(organizationalEntity3 instanceof UserImpl);              
+        assertTrue(organizationalEntity3 instanceof User);              
         assertEquals(businessAdministratorId, organizationalEntity3.getId());
 	}
 	
@@ -243,7 +247,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 	
 		String taskStakeholderId = "espiegelberg";
 		
-		TaskImpl task = new TaskImpl();
+		Task task = TaskModelProvider.getFactory().newTask();
 		InternalPeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -252,7 +256,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		peopleAssignmentHelper.assignTaskStakeholders(workItem, peopleAssignments);
 		assertEquals(1, peopleAssignments.getTaskStakeholders().size());
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getTaskStakeholders().get(0);		
-		assertTrue(organizationalEntity1 instanceof UserImpl);				
+		assertTrue(organizationalEntity1 instanceof User);				
 		assertEquals(taskStakeholderId, organizationalEntity1.getId());
 		
 	}
@@ -262,7 +266,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		
 		String groupId = "Software Developers, Project Managers";
 		
-		TaskImpl task = new TaskImpl();
+		Task task = TaskModelProvider.getFactory().newTask();
 		PeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		
 		WorkItem workItem = new WorkItemImpl();		
@@ -270,10 +274,10 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		
 		peopleAssignmentHelper.assignGroups(workItem, peopleAssignments);
 		OrganizationalEntity organizationalEntity1 = peopleAssignments.getPotentialOwners().get(0);
-		assertTrue(organizationalEntity1 instanceof GroupImpl);
+		assertTrue(organizationalEntity1 instanceof Group);
 		assertEquals("Software Developers", organizationalEntity1.getId());
 		OrganizationalEntity organizationalEntity2 = peopleAssignments.getPotentialOwners().get(1);
-		assertTrue(organizationalEntity2 instanceof GroupImpl);
+		assertTrue(organizationalEntity2 instanceof Group);
 		assertEquals("Project Managers", organizationalEntity2.getId());
 		
 	}
@@ -281,7 +285,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 	@Test
 	public void testgetNullSafePeopleAssignments() {
 		
-		TaskImpl task = new TaskImpl();
+		Task task = TaskModelProvider.getFactory().newTask();
 		
 		InternalPeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
@@ -289,7 +293,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
 		
-		task.setPeopleAssignments(null);
+		((InternalTask) task).setPeopleAssignments(null);
 		peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
 		assertEquals(0, peopleAssignment.getPotentialOwners().size());
@@ -303,8 +307,8 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 	@Test
 	public void testHandlePeopleAssignments() {
 		
-		TaskImpl task = new TaskImpl();
-		TaskDataImpl taskData = new TaskDataImpl();
+		InternalTask task = (InternalTask) TaskModelProvider.getFactory().newTask();
+		InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
 		InternalPeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 		assertNotNull(peopleAssignment);
 		assertEquals(0, peopleAssignment.getPotentialOwners().size());
@@ -355,8 +359,8 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
     @Test
     public void testHandleMultiPeopleAssignments() {
 
-        TaskImpl task = new TaskImpl();
-        TaskDataImpl taskData = new TaskDataImpl();
+    	InternalTask task = (InternalTask) TaskModelProvider.getFactory().newTask();
+		InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();
         InternalPeopleAssignments peopleAssignment = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
         assertNotNull(peopleAssignment);
         assertEquals(0, peopleAssignment.getPotentialOwners().size());
@@ -414,7 +418,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 
         String excludedOwnerId = "espiegelberg";
 
-        TaskImpl task = new TaskImpl();
+        Task task = TaskModelProvider.getFactory().newTask();
         InternalPeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 
         WorkItem workItem = new WorkItemImpl();
@@ -423,7 +427,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         peopleAssignmentHelper.assignExcludedOwners(workItem, peopleAssignments);
         assertEquals(1, peopleAssignments.getExcludedOwners().size());
         OrganizationalEntity organizationalEntity1 = peopleAssignments.getExcludedOwners().get(0);
-        assertTrue(organizationalEntity1 instanceof UserImpl);
+        assertTrue(organizationalEntity1 instanceof User);
         assertEquals(excludedOwnerId, organizationalEntity1.getId());
 
     }
@@ -433,7 +437,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 
         String recipientId = "espiegelberg";
 
-        TaskImpl task = new TaskImpl();
+        Task task = TaskModelProvider.getFactory().newTask();
         InternalPeopleAssignments peopleAssignments = peopleAssignmentHelper.getNullSafePeopleAssignments(task);
 
         WorkItem workItem = new WorkItemImpl();
@@ -442,7 +446,7 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         peopleAssignmentHelper.assignRecipients(workItem, peopleAssignments);
         assertEquals(1, peopleAssignments.getRecipients().size());
         OrganizationalEntity organizationalEntity1 = peopleAssignments.getRecipients().get(0);
-        assertTrue(organizationalEntity1 instanceof UserImpl);
+        assertTrue(organizationalEntity1 instanceof User);
         assertEquals(recipientId, organizationalEntity1.getId());
 
     }

@@ -29,12 +29,12 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.adapter.StatusXmlAdapter;
 import org.jbpm.services.task.impl.model.xml.adapter.SubTasksStrategyXmlAdapter;
 import org.jbpm.services.task.impl.model.xml.adapter.UserXmlAdapter;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
@@ -271,12 +271,12 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         skipable = in.readBoolean();
 
         if (in.readBoolean()) {
-            actualOwner = new UserImpl();
+            actualOwner = TaskModelProvider.getFactory().newUser();
             actualOwner.readExternal(in);
         }
 
         if (in.readBoolean()) {
-            createdBy = new UserImpl();
+            createdBy = TaskModelProvider.getFactory().newUser();
             createdBy.readExternal(in);
         }
 

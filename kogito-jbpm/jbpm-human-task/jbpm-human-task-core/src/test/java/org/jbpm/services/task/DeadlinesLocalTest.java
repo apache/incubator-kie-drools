@@ -15,56 +15,48 @@
  */
 package org.jbpm.services.task;
 
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.shrinkwrap.api.Archive;
-import org.jboss.shrinkwrap.api.ArchivePaths;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.jbpm.services.task.deadlines.notifications.impl.MockNotificationListener;
+import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.kie.internal.task.api.InternalTaskService;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  *
  *
  */
-@RunWith(Arquillian.class)
+
 public class DeadlinesLocalTest extends DeadlinesBaseTest {
 
-    @Deployment()
-    public static Archive<?> createDeployment() {
-        return ShrinkWrap.create(JavaArchive.class, "jbpm-human-task-cdi.jar")
-                .addPackage("org.jboss.seam.transaction") //seam-persistence
-                .addPackage("org.jbpm.shared.services.api")
-                .addPackage("org.jbpm.shared.services.impl")
-                .addPackage("org.jbpm.services.task")
-                .addPackage("org.jbpm.services.task.annotations")
-                .addPackage("org.jbpm.services.task.api")
-                .addPackage("org.jbpm.services.task.impl")
-                .addPackage("org.jbpm.services.task.events")
-                .addPackage("org.jbpm.services.task.exception")
-                .addPackage("org.jbpm.services.task.identity")
-                .addPackage("org.jbpm.services.task.factories")
-                .addPackage("org.jbpm.services.task.internals")
-                .addPackage("org.jbpm.services.task.internals.lifecycle")
-                .addPackage("org.jbpm.services.task.lifecycle.listeners")
-                .addPackage("org.jbpm.services.task.query")
-                .addPackage("org.jbpm.services.task.util")
-                .addPackage("org.jbpm.services.task.commands") // This should not be required here
-                .addPackage("org.jbpm.services.task.deadlines") // deadlines
-                .addPackage("org.jbpm.services.task.deadlines.notifications.impl")
-                .addPackage("org.jbpm.services.task.subtask")
-                .addPackage("org.jbpm.services.task.rule")
-                .addPackage("org.jbpm.services.task.rule.impl")
-                .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
-                .addAsManifestResource("META-INF/Taskorm.xml", ArchivePaths.create("Taskorm.xml"))
-                .addAsManifestResource("beans-deadlines.xml", ArchivePaths.create("beans.xml"));
+	private PoolingDataSource pds;
+	private EntityManagerFactory emf;
+	
+	@Before
+	public void setup() {
+		this.notificationListener = new MockNotificationListener();
+		pds = setupPoolingDataSource();
+		emf = Persistence.createEntityManagerFactory( "org.jbpm.services.task" );
+		TaskDeadlinesServiceImpl.setNotificationListener(this.notificationListener);
+		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
+												.entityManagerFactory(emf)
+												.getTaskService();
+	}
+	
+	@After
+	public void clean() {
+		TaskDeadlinesServiceImpl.reset();
+		super.tearDown();
+		if (emf != null) {
+			emf.close();
+		}
+		if (pds != null) {
+			pds.close();
+		}
+	}
 
-    }
-    
-    @Override
-    @Before
-    public void setUp(){
-        super.setUp();
-    }
 }

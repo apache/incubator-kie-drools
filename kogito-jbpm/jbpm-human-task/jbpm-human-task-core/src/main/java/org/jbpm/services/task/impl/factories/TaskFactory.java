@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.Map;
 
-import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.utils.MVELUtils;
+import org.kie.api.task.model.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +20,10 @@ public class TaskFactory {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskFactory.class);
  
-    public static TaskImpl evalTask(Reader reader, Map<String, Object> vars) {
-        TaskImpl task = null;
+    public static Task evalTask(Reader reader, Map<String, Object> vars) {
+        Task task = null;
         try {
-            task = (TaskImpl) MVELUtils.eval(MVELUtils.toString(reader), vars);
+            task = (Task) MVELUtils.eval(MVELUtils.toString(reader), vars);
            
 
         } catch (IOException ex) {
@@ -32,13 +32,13 @@ public class TaskFactory {
         return task;
     }
 
-    public static TaskImpl evalTask(String taskString, Map<String, Object> vars) {
-        TaskImpl task = (TaskImpl) MVELUtils.eval(taskString, vars);
+    public static Task evalTask(String taskString, Map<String, Object> vars) {
+        Task task = (Task) MVELUtils.eval(taskString, vars);
         
         return task;
     }
 
-    public static TaskImpl evalTask(Reader reader) {
+    public static Task evalTask(Reader reader) {
         return evalTask(reader, null);
     }
 

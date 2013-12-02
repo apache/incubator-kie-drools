@@ -13,7 +13,9 @@ import org.kie.internal.command.Context;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetAttachmentCommand extends TaskCommand<Attachment> {
 
-    @XmlElement(name="attachment-id")
+	private static final long serialVersionUID = -4566088487597623910L;
+
+	@XmlElement(name="attachment-id")
     @XmlSchemaType(name="long")
 	private Long attachmentId;
 	
@@ -34,9 +36,6 @@ public class GetAttachmentCommand extends TaskCommand<Attachment> {
 
 	public Attachment execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	return context.getTaskService().getAttachmentById(attachmentId);
-        }
         return context.getTaskAttachmentService().getAttachmentById(attachmentId);
     }
 

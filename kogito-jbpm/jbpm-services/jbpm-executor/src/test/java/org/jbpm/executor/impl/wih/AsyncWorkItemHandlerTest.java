@@ -23,22 +23,12 @@ import static org.junit.Assert.assertNull;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.executor.impl.ClassCacheManager;
-import org.jbpm.executor.impl.ExecutorImpl;
-import org.jbpm.executor.impl.ExecutorQueryServiceImpl;
-import org.jbpm.executor.impl.ExecutorRequestAdminServiceImpl;
-import org.jbpm.executor.impl.ExecutorRunnable;
-import org.jbpm.executor.impl.ExecutorServiceImpl;
-import org.jbpm.executor.impl.runtime.RuntimeManagerRegistry;
+import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.jbpm.test.util.TestUtil;
 import org.junit.After;
@@ -54,11 +44,9 @@ import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.UserGroupCallback;
-import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorAdminService;
-import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorService;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -69,6 +57,7 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
     private UserGroupCallback userGroupCallback;  
     private RuntimeManager manager;
     private ExecutorService executorService;
+    private EntityManagerFactory emf = null;
     @Before
     public void setup() {
         TestUtil.cleanupSingletonSessionId();
@@ -86,6 +75,9 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
         if (manager != null) {
             RuntimeManagerRegistry.get().remove(manager.getIdentifier());
             manager.close();
+        }
+        if (emf != null) {
+        	emf.close();
         }
         pds.close();
     }
@@ -110,8 +102,6 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
-        // important to register RuntimeManager in the registry as callbacks rely on it to move process forward
-        RuntimeManagerRegistry.get().addRuntimeManager(manager.getIdentifier(), manager);
         assertNotNull(manager);
         
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
@@ -147,8 +137,6 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
-        // important to register RuntimeManager in the registry as callbacks rely on it to move process forward
-        RuntimeManagerRegistry.get().addRuntimeManager(manager.getIdentifier(), manager);
         assertNotNull(manager);
         
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
@@ -187,8 +175,6 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
-        // important to register RuntimeManager in the registry as callbacks rely on it to move process forward
-        RuntimeManagerRegistry.get().addRuntimeManager(manager.getIdentifier(), manager);
         assertNotNull(manager);
         
         RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
@@ -206,40 +192,14 @@ public class AsyncWorkItemHandlerTest extends AbstractBaseTest {
         manager.close();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
-        RuntimeManagerRegistry.get().addRuntimeManager(manager.getIdentifier(), manager);
+
     }
     
-    private ExecutorService buildExecutorService() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
-        EntityManager em = emf.createEntityManager();
-        
-        JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
-        ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
-        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(new JbpmLocalTransactionManager());        
-        
-        ExecutorService executorService = new ExecutorServiceImpl();       
-        
-        ExecutorQueryService queryService = new ExecutorQueryServiceImpl();
-        ((ExecutorQueryServiceImpl)queryService).setPm(pm);
-        
-        ((ExecutorServiceImpl)executorService).setQueryService(queryService);
+    private ExecutorService buildExecutorService() {        
+        emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
 
-        Executor executor = new ExecutorImpl();
-        ClassCacheManager classCacheManager = new ClassCacheManager();
-        ExecutorRunnable runnable = new ExecutorRunnable();
-        runnable.setPm(pm);
-        runnable.setQueryService(queryService);
-        runnable.setClassCacheManager(classCacheManager);
-        ((ExecutorImpl)executor).setPm(pm);
-        ((ExecutorImpl)executor).setExecutorRunnable(runnable);
-        ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setClassCacheManager(classCacheManager);
+        executorService = ExecutorServiceFactory.newExecutorService(emf);
         
-        ((ExecutorServiceImpl)executorService).setExecutor(executor);
-        
-        ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
-        ((ExecutorRequestAdminServiceImpl)adminService).setPm(pm);
-        ((ExecutorServiceImpl)executorService).setAdminService(adminService);
         executorService.init();
         
         return executorService;

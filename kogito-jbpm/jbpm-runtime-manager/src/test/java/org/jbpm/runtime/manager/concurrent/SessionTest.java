@@ -74,7 +74,7 @@ public class SessionTest extends AbstractBaseTest {
 
      @Parameters
      public static Collection<Object[]> persistence() {
-         Object[][] data = new Object[][] { { false }, { true } };
+         Object[][] data = new Object[][] { { false } };
          return Arrays.asList(data);
      };
      
@@ -596,7 +596,7 @@ public class SessionTest extends AbstractBaseTest {
 				// TODO can we avoid these by doing it all in one transaction?
 			    logger.debug("Task thread was too late for starting task {}", taskId);
 			} catch (RuntimeException e) {
-				if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
+				if (isCausedByOptimisticLockingFailure(e)) {
 				    logger.debug("Task thread got in conflict when starting task {}", taskId);
 				} else {
 					throw e;
@@ -608,7 +608,7 @@ public class SessionTest extends AbstractBaseTest {
     			    logger.debug("Completed task {}", taskId);
     				result = true;
 			    } catch (RuntimeException e) {
-	                if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
+	                if (isCausedByOptimisticLockingFailure(e)) {
 	                    logger.debug("Task thread got in conflict when completing task {}", taskId);
 	                } else {
 	                    throw e;
@@ -641,7 +641,7 @@ public class SessionTest extends AbstractBaseTest {
                 // TODO can we avoid these by doing it all in one transaction?
                 logger.debug("Task thread was too late for starting task {}", taskId);
             } catch (RuntimeException e) {
-                if (e.getCause() instanceof OptimisticLockException || e.getCause() instanceof StaleObjectStateException) {
+                if (isCausedByOptimisticLockingFailure(e)) {
                     logger.debug("Task thread got in conflict when starting task {}", taskId);
                 } else {
                     throw e;
@@ -740,4 +740,19 @@ public class SessionTest extends AbstractBaseTest {
             }
         }
     }
+   
+   protected boolean isCausedByOptimisticLockingFailure(Throwable throwable) {
+
+
+       while (throwable != null) {
+           if (OptimisticLockException.class.isAssignableFrom(throwable.getClass())
+        		   || StaleObjectStateException.class.isAssignableFrom(throwable.getClass())) {
+               return true;
+           } else {
+               throwable = throwable.getCause();
+           }
+       }
+
+       return false;
+   }
 }

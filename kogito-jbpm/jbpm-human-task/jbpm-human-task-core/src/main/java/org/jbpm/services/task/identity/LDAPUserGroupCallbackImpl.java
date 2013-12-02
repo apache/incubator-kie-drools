@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.enterprise.inject.Alternative;
 
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -32,7 +31,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.jbpm.shared.services.cdi.Selectable;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +58,6 @@ import org.slf4j.LoggerFactory;
  *  <li></li>
  * </ul>
  */
-
-@Alternative
-@Selectable
 public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
     
     private static final Logger logger = LoggerFactory.getLogger(LDAPUserGroupCallbackImpl.class);
@@ -86,8 +81,8 @@ public class LDAPUserGroupCallbackImpl implements UserGroupCallback {
     
     private Properties config;
     
-    
-    public LDAPUserGroupCallbackImpl() {
+    //no no-arg constructor to prevent cdi from auto deploy
+    public LDAPUserGroupCallbackImpl(boolean activate) {
         String propertiesLocation = System.getProperty("jbpm.usergroup.callback.properties");
         
         if (propertiesLocation == null) {

@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -32,17 +30,15 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Alternative
-@ApplicationScoped
 public class LDAPUserInfoImpl implements UserInfo {
     
     private static final Logger logger = LoggerFactory.getLogger(LDAPUserInfoImpl.class);
@@ -73,8 +69,8 @@ public class LDAPUserInfoImpl implements UserInfo {
     
     private Properties config;
     
-    
-    public LDAPUserInfoImpl() {
+    //no no-arg constructor to prevent cdi from auto deploy
+    public LDAPUserInfoImpl(boolean activate) {
         String propertiesLocation = System.getProperty("jbpm.user.info.properties");
         
         if (propertiesLocation == null) {
@@ -104,11 +100,11 @@ public class LDAPUserInfoImpl implements UserInfo {
         String context = null;
         String filter = null;
         String attrId = null;
-        if (entity instanceof UserImpl) {
+        if (entity instanceof User) {
             context = this.config.getProperty(USER_CTX);
             filter = this.config.getProperty(USER_FILTER);
             attrId = this.config.getProperty(NAME_ATTR_ID, "displayName");
-        } else if (entity instanceof GroupImpl) {
+        } else if (entity instanceof Group) {
             context = this.config.getProperty(ROLE_CTX);
             filter = this.config.getProperty(ROLE_FILTER);
             attrId = this.config.getProperty(NAME_ATTR_ID, "displayName");
@@ -139,7 +135,9 @@ public class LDAPUserInfoImpl implements UserInfo {
                 SearchResult sr = result.next();
                 Attribute member = sr.getAttributes().get(roleAttrId);
                 for (int i = 0; i < member.size(); i++) {
-                    memebers.add(new UserImpl(member.get(i).toString()));
+                	User user = TaskModelProvider.getFactory().newUser();
+                    ((InternalOrganizationalEntity) user).setId(member.get(i).toString());
+                    memebers.add(user);
                 }
                 
             }
@@ -205,11 +203,11 @@ public class LDAPUserInfoImpl implements UserInfo {
         String context = null;
         String filter = null;
         String attrId = null;
-        if (entity instanceof UserImpl) {
+        if (entity instanceof User) {
             context = this.config.getProperty(USER_CTX);
             filter = this.config.getProperty(USER_FILTER);
             attrId = this.config.getProperty(EMAIL_ATTR_ID, "mail");
-        } else if (entity instanceof GroupImpl) {
+        } else if (entity instanceof Group) {
             context = this.config.getProperty(ROLE_CTX);
             filter = this.config.getProperty(ROLE_FILTER);
             attrId = this.config.getProperty(EMAIL_ATTR_ID, "mail");
@@ -363,9 +361,9 @@ public class LDAPUserInfoImpl implements UserInfo {
             return userDN;
         }
         String entityAttrId = null;
-        if (entity instanceof UserImpl) {
+        if (entity instanceof User) {
             entityAttrId = this.config.getProperty(USER_ATTR_ID, "uid");
-        } else if (entity instanceof GroupImpl) {
+        } else if (entity instanceof Group) {
             entityAttrId = this.config.getProperty(ROLE_ATTR_ID, "cn");
         }
         if (attributes != null) {

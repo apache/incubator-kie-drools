@@ -17,9 +17,6 @@ package org.jbpm.services.task.deadlines.notifications.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.Reception;
 
 import org.jbpm.services.task.deadlines.NotificationListener;
 import org.kie.internal.task.api.model.NotificationEvent;
@@ -27,7 +24,7 @@ import org.kie.internal.task.api.model.NotificationEvent;
 /**
  *
  */
-@ApplicationScoped
+
 public class MockNotificationListener implements NotificationListener{
     private  List<NotificationEvent> eventsRecieved = new ArrayList<NotificationEvent>();
 
@@ -35,7 +32,7 @@ public class MockNotificationListener implements NotificationListener{
     }
     
     
-    public void onNotification(@Observes(notifyObserver = Reception.IF_EXISTS) NotificationEvent event) {
+    public void onNotification(NotificationEvent event) {
         eventsRecieved.add(event);
     }
 

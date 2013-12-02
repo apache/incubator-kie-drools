@@ -3,11 +3,13 @@ package org.jbpm.services.task.jaxb;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,28 +17,8 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.hibernate.mapping.Array;
-import org.jbpm.services.task.MvelFilePath;
-import org.jbpm.services.task.deadlines.notifications.impl.email.EmailNotificationListener;
-import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.AttachmentImpl;
-import org.jbpm.services.task.impl.model.CommentImpl;
-import org.jbpm.services.task.impl.model.I18NTextImpl;
-import org.jbpm.services.task.impl.model.TaskDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
-import org.junit.Assert;
 import org.junit.Test;
-import org.kie.api.task.model.I18NText;
-import org.kie.api.task.model.Task;
-import org.reflections.Reflections;
-import org.reflections.scanners.FieldAnnotationsScanner;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JaxbSerializationTest extends AbstractSerializationTest {
 

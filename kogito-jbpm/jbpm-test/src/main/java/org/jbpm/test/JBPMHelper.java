@@ -12,7 +12,6 @@ import javax.persistence.Persistence;
 import org.h2.tools.Server;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -104,7 +103,6 @@ public final class JBPMHelper {
         TaskService taskService = new HumanTaskConfigurator()
                                         .entityManagerFactory(emf)
                                         .userGroupCallback(getUserGroupCallback())
-                                        .transactionManager(new JbpmJTATransactionManager())
                                         .getTaskService();
         return taskService;
     }

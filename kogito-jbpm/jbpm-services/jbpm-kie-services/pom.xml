@@ -35,10 +35,6 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-shared-services</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-runtime-manager</artifactId>
     </dependency>
     <dependency>
@@ -60,10 +56,6 @@
       <artifactId>kie-ci</artifactId>
     </dependency>  
 
-    <dependency>
-      <groupId>org.jboss.seam.transaction</groupId>
-      <artifactId>seam-transaction</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.jboss.solder</groupId>
       <artifactId>solder-api</artifactId>
@@ -142,18 +134,6 @@
 
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-shared-services</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-shared-services</artifactId>
-      <classifier>btm</classifier>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-runtime-manager</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
@@ -205,6 +185,10 @@
       <groupId>org.jboss.arquillian.core</groupId>
       <artifactId>arquillian-core-api</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.jbpm</groupId>
+    	<artifactId>jbpm-shared-services</artifactId>
     </dependency>
   </dependencies>
 

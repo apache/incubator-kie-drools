@@ -17,7 +17,6 @@
 package org.jbpm.executor;
 
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.executor.impl.ClassCacheManager;
@@ -26,13 +25,10 @@ import org.jbpm.executor.impl.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.ExecutorRunnable;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
-import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorAdminService;
+import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.ExecutorService;
 
 /**
@@ -40,69 +36,44 @@ import org.kie.internal.executor.api.ExecutorService;
  * environment.
  */
 public class ExecutorServiceFactory {
-    
-    private static ExecutorService service = new ExecutorServiceImpl();
-    
-    private static JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
-    
-    private static EntityManagerFactory emf;
-    
-    private static JbpmServicesTransactionManager jbpmTransactionManager = new JbpmLocalTransactionManager();
-    
-    private static ExecutorQueryService queryService = new ExecutorQueryServiceImpl();
    
-    private static Executor executor = new ExecutorImpl();
+    
+    public static ExecutorService newExecutorService(EntityManagerFactory emf){
         
-    private static ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
-    
-    
-    public static ExecutorService newExecutorService(){
-        configure();
+        return configure(emf);
+    }
+
+    private static ExecutorService configure(EntityManagerFactory emf) {
+    	// create instances of executor services
+    	ExecutorService service = new ExecutorServiceImpl();
+    	ExecutorQueryService queryService = new ExecutorQueryServiceImpl();
+    	Executor executor = new ExecutorImpl();    	
+        ExecutorRunnable runnable = new ExecutorRunnable();
+    	ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
+    	
+    	ClassCacheManager classCacheManager = new ClassCacheManager();
+    	
+    	// create executor for persistence handling
+        TransactionalCommandService commandService = new TransactionalCommandService(emf);
+        
+        // set executor on all instances that requires it
+        ((ExecutorQueryServiceImpl) queryService).setCommandService(commandService);
+        ((ExecutorImpl) executor).setCommandService(commandService);
+        ((ExecutorRequestAdminServiceImpl) adminService).setCommandService(commandService);
+        ((ExecutorRunnable) runnable).setCommandService(commandService);
+        
+        // configure services
+    	((ExecutorServiceImpl)service).setQueryService(queryService);
+    	((ExecutorServiceImpl)service).setExecutor(executor);               
+        ((ExecutorServiceImpl)service).setAdminService(adminService);
+        
+        runnable.setClassCacheManager(classCacheManager);
+        runnable.setQueryService(queryService);
+
+        ((ExecutorImpl)executor).setExecutorRunnable(runnable);
+        ((ExecutorImpl)executor).setQueryService(queryService);        
+        
+        
         return service;
     }
-
-    private static void configure() {
-        
-        configurePersistenceManager();
-
-        ((ExecutorQueryServiceImpl)queryService).setPm(pm);
-        ((ExecutorServiceImpl)service).setQueryService(queryService);
-
-        configureExecutorImpl();
-        ((ExecutorServiceImpl)service).setExecutor(executor);
-                
-        ((ExecutorRequestAdminServiceImpl)adminService).setPm(pm);
-        ((ExecutorServiceImpl)service).setAdminService(adminService);
-    }
-
-    public static void setEmf(EntityManagerFactory emf) {
-        ExecutorServiceFactory.emf = emf;
-    }
-
-    public static void setJbpmTransactionManager(JbpmServicesTransactionManager jbpmTransactionManager) {
-        ExecutorServiceFactory.jbpmTransactionManager = jbpmTransactionManager;
-    }
-
-    
-    public static void configurePersistenceManager(){
-        EntityManager em = emf.createEntityManager();
-        // Persistence and Transactions
-        ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
-        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(jbpmTransactionManager);
-        
-    }
-     
-    public static void configureExecutorImpl(){
-        ClassCacheManager classCacheManager = new ClassCacheManager();
-        ExecutorRunnable runnable = new ExecutorRunnable();
-        runnable.setClassCacheManager(classCacheManager);
-        runnable.setPm(pm);
-        runnable.setQueryService(queryService);
-        ((ExecutorImpl)executor).setPm(pm);
-        ((ExecutorImpl)executor).setExecutorRunnable(runnable);
-        ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setClassCacheManager(classCacheManager);
-    }
-     
-    
 }

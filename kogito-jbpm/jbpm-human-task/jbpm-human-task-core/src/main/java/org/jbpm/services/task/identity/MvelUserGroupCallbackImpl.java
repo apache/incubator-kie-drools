@@ -24,26 +24,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.inject.Alternative;
-
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.MVELUtils;
-import org.jbpm.shared.services.cdi.Selectable;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.User;
 import org.kie.internal.task.api.UserGroupCallback;
 
-@Alternative
-@Selectable
 public class MvelUserGroupCallbackImpl implements UserGroupCallback {
 
-    private Map<UserImpl, List<GroupImpl>> userGroupMapping;
+    private Map<User, List<Group>> userGroupMapping;
 
-    public MvelUserGroupCallbackImpl() {
+    //no no-arg constructor to prevent cdi from auto deploy
+    public MvelUserGroupCallbackImpl(boolean activate) {
         Reader reader = null;
         Map vars = new HashMap();
         try {
             reader = new InputStreamReader(getClass().getResourceAsStream("UserGroupsAssignmentsOne.mvel"));
-            userGroupMapping = (Map<UserImpl, List<GroupImpl>>) MVELUtils.eval(reader, vars);
+            userGroupMapping = (Map<User, List<Group>>) MVELUtils.eval(reader, vars);
         } finally {
             try {
                 if (reader != null) {
@@ -57,9 +53,9 @@ public class MvelUserGroupCallbackImpl implements UserGroupCallback {
     }
 
     public boolean existsUser(String userId) {
-        Iterator<UserImpl> iter = userGroupMapping.keySet().iterator();
+        Iterator<User> iter = userGroupMapping.keySet().iterator();
         while (iter.hasNext()) {
-            UserImpl u = iter.next();
+            User u = iter.next();
             if (u.getId().equals(userId)) {
                 return true;
             }
@@ -68,11 +64,11 @@ public class MvelUserGroupCallbackImpl implements UserGroupCallback {
     }
 
     public boolean existsGroup(String groupId) {
-        Iterator<UserImpl> iter = userGroupMapping.keySet().iterator();
+        Iterator<User> iter = userGroupMapping.keySet().iterator();
         while (iter.hasNext()) {
-            UserImpl u = iter.next();
-            List<GroupImpl> groups = userGroupMapping.get(u);
-            for (GroupImpl g : groups) {
+            User u = iter.next();
+            List<Group> groups = userGroupMapping.get(u);
+            for (Group g : groups) {
                 if (g.getId().equals(groupId)) {
                     return true;
                 }
@@ -91,13 +87,13 @@ public class MvelUserGroupCallbackImpl implements UserGroupCallback {
     }
 
     public List<String> getGroupsForUser(String userId) {
-        Iterator<UserImpl> iter = userGroupMapping.keySet().iterator();
+        Iterator<User> iter = userGroupMapping.keySet().iterator();
         while (iter.hasNext()) {
-            UserImpl u = iter.next();
+            User u = iter.next();
             if (u.getId().equals(userId)) {
                 List<String> groupList = new ArrayList<String>();
-                List<GroupImpl> userGroupList = userGroupMapping.get(u);
-                for (GroupImpl g : userGroupList) {
+                List<Group> userGroupList = userGroupMapping.get(u);
+                for (Group g : userGroupList) {
                     groupList.add(g.getId());
                 }
                 return groupList;

@@ -31,13 +31,14 @@ import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.JBPMMessages;
 import org.jbpm.marshalling.impl.JBPMMessages.Variable;
 import org.jbpm.marshalling.impl.ProtobufProcessMarshaller;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.FaultDataImpl;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.FaultData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +48,13 @@ public class ContentMarshallerHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(ContentMarshallerHelper.class);
 
-    public static ContentDataImpl marshal(Object o, Environment env) {
+    public static ContentData marshal(Object o, Environment env) {
         if (o == null) {
             return null;
         }
-        MarshallerWriteContext context = null;
-        ContentDataImpl content = null;
+        ContentData content = null;
         byte[] toByteArray = marshallContent(o, env);
-        content = new ContentDataImpl();
+        content = TaskModelProvider.getFactory().newContentData();
         content.setContent(toByteArray);
         content.setType(o.getClass().getCanonicalName());
         content.setAccessType(AccessType.Inline); 
@@ -62,11 +62,11 @@ public class ContentMarshallerHelper {
         return content;
     }
     
-     public static FaultDataImpl marshalFault(Map<String, Object> fault, Environment env) {
+     public static FaultData marshalFault(Map<String, Object> fault, Environment env) {
         
-        FaultDataImpl content = null;
+        FaultData content = null;
         byte[] toByteArray = marshallContent(fault, env);
-        content = new FaultDataImpl();
+        content = TaskModelProvider.getFactory().newFaultData();
         content.setContent(toByteArray);
         content.setType(fault.getClass().getCanonicalName());
         content.setAccessType(AccessType.Inline);

@@ -16,151 +16,94 @@
 
 package org.jbpm.services.task;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Constructor;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.jbpm.services.task.deadlines.DeadlinesDecorator;
+import org.drools.core.command.Interceptor;
+import org.drools.core.impl.EnvironmentFactory;
+import org.jbpm.services.task.commands.TaskCommandExecutorImpl;
+import org.jbpm.services.task.events.TaskEventSupport;
+import org.jbpm.services.task.identity.DefaultUserInfo;
 import org.jbpm.services.task.identity.MvelUserGroupCallbackImpl;
-import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
-import org.jbpm.services.task.identity.UserGroupTaskInstanceServiceDecorator;
-import org.jbpm.services.task.identity.UserGroupTaskQueryServiceDecorator;
-import org.jbpm.services.task.impl.TaskAdminServiceImpl;
-import org.jbpm.services.task.impl.TaskContentServiceImpl;
 import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
-import org.jbpm.services.task.impl.TaskIdentityServiceImpl;
-import org.jbpm.services.task.impl.TaskInstanceServiceImpl;
-import org.jbpm.services.task.impl.TaskQueryServiceImpl;
-import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
-import org.jbpm.services.task.impl.ThrowableInteranlTaskService;
-import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
-import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
-import org.jbpm.services.task.rule.RuleContextProvider;
-import org.jbpm.services.task.rule.TaskRuleService;
-import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
-import org.jbpm.services.task.rule.impl.TaskRuleServiceImpl;
-import org.jbpm.services.task.subtask.SubTaskDecorator;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
-import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.jbpm.services.task.impl.command.CommandBasedTaskService;
+import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.task.api.EventService;
-import org.kie.internal.task.api.InternalTaskService;
-import org.kie.internal.task.api.TaskAdminService;
-import org.kie.internal.task.api.TaskContentService;
-import org.kie.internal.task.api.TaskDeadlinesService;
-import org.kie.internal.task.api.TaskIdentityService;
-import org.kie.internal.task.api.TaskInstanceService;
-import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.UserInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Task service configurator that provides fluent API approach to building <code>TaskService</code>
- * instances. Most of the attributes have their defaults but there is on that must be explicitly set
+ * instances. Most of the attributes have their defaults but there is one that must be explicitly set
  * <ul>
  * 	<li>entityManagerFactory</li>
  * </ul>
  * Important to notice is defaults for:
  * <ul>
- * 	<li>transactionManager - uses local transactions by default</li>
+ * 	<li>userInfo - DefaultUserInfo by default</li>
  * 	<li>userGroupCallback - uses MvelUserGroupCallbackImpl by default</li>
  * </ul>
- * Before returning the instance of <code>TaskService</code> it will be wrapped with proxy instance to provide transaction
- * handling capabilities - begin and commit/rollback to simplify usage.
+ * 
+ * @see DefaultUserInfo
+ * @see MvelUserGroupCallbackImpl
  */
 public class HumanTaskConfigurator {
+	
+	private static final Logger logger = LoggerFactory.getLogger(HumanTaskConfigurator.class);
+	
+	private static final String DEFAULT_INTERCEPTOR = "org.jbpm.services.task.persistence.TaskTransactionInterceptor";
 
     private TaskService service;
+    private TaskCommandExecutorImpl commandExecutor;
+    private Environment environment = EnvironmentFactory.newEnvironment();
+	
+    private UserGroupCallback userGroupCallback = new MvelUserGroupCallbackImpl(true);
+    private UserInfo userInfo = new DefaultUserInfo(true);
     
-    private EntityManagerFactory emf;   
+    private Set<PriorityInterceptor> insterceptors = new TreeSet<PriorityInterceptor>();
+    private Set<TaskLifeCycleEventListener> listeners = new HashSet<TaskLifeCycleEventListener>();
     
-    private JbpmServicesTransactionManager jbpmTransactionManager = new JbpmLocalTransactionManager();
+    public HumanTaskConfigurator interceptor(int priority, Interceptor interceptor) {
+    	this.insterceptors.add(new PriorityInterceptor(priority, interceptor));
+    	return this;
+    }
     
-    private JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();   
+    public HumanTaskConfigurator listener(TaskLifeCycleEventListener listener) {
+    	this.listeners.add(listener);
+    	return this;
+    }
     
-    private TaskQueryService queryService = new TaskQueryServiceImpl();
-    
-    private TaskIdentityService identityService = new TaskIdentityServiceImpl();
-    
-    private TaskAdminService adminService = new TaskAdminServiceImpl();
-    
-    private TaskContentService contentService = new TaskContentServiceImpl();
-    
-    private TaskDeadlinesService deadlinesService = new TaskDeadlinesServiceImpl();
-    
-    private TaskInstanceService instanceService =  new TaskInstanceServiceImpl();
-    
-    private LifeCycleManager lifeCycleManager = new MVELLifeCycleManager();
-    
-    private UserGroupLifeCycleManagerDecorator userGroupLifeCycleDecorator = new UserGroupLifeCycleManagerDecorator();
-    
-    private UserGroupCallback userGroupCallback = new MvelUserGroupCallbackImpl();
-    
-    public HumanTaskConfigurator transactionManager(JbpmServicesTransactionManager tm) {
-        this.jbpmTransactionManager = tm;
-        
-        return this;
+    public HumanTaskConfigurator environment(Environment environment) {
+    	
+    	this.environment = environment;
+    	
+    	return this;
     }
 
     public HumanTaskConfigurator entityManagerFactory(EntityManagerFactory emf) {
-        this.emf = emf;
+    	environment.set(EnvironmentName.ENTITY_MANAGER_FACTORY, emf);
         
         return this;
     }
-    
-    public HumanTaskConfigurator persistenceManager(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+   
+    public HumanTaskConfigurator userInfo(UserInfo userInfo) {
+    	if (userInfo == null) {
+            return this;
+        }
+        this.userInfo = userInfo;
         
         return this;
     }
-    
-    public HumanTaskConfigurator queryService(TaskQueryService queryService) {
-        this.queryService = queryService;
-        
-        return this;
-    }
-    
-    public HumanTaskConfigurator identityService(TaskIdentityService identityService) {
-        this.identityService = identityService;
-        
-        return this;
-    }
-    
-    public HumanTaskConfigurator adminService(TaskAdminService adminService) {
-        this.adminService = adminService;
-        
-        return this;
-    }
-    
-    public HumanTaskConfigurator contentService(TaskContentService contentService) {
-        this.contentService = contentService;
-        
-        return this;
-    }
-    
-    public HumanTaskConfigurator deadlinesService(TaskDeadlinesService deadlinesService) {
-        this.deadlinesService = deadlinesService;
-        
-        return this;
-    }
-    
-    public HumanTaskConfigurator instanceService(TaskInstanceService instanceService) {
-        this.instanceService = instanceService;
-        
-        return this;
-    }
-    
-    public HumanTaskConfigurator lifeCycleManager(LifeCycleManager lifeCycleManager) {
-        this.lifeCycleManager = lifeCycleManager;
-        
-        return this;
-    }
+   
     
     public HumanTaskConfigurator userGroupCallback(UserGroupCallback userGroupCallback) {
         if (userGroupCallback == null) {
@@ -171,211 +114,66 @@ public class HumanTaskConfigurator {
         return this;
     }
     
-    public TaskService getTaskService() {
+    @SuppressWarnings("unchecked")
+	public TaskService getTaskService() {
         if (service == null) {
-            service = new TaskServiceEntryPointImpl();
-            // Persistence and Transactions
-            configurePersistenceManager();
-    
-            // Task Query
-            configureTaskQueryService(pm);
-            TaskQueryService userGroupQueryServiceDecorator = configureUserGroupQueryServiceDecorator(queryService, userGroupCallback);
-            ((TaskServiceEntryPointImpl)service).setTaskQueryService(userGroupQueryServiceDecorator);
-            
-            // Task Identity
-            configureTaskIdentityService(pm);
-            ((TaskServiceEntryPointImpl)service).setTaskIdentityService(identityService);
-            
-            // Task Admin
-            configureTaskAdminService(pm);
-            ((TaskServiceEntryPointImpl)service).setTaskAdminService(adminService);
-            
-            // Task Content
-            configureTaskContentService(pm);
-            ((TaskServiceEntryPointImpl)service).setTaskContentService(contentService);
-            
-            // Task Deadlines
-            configureTaskDeadlinesService(pm);
-    
-            // Task Instance
-            configureTaskInstanceService(pm, queryService);
-            
-            // Task Instance  - Lifecycle Manager
-            configureLifeCycleManager(pm, identityService, queryService, contentService);
-            
-            // User/Group Callbacks
-            
-            configureUserGroupLifeCycleManagerDecorator(pm, lifeCycleManager, userGroupCallback);
-        
-            ((TaskInstanceServiceImpl)instanceService).setLifeCycleManager(userGroupLifeCycleDecorator);
-            
-            TaskInstanceService userGroupTaskInstanceServiceDecorator = configureUserGroupTaskInstanceServiceDecorator(instanceService, userGroupCallback);
-                    
-            // Task Decorators - Sub Tasks
-            SubTaskDecorator subTaskDecorator = createSubTaskDecorator(pm, userGroupTaskInstanceServiceDecorator, queryService);
-            ((TaskDeadlinesServiceImpl)deadlinesService).setTaskContentService(contentService);
-            ((TaskDeadlinesServiceImpl)deadlinesService).setTaskQueryService(queryService);
-            // Task Decorators - Deadlines
-            DeadlinesDecorator deadlinesDecorator = createDeadlinesDecorator(pm, queryService, deadlinesService, subTaskDecorator);
-            
-            ((TaskServiceEntryPointImpl)service).setTaskInstanceService(deadlinesDecorator);
-            
-            RuleContextProvider ruleProvider = new RuleContextProviderImpl();
-            ((RuleContextProviderImpl)ruleProvider).initialize();
-            TaskRuleService taskRuleService = new TaskRuleServiceImpl();
-            ((TaskRuleServiceImpl)taskRuleService).setRuleContextProvider(ruleProvider);
-            ((TaskServiceEntryPointImpl)service).setTaskRuleService(taskRuleService);
+        	TaskEventSupport taskEventSupport = new TaskEventSupport();
+        	this.commandExecutor = new TaskCommandExecutorImpl(this.environment, taskEventSupport);
+        	environment.set(EnvironmentName.TASK_USER_GROUP_CALLBASK, userGroupCallback);
+        	environment.set(EnvironmentName.TASK_USER_INFO, userInfo);
+        	addDefaultInterceptor();
+        	for (PriorityInterceptor pInterceptor : insterceptors) {
+        		this.commandExecutor.addInterceptor(pInterceptor.getInterceptor());
+        	}        	
+        	
+            service = new CommandBasedTaskService(this.commandExecutor, taskEventSupport); 
+            // register listeners
+            for (TaskLifeCycleEventListener listener : listeners) {
+            	((EventService<TaskLifeCycleEventListener>) service).registerTaskEventListener(listener);
+            }
+            // initialize deadline service with command executor for processing
+            if (TaskDeadlinesServiceImpl.getInstance() == null) {
+            	TaskDeadlinesServiceImpl.initialize(commandExecutor);
+            }
         }
-        return (TaskService) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {ThrowableInteranlTaskService.class,
-        	EventService.class}, new TransactionInterceptor((InternalTaskService) service, pm));
-    }
+        return service;
+   }
     
-    protected void configurePersistenceManager(){        
-        // Persistence and Transactions
-        ((JbpmServicesPersistenceManagerImpl)pm).setEmf(emf);
-        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(jbpmTransactionManager);
-        
+    @SuppressWarnings("unchecked")
+	protected void addDefaultInterceptor() {
+    	// add default interceptor if present
+    	try {
+    		Class<Interceptor> defaultInterceptorClass = (Class<Interceptor>) Class.forName(DEFAULT_INTERCEPTOR);
+    		Constructor<Interceptor> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class});
+    		
+    		Interceptor defaultInterceptor = constructor.newInstance(this.environment);
+    		interceptor(5, defaultInterceptor);
+    	} catch (Exception e) {
+    		logger.warn("No default interceptor found of type {} might be mssing jbpm-human-task-jpa module on classpath (error {}",
+    				DEFAULT_INTERCEPTOR, e.getMessage());
+    	}
     }
-    
-   protected void configureTaskQueryService(JbpmServicesPersistenceManager pm){
-        
-        ((TaskQueryServiceImpl)queryService).setPm(pm);
-    }
-    
-    protected void configureTaskIdentityService(JbpmServicesPersistenceManager pm){
-        ((TaskIdentityServiceImpl)identityService).setPm(pm);
-    }
-    
-    protected void configureTaskAdminService(JbpmServicesPersistenceManager pm){
-        ((TaskAdminServiceImpl)adminService).setPm(pm);
-        
-    }
-    
-    protected void configureTaskContentService(JbpmServicesPersistenceManager pm){
-        ((TaskContentServiceImpl)contentService).setPm(pm);
-    }
-    
-    protected void configureTaskDeadlinesService(JbpmServicesPersistenceManager pm){
-        ((TaskDeadlinesServiceImpl)deadlinesService).setTaskContentService(contentService);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setTaskQueryService(queryService);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setPm(pm);
-        ((TaskDeadlinesServiceImpl)deadlinesService).setNotificationEvents(((TaskServiceEntryPointImpl)service).getTaskNotificationEventListeners());
-        ((TaskDeadlinesServiceImpl)deadlinesService).init();
-    }
-    
-    protected void configureTaskInstanceService(JbpmServicesPersistenceManager pm, TaskQueryService queryService){
-        ((TaskInstanceServiceImpl)instanceService).setPm(pm);
-        ((TaskInstanceServiceImpl)instanceService).setTaskQueryService(queryService);
-        ((TaskInstanceServiceImpl)instanceService).setTaskEvents(((TaskServiceEntryPointImpl)service).getTaskLifecycleEventListeners());
-    }
-    
-    protected void configureLifeCycleManager(JbpmServicesPersistenceManager pm, 
-                    TaskIdentityService identityService, TaskQueryService queryService, TaskContentService contentService){
-        
-        ((MVELLifeCycleManager)lifeCycleManager).setPm(pm);
-        ((MVELLifeCycleManager)lifeCycleManager).setTaskIdentityService(identityService);
-        ((MVELLifeCycleManager)lifeCycleManager).setTaskQueryService(queryService);
-        ((MVELLifeCycleManager)lifeCycleManager).setTaskContentService(contentService);
-        ((MVELLifeCycleManager)lifeCycleManager).setTaskEvents(((TaskServiceEntryPointImpl)service).getTaskLifecycleEventListeners());
-        ((MVELLifeCycleManager)lifeCycleManager).initMVELOperations();
-        
-        
-    }
-    
-    protected void configureUserGroupLifeCycleManagerDecorator(JbpmServicesPersistenceManager pm, 
-                                                            LifeCycleManager lifeCycleManager, UserGroupCallback userGroupCallback){
-        
-        
-        userGroupLifeCycleDecorator.setManager(lifeCycleManager);
-        userGroupLifeCycleDecorator.setPm(pm);
-        userGroupLifeCycleDecorator.setUserGroupCallback(userGroupCallback);
-        
-    }
-    
-    protected TaskQueryService configureUserGroupQueryServiceDecorator(TaskQueryService queryService, UserGroupCallback userGroupCallback) {
-        UserGroupTaskQueryServiceDecorator userGroupTaskQueryServiceDecorator = new UserGroupTaskQueryServiceDecorator();
-        userGroupTaskQueryServiceDecorator.setPm(pm);
-        userGroupTaskQueryServiceDecorator.setUserGroupCallback(userGroupCallback);
-        userGroupTaskQueryServiceDecorator.setDelegate(queryService);
-        return userGroupTaskQueryServiceDecorator;
-        
-    }
-    
-    protected TaskInstanceService configureUserGroupTaskInstanceServiceDecorator(TaskInstanceService instanceService, UserGroupCallback userGroupCallback) {
-        UserGroupTaskInstanceServiceDecorator userGroupTaskInstanceDecorator = new UserGroupTaskInstanceServiceDecorator();
-        userGroupTaskInstanceDecorator.setPm(pm);
-        userGroupTaskInstanceDecorator.setUserGroupCallback(userGroupCallback);
-        userGroupTaskInstanceDecorator.setDelegate(instanceService);
-        return userGroupTaskInstanceDecorator;
-    }
-    
-    protected SubTaskDecorator createSubTaskDecorator(JbpmServicesPersistenceManager pm,
-            TaskInstanceService instanceService, TaskQueryService queryService) {
-        SubTaskDecorator subTaskDecorator = new SubTaskDecorator();
-        subTaskDecorator.setPm(pm);
-        subTaskDecorator.setInstanceService(instanceService);
-        subTaskDecorator.setQueryService(queryService);
-        return subTaskDecorator;
-    }
-
-    protected DeadlinesDecorator createDeadlinesDecorator(JbpmServicesPersistenceManager pm, TaskQueryService queryService,
-            TaskDeadlinesService deadlinesService,
-            SubTaskDecorator subTaskDecorator) {
-        DeadlinesDecorator deadlinesDecorator = new DeadlinesDecorator();
-        deadlinesDecorator.setPm(pm);
-        deadlinesDecorator.setQueryService(queryService);
-        deadlinesDecorator.setDeadlineService(deadlinesService);
-        deadlinesDecorator.setInstanceService(subTaskDecorator);
-        return deadlinesDecorator;
-
-    }   
-    
-    private static class TransactionInterceptor implements InvocationHandler {
+   
+    private static class PriorityInterceptor implements Comparable<PriorityInterceptor> {
+    	private Integer priority;
+    	private Interceptor interceptor;
     	
-    	private List<String> excludedMethods = new ArrayList<String>();
-    	private InternalTaskService delegate;
-    	private JbpmServicesPersistenceManager pm;
-    	
-    	TransactionInterceptor(InternalTaskService delegate, JbpmServicesPersistenceManager pm) {
-    		this.delegate = delegate;
-    		this.pm = pm;
-    		this.excludedMethods.add("addMarshallerContext");
-    		this.excludedMethods.add("removeMarshallerContext");
-    		this.excludedMethods.add("getMarshallerContext");
+    	PriorityInterceptor(Integer priority, Interceptor interceptor) {
+    		this.priority = priority;
+    		this.interceptor = interceptor;
     	}
 
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] aruments) throws Throwable {
-			if (!isTransactional(method)) {
-				return method.invoke(delegate, aruments);
-			}
-			boolean owner = pm.beginTransaction();
-			try {
-				Object result = method.invoke(delegate, aruments);
-				pm.endTransaction(owner);
-				
-				return result;
-			} catch (Exception e) {
-				if (owner) {
-					pm.rollBackTransaction(owner);
-				}
-				if (e instanceof InvocationTargetException) {
-					throw ((InvocationTargetException) e).getTargetException();
-				} else {
-					throw e;
-				}
-			}
-			
+		public Integer getPriority() {
+			return priority;
 		}
-		
-		private boolean isTransactional(Method method) {
-			if (method.getDeclaringClass().isAssignableFrom(EventService.class)) {
-				return false;
-			} else if (excludedMethods.contains(method.getName())) {
-				return false;
-			}
-			
-			return true;
+
+		public Interceptor getInterceptor() {
+			return interceptor;
+		}
+
+		@Override
+		public int compareTo(PriorityInterceptor other) {
+			return this.getPriority().compareTo(other.getPriority());
 		}
     }
 }

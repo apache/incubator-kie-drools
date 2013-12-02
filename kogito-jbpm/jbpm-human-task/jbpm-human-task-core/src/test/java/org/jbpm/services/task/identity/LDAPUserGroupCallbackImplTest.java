@@ -64,7 +64,7 @@ public class LDAPUserGroupCallbackImplTest {
     @Test
     public void testDefaultPropsUserExists() {
         
-        UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl();
+        UserGroupCallback ldapUserGroupCallback = new LDAPUserGroupCallbackImpl(true);
         
         boolean userExists = ldapUserGroupCallback.existsUser("john");
         assertTrue(userExists);

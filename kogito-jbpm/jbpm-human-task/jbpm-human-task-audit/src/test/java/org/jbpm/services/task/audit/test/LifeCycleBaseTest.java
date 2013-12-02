@@ -20,19 +20,15 @@ import static org.junit.Assert.assertEquals;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
-import javax.inject.Inject;
+
+import org.jbpm.services.task.audit.GetAuditEventsCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.audit.TaskAuditService;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.model.TaskEvent;
 
 public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
-
-    
-    @Inject
-    private TaskAuditService taskAudit;
 
     @Test
     public void testComplete() {
@@ -72,8 +68,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         Task task2 = taskService.getTaskById(taskId);
         assertEquals(Status.Completed, task2.getTaskData().getStatus());
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
-        List<TaskEvent> allTaskEvents = taskAudit.getAllTaskEvents(taskId);
-        
+
+        List<TaskEvent> allTaskEvents = taskService.execute(new GetAuditEventsCommand(taskId));
+               
         assertEquals(6, allTaskEvents.size());
         
     }

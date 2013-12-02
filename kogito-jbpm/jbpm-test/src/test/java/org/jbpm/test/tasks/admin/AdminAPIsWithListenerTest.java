@@ -20,10 +20,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.event.KnowledgeRuntimeEventManager;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
-import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +67,6 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
-
-
-        ((InternalTaskService) taskService).setUserInfo(userInfo);
 
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
@@ -126,7 +123,7 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
         Assert.assertNull(process);
 
 
-        final EntityManager em = emfTasks.createEntityManager();
+        final EntityManager em = emfTasks.createEntityManager();       
         Assert.assertEquals(0, em.createQuery("select t from TaskImpl t").getResultList().size());
         Assert.assertEquals(0, em.createQuery("select i from I18NTextImpl i").getResultList().size());
         Assert.assertEquals(0, em.createNativeQuery("select * from PeopleAssignments_BAs").getResultList().size());
@@ -140,13 +137,12 @@ public class AdminAPIsWithListenerTest extends JbpmJUnitBaseTestCase {
 
     @Test
     public void automaticCleanUpTestAbortProcess() throws Exception {
-
+    	
         createRuntimeManager("patient-appointment.bpmn");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
         
-        ((InternalTaskService) taskService).setUserInfo(userInfo);
         KnowledgeRuntimeLoggerFactory.newConsoleLogger((KnowledgeRuntimeEventManager) ksession);
 
         ksession.addEventListener(new TaskCleanUpProcessEventListener(taskService));

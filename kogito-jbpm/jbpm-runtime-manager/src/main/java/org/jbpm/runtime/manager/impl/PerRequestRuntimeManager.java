@@ -49,7 +49,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
         super(environment, identifier);
         this.factory = factory;
         this.taskServiceFactory = taskServiceFactory;
-        activeManagers.add(identifier);
+        this.registry.register(this);
     }
     
     @Override

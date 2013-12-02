@@ -15,133 +15,129 @@
  */
 package org.jbpm.services.task.commands;
 
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
-import org.jbpm.services.task.annotations.Internal;
-import org.jbpm.services.task.impl.TaskServiceEntryPointImpl;
-import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.kie.api.task.model.Task;
+import org.jbpm.services.task.events.TaskEventSupport;
+import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
+import org.jbpm.services.task.impl.TaskAdminServiceImpl;
+import org.jbpm.services.task.impl.TaskAttachmentServiceImpl;
+import org.jbpm.services.task.impl.TaskCommentServiceImpl;
+import org.jbpm.services.task.impl.TaskContentServiceImpl;
+import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
+import org.jbpm.services.task.impl.TaskDefServiceImpl;
+import org.jbpm.services.task.impl.TaskIdentityServiceImpl;
+import org.jbpm.services.task.impl.TaskInstanceServiceImpl;
+import org.jbpm.services.task.impl.TaskQueryServiceImpl;
+import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
+import org.jbpm.services.task.rule.TaskRuleService;
+import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
+import org.jbpm.services.task.rule.impl.TaskRuleServiceImpl;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
+import org.kie.internal.task.api.TaskAdminService;
 import org.kie.internal.task.api.TaskAttachmentService;
+import org.kie.internal.task.api.TaskCommentService;
 import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskDefService;
 import org.kie.internal.task.api.TaskIdentityService;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.UserGroupCallback;
 
 /**
  *
  */
-public class TaskContext implements Context{
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
-    @Inject
-    private TaskDefService taskDefService;
-    @Inject
-    private TaskQueryService taskQueryService;
-    @Inject
-    private TaskIdentityService taskIdentityService;
-    @Inject
-    private TaskContentService taskContentService;
-    @Inject
-    private TaskAttachmentService taskAttachmentService;
-    @Inject 
-    private Event<Task> taskEvents;
-    @Inject @Internal
-    private TaskLifeCycleEventListener eventListener;
-    @Inject 
-    private UserGroupCallback userGroupCallback;
+public class TaskContext implements org.kie.internal.task.api.TaskContext {
     
-    private TaskServiceEntryPointImpl taskService;
+    private TaskPersistenceContext persistenceContext;
+    private Environment environment;
+    private TaskEventSupport taskEventSupport;
     
     public TaskContext() {
-    }
+    }   
     
-    public TaskContext(TaskServiceEntryPointImpl taskService) {
-    	this.taskService = taskService;
-    }
+    public TaskContext(Context context, Environment environment, TaskEventSupport taskEventSupport) {
+    	if (context instanceof org.kie.internal.task.api.TaskContext) {
+    		this.persistenceContext = ((org.kie.internal.task.api.TaskContext) context).getPersistenceContext();
+    	}
+    	this.environment = environment;
+    	this.taskEventSupport = taskEventSupport;
+    }  
     
-    public TaskServiceEntryPointImpl getTaskService() {
-    	return taskService;
-    }
-
-    public JbpmServicesPersistenceManager getPm() {
-        return pm;
-    }
-
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    public TaskInstanceService getTaskInstanceService() {
+        return new TaskInstanceServiceImpl(persistenceContext,
+        		new UserGroupLifeCycleManagerDecorator(getUserGroupCallback(),
+        		new MVELLifeCycleManager(persistenceContext, getTaskContentService(), taskEventSupport)),
+        		taskEventSupport);
     }
     
     public TaskDefService getTaskDefService() {
-        return taskDefService;
-    }
-
-    public void setTaskDefService(TaskDefService taskDefService) {
-        this.taskDefService = taskDefService;
+        return new TaskDefServiceImpl(persistenceContext);
     }
 
     public TaskQueryService getTaskQueryService() {
-        return taskQueryService;
+        return new TaskQueryServiceImpl(persistenceContext);
     }
 
     public TaskContentService getTaskContentService() {
-        return taskContentService;
+        return new TaskContentServiceImpl(persistenceContext);
     }
-
-    public void setTaskContentService(TaskContentService taskContentService) {
-        this.taskContentService = taskContentService;
+    
+    public TaskCommentService getTaskCommentService() {
+    	return new TaskCommentServiceImpl(persistenceContext);
     }
     
     public TaskAttachmentService getTaskAttachmentService() {
-        return taskAttachmentService;
-    }
-
-    public void setTaskAttachmentService(TaskAttachmentService taskAttachmentService) {
-        this.taskAttachmentService = taskAttachmentService;
-    }
-    
-    public void setTaskQueryService(TaskQueryService taskQueryService) {
-        this.taskQueryService = taskQueryService;
+        return new TaskAttachmentServiceImpl(persistenceContext);
     }
 
     public TaskIdentityService getTaskIdentityService() {
-        return taskIdentityService;
-    }
-
-    public void setTaskIdentityService(TaskIdentityService taskIdentityService) {
-        this.taskIdentityService = taskIdentityService;
-    }
-
-    public Event<Task> getTaskEvents() {
-        return taskEvents;
-    }
-
-    public void setTaskEvents(Event<Task> taskEvents) {
-        this.taskEvents = taskEvents;
-    }
-
-    public TaskLifeCycleEventListener getEventListener() {
-        return eventListener;
-    }
-
-    public UserGroupCallback getUserGroupCallback() {
-        return userGroupCallback;
-    }
-
-    public void setUserGroupCallback(UserGroupCallback userGroupCallback) {
-        this.userGroupCallback = userGroupCallback;
+        return new TaskIdentityServiceImpl(persistenceContext);
     }
     
-    public void setEventListener(TaskLifeCycleEventListener eventListener) {
-        this.eventListener = eventListener;
+    public TaskAdminService getTaskAdminService() {
+    	return new TaskAdminServiceImpl(persistenceContext);
+    }
+    
+    public TaskDeadlinesService getTaskDeadlinesService() {
+    	return new TaskDeadlinesServiceImpl(persistenceContext);
     }
 
+    public TaskRuleService getTaskRuleService() {
+    	return new TaskRuleServiceImpl(RuleContextProviderImpl.get());
+    }
     
-    
+    public TaskPersistenceContext getPersistenceContext() {
+    	return persistenceContext;
+    }
+
+	public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+		this.persistenceContext = persistenceContext;
+	}	
+
+    public Object get(String string) {
+        return this.environment.get(string);
+    }
+
+    public void set(String string, Object o) {
+        if (this.environment.get(string) != null) {
+        	throw new IllegalArgumentException("Cannot override value for property " + string);
+        }
+    	this.environment.set(string, o);
+    }
+
+
+	@Override
+	public UserGroupCallback getUserGroupCallback() {
+		return (UserGroupCallback) get(EnvironmentName.TASK_USER_GROUP_CALLBASK);
+	}
+	
+	/*
+	 * currently not used methods 
+	 */
+	
     public World getContextManager() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -150,19 +146,8 @@ public class TaskContext implements Context{
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Object get(String string) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void set(String string, Object o) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void remove(String string) {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
+    }    
 
-    
-
-   
 }

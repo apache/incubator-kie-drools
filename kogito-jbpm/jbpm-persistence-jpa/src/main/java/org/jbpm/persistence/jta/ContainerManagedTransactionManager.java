@@ -96,4 +96,14 @@ public class ContainerManagedTransactionManager implements TransactionManager {
         return null;
     }
 
+	@Override
+	public void putResource(Object key, Object resource) {
+		TransactionSynchronizationRegistryHelper.putResource(this.txSyncRegistry, key, resource);
+	}
+
+	@Override
+	public Object getResource(Object key) {
+		return TransactionSynchronizationRegistryHelper.getResource(this.txSyncRegistry, key);
+	}
+
 }

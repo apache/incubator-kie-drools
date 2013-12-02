@@ -26,10 +26,6 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.InternalTaskService;
 
 
-/**
- *
- * @author salaboy
- */
 public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener {
 
     private InternalTaskService taskService;
@@ -48,10 +44,10 @@ public class TaskCleanUpProcessEventListener extends DefaultProcessEventListener
         statuses.add(Status.Suspended);
         statuses.add(Status.Completed);
         statuses.add(Status.Exited);
-        List<TaskSummary> completedTasksByProcessId = taskService.getTasksByStatusByProcessInstanceId(event.getProcessInstance().getId(), statuses, "en-UK");
+        List<TaskSummary> completedTasksByProcessId = ((InternalTaskService)taskService).execute(new GetTasksForProcessCommand(event.getProcessInstance().getId(), statuses, "en-UK"));
         taskService.archiveTasks(completedTasksByProcessId);
         taskService.removeTasks(completedTasksByProcessId);
-        
-        
     }
+    
+
 }

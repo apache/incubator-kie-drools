@@ -1,6 +1,7 @@
 package org.jbpm.services.task.jaxb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -14,20 +15,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.AttachmentImpl;
-import org.jbpm.services.task.impl.model.CommentImpl;
-import org.jbpm.services.task.impl.model.TaskDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskData;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalAttachment;
+import org.kie.internal.task.api.model.InternalComment;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+import org.kie.internal.task.api.model.InternalTaskData;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -67,24 +69,28 @@ public abstract class AbstractSerializationTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.FullTask));
-        TaskImpl task = (TaskImpl) TaskFactory.evalTask(reader, vars);
-        TaskDataImpl taskData = (TaskDataImpl) task.getTaskData();
+        Task task = (Task) TaskFactory.evalTask(reader, vars);
+        InternalTaskData taskData = (InternalTaskData) task.getTaskData();
 
         String payload = "brainwashArmitageRecruitCaseGetPasswordFromLady3JaneAscentToStraylightIcebreakerUniteWithNeuromancer";
 
-        CommentImpl comment = new CommentImpl();
+        InternalComment comment = (InternalComment) TaskModelProvider.getFactory().newComment();
         comment.setId(42);
         comment.setText(payload);
         comment.setAddedAt(new Date());
-        comment.setAddedBy(new UserImpl("Case"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Case");;
+        comment.setAddedBy(user);
         taskData.addComment(comment);
 
-        AttachmentImpl attach = new AttachmentImpl();
+        InternalAttachment attach = (InternalAttachment) TaskModelProvider.getFactory().newAttachment();
         attach.setId(1);
         attach.setName("virus");
         attach.setContentType("ROM");
         attach.setAttachedAt(new Date());
-        attach.setAttachedBy(new UserImpl("Wintermute"));
+        user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Wintermute");;
+        attach.setAttachedBy(user);
         attach.setSize(payload.getBytes().length);
         attach.setAttachmentContentId(comment.getId());
         taskData.addAttachment(attach);
@@ -177,6 +183,9 @@ public abstract class AbstractSerializationTest {
     @Test
     public void taskCommandSubTypesCanBeSerialized() throws Exception { 
         for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class) ) { 
+        	if (jaxbClass.equals(UserGroupCallbackTaskCommand.class) ) {
+        		continue;
+        	}
             addClassesToSerializationContext(jaxbClass);
             Constructor<?> construct = jaxbClass.getConstructor(new Class [] {});
             Object jaxbInst = construct.newInstance(new Object [] {});

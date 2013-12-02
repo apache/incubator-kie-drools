@@ -15,20 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
-import org.jbpm.services.task.events.BeforeTaskSuspendedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Suspend : [ new OperationCommand().{ status = [ Status.Ready ],
@@ -37,11 +28,12 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.Reserved, Status.InProgress ], allowed = [Allowed.Owner,
  * Allowed.BusinessAdministrator ], newStatus = Status.Suspended } ],
  */
-@Transactional
 @XmlRootElement(name="suspend-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class SuspendTaskCommand extends TaskCommand<Void> {
+public class SuspendTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 	
+	private static final long serialVersionUID = 5486559063221608125L;
+
 	public SuspendTaskCommand() {
 	}
 
@@ -52,46 +44,9 @@ public class SuspendTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().suspend(taskId, userId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskSuspendedEvent>() {
-        }).fire(task);
-        // CHeck for potential Owner allowed (decorator?)
-        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
-        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getPotentialOwners());
-        boolean ownerAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
-        boolean noOp = true;
-        if (!adminAllowed && !potOwnerAllowed && !ownerAllowed) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task " + task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-        
-        if (potOwnerAllowed || adminAllowed ) {
-            if (task.getTaskData().getStatus().equals(Status.Ready)) {
-            	((InternalTaskData) task.getTaskData()).setStatus(Status.Suspended);
-                noOp = false;
-            }
-        }
-        if (ownerAllowed || adminAllowed  ) {
-            if (task.getTaskData().getStatus().equals(Status.Reserved)
-                    || task.getTaskData().getStatus().equals(Status.InProgress)) {
-            	((InternalTaskData) task.getTaskData()).setStatus(Status.Suspended);
-                noOp = false;
-            }
-        }
-        
-        if(noOp){
-            String errorMessage = "User '" + user + "' was unable to execution operation Task Suspend on task id " + task.getId() + " due to a no 'current status' match";
-            throw new PermissionDeniedException(errorMessage);
-        }
-
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskSuspendedEvent>() {
-        }).fire(task);
-
-        return null;
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().suspend(taskId, userId);
+    	return null;        
     }
 }

@@ -17,12 +17,12 @@
 package org.jbpm.executor;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
+
+import org.jbpm.shared.services.impl.TransactionalCommandService;
 
 @ApplicationScoped
 public class ExecutorDatabaseProducer {
@@ -41,21 +41,7 @@ public class ExecutorDatabaseProducer {
     }
 
     @Produces
-    @ApplicationScoped
-    public EntityManager getEntityManager() {
-        EntityManager em = getEntityManagerFactory().createEntityManager();
-        em.getTransaction().begin();
-        return em;
+    public TransactionalCommandService produceCommandService(EntityManagerFactory emf) {
+    	return new TransactionalCommandService(emf);
     }
-
-    @ApplicationScoped
-    public void commitAndClose(@Disposes EntityManager em) {
-        try {
-            em.getTransaction().commit();
-            em.close();
-        } catch (Exception e) {
-
-        }
-    }
-
 }

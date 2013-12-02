@@ -15,21 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskForwardedEvent;
-import org.jbpm.services.task.events.BeforeTaskForwardedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  Operation.Forward 
@@ -52,11 +42,12 @@ import org.kie.internal.task.api.model.InternalTaskData;
                 newStatus = Status.Ready
             }],          
  */
-@Transactional
 @XmlRootElement(name="forward-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class ForwardTaskCommand extends TaskCommand<Void> {
+public class ForwardTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 	
+	private static final long serialVersionUID = -3291367442760747824L;
+
 	public ForwardTaskCommand() {
 	}
 
@@ -68,59 +59,11 @@ public class ForwardTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().forward(taskId, userId, targetEntityId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        OrganizationalEntity targetEntity = context.getTaskIdentityService().getOrganizationalEntityById(targetEntityId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskForwardedEvent>() {
-        }).fire(task);
-        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
-        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getPotentialOwners());
-        boolean ownerAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
-        
-        
-        if ((!adminAllowed && !potOwnerAllowed && !ownerAllowed)) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task " + task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-
-        boolean noOp = true;
-        if (potOwnerAllowed || adminAllowed ) {
-            if (task.getTaskData().getStatus().equals(Status.Ready)) {
-            	((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
-                if ( !task.getPeopleAssignments().getPotentialOwners().contains(targetEntity)) {
-                    task.getPeopleAssignments().getPotentialOwners().add(targetEntity);
-                }
-                ((InternalTaskData) task.getTaskData()).setActualOwner(null);
-                task.getPeopleAssignments().getPotentialOwners().remove(user);
-                noOp = false;
-            }
-        }
-        
+        doCallbackUserOperation(userId, context);
+        doCallbackUserOperation(targetEntityId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().forward(taskId, userId, targetEntityId);
+    	return null;
        
-        
-        if (ownerAllowed || adminAllowed  ) {
-            if (task.getTaskData().getStatus().equals(Status.Reserved)
-                    || task.getTaskData().getStatus().equals(Status.InProgress)) {
-            	((InternalTaskData) task.getTaskData()).setStatus(Status.Ready);
-                if ( !task.getPeopleAssignments().getPotentialOwners().contains(targetEntity)) {
-                    task.getPeopleAssignments().getPotentialOwners().add(targetEntity);
-                }
-                ((InternalTaskData) task.getTaskData()).setActualOwner(null);
-                task.getPeopleAssignments().getPotentialOwners().remove(user);
-                noOp = false;
-            }
-        }
-        if(noOp){
-            String errorMessage = "The action Forward Task on " + task.getId() +" was not applied by "+userId;
-            throw new PermissionDeniedException(errorMessage);
-        }
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskForwardedEvent>() {
-        }).fire(task);
-
-        return null;
     }
 }

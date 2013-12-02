@@ -14,15 +14,17 @@ import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-task-assigned-pot-owner-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetTaskAssignedAsPotentialOwnerCommand extends TaskCommand<List<TaskSummary>> {
+public class GetTaskAssignedAsPotentialOwnerCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
-    @XmlElement
+	private static final long serialVersionUID = 5077599352603072633L;
+
+	@XmlElement
     @XmlSchemaType(name="string")
 	private String language;
 	
     @XmlElement
 	private List<Status> status;
-	
+    
 	public GetTaskAssignedAsPotentialOwnerCommand() {
 	}
 	
@@ -35,6 +37,13 @@ public class GetTaskAssignedAsPotentialOwnerCommand extends TaskCommand<List<Tas
 		this.userId = userId;
 		this.language = language;
 		this.status = status;
+    }
+	
+	public GetTaskAssignedAsPotentialOwnerCommand(String userId, List<String> groupIds, String language, List<Status> status) {
+		this.userId = userId;
+		this.language = language;
+		this.status = status;
+		this.groupsIds = groupIds;
     }
 	
 	public String getLanguage() {
@@ -53,19 +62,20 @@ public class GetTaskAssignedAsPotentialOwnerCommand extends TaskCommand<List<Tas
 		this.status = status;
 	}
 
-    public List<TaskSummary> execute(Context cntxt) {
+
+	public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	if (status == null) {
-        		return context.getTaskService().getTasksAssignedAsPotentialOwner(userId, language);
-        	} else {
-        		return context.getTaskService().getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
-        	}
+        doCallbackUserOperation(userId, context);
+        if (groupsIds != null) {
+        	return context.getTaskQueryService().getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupsIds, status, language);
         }
+        
+        List<String> groupIds = doUserGroupCallbackOperation(userId, null, context);
+        
         if (status == null) {
-        	return context.getTaskQueryService().getTasksAssignedAsPotentialOwner(userId, language);
+        	return context.getTaskQueryService().getTasksAssignedAsPotentialOwner(userId, groupIds, language);
         } else {
-        	return context.getTaskQueryService().getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
+        	return context.getTaskQueryService().getTasksAssignedAsPotentialOwnerByStatusByGroup(userId, groupIds, status, language);
         }
     }
 

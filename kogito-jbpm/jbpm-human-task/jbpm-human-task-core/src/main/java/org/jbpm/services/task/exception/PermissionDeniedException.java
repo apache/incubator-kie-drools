@@ -16,6 +16,9 @@
 
 package org.jbpm.services.task.exception;
 
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.exception.TaskException;
+
 /**
  * Exception that is thrown when a <code>User</code> try to perform an <code>Operation</code> on a <code>Task</code>
  *

@@ -23,17 +23,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.executor.impl.runtime.RuntimeManagerRegistry;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.MergeObjectCommand;
 import org.kie.internal.executor.api.Command;
 import org.kie.internal.executor.api.CommandCallback;
 import org.kie.internal.executor.api.CommandContext;
@@ -41,6 +38,7 @@ import org.kie.internal.executor.api.ExecutionResults;
 import org.kie.internal.executor.api.ExecutorQueryService;
 import org.kie.internal.executor.api.STATUS;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +52,6 @@ public class ExecutorRunnable implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutorRunnable.class);
 
-    @Inject
-    private JbpmServicesPersistenceManager pm;
    
     @Inject
     private ExecutorQueryService queryService;
@@ -63,9 +59,13 @@ public class ExecutorRunnable implements Runnable {
     @Inject
     private ClassCacheManager classCacheManager;
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    @Inject
+    private TransactionalCommandService commandService;
+   
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
+
 
     public void setQueryService(ExecutorQueryService queryService) {
         this.queryService = queryService;
@@ -75,13 +75,6 @@ public class ExecutorRunnable implements Runnable {
         this.classCacheManager = classCacheManager;
     }
 
-    @PostConstruct
-    public void init() {
-        // make sure it has tx manager as it runs as background thread - no request scope available
-        if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
-            ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
-        }
-    }
 
     @SuppressWarnings("unchecked")
     public void run() {
@@ -133,7 +126,7 @@ public class ExecutorRunnable implements Runnable {
                     }
     
                     request.setStatus(STATUS.DONE);
-                    pm.merge(request);
+                    commandService.execute(new MergeObjectCommand(request));                    
                     
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -151,13 +144,13 @@ public class ExecutorRunnable implements Runnable {
                         request.setExecutions(request.getExecutions() + 1);
                         logger.debug("Retrying ({}) still available!", request.getRetries());
                         
-                        pm.merge(request);
+                        commandService.execute(new MergeObjectCommand(request));
                     } else {
                         logger.debug("Error no retries left!");
                         request.setStatus(STATUS.ERROR);
                         request.setExecutions(request.getExecutions() + 1);
                         
-                        pm.merge(request);
+                        commandService.execute(new MergeObjectCommand(request));
                         
                         if (callbacks != null) {
                             for (CommandCallback handler : callbacks) {                        
@@ -180,7 +173,7 @@ public class ExecutorRunnable implements Runnable {
             return cl;
         }
         
-        InternalRuntimeManager manager = ((InternalRuntimeManager)RuntimeManagerRegistry.get().getRuntimeManager(deploymentId));
+        InternalRuntimeManager manager = ((InternalRuntimeManager)RuntimeManagerRegistry.get().getManager(deploymentId));
         if (manager != null && manager.getEnvironment().getClassLoader() != null) {            
             cl = manager.getEnvironment().getClassLoader();
         }

@@ -8,13 +8,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 
 //Ignore it as it relies on external LDAP server
 @Ignore
@@ -29,8 +30,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.ROLE_FILTER, "(cn={0})");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getEmailForEntity(new UserImpl("john"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("john");
+        String email = ldapUserInfo.getEmailForEntity(user);
         assertNotNull(email);
         assertEquals("john@jbpm.org", email);
     }
@@ -45,8 +47,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.EMAIL_ATTR_ID, "ou");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getEmailForEntity(new GroupImpl("manager"));
+        Group group = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) group).setId("manager");
+        String email = ldapUserInfo.getEmailForEntity(group);
         assertNotNull(email);
         assertEquals("managers@jbpm.org", email);
     }
@@ -61,8 +64,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.IS_ENTITY_ID_DN, "true");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getEmailForEntity(new UserImpl("uid=john,ou=People,dc=jbpm,dc=org"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("uid=john,ou=People,dc=jbpm,dc=org");
+        String email = ldapUserInfo.getEmailForEntity(user);
         assertNotNull(email);
         assertEquals("john@jbpm.org", email);
     }
@@ -78,8 +82,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.EMAIL_ATTR_ID, "ou");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getEmailForEntity(new GroupImpl("cn=manager,ou=Roles,dc=jbpm,dc=org"));
+        Group group = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) group).setId("cn=manager,ou=Roles,dc=jbpm,dc=org");
+        String email = ldapUserInfo.getEmailForEntity(group);
         assertNotNull(email);
         assertEquals("managers@jbpm.org", email);
     }
@@ -95,12 +100,14 @@ public class LDAPUserInfoImplTest {
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
         
-        Iterator<OrganizationalEntity> members = ldapUserInfo.getMembersForGroup(new GroupImpl("manager"));
+        Group group = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) group).setId("manager");
+        Iterator<OrganizationalEntity> members = ldapUserInfo.getMembersForGroup(group);
         assertNotNull(members);
-        List<OrganizationalEntityImpl> orgMembers = new ArrayList<OrganizationalEntityImpl>();
+        List<OrganizationalEntity> orgMembers = new ArrayList<OrganizationalEntity>();
         
         while (members.hasNext()) {
-            OrganizationalEntityImpl organizationalEntity = (OrganizationalEntityImpl) members
+            OrganizationalEntity organizationalEntity = (OrganizationalEntity) members
                     .next();
             orgMembers.add(organizationalEntity);
         }
@@ -117,8 +124,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.ROLE_FILTER, "(cn={0})");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getDisplayName(new UserImpl("john"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("john");
+        String email = ldapUserInfo.getDisplayName(user);
         assertNotNull(email);
         assertEquals("John Doe", email);
     }
@@ -133,8 +141,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.NAME_ATTR_ID, "description");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getDisplayName(new GroupImpl("manager"));
+        Group group = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) group).setId("manager");
+        String email = ldapUserInfo.getDisplayName(group);
         assertNotNull(email);
         assertEquals("Manager group", email);
     }
@@ -149,7 +158,9 @@ public class LDAPUserInfoImplTest {
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
         
-        String email = ldapUserInfo.getLanguageForEntity(new UserImpl("john"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("john");
+        String email = ldapUserInfo.getLanguageForEntity(user);
         assertNotNull(email);
         assertEquals("en-UK", email);
     }
@@ -163,8 +174,9 @@ public class LDAPUserInfoImplTest {
         properties.setProperty(LDAPUserInfoImpl.ROLE_FILTER, "(cn={0})");
         
         UserInfo ldapUserInfo = new LDAPUserInfoImpl(properties);
-        
-        String email = ldapUserInfo.getLanguageForEntity(new GroupImpl("manager"));
+        Group group = TaskModelProvider.getFactory().newGroup();
+        ((InternalOrganizationalEntity) group).setId("manager");
+        String email = ldapUserInfo.getLanguageForEntity(group);
         assertNotNull(email);
         assertEquals("en-UK", email);
     }

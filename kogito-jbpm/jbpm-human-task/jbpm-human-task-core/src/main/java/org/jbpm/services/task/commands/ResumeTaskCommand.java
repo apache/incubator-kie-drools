@@ -15,25 +15,11 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-
-import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.events.AfterTaskResumedEvent;
-import org.jbpm.services.task.events.BeforeTaskResumedEvent;
-import org.jbpm.services.task.exception.PermissionDeniedException;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  * Operation.Resume : [ new OperationCommand().{ previousStatus = [ Status.Ready
@@ -42,11 +28,12 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.Reserved, Status.InProgress ], allowed = [ Allowed.Owner,
  * Allowed.BusinessAdministrator ], setToPreviousStatus = true } ],
  */
-@Transactional
 @XmlRootElement(name="resume-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class ResumeTaskCommand extends TaskCommand<Void> {
+public class ResumeTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 	
+	private static final long serialVersionUID = -5174631969130504959L;
+
 	public ResumeTaskCommand() {
 	}
 
@@ -57,56 +44,10 @@ public class ResumeTaskCommand extends TaskCommand<Void> {
 
     public Void execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-        	context.getTaskService().resume(taskId, userId);
-        	return null;
-        }
-        Task task = context.getTaskQueryService().getTaskInstanceById(taskId);
-        User user = context.getTaskIdentityService().getUserById(userId);
-        context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskResumedEvent>() {
-        }).fire(task);
-        // CHeck for potential Owner allowed (decorator?)
-        boolean adminAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getBusinessAdministrators());
-        boolean potOwnerAllowed = CommandsUtil.isAllowed(user, getGroupsIds(), task.getPeopleAssignments().getPotentialOwners());
-        boolean ownerAllowed = (task.getTaskData().getActualOwner() != null && task.getTaskData().getActualOwner().equals(user));
-        if (!adminAllowed && !potOwnerAllowed && !ownerAllowed) {
-            String errorMessage = "The user" + user + "is not allowed to Start the task " + task.getId();
-            throw new PermissionDeniedException(errorMessage);
-        }
-
-        if (potOwnerAllowed || adminAllowed) {
-            if (task.getTaskData().getPreviousStatus().equals(Status.Ready)) {
-
-            	((InternalTaskData) task.getTaskData()).setStatus(task.getTaskData().getPreviousStatus());
-                
-            }
-        }
-        
-         if (ownerAllowed || adminAllowed) {
-            if (task.getTaskData().getPreviousStatus().equals(Status.Reserved) || 
-                    task.getTaskData().getPreviousStatus().equals(Status.InProgress)) {
-
-            	((InternalTaskData) task.getTaskData()).setStatus(task.getTaskData().getPreviousStatus());
-                
-            }
-        }
-
-        context.getTaskEvents().select(new AnnotationLiteral<AfterTaskResumedEvent>() {
-        }).fire(task);
-
-        return null;
-    }
-
-    private boolean isAllowed(final UserImpl user, final List<String> groupIds, final List<OrganizationalEntityImpl> entities) {
-        // for now just do a contains, I'll figure out group membership later.
-        for (OrganizationalEntityImpl entity : entities) {
-            if (entity instanceof UserImpl && entity.equals(user)) {
-                return true;
-            }
-            if (entity instanceof GroupImpl && groupIds != null && groupIds.contains(entity.getId())) {
-                return true;
-            }
-        }
-        return false;
+        doCallbackUserOperation(userId, context);
+        doUserGroupCallbackOperation(userId, null, context);
+    	context.getTaskInstanceService().resume(taskId, userId);
+    	return null;
+       
     }
 }

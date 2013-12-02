@@ -9,41 +9,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.util.AnnotationLiteral;
-import javax.inject.Inject;
-
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.annotations.Mvel;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
-import org.jbpm.services.task.events.AfterTaskAddedEvent;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.identity.UserGroupLifeCycleManagerDecorator;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
+import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.command.Command;
-import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.task.model.Content;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskInstanceService;
-import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.InternalContent;
+import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.Operation;
 import org.kie.internal.task.api.model.SubTasksStrategy;
@@ -53,69 +40,68 @@ import org.slf4j.LoggerFactory;
 /**
  *
  */
-@Transactional
-@ApplicationScoped
 public class TaskInstanceServiceImpl implements TaskInstanceService {
     
     private static final Logger logger = LoggerFactory.getLogger(TaskInstanceServiceImpl.class);
     
-    @Inject
-    private TaskQueryService taskQueryService;
-    @Inject
-    @Mvel
     private LifeCycleManager lifeCycleManager;
-    @Inject
-    private JbpmServicesPersistenceManager pm;
-    @Inject
-    private Event<Task> taskEvents;
+   
+    private TaskPersistenceContext persistenceContext;    
+    private TaskEventSupport taskEventSupport;
 
     public TaskInstanceServiceImpl() {
     }
 
-    public void setTaskQueryService(TaskQueryService taskQueryService) {
-        this.taskQueryService = taskQueryService;
+    public TaskInstanceServiceImpl(TaskPersistenceContext persistenceContext,
+    		LifeCycleManager lifeCycleManager, TaskEventSupport taskEventSupport) {
+    	this.persistenceContext = persistenceContext;
+    	this.lifeCycleManager = lifeCycleManager;
+    	this.taskEventSupport = taskEventSupport;
     }
 
     public void setLifeCycleManager(LifeCycleManager lifeCycleManager) {
         this.lifeCycleManager = lifeCycleManager;
     }
 
-    public void setTaskEvents(Event<Task> taskEvents) {
-        this.taskEvents = taskEvents;
+    public void setTaskEventSupport(TaskEventSupport taskEventSupport) {
+        this.taskEventSupport = taskEventSupport;
     }
 
     
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+        this.persistenceContext = persistenceContext;
     }
 
    
-    public long addTask(Task task, Map<String, Object> params) {
-         if (params != null) {
-            ContentDataImpl contentData = ContentMarshallerHelper.marshal(params, null);
-            ContentImpl content = new ContentImpl(contentData.getContent());
-            pm.persist(content);
-            ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
-        }
-         
-        pm.persist(task);
-        if(taskEvents != null){
-            taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
-        }
-        return task.getId();
+    public long addTask(Task task, Map<String, Object> params) {    	
+    	taskEventSupport.fireBeforeTaskAdded(task, persistenceContext);
+    	
+    	if (params != null) {
+			ContentData contentData = ContentMarshallerHelper.marshal(params, null);
+			Content content = TaskModelProvider.getFactory().newContent();
+			((InternalContent) content).setContent(contentData.getContent());
+			persistenceContext.persistContent(content);
+			((InternalTaskData) task.getTaskData()).setDocument(
+					content.getId(), contentData);
+		}
+
+		persistenceContext.persistTask(task);
+		taskEventSupport.fireAfterTaskAdded(task, persistenceContext);
+		return task.getId();
     }
 
     public long addTask(Task task, ContentData contentData) {
-        pm.persist(task);
+    	taskEventSupport.fireBeforeTaskAdded(task, persistenceContext);   	
 
         if (contentData != null) {
-            ContentImpl content = new ContentImpl(contentData.getContent());
-            pm.persist(content);
+            Content content = TaskModelProvider.getFactory().newContent();
+            ((InternalContent) content).setContent(contentData.getContent());
+            persistenceContext.persistContent(content);
             ((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
         }
-        if(taskEvents != null){
-            taskEvents.select(new AnnotationLiteral<AfterTaskAddedEvent>() {}).fire(task);
-        }
+        
+        persistenceContext.persistTask(task);
+        taskEventSupport.fireAfterTaskAdded(task, persistenceContext);
         return task.getId();
     }
 
@@ -134,7 +120,9 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public void claimNextAvailable(String userId, String language) {
         List<Status> status = new ArrayList<Status>();
         status.add(Status.Ready);
-        List<TaskSummary> queryTasks = taskQueryService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
+        List<TaskSummary> queryTasks = persistenceContext.queryWithParametersInTransaction("TasksAssignedAsPotentialOwnerByStatus", 
+                persistenceContext.addParametersToMap("userId", userId ,"language", language,"status", status),
+                ClassUtil.<List<TaskSummary>>castClass(List.class));;
         if (queryTasks.size() > 0) {
             lifeCycleManager.taskOperation(Operation.Claim, queryTasks.get(0).getId(), userId, null, null, null);
         } else {
@@ -195,13 +183,13 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void setPriority(long taskId, int priority) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.setPriority(priority);
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setPriority(priority);
     }
 
     public void setTaskNames(long taskId, List<I18NText> taskNames) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.setNames(taskNames);
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setNames(taskNames);
     }
 
     public void skip(long taskId, String userId) {
@@ -231,51 +219,53 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     }
 
     public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.setSubTaskStrategy(strategy);
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setSubTaskStrategy(strategy);
     }
 
     public void setExpirationDate(long taskId, Date date) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         ((InternalTaskData) task.getTaskData()).setExpirationTime(date);
     }
 
     public void setDescriptions(long taskId, List<I18NText> descriptions) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        task.setDescriptions(descriptions);
+        Task task = persistenceContext.findTask(taskId);
+        ((InternalTask) task).setDescriptions(descriptions);
     }
 
     public void setSkipable(long taskId, boolean skipable) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         ((InternalTaskData) task.getTaskData()).setSkipable(skipable);
     }
 
     public int getPriority(long taskId) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         return task.getPriority();
     }
 
     public Date getExpirationDate(long taskId) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         return task.getTaskData().getExpirationTime();
     }
 
     public List<I18NText> getDescriptions(long taskId) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         return (List<I18NText>) task.getDescriptions();
     }
 
     public boolean isSkipable(long taskId) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         return task.getTaskData().isSkipable();
     }
 
     public SubTasksStrategy getSubTaskStrategy(long taskId) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        return task.getSubTaskStrategy();
+        Task task = persistenceContext.findTask(taskId);
+        return ((InternalTask) task).getSubTaskStrategy();
     }
     
     public <T> T execute(Command<T> command) {
         return (T) ((TaskCommand) command).execute( new TaskContext() );
     }
+    
+
 }

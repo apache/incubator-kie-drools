@@ -16,16 +16,20 @@
 
 package org.jbpm.services.task.exception;
 
-import org.jbpm.services.task.impl.model.ContentDataImpl;
+import org.kie.internal.task.exception.TaskException;
+
 
 /**
  * Exception thrown from the <code>TaskServiceSession</code> when there is a problem adding task. This exception
- * is specififically thrown when custom logic in rules has not allowed the <code>Task</code> to be added.
+ * is specifically thrown when custom logic in rules has not allowed the <code>Task</code> to be added.
  *
  * @see org.jbpm.services.task.service.TaskServiceSession#addTask(org.jbpm.services.task.Task, ContentDataImpl)
  */
 public class CannotAddTaskException extends TaskException {
-    public CannotAddTaskException(String message) {
+
+	private static final long serialVersionUID = 7726830444895556394L;
+
+	public CannotAddTaskException(String message) {
         super(message);
     }
 

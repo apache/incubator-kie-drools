@@ -17,8 +17,6 @@ package org.jbpm.services.task.deadlines.notifications.impl.email;
 
 import java.util.Properties;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Singleton;
 import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -31,12 +29,9 @@ public class EmailSessionProducer {
     private static final Logger logger = LoggerFactory.getLogger(EmailSessionProducer.class);
     private static final String MAIL_JNDI_KEY = System.getProperty("org.kie.mail.session", "mail/jbpmMailSession");
 
-    private Session mailSession;
+    private static Session mailSession;
     
-    
-    @Produces
-    @Singleton
-    public Session produceSession() {
+    public static Session produceSession() {
         if (mailSession == null) {
             
             try {
@@ -45,7 +40,7 @@ public class EmailSessionProducer {
                 logger.warn("Mail session was not found in JNDI under {} trying to look up email.properties on classspath", MAIL_JNDI_KEY);
                 Properties conf = new Properties();
                 try {
-                    conf.load(this.getClass().getResourceAsStream("/email.properties"));
+                    conf.load(EmailSessionProducer.class.getResourceAsStream("/email.properties"));
                     
                     mailSession = Session.getInstance(conf);
                 } catch (Exception e) {

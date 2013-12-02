@@ -18,67 +18,53 @@ package org.jbpm.executor.impl;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import org.jboss.seam.transaction.Transactional;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.impl.JbpmJTATransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.QueryStringCommand;
+import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
 import org.kie.internal.executor.api.ExecutorAdminService;
 
 /**
  * Default implementation of <code>ExecutorAdminService</code> backed with JPA
  *
  */
-@Transactional
 public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService {
 
     @Inject
-    private JbpmServicesPersistenceManager pm;
-
+    private TransactionalCommandService commandService;
+   
     public ExecutorRequestAdminServiceImpl() {
     }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
-    }
-    
-    @PostConstruct
-    public void init() {
-        // make sure it has tx manager as it runs as background thread - no request scope available
-        if (!((JbpmServicesPersistenceManagerImpl) pm).hasTransactionManager()) {
-            ((JbpmServicesPersistenceManagerImpl) pm).setTransactionManager(new JbpmJTATransactionManager());
-        }
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public int clearAllRequests() {
         
-        List<RequestInfo> requests = (List<RequestInfo>)pm.queryStringInTransaction("select r from RequestInfo r");
-        for (RequestInfo r : requests) {
-            pm.remove(r);
+        List<RequestInfo> requests = 
+        		commandService.execute(new QueryStringCommand<List<RequestInfo>>("select r from RequestInfo r"));
+        
+        commandService.execute(new RemoveObjectCommand(requests.toArray()));
 
-        }
         return requests.size();
     }
 
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
     public int clearAllErrors() {
-        List<ErrorInfo> errors = (List<ErrorInfo>)pm.queryStringInTransaction("select e from ErrorInfo e");
+        List<ErrorInfo> errors = 
+        		commandService.execute(new QueryStringCommand<List<ErrorInfo>>("select e from ErrorInfo e"));
 
-        for (ErrorInfo e : errors) {
-            pm.remove(e);
+        commandService.execute(new RemoveObjectCommand(errors.toArray()));
 
-        }
         return errors.size();
     }
 }

@@ -34,16 +34,15 @@ import org.jbpm.kie.services.api.bpmn2.BPMN2DataService;
 import org.jbpm.kie.services.impl.form.model.InputData;
 import org.jbpm.kie.services.impl.form.model.OutputData;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
 import org.kie.internal.deployment.DeployedUnit;
 import org.kie.internal.deployment.DeploymentService;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.task.api.ContentMarshallerContext;
-import org.kie.internal.task.api.TaskContentService;
-import org.kie.internal.task.api.TaskInstanceService;
-import org.kie.internal.task.api.TaskQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,11 +52,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     private static Logger logger = LoggerFactory.getLogger(FormProviderServiceImpl.class);
 
     @Inject
-    private TaskQueryService queryService;
-    @Inject
-    private TaskContentService contentService;
-    @Inject
-    private TaskInstanceService instanceService;
+    private TaskService taskService;
     @Inject
     private BPMN2DataService bpmn2Service;
     @Inject
@@ -110,7 +105,7 @@ public class FormProviderServiceImpl implements FormProviderService {
     @Override
     @SuppressWarnings("unchecked")
     public String getFormDisplayTask(long taskId) {
-        Task task = queryService.getTaskInstanceById(taskId);
+        Task task = taskService.getTaskById(taskId);
         String name = task.getNames().get(0).getText();
         ProcessAssetDesc processDesc = dataService.getProcessById(task.getTaskData().getProcessId());
         Map<String, Object> renderContext = new HashMap<String, Object>();
@@ -120,7 +115,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         Object input = null;
         long inputContentId = task.getTaskData().getDocumentContentId();
         if (inputContentId != -1) {
-            Content content = contentService.getContentById(inputContentId);
+            Content content = taskService.getContentById(inputContentId);
             input = ContentMarshallerHelper.unmarshall(content.getContent(), marshallerContext.getEnvironment(), marshallerContext.getClassloader());
         }
         if (input == null) {
@@ -130,7 +125,7 @@ public class FormProviderServiceImpl implements FormProviderService {
         Object output = null;
         long outputContentId = task.getTaskData().getOutputContentId();
         if (outputContentId != -1) {
-            Content content = contentService.getContentById(outputContentId);
+            Content content = taskService.getContentById(outputContentId);
             output = ContentMarshallerHelper.unmarshall(content.getContent(), marshallerContext.getEnvironment(), marshallerContext.getClassloader());
         }
         if (output == null) {
@@ -226,6 +221,6 @@ public class FormProviderServiceImpl implements FormProviderService {
             return new ContentMarshallerContext();
         }
         
-        return contentService.getMarshallerContext(task);
+        return TaskContentRegistry.get().getMarshallerContext(task);
     }
 }

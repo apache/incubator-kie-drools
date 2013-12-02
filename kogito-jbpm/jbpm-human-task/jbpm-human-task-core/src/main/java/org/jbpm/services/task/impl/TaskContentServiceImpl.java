@@ -17,53 +17,48 @@ package org.jbpm.services.task.impl;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.TaskPersistenceContext;
+import org.kie.internal.task.api.model.ContentData;
+import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *
  */
-@Transactional
-@ApplicationScoped
 public class TaskContentServiceImpl implements TaskContentService {
 
-    @Inject
-    private JbpmServicesPersistenceManager pm;
-
-    private ConcurrentHashMap<String, ContentMarshallerContext> marhsalContexts = new ConcurrentHashMap<String, ContentMarshallerContext>();
-    
+    private TaskPersistenceContext persistenceContext;
 
     public TaskContentServiceImpl() {
     }
+    
+    public TaskContentServiceImpl(TaskPersistenceContext persistenceContext) {
+    	this.persistenceContext = persistenceContext;
+    }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+        this.persistenceContext = persistenceContext;
     }
     
-    public long addContent(long taskId, Map<String, Object> params) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+    @SuppressWarnings("unchecked")
+	public long addContent(long taskId, Map<String, Object> params) {
+        Task task = persistenceContext.findTask(taskId);
         long outputContentId = task.getTaskData().getOutputContentId();
-        ContentImpl outputContent = pm.find(ContentImpl.class, outputContentId);
+        Content outputContent = persistenceContext.findContent(outputContentId);
         
         long contentId = -1;
         if (outputContent == null) {
-            ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(params, null);
-            ContentImpl content = new ContentImpl(outputContentData.getContent());
-            pm.persist(content);
+            ContentData outputContentData = ContentMarshallerHelper.marshal(params, null);
+            Content content = TaskModelProvider.getFactory().newContent();
+            ((InternalContent) content).setContent(outputContentData.getContent());
+            persistenceContext.persistContent(content);
             
             ((InternalTaskData) task.getTaskData()).setOutput(content.getId(), outputContentData);
             contentId = content.getId();
@@ -74,26 +69,26 @@ public class TaskContentServiceImpl implements TaskContentService {
             if(unmarshalledObject != null && unmarshalledObject instanceof Map){
                 ((Map<String, Object>)unmarshalledObject).putAll(params);
             }
-            ContentDataImpl outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, context.getEnvironment());
-            outputContent.setContent(outputContentData.getContent());
-            pm.persist(outputContent);
+            ContentData outputContentData = ContentMarshallerHelper.marshal(unmarshalledObject, context.getEnvironment());
+            ((InternalContent)outputContent).setContent(outputContentData.getContent());
+            persistenceContext.persistContent(outputContent);
             contentId = outputContentId;
         }
         return contentId;
     }
 
     public long addContent(long taskId, Content content) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        pm.persist(content);
+        Task task = persistenceContext.findTask(taskId);
+        persistenceContext.persistContent(content);
         ((InternalTaskData) task.getTaskData()).setDocumentContentId(content.getId());
         return content.getId();
     }
 
     public void deleteContent(long taskId, long contentId) {
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
+        Task task = persistenceContext.findTask(taskId);
         ((InternalTaskData) task.getTaskData()).setDocumentContentId(-1);
-        ContentImpl content = pm.find(ContentImpl.class, contentId);
-        pm.remove(content);
+        Content content = persistenceContext.findContent(contentId);
+        persistenceContext.removeContent(content);
 
     }
 
@@ -101,25 +96,21 @@ public class TaskContentServiceImpl implements TaskContentService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public ContentImpl getContentById(long contentId) {
-        return pm.find(ContentImpl.class, contentId);
+    public Content getContentById(long contentId) {
+        return persistenceContext.findContent(contentId);
     }
     
     @Override
     public void addMarshallerContext(String ownerId, ContentMarshallerContext context) {
-        this.marhsalContexts.put(ownerId, context);
+        TaskContentRegistry.get().addMarshallerContext(ownerId, context);
     }
 
     @Override
     public void removeMarshallerContext(String ownerId) {
-        this.marhsalContexts.remove(ownerId);
+    	TaskContentRegistry.get().removeMarshallerContext(ownerId);
     }   
 
     public ContentMarshallerContext getMarshallerContext(Task task) {
-        if (task.getTaskData().getDeploymentId() != null && this.marhsalContexts.containsKey(task.getTaskData().getDeploymentId())) {
-            return this.marhsalContexts.get(task.getTaskData().getDeploymentId());
-        }
-        
-        return new ContentMarshallerContext();
+        return TaskContentRegistry.get().getMarshallerContext(task);
     }
 }

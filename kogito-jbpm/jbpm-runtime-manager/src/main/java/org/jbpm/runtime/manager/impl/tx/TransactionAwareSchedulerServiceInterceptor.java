@@ -17,8 +17,9 @@
 package org.jbpm.runtime.manager.impl.tx;
 
 import org.drools.core.time.impl.TimerJobInstance;
+import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
-import org.drools.persistence.TransactionSynchronization;
+import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.DelegateSchedulerServiceInterceptor;
@@ -36,29 +37,38 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
  */
 public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedulerServiceInterceptor {
 
+	private RuntimeEnvironment environment;
+	
     public TransactionAwareSchedulerServiceInterceptor(RuntimeEnvironment environment, GlobalSchedulerService schedulerService) {
         super(schedulerService);
+        this.environment = environment;
     }
 
     @Override
     public final void internalSchedule(final TimerJobInstance timerJobInstance) {
-        JtaTransactionManager tm = new ExtendedJTATransactionManager(null, null, null);
+    	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+    		super.internalSchedule(timerJobInstance);
+    		return;
+    	}
+        JtaTransactionManager tm = new JtaTransactionManager(null, null, null);
         if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
                 && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
                 && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
-            tm.registerTransactionSynchronization(new ScheduleTimerTransactionSynchronization(timerJobInstance, delegate));
+            TransactionManagerHelper.registerTransactionSyncInContainer(tm, 
+            		new ScheduleTimerTransactionSynchronization(timerJobInstance, delegate));
             
             return;
         }
         super.internalSchedule(timerJobInstance);
     }
 
-    private class ScheduleTimerTransactionSynchronization implements TransactionSynchronization {
+    private class ScheduleTimerTransactionSynchronization extends OrderedTransactionSynchronization {
         
         private GlobalSchedulerService schedulerService;
         private TimerJobInstance timerJobInstance;
         
         ScheduleTimerTransactionSynchronization(TimerJobInstance timerJobInstance, GlobalSchedulerService schedulerService) {
+        	super(5);
             this.timerJobInstance = timerJobInstance;
             this.schedulerService = schedulerService;
         }
@@ -74,5 +84,26 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
             }
             
         }
+
+		@Override
+		public int compareTo(OrderedTransactionSynchronization o) {
+			if (o instanceof ScheduleTimerTransactionSynchronization) {
+				if (this.timerJobInstance.equals(((ScheduleTimerTransactionSynchronization) o).timerJobInstance)) {
+					return 0;
+				}
+				return -1;
+			}
+			return super.compareTo(o);
+		}
+        
+        
+    }
+    
+    protected boolean hasEnvironmentEntry(String name, Object value) {
+    	Object envEntry = environment.getEnvironment().get(name);
+    	if (value == null) {
+    		return envEntry == null;
+    	}
+    	return value.equals(envEntry);
     }
 }

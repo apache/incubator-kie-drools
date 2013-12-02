@@ -17,46 +17,47 @@ package org.jbpm.services.task.impl;
 
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.impl.model.AttachmentImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskAttachmentService;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 /**
  *
  */
-@Transactional
-@ApplicationScoped
 public class TaskAttachmentServiceImpl implements TaskAttachmentService {
-
-    @Inject 
-    private JbpmServicesPersistenceManager pm;
+ 
+    private TaskPersistenceContext persistenceContext;
 
     public TaskAttachmentServiceImpl() {
     }
+    
+    public TaskAttachmentServiceImpl(TaskPersistenceContext persistenceContext) {
+    	this.persistenceContext = persistenceContext;
+    }
  
-    public long addAttachment(long taskId, Attachment attachment, Content content) {
-        //@TODO: The attachment is not being persisted! 
-        TaskImpl task = pm.find(TaskImpl.class, taskId);
-        // doCallbackOperationForAttachment(attachment); -> This should go in a decorator
-        pm.persist(content);
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+		this.persistenceContext = persistenceContext;
+	}
+
+	public long addAttachment(long taskId, Attachment attachment, Content content) {
+        Task task = persistenceContext.findTask(taskId);
+        persistenceContext.persistAttachment(attachment);
+        persistenceContext.persistContent(content);
         ((InternalAttachment) attachment).setContent(content);
         ((InternalTaskData) task.getTaskData()).addAttachment(attachment);
         return content.getId();
     }
 
     public void deleteAttachment(long taskId, long attachmentId) {
-       TaskImpl task = pm.find(TaskImpl.class, taskId);
-       ((InternalTaskData) task.getTaskData()).removeAttachment(attachmentId);
-       //TODO: should I remove the content?
+       Task task = persistenceContext.findTask(taskId);
+       Attachment attachment = ((InternalTaskData) task.getTaskData()).removeAttachment(attachmentId);
+       Content content = persistenceContext.findContent(attachment.getAttachmentContentId());
+       
+       persistenceContext.removeContent(content);
        
     }
 
@@ -64,7 +65,7 @@ public class TaskAttachmentServiceImpl implements TaskAttachmentService {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public AttachmentImpl getAttachmentById(long attachId) {
-        return pm.find(AttachmentImpl.class, attachId);
+    public Attachment getAttachmentById(long attachId) {
+        return persistenceContext.findAttachment(attachId);
     }
 }

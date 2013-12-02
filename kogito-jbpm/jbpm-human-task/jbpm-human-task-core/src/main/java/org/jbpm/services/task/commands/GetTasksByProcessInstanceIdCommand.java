@@ -8,15 +8,15 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-task-by-proc-inst-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> {
 
-    @XmlElement
+	private static final long serialVersionUID = -2328845811017055632L;
+
+	@XmlElement
     @XmlSchemaType(name="long")
 	private Long processInstanceId;
 	
@@ -37,9 +37,6 @@ public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> 
 
 	public List<Long> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        if (context.getTaskService() != null) {
-    		return context.getTaskService().getTasksByProcessInstanceId(processInstanceId);
-        }
     	return context.getTaskQueryService().getTasksByProcessInstanceId(processInstanceId);
     }
 

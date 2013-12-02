@@ -8,8 +8,8 @@ package org.jbpm.services.task.internals.lifecycle;
 import java.util.List;
 import java.util.Map;
 
-import org.jbpm.services.task.exception.TaskException;
 import org.kie.internal.task.api.model.Operation;
+import org.kie.internal.task.exception.TaskException;
 
 /**
  *

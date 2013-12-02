@@ -9,88 +9,92 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import org.jboss.seam.transaction.Transactional;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.services.task.utils.ClassUtil;
+import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.task.api.TaskAdminService;
+import org.kie.internal.task.api.TaskPersistenceContext;
+import org.kie.internal.task.api.model.InternalTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  *
  */
-@Transactional
-@ApplicationScoped
 public class TaskAdminServiceImpl implements TaskAdminService {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskAdminServiceImpl.class);
     
-    @Inject
-    private JbpmServicesPersistenceManager pm;
+    private TaskPersistenceContext persistenceContext;
 
     public TaskAdminServiceImpl() {
     }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+    public TaskAdminServiceImpl(TaskPersistenceContext persistenceContext) {
+    	this.persistenceContext = persistenceContext;
+    }
+    
+    public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
+        this.persistenceContext = persistenceContext;
     }
 
     public List<TaskSummary> getActiveTasks() {
-        HashMap<String, Object> params = pm.addParametersToMap(
+        HashMap<String, Object> params = persistenceContext.addParametersToMap(
                 "status", Arrays.asList(Status.InProgress),
                 "language", "en-UK");
 
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatus", params);
+        return persistenceContext.queryWithParametersInTransaction("TasksByStatus", params,
+                ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
     public List<TaskSummary> getActiveTasks(Date since) {
-        HashMap<String, Object> params = pm.addParametersToMap(
+        HashMap<String, Object> params = persistenceContext.addParametersToMap(
                 "status", Arrays.asList(Status.InProgress),
                 "language", "en-UK",
                 "since", since);
 
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatus", params);
+        return persistenceContext.queryWithParametersInTransaction("TasksByStatus", params,
+                ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
     public List<TaskSummary> getCompletedTasks() {
-        HashMap<String, Object> params = pm.addParametersToMap(
+        HashMap<String, Object> params = persistenceContext.addParametersToMap(
                 "status", Arrays.asList(Status.Completed),
                 "language", "en-UK");
 
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatus", params);
+        return persistenceContext.queryWithParametersInTransaction("TasksByStatus", params,
+                ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
     public List<TaskSummary> getCompletedTasks(Date since) {
-        HashMap<String, Object> params = pm.addParametersToMap(
+        HashMap<String, Object> params = persistenceContext.addParametersToMap(
                 "status", Arrays.asList(Status.Completed),
                 "language", "en-UK",
                 "since", since);
 
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatusSince", params);
+        return persistenceContext.queryWithParametersInTransaction("TasksByStatusSince", params,
+                ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
     public List<TaskSummary> getCompletedTasksByProcessId(Long processId) {
-        HashMap<String, Object> params = pm.addParametersToMap(
+        HashMap<String, Object> params = persistenceContext.addParametersToMap(
                 "status", Arrays.asList(Status.Completed),
                 "language", "en-UK",
                 "processInstanceId", processId);
 
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("TasksByStatusByProcessId", params);
+        return persistenceContext.queryWithParametersInTransaction("TasksByStatusByProcessId", params,
+                ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
     public int archiveTasks(List<TaskSummary> tasks) {
         int archivedTasks = 0;
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
-            TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
-            task.setArchived(true);
-            pm.persist(task);
+            Task task = persistenceContext.findTask(taskId);
+            ((InternalTask) task).setArchived(true);
+            persistenceContext.persist(task);
             archivedTasks++;
 
         }
@@ -98,9 +102,10 @@ public class TaskAdminServiceImpl implements TaskAdminService {
     }
 
     public List<TaskSummary> getArchivedTasks() {
-        HashMap<String, Object> params = pm.addParametersToMap(
+        HashMap<String, Object> params = persistenceContext.addParametersToMap(
                 "language", "en-UK");
-        return (List<TaskSummary>) pm.queryWithParametersInTransaction("ArchivedTasks", params);
+        return persistenceContext.queryWithParametersInTransaction("ArchivedTasks", params,
+                ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
     public int removeTasks(List<TaskSummary> tasks) {
@@ -109,12 +114,12 @@ public class TaskAdminServiceImpl implements TaskAdminService {
         for (TaskSummary sum : tasks) {
             long taskId = sum.getId();
             // Only remove archived tasks
-            TaskImpl task = (TaskImpl) pm.find(TaskImpl.class, taskId);
-            ContentImpl content = (ContentImpl) pm.find(ContentImpl.class, task.getTaskData().getDocumentContentId());
-            if (task.isArchived()) {
-                pm.remove(task);
+            Task task = persistenceContext.findTask(taskId);
+            Content content = persistenceContext.findContent(task.getTaskData().getDocumentContentId());
+            if (((InternalTask) task).isArchived()) {
+                persistenceContext.remove(task);
                 if (content != null) {
-                    pm.remove(content);
+                    persistenceContext.remove(content);
                 }
                 removedTasks++;
             } else {
@@ -126,10 +131,11 @@ public class TaskAdminServiceImpl implements TaskAdminService {
     }
 
     public int removeAllTasks() {
-        List<TaskImpl> tasks = (List<TaskImpl>) pm.queryStringInTransaction("select t from TaskImpl t");
+        List<Task> tasks = persistenceContext.queryStringInTransaction("select t from TaskImpl t",
+                ClassUtil.<List<Task>>castClass(List.class));
         int count = 0;
-        for (TaskImpl t : tasks) {
-            pm.remove(t);
+        for (Task t : tasks) {
+            persistenceContext.removeTask(t);
             count++;
         }
         return count;

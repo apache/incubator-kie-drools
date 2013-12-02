@@ -141,6 +141,10 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         }
         return this.kbase;
     }
+    
+    public Environment getEnvironmentTemplate() {
+    	return this.environment;
+    }
 
     @Override
     public Environment getEnvironment() {
@@ -196,6 +200,8 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
         addIfPresent(EnvironmentName.TRANSACTION_MANAGER, copy);
         addIfPresent(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY, copy);
         addIfPresent(EnvironmentName.TRANSACTION, copy);
+        addIfPresent(EnvironmentName.USE_LOCAL_TRANSACTIONS, copy);
+        addIfPresent(EnvironmentName.USE_PESSIMISTIC_LOCKING, copy);
         
         if (usePersistence()) {
             ObjectMarshallingStrategy[] strategies = (ObjectMarshallingStrategy[]) copy.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES);        
@@ -205,7 +211,14 @@ public class SimpleRuntimeEnvironment implements RuntimeEnvironment, SchedulerPr
             strategies = new ObjectMarshallingStrategy[listStrategies.size()];  
             copy.set(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES, listStrategies.toArray(strategies));
         }
+        // copy if present in environment template which in general should not be used 
+        // unless with some framework support to make EM thread safe - like spring 
+        addIfPresent(EnvironmentName.APP_SCOPED_ENTITY_MANAGER, copy);
+        addIfPresent(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER, copy);
         
+        
+        addIfPresent("IS_JTA_TRANSACTION", copy);
+		addIfPresent("IS_SHARED_ENTITY_MANAGER", copy);
         return copy;
     }
     @Override

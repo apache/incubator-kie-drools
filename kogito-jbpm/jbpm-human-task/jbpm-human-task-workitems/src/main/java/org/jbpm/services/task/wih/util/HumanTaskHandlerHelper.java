@@ -8,24 +8,20 @@ import java.util.Map;
 
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendar;
-import org.jbpm.services.task.impl.model.DeadlineImpl;
-import org.jbpm.services.task.impl.model.DeadlinesImpl;
-import org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl;
-import org.jbpm.services.task.impl.model.EmailNotificationImpl;
-import org.jbpm.services.task.impl.model.EscalationImpl;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.I18NTextImpl;
-import org.jbpm.services.task.impl.model.LanguageImpl;
-import org.jbpm.services.task.impl.model.ReassignmentImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
+import org.kie.internal.task.api.model.EmailNotification;
 import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.InternalI18NText;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.Notification;
 import org.kie.internal.task.api.model.Reassignment;
@@ -51,7 +47,7 @@ public class HumanTaskHandlerHelper {
 		String notCompletedNotify = (String) workItem.getParameter("NotCompletedNotify");
 		
 
-	    Deadlines deadlinesTotal = new DeadlinesImpl();
+	    Deadlines deadlinesTotal = TaskModelProvider.getFactory().newDeadlines();
 	    
 	    List<Deadline> startDeadlines = new ArrayList<Deadline>();
 	    startDeadlines.addAll(parseDeadlineString(notStartedNotify, businessAdministrators, environment));
@@ -94,7 +90,7 @@ public class HumanTaskHandlerHelper {
 	            Deadline taskDeadline = null;
 	            
 	            for (String expiresAt : expireElements) {
-	                taskDeadline = new DeadlineImpl();
+	                taskDeadline = TaskModelProvider.getFactory().newDeadline();
 	                if (businessCalendar != null) {
 	                	taskDeadline.setDate(businessCalendar.calculateBusinessTimeAsDate(expiresAt));
 	                } else {
@@ -102,7 +98,7 @@ public class HumanTaskHandlerHelper {
 	                }
 	                List<Escalation> escalations = new ArrayList<Escalation>();
 	                
-	                EscalationImpl escalation = new EscalationImpl();
+	                Escalation escalation = TaskModelProvider.getFactory().newEscalation();
 	                escalations.add(escalation);
 	                
 	                escalation.setName("Default escalation");
@@ -129,7 +125,7 @@ public class HumanTaskHandlerHelper {
 			if (locale == null) {
 				locale = "en-UK";
 			}
-			EmailNotificationImpl emailNotification = new EmailNotificationImpl();
+			EmailNotification emailNotification = TaskModelProvider.getFactory().newEmialNotification();
 			notifications.add(emailNotification);
 
 			emailNotification.setBusinessAdministrators(businessAdministrators);
@@ -139,25 +135,32 @@ public class HumanTaskHandlerHelper {
 			List<I18NText> names = new ArrayList<I18NText>();
 			List<OrganizationalEntity> notificationRecipients = new ArrayList<OrganizationalEntity>();
 
-			EmailNotificationHeaderImpl emailHeader = new EmailNotificationHeaderImpl();
+			EmailNotificationHeader emailHeader = TaskModelProvider.getFactory().newEmailNotificationHeader();
 			emailHeader.setBody(parameters.get("body"));
 			emailHeader.setFrom(parameters.get("from"));
 			emailHeader.setReplyTo(parameters.get("replyto"));
 			emailHeader.setLanguage(locale);
 			emailHeader.setSubject(parameters.get("subject"));
 
-			emailHeaders.put(new LanguageImpl(locale), emailHeader);
+			Language lang = TaskModelProvider.getFactory().newLanguage();
+			lang.setMapkey(locale);
+			emailHeaders.put(lang, emailHeader);
 
-			subjects.add(new I18NTextImpl(locale, emailHeader.getSubject()));
-
-			names.add(new I18NTextImpl(locale, emailHeader.getSubject()));
+			I18NText subject = TaskModelProvider.getFactory().newI18NText();
+			((InternalI18NText) subject).setLanguage(locale);
+			((InternalI18NText) subject).setText(emailHeader.getSubject());;
+			
+			subjects.add(subject);
+			names.add(subject);
 
 			String recipients = parameters.get("tousers");
 			if (recipients != null && recipients.trim().length() > 0) {
 				String[] recipientsIds = recipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
 
 				for (String id : recipientsIds) {
-					notificationRecipients.add(new UserImpl(id.trim()));
+					User user = TaskModelProvider.getFactory().newUser();
+                	((InternalOrganizationalEntity) user).setId(id.trim());
+					notificationRecipients.add(user);
 				}
 
 			}
@@ -166,7 +169,9 @@ public class HumanTaskHandlerHelper {
 				String[] groupRecipientsIds = groupRecipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
 
 				for (String id : groupRecipientsIds) {
-					notificationRecipients.add(new GroupImpl(id.trim()));
+					Group group = TaskModelProvider.getFactory().newGroup();
+                	((InternalOrganizationalEntity) group).setId(id.trim());
+					notificationRecipients.add(group);
 				}
 			}
 
@@ -187,13 +192,15 @@ public class HumanTaskHandlerHelper {
     	
     	if (parameters.containsKey("users") || parameters.containsKey("groups")) {
 	        
-            Reassignment reassignment = new ReassignmentImpl();
+            Reassignment reassignment = TaskModelProvider.getFactory().newReassignment();
             List<OrganizationalEntity> reassignmentUsers = new ArrayList<OrganizationalEntity>();
             String recipients = parameters.get("users");
             if (recipients != null && recipients.trim().length() > 0) {
                 String[] recipientsIds = recipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
                 for (String id: recipientsIds) {
-                    reassignmentUsers.add(new UserImpl(id.trim()));
+                	User user = TaskModelProvider.getFactory().newUser();
+                	((InternalOrganizationalEntity) user).setId(id.trim());
+                    reassignmentUsers.add(user);
                 }
             }
             
@@ -201,7 +208,9 @@ public class HumanTaskHandlerHelper {
             if (recipients != null && recipients.trim().length() > 0) {
                 String[] recipientsIds = recipients.split(ATTRIBUTES_ELEMENTS_SEPARATOR);
                 for (String id: recipientsIds) {
-                    reassignmentUsers.add(new GroupImpl(id.trim()));
+                	Group group = TaskModelProvider.getFactory().newGroup();
+                	((InternalOrganizationalEntity) group).setId(id.trim());
+                    reassignmentUsers.add(group);
                 }
             }
             reassignment.setPotentialOwners(reassignmentUsers);

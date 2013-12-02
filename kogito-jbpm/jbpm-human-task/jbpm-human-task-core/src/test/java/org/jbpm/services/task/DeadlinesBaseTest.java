@@ -27,24 +27,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.deadlines.notifications.impl.MockNotificationListener;
 import org.jbpm.services.task.impl.factories.TaskFactory;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalContent;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -53,13 +48,10 @@ import org.kie.internal.task.api.model.InternalTaskData;
 
 public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
-    @Inject
-    private NotificationListener notificationListener;
+    protected NotificationListener notificationListener;
     
-    @After
     public void tearDown(){
         super.tearDown();
-        ((MockNotificationListener)notificationListener).reset();
     }
     
     
@@ -70,15 +62,15 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        Task task = (Task) TaskFactory.evalTask(reader, vars);
         
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        InternalContent content = new ContentImpl();
+        InternalContent content =  (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -103,7 +95,6 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // 1 email with two recipients should now exist
         assertEquals(1, ((MockNotificationListener)notificationListener).getEventsRecieved().size());
-        assertEquals(2, ((MockNotificationListener)notificationListener).getEventsRecieved().get(0).getNotification().getRecipients().size());
         
     }
     @Test
@@ -114,13 +105,13 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotificationContentSingleObject));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        Task task = (Task) TaskFactory.evalTask(reader, vars);
      
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        InternalContent content = new ContentImpl();
-        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal("'singleobject'", null);
+        InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
+        ContentData marshalledObject = ContentMarshallerHelper.marshal("'singleobject'", null);
         content.setContent(marshalledObject.getContent());
        
         taskService.addContent(taskId, content);
@@ -150,20 +141,24 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
     public void testDelayedEmailNotificationOnDeadlineTaskCompleted() throws Exception {
 
 
-         Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
         
         ((InternalTaskData) task.getTaskData()).setSkipable(true);
-        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
+        InternalPeopleAssignments assignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new UserImpl("Administrator"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Administrator");
+        ba.add(user);
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new UserImpl("Administrator"));
+        User user2 = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user2).setId("Administrator");        
+        po.add(user2);
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
@@ -171,10 +166,10 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        InternalContent content = new ContentImpl();
+        InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -215,16 +210,20 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
         
         ((InternalTaskData) task.getTaskData()).setSkipable(true);
-        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
+        InternalPeopleAssignments assignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new UserImpl("Administrator"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Administrator");
+        ba.add(user);
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new UserImpl("Administrator"));
+        User user2 = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user2).setId("Administrator");        
+        po.add(user2);
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
@@ -233,10 +232,10 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        InternalContent content = new ContentImpl();
+        InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -274,26 +273,30 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
         
         ((InternalTaskData) task.getTaskData()).setSkipable(true);
-        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
+        InternalPeopleAssignments assignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new UserImpl("Administrator"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Administrator");
+        ba.add(user);
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new UserImpl("Administrator"));
+        User user2 = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user2).setId("Administrator");        
+        po.add(user2);
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        InternalContent content = new ContentImpl();
+        InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -330,26 +333,30 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithNotification));
-        InternalTask task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
         
         ((InternalTaskData) task.getTaskData()).setSkipable(true);
-        InternalPeopleAssignments assignments = new PeopleAssignmentsImpl();
+        InternalPeopleAssignments assignments = (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
         List<OrganizationalEntity> ba = new ArrayList<OrganizationalEntity>();
-        ba.add(new UserImpl("Administrator"));
+        User user = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user).setId("Administrator");
+        ba.add(user);
         assignments.setBusinessAdministrators(ba);
         
         List<OrganizationalEntity> po = new ArrayList<OrganizationalEntity>();
-        po.add(new UserImpl("Administrator"));
+        User user2 = TaskModelProvider.getFactory().newUser();
+        ((InternalOrganizationalEntity) user2).setId("Administrator");        
+        po.add(user2);
         assignments.setPotentialOwners(po);
         
         task.setPeopleAssignments(assignments);
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        InternalContent content = new ContentImpl();
+        InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentDataImpl marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -389,7 +396,7 @@ public abstract class DeadlinesBaseTest extends HumanTaskServicesBaseTest {
         vars.put("now", new Date());
 
         Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.DeadlineWithReassignment));
-        Task task = (TaskImpl) TaskFactory.evalTask(reader, vars);
+        Task task = (InternalTask) TaskFactory.evalTask(reader, vars);
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 

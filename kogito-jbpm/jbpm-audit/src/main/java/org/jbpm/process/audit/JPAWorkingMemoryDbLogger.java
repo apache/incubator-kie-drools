@@ -38,6 +38,7 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
+import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
@@ -84,6 +85,15 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 
     public JPAWorkingMemoryDbLogger(EntityManagerFactory emf) {
         this.emf = emf;
+    }
+    
+    public JPAWorkingMemoryDbLogger(EntityManagerFactory emf, Environment env) {
+        this.emf = emf;
+        this.env = env;
+        Boolean bool = (Boolean) env.get("IS_JTA_TRANSACTION");
+        if (bool != null) {
+        	isJTA = bool.booleanValue();
+        }
     }
 
     @Override

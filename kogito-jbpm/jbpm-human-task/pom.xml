@@ -16,6 +16,7 @@
     <module>jbpm-human-task-core</module>
     <module>jbpm-human-task-workitems</module>
     <module>jbpm-human-task-audit</module>
+    <module>jbpm-human-task-jpa</module>
   </modules>
 
   <dependencies>
@@ -44,13 +45,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
-    
+     <!-- 
     <maven.tx.type>RESOURCE_LOCAL</maven.tx.type>
     <maven.data.source/>
-    <!--  
-    <maven.tx.type>JTA</maven.tx.type>
-    <maven.data.source>&lt;jta-data-source&gt;jdbc/taskDS&lt;/jta-data-source&gt;</maven.data.source>
     -->
+    <maven.tx.type>JTA</maven.tx.type>
+    <maven.data.source>&lt;jta-data-source&gt;jdbc/jbpm-ds&lt;/jta-data-source&gt;</maven.data.source>
+    
     
     <!-- H2
      -->
@@ -59,11 +60,14 @@
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
     <maven.jdbc.db.name/>
     <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>     
+    <maven.jdbc.db.server/> 
+    <!--     
     <maven.jdbc.username>sa</maven.jdbc.username>
     <maven.jdbc.password>sasa</maven.jdbc.password>
     <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
     <maven.jdbc.schema/>
+     -->
+    <maven.jdbc.url>jdbc:h2:mem:jbpm-db;MVCC=true</maven.jdbc.url>
   </properties>
   
 </project>

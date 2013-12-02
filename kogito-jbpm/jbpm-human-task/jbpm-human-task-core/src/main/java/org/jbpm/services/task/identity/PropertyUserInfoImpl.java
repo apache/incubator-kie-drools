@@ -7,22 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
-
-import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserInfo;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 
-@Alternative
-@ApplicationScoped
 public class PropertyUserInfoImpl implements UserInfo {
     
     protected Map<String, Map<String, Object>> registry = new HashMap<String, Map<String,Object>>();
 
-    public PropertyUserInfoImpl() {
+    //no no-arg constructor to prevent cdi from auto deploy
+    public PropertyUserInfoImpl(boolean activate) {
         try {
         Properties registryProps = new Properties();
         // BZ-1037445: Obtain the properties file from the webapp classload (current thread classloader).
@@ -122,9 +119,11 @@ public class PropertyUserInfoImpl implements UserInfo {
                     }
                     String[] members = memberList.split(",");
                     
-                    List<OrganizationalEntityImpl> membersList = new ArrayList<OrganizationalEntityImpl>();
+                    List<OrganizationalEntity> membersList = new ArrayList<OrganizationalEntity>();
                     for (String member : members) {
-                        membersList.add(new UserImpl(member));
+                    	User user = TaskModelProvider.getFactory().newUser();
+                        ((InternalOrganizationalEntity) user).setId(member);
+                        membersList.add(user);
                     }
                     entityInfo.put("members", membersList);
                 }

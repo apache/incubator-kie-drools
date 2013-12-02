@@ -15,14 +15,13 @@
  */
 package org.jbpm.services.task.rule;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.jbpm.services.task.exception.CannotAddTaskException;
-import org.jbpm.services.task.exception.TaskException;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.exception.TaskException;
 
 public class TaskServiceRequest {
     

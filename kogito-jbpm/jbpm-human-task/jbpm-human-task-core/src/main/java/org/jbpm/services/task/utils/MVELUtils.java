@@ -22,33 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.util.MVELSafeHelper;
-import org.jbpm.services.task.impl.model.AttachmentImpl;
-import org.jbpm.services.task.impl.model.BooleanExpressionImpl;
-import org.jbpm.services.task.impl.model.CommentImpl;
-import org.jbpm.services.task.impl.model.ContentDataImpl;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.DeadlineImpl;
-import org.jbpm.services.task.impl.model.DeadlinesImpl;
-import org.jbpm.services.task.impl.model.DelegationImpl;
-import org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl;
-import org.jbpm.services.task.impl.model.EmailNotificationImpl;
-import org.jbpm.services.task.impl.model.EscalationImpl;
-import org.jbpm.services.task.impl.model.GroupImpl;
-import org.jbpm.services.task.impl.model.I18NTextImpl;
-import org.jbpm.services.task.impl.model.LanguageImpl;
-import org.jbpm.services.task.impl.model.NotificationImpl;
-import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
-import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
-import org.jbpm.services.task.impl.model.ReassignmentImpl;
-import org.jbpm.services.task.impl.model.TaskDataImpl;
-import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.internals.lifecycle.Allowed;
 import org.jbpm.services.task.internals.lifecycle.OperationCommand;
 import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.command.Command;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
+import org.kie.internal.task.api.TaskModelFactory;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.AllowedToDelegate;
@@ -64,7 +46,8 @@ import org.mvel2.ParserContext;
  *
  */
 public class MVELUtils { 
-     private static Map<String, Class<?>> inputs = new HashMap<String, Class<?>>();
+    private static Map<String, Class<?>> inputs = new HashMap<String, Class<?>>();
+    private static TaskModelFactory factory = TaskModelProvider.getFactory(); 
     
     public static Map<String, Class<?>> getInputs() {
         synchronized (inputs) {
@@ -72,37 +55,37 @@ public class MVELUtils {
                 // org.jbpm.services.task
                 inputs.put("AccessType", AccessType.class);
                 inputs.put("AllowedToDelegate", AllowedToDelegate.class);
-                inputs.put("Attachment", AttachmentImpl.class);
-                inputs.put("BooleanExpression", BooleanExpressionImpl.class);
-                inputs.put("Comment", CommentImpl.class);
-                inputs.put("Content", ContentImpl.class);
-                inputs.put("Deadline", DeadlineImpl.class);
-                inputs.put("Deadlines", DeadlinesImpl.class);
-                inputs.put("Delegation", DelegationImpl.class);
-                inputs.put("EmailNotification", EmailNotificationImpl.class);
-                inputs.put("EmailNotificationHeader", EmailNotificationHeaderImpl.class);
-                inputs.put("Escalation", EscalationImpl.class);
-                inputs.put("Group", GroupImpl.class);
-                inputs.put("I18NText", I18NTextImpl.class);
-                inputs.put("Notification", NotificationImpl.class);
+                inputs.put("Attachment", factory.newAttachment().getClass());
+                inputs.put("BooleanExpression", factory.newBooleanExpression().getClass());
+                inputs.put("Comment", factory.newComment().getClass());
+                inputs.put("Content", factory.newContent().getClass());
+                inputs.put("Deadline", factory.newDeadline().getClass());
+                inputs.put("Deadlines", factory.newDeadlines().getClass());
+                inputs.put("Delegation", factory.newDelegation().getClass());
+                inputs.put("EmailNotification", factory.newEmialNotification().getClass());
+                inputs.put("EmailNotificationHeader", factory.newEmailNotificationHeader().getClass());
+                inputs.put("Escalation", factory.newEscalation().getClass());
+                inputs.put("Group", factory.newGroup().getClass());
+                inputs.put("I18NText", factory.newI18NText().getClass());
+                inputs.put("Notification", factory.newNotification().getClass());
                 inputs.put("NotificationType", NotificationType.class);
-                inputs.put("OrganizationalEntity", OrganizationalEntityImpl.class);
-                inputs.put("PeopleAssignments", PeopleAssignmentsImpl.class);
-                inputs.put("Reassignment", ReassignmentImpl.class);
+                inputs.put("OrganizationalEntity", OrganizationalEntity.class);
+                inputs.put("PeopleAssignments", factory.newPeopleAssignments().getClass());
+                inputs.put("Reassignment", factory.newReassignment().getClass());
                 inputs.put("Status", Status.class);
-                inputs.put("Task", TaskImpl.class);
-                inputs.put("TaskData", TaskDataImpl.class);
-                inputs.put("User", UserImpl.class);
+                inputs.put("Task", factory.newTask().getClass());
+                inputs.put("TaskData", factory.newTaskData().getClass());
+                inputs.put("User", factory.newUser().getClass());
                 inputs.put("UserInfo", UserInfo.class);
                 inputs.put("SubTasksStrategy",SubTasksStrategy.class);
-                inputs.put("Language",LanguageImpl.class);
+                inputs.put("Language", factory.newLanguage().getClass());
                 
 
                 // org.jbpm.services.task.service
                 inputs.put("Allowed", Allowed.class);
                 inputs.put("Command", Command.class);
                 inputs.put("CommandName", CommandName.class);
-                inputs.put("ContentData", ContentDataImpl.class);
+                inputs.put("ContentData", factory.newContentData().getClass());
                 inputs.put("Operation", Operation.class);
                 inputs.put("Operation.Claim", Operation.class);
                 inputs.put("Operation.Delegate", Operation.class);

@@ -27,10 +27,6 @@
     </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-shared-services</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jbpm</groupId>
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
@@ -44,31 +40,11 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>    
 
     <!--test-->
-    <dependency>
-      <groupId>org.jboss.weld</groupId>
-      <artifactId>weld-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.weld.se</groupId>
-      <artifactId>weld-se-core</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -101,27 +77,10 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- test: arquillian -->
-    <dependency>
-      <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-container</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.container</groupId>
-      <artifactId>arquillian-weld-se-embedded-1.1</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.arquillian.core</groupId>
-      <artifactId>arquillian-core-api</artifactId>
-      <scope>test</scope>
-    </dependency>
+	  <groupId>org.jbpm</groupId>
+	  <artifactId>jbpm-human-task-jpa</artifactId>
+	  <scope>test</scope>
+	</dependency>
   </dependencies>
 
   <build>
@@ -167,8 +126,6 @@
             <Bundle-SymbolicName>org.jbpm.services.task.wih</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.services.task.wih,
-              org.jboss.solder.core;resolution:=optional,
-              org.jboss.seam.transaction;resolution:=optional,
               *
             </Import-Package>
             <Private-Package></Private-Package>

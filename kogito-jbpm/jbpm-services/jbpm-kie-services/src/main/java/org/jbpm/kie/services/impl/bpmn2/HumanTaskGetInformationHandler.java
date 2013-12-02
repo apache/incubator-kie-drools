@@ -16,18 +16,17 @@
 package org.jbpm.kie.services.impl.bpmn2;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import org.drools.core.xml.ExtensibleXmlParser;
 
+import org.drools.core.xml.ExtensibleXmlParser;
 import org.jbpm.bpmn2.xml.UserTaskHandler;
-import org.jbpm.services.task.impl.model.TaskDefImpl;
-import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.TaskDef;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -77,7 +76,7 @@ public class HumanTaskGetInformationHandler extends UserTaskHandler {
         NamedNodeMap map = xmlNode.getParentNode().getAttributes();
         Node nodeName = map.getNamedItem("name");
         String name = nodeName.getNodeValue();
-        TaskDefImpl task = new TaskDefImpl();
+        TaskDef task = TaskModelProvider.getFactory().newTaskDef();
         task.setName(name);
 
         Map<String, String> inputParams = new HashMap<String, String>();

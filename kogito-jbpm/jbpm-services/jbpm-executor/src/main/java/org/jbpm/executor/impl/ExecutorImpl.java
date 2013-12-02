@@ -20,7 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -28,10 +29,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
 
-import org.jboss.seam.transaction.Transactional;
+import org.drools.core.command.impl.GenericCommand;
 import org.jbpm.executor.entities.RequestInfo;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
+import org.jbpm.shared.services.impl.JpaPersistenceContext;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
+import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.CommandContext;
 import org.kie.internal.executor.api.Executor;
 import org.kie.internal.executor.api.ExecutorQueryService;
@@ -52,19 +57,16 @@ import org.slf4j.LoggerFactory;
  * set to true
  */
 @ApplicationScoped
-@Transactional
 public class ExecutorImpl implements Executor {
 
     private static final Logger logger = LoggerFactory.getLogger(ExecutorImpl.class);
 
     @Inject
-    private JbpmServicesPersistenceManager pm;
-    @Inject
     private ExecutorRunnable runnableTask;
     @Inject
     private ExecutorQueryService queryService;
     @Inject
-    private ClassCacheManager classCacheManager;
+    private TransactionalCommandService commandService;
     
     private ScheduledFuture<?> handle;
     private int threadPoolSize = Integer.parseInt(System.getProperty("org.kie.executor.pool.size", "1"));
@@ -75,8 +77,9 @@ public class ExecutorImpl implements Executor {
     public ExecutorImpl() {
     }
 
-    public void setPm(JbpmServicesPersistenceManager pm) {
-        this.pm = pm;
+   
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
 
     public void setExecutorRunnable(ExecutorRunnable runnableTask) {
@@ -85,10 +88,6 @@ public class ExecutorImpl implements Executor {
 
     public void setQueryService(ExecutorQueryService queryService) {
         this.queryService = queryService;
-    }
-    
-    public void setClassCacheManager(ClassCacheManager classCacheManager) {
-        this.classCacheManager = classCacheManager;
     }
 
     /**
@@ -202,7 +201,7 @@ public class ExecutorImpl implements Executor {
             }
         }
 
-        pm.persist(requestInfo);
+        commandService.execute(new PersistObjectCommand(requestInfo));
 
         logger.debug("Scheduling request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
         return requestInfo.getId();
@@ -214,19 +213,42 @@ public class ExecutorImpl implements Executor {
     public void cancelRequest(Long requestId) {
         logger.debug("Before - Cancelling Request with Id: {}", requestId);
 
-        List<?> result = queryService.getPendingRequestById(requestId);
-        if (result.isEmpty()) {
-            return;
-        }
-        RequestInfo r = (RequestInfo) result.iterator().next();
+        commandService.execute(new LockAndCancelRequestInfoCommand(requestId));
 
-        r.setStatus(STATUS.CANCELLED);
-        pm.merge(r);
-
-        
-        
         logger.debug("After - Cancelling Request with Id: {}", requestId);
     }
 
+    private class LockAndCancelRequestInfoCommand implements GenericCommand<RequestInfo> {
+
+		private static final long serialVersionUID = 8670412133363766161L;
+
+		private Long requestId;
+		
+		LockAndCancelRequestInfoCommand(Long requestId) {
+			this.requestId = requestId;
+		}
+		
+		@Override
+		public RequestInfo execute(Context context) {
+			Map<String, Object> params = new HashMap<String, Object>();
+	    	params.put("id", requestId);
+	    	params.put("firstResult", 0);
+	    	params.put("maxResults", 1);
+	    	RequestInfo request = null;
+	    	try {
+				JpaPersistenceContext ctx = (JpaPersistenceContext) context;
+				request = ctx.queryAndLockWithParametersInTransaction("PendingRequestById",params, true, RequestInfo.class);
+				
+				if (request != null) {
+	                request.setStatus(STATUS.CANCELLED);
+	                ctx.merge(request);
+	            }
+	    	} catch (NoResultException e) {
+	    		
+	    	}
+			return request;
+		}
+    	
+    }
 
 }

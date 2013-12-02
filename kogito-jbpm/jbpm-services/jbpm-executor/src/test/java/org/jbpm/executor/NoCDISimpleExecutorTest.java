@@ -15,65 +15,28 @@
  */
 package org.jbpm.executor;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.jbpm.executor.impl.ClassCacheManager;
-import org.jbpm.executor.impl.ExecutorImpl;
-import org.jbpm.executor.impl.ExecutorQueryServiceImpl;
-import org.jbpm.executor.impl.ExecutorRequestAdminServiceImpl;
-import org.jbpm.executor.impl.ExecutorRunnable;
-import org.jbpm.executor.impl.ExecutorServiceImpl;
-import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
-import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
+import org.jbpm.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
-import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorQueryService;
-import org.kie.internal.executor.api.ExecutorAdminService;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
 public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
     
-    public NoCDISimpleExecutorTest() {
-    }
-    
+	private PoolingDataSource pds;
+	private EntityManagerFactory emf = null;
     
     @Before
     public void setUp() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
-        EntityManager em = emf.createEntityManager();
-        
-        JbpmServicesPersistenceManager pm = new JbpmServicesPersistenceManagerImpl();
-        ((JbpmServicesPersistenceManagerImpl)pm).setEm(em);
-        ((JbpmServicesPersistenceManagerImpl)pm).setTransactionManager(new JbpmLocalTransactionManager());        
-        
-        executorService = new ExecutorServiceImpl();
-        
+        pds = TestUtil.setupPoolingDataSource();
+        emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
 
-        ExecutorQueryService queryService = new ExecutorQueryServiceImpl();
-        ((ExecutorQueryServiceImpl)queryService).setPm(pm);
+        executorService = ExecutorServiceFactory.newExecutorService(emf);
         
-        ((ExecutorServiceImpl)executorService).setQueryService(queryService);
-
-        Executor executor = new ExecutorImpl();
-        ClassCacheManager classCacheManager = new ClassCacheManager();
-        ExecutorRunnable runnable = new ExecutorRunnable();
-        runnable.setPm(pm);
-        runnable.setQueryService(queryService);
-        runnable.setClassCacheManager(classCacheManager);
-        ((ExecutorImpl)executor).setPm(pm);
-        ((ExecutorImpl)executor).setExecutorRunnable(runnable);
-        ((ExecutorImpl)executor).setQueryService(queryService);
-        ((ExecutorImpl)executor).setClassCacheManager(classCacheManager);
-        
-        ((ExecutorServiceImpl)executorService).setExecutor(executor);
-        
-        ExecutorAdminService adminService = new ExecutorRequestAdminServiceImpl();
-        ((ExecutorRequestAdminServiceImpl)adminService).setPm(pm);
-        ((ExecutorServiceImpl)executorService).setAdminService(adminService);
         executorService.init();
         super.setUp();
     }
@@ -82,6 +45,10 @@ public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
     public void tearDown() {
         super.tearDown();
         executorService.destroy();
+        if (emf != null) {
+        	emf.close();
+        }
+        pds.close();
     }
    
     
