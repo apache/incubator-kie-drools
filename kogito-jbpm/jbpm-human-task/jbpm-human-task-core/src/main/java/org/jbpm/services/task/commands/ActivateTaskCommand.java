@@ -18,6 +18,9 @@ package org.jbpm.services.task.commands;
 import java.util.List;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskActivatedEvent;
@@ -36,6 +39,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.Ready } ],
  */
 @Transactional
+@XmlRootElement(name="activate-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class ActivateTaskCommand extends TaskCommand<Void> {
 
 	public ActivateTaskCommand() {

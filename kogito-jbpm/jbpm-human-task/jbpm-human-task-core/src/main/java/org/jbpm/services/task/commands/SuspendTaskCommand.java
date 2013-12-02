@@ -16,6 +16,9 @@
 package org.jbpm.services.task.commands;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskSuspendedEvent;
@@ -35,6 +38,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Allowed.BusinessAdministrator ], newStatus = Status.Suspended } ],
  */
 @Transactional
+@XmlRootElement(name="suspend-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class SuspendTaskCommand extends TaskCommand<Void> {
 	
 	public SuspendTaskCommand() {

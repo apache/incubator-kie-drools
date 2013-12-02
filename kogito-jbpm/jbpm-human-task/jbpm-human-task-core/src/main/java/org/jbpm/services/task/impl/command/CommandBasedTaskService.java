@@ -95,8 +95,11 @@ public class CommandBasedTaskService implements TaskService {
 	
     @Override
     public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, boolean union) {
-		return executor.execute(new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, statuses, union));
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, 
+            List<String> language, boolean union) {
+		return executor.execute(new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, 
+		        busAdmins, potOwners, taskOwners, 
+		        statuses, language, union));
     }
 
     @Override

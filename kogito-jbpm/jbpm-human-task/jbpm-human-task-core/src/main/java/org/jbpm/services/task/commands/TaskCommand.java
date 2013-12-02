@@ -16,23 +16,40 @@
 package org.jbpm.services.task.commands;
 
 import java.util.List;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.drools.core.command.impl.GenericCommand;
 
 /**
  *
  */
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class TaskCommand<T> implements GenericCommand<T> {
 
-    protected long taskId;
+    @XmlElement(name="task-id")
+    @XmlSchemaType(name="long")
+    protected Long taskId;
+    
+    @XmlElement(name="user-id")
+    @XmlSchemaType(name="string")
     protected String userId;
+    
+    @XmlElement(name="group-id")
     protected List<String> groupsIds;
+    
+    @XmlElement(name="target-entity-id")
+    @XmlSchemaType(name="string")
     protected String targetEntityId;
 
     public long getTaskId() {
         return this.taskId;
     }
 
-    public void setTaskId(long taskId) {
+    public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
 

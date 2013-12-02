@@ -21,6 +21,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.jboss.seam.transaction.Transactional;
@@ -47,7 +48,9 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.Obsolete, skipable = true } ],
  */
 @Transactional
-@XmlAccessorType(XmlAccessType.FIELD)
+
+@XmlRootElement(name="nominate-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class NominateTaskCommand extends TaskCommand<Void> {
 
     @XmlElement(name="potential-owner")

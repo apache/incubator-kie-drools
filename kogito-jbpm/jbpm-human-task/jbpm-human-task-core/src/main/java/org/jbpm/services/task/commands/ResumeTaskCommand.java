@@ -18,6 +18,9 @@ package org.jbpm.services.task.commands;
 import java.util.List;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskResumedEvent;
@@ -40,6 +43,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Allowed.BusinessAdministrator ], setToPreviousStatus = true } ],
  */
 @Transactional
+@XmlRootElement(name="resume-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class ResumeTaskCommand extends TaskCommand<Void> {
 	
 	public ResumeTaskCommand() {

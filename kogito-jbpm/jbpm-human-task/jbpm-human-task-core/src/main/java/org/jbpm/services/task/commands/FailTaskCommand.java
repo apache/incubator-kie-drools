@@ -18,6 +18,9 @@ package org.jbpm.services.task.commands;
 import java.util.Map;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskFailedEvent;
@@ -37,6 +40,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * allowed = [ Allowed.Owner ], newStatus = Status.Failed } ],
  */
 @Transactional
+@XmlRootElement(name="fail-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class FailTaskCommand extends TaskCommand<Void> {
 
     private Map<String, Object> data;

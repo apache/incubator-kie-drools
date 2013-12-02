@@ -722,10 +722,11 @@ public class TaskServiceEntryPointImpl implements ThrowableInteranlTaskService, 
 
     @Override
     public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> status, boolean union) {
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
+            List<Status> status, List<String> language, boolean union ) {
         return this.taskQueryService.getTasksByVariousFields(workItemIds, taskIds, procInstIds, 
                 busAdmins, potOwners, taskOwners, 
-                status, union);
+                status, language, union);
     }
 
     @Override

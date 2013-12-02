@@ -168,6 +168,24 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- serialization tests -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson-provider</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.yaml</groupId>
+      <artifactId>snakeyaml</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
+      <version>0.9.9-RC1</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

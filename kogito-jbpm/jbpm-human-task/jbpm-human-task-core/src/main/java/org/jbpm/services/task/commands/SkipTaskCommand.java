@@ -16,6 +16,9 @@
 package org.jbpm.services.task.commands;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskSkippedEvent;
@@ -38,6 +41,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * Status.Obsolete, skipable = true } ],
  */
 @Transactional
+@XmlRootElement(name="skip-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class SkipTaskCommand extends TaskCommand<Void> {
 	
 	public SkipTaskCommand() {

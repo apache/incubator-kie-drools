@@ -1,9 +1,10 @@
-package org.jbpm.services.task;
+package org.jbpm.services.task.jaxb;
 
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.*;
+
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,30 +13,56 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Random;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jbpm.services.task.MvelFilePath;
+import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
-import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
-import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
-import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Task;
+import org.reflections.Reflections;
+import org.reflections.scanners.FieldAnnotationsScanner;
+import org.reflections.scanners.MethodAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class JaxbTaskTest extends Assert {
+public abstract class AbstractSerializationTest {
 
+    protected final Logger logger;
+    
+    public AbstractSerializationTest() { 
+         logger = LoggerFactory.getLogger(this.getClass());
+    }
+    
+    public abstract Object testRoundTrip(Object input) throws Exception;
+    public abstract TestType getType();
+    public abstract void addClassesToSerializationContext(Class<?>... extraClass);
+    
+    public enum TestType { 
+        JAXB, JSON, YAML;
+    }
+    
+    protected Reflections reflections = new Reflections(ClasspathHelper.forPackage("org.jbpm.services.task"),
+            new TypeAnnotationsScanner(), new FieldAnnotationsScanner(), new MethodAnnotationsScanner(), new SubTypesScanner());
+
+    // TESTS ----------------------------------------------------------------------------------------------------------------------
+    
     @Test
-    public void roundTripXmlAndTestEquals() throws Exception {
+    public void jaxbTaskTest() throws Exception {
+        // Json and Yaml serialization not yet supported.. :/ 
+        Assume.assumeTrue(getType().equals(TestType.JAXB));
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -63,8 +90,7 @@ public class JaxbTaskTest extends Assert {
         taskData.addAttachment(attach);
 
         JaxbTask xmlTask = new JaxbTask(task);
-        String xmlStr = convertJaxbObjectToString(xmlTask);
-        JaxbTask bornAgainTask = (JaxbTask) convertStringToJaxbObject(xmlStr);
+        JaxbTask bornAgainTask = (JaxbTask) testRoundTrip(xmlTask);
 
         ComparePair compare = new ComparePair(task, bornAgainTask, Task.class);
         Queue<ComparePair> compares = new LinkedList<ComparePair>();
@@ -146,35 +172,20 @@ public class JaxbTaskTest extends Assert {
             }
             return newInterface;
         }
-    }
-
-    private static Random random = new Random();
-
-    private I18NText createText(String string) {
-        I18NTextImpl text = new I18NTextImpl("en-UK", string);
-        text.setId(random.nextLong());
-        return text;
-    }
-
-    private static Class[] jaxbClasses = { JaxbTask.class };
-
-    public static String convertJaxbObjectToString(Object object) throws JAXBException {
-        Marshaller marshaller = JAXBContext.newInstance(jaxbClasses).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter stringWriter = new StringWriter();
-
-        marshaller.marshal(object, stringWriter);
-        String output = stringWriter.toString();
-
-        return output;
-    }
-
-    public static Object convertStringToJaxbObject(String xmlStr) throws JAXBException {
-        Unmarshaller unmarshaller = JAXBContext.newInstance(jaxbClasses).createUnmarshaller();
-        ByteArrayInputStream xmlStrInputStream = new ByteArrayInputStream(xmlStr.getBytes());
-
-        Object jaxbObj = unmarshaller.unmarshal(xmlStrInputStream);
-
-        return jaxbObj;
+    } 
+    
+    @Test
+    public void taskCommandSubTypesCanBeSerialized() throws Exception { 
+        for (Class<?> jaxbClass : reflections.getSubTypesOf(TaskCommand.class) ) { 
+            addClassesToSerializationContext(jaxbClass);
+            Constructor<?> construct = jaxbClass.getConstructor(new Class [] {});
+            Object jaxbInst = construct.newInstance(new Object [] {});
+            try { 
+                testRoundTrip(jaxbInst);
+            } catch( Exception e) { 
+                logger.warn( "Testing failed for" + jaxbClass.getName());
+                throw e;
+            }
+        } 
     }
 }

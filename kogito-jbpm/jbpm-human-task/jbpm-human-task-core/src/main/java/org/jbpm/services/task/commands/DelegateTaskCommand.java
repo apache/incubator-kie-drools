@@ -16,6 +16,9 @@
 package org.jbpm.services.task.commands;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskDelegatedEvent;
@@ -46,6 +49,8 @@ import org.kie.internal.task.api.model.InternalTaskData;
             } ],
  */
 @Transactional
+@XmlRootElement(name="delegate-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class DelegateTaskCommand extends TaskCommand<Void> {
 
 	public DelegateTaskCommand() {

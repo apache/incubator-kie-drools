@@ -18,7 +18,13 @@ package org.jbpm.services.task.commands;
 import java.util.Map;
 
 import javax.enterprise.util.AnnotationLiteral;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.jboss.seam.transaction.Transactional;
 import org.jbpm.services.task.events.AfterTaskCompletedEvent;
 import org.jbpm.services.task.events.BeforeTaskCompletedEvent;
@@ -38,8 +44,12 @@ import org.kie.internal.task.api.model.InternalTaskData;
  */
 
 @Transactional
+@XmlRootElement(name="complete-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class CompleteTaskCommand extends TaskCommand<Void> {
 
+    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
+    @XmlElement
     private Map<String, Object> data;
     
     public CompleteTaskCommand() {

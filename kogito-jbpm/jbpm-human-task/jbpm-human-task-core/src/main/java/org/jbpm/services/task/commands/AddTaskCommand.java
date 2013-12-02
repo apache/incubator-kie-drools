@@ -23,6 +23,8 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
@@ -55,15 +57,20 @@ import org.kie.internal.task.api.model.InternalTaskData;
  * allowed = [ Allowed.Owner ], newStatus = Status.InProgress } ], *
  */
 @Transactional
+@XmlRootElement(name="add-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AddTaskCommand extends TaskCommand<Long> {
 
     @XmlElement
     private JaxbTask jaxbTask;
+    
+    @XmlTransient
     private Task task;
+    
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
     @XmlElement(name="parameter")
     private Map<String, Object> params;
+    
     // TODO support ContentData marshalling
     private ContentData data;
     
@@ -87,68 +94,19 @@ public class AddTaskCommand extends TaskCommand<Long> {
         		task = jaxbTask;
         	}
         	if (task instanceof JaxbTask) {
-        		TaskImpl taskImpl = new TaskImpl();
-    			List<I18NText> names = new ArrayList<I18NText>();
-        		for (I18NText n: task.getNames()) {
-    				names.add(new I18NTextImpl(n.getLanguage(), n.getText()));
-        		}
-        		taskImpl.setNames(names);
-                List<I18NText> descriptions = new ArrayList<I18NText>();
-        		for (I18NText n: task.getDescriptions()) {
-    				descriptions.add(new I18NTextImpl(n.getLanguage(), n.getText()));
-        		}
-                taskImpl.setDescriptions(descriptions);
-                List<I18NText> subjects = new ArrayList<I18NText>();
-        		for (I18NText n: task.getSubjects()) {
-    				subjects.add(new I18NTextImpl(n.getLanguage(), n.getText()));
-        		}
-                taskImpl.setSubjects(subjects);
-                taskImpl.setPriority(task.getPriority());
-                InternalTaskData taskData = new TaskDataImpl();
-                taskData.setWorkItemId(task.getTaskData().getWorkItemId());
-                taskData.setProcessInstanceId(task.getTaskData().getProcessInstanceId());
-                taskData.setProcessId(task.getTaskData().getProcessId());
-                taskData.setProcessSessionId(task.getTaskData().getProcessSessionId());
-                taskData.setSkipable(task.getTaskData().isSkipable());
-                PeopleAssignmentsImpl peopleAssignments = new PeopleAssignmentsImpl();
-                List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-                for (OrganizationalEntity e: task.getPeopleAssignments().getPotentialOwners()) {
-                	if (e instanceof User) {
-                		potentialOwners.add(new UserImpl(e.getId()));
-                	} else if (e instanceof Group) {
-                		potentialOwners.add(new GroupImpl(e.getId()));
-                	}
+        	    TaskImpl taskImpl = (TaskImpl) ((JaxbTask) task).getTask();
+        	    if (data != null) {
+                    return context.getTaskService().addTask(taskImpl, data);
+                } else {
+                    return context.getTaskService().addTask(taskImpl, params);
                 }
-            	peopleAssignments.setPotentialOwners(potentialOwners);
-            	List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-                for (OrganizationalEntity e: task.getPeopleAssignments().getBusinessAdministrators()) {
-                	if (e instanceof User) {
-                		businessAdmins.add(new UserImpl(e.getId()));
-                	} else if (e instanceof Group) {
-                		businessAdmins.add(new GroupImpl(e.getId()));
-                	}
+            } else {
+                if (data != null) {
+                    return context.getTaskService().addTask(task, data);
+                } else {
+                    return context.getTaskService().addTask(task, params);
                 }
-                if (task.getPeopleAssignments().getTaskInitiator() != null) {
-                	peopleAssignments.setTaskInitiator(new UserImpl(task.getPeopleAssignments().getTaskInitiator().getId()));
-                }
-            	peopleAssignments.setBusinessAdministrators(businessAdmins);
-            	peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());
-            	peopleAssignments.setRecipients(new ArrayList<OrganizationalEntity>());
-            	peopleAssignments.setTaskStakeholders(new ArrayList<OrganizationalEntity>());
-            	taskImpl.setPeopleAssignments(peopleAssignments);        
-            	taskImpl.setTaskData(taskData);
-            	if (data != null) {
-            		return context.getTaskService().addTask(taskImpl, data);
-            	} else {
-            		return context.getTaskService().addTask(taskImpl, params);
-            	}
-        	} else {
-        		if (data != null) {
-        			return context.getTaskService().addTask(task, data);
-        		} else {
-        			return context.getTaskService().addTask(task, params);
-        		}
-        	}
+            }
         }
         context.getTaskEvents().select(new AnnotationLiteral<BeforeTaskAddedEvent>() {
         }).fire(task);
@@ -171,10 +129,18 @@ public class AddTaskCommand extends TaskCommand<Long> {
         return (Long) task.getId();
     }
 
+    public JaxbTask getJaxbTask() {
+        return jaxbTask;
+    }
+
+    public void setJaxbTask(JaxbTask jaxbTask) {
+        this.jaxbTask = jaxbTask;
+    }
+
     public Task getTask() {
         return task;
     }
-    
+
     public void setTask(Task task) {
     	this.task = task;
         if (task instanceof JaxbTask) {
@@ -190,5 +156,13 @@ public class AddTaskCommand extends TaskCommand<Long> {
     
     public void setParams(Map<String, Object> params) {
     	this.params = params;
+    }
+
+    public ContentData getData() {
+        return data;
+    }
+
+    public void setData(ContentData data) {
+        this.data = data;
     }
 }

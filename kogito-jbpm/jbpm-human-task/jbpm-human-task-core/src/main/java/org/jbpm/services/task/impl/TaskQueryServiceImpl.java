@@ -17,6 +17,7 @@
 package org.jbpm.services.task.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -357,10 +358,10 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                     pm.addParametersToMap("userId", userId, "groupIds", "", "status", status, "expirationDate", expirationDate, "language", "en-UK")); //@TODO: FIX LANGUANGE
     }
     
-    public List<TaskSummary> getTasksByVariousFields( List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds, 
+    @Override
+    public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
-            List<Status> statuses, boolean union) { 
-        
+            List<Status> status, List<String> language, boolean union) {
         Map<String, List<?>> params = new HashMap<String, List<?>>();
         params.put(WORK_ITEM_ID_LIST, workItemIds);
         params.put(TASK_ID_LIST, taskIds);
@@ -368,7 +369,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         params.put(BUSINESS_ADMIN_ID_LIST, busAdmins);
         params.put(POTENTIAL_OWNER_ID_LIST, potOwners);
         params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
-        params.put(STATUS_LIST, statuses);
+        params.put(STATUS_LIST, status);
+        params.put(LANGUAGE, language);
+        
         return getTasksByVariousFields(params, union);
     }
     
@@ -385,6 +388,7 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         List<String> busAdmins = stringQueryAdder.checkNullAndInstanceOf(parameters, BUSINESS_ADMIN_ID_LIST);
         List<String> potOwners = stringQueryAdder.checkNullAndInstanceOf(parameters, POTENTIAL_OWNER_ID_LIST);
         List<String> taskOwners = stringQueryAdder.checkNullAndInstanceOf(parameters, ACTUAL_OWNER_ID_LIST);
+        List<String> language = stringQueryAdder.checkNullAndInstanceOf(parameters, LANGUAGE);
         List<Status> status = statusQueryAdder.checkNullAndInstanceOf(parameters, STATUS_LIST);
         
         if( workItemIds != null && workItemIds.size() > 0 ) { 
@@ -426,6 +430,13 @@ public class TaskQueryServiceImpl implements TaskQueryService {
             String paramName = "taskOwnerIds";
             String query =  "( t.taskData.actualOwner.id in ( :" + paramName + " ) ) ";
             stringQueryAdder.addToQueryBuilder(query, paramName, taskOwners);
+        }
+        if( language != null && language.size() > 0 ) { 
+            String paramName = "language";
+            String query = "( name.language = :" + paramName + " or t.names.size = 0 ) and"
+                    + "( subject.language = :" + paramName + " or t.subjects.size = 0 ) and"
+                    + "( description.language = :" + paramName + " or t.descriptions.size = 0 )";
+            stringQueryAdder.addToQueryBuilder(query, paramName, language);
         }
         
         statusQueryAdder.setAlreadyUsed(stringQueryAdder.isAlreadyUsed());

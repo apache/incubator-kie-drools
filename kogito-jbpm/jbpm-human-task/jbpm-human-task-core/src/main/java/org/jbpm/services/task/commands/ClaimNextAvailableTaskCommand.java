@@ -17,6 +17,12 @@ package org.jbpm.services.task.commands;
 
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.jboss.seam.transaction.Transactional;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
@@ -25,8 +31,12 @@ import org.kie.internal.command.Context;
 
  */
 @Transactional
+@XmlRootElement(name="claim-next-task-command")
+@XmlAccessorType(XmlAccessType.NONE)
 public class ClaimNextAvailableTaskCommand extends TaskCommand<Void> {
 
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String language;
     
     public ClaimNextAvailableTaskCommand() {

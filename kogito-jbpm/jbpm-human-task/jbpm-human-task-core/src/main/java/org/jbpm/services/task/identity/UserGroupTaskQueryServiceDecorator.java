@@ -244,10 +244,13 @@ public class UserGroupTaskQueryServiceDecorator extends
 
     @Override
     public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
-            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> status, boolean union) {
+            List<String> busAdmins, List<String> potOwners, List<String> taskOwners, 
+            List<Status> status, List<String> language, boolean union) {
     	potOwners = populateOrganizationalEntityWithGroupInfo(potOwners);
     	busAdmins = populateOrganizationalEntityWithGroupInfo(busAdmins);
-        return delegate.getTasksByVariousFields(workItemIds, taskIds, procInstIds, busAdmins, potOwners, taskOwners, status, union);
+        return delegate.getTasksByVariousFields(workItemIds, taskIds, procInstIds, 
+                busAdmins, potOwners, taskOwners, 
+                status, language, union);
     }
 
     @SuppressWarnings("unchecked")
