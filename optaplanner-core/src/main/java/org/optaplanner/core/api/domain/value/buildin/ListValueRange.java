@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.domain.value.buildin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,13 @@ public class ListValueRange<T> extends AbstractValueRange<T> {
 
     public ListValueRange(List<T> list) {
         this.list = list;
+    }
+
+    public ListValueRange(Collection<?> collection) {
+        // TODO The user might not be aware of these performance pitfalls with Set and LinkedList:
+        // - If only createOriginalIterator() is used, cloning a Set to a List is a waste of time.
+        // - If the List is a LinkedList, createRandomIterator(Random) and get(int) are not efficient.
+        this(collection instanceof List ? (List) collection : new ArrayList<Object>(collection));
     }
 
     @Override
