@@ -100,24 +100,22 @@ public class RuleTemplateModelDRLPersistenceImpl
         if ( tplModel.getRowsCount() > 0 ) {
             dataProvider = new ArrayDataProvider( tplModel.getTableAsArray() );
         } else {
-            dataProvider = new ArrayDataProvider( generateEmptyIterator( tplModel ) );
+            dataProvider = generateEmptyIterator();
         }
         return dataProvider;
     }
 
-    private String[][] generateEmptyIterator( final TemplateModel templateModel ) {
-        String[][] rows = new String[ 1 ][];
+    private DataProvider generateEmptyIterator() {
+        return new DataProvider() {
 
-        InterpolationVariable[] interpolationVariables = templateModel.getInterpolationVariablesList();
-        if ( interpolationVariables == null || interpolationVariables.length == 0 ) {
-            rows[ 0 ] = new String[]{ "" };
-        } else {
-            rows[ 0 ] = new String[ interpolationVariables.length ];
-            for ( int i = 0; i < interpolationVariables.length; i++ ) {
-                rows[ 0 ][ i ] = interpolationVariables[ i ].getVarName() + "_na";
+            public boolean hasNext() {
+                return false;
             }
-        }
-        return rows;
+
+            public String[] next() {
+                return new String[ 0 ];
+            }
+        };
     }
 
     @Override
