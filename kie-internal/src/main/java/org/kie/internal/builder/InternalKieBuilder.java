@@ -24,4 +24,6 @@ public interface InternalKieBuilder extends KieBuilder {
     KieBuilderSet createFileSet(String... files);
 
     KieModule getKieModuleIgnoringErrors();
+
+    IncrementalResults incrementalBuild();
 }
