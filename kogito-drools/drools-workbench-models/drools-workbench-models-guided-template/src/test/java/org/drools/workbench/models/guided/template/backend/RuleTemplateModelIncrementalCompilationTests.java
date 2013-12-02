@@ -245,8 +245,9 @@ public class RuleTemplateModelIncrementalCompilationTests {
     }
 
     @Test
-    @Ignore("See https://issues.jboss.org/browse/DROOLS-360")
     public void testRuleTemplateIncrementalCompilationAddValidUpdateWithInvalid() throws Exception {
+        // DROOLS-360
+
         //Valid
         //  package org.mortgages;
         //    rule "t1_0"
