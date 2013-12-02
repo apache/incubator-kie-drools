@@ -82,15 +82,15 @@ public class PlannerAssert extends Assert {
         verify(lifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
     }
 
-    public static <O> void assertElementsOfIterator(Iterator<Integer> iterator, int... elements) {
+    public static <O> void assertElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertNotNull(iterator);
-        for (int element : elements) {
+        for (O element : elements) {
             assertTrue(iterator.hasNext());
-            assertEquals(element, iterator.next().intValue());
+            assertEquals(element, iterator.next());
         }
     }
 
-    public static <O> void assertAllElementsOfIterator(Iterator<Integer> iterator, int... elements) {
+    public static <O> void assertAllElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertElementsOfIterator(iterator, elements);
         assertFalse(iterator.hasNext());
     }
