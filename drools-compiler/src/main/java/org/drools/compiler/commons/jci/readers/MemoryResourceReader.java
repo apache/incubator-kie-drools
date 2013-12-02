@@ -20,14 +20,18 @@ package org.drools.compiler.commons.jci.readers;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A memory based reader to compile from memory
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private Map resources = null;
+    private Map resources;
+
+    private Set<String> modifiedResourcesSinceLastMark;
 
     public boolean isAvailable( final String pResourceName ) {
         if (resources == null) {
@@ -43,6 +47,9 @@ public class MemoryResourceReader implements ResourceReader {
         }
         
         resources.put(pResourceName, pContent);
+        if (modifiedResourcesSinceLastMark != null) {
+            modifiedResourcesSinceLastMark.add(pResourceName);
+        }
     }
     
     public void remove( final String pResourceName ) {
@@ -50,7 +57,14 @@ public class MemoryResourceReader implements ResourceReader {
             resources.remove(pResourceName);
         }
     }
-    
+
+    public void mark() {
+        modifiedResourcesSinceLastMark = new HashSet<String>();
+    }
+
+    public Collection<String> getModifiedResourcesSinceLastMark() {
+        return modifiedResourcesSinceLastMark;
+    }
 
     public byte[] getBytes( final String pResourceName ) {
         return (byte[]) resources.get(pResourceName);

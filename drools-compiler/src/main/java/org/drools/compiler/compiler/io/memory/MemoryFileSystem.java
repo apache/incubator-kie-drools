@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -42,6 +43,8 @@ public class MemoryFileSystem
     private Map<String, Set<Resource>> folders;
 
     private Map<String, byte[]>        fileContents;
+
+    private Set<String>                modifiedFilesSinceLastMark;
 
     public MemoryFileSystem() {
         folders = new HashMap<String, Set<Resource>>();
@@ -113,13 +116,28 @@ public class MemoryFileSystem
             createFolder( (MemoryFolder) file.getFolder() );
         }
 
-        fileContents.put( file.getPath().toPortableString(),
+        String fileName = file.getPath().toPortableString();
+        if (modifiedFilesSinceLastMark != null) {
+            byte[] oldContent = fileContents.get( fileName );
+            if (oldContent == null || !Arrays.equals(oldContent, contents)) {
+                modifiedFilesSinceLastMark.add(fileName);
+            }
+        }
+        fileContents.put( fileName,
                           contents );
 
         folders.get( file.getFolder().getPath().toPortableString() ).add( file );
 
     }
-    
+
+    public void mark() {
+        modifiedFilesSinceLastMark = new HashSet<String>();
+    }
+
+    public Collection<String> getModifiedResourcesSinceLastMark() {
+        return modifiedFilesSinceLastMark;
+    }
+
     public boolean existsFolder(MemoryFolder folder) {
         return existsFolder( folder.getPath().toPortableString() ); 
     }
@@ -164,7 +182,11 @@ public class MemoryFileSystem
             if ( res instanceof Folder ) {
                 remove( folders.get( res.getPath().toPortableString() ) );
             } else {
-                fileContents.remove( res.getPath().toPortableString() );
+                String fileName = res.getPath().toPortableString();
+                fileContents.remove( fileName );
+                if (modifiedFilesSinceLastMark != null) {
+                    modifiedFilesSinceLastMark.add( fileName );
+                }
             }
             it.remove();
         }
@@ -172,7 +194,11 @@ public class MemoryFileSystem
 
     public boolean remove(File file) {
         if ( file.exists() ) {
-            fileContents.remove( file.getPath().toPortableString() );
+            String fileName = file.getPath().toPortableString();
+            fileContents.remove( fileName );
+            if (modifiedFilesSinceLastMark != null) {
+                modifiedFilesSinceLastMark.add( fileName );
+            }
             folders.get( ((MemoryFile) file).getFolder().getPath().toPortableString() ).remove( file );
             return true;
         } else {
