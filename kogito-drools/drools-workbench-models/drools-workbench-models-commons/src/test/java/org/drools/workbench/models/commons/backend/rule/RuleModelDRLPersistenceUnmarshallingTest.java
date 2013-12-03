@@ -1945,7 +1945,6 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1036020")
     public void testExpressionWithListSize() throws Exception {
         String drl = "" +
                 "rule \"Borked\"\n" +

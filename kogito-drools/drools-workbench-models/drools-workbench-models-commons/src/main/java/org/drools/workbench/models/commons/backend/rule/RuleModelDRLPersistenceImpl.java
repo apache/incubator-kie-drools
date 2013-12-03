@@ -2601,7 +2601,7 @@ public class RuleModelDRLPersistenceImpl
             ModelField[] typeFields = modelFields.get( factType );
 
             for ( int i = 0; i < splits.length - 1; i++ ) {
-                String expressionPart = splits[ i ].trim();
+                String expressionPart = normalizeExpressionPart( splits[ i ] );
                 if ( "this".equals( expressionPart ) ) {
                     expression.appendPart( new ExpressionField( expressionPart,
                                                                 getSimpleFactType( factType,
@@ -2627,7 +2627,7 @@ public class RuleModelDRLPersistenceImpl
                     typeFields = modelFields.get( currentField.getClassName() );
                 }
             }
-            String expressionPart = splits[ splits.length - 1 ].trim();
+            String expressionPart = normalizeExpressionPart( splits[ splits.length - 1 ] );
             ModelField currentField = findField( typeFields,
                                                  expressionPart );
             expression.appendPart( new ExpressionField( expressionPart,
@@ -2636,6 +2636,14 @@ public class RuleModelDRLPersistenceImpl
                                                         getSimpleFactType( currentField.getType(),
                                                                            dmo ) ) );
             return expression;
+        }
+
+        private String normalizeExpressionPart(String expressionPart) {
+            int parenthesisPos = expressionPart.indexOf('(');
+            if (parenthesisPos > 0) {
+                expressionPart = expressionPart.substring(0, parenthesisPos);
+            }
+            return expressionPart.trim();
         }
 
         private String getFQFactType( String factType ) {
