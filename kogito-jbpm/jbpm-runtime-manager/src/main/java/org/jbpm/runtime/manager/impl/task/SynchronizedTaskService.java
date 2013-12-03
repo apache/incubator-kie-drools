@@ -935,13 +935,12 @@ public class SynchronizedTaskService
 	public List<TaskSummary> getTasksByVariousFields(List<Long> workItemIds,
 			List<Long> taskIds, List<Long> procInstIds, List<String> busAdmins,
 			List<String> potOwners, List<String> taskOwners,
-			List<Status> status, boolean union) {
+			List<Status> status, List<String> language, boolean union) {
 		synchronized (ksession) {
             if (taskService != null) {
                 return taskService.getTasksByVariousFields(workItemIds, taskIds, procInstIds,
-                		busAdmins, potOwners, taskOwners, status, union);
+                		busAdmins, potOwners, taskOwners, status, language, union);
             }
-            
             return null;
         }
 	}
