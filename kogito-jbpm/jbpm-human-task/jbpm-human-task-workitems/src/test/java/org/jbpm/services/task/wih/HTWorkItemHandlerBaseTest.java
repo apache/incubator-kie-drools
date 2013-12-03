@@ -703,7 +703,7 @@ public abstract class HTWorkItemHandlerBaseTest extends AbstractBaseTest {
         workItem.setParameter("Comment", "Comment");
         workItem.setParameter("Priority", "10");
         workItem.setParameter("ActorId", "Darth Vader");
-        workItem.setParameter("Delay", "2d"); // Period 2 days
+        workItem.setParameter("DueDate", "P2d"); // Period 2 days
         
         workItem.setProcessInstanceId(10);
         handler.executeWorkItem(workItem, manager);

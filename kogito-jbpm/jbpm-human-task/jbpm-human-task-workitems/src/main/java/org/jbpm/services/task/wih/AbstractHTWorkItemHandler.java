@@ -15,17 +15,12 @@
  */
 package org.jbpm.services.task.wih;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
-import org.drools.core.util.DateUtils;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
@@ -138,12 +133,11 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         String dueDateString = (String) workItem.getParameter("DueDate");
         Date date = null;
         if(dueDateString != null && !dueDateString.isEmpty()){
-                date = new Date(DateTimeUtils.parseDateTime(dueDateString));
-        }else{
-            String delayString = (String) workItem.getParameter("Delay");
-            if(delayString != null && !delayString.isEmpty()){
-                Long longDateValue = DateTimeUtils.parseDateAsDuration(delayString);
+            if(DateTimeUtils.isPeriod(dueDateString)){
+                Long longDateValue = DateTimeUtils.parseDateAsDuration(dueDateString.substring(1));
                 date = new Date(System.currentTimeMillis() + longDateValue);
+            }else{
+                date = new Date(DateTimeUtils.parseDateTime(dueDateString));
             }
         }
         if(date != null){
