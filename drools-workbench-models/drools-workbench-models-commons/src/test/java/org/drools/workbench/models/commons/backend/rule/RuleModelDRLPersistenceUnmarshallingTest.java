@@ -1944,6 +1944,44 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       sfc.getValue() );
     }
 
+    @Test
+    public void testExpressionWithListSize() throws Exception {
+        String drl = "" +
+                "rule \"Borked\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    Company( emps.size() == 0 )\n" +
+                "  then\n" +
+                "end";
+
+        addModelField("Company",
+                "emps",
+                "java.util.List",
+                "List");
+
+        addModelField("java.util.List",
+                "size",
+                "int",
+                "Integer");
+
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                dmo );
+        assertEquals( 1,
+                m.lhs.length );
+        assertTrue( m.lhs[0] instanceof FactPattern);
+        FactPattern factPattern = (FactPattern) m.lhs[0];
+        assertEquals(1,
+                factPattern.getConstraintList().getConstraints().length);
+        assertTrue(factPattern.getConstraintList().getConstraints()[0] instanceof SingleFieldConstraintEBLeftSide);
+        SingleFieldConstraintEBLeftSide constraint = (SingleFieldConstraintEBLeftSide) factPattern.getConstraintList().getConstraints()[0];
+        assertEquals("size",constraint.getFieldName());
+        assertEquals("int",constraint.getFieldType());
+        assertEquals("0",constraint.getValue());
+        assertEquals("==",constraint.getOperator());
+        assertEquals(1,constraint.getConstraintValueType());
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
