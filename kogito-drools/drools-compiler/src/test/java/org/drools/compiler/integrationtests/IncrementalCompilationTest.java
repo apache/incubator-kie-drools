@@ -14,6 +14,7 @@ import org.drools.core.RuleBase;
 import org.drools.core.common.InternalRuleBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
 
 import org.junit.Test;
@@ -637,7 +638,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     public void testIncrementalCompilationWithSnapshots() throws Exception {
         // DROOLS-358
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.0-SNAPSHOT" );
-        testIncrementalCompilation(releaseId, releaseId);
+        testIncrementalCompilation(releaseId, releaseId, false);
     }
 
     @Test
@@ -645,10 +646,18 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // DROOLS-358
         ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.1" );
         ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.2" );
-        testIncrementalCompilation(releaseId1, releaseId2);
+        testIncrementalCompilation(releaseId1, releaseId2, false);
     }
 
-    private void testIncrementalCompilation(ReleaseId releaseId1, ReleaseId releaseId2) {
+    @Test
+    public void testIncrementalCompilationWithDeclaredType() throws Exception {
+        // DROOLS-358
+        ReleaseId releaseId1 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.1" );
+        ReleaseId releaseId2 = KieServices.Factory.get().newReleaseId( "org.test", "test", "1.0.2" );
+        testIncrementalCompilation(releaseId1, releaseId2, true);
+    }
+
+    private void testIncrementalCompilation(ReleaseId releaseId1, ReleaseId releaseId2, boolean useDeclaredType) {
         String drl1 = "package org.drools.compiler\n" +
                       "global java.util.List list\n" +
                       "rule R0 when then list.add( \"000\" ); end \n" +
@@ -659,7 +668,25 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                       " list.add( \"a\" + $s );" +
                       "end\n";
 
-        String drl2 = "package org.drools.compiler\n" +
+        String drl2 = useDeclaredType
+                      ?
+                      "package org.drools.compiler\n" +
+                      "global java.util.List list\n" +
+                      "declare StringWrapper\n" +
+                      " s : String\n" +
+                      "end\n" +
+                      "rule RInit when\n" +
+                      " $s : String() \n" +
+                      "then\n" +
+                      " insert( new StringWrapper( $s ) );" +
+                      "end\n" +
+                      "rule R2 when\n" +
+                      " $s : StringWrapper() \n" +
+                      "then\n" +
+                      " list.add( \"b\" + $s.getS() );" +
+                      "end\n"
+                      :
+                      "package org.drools.compiler\n" +
                       "global java.util.List list\n" +
                       "rule R2 when\n" +
                       " $s : String() \n" +
@@ -679,6 +706,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                      .setSourcePath("drl1.txt") );
 
         kieBuilder.buildAll();
+        assertEquals(0, kieBuilder.getResults().getMessages().size());
         KieModule kieModule = kieBuilder.getKieModule();
         assertEquals(releaseId1, kieModule.getReleaseId());
 
@@ -706,7 +734,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kieModule = kieBuilder.getKieModule();
         assertEquals(releaseId2, kieModule.getReleaseId());
 
-        kc.updateToVersion( releaseId2 );
+        Results updateResults = kc.updateToVersion( releaseId2 );
+        assertEquals(0, updateResults.getMessages().size());
 
         ksession.insert( "Bar" );
         ksession.fireAllRules();

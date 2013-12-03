@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
@@ -49,6 +50,7 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -92,10 +94,13 @@ public class KieContainerImpl
         return containerReleaseId != null ? containerReleaseId : getReleaseId();
     }
 
-    public void updateToVersion(ReleaseId newReleaseId) {
+    public Results updateToVersion(ReleaseId newReleaseId) {
         if( kProject instanceof ClasspathKieProject ) {
             throw new UnsupportedOperationException( "It is not possible to update a classpath container to a new version." );
         }
+
+        ResultsImpl results = new ResultsImpl();
+
         ReleaseId currentReleaseId = kProject.getGAV();
 
         // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
@@ -192,6 +197,14 @@ public class KieContainerImpl
 
                         ckbuilder.build();
 
+                        PackageBuilderErrors errors = pkgbuilder.getErrors();
+                        if ( !errors.isEmpty() ) {
+                            for ( KnowledgeBuilderError error : errors.getErrors() ) {
+                                results.addMessage(error);
+                            }
+                            log.error("Unable to update KieBase: " + kieBaseModel.getName() + " to release " + newReleaseId + "\n" + errors.toString());
+                        }
+
                         if (!modifiedClasses.isEmpty()) {
                             pkgbuilder.rewireClassObjectTypes(modifiedPackages);
                         }
@@ -221,6 +234,8 @@ public class KieContainerImpl
                 it.remove();
             }
         }
+
+        return results;
     }
     
     public KieBase getKieBase() {
