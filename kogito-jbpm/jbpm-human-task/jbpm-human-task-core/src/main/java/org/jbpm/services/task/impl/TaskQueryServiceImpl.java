@@ -433,9 +433,9 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         }
         if( language != null && language.size() > 0 ) { 
             String paramName = "language";
-            String query = "( name.language = :" + paramName + " or t.names.size = 0 ) and"
-                    + "( subject.language = :" + paramName + " or t.subjects.size = 0 ) and"
-                    + "( description.language = :" + paramName + " or t.descriptions.size = 0 )";
+            String query = "( name.language in ( :" + paramName + " ) or t.names.size = 0 ) and"
+                    + "( subject.language in ( :" + paramName + " ) or t.subjects.size = 0 ) and"
+                    + "( description.language in ( :" + paramName + " ) or t.descriptions.size = 0 )";
             stringQueryAdder.addToQueryBuilder(query, paramName, language);
         }
         
