@@ -40,7 +40,7 @@ public interface KieContainer {
     /**
      * Updates this KieContainer to a KieModule with the given ReleaseId
      */
-    void updateToVersion(ReleaseId version);
+    Results updateToVersion(ReleaseId version);
 
     /**
      * Returns the default KieBase in this KieContainer.
