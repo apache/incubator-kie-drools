@@ -1960,6 +1960,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "java.util.List",
                 "List");
 
+        addModelField("java.util.List",
+                "size",
+                "int",
+                "Integer");
+
 
         RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
                 dmo );
