@@ -41,6 +41,14 @@ public class CompositePackageDescr extends PackageDescr {
                 descr.setResource(resource);
             }
         }
+        
+        List<AccumulateImportDescr> accumulateImports = getAccumulateImports();
+        for (AccumulateImportDescr descr : packageDescr.getAccumulateImports()) {
+            if (!currentFunctionImports.contains(descr)) {
+                addAccumulateImport(descr);
+                descr.setResource(resource);
+            }
+        }
 
         List<AttributeDescr> currentAttributeDescrs = getAttributes();
         for (AttributeDescr descr : packageDescr.getAttributes()) {

@@ -324,6 +324,8 @@ public class DroolsParserExceptionFactory {
                 return "import";
             case FUNCTION_IMPORT :
                 return "function import";
+            case ACCUMULATE_IMPORT :
+                return "accumulate import";
             case GLOBAL :
                 return "global";
             case FUNCTION :
