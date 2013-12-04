@@ -34,7 +34,7 @@
       information, one for node instance information, and one for (process) 
       variable instance information.</para>
      
-      <!-- width && scalefit for pdf's -->
+      <!-- width && scalefit for PDFs -->
       <figure>
         <title>jBPM Audit data model</title>
         <mediaobject>
@@ -325,11 +325,11 @@ ksession.addProcessEventListener(auditLogger);
       <title>Storing Process Events in a JMS queue for further processing</title>
 
       <para>
-        Process events are stored in data base synchronously and within the same transaction as actual process instance
+        Process events are stored in the database synchronously and within the same transaction as actual process instance
         execution. That obviously takes some time especially in highly loaded systems and might have some impact on
-        data base when both history log and runtime data are kept in the same data base.
-        To provide alternative option for storing process events a JMS based logger has been provided. It allows to be
-        configured to submit messages to JMS queue instead of directly persisting them in data base. It can be configured
+        the database when both history log and runtime data are kept in the same database.
+        To provide an alternative option for storing process events, a JMS based logger has been provided. It can be
+        configured to submit messages to JMS queue instead of directly persisting them in the database. It can be configured
         to be transactional as well to avoid issues with inconsistent data in case of process engine transaction is
         rolled back.
       </para>

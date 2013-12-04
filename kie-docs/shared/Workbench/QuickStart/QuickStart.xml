@@ -228,7 +228,7 @@
       </mediaobject>
     </figure>
     <para>Now the project has been built and deployed; it can be referenced from your own projects as any other Maven Artifact.</para>
-    <para>The full documentation contains details about integrating projects with your own aplications.</para>
+    <para>The full documentation contains details about integrating projects with your own applications.</para>
   </section>
   
 </section>

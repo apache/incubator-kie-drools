@@ -21,7 +21,7 @@ BPMN2. In this case, it's important to handle these exceptions in expected ways.
     <listitem><para>Any code that is executed during a process and is not part of jBPM</para></listitem>
     <listitem><para>Any code that interacts with a technical component outside of the process engine</para></listitem>
   </itemizedlist>
-However, those are somewhat abstract defintions. We can narrow down the places at which an
+However, those are somewhat abstract definitions. We can narrow down the places at which an
 exception might be thrown. Technical exceptions can occur at the following points: 
   <orderedlist>
     <listitem><para>Code present in <code>&lt;scriptTask&gt;</code> nodes or in the 
@@ -55,7 +55,7 @@ dealing with process variables. Using a <code>&lt;scriptTask&gt;</code> to inter
 database or web service has <emphasis>significant risks</emphasis> because any exceptions thrown 
 will corrupt or abort the process.<literallayout>
 </literallayout><code>&lt;task&gt;</code> nodes, <code>&lt;serviceTask&gt;</code> nodes and the rest of 
-the <code>task</code>-type nodes are explictly meant for interacting with other systems -- not 
+the <code>task</code>-type nodes are explicitly meant for interacting with other systems -- not 
 <code>&lt;scriptTask&gt;</code> nodes!  Use <code>&lt;task&gt;</code>-type nodes to interact with 
 other technical components.</para>
   </warning>
@@ -158,7 +158,7 @@ will happen:
 </para>
 
 <para>The example we'll go through contains an <code>&lt;error&gt;</code>, but at the end of the
-secion, we'll show how you can change the process to use a <code>&lt;signal&gt;</code>
+section, we'll show how you can change the process to use a <code>&lt;signal&gt;</code>
 instead.</para>
 
   <tip>
@@ -191,7 +191,7 @@ on the different BPMN2 elements.</para>
 
   <note>
 <para>If you're viewing this on a web browser, you may need to widen or narrow your browser window in order to see
-the "callout" or note numbers on the righthand side of the code.</para>
+the "callout" or note numbers on the right hand side of the code.</para>
   </note>
 
 <programlistingco>

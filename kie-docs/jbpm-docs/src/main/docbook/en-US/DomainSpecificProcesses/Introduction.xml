@@ -47,7 +47,7 @@ Work item handlers should almost never contain any data.</para>
 
 <para>Users can thus easily define their own set of domain-specific service nodes and integrate 
 them with the process language. For example, the next figure shows an example of a 
-healtchare-related BPMN2 process. The process includes domain-specific service nodes for measuring 
+healthcare-related BPMN2 process. The process includes domain-specific service nodes for measuring 
 blood pressure, prescribing medication, notifying care providers and following-up on the patient.
 </para>
 

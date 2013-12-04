@@ -14,7 +14,7 @@
     
     <para>Many of the elements in BPMN2 related to Business Exceptions are related to
       <emphasis>Compensation</emphasis> and <emphasis>Business Transactions</emphasis>. Compensation, in
-      particular, is complexer than many other parts of the BPMN2 specfication.</para>
+      particular, is complexer than many other parts of the BPMN2 specification.</para>
     
     <para>Full support for <emphasis>compensation</emphasis> and <emphasis>business
       transactions</emphasis> is expected with the release of jBPM 6.1 or 6.2. Once that has been
@@ -69,11 +69,11 @@
             <row>
               <entry>Compensation</entry>
               <entry><para>Exception handling activities <emphasis>associated</emphasis> with the normal 
-                activies in a Business Transaction are triggered by <emphasis>Compensation 
+                activities in a Business Transaction are triggered by <emphasis>Compensation 
                   Events</emphasis>.</para>
                 <para>There are 3 types of compensation events: Intermediate (a.k.a. Boundary) (catch) events,
                   Start (catch) events, and Intermediate or End (throw) events.</para>
-                <para>Compensation Boundary (catch) events may only be attached to activites (e.g. tasks) that could 
+                <para>Compensation Boundary (catch) events may only be attached to activities (e.g. tasks) that could 
                   cause an exception. These Boundary events are then <emphasis>associated</emphasis> (not linked!)
                   with a Task that will be executed if the Boundary event catches a (thrown) Compensation signal.</para>
                 <!-- add when Business Transactions have been implemented 

@@ -42,7 +42,7 @@
       * shown on screen
       * @param value The current field value
       * @param fieldName The field name
-      * @param namespace The unique id for the rendered form, it should be used to generate identifiers inside the html code.
+      * @param namespace The unique id for the rendered form, it should be used to generate identifiers inside the HTML code.
       * @param required Determines if the field is required or not
       * @param readonly Determines if the field must be shown on read only mode
       * @param params A list of configuration params that can be set on the field configuration screen
@@ -54,7 +54,7 @@
       * This method returns a String that contains the HTML code that will show the input view of the field. That will be used to set the field value.
       * @param value The current field value
       * @param fieldName The field name
-      * @param namespace The unique id for the rendered form, it should be used to generate identifiers inside the html code.
+      * @param namespace The unique id for the rendered form, it should be used to generate identifiers inside the HTML code.
       * @param required Determines if the field is required or not
       * @param readonly Determines if the field must be shown on read only mode
       * @param params A list of configuration params that can be set on the field configuration screen
@@ -67,7 +67,7 @@
       * @param requestParameters A Map containing the request parameters for the submitted form
       * @param requestFiles A Map containing the java.io.Files uploaded on the request
       * @param fieldName The field name
-      * @param namespace The unique id for the rendered form, it should be used to generate identifiers inside the html code.
+      * @param namespace The unique id for the rendered form, it should be used to generate identifiers inside the HTML code.
       * @param previousValue The previous value of the current field
       * @param required Determines if the field is required or not
       * @param readonly Determines if the field must be shown on read only mode

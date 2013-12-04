@@ -69,8 +69,8 @@
         <para>Deployment service stores the deployed units only in memory and
         thus in case of a need to restore all previously deployed units,
         component that uses deployment service needs to store that information
-        itself. Common places for such store is data base, file system,
-        repository of some sort etc. Deployment service will fire CDI events
+        itself. Common places for such a store are database, file system,
+        repository of some sort, etc. Deployment service will fire CDI events
         on deployment and undeployment to allow application components to
         react real time to these events to be able to store deployments or
         remove them from the store when they are undeployed.</para>
@@ -153,9 +153,9 @@
       will collect all available providers and iterate over them asking for
       the form content (rendered) in their priority order. The lower the
       number the higher priority it gets during evaluation, e.g. provider with
-      priority 5 will be evalauted before provider with priority 10.
-      FormProviderService will irerate over available providers as long as one
-      delivers the content. In worse case scenario simple text based forms
+      priority 5 will be evaluated before provider with priority 10.
+      FormProviderService will iterate over available providers as long as one
+      delivers the content. In the worse case scenario, simple text based forms
       will be returned.</para>
 
       <para>jBPM comes with following FormProviders out of the box:</para>
@@ -301,7 +301,7 @@
         </listitem>
 
         <listitem>
-          <para>identity provider to pass autheticated user information to the
+          <para>identity provider to pass authenticated user information to the
           services</para>
         </listitem>
       </itemizedlist>

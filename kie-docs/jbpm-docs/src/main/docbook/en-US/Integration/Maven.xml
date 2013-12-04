@@ -139,10 +139,10 @@
   &lt;/kbase&gt;
 &lt;/kmodule&gt;</programlisting>
 
-      <para>As illustrated on the listining above the kmodule.xml provides
-      fliexible way of instructing the runtime engine on what and how should
-      be configured. The example above does not present all available option
-      but these that are most common when working with processes. </para>
+      <para>As illustrated in the listing above the kmodule.xml provides
+      flexible way of instructing the runtime engine on what should be
+      configured and how. The example above does not present all available options,
+      but these are the most common when working with processes. </para>
 
       <note>
         <para>Important to note is that when using RuntimeManager, KieSession
@@ -164,7 +164,7 @@
   <section>
     <title>Use Maven for dependency management</title>
 
-    <para>When building systems that embed jBPM as wrokflow engine the
+    <para>When building systems that embed jBPM as workflow engine the
     simplest way is to configure all dependencies required by jBPM via Apache
     Maven. jBPM provides set of BOMs (Bill Of Material) to simplify what
     artifacts needs to be declared. Common way to start with integration of
@@ -240,7 +240,7 @@
       &lt;version&gt;${slf4j.version}&lt;/version&gt;
     &lt;/dependency&gt;</programlisting>
 
-    <para>Above are the main runtime dependencies, reagrdless of where the
+    <para>Above are the main runtime dependencies, regardless of where the
     application is deployed (application server, servlet container, standalone
     app). A good practice is to test the workflow components to ensure they
     work properly before actual deployment and thus following test
@@ -291,7 +291,7 @@
     &lt;/dependency&gt;</programlisting>
 
     <para>Last but not least, define the JBoss Maven repository for artifacts
-    resuolution:</para>
+    resolution:</para>
 
     <programlisting language="xml">  &lt;repositories&gt;
     &lt;repository&gt;

@@ -31,8 +31,8 @@
     <itemizedlist>
       <listitem>
         <para>Add fields by origin: this tab allows you to add fields to the form based on the data origins defined.
-          These fields will have the correct configuration on the "Input binding expression" and "Output binding expression" properties so whe the
-          form is submitted the fields values will be stored in the corresponding Data Origin.
+          These fields will have the correct configuration on the "Input binding expression" and "Output binding expression" properties, so when the
+          form is submitted, the fields values will be stored in the corresponding Data Origin.
           <figure>
             <title>Add field by origin</title>
             <screenshot>
@@ -68,7 +68,7 @@
     Notice the data model 'po' of type 'org.jbpm.examples.purchases.PurchaseOrder' is composed of three properties.
     <itemizedlist>
       <listitem>
-        <para>Simple : property of type text (description). We will adjust the view settings.</para>
+        <para>Simple: property of type text (description). We will adjust the view settings.</para>
       </listitem>
       <listitem>
         <para>Complex: property of type object (header).</para>

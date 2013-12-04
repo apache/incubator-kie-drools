@@ -46,9 +46,9 @@
   documentation on how to use them (e.g. what the different input and output parameters are) when
   you select them browsing the service repository.</para>
   
-  <para>Click on the image below to see a screencast where we import the twitter service in a new jBPM
+  <para>Click on the image below to see a screencast where we import the Twitter service in a new jBPM
   project and create a simple process with it that sends an actual tweet.  Note that you need the 
-  necessary twitter keys and secrets to be able to programatically send tweets to your twitter account.
+  necessary Twitter keys and secrets to be able to programmatically send tweets to your Twitter account.
   How to create these is explained <ulink url="http://docs.jboss.org/jbpm/v6.0/repository/Twitter/">here</ulink>,
   but once you have these, you can just drop them in your project using a simple configuration file.</para>
 
@@ -97,7 +97,7 @@ import org.drools.core.process.core.datatype.impl.type.StringDataType;
 [
   [
     "name" : "Twitter",
-    "description" : "Send a twitter message",
+    "description" : "Send a Twitter message",
     "parameters" : [
       "Message" : new StringDataType()
     ],

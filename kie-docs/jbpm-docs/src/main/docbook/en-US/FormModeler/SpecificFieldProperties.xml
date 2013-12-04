@@ -41,14 +41,14 @@
               </listitem>
 
               <listitem>
-                <para>Show html: indicates whether the contents of the field
-                  is interpreted as html in show mode.
+                <para>Show HTML: indicates whether the contents of the field
+                  is interpreted as HTML in show mode.
                 </para>
               </listitem>
 
               <listitem>
                 <para>Formula. to enter expressions that will be evaluated to
-                  set the field value. These expressions are descrived in <link
+                  set the field value. These expressions are described in <link
                       linkend="sect-formmodeler-FormulasExpression">Formula &amp; expression section
                   </link>.
                 </para>

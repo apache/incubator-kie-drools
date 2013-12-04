@@ -82,7 +82,7 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold"><literal>org.uberfire.metadata.index.dir</literal></emphasis>: Place where lucene
+        <para><emphasis role="bold"><literal>org.uberfire.metadata.index.dir</literal></emphasis>: Place where Lucene
         <literal>.index</literal> folder will be stored. Default: working directory</para>
       </listitem>
 

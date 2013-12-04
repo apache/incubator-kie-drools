@@ -29,8 +29,8 @@
         </listitem>
       </itemizedlist></para>
 
-    <para>Runtime Manager is primary responsible for mananging and delivering
-    to the caller instances of RuntimeEngine. In turn RuntimeEngine
+    <para>Runtime Manager is primary responsible for managing and delivering
+    instances of RuntimeEngine to the caller. In turn, RuntimeEngine
     encapsulates two the most important elements of jBPM engine:</para>
 
     <itemizedlist>
@@ -108,7 +108,7 @@
     TaskService getTaskService();   
 }</programlisting>
 
-    <para>RuntimeManager will ensure that regadless of the strategy it will
+    <para>RuntimeManager will ensure that regardless of the strategy it will
     provide same capabilities when it comes to initialization and
     configuration of the RuntimeEngine. That means</para>
 
@@ -134,7 +134,7 @@
 
         <itemizedlist>
           <listitem>
-            <para>JTA transaction mananger</para>
+            <para>JTA transaction manager</para>
           </listitem>
 
           <listitem>
@@ -148,9 +148,9 @@
       </listitem>
     </itemizedlist>
 
-    <para>On the other hand RuntimeManager maintains the engine disposal as
+    <para>On the other hand, RuntimeManager maintains the engine disposal as
     well by providing dedicated methods to dispose RuntimeEngine when it's no
-    more needed to release any resources it might aquired.</para>
+    more needed to release any resources it might have acquired.</para>
   </section>
 
   <section>
@@ -160,7 +160,7 @@
     RuntimeManager to maintain single instance of RuntimeEngine (and in turn
     single instance of KieSession and TaskService). Access to the
     RuntimeEngine is synchronized and by that thread safe although it comes
-    with performance penelty due to synchronization. This strategy is similar
+    with a performance penalty due to synchronization. This strategy is similar
     to what was available by default in jBPM version 5.x and it's considered
     easiest strategy and recommended to start with.</para>
 
@@ -225,7 +225,7 @@
     done in one call would not be visible in the other. This is sort of
     "stateless" strategy that provides only request scope state and once
     request is completed RuntimeEngine will be permanently destroyed -
-    KieSession information will be removed from data base in case persistence
+    KieSession information will be removed from the database in case persistence
     was used.</para>
 
     <para>It has following characteristics:</para>
@@ -260,14 +260,14 @@
     </itemizedlist>
 
     <para><emphasis role="bold">Per process instance strategy</emphasis> -
-    instructs RuntimeManager to maintain strick relationship between
+    instructs RuntimeManager to maintain a strict relationship between
     KieSession and ProcessInstance. That means that KieSession will be
-    available as long as ProcessInstance that it belongs to is active. This
-    strategy provides most flexible approach to secure advanced capabilities
+    available as long as the ProcessInstance that it belongs to is active. This
+    strategy provides the most flexible approach to use advanced capabilities
     of the engine like rule evaluation in isolation (for given process
-    instance only), maximum performance and reduction of potential bottle
-    necks intruduced by synchronization and at the same time reduces number of
-    KieSessions to the actual number of process isntances rather than number
+    instance only), maximum performance and reduction of potential bottlenecks
+    intriduced by synchronization; and at the same time reduces number of
+    KieSessions to the actual number of process instances rather than number
     of requests (in contrast to per request strategy).</para>
 
     <para>It has following characteristics:</para>
@@ -389,11 +389,11 @@
     <para/>
 
     <para><note>
-        <para>When RuntimeEngine is obtained from RuntimeManager within active
-        JTA transaction then there is no need to dispose RuntimeEngine at the
-        end as RuntimeManager will automatically dipose the RuntimeEngine on
+        <para>When RuntimeEngine is obtained from RuntimeManager within an active
+        JTA transaction, then there is no need to dispose RuntimeEngine at the
+        end, as RuntimeManager will automatically dispose the RuntimeEngine on
         transaction completion (regardless of the completion status commit or
-        rollback)</para>
+        rollback).</para>
       </note></para>
 
     <section>
@@ -412,7 +412,7 @@
     // next create RuntimeManager - in this case singleton strategy is chosen
     RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 
-    // then get RuntimeEngine out of manager - using empty context as singleton does not kep track
+    // then get RuntimeEngine out of manager - using empty context as singleton does not keep track
     // of runtime engine as there is only one
     RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
 
@@ -743,7 +743,7 @@
     List&lt;WorkingMemoryEventListener&gt; getWorkingMemoryEventListeners(RuntimeEngine runtime);</programlisting>
 
       <para>A best practice is to just extend those that come out of the box
-      and just add your own. Although extanstions are not always needed as the
+      and just add your own. Extensions are not always needed as the
       default implementations of RegisterableItemsFactory provides possibility
       to define custom handlers and listeners. Following is a list of
       available implementations that might be useful (they are ordered in the
@@ -766,7 +766,7 @@
 
         <listitem>
           <para>org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory
-          - exension of default implementation that provides specific
+          - extension of default implementation that provides specific
           capabilities for kmodule and still provides same capabilities as
           Simple implementation</para>
         </listitem>
@@ -891,7 +891,7 @@
         KieSession that is created or loaded from data store.</para>
 
         <para>Some parameters are provided to the producers to allow
-        handlers/listeners to eb more stateful and be able to do more advanced
+        handlers/listeners to be more stateful and be able to do more advanced
         things with the engine - like signal of the engine or process instance
         in case of an error. Thus all components are provided:</para>
 
@@ -919,7 +919,7 @@
 
         <para>In addition, some filtering can be applied based on identifier
         (that is given as argument to the methods) to decide if given
-        RuntimeManager shall recieve handlers/listeners or not.</para>
+        RuntimeManager shall receive handlers/listeners or not.</para>
 
         <para/>
       </section>

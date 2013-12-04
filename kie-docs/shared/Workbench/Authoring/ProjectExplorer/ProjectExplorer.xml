@@ -6,7 +6,7 @@
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>Project Explorer</title>
-  <para>The Project Explorer provides the ability to browse diffeent Organizational Units,
+  <para>The Project Explorer provides the ability to browse different Organizational Units,
     Repositories, Projects and their files.</para>
   <section xml:id="wb.ProjectExplorerEmpty">
     <title>Initial view</title>
@@ -49,7 +49,7 @@
 
     <para>After a suitable combination of Organizational Unit, Repository, Project and Package have
       been selected the Project Explorer will show the contents. The exact combination of selections
-      depends wholey on the structures defined within the Workbench installation and projects. Each
+      depends wholly on the structures defined within the Workbench installation and projects. Each
       section contains groups of related files.</para>
     <figure>
       <title>Expanded asset group</title>
@@ -77,7 +77,7 @@
       </itemizedlist></para>
     <para>Views can be selected by clicking on the icon within the Project Explorer, as shown
       below.</para>
-    <para>Both Project View and Repository Views can be further refined by seleting either "Show as Folders" or "Show as
+    <para>Both Project View and Repository Views can be further refined by selecting either "Show as Folders" or "Show as
       Links".</para>
     <figure>
       <title>Switching view</title>
