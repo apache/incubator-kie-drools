@@ -15,6 +15,9 @@
  */
 package org.drools.persistence.jta;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.transaction.Status;
@@ -46,6 +49,13 @@ public class JtaTransactionManager
     private static final String          TRANSACTION_SYNCHRONIZATION_REGISTRY_CLASS_NAME   = "javax.transaction.TransactionSynchronizationRegistry";
 
     private static Class< ? >            transactionSynchronizationRegistryClass;
+
+    private static final ThreadLocal <Map<Object, Object>> transactionResources = new ThreadLocal<Map<Object, Object>>(){
+        @Override
+        protected Map<Object, Object> initialValue() {
+            return Collections.synchronizedMap(new HashMap<Object, Object>());
+        }
+    };
 
     static {
         ClassLoader cl = JtaTransactionManager.class.getClassLoader();
@@ -203,7 +213,8 @@ public class JtaTransactionManager
                 throw new RuntimeException( "Unable to commit transaction",
                                             e );
             }
-        } 
+        }
+        transactionResources.get().clear();
     }
     
     public void rollback(boolean transactionOwner) {
@@ -222,6 +233,7 @@ public class JtaTransactionManager
             throw new RuntimeException( "Unable to rollback transaction",
                                         e );
         }
+        transactionResources.get().clear();
     }
 
     public int getStatus() {
@@ -262,6 +274,23 @@ public class JtaTransactionManager
             // No JTA TransactionManager available - log a warning.
             logger.warn( "Participating in existing JTA transaction, but no JTA TransactionManager or TransactionSychronizationRegistry available: " );
         }
+    }
+
+    @Override
+    public void putResource(Object key, Object resource) {
+        if (this.tsr != null) {
+            TransactionSynchronizationRegistryHelper.putResource(this.tsr, key, resource);
+        }  else {
+            transactionResources.get().put(key, resource);
+        }
+    }
+
+    @Override
+    public Object getResource(Object key) {
+        if (this.tsr != null) {
+            return TransactionSynchronizationRegistryHelper.getResource(this.tsr, key);
+        }
+        return transactionResources.get().get(key);
     }
 
 }

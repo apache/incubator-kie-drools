@@ -73,8 +73,6 @@ public class SingleSessionCommandService
 
     private volatile boolean           doRollback;
 
-    private static Map<Object, Object> synchronizations = Collections.synchronizedMap( new IdentityHashMap<Object, Object>() );
-
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
              env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER ) == null ) {
@@ -294,6 +292,7 @@ public class SingleSessionCommandService
                     Class< ? > cls = Class.forName( "org.kie.spring.persistence.KieSpringTransactionManager" );
                     Constructor< ? > con = cls.getConstructors()[0];
                     this.txm = (TransactionManager) con.newInstance( tm );
+                    env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
                     cls = Class.forName( "org.kie.spring.persistence.KieSpringJpaManager" );
                     con = cls.getConstructors()[0];
                     this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
@@ -305,6 +304,7 @@ public class SingleSessionCommandService
                         Class< ? > cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringTransactionManager" );
                         Constructor< ? > con = cls.getConstructors()[0];
                         this.txm = (TransactionManager) con.newInstance( tm );
+                        env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
 
                         // configure spring for JPA and local transactions
                         cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
@@ -320,6 +320,7 @@ public class SingleSessionCommandService
                 this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
                                                       env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
                                                       tm );
+                env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
                 try {
                     Class< ? > jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
                     Constructor< ? > jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
@@ -427,20 +428,17 @@ public class SingleSessionCommandService
     }
 
     private void registerRollbackSync() {
-        if ( synchronizations.get( this ) == null ) {
-            txm.registerTransactionSynchronization( new SynchronizationImpl( this ) );
-            synchronizations.put( this,
-                                  this );
-        }
+        TransactionManagerHelper.registerTransactionSyncInContainer(this.txm, new SynchronizationImpl( this ));
     }
 
     private static class SynchronizationImpl
-        implements
-        TransactionSynchronization {
+        extends
+        OrderedTransactionSynchronization {
 
         SingleSessionCommandService service;
 
         public SynchronizationImpl(SingleSessionCommandService service) {
+            super(1);
             this.service = service;
         }
 
@@ -448,9 +446,6 @@ public class SingleSessionCommandService
             if ( status != TransactionManager.STATUS_COMMITTED ) {
                 this.service.rollback();
             }
-
-            // always cleanup thread local whatever the result
-            SingleSessionCommandService.synchronizations.remove( this.service );
 
             this.service.jpm.endCommandScopedEntityManager();
 
