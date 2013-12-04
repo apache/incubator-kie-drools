@@ -440,7 +440,7 @@ kSession.fireAllRules();</programlisting>
     </example>
   </section>
   <section>
-    <title>Programaticaly build a Simple KieModule with Defaults</title>
+    <title>Programmaticaly build a Simple KieModule with Defaults</title>
     <itemizedlist>
       <listitem>
         <para>Project: kiemoduelmodel-example</para>
@@ -483,7 +483,7 @@ kSession.fireAllRules();</programlisting>
     </example>
   </section>
   <section>
-    <title>Programaticaly build a KieModule using Meta Models</title>
+    <title>Programmaticaly build a KieModule using Meta Models</title>
     <itemizedlist>
       <listitem>
         <para>Project: kiemoduelmodel-example</para>

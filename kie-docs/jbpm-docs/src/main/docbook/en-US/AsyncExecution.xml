@@ -103,7 +103,7 @@
       <para>In this use case, a race condition exists in which both thread A
       and thread B will have coincidentally simultaneously finished a process.
       At this point, because persistence is being used, both thread A and B
-      will be commiting changes to the databse. If row-level locks are not
+      will be committing changes to the database. If row-level locks are not
       possible, then the following situation can occur:</para>
 
       <itemizedlist>
@@ -129,7 +129,7 @@
       </itemizedlist>
 
       <para>This is a deadlock situation which the database and application
-      will not be able to solve. However, if row-level locks are posible (and
+      will not be able to solve. However, if row-level locks are possible (and
       enabled!!) in the database (and tables used), then this situation will
       not occur.</para>
     </section>
@@ -208,7 +208,7 @@
         </listitem>
 
         <listitem>
-          <para>provides cancelation option</para>
+          <para>provides cancellation option</para>
         </listitem>
 
         <listitem>
@@ -217,7 +217,7 @@
       </itemizedlist>
 
       <para>When confronting these requirements with the "simple async
-      handler" (exeucted as separate thread) you can directly notice that all
+      handler" (executed as separate thread) you can directly notice that all
       of these would need to be implemented all over again by different
       systems. Due to that a common, generic component has been provided out
       of the box to simplify and empower usage.</para>
@@ -455,7 +455,7 @@ public class ExecutionResults implements Serializable {
       <section>
         <title>Configuration</title>
 
-        <para>jbpm executor is configurable to allow fine tunning of its
+        <para>jbpm executor is configurable to allow fine tuning of its
         environment. In general jbpm executor runs as a thread pool that
         periodically checks for waiting jobs and executes them when needed.
         Configuration of jbpm executor is done via system properties:</para>

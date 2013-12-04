@@ -36,7 +36,7 @@
   taskService.start(taskId, taskUserId);
   taskService.complete(taskId, taskUserId, null);</programlisting>
 
-    <para>In the above example, the following variables were used when initalizing the <code>RemoteRestSessionFactory</code>
+    <para>In the above example, the following variables were used when initializing the <code>RemoteRestSessionFactory</code>
       <table frame="all">
         <title>Pagination query parameter syntax</title>
         <tgroup cols="3" align="left" rowsep="1" colsep="1">

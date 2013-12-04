@@ -787,7 +787,7 @@
 
           <para>To prevent leaks, it is advised to close the
           <emphasis>&lt;kie:fileLogger ...&gt; </emphasis>
-          programatically.</para>
+          programmatically.</para>
 
           <programlisting language="java">LoggerAdaptor adaptor = (LoggerAdaptor) context.getBean("fl_logger");
 adaptor.close();</programlisting>

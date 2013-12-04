@@ -222,9 +222,9 @@ ProcessInstance processInstance = ksession.startProcess("com.sample.MyProcess");
   <section>
     <title>Correlation Keys</title>
 
-    <para>Common requriement when working with processes is ability to assign given process instance
-    sort of business identifier that can be later on referenced without knowing the actual (generated) id
-    of the process instance. To provide such capabilities jBPM allows to use CorrelationKey that is composed
+    <para>A common requirement when working with processes is ability to assign a given process instance
+    some sort of business identifier that can be later on referenced without knowing the actual (generated) id
+    of the process instance. To provide such capabilities, jBPM allows to use CorrelationKey that is composed
     of CorrelationProperties. CorrelationKey can have either single property describing it (which is in most cases)
     but it can be represented as multi valued properties set.</para>
     <para>Correlation capabilities are provided as part of interface

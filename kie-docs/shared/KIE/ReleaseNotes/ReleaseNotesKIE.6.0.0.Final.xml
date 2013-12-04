@@ -21,22 +21,22 @@
   </section>
   <section>
     <title>Maven aligned projects and modules and Maven Deployment</title>
-    <para>One of the biggest complaints during the 5.x series was the lack of defined methodolgy for deployment. The
-      mechanism used by Drools and jBPM was very flexible, but it was too flexible. A big focus for 6.0 was streamling
+    <para>One of the biggest complaints during the 5.x series was the lack of defined methodology for deployment. The
+      mechanism used by Drools and jBPM was very flexible, but it was too flexible. A big focus for 6.0 was streamlining
       the build, deploy and loading(utilization) aspects of the system. Building and deploying now align with Maven and
-      Maven repositories. The utilization for loadng rules and processess is now convention and configuration oriented,
-      instead of programmatic, with sane default to minimise the configuration.</para>
-    <para>Projects can be built with Maven and installed ot the local M2_REPO or remote Maven repositories. Maven is
+      Maven repositories. The utilization for loading rules and processess is now convention and configuration oriented,
+      instead of programmatic, with sane defaults to minimise the configuration.</para>
+    <para>Projects can be built with Maven and installed to the local M2_REPO or remote Maven repositories. Maven is
       then used to declare and build the classpath of dependencies, for KIE to access.</para>
   </section>
   <section>
     <title>Configuration and convention based projects</title>
-    <para>The 'kmodule.xml' provides declarative configuration for KIE projects. Conventions and defaults ar used to
+    <para>The 'kmodule.xml' provides declarative configuration for KIE projects. Conventions and defaults are used to
       reduce the amount of configuration needed. </para>
     <example>
       <title>Declare KieBases and KieSessions</title>
       <programlisting language="xml">&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
-  &lt;kbase name="kbase1" packages="org.mypaackges&gt;
+  &lt;kbase name="kbase1" packages="org.mypackages&gt;
     &lt;ksession name="ksession1"/&gt;
   &lt;/kbase&gt;
 &lt;/kmodule&gt;</programlisting>
@@ -73,7 +73,7 @@ KieBaseModel kieBaseModel1 = kmodule.newKieBaseModel("KBase2").addInclude("KBase
   </section>
   <section>
     <title>KieModules, KieContainer and KIE-CI</title>
-    <para>Any Maven  produce JAR with a 'kmodule.xml' in it is considered a KieModule. This can be loade from the
+    <para>Any Maven  produce JAR with a 'kmodule.xml' in it is considered a KieModule. This can be loaded from the
       classpath or dynamically at runtime from a Resource location. If the kie-ci dependency is on the classpath it
       embeds Maven and all resolving is done automatically using Maven and can access local or remote repositories.
       Settings.xml is obeyed for Maven configuration.</para>
@@ -89,7 +89,7 @@ KieSession kSession = kContainer.newKieSession("ksession1");
 kSession.insert(new Message("Dave", "Hello, HAL. Do you read me, HAL?"));
 kSession.fireAllRules();</programlisting>
     </example>
-    <para>KieContainers can be dynamically updated to a specifc verison, all resolved through Maven if KIE-CI is on the
+    <para>KieContainers can be dynamically updated to a specific version, all resolved through Maven if KIE-CI is on the
       classpath. For  stateful KieSessions the existing sessions are incrementally updated.</para>
     <example xmlns:ns2="http://www.w3.org/1998/Math/MathML">
       <title>Dynamically Update- Java</title>
@@ -101,7 +101,7 @@ kSession.fireAllRules();</programlisting>
     <title>KieScanner</title>
 
     <para>The <code>KieScanner</code> is a Maven-oriented replacement of the KnowledgeAgent
-    present in Drools 5. In fact it allows to continously monitoring your Maven repository
+    present in Drools 5. In fact it allows to continuously monitoring your Maven repository
     to check if a new release of a Kie project has been installed and if so deploying it in
     the <code>KieContainer</code> wrapping that project. The use of the <code>KieScanner</code>
     requires kie-ci.jar to be on the classpath.</para>
@@ -135,7 +135,7 @@ kScanner.start( 10000L );</programlisting>
     <para>The CompositeClassLoader is no longer used; as it was a constant source of performance problems and bugs.
       Traditional hierarchical classloaders are now used. The root classloader is at the KieContext level, there is then
       one child ClassLoader per namespace. This makes it cleaner to add and remove rules, but there can now be no
-      referencing betwen namespaces in DRL files; i.e. functions can only be used by the namespaces that declared them.
+      referencing between namespaces in DRL files; i.e. functions can only be used by the namespaces that declared them.
       The recommendation is to use static Java methods in your project, which is visible to all namespaces; but those
       cannot (like other classes on the root KieContainer ClassLoader) be dynamically updated.</para>
   </section>
@@ -150,7 +150,7 @@ kScanner.start( 10000L );</programlisting>
     <title>KIE Documentation</title>
     <para> While a lot of new documentation has been added for working with the new KIE API, the entire documentation
       has not yet been brought up to date. For this reason there will be continued references to old terminologies.
-      Apologies in adanced, and thank you for your patience. We hope those in the community will work with us to get the
+      Apologies in advance, and thank you for your patience. We hope those in the community will work with us to get the
       documentation updated throughout, for 6.1</para>
   </section>
 </section>

@@ -226,7 +226,7 @@ Person( name == ( processInstance.getVariable("name") ) )
       <title>Configure timer ISO-8601 date format</title>
       <para>since version 6 timers can be configured with valid <ulink url="http://en.wikipedia.org/wiki/ISO_8601">
       ISO8601</ulink> date format that supports both one shot timers and repeatable timers. Timers can be defined
-      as data dn time representation, time duration or repeating intervals</para>
+      as date and time representation, time duration or repeating intervals</para>
       <itemizedlist>
         <listitem>Date - 2013-12-24T20:00:00.000+02:00 - fires exactly at Christmas Eve at 8PM</listitem>
         <listitem>Duration - PT1S - fires once after 1 second</listitem>
