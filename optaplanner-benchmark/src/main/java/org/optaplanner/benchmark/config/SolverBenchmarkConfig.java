@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.config;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,8 @@ public class SolverBenchmarkConfig {
     // Builder methods
     // ************************************************************************
 
-    public SolverBenchmark buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark) {
+    public SolverBenchmark buildSolverBenchmark(DefaultPlannerBenchmark plannerBenchmark,
+            File latestResumeBenchmarkDir) {
         validate();
         SolverBenchmark solverBenchmark = new SolverBenchmark(plannerBenchmark);
         solverBenchmark.setName(name);
@@ -75,7 +77,8 @@ public class SolverBenchmarkConfig {
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;
         List<ProblemBenchmark> problemBenchmarkList
-                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmark);
+                = problemBenchmarksConfig_.buildProblemBenchmarkList(plannerBenchmark, solverBenchmark,
+                        latestResumeBenchmarkDir);
         solverBenchmark.setProblemBenchmarkList(problemBenchmarkList);
         return solverBenchmark;
     }
