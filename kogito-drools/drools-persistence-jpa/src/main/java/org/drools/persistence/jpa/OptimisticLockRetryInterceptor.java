@@ -16,6 +16,8 @@
 
 package org.drools.persistence.jpa;
 
+import javax.persistence.OptimisticLockException;
+
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.kie.api.command.Command;
 import org.slf4j.Logger;
@@ -102,7 +104,8 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
         }
 
         while (throwable != null) {
-            if (targetExceptionClass.isAssignableFrom(throwable.getClass())) {
+            if (targetExceptionClass.isAssignableFrom(throwable.getClass())
+                    || OptimisticLockException.class.isAssignableFrom(throwable.getClass())) {
                 return true;
             } else {
                 throwable = throwable.getCause();

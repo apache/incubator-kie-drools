@@ -42,4 +42,8 @@ public interface TransactionManager {
 
     void registerTransactionSynchronization(TransactionSynchronization ts);
 
+    void putResource(Object key, Object resource);
+
+    Object getResource(Object key);
+
 }

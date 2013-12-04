@@ -263,24 +263,24 @@ public class JtaTransactionManagerTest {
         commandKSession.getId(); // initialize CSEM
         SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) commandKSession).getCommandService();
         JpaPersistenceContextManager jpm = (JpaPersistenceContextManager) getValueOfField("jpm", commandService);
-
-        Method csemMethod = JpaPersistenceContextManager.class.getDeclaredMethod("getInternalCommandScopedEntityManager");
-        csemMethod.setAccessible(true);
-        EntityManager em = (EntityManager) csemMethod.invoke(jpm);
         
         TransactionTestObject mainObject = new TransactionTestObject();
         mainObject.setName("mainCommand");
         TransactionTestObject subObject = new TransactionTestObject();
         subObject.setName("subCommand");
         mainObject.setSubObject(subObject);
-       
+
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
         HashMap<String, Object> emEnv = new HashMap<String, Object>();
         emEnv.put(COMMAND_ENTITY_MANAGER_FACTORY, emf);
-        emEnv.put(COMMAND_ENTITY_MANAGER, em);
+        emEnv.put(COMMAND_ENTITY_MANAGER, jpm.getCommandScopedEntityManager());
         
         TransactionTestCommand txTestCmd = new TransactionTestCommand(mainObject, subObject, emEnv);
         
         commandKSession.execute(txTestCmd);
+
+        ut.commit();
     }
 
     /**
