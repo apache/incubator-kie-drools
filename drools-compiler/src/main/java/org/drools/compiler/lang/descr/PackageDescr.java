@@ -32,14 +32,16 @@ import org.kie.internal.definition.KnowledgeDescr;
 import org.kie.api.io.Resource;
 
 public class PackageDescr extends BaseDescr
-    implements
-    Namespaceable,
-    KnowledgeDescr {
+        implements
+        Namespaceable,
+        KnowledgeDescr {
+
     private static final long               serialVersionUID       = 530l;
     private String                          documentation;
 
     private List<ImportDescr>               imports                = Collections.emptyList();
     private List<FunctionImportDescr>       functionImports        = Collections.emptyList();
+    private List<AccumulateImportDescr>     accumulateImports      = Collections.emptyList();
     private List<AttributeDescr>            attributes             = Collections.emptyList();
     private List<GlobalDescr>               globals                = Collections.emptyList();
     private List<FunctionDescr>             functions              = Collections.emptyList();
@@ -50,25 +52,25 @@ public class PackageDescr extends BaseDescr
     private List<EnumDeclarationDescr>      enumDeclarations       = Collections.emptyList();
 
     public PackageDescr() {
-        this( "",
-              "");
+        this("",
+                "");
     }
 
     public PackageDescr(final String namespace) {
-        this( namespace,
-              "" );
+        this(namespace,
+                "");
     }
 
     public PackageDescr(final String namespace,
-                        final String documentation) {
+            final String documentation) {
         setNamespace(namespace);
         this.documentation = documentation;
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal( ObjectInput in ) throws IOException,
-                                              ClassNotFoundException {
-        super.readExternal( in );
+    public void readExternal(ObjectInput in) throws IOException,
+            ClassNotFoundException {
+        super.readExternal(in);
         documentation = in.readUTF();
         imports = (List<ImportDescr>) in.readObject();
         functionImports = (List<FunctionImportDescr>) in.readObject();
@@ -82,26 +84,26 @@ public class PackageDescr extends BaseDescr
         enumDeclarations = (List<EnumDeclarationDescr>) in.readObject();
     }
 
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        super.writeExternal( out );
-        out.writeUTF( documentation );
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeUTF(documentation);
         out.writeObject(imports);
-        out.writeObject( functionImports );
-        out.writeObject( attributes );
-        out.writeObject( globals );
-        out.writeObject( functions );
-        out.writeObject( windowDeclarations );
-        out.writeObject( rules );
-        out.writeObject( entryPointDeclarations );
-        out.writeObject( typeDeclarations );
-        out.writeObject( enumDeclarations );
+        out.writeObject(functionImports);
+        out.writeObject(attributes);
+        out.writeObject(globals);
+        out.writeObject(functions);
+        out.writeObject(windowDeclarations);
+        out.writeObject(rules);
+        out.writeObject(entryPointDeclarations);
+        out.writeObject(typeDeclarations);
+        out.writeObject(enumDeclarations);
     }
 
     public String getName() {
         return getNamespace() == null ? "" : getNamespace();
     }
-    
-    public void setName( String name ) {
+
+    public void setName(String name) {
         setNamespace(name);
     }
 
@@ -109,61 +111,72 @@ public class PackageDescr extends BaseDescr
         return this.documentation;
     }
 
-    public void addAllImports( final Collection<ImportDescr> importEntries ) {
-        if ( this.imports == Collections.EMPTY_LIST ) {
+    public void addAllImports(final Collection<ImportDescr> importEntries) {
+        if (this.imports == Collections.EMPTY_LIST) {
             this.imports = new ArrayList<ImportDescr>();
         }
-        this.imports.addAll( importEntries );
+        this.imports.addAll(importEntries);
     }
 
-    public void addImport( final ImportDescr importEntry ) {
-        if ( this.imports == Collections.EMPTY_LIST ) {
+    public void addImport(final ImportDescr importEntry) {
+        if (this.imports == Collections.EMPTY_LIST) {
             this.imports = new ArrayList<ImportDescr>();
         }
-        this.imports.add( importEntry );
+        this.imports.add(importEntry);
     }
 
     public List<ImportDescr> getImports() {
         return this.imports;
     }
 
-    public void addFunctionImport( final FunctionImportDescr importFunction ) {
-        if ( this.functionImports == Collections.EMPTY_LIST ) {
+    public void addFunctionImport(final FunctionImportDescr importFunction) {
+        if (this.functionImports == Collections.EMPTY_LIST) {
             this.functionImports = new ArrayList<FunctionImportDescr>();
         }
-        this.functionImports.add( importFunction );
+        this.functionImports.add(importFunction);
     }
 
     public List<FunctionImportDescr> getFunctionImports() {
         return this.functionImports;
     }
 
-    public void addGlobal( final GlobalDescr global ) {
-        if ( this.globals == Collections.EMPTY_LIST ) {
+    public void addAccumulateImport(final AccumulateImportDescr importAccumulate) {
+        if (this.accumulateImports == Collections.EMPTY_LIST) {
+            this.accumulateImports = new ArrayList<AccumulateImportDescr>();
+        }
+        this.accumulateImports.add(importAccumulate);
+    }
+
+    public List<AccumulateImportDescr> getAccumulateImports() {
+        return this.accumulateImports;
+    }
+
+    public void addGlobal(final GlobalDescr global) {
+        if (this.globals == Collections.EMPTY_LIST) {
             this.globals = new ArrayList<GlobalDescr>();
         }
-        this.globals.add( global );
+        this.globals.add(global);
     }
 
     public List<GlobalDescr> getGlobals() {
         return this.globals;
     }
 
-    public void addAttribute( final AttributeDescr attribute ) {
-        if ( this.attributes == Collections.EMPTY_LIST ) {
+    public void addAttribute(final AttributeDescr attribute) {
+        if (this.attributes == Collections.EMPTY_LIST) {
             this.attributes = new ArrayList<AttributeDescr>();
         }
-        this.attributes.add( attribute );
+        this.attributes.add(attribute);
     }
 
     public List<AttributeDescr> getAttributes() {
         return this.attributes;
     }
 
-    public AttributeDescr getAttribute( String name ) {
-        if ( name != null ) {
-            for ( AttributeDescr attr : this.attributes ) {
-                if ( name.equals( attr.getName() ) ) {
+    public AttributeDescr getAttribute(String name) {
+        if (name != null) {
+            for (AttributeDescr attr : this.attributes) {
+                if (name.equals(attr.getName())) {
                     return attr;
                 }
             }
@@ -171,52 +184,52 @@ public class PackageDescr extends BaseDescr
         return null;
     }
 
-    public void addFunction( final FunctionDescr function ) {
-        if ( this.functions == Collections.EMPTY_LIST ) {
-            this.functions = new ArrayList<FunctionDescr>( 1 );
+    public void addFunction(final FunctionDescr function) {
+        if (this.functions == Collections.EMPTY_LIST) {
+            this.functions = new ArrayList<FunctionDescr>(1);
         }
-        this.functions.add( function );
+        this.functions.add(function);
     }
 
     public List<FunctionDescr> getFunctions() {
         return this.functions;
     }
 
-    public void addRule( final RuleDescr rule ) {
-        if ( this.rules == Collections.EMPTY_LIST ) {
-            this.rules = new ArrayList<RuleDescr>( 1 );
+    public void addRule(final RuleDescr rule) {
+        if (this.rules == Collections.EMPTY_LIST) {
+            this.rules = new ArrayList<RuleDescr>(1);
         }
-        for ( final AttributeDescr at : attributes ) {
+        for (final AttributeDescr at : attributes) {
             // check if rule overrides the attribute
-            if ( !rule.getAttributes().containsKey( at.getName() ) ) {
+            if (!rule.getAttributes().containsKey(at.getName())) {
                 // if not, use default value
-                rule.addAttribute( at );
+                rule.addAttribute(at);
             }
         }
         rule.setLoadOrder(rules.size());
-        this.rules.add( rule );
+        this.rules.add(rule);
     }
 
     public List<RuleDescr> getRules() {
         return this.rules;
     }
 
-    public void addTypeDeclaration( TypeDeclarationDescr declaration ) {
-        if ( this.typeDeclarations == Collections.EMPTY_LIST ) {
+    public void addTypeDeclaration(TypeDeclarationDescr declaration) {
+        if (this.typeDeclarations == Collections.EMPTY_LIST) {
             this.typeDeclarations = new ArrayList<TypeDeclarationDescr>();
         }
-        this.typeDeclarations.add( declaration );
+        this.typeDeclarations.add(declaration);
     }
 
     public List<TypeDeclarationDescr> getTypeDeclarations() {
         return this.typeDeclarations;
     }
 
-    public void addEntryPointDeclaration( EntryPointDeclarationDescr epDescr ) {
-        if ( this.entryPointDeclarations == Collections.EMPTY_SET ) {
+    public void addEntryPointDeclaration(EntryPointDeclarationDescr epDescr) {
+        if (this.entryPointDeclarations == Collections.EMPTY_SET) {
             this.entryPointDeclarations = new HashSet<EntryPointDeclarationDescr>();
         }
-        this.entryPointDeclarations.add( epDescr );
+        this.entryPointDeclarations.add(epDescr);
     }
 
     public Set<EntryPointDeclarationDescr> getEntryPointDeclarations() {
@@ -226,30 +239,29 @@ public class PackageDescr extends BaseDescr
     public Set<WindowDeclarationDescr> getWindowDeclarations() {
         return this.windowDeclarations;
     }
-    
-    public void addWindowDeclaration( WindowDeclarationDescr window ) {
-        if ( this.windowDeclarations == Collections.EMPTY_SET ) {
+
+    public void addWindowDeclaration(WindowDeclarationDescr window) {
+        if (this.windowDeclarations == Collections.EMPTY_SET) {
             this.windowDeclarations = new HashSet<WindowDeclarationDescr>();
         }
-        this.windowDeclarations.add( window );
+        this.windowDeclarations.add(window);
     }
 
-    public void addEnumDeclaration( EnumDeclarationDescr declaration ) {
-        if ( this.enumDeclarations == Collections.EMPTY_LIST ) {
+    public void addEnumDeclaration(EnumDeclarationDescr declaration) {
+        if (this.enumDeclarations == Collections.EMPTY_LIST) {
             this.enumDeclarations = new ArrayList<EnumDeclarationDescr>();
         }
-        this.enumDeclarations.add( declaration );
+        this.enumDeclarations.add(declaration);
     }
 
     public List<EnumDeclarationDescr> getEnumDeclarations() {
         return this.enumDeclarations;
     }
-    
-    
+
     public List<AbstractClassTypeDeclarationDescr> getClassAndEnumDeclarationDescrs() {
-        List<AbstractClassTypeDeclarationDescr> list = new ArrayList<AbstractClassTypeDeclarationDescr>( getEnumDeclarations() );
-        list.addAll( getTypeDeclarations() );
-        return Collections.unmodifiableList( list );
+        List<AbstractClassTypeDeclarationDescr> list = new ArrayList<AbstractClassTypeDeclarationDescr>(getEnumDeclarations());
+        list.addAll(getTypeDeclarations());
+        return Collections.unmodifiableList(list);
     }
 
     public void removeObjectsGeneratedFromResource(Resource resource) {

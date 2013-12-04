@@ -16,20 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.TypeResolver;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.facttemplates.FactTemplate;
-import org.drools.core.util.ClassUtils;
-import org.kie.api.definition.process.Process;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.definition.type.Role;
-import org.kie.api.io.Resource;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -45,6 +31,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.TypeResolver;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.factmodel.traits.TraitRegistry;
+import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.util.ClassUtils;
+import org.kie.api.definition.process.Process;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * Collection of related <code>Rule</code>s.
@@ -77,6 +78,8 @@ public class Package
     private Map<String, ImportDeclaration> imports;
 
     private Map<String, Function>          functions;
+    
+    private Map<String, AccumulateFunction> accumulateFunctions;
 
     private Set<String>                    staticImports;
 
@@ -139,8 +142,9 @@ public class Package
     public Package(final String name) {
         this.name = name;
         this.imports = new HashMap<String, ImportDeclaration>();
+        this.accumulateFunctions = Collections.emptyMap();
         this.typeDeclarations = new LinkedHashMap<String, TypeDeclaration>();
-        this.staticImports = Collections.EMPTY_SET;
+        this.staticImports = Collections.emptySet();
         this.rules = new LinkedHashMap<String, Rule>();
         this.ruleFlows = Collections.emptyMap();
         this.globals = Collections.emptyMap();
@@ -180,6 +184,7 @@ public class Package
         out.writeObject( this.imports );
         out.writeObject( this.staticImports );
         out.writeObject( this.functions );
+        out.writeObject( this.accumulateFunctions );
         out.writeObject( this.factTemplates );
         out.writeObject( this.ruleFlows );
         out.writeObject( this.globals );
@@ -227,6 +232,7 @@ public class Package
         this.imports = (Map<String, ImportDeclaration>) in.readObject();
         this.staticImports = (Set) in.readObject();
         this.functions = (Map<String, Function>) in.readObject();
+        this.accumulateFunctions = (Map<String, AccumulateFunction>) in.readObject();
         this.factTemplates = (Map) in.readObject();
         this.ruleFlows = (Map) in.readObject();
         this.globals = (Map<String, String>) in.readObject();
@@ -334,6 +340,19 @@ public class Package
 
     public Map<String, Function> getFunctions() {
         return this.functions;
+    }
+
+    public void addAccumulateFunction( final String name, final AccumulateFunction function ) {
+        if (this.accumulateFunctions == Collections.EMPTY_MAP) {
+            this.accumulateFunctions = new HashMap<String, AccumulateFunction>( 1 );
+        }
+
+        this.accumulateFunctions.put( name,
+                            function );
+    }
+
+    public Map<String, AccumulateFunction> getAccumulateFunctions() {
+        return this.accumulateFunctions;
     }
 
     public void removeFunctionImport( final String functionImport ) {
@@ -536,6 +555,7 @@ public class Package
         this.ruleFlows.clear();
         this.imports.clear();
         this.functions.clear();
+        this.accumulateFunctions.clear();
         this.staticImports.clear();
         this.globals.clear();
         this.factTemplates.clear();

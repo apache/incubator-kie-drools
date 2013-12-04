@@ -144,6 +144,10 @@ public class JavaAccumulateBuilder
         for ( AccumulateFunctionCallDescr fc : funcCalls ) {
             // find the corresponding function
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( fc.getFunction() );
+            if( function == null ) {
+                // might have been imported in the package
+                function = context.getPackageBuilder().getPackage().getAccumulateFunctions().get(fc.getFunction());
+            }
             if ( function == null ) {
                 context.addError( new DescrBuildError( accumDescr,
                                                               context.getRuleDescr(),

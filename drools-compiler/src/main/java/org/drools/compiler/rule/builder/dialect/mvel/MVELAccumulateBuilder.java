@@ -22,12 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
-import org.drools.core.base.extractors.ArrayElementReader;
-import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
-import org.drools.core.base.mvel.MVELAccumulator;
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -39,6 +33,12 @@ import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.util.PackageBuilderUtil;
+import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
+import org.drools.core.base.extractors.ArrayElementReader;
+import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
+import org.drools.core.base.mvel.MVELAccumulator;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELCompileable;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Declaration;
@@ -172,6 +172,10 @@ public class MVELAccumulateBuilder
         for ( AccumulateFunctionCallDescr func : functions ) {
             // build an external function executor
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
+            if( function == null ) {
+                // might have been imported in the package
+                function = context.getPackageBuilder().getPackage().getAccumulateFunctions().get(func.getFunction());
+            }
             if ( function == null ) {
                 context.addError( new DescrBuildError( accumDescr,
                                                               context.getRuleDescr(),

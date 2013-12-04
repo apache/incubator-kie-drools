@@ -33,6 +33,7 @@ import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AccumulateDescr.AccumulateFunctionCallDescr;
+import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
@@ -104,7 +105,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackage() throws Exception {
         final String source = "package foo.bar.baz";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
         final PackageDescr pkg = parser.parse( new StringReader( source ) );
         assertFalse( parser.hasErrors() );
         assertEquals( "foo.bar.baz",
@@ -114,7 +115,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackageWithError() throws Exception {
         final String source = "package 12 foo.bar.baz";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
         final PackageDescr pkg = parser.parse( true,
                                                new StringReader( source ) );
         assertTrue( parser.hasErrors() );
@@ -125,7 +126,7 @@ public class RuleParserTest extends TestCase {
     @Test
     public void testPackageWithError2() throws Exception {
         final String source = "package 12 12312 231";
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
         final PackageDescr pkg = parser.parse( true,
                                                new StringReader( source ) );
         assertTrue( parser.hasErrors() );
@@ -854,8 +855,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithoutParens() throws Exception {
         String input = "( foo )";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
-                                          DRL5Lexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL6Lexer.LEFT_PAREN,
+                                          DRL6Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "foo",
@@ -866,8 +867,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithParens() throws Exception {
         String input = "(fnord())";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
-                                          DRL5Lexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL6Lexer.LEFT_PAREN,
+                                          DRL6Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "fnord()",
@@ -878,8 +879,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithParensAndQuotedString() throws Exception {
         String input = "( fnord( \"cheese\" ) )";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
-                                          DRL5Lexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL6Lexer.LEFT_PAREN,
+                                          DRL6Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "fnord( \"cheese\" )",
@@ -890,8 +891,8 @@ public class RuleParserTest extends TestCase {
     public void testChunkWithRandomCharac5ters() throws Exception {
         String input = "( %*9dkj)";
         createParser( new ANTLRStringStream( input ) );
-        String returnData = parser.chunk( DRL5Lexer.LEFT_PAREN,
-                                          DRL5Lexer.RIGHT_PAREN,
+        String returnData = parser.chunk( DRL6Lexer.LEFT_PAREN,
+                                          DRL6Lexer.RIGHT_PAREN,
                                           -1 );
 
         assertEquals( "%*9dkj",
@@ -1440,7 +1441,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderLineSpread() throws Exception {
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
         final PackageDescr pkg = parser.parse( this.getReader( "expander_spread_lines.dslr" ),
                                                this.getReader( "complex.dsl" ) );
 
@@ -1460,7 +1461,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderMultipleConstraints() throws Exception {
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints.dslr" ),
                                                this.getReader( "multiple_constraints.dsl" ) );
 
@@ -1492,7 +1493,7 @@ public class RuleParserTest extends TestCase {
 
     @Test
     public void testExpanderMultipleConstraintsFlush() throws Exception {
-        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL5);
+        final DrlParser parser = new DrlParser(LanguageLevelOption.DRL6);
         // this is similar to the other test, but it requires a flush to add the
         // constraints
         final PackageDescr pkg = parser.parse( this.getReader( "expander_multiple_constraints_flush.dslr" ),
@@ -3087,6 +3088,148 @@ public class RuleParserTest extends TestCase {
     }
 
     @Test
+    public void testAccumulateMnemonic() throws Exception {
+        String drl = "package org.drools.compiler\n" + 
+                "rule \"Accumulate 1\"\n" + 
+                "when\n" + 
+                "     acc( Cheese( $price : price ),\n" + 
+                "          $a1 : average( $price ) )\n" + 
+                "then\n" + 
+                "end\n";
+        final PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                        drl );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Object[]",
+                      out.getObjectType() );
+        AccumulateDescr accum = (AccumulateDescr) out.getSource();
+        assertTrue( accum.isExternalFunction() );
+
+        List<AccumulateFunctionCallDescr> functions = accum.getFunctions();
+        assertEquals( 1,
+                      functions.size() );
+        assertEquals( "average",
+                      functions.get( 0 ).getFunction() );
+        assertEquals( "$a1",
+                      functions.get( 0 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 0 ).getParams()[0] );
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
+    }
+    
+    @Test
+    public void testAccumulateMnemonic2() throws Exception {
+        String drl = "package org.drools.compiler\n" + 
+                "rule \"Accumulate 1\"\n" + 
+                "when\n" + 
+                "     Number() from acc( Cheese( $price : price ),\n" + 
+                "                        average( $price ) )\n" + 
+                "then\n" + 
+                "end\n";
+        final PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                        drl );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Number",
+                      out.getObjectType() );
+        AccumulateDescr accum = (AccumulateDescr) out.getSource();
+        assertTrue( accum.isExternalFunction() );
+
+        List<AccumulateFunctionCallDescr> functions = accum.getFunctions();
+        assertEquals( 1,
+                      functions.size() );
+        assertEquals( "average",
+                      functions.get( 0 ).getFunction() );
+        assertEquals( "$price",
+                      functions.get( 0 ).getParams()[0] );
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
+    }
+
+    @Test
+    public void testImportAccumulate() throws Exception {
+        String drl = "package org.drools.compiler\n" +
+                "import acc foo.Bar baz\n" +
+                "import accumulate foo.Bar2 baz2\n" + 
+                "rule \"Accumulate 1\"\n" + 
+                "when\n" + 
+                "     acc( Cheese( $price : price ),\n" + 
+                "          $v1 : baz( $price ), \n" +
+                "          $v2 : baz2( $price ) )\n" + 
+                "then\n" + 
+                "end\n";
+        final PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                        drl );
+        
+        assertEquals( 2, 
+                      pkg.getAccumulateImports().size() );
+        AccumulateImportDescr imp = (AccumulateImportDescr) pkg.getAccumulateImports().get(0);
+        assertEquals( "foo.Bar", 
+                imp.getTarget() );
+        assertEquals( "baz", 
+                imp.getFunctionName() );
+
+        imp = (AccumulateImportDescr) pkg.getAccumulateImports().get(1);
+        assertEquals( "foo.Bar2", 
+                imp.getTarget() );
+        assertEquals( "baz2", 
+                imp.getFunctionName() );
+
+        assertEquals( 1,
+                      pkg.getRules().size() );
+
+        RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
+        assertEquals( 1,
+                      rule.getLhs().getDescrs().size() );
+
+        PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
+        assertEquals( "Object[]",
+                      out.getObjectType() );
+        AccumulateDescr accum = (AccumulateDescr) out.getSource();
+        assertTrue( accum.isExternalFunction() );
+
+        List<AccumulateFunctionCallDescr> functions = accum.getFunctions();
+        assertEquals( 2,
+                      functions.size() );
+        assertEquals( "baz",
+                functions.get( 0 ).getFunction() );
+        assertEquals( "$v1",
+                functions.get( 0 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 0 ).getParams()[0] );
+
+        assertEquals( "baz2",
+                functions.get( 1 ).getFunction() );
+        assertEquals( "$v2",
+                functions.get( 1 ).getBind() );
+        assertEquals( "$price",
+                      functions.get( 1 ).getParams()[0] );
+
+        final PatternDescr pattern = (PatternDescr) accum.getInputPattern();
+        assertEquals( "Cheese",
+                      pattern.getObjectType() );
+    }
+
+    @Test
     public void testAccumulateMultipleFunctionsConstraint() throws Exception {
         final PackageDescr pkg = (PackageDescr) parseResource( "compilationUnit",
                                                                "accumulateMultipleFunctionsConstraint.drl" );
@@ -4175,7 +4318,7 @@ public class RuleParserTest extends TestCase {
             /** Use Reflection to get rule method from parser */
             Method ruleName = null;
             Object[] params = null;
-            for ( Method method : DRL5Parser.class.getMethods() ) {
+            for ( Method method : DRL6Parser.class.getMethods() ) {
                 if ( method.getName().equals( testRuleName ) ) {
                     ruleName = method;
                     Class< ? >[] parameterTypes = method.getParameterTypes();
@@ -4200,7 +4343,7 @@ public class RuleParserTest extends TestCase {
     }
 
     private void createParser( CharStream charStream ) {
-        parser = buildParser(charStream, LanguageLevelOption.DRL5);
+        parser = buildParser(charStream, LanguageLevelOption.DRL6);
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,

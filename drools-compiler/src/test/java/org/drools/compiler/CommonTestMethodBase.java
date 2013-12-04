@@ -45,6 +45,8 @@ import org.kie.api.runtime.conf.KieSessionOption;
 
 import ch.qos.logback.classic.Level;
 
+import ch.qos.logback.classic.Level;
+
 /**
  * This contains methods common to many of the tests in drools-compiler. </p>
  * The {@link #createKnowledgeSession(KnowledgeBase)} method has been made
@@ -329,7 +331,9 @@ public class CommonTestMethodBase extends Assert {
 				kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
 			}
 		}
-		ks.newKieBuilder(kfs).buildAll();
+		KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
+		assertFalse( kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(), 
+		        kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR) );
 		InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
 				.getKieModule(releaseId);
 		byte[] jar = kieModule.getBytes();
