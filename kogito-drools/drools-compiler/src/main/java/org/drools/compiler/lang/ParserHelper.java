@@ -23,6 +23,7 @@ import org.antlr.runtime.TokenStream;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.api.AbstractClassTypeDeclarationBuilder;
 import org.drools.compiler.lang.api.AccumulateDescrBuilder;
+import org.drools.compiler.lang.api.AccumulateImportDescrBuilder;
 import org.drools.compiler.lang.api.AttributeDescrBuilder;
 import org.drools.compiler.lang.api.AttributeSupportBuilder;
 import org.drools.compiler.lang.api.BehaviorDescrBuilder;
@@ -641,6 +642,14 @@ public class ParserHelper {
                 }
                 pushParaphrases( DroolsParaphraseTypes.IMPORT );
                 beginSentence( DroolsSentenceType.IMPORT_STATEMENT );
+                setStart( imp );
+                return (T) imp;
+            } else if ( AccumulateImportDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                AccumulateImportDescrBuilder imp = ctxBuilder == null ?
+                          DescrFactory.newPackage().newAccumulateImport() :
+                          ((PackageDescrBuilder) ctxBuilder).newAccumulateImport();
+                pushParaphrases( DroolsParaphraseTypes.ACCUMULATE_IMPORT );
+                beginSentence( DroolsSentenceType.ACCUMULATE_IMPORT_STATEMENT );
                 setStart( imp );
                 return (T) imp;
             } else if ( GlobalDescrBuilder.class.isAssignableFrom( clazz ) ) {

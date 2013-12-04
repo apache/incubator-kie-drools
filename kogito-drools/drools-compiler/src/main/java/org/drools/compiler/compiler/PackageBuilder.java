@@ -52,6 +52,7 @@ import org.drools.compiler.compiler.PackageBuilder.AssetFilter.Action;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -140,6 +141,7 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.DecisionTableConfiguration;
@@ -1565,6 +1567,8 @@ public class PackageBuilder
             pkgRegistry.addImport(importDescr);
         }
 
+        processAccumulateFunctions(pkgRegistry, packageDescr);
+
         processEntryPointDeclarations(pkgRegistry, packageDescr);
 
         // process types in 2 steps to deal with circular and recursive declarations
@@ -1574,6 +1578,7 @@ public class PackageBuilder
     }
 
     void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
+        processAccumulateFunctions( pkgRegistry, packageDescr);
         processWindowDeclarations(pkgRegistry, packageDescr);
         processFunctions(pkgRegistry, packageDescr);
         processGlobals(pkgRegistry, packageDescr);
@@ -1612,6 +1617,35 @@ public class PackageBuilder
                 this.results.add(new GlobalError(global, e.getMessage()));
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void processAccumulateFunctions(PackageRegistry pkgRegistry,
+            PackageDescr packageDescr) {
+        for (final AccumulateImportDescr aid : packageDescr.getAccumulateImports() ) {
+            AccumulateFunction af = loadAccumulateFunction( pkgRegistry, 
+                    aid.getFunctionName(),
+                    aid.getTarget() ); 
+            pkgRegistry.getPackage().addAccumulateFunction(aid.getFunctionName(), af);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private AccumulateFunction loadAccumulateFunction(PackageRegistry pkgRegistry,
+                                                      String identifier,
+                                                      String className) {
+        try {
+            Class< ? extends AccumulateFunction> clazz = (Class< ? extends AccumulateFunction>) pkgRegistry.getTypeResolver().resolveType(className);
+            return clazz.newInstance();
+        } catch ( ClassNotFoundException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Class " + className + " not found",
+                                              e );
+        } catch ( InstantiationException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Instantiation failed for class " + className,
+                                              e );
+        } catch ( IllegalAccessException e ) {
+            throw new RuntimeDroolsException( "Error loading accumulate function for identifier " + identifier + ". Illegal access to class " + className,
+                                              e );
         }
     }
 

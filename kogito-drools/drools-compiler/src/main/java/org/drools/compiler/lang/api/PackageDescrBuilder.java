@@ -25,6 +25,12 @@ public interface PackageDescrBuilder
      * @return the ImporDescrBuilder to set the function import
      */
     public ImportDescrBuilder newFunctionImport();
+    
+    /**
+     * Adds an accumulate import statement to the package
+     * @return
+     */
+    public AccumulateImportDescrBuilder newAccumulateImport();
 
     /**
      * Adds a global statement to the package 

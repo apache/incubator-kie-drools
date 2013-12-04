@@ -1,8 +1,13 @@
 package org.drools.compiler.integrationtests;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +28,7 @@ import org.drools.compiler.OrderItem;
 import org.drools.compiler.OuterClass;
 import org.drools.compiler.Person;
 import org.drools.compiler.compiler.PackageBuilder;
+import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.RuleBase;
 import org.drools.core.RuleBaseFactory;
 import org.drools.core.StatelessSession;
@@ -35,13 +41,18 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.QueryResults;
@@ -2545,7 +2556,68 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( list, Arrays.asList( 2, 5 ) );
 
-
     }
+    
+    @Test
+    public void testImportAccumulateFunction() throws Exception {
+        String drl = "package org.foo.bar\n"
+                + "import accumulate "+TestFunction.class.getCanonicalName()+" f\n"
+                + "rule X when\n"
+                + "    accumulate( $s : String(),\n"
+                + "                $v : f( $s ) )\n"
+                + "then\n"
+                + "end\n";
+        ReleaseId releaseId = new ReleaseIdImpl("foo", "bar", "1.0");
+        KieServices ks = KieServices.Factory.get();
+        createAndDeployJar( ks, releaseId, drl );
+        
+        KieContainer kc = ks.newKieContainer( releaseId );
+        KieSession ksession = kc.newKieSession();
+        
+        AgendaEventListener ael = mock(AgendaEventListener.class);
+        ksession.addEventListener(ael);
+        
+        ksession.insert("x");
+        ksession.fireAllRules();
+        
+        ArgumentCaptor<AfterMatchFiredEvent> ac = ArgumentCaptor.forClass(AfterMatchFiredEvent.class);
+        verify( ael ).afterMatchFired(ac.capture());
+        
+        assertThat( (Integer) ac.getValue().getMatch().getDeclarationValue("$v"), is(Integer.valueOf(1)) );
+    }
+    
+    public static class TestFunction implements AccumulateFunction {
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+        }
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        }
+        @Override
+        public Serializable createContext() {
+            return null;
+        }
+        @Override
+        public void init(Serializable context) throws Exception {
+        }
+        @Override
+        public void accumulate(Serializable context, Object value) {
+        }
+        @Override
+        public void reverse(Serializable context, Object value) throws Exception {
+        }
+        @Override
+        public Object getResult(Serializable context) throws Exception {
+            return Integer.valueOf(1);
+        }
+        @Override
+        public boolean supportsReverse() {
+            return true;
+        }
+        @Override
+        public Class<?> getResultType() {
+            return Number.class;
+        }
+    }    
 
 }

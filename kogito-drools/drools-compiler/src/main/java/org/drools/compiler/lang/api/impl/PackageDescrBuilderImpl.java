@@ -1,10 +1,12 @@
 package org.drools.compiler.lang.api.impl;
 
+import org.drools.compiler.lang.api.AccumulateImportDescrBuilder;
 import org.drools.compiler.lang.api.AttributeDescrBuilder;
 import org.drools.compiler.lang.api.DeclareDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
 import org.drools.compiler.lang.api.GlobalDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -66,6 +68,12 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     public ImportDescrBuilder newFunctionImport() {
         ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, true );
         descr.addFunctionImport( (FunctionImportDescr) initDescr(impl) );
+        return impl;
+    }
+
+    public AccumulateImportDescrBuilder newAccumulateImport() {
+        AccumulateImportDescrBuilder impl = new AccumulateImportDescrBuilderImpl( this );
+        descr.addAccumulateImport( (AccumulateImportDescr) initDescr(impl) );
         return impl;
     }
 

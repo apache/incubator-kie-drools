@@ -24,7 +24,8 @@ package org.drools.compiler.lang;
 public enum DroolsSentenceType {
     PACKAGE, 
 	FUNCTION_IMPORT_STATEMENT, 
-	IMPORT_STATEMENT, 
+    ACCUMULATE_IMPORT_STATEMENT, 
+    IMPORT_STATEMENT, 
 	GLOBAL, 
 	FUNCTION, 
 	TEMPLATE, 

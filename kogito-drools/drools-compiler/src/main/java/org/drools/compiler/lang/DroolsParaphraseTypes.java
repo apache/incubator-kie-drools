@@ -23,6 +23,7 @@ public enum DroolsParaphraseTypes {
     PACKAGE, 
     IMPORT, 
     FUNCTION_IMPORT, 
+    ACCUMULATE_IMPORT, 
     GLOBAL, 
     FUNCTION, 
     QUERY, 
