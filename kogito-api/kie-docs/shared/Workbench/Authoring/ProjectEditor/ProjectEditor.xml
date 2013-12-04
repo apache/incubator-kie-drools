@@ -28,7 +28,7 @@
   <section>
     <title>Project General Settings </title>
   <para>General settings provide tools for project name and GAV-data (Group, Artifact, Version). GAV values are used as
-    indentifiers to differ projects and versions of the same project.</para>
+    identifiers to differentiate projects and versions of the same project.</para>
     <figure>
       <title>Project Settings</title>
       

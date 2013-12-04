@@ -56,7 +56,7 @@
               <listitem><para>
                      If everything goes well, as soon as the process is notified that the
                      candidate was hired, the system will automatically post a tweet about the new
-                     Hire using the twitter service connector.</para>
+                     Hire using the Twitter service connector.</para>
               </listitem>
        </itemizedlist>
 
@@ -170,7 +170,7 @@
                                    width="700"/>
                      </imageobject>
               </mediaobject>
-              <para>You can start process instances using any of the two options highlated in the
+              <para>You can start process instances using any of the two options highlighted in the
                      previous screen.</para>
               <para>In order to create a new process instance most of the processes will require you
                      to fill in some information and for that a form will be displayed. For this

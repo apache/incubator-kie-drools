@@ -74,7 +74,7 @@
        </section>
   <section xml:id="wb.CommandLineConfig">
   <title>Command line config tool</title>
-    <para>Provides capabilites to manage the system repository from command line.</para>
+    <para>Provides capabilities to manage the system repository from command line.</para>
     <section>
       <title>Modes</title>
       <itemizedlist>
@@ -194,7 +194,7 @@
       <title>How to use</title>
       <para>The tool can be found from kie-config-cli-${version}-dist.zip. Execute the kie-config-cli.sh script and by
         default it will start in online mode asking for a Git url to connect to ( the default value is
-        git://localhost/system ). To connect to a remote server, replace the host and port with appropiate values e.g.
+        git://localhost/system ). To connect to a remote server, replace the host and port with appropriate values, e.g.
         git://kie-wb-host:9148/system.</para>
       <programlisting>./kie-config-cli.sh </programlisting>
       <para>To operate in offline mode, append the offline parameter to the kie-config-cli.sh command. This will change

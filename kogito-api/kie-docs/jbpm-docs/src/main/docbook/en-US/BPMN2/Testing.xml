@@ -23,7 +23,7 @@
     as expected in specific use cases, for example test the output based on
     the existing input. To simplify unit testing, jBPM includes a helper class
     called <emphasis role="bold">JbpmJUnitBaseTestCase</emphasis> (in the
-    jbpm-test module) that you can use to greatly simplify your junit testing,
+    jbpm-test module) that you can use to greatly simplify your JUnit testing,
     by offering:</para>
 
     <itemizedlist>
@@ -66,8 +66,8 @@
       </listitem>
     </itemizedlist>
 
-    <para>For example, conside the following hello world process containing a
-    start event, a script task and an end event. The following junit test will
+    <para>For example, consider the following "hello world" process containing a
+    start event, a script task and an end event. The following JUnit test will
     create a new session, start the process and then verify whether the
     process instance completed successfully and whether these three nodes have
     been executed.</para>
@@ -304,7 +304,7 @@
       specific service and contains all the data related to that task) for a
       given type. This test handler can then be queried during unit testing to
       check whether specific work was actually requested during the execution
-      of the process and that the data associcated with the work was
+      of the process and that the data associated with the work was
       correct.</para>
 
       <para>The following example describes how a process that sends out an
@@ -365,10 +365,10 @@
     <section>
       <title>Configuring persistence</title>
 
-      <para>You can configure whether you want to execute the junit tests
-      using persistence or not. By default, the junit tests will use
+      <para>You can configure whether you want to execute the JUnit tests
+      using persistence or not. By default, the JUnit tests will use
       persistence, meaning that the state of all process instances will be
-      stored in a (in-memory H2) database (which is started by the junit test
+      stored in a (in-memory H2) database (which is started by the JUnit test
       during setup) and a history log will be used to check assertions related
       to execution history. When persistence is not used, process instances
       will only live in memory and an in-memory logger is used for history

@@ -183,7 +183,7 @@ ds.init();</programlisting>
       <para>You need to configure the jBPM engine to use persistence, usually simply by using
         the appropriate constructor when creating your session.  There are various ways to create
         a session (as we have tried to make this as easy as possible for you and have several
-        utility classes for you, depending for example if you are trying to write a process junit
+        utility classes for you, depending for example if you are trying to write a process JUnit
         test).</para>
 
       <para>The easiest way to do this is to use the <code>jbpm-test</code> module that allows you to easily

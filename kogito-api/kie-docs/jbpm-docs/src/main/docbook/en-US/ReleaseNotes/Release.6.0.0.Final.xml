@@ -83,8 +83,8 @@
   <section>
     <title>jBPM Designer</title>
 
-    <para>jBPM designer has been reimplemented and is fully integrated into the workbench. It easly
-      now integrates with many of the workbench services available. In addition following features
+    <para>jBPM designer has been reimplemented and is fully integrated into the workbench. It now
+      easily integrates with many of the workbench services available. In addition, the following features
       were added/improved on:</para>
     <itemizedlist>
       <listitem><para>Improvement of jBPM Simulation engine and the UI. Added ability to specify simulation

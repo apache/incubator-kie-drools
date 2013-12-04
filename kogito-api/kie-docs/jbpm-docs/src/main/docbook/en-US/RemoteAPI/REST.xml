@@ -445,7 +445,7 @@
   <section>
     <title>History calls</title>
        <important>       
-    <para>The information that is available via the History REST calls is <emphasis>not</emphasis> limited to the deployment specfied by the
+    <para>The information that is available via the History REST calls is <emphasis>not</emphasis> limited to the deployment specified by the
       <emphasis>deploymentId</emphasis> part of the URL used. This is because the <code>AuditLogService</code> used by the REST calls is
       only dependent on the persistence framework used by the deployment, but not on anything else.</para>
        </important>
@@ -654,7 +654,7 @@
       <para>All of the task operation calls described in this section use the user (id) used in the REST basic authorization as
         input for the user parameter in the specific call.</para>
       
-      <para>Some of the operations take an optional <code>lanaguage</code> query parameter. If this parameter is not specified
+      <para>Some of the operations take an optional <code>language</code> query parameter. If this parameter is not specified
         in the REST call, the default value of "<code>en-UK</code>" is used.</para>
       
       <para>The <emphasis>taskId</emphasis> component of the REST calls below must conform to the following regex: 

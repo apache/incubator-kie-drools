@@ -169,7 +169,7 @@
       </para>
   
       <para>If you end up using different names for your user/schemas, please make a note of
-      where we insert "jbpm" in the configuation files.</para>
+      where we insert "jbpm" in the configuration files.</para>
   
       <para>If you want to try this quickstart with <emphasis>another</emphasis> database, a section at
       the end of this quickstart describes what you may need to modify.</para>
@@ -198,7 +198,7 @@
       
       <para>Do the following:
         <itemizedlist>
-        <listitem>Disable H2 default data base and enable mysql data base in build.properties
+        <listitem>Disable H2 default database and enable MySQL database in build.properties
         <programlisting># default is H2
 # H2.version=1.3.168
 # db.name=h2
@@ -218,7 +218,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
           <para>In this file, you will have to change the name of the hibernate dialect used for your database.</para>
           <para>The original line is:</para> 
           <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/&gt;</programlisting>
-          <para>In the case of a MySql database, you need to change it to:</para> 
+          <para>In the case of a MySQL database, you need to change it to:</para> 
           <programlisting>&lt;property name="hibernate.dialect" value="org.hibernate.dialect.<emphasis role="bold">MySQL</emphasis>Dialect"/&gt;</programlisting>
           <para>For those of you who decided to use another database, a list of the available 
           hibernate dialect classes can be found <link
@@ -330,8 +330,8 @@ db.driver.download.url=https://repository.jboss.org/nexus/service/local/reposito
               </listitem>
               <listitem>Copy one of the example configs (mysql or postgresql)
               <programlisting>
-#postresql
-db.name=postresql
+#postgresql
+db.name=postgresql
 db.driver.module.prefix=org/postgresql
 db.driver.jar.name=${db.name}-jdbc.jar
 db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads/postgresql/postgresql/9.1-902.jdbc4/postgresql-9.1-902.jdbc4.jar
@@ -396,19 +396,19 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
   </section>
 
   <section>
-    <title>jBPM data base schema scripts (DDL scripts)</title>
+    <title>jBPM database schema scripts (DDL scripts)</title>
 
     <para>By default the demo setup makes use of Hibernate auto DDL generation capabilities to build up 
-    the complete data base schema, including all tables, sequences, etc. This might not always be welcomed
-    (by your database administrator) and thus the installer provides DDL scripts for most popular databases.
+    the complete database schema, including all tables, sequences, etc. This might not always be welcomed
+    (by your database administrator), and thus the installer provides DDL scripts for most popular databases.
     </para>
 
     <table>
     <title>DDL scripts</title>
-      <tgroup cols="2">jBPM DDL scripts for data bases
+      <tgroup cols="2">jBPM DDL scripts for databases
         <thead>
           <row>
-            <entry>Data base name</entry>
+            <entry>Database name</entry>
             <entry>Location</entry>
           </row>
         </thead>
@@ -503,7 +503,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
         <tbody>
           <row>
             <entry>clean.db</entry>
-            <entry>cleans up data base used by jBPM demo (applies only to H2 database)</entry>
+            <entry>cleans up database used by jBPM demo (applies only to H2 database)</entry>
           </row>
         </tbody>
         <tbody>
@@ -666,7 +666,7 @@ db.driver.download.url=https://repository.jboss.org/nexus/content/repositories/t
       <tbody>
         <row>
           <entry>jbpm.schemaexport</entry>
-          <entry>generates DDL scripts for jBPM data base schema based on persistence.xml located in jbpm-installer/db</entry>
+          <entry>generates DDL scripts for jBPM database schema based on persistence.xml located in jbpm-installer/db</entry>
         </row>
       </tbody>
       <tbody>

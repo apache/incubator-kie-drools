@@ -143,7 +143,7 @@
       <para>On the formula expression:
         <programlisting>="<b>" + {sum(po_lines/line_total)} + "</b>"
         </programlisting>
-        we are using the XPATH function sum() that is going to sumarize the totals of all the lines. So after creating
+        we are using the XPATH function sum() that is going to summarize the totals of all the lines. So after creating
         some Lines the form will look like this:
       </para>
       <figure>
@@ -156,7 +156,7 @@
         </screenshot>
       </figure>
       <para>Note that the line_total child field corresponds with the field line_total field on then
-        form selected as a Default Form selected on the Lines field configuratio
+        form selected as a Default Form selected on the Lines field configuration.
       </para>
       <para>On this sample we are using the sum() XPATH function to calculate the total of the Purchase
         Order, but XPATH provides a lot of possibilities to select values from a set of children and

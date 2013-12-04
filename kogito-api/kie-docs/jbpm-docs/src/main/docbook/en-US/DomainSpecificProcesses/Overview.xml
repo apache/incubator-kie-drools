@@ -76,7 +76,7 @@ Twitter, for example, we recommend you take a look at the classes made available
     <listitem>Execute the necessary business logic. This might be mean interacting with a web
     service, database, or other technical component.</listitem>
     <listitem>Inform the process engine that the work item has been completed (or aborted) by
-    calling one of the following two mtehods on the <code>WorkItemManager</code> instance passed 
+    calling one of the following two methods on the <code>WorkItemManager</code> instance passed 
     to the method:
     </listitem>
   </orderedlist>

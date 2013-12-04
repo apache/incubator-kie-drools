@@ -71,23 +71,23 @@
             </row>
             <row>
               <entry>First parameter</entry>
-              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+              <entry>A String parameter that can be user to pass custom configuration needed by the Custom Field Type implementation</entry>
             </row>
             <row>
               <entry>Second parameter</entry>
-              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+              <entry>A String parameter that can be user to pass custom configuration needed by the Custom Field Type implementation</entry>
             </row>
             <row>
               <entry>Third parameter</entry>
-              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+              <entry>A String parameter that can be user to pass custom configuration needed by the Custom Field Type implementation</entry>
             </row>
             <row>
               <entry>Fourth parameter</entry>
-              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+              <entry>A String parameter that can be user to pass custom configuration needed by the Custom Field Type implementation</entry>
             </row>
             <row>
               <entry>Fifth parameter</entry>
-              <entry>A String parameter that can be user to pass custom configuration neede by the Custom Field Type implementation</entry>
+              <entry>A String parameter that can be user to pass custom configuration needed by the Custom Field Type implementation</entry>
             </row>
             <row>
               <entry>Required</entry>
@@ -148,7 +148,7 @@
     If we build a simple process and configure a
     <emphasis>Short text</emphasis>
     to be shown as the sample<emphasis>File Input</emphasis>, if we build the project
-    on runtime the field will behave uploading the choosen files to the server and allowing the user to download it like this:
+    on runtime the field will behave uploading the chosen files to the server and allowing the user to download it like this:
     <figure>
       <title>Choosing the file to upload</title>
       <screenshot>

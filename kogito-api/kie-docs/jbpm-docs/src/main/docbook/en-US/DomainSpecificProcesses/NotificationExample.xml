@@ -74,7 +74,7 @@ files. That means adding a <code>drools.workDefinitions</code> property to the
 <filename>drools.rulebase.conf</filename> file in the <filename>META-INF</filename>.</para>
 
 <para>The <code>drools.workDefinitions</code> property represents a list of files containing work 
-item definitions, separated usings spaces. If you want to <emphasis>exclude</emphasis> all other 
+item definitions, separated using spaces. If you want to <emphasis>exclude</emphasis> all other 
 work item definitions and only use your definition, you could use the following:</para>
 
 <programlisting>drools.workDefinitions = MyWorkDefinitions.wid</programlisting>

@@ -377,8 +377,8 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
     <title>Defining a KieModule programmatically</title>
 
     <para>It is also possible to define the <code>KieBase</code>s and <code>KieSession</code>s
-    belonging to a KieModule programatically instead of declaratively define them in the
-    kmodule.xml file. The same programatic API also allows to explicitly add the file containing the
+    belonging to a KieModule programmatically instead of declaratively define them in the
+    kmodule.xml file. The same programmatic API also allows to explicitly add the file containing the
     Kie artifacts instead of automatically read them from the resources folder of your project.
     To do that it is necessary to create a <code>KieFileSystem</code>, a sort of virtual file
     system, and add all the resources contained in your project to it.</para>
@@ -397,7 +397,7 @@ KieContainer kieContainer = kieServices.newKieContainer( releaseId );</programli
     <para>Like all other Kie core component you can obtain an instance of the <code>KieFileSystem</code> from
     the <code>KieServices</code>. One of the thing that for sure it will be necessary to add to this file
     system is the kmodule.xml configuration file. As anticipated above Kie also provides a convenient fluent
-    API, implemented by the <code>KieModuleModel</code>, to programatically create this file.</para>
+    API, implemented by the <code>KieModuleModel</code>, to programmatically create this file.</para>
 
     <figure>
       <title>KieModuleModel</title>

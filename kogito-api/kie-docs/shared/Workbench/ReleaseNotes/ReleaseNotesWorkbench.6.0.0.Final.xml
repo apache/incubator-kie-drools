@@ -8,7 +8,7 @@
   <title>New and Noteworthy in KIE Workbench 6.0.0</title>
 
   <para>The workbench has had a big overhaul using a new base project called UberFire. UberFire is inspired by Eclipse
-    and provides a clean, extensible and flexible framework for the workebench. The end result is not only a richer
+    and provides a clean, extensible and flexible framework for the workbench. The end result is not only a richer
     experience for our end users, but we can now develop more rapidly with a clean component based architecture. If you
     like he Workbench experience you can use UberFire today to build your own web based dashboard and console
     efforts.</para>
@@ -17,7 +17,7 @@
     solid OSS implementation for Git. This addresses the continued performance problems with the various JCR
     implementations, which would slow down once the number of files and number of versions become too high. There has
     been a big "low tech" drive, to remove complexity. Everything is now stored as a file, including meta data. The
-    database is ony there to provide fast indexing and search. So importing and exporting is all standard Git and
+    database is only there to provide fast indexing and search. So importing and exporting is all standard Git and
     external sites, like GitHub, can be used to exchange repositories. </para>
   <para>In 5.x developers would work with their own source repository and then push JCR, via the team provider. This
     team provider was not full featured and not available outside Eclipse. Git enables our repository to work any
@@ -52,7 +52,7 @@
   </figure>
   <important>
     <para>KIE Drools Workbench and KIE Workbench share a common set of components for generic workbench functionality
-      such as Project navigation, Project defintions, Maven based Projects, Maven Artifact Repository. These common
+      such as Project navigation, Project definitions, Maven based Projects, Maven Artifact Repository. These common
       features are described in more detail throughout this documentation.</para>
   </important>
   <para/>

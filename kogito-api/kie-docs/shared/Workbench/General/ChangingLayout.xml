@@ -8,16 +8,16 @@
   xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:ns="http://docbook.org/ns/docbook">
   <title>Changing the layout</title>
-  <para>The default layout may not be suitable for a user. Panels can therefore be either resized or repositoned.</para>
+  <para>The default layout may not be suitable for a user. Panels can therefore be either resized or repositioned.</para>
   <para>This, for example, could be useful when running tests; as the test defintion and rule can be repositioned side-by-side.</para>
 
 <section xml:id="wb.Resizing">
   <title>Resizing</title>
   <para>The following screenshot shows a Panel being resized.</para>
-  <para>Move the mouse pointer over the panel splitter (a grey horizontal or vertical line inbetween
+  <para>Move the mouse pointer over the panel splitter (a grey horizontal or vertical line in between
       panels). </para>
     <para>The cursor will changing indicating it is positioned correctly over the splitter. Press
-      and hold the left mouse button and drag the splitter to the required postion; then release the
+      and hold the left mouse button and drag the splitter to the required position; then release the
       left mouse button.</para>
   <figure>
     <title>Resizing</title>
