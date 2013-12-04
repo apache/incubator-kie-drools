@@ -105,6 +105,9 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksByVariousFields( Map<String, List<?>> parameters, boolean union);
     
+    int getCompletedTaskByUserId(String userId);
+    int getPendingTaskByUserId(String userId);
+    
     static String WORK_ITEM_ID_LIST = "Work item id list";
     static String TASK_ID_LIST = "task id list";
     static String PROCESS_INST_ID_LIST = "process instance id list";
