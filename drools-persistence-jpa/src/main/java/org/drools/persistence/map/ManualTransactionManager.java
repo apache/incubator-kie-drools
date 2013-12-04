@@ -15,6 +15,10 @@
  */
 package org.drools.persistence.map;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.info.SessionInfo;
@@ -30,6 +34,13 @@ public class ManualTransactionManager
     private NonTransactionalPersistentSession session;
     private KnowledgeSessionStorage storage;
     private TransactionSynchronization transactionSynchronization;
+
+    private static final ThreadLocal <Map<Object, Object>> transactionResources = new ThreadLocal<Map<Object, Object>>(){
+        @Override
+        protected Map<Object, Object> initialValue() {
+            return Collections.synchronizedMap(new HashMap<Object, Object>());
+        }
+    };
     
     public ManualTransactionManager(NonTransactionalPersistentSession session,
                                     KnowledgeSessionStorage storage) {
@@ -77,5 +88,15 @@ public class ManualTransactionManager
 
     public void registerTransactionSynchronization(TransactionSynchronization ts) {
         this.transactionSynchronization = ts;
+    }
+
+    @Override
+    public void putResource(Object key, Object resource) {
+        transactionResources.get().put(key, resource);
+    }
+
+    @Override
+    public Object getResource(Object key) {
+        return transactionResources.get().get(key);
     }
 }
