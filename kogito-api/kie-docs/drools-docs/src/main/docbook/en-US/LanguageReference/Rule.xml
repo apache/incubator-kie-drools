@@ -2342,14 +2342,11 @@ end</programlisting>
           </mediaobject>
         </figure>
 
-        <para>The Conditional Element <literal>accumulate</literal> is a more
-        flexible and powerful form of <literal>collect</literal>, in the sense
-        that it can be used to do what <literal>collect</literal> does and
-        also achieve results that the CE <literal>collect</literal> is not
-        capable of doing. Basically, what it does is that it allows a rule to
-        iterate over a collection of objects, executing custom actions for
-        each of the elements, and at the end it returns a result
-        object.</para>
+        <para>The Conditional Element <literal>accumulate</literal> is a more flexible and powerful form of
+            <literal>collect</literal>, in the sense that it can be used to do what <literal>collect</literal> does and
+          also achieve results that the CE <literal>collect</literal> is not capable of achieving. Accumulate allows a
+          rule to iterate over a collection of objects, executing custom actions for each of the elements, and at the
+          end, it returns a result object.</para>
 
         <para>Accumulate supports both the use of pre-defined accumulate
         functions, or the use of inline custom code. Inline custom code should
@@ -2375,6 +2372,11 @@ end</programlisting>
           alarm if the minimum temperature is under 20C degrees and the
           average is over 70C degrees could be written in the following way,
           using Accumulate:</para>
+          <note>
+            <para>The DRL language defines "<code>acc</code>" as a synonym of "<code>accumulate</code>". The author
+              might prefer to use "<code>acc</code>" as a less verbose keyword or the full keyword
+                "<code>accumulate</code>" for legibility.</para>
+          </note>
 
           <programlisting>rule "Raise alarm"
 when
@@ -2439,17 +2441,12 @@ then
     // average profit for $order is $avgProfit
 end</programlisting>
 
-          <para>Accumulate Functions are all pluggable. That means that if
-          needed, custom, domain specific functions can easily be added to the
-          engine and rules can start to use them without any restrictions. To
-          implement a new Accumulate Function all one needs to do is to create
-          a Java class that implements the
-          <code>org.drools.core.runtime.rule.TypedAccumulateFunction</code>
-          interface and add a line to the configuration file or set a system
-          property to let the engine know about the new function. As an
-          example of an Accumulate Function implementation, the following is
-          the implementation of the <literal>average</literal>
-          function:</para>
+          <para>Accumulate Functions are all pluggable. That means that if needed, custom, domain specific functions can
+            easily be added to the engine and rules can start to use them without any restrictions. To implement a new
+            Accumulate Function all one needs to do is to create a Java class that implements the
+              <code>org.drools.core.runtime.rule.TypedAccumulateFunction</code> interface. As an example of an
+            Accumulate Function implementation, the following is the implementation of the <literal>average</literal>
+            function:</para>
 
           <programlisting language="java">/**
  * An implementation of an accumulator capable of calculating average values
@@ -2543,19 +2540,39 @@ public class AverageAccumulateFunction implements org.drools.core.runtime.rule.T
 }
 </programlisting>
 
-          <para>The code for the function is very simple, as we could expect,
-          as all the "dirty" integration work is done by the engine. Finally,
-          to plug the function into the engine, we added it to the
-          configuration file:</para>
+          <para>The code for the function is very simple, as we could expect, as all the "dirty" integration work is
+            done by the engine. Finally, to use the function in the rules, the author can import it using the "import
+            accumulate" statement:</para>
+          <programlisting>import accumulate &lt;class_name> &lt;function_name></programlisting>
+          <para>For instance, if one implements the class <code>some.package.VarianceFunction</code> function that
+            implements the <code>variance</code> function and wants to use it in the rules, he would do the
+            following:</para>
+          <example>
+            <title>Example of importing and using the custom "<code>variance</code>" accumulate function</title>
+            <programlisting><emphasis role="bold">import accumulate</emphasis> some.package.VarianceFunction variance
 
-          <programlisting>drools.accumulate.function.average = org.drools.core.base.accumulators.AverageAccumulateFunction</programlisting>
-
-          <para>Here, "drools.accumulate.function." is a prefix that must
-            always be used, "average" is how the function will be used in the
-            rule file, and
-            "org.drools.core.base.accumulators.AverageAccumulateFunction" is the
-            fully qualified name of the class that implements the function
-            behavior.</para>
+<emphasis role="bold">rule</emphasis> "Calculate Variance"
+<emphasis role="bold">when</emphasis>
+    <emphasis role="bold">accumulate</emphasis>( Test( $s : score ), $v : variance( $s ) )
+<emphasis role="bold">then</emphasis>
+    <emphasis role="italic">// the variance of the test scores is $v</emphasis>
+<emphasis role="bold">end</emphasis></programlisting>
+          </example>
+          <note>
+            <para>The built in functions (sum, average, etc) are imported automatically by the engine. Only user-defined
+              custom accumulate functions need to be explicitly imported.</para>
+          </note>
+          <note>
+            <para>For backward compatibility, Drools still supports the configuration of accumulate functions through
+              configuration files and system properties, but this is a deprecated method. In order to configure the
+              variance function from the previous example using the configuration file or system property, the user
+              would set a property like this:</para>
+            <programlisting>drools.accumulate.function.variance = some.package.VarianceFunction</programlisting>
+            <para>Please note that "<code>drools.accumulate.function.</code>" is a prefix that must always be used,
+                "<code>variance</code>" is how the function will be used in the drl files, and
+                "<code>some.package.VarianceFunction</code>" is the fully qualified name of the class that implements
+              the function behavior.</para>
+          </note>
         </section>
 
         <section>
