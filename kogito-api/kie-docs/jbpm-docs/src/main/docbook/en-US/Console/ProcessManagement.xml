@@ -12,7 +12,7 @@
                 process definitions and process instances. 
          </para>
          <para>
-                Once you have modelled and configured all the techncial details to run a process definition
+                Once you have modelled and configured all the technical details to run a process definition
                 your process definition will appear in the Process Definitions List. Once you have the process
                 in the Process Definition List, you can start new instances of it. 
                 The following sections describes the features provided by each of these screens.
@@ -70,7 +70,7 @@
                             </imageobject>
                      </mediaobject>
                        <para>Notice that you can View the Process Model (Read Only mode) using the Options Menu in the top bar. You can also
-                              look at all the process instances for the selected process definition goint to Options -> View Process Instances.
+                              look at all the process instances for the selected process definition by going to Options -> View Process Instances.
                        </para>
                 </section>
                 

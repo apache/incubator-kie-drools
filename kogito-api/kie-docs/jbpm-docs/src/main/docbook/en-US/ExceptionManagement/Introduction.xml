@@ -16,7 +16,7 @@
     
     <para>The next step is to think about what might go <emphasis>wrong</emphasis> when the business 
       process is run. What would happen if any of the human or technical actors in the process do 
-      <emphasis>not</emphasis> respond in unexpexected ways?  Will any of the technical systems that the 
+      <emphasis>not</emphasis> respond in unexpected ways?  Will any of the technical systems that the 
       process interacts with return unexpected results -- or not return any results at all?</para>
     
     <para>Deviations from the normative or "happy" flow of a business process are called 

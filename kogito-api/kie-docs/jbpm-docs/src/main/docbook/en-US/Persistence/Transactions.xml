@@ -114,7 +114,7 @@ env.set(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, new JpaProcessPersistenceCo
             on transaction completion as there are some transaction synchronization registered by jBPM to clean up
             the state after invocation is finished. To overcome this problem specialized command has been provided
             <code>org.jbpm.persistence.jta.ContainerManagedTransactionDisposeCommand</code> which allows to simply
-            execute this command instead of refular <code>ksession.dispose</code> which will ensure that ksession will
+            execute this command instead of regular <code>ksession.dispose</code> which will ensure that ksession will
             be disposed at the transaction completion.
           </para>
         </section>

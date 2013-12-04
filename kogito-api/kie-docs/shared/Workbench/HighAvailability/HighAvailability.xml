@@ -188,7 +188,7 @@ $ ./helix-admin.sh --zkSvr localhost:2181 --addNode kie-cluster nodeTwo:12346
           </listitem>
 
           <listitem>
-            <para>ocate the XML elements <literal>server</literal> that belong to the
+            <para>Locate the XML elements <literal>server</literal> that belong to the
             <literal>main-server-group</literal> and add the necessary system property.</para>
 
             <para>For example for nodeOne:</para>

@@ -105,7 +105,7 @@ logger.close();
       </mediaobject>
 
       <tip><para>Note that the file-based logger will only save the events on close (or when a certain
-      threshhold is reached).  If you want to make sure the events are saved on a regular interval
+      threshold is reached).  If you want to make sure the events are saved on a regular interval
       (for example during debugging), make sure to use a threaded file logger, so the audit view can
       be update to show the latest state.  When creating a threaded file logger, you can specify the
       interval after which events should be saved to the file (in milliseconds).</para></tip>

@@ -27,7 +27,7 @@
 
   <para>Once a shape is dropped onto the canvas users have a much faster way of continuing modelling without having to go back to the Object Repository panel. This is realized through the shape morphing menu which is presented
   when a shape on the drawing canvas is clicked on. This menu allows users to either select a connecting shape (next shape) or morph the selected node into another node type. In addition this menu
-  includes means to store the shape name as a dictionary item (explained later), view the specific BPMN2 code of the selected shape, asd well as create/edit the task form (in the case of user tasks only).</para>
+  includes means to store the shape name as a dictionary item (explained later), view the specific BPMN2 code of the selected shape, as well as create/edit the task form (in the case of user tasks only).</para>
 
   <figure>
     <title>Morphing Menu for shapes</title>
@@ -77,7 +77,7 @@
   </figure>
 
   <para>
-    Designer also shows three buttons ontop of a clicked shape as shown below.
+    Designer also shows three buttons on top of a clicked shape as shown below.
   </para>
   <figure>
     <title>Extra in-line options</title>

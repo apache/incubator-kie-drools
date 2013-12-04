@@ -95,7 +95,7 @@
     commit changes, right-click on your repository project and select "Team -> Commit ...".  A new
     dialog pops up, showing all the changes you have on your local file system.  Select the files
     you want to commit (if you double-click them, you can get an overview of the changes you did for
-    that file), provide an appropiate commit message and click "Commit".</para>
+    that file), provide an appropriate commit message and click "Commit".</para>
     
     <figure>
       <mediaobject>

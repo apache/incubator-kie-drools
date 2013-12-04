@@ -27,7 +27,7 @@
   where care plans can be used to describe how patients should be treated in specific circumstances,
   but people like general practitioners still need to have the flexibility to add additional steps 
   and deviate from the proposed plan, as each case is unique. And there are similar examples in 
-  claim management, helpdesk support, etc.</para>
+  claim management, help desk support, etc.</para>
 
   <para>So, should we just throw away our BPM system then? No! Even at its most extreme form (where 
   we don't model any process up front), you still need a lot of the other features a BPM system 
@@ -75,7 +75,7 @@
   <para>And in its most extreme form, we even allow you to create case instances without a process 
   definition, where what needs to be performed is selected purely at runtime. This however doesn't 
   mean you can't figure out anymore what 's actually happening. For example, meetings can be very 
-  adhoc and dynamic, but we usually want a log of what was actually discussed. The following 
+  ad hoc and dynamic, but we usually want a log of what was actually discussed. The following 
   screenshot shows how our regular audit view can still be used in this case, and the end user 
   could then for example get a lot more info about what actually happened by looking at the data 
   associated with each of those steps. And maybe, over time, we can even automate part of that by 

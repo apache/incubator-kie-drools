@@ -5,9 +5,9 @@
   <section>
   <title>Introduction</title>
   <para>It's been a busy year since the last 5.x series release and so much has change.</para>
-  <para>One of the biggest complaints during the 5.x series was the lack of defined methodolgy for
+  <para>One of the biggest complaints during the 5.x series was the lack of defined methodology for
     deployment. The mechanism used by Drools and jBPM was very flexible, but it was too flexible.
-    A big focus for 6.0 was streamling the build, deploy and loading(utilization) aspects of the
+    A big focus for 6.0 was streamlining the build, deploy and loading(utilization) aspects of the
     system. Building and deploying now align with Maven and the utilization is now convention and
     configuration oriented, instead of programmatic, with sane default to minimise the
     configuration.</para>

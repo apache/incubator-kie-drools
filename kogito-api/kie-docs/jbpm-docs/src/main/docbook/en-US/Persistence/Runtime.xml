@@ -95,7 +95,7 @@
     <para>As a result of jBPM using marshalling, the data model is both 
     simple and small:</para>
 
-    <!-- width && scalefit for pdf's -->
+    <!-- width && scalefit for PDFs -->
     <ulink url="images/Chapter-Persistence/jbpm_schema.png">
       <figure>
         <title>jBPM data model</title>
