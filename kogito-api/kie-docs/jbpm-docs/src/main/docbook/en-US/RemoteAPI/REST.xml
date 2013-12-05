@@ -17,13 +17,49 @@
    
     <section>
       <title>Serialization: JAXB or JSON</title>
-      <para>Except for the <link linkend='remote.rest.execute' nextend='remote.rest.execute.title'>Execute calls</link>,  all other REST calls 
+      <para>Except for the <link linkend='remote.rest.execute'>Execute calls</link>,  all other REST calls 
         described below can use either JAXB or JSON.</para>
       
       <para>All REST calls, unless otherwise specified, will use JAXB serialization.</para>
       
       <para>When using JSON, make sure to add the JSON media type (<code>"application/json"</code>) to the <code>ACCEPT</code> header of your REST 
         call.</para>     
+    </section>
+    
+    <section>
+      <title>Serialization: classes from the deployment/KJar</title>
+      
+      <para>When interacting with the Remote API, users may want to pass instances of their own classes as parameters to certain operations. This
+      will only be possible if the KJar for a deployment includes these classes.</para>
+      
+      <para>For all REST calls that start with <code>/runtime/{deploymentId}</code>, no additional information is required in order to pass instances
+        of these classes.</para>
+      
+      <para>However, REST calls that start with <code>/task</code> often do not contain any information about the associated deployment. In that case, 
+        an extra query parameter will have to be added to the REST call so that the server can find the appropriate deployment with the class (definition)
+        and correctly deserialize the information passed with the call.</para>
+        
+      <para>Therefore, for REST calls for which the URL does not contain the deployment id, you'll need to add the following parameter: 
+        <table frame="all">
+          <title>Deployment id query parameter</title>
+          <tgroup cols="2" align="left" rowsep="1" colsep="1">
+            <thead valign="top">
+              <row>
+                <entry>Parameter name</entry>
+                <entry>Description</entry>
+              </row>
+            </thead>
+            <tbody valign="top">
+              <row>
+                <entry><code>deploymentId</code></entry>
+                <entry><para>Value (must match the regex <code>[a-zA-Z0-9-:\.]+</code>) specifies the deployment which contains the user-defined class(es) needed to 
+                correctly deserialze information passed in the call</para></entry>
+              </row>
+            </tbody>
+          </tgroup>
+        </table>
+      </para>
+      
     </section>
     
     <section>
@@ -48,19 +84,19 @@
           <tbody valign="top">
             <row>
               <entry><code>page</code></entry>
-              <entry><para>This the page number requested. The default value is 1.</para></entry>
+              <entry><para>The page number requested. The default value is 1.</para></entry>
             </row>
             <row>
               <entry><code>p</code></entry>
-              <entry><para>This is a synonym for the above <code>page</code> parameter.</para></entry>
+              <entry><para>Synonym for the above <code>page</code> parameter.</para></entry>
             </row>
             <row>
               <entry><code>pageSize</code></entry>
-              <entry><para>This is the number of elements per page to return. The default value is 10.</para></entry>
+              <entry><para>The number of elements per page to return. The default value is 10.</para></entry>
             </row>
             <row>
               <entry><code>s</code></entry>
-              <entry><para>This is a synonym for the above <code>pageSize</code> parameter.</para></entry>
+              <entry><para>Synonym for the above <code>pageSize</code> parameter.</para></entry>
             </row>
           </tbody>
         </tgroup>
@@ -225,10 +261,10 @@
             <tbody valign="top">
               <row>
                 <entry><code>runtimeProcInstId</code></entry>
-                <entry><para>Query parameter that may only have numbers as it values: the value specify the process instance id that identifies the 
+                <entry><para>Value (must match the regex <code>[0-9]+</code>) specifies the process instance id that identifies the 
                   underlying <code>Per-Process-Instance</code> deployment</para>
-                <para>This parameter will have no effect if the underlying deployment uses the <code>Singleton</code> or <code>Per-Request</code>
-                strategy.</para></entry>
+                <para>Will have no effect if the underlying deployment uses the <code>Singleton</code> or <code>Per-Request</code>
+                strategy</para></entry>
               </row>
             </tbody>
           </tgroup>
@@ -236,7 +272,8 @@
       </para>
         
     </section>
-
+    
+    
   </section>
 
 <!-- add later.. :/ 
@@ -445,7 +482,7 @@
   <section>
     <title>History calls</title>
        <important>       
-    <para>The information that is available via the History REST calls is <emphasis>not</emphasis> limited to the deployment specified by the
+    <para>The information that is available via the History REST calls is <emphasis>not</emphasis> limited to the deployment specfied by the
       <emphasis>deploymentId</emphasis> part of the URL used. This is because the <code>AuditLogService</code> used by the REST calls is
       only dependent on the persistence framework used by the deployment, but not on anything else.</para>
        </important>
@@ -648,14 +685,23 @@
   <section>
      <title>Task calls</title>
          
+    <para>The following section describes the three different types of task calls: 
+      <itemizedlist>
+        <listitem><para>Task REST operations that mirror the <code>TaskService</code> interface, allowing the user to interact with the remote 
+          <code>TaskService</code> instance</para></listitem>
+        <listitem><para>The Task query REST operation, that allows users to query for <code>Task</code> instances</para></listitem>
+        <listitem><para>Other assorted Task REST operations</para></listitem>
+      </itemizedlist>
+    </para>
+    
     <section>
       <title>Task operation calls</title>
 
       <para>All of the task operation calls described in this section use the user (id) used in the REST basic authorization as
         input for the user parameter in the specific call.</para>
       
-      <para>Some of the operations take an optional <code>language</code> query parameter. If this parameter is not specified
-        in the REST call, the default value of "<code>en-UK</code>" is used.</para>
+      <para>Some of the operations take an optional <code>lanaguage</code> query parameter. If this parameter is not given as a element
+        of the URL itself, the default value of "<code>en-UK</code>" is used.</para>
       
       <para>The <emphasis>taskId</emphasis> component of the REST calls below must conform to the following regex: 
         <itemizedlist>
@@ -930,8 +976,234 @@
          
   </section>
 
-  <section id='remote.rest.execute'>
-    <title id='remote.rest.execute.title'>Execute calls</title>
+   <section xml:id='remote.rest.deployment'>
+     <title xml:id='remote.rest.deployment.title'>Deployment calls</title>
+     
+     <para>The calls described in this section allow users to manage deployments. Deployments are in fact
+        <code>KieModule</code> JARs which can be deployed or undeployed, either via the UI or via
+      the REST calls described below. Configuration options, such as the runtime strategy, should be
+      specified when deploying the deployment: the configuration of a deployment can not be changed
+      after it has already been deployed. </para>
+     
+     <para>The <emphasis>deploymentId</emphasis> component of the REST calls below must conform to
+      the following regex: <itemizedlist>
+        <listitem>
+          <para><code>[\w\.-]+(:[\w\.-]+){2,2}(:[\w\.-]*){0,2}</code></para>
+        </listitem>
+      </itemizedlist> The above regular expression is explained below: <itemizedlist>
+        <listitem>
+          <para>The <code>[\w\.-]</code> element, which occurs 3 times in the above regex, refers to
+            a character set that can contain the following character sets:</para>
+          <itemizedlist>
+            <listitem>
+              <para><code>[A-Z]</code></para>
+            </listitem>
+            <listitem>
+              <para><code>[a-z]</code></para>
+            </listitem>
+            <listitem>
+              <para><code>[0-9]</code></para>
+            </listitem>
+            <listitem>
+              <para><code>_</code></para>
+            </listitem>
+            <listitem>
+              <para><code>.</code></para>
+            </listitem>
+            <listitem>
+              <para><code>-</code></para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+        <listitem>
+          <para>The <code>deploymentId</code> string must contain at least 3 groups of characters
+            that satisfy <code>[\w\.-]+</code> separated by a <code>:</code> character. For example: <itemizedlist>
+              <listitem>
+                <para><code>com.wonka:choco-maker:67.190</code></para>
+              </listitem>
+            </itemizedlist></para>
+        </listitem>
+        <listitem>
+          <para>Lastly, the <code>deploymentId</code> may then also contain up to two more groups of
+            characters that satisfy <code>[\w\.-]*</code> separated by a <code>:</code> character (note that
+              <code>*</code> means <emphasis>0</emphasis> or more characters where <code>+</code>
+            means <emphasis>1</emphasis> or more). For example:<itemizedlist>
+              <listitem>
+                <para><code>com.wonka:choco-maker:67.190:oompaBase</code></para>
+              </listitem>
+              <listitem>
+                <para><code>com.wonka:choco-maker:67.190:oompaLoompaBase:gloopSession</code></para>
+              </listitem>
+            </itemizedlist></para>
+        </listitem>
+      </itemizedlist>
+       The general idea behind the deploymentId is that it describes it contains the following elements, separated from eachother by a <code>:</code> character: 
+       <orderedlist>
+       <listitem><para>The group id</para></listitem>
+         <listitem><para>The artifact id</para></listitem>
+         <listitem><para>The version</para></listitem>
+         <listitem><para>The (optional) kbase id</para></listitem>
+         <listitem><para>The (optional) ksession id</para></listitem>
+       </orderedlist>
+     </para>
+     
+     <section>
+       <title>Asynchrous deployment calls</title>
+ 
+       <para>There are 2 operations that can be used to modify the status of a deployment: <itemizedlist>
+         <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/deploy</code></para></listitem>
+         <listitem><para><code>/deployments/<emphasis>{deploymentId}</emphasis>/undeploydeploy</code></para></listitem>
+       </itemizedlist>
+         These <code>POST</code> deployment calls are both <emphasis>asynchronous</emphasis>, which 
+         means that the information returned by the <code>POST</code> request does not reflect the 
+         eventual final status of the operation itself.</para>
+       
+       <important>
+         <para>As noted above, both the <code>/deploy</code> and <code>/undeploy</code> operations  are
+           <emphasis>asynchronous</emphasis> REST operations. Successfull requests to these URLs will return the 
+           status <code>202</code> upon the request completion. RFC 2616 defines the <code>202</code> status 
+           as meaning that
+           <quote>the request has been accepted for processing, but the processing has not been completed.</quote></para>
+         <para>This means the following:<orderedlist>
+           <listitem><para>While the request may have been accepted "successfully", the operation itself (deploying
+             or undeploying the deployment unit) may actually fail.</para></listitem>
+           <listitem><para>Furthermore, information about deployments, such as that retrieved by calling the 
+             <code>GET</code> operations described below, are <emphasis>snapshots</emphasis> and the information 
+             (including the status of the deployment unit) may have changed by the time the user client receives 
+             the answer to the <code>GET</code> request.</para></listitem>
+         </orderedlist></para>
+       </important>
+       
+    </section>
+     
+    <section>
+      <title>Additional deployment call details</title>
+      <para>In addition to the asynchronous nature of the <code>POST</code> deploy and undeploy
+        calls described above, the following information is also important to know: <itemizedlist>
+          <listitem>
+            <para>The deploy and undeploy operations can fail if one of the following is
+              true:</para>
+            <orderedlist>
+              <listitem>
+                <para>An identical job has already been submitted to the queue and has not yet
+                  completed.</para>
+              </listitem>
+              <listitem>
+                <para>The amount of (deploy/undeploy) jobs submitted but not yet processed exceeds
+                  the job cache size.</para>
+              </listitem>
+            </orderedlist>
+          </listitem>
+        </itemizedlist>
+      </para>
+      <section>
+        <title>The deploy/undeploy job queue</title>
+        <para>Requests for the deployment or undeployment of deployment units are added as they are received
+          to a single queue and processed in a serial fashion. </para>
+        <para>The reason for this is that the increased complexity necessary to manage and
+          safeguard concurrent deploy and undeploy operation requests possibly involving the same
+          deployment unit is far more costly than the benefit of having these requests complete
+          safely in a concurrent environment, especially given that deploy and undeploy requests
+          will be far less utilized than parts of the remote API involving actions on the deployment
+          units themselves.</para>
+        <para>The size of this queue can be determined at startup by the parameter described below.
+          Otherwise, the deployment job queue size defaults to 100.</para>
+        <para>The following system properties can be specified in order to change the size of the
+          deploy/undeploy job cache: <table frame="all">
+            <title>System properties that influence REST deployment call behavior</title>
+            <tgroup cols="2" align="left" rowsep="1" colsep="1">
+              <thead valign="top">
+                <row>
+                  <entry>Parameter name</entry>
+                  <entry>Description</entry>
+                </row>
+              </thead>
+              <tbody valign="top">
+                <row>
+                  <entry><code>org.kie.remote.rest.deployment.job.queue.size</code></entry>
+                  <entry>
+                    <para>Specifies the size of the deploy/undeploy job cache. Must be
+                      numerical.</para>
+                  </entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </para>
+      </section>
+    </section>
+     
+     <section>
+       <title>Deployment call details</title>
+       
+       <variablelist>
+         <varlistentry>
+           <term>[GET] <command>/deployment/</command></term>
+           <listitem>
+             <itemizedlist>
+               <listitem><para>Returns a list of all the available deployed instances in a <code>JaxbDeploymentUnitList</code> instance</para></listitem>
+             </itemizedlist>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term>[GET] <command>/deployment/<emphasis>{deploymentId}</emphasis></command></term>
+           <listitem>
+             <itemizedlist>
+               <listitem><para>Returns a <code>JaxbDeploymentUnit</code> instance containing th e information (including the
+                  configuration) of the deployment unit.</para>
+               <itemizedlist>
+                 <listitem><para>This operation will fail when the URL uses a <emphasis>deployementId</emphasis> that refers to a 
+                 deployment unit that does not exist or for which the deployment has not yet been completed.</para></listitem>
+                 <listitem><para>This operation may succeed for deployment units for which an undeploy operation request has not
+                 yet completed.</para></listitem>
+               </itemizedlist></listitem>
+             </itemizedlist>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term>[POST] <command>/deployment/<emphasis>{deploymentId}</emphasis>/deploy</command></term>
+           <listitem>
+             <itemizedlist>
+               <listitem><para>Deploys the deployment unit referenced by the <emphasis>deploymentId</emphasis></para></listitem>
+               <listitem><para>Returns a <code>JaxbDeploymentJobResult</code> instance with the status of the <emphasis>request</emphasis></para></listitem>
+               <listitem><para>Takes a <code>strategy</code> query parameter: <itemizedlist>
+                    <listitem>
+                      <para>This parameter describes the runtime strategy used for the deployment.</para>
+                    </listitem>
+                    <listitem>
+                      <para>This parameter takes the following (case-<emphasis>in</emphasis>sensitive) values:<itemizedlist>
+                          <listitem><para><code>SINGLETON</code></para></listitem>
+                          <listitem><para><code>PER_REQUEST</code></para></listitem>
+                          <listitem><para><code>PER_PROCESS_INSTANCE</code></para></listitem>
+                        </itemizedlist></para>
+                    </listitem>
+                    <listitem><para>The default runtime strategy used for a deployment is <code>SINGLETON</code>.</para></listitem>
+               </itemizedlist></para></listitem>
+               <listitem><para>The deploy operation is an <emphasis>asynchronous</emphasis> operation. The status of the deployment can be retrieved
+               using the <code>GET</code> calls described above.</para></listitem>
+               <listitem><para>The request can fail for the reasons described </para></listitem>
+             </itemizedlist>
+           </listitem>
+         </varlistentry>
+         <varlistentry>
+           <term>[POST] <command>/deployment/<emphasis>{deploymentId}</emphasis>/undeploy</command></term>
+           <listitem>
+             <itemizedlist>
+               <listitem><para>Undeploys the deployment unit referenced by the <emphasis>deploymentId</emphasis></para></listitem>
+               <listitem><para>Returns a <code>JaxbDeploymentJobResult</code> instance with the status of the <emphasis>request</emphasis></para></listitem>
+               <listitem><para>The undeploy operation is an <emphasis>asynchronous</emphasis> operation. The status of the deployment can be retrieved
+                 using the <code>GET</code> calls described above.</para></listitem>
+             </itemizedlist>
+           </listitem>
+         </varlistentry>
+       </variablelist>
+       
+     </section>
+     
+   </section>
+
+  <section xml:id='remote.rest.execute'>
+    <title xml:id='remote.rest.execute.title'>Execute calls</title>
 
     <para>While there is a <code>/runtime/{id}/execute</code> and a <code>task/execute</code> method, both will take all types 
     of commands. This is possible because execute takes a JaxbCommandsRequest object, which contains 
