@@ -1,0 +1,21 @@
+package org.drools.compiler.integrationtests
+
+import org.drools.compiler.integrationtests.CepAfterTest.MetadataEvent
+import java.util.List;
+
+global List results;
+global List negativeParametersResults;
+
+declare MetadataEvent
+	@role( event )
+	@timestamp( metadataTimestamp )
+	@duration( metadataDuration )
+end
+
+rule "Test B After A"
+    when
+        $e : MetadataEvent( name == "EventA" ) from entry-point AfterMultipleAEventsStream
+             MetadataEvent( name == "EventB", this after[5s, 6s] $e ) from entry-point AfterMultipleAEventsStream
+    then
+      results.add("fired");
+end
