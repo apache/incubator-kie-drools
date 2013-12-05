@@ -82,6 +82,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         Map<String, String> formsData = new HashMap<String, String>();
         Collection<String> files = module.getFileNames();
+        String fileSeparator = ( File.separatorChar=='\\' ? "\\\\" : File.separator );
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
                 ProcessAssetDesc process;
@@ -98,7 +99,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             } else if (fileName.matches(".+ftl$")) {
                 try {
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    Pattern regex = Pattern.compile("(.{0}|.*" + File.separator + ")([^" + File.separator + "]*?)\\.ftl");
+                    Pattern regex = Pattern.compile("(.{0}|.*" + fileSeparator + ")([^" + fileSeparator + "]*?)\\.ftl");
                     Matcher m = regex.matcher(fileName);
                     String key = fileName;
                     while (m.find()) {
@@ -111,7 +112,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             } else if (fileName.matches(".+form$")) {
                 try {
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
-                    Pattern regex = Pattern.compile("(.{0}|.*" + File.separator + ")([^" + File.separator + "]*?)\\.form");
+                    Pattern regex = Pattern.compile("(.{0}|.*" + fileSeparator + ")([^" + fileSeparator + "]*?)\\.form");
                     Matcher m = regex.matcher(fileName);
                     String key = fileName;
                     while (m.find()) {
@@ -122,7 +123,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     logger.warn("Unable to load content for form '{}' : {}", fileName, e);
                 }
             } else if( fileName.matches(".+class$")) { 
-                String className = fileName.replaceAll(File.separator, ".");
+                String className = fileName.replaceAll(fileSeparator, ".");
                 className = className.substring(0, fileName.length() - ".class".length());
                 deployedUnit.addClassName(className);
             }
