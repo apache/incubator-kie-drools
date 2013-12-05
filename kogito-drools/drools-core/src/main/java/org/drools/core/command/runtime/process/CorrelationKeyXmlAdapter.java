@@ -15,7 +15,7 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
     public CorrelationKey unmarshal(String key) throws Exception {
     	List<String> keys = new ArrayList<String>();
     	for (String k: key.split(",")) {
-    		keys.add(key);
+    		keys.add(k);
     	}
         return KieInternalServices.Factory.get()
     		.newCorrelationKeyFactory().newCorrelationKey(keys);
