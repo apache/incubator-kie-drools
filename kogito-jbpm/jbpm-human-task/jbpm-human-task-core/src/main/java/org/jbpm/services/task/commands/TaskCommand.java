@@ -27,7 +27,7 @@ import org.drools.core.command.impl.GenericCommand;
 /**
  *
  */
-@XmlAccessorType(XmlAccessType.NONE)
+@XmlAccessorType(XmlAccessType.FIELD)
 public abstract class TaskCommand<T> implements GenericCommand<T> {
 
     @XmlElement(name="task-id")
@@ -45,7 +45,7 @@ public abstract class TaskCommand<T> implements GenericCommand<T> {
     @XmlSchemaType(name="string")
     protected String targetEntityId;
 
-    public long getTaskId() {
+    public Long getTaskId() {
         return this.taskId;
     }
 
