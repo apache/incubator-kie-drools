@@ -3,6 +3,7 @@ package org.kie.scanner;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.apache.maven.repository.internal.MavenServiceLocator;
+import org.apache.maven.settings.Settings;
 import org.apache.maven.wagon.Wagon;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
@@ -29,10 +30,9 @@ public class Aether {
 
     private static final Logger log = LoggerFactory.getLogger(Aether.class);
 
-    private static final String M2_REPO = MavenSettings.getSettings().getLocalRepository();
-    private String localRepoDir = M2_REPO;
+    private String localRepoDir;
 
-    public static final Aether DEFUALT_AETHER = new Aether();
+    public static Aether instance;
 
     private final RepositorySystem system;
     private final RepositorySystemSession session;
@@ -40,11 +40,24 @@ public class Aether {
 
     private RemoteRepository localRepository;
 
-    private Aether() {
-        this(loadMavenProject());
+    private Aether(String localRepoDir) {
+        this(loadMavenProject(), localRepoDir);
     }
 
     Aether(MavenProject mavenProject) {
+        this(mavenProject, getAether().localRepoDir);
+    }
+
+    static synchronized Aether getAether() {
+        if (instance == null) {
+            Settings settings = MavenSettings.getSettings();
+            instance = new Aether(settings.getLocalRepository());
+        }
+        return instance;
+    }
+
+    private Aether(MavenProject mavenProject, String localRepoDir) {
+        this.localRepoDir = localRepoDir;
         system = newRepositorySystem();
         session = newRepositorySystemSession( system );
         repositories = initRepositories(mavenProject);
@@ -89,7 +102,7 @@ public class Aether {
     }
 
     private RemoteRepository newLocalRepository() {
-        File m2RepoDir = new File( M2_REPO );
+        File m2RepoDir = new File( localRepoDir );
         if (!m2RepoDir.exists()) {
             return null;
         }
