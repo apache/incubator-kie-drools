@@ -61,6 +61,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
     private           InternalFactHandle                             factHandle;
     private transient boolean                                        canceled;
     private           boolean                                        matched;
+    private           boolean                                        active;
     private           ActivationUnMatchListener                      activationUnMatchListener;
     private           RuleAgendaItem                                 ruleAgendaItem;
 
@@ -236,7 +237,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
                 LogicalDependency tmp = dep.getNext();
                 removeBlocked(dep);
                 RuleTerminalNodeLeftTuple justified = (RuleTerminalNodeLeftTuple) dep.getJustified();
-                if (justified.getBlockers().isEmpty()) {
+                if (justified.getBlockers().isEmpty() && justified.isActive()) {
                     agenda.stageLeftTuple(ruleAgendaItem, justified);
 
                 }
@@ -285,12 +286,11 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         return this.queued;
     }
 
-    public boolean isActive() {
-        return this.queued;
-    }
-
     public void setQueued(final boolean queued) {
         this.queued = queued;
+        if (queued) {
+            setActive(true);
+        }
     }
 
     public void setQueueIndex(final int queueIndex) {
@@ -301,7 +301,7 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
         if (this.agendaGroup != null) {
             this.agendaGroup.remove(this);
         }
-        this.queued = false;
+        setQueued(false);
     }
 
     public int getQueueIndex() {
@@ -407,6 +407,14 @@ public class RuleTerminalNodeLeftTuple extends BaseLeftTuple implements
 
     public void setMatched(boolean matched) {
         this.matched = matched;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public boolean isRuleAgendaItem() {
