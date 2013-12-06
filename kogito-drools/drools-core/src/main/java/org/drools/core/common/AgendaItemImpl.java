@@ -76,6 +76,7 @@ public class AgendaItemImpl
     private           InternalFactHandle                             factHandle;
     private transient boolean                                        canceled;
     private           boolean                                        matched;
+    private           boolean                                        active;
     private           ActivationUnMatchListener                      activationUnMatchListener;
     private           RuleAgendaItem                                 ruleAgendaItem;
 
@@ -451,6 +452,14 @@ public class AgendaItemImpl
     @Override
     public void setMatched(boolean matched) {
         this.matched = matched;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

@@ -124,6 +124,10 @@ public interface Activation
 
     public void setMatched(boolean matched);    
 
+    public boolean isActive();
+
+    public void setActive(boolean active);
+
     public boolean isRuleAgendaItem();
 
 

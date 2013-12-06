@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -21,6 +27,8 @@ import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+
+import static org.junit.Assert.assertEquals;
 
 public class DeclarativeAgendaTest extends CommonTestMethodBase {
     
@@ -855,4 +863,85 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
+
+    @Test
+    public void testFiredRuleDoNotRefireAfterUnblock() {
+        // BZ-1038076
+        String drl =
+                "package org.drools.compiler.integrationtests\n" +
+                "\n" +
+                "import org.kie.api.runtime.rule.Match\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "global List list\n" +
+                "\n" +
+                "rule startAgenda\n" +
+                "salience 100\n" +
+                "when\n" +
+                "    String( this == 'startAgenda' )\n" +
+                "then\n" +
+                "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup(\"agenda\").setFocus();\n" +
+                "    list.add(kcontext.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule sales @department('sales')\n" +
+                "agenda-group \"agenda\"\n" +
+                "when\n" +
+                "    $s : String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(kcontext.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule salesBlocker salience 10\n" +
+                "when\n" +
+                "    $s : String( this == 'fireBlockerRule' )\n" +
+                "    $i : Match( department == 'sales' )\n" +
+                "then\n" +
+                "    kcontext.blockMatch( $i );\n" +
+                "    list.add(kcontext.getRule().getName());\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        KieModuleModel kmodule = ks.newKieModuleModel();
+
+        KieBaseModel baseModel = kmodule.newKieBaseModel("defaultKBase")
+                                        .setDefault(true)
+                                        .setDeclarativeAgenda(DeclarativeAgendaOption.ENABLED);
+        baseModel.newKieSessionModel("defaultKSession")
+                 .setDefault(true);
+
+        kfs.writeKModuleXML(kmodule.toXML());
+        kfs.write("src/main/resources/block_rule.drl", drl);
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        assertEquals( 0, kieBuilder.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+
+        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+
+        List<String> list = new ArrayList<String>();
+
+        ksession.setGlobal("list", list);
+
+        // first run
+        ksession.insert("startAgenda");
+        ksession.insert("fireRules");
+        FactHandle fireBlockerRule = ksession.insert("fireBlockerRule");
+        ksession.fireAllRules();
+        String[] expected = { "startAgenda", "sales", "salesBlocker" };
+
+        assertEquals(expected.length, list.size());
+        for (int i = 0; i < list.size(); i++) {
+            assertEquals(expected[i], list.get(i));
+        }
+
+        // second run
+        ksession.delete(fireBlockerRule);
+        list.clear();
+        ksession.fireAllRules();
+        assertEquals(0, list.size());
+
+        ksession.dispose();
+        list.clear();
+    }
+
 }

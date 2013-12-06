@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
@@ -2984,5 +2985,69 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(2, list.size());
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testDeclarativeAgenda() {
+        String drl =
+                "package org.drools.compiler.integrationtests\n" +
+                "\n" +
+                "import org.kie.api.runtime.rule.Match\n" +
+                "import java.util.List\n" +
+                "\n" +
+                "global List list\n" +
+                "\n" +
+                "rule startAgenda\n" +
+                "salience 100\n" +
+                "when\n" +
+                "    String( this == 'startAgenda' )\n" +
+                "then\n" +
+                "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup(\"agenda\").setFocus();\n" +
+                "    list.add(kcontext.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule sales @department('sales') salience 10\n" +
+                "agenda-group \"agenda\"\n" +
+                "when\n" +
+                "    $s : String( this == 'fireRules' )\n" +
+                "then\n" +
+                "    list.add(kcontext.getRule().getName());\n" +
+                "end\n" +
+                "\n" +
+                "rule salesBlocker\n" +
+                "when\n" +
+                "    $s : String( this == 'fireBlockerRule' )\n" +
+                "    $i : Match( department == 'sales' )\n" +
+                "then\n" +
+                "    kcontext.blockMatch( $i );\n" +
+                "    list.add(kcontext.getRule().getName());\n" +
+                "end\n";
+
+        KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kbConf.setOption( DeclarativeAgendaOption.ENABLED );
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
+
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        List list = new ArrayList(  );
+        ksession.setGlobal( "list", list );
+
+        // first run
+        ksession.insert("startAgenda");
+        ksession.insert("fireRules");
+        FactHandle fireBlockerRule = ksession.insert("fireBlockerRule");
+        ksession.fireAllRules();
+        String[] expected = { "startAgenda", "sales", "salesBlocker" };
+
+        assertEquals(expected.length, list.size());
+        for (int i = 0; i < list.size(); i++) {
+            assertEquals(expected[i], list.get(i));
+        }
+
+        // second run
+        ksession.delete(fireBlockerRule);
+        list.clear();
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, list.size());
     }
 }

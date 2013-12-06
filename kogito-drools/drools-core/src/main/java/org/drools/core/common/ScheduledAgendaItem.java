@@ -67,6 +67,14 @@ public class ScheduledAgendaItem
         agendaItem.setMatched(matched);
     }
 
+    public boolean isActive() {
+        return agendaItem.isActive();
+    }
+
+    public void setActive(boolean active) {
+        agendaItem.setActive(active);
+    }
+
     public TerminalNode getTerminalNode() {
         return agendaItem.getTerminalNode();
     }

@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,7 +40,6 @@ import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.Rule;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.ActivationGroup;
 import org.drools.core.spi.AgendaFilter;
@@ -57,11 +55,8 @@ import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import sun.security.provider.PolicyFile;
 
 /**
  * Rule-firing Agenda.
@@ -1020,6 +1015,7 @@ public class DefaultAgenda
                 }
                 activation.getConsequence().evaluate( this.knowledgeHelper,
                                                       this.workingMemory );
+                activation.setActive(false);
                 this.knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
                 this.knowledgeHelper.reset();
             } catch ( final Exception e ) {

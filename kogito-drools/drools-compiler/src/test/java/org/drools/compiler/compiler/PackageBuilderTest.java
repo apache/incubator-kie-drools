@@ -1466,10 +1466,6 @@ public class PackageBuilderTest extends DroolsTestCase {
             return false;
         }
         
-        public boolean isActive() {
-            return isQueued();
-        }
-
         public void addBlocked(LogicalDependency node) {
         }
 
@@ -1487,13 +1483,18 @@ public class PackageBuilderTest extends DroolsTestCase {
         public LinkedList getBlockers() {
             return null;
         }
-        
+
         public boolean isMatched() {
             return false;
         }
 
-        public void setMatched(boolean matched) {
+        public void setMatched(boolean matched) { }
+
+        public boolean isActive() {
+            return false;
         }
+
+        public void setActive(boolean active) { }
 
         public boolean isRuleAgendaItem() {
             return false;
