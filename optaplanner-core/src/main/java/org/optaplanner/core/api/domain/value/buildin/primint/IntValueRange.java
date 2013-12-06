@@ -1,6 +1,7 @@
 package org.optaplanner.core.api.domain.value.buildin.primint;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.optaplanner.core.api.domain.value.AbstractValueRange;
@@ -78,6 +79,9 @@ public class IntValueRange extends AbstractValueRange<Integer> {
 
         @Override
         public Integer next() {
+            if (upcoming >= to) {
+                throw new NoSuchElementException();
+            }
             int next = upcoming;
             upcoming += incrementUnit;
             return next;
