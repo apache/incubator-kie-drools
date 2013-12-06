@@ -16,10 +16,12 @@ public class MavenSettings {
 
     private static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
 
-    private static final Settings settings = initSettings();
+    private static class SettingsHolder {
+        private static final Settings settings = initSettings();
+    }
 
     public static Settings getSettings() {
-        return settings;
+        return SettingsHolder.settings;
     }
 
     private static Settings initSettings() {

@@ -6,14 +6,7 @@ import java.io.File;
 import java.io.InputStream;
 
 public class MavenProjectLoader {
-    private static class MavenProjectHolder {
-        private static final MavenProject mavenProject = loadMavenProject();
-
-        private static MavenProject loadMavenProject() {
-            File pomFile = new File( "pom.xml" );
-            return parseMavenPom(pomFile);
-        }
-    }
+    private static MavenProject mavenProject;
 
     public static MavenProject parseMavenPom(File pomFile) {
         if (!pomFile.exists()) {
@@ -49,7 +42,11 @@ public class MavenProjectLoader {
         return mavenRequest;
     }
 
-    public static MavenProject loadMavenProject() {
-        return MavenProjectHolder.mavenProject;
+    public static synchronized MavenProject loadMavenProject() {
+        if (mavenProject == null) {
+            File pomFile = new File( "pom.xml" );
+            mavenProject = parseMavenPom(pomFile);
+        }
+        return mavenProject;
     }
 }

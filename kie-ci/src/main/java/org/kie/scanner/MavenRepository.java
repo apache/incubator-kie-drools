@@ -1,8 +1,12 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Profile;
+import org.apache.maven.settings.Repository;
+import org.apache.maven.settings.Settings;
 import org.kie.api.builder.ReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.kie.scanner.embedder.MavenSettings;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.CollectRequest;
 import org.sonatype.aether.collection.CollectResult;
@@ -27,7 +31,7 @@ import java.util.List;
 
 public class MavenRepository {
 
-    private static final MavenRepository DEFAULT_MAVEN_REPOSITORY = new MavenRepository(Aether.DEFUALT_AETHER);
+    private static MavenRepository defaultMavenRepository;
 
     private final Aether aether;
     private static final List<RemoteRepository> extraRepositories = new ArrayList<RemoteRepository>();
@@ -35,21 +39,37 @@ public class MavenRepository {
     private MavenRepository(Aether aether) {
         this.aether = aether;
     }
-    
-    public static MavenRepository getMavenRepository() {
-        return DEFAULT_MAVEN_REPOSITORY;
+
+    public static synchronized MavenRepository getMavenRepository() {
+        if (defaultMavenRepository == null) {
+            Aether defaultAether = Aether.getAether();
+            defaultMavenRepository = new MavenRepository(defaultAether);
+            initSettings();
+        }
+        return defaultMavenRepository;
+    }
+
+    private static void initSettings() {
+        Settings settings = MavenSettings.getSettings();
+        for (Profile profile : settings.getProfiles()) {
+            if (profile.getActivation().isActiveByDefault()) {
+                for (Repository repository : profile.getRepositories()) {
+                    addExtraRepository( new RemoteRepository( repository.getId(), "default", repository.getUrl() ) );
+                }
+            }
+        }
+    }
+
+    public static void addExtraRepository(RemoteRepository r) {
+        extraRepositories.add(r);
     }
     
-    public static void addExtraRepository(RemoteRepository r){
-      extraRepositories.add(r);
+    public static List<RemoteRepository> getExtraRepositories() {
+        return extraRepositories;
     }
     
-    public static List<RemoteRepository> getExtraRepositories(){
-      return extraRepositories;
-    }
-    
-    public static void clearExtraRepositories(){
-      extraRepositories.clear();
+    public static void clearExtraRepositories() {
+        extraRepositories.clear();
     }
 
     public static MavenRepository getMavenRepository(MavenProject mavenProject) {
