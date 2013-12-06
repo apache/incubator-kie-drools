@@ -45,6 +45,7 @@ import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.Activation;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
@@ -437,6 +438,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
             long mask = sink.getLeftInferredMask();
             if ( intersect( context.getModificationMask(),  mask) ) {
                 doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), true, lm, lm.getSegmentMemory() );
+                if (leftTuple instanceof Activation) {
+                    ((Activation)leftTuple).setActive(true);
+                }
             }
         } else {
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();

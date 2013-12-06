@@ -179,10 +179,6 @@ class MockActivation
         return false;
     }
     
-    public boolean isActive() {
-        return isQueued();
-    }
-
     public void addBlocked(LogicalDependency node) {
     }
 
@@ -204,8 +200,13 @@ class MockActivation
         return false;
     }
 
-    public void setMatched(boolean matched) {
+    public void setMatched(boolean matched) { }
+
+    public boolean isActive() {
+        return false;
     }
+
+    public void setActive(boolean active) { }
 
     public boolean isRuleAgendaItem() {
         return false;

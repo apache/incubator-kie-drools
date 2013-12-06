@@ -146,10 +146,6 @@ public class BaseQueueable
         return false;
     }
     
-    public boolean isActive() {
-        return isQueued();
-    }
-
     public void addBlocked(LogicalDependency node) {
     }
 
@@ -168,14 +164,17 @@ public class BaseQueueable
     }
 
     public boolean isMatched() {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    public void setMatched(boolean matched) {
-     
-    }
+    public void setMatched(boolean matched) { }
   
+    public boolean isActive() {
+        return false;
+    }
+
+    public void setActive(boolean active) { }
+
     public boolean isRuleAgendaItem() {
         return false;
     }
