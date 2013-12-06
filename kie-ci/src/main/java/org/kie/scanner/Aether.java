@@ -48,7 +48,7 @@ public class Aether {
         this(mavenProject, getAether().localRepoDir);
     }
 
-    static synchronized Aether getAether() {
+    public static synchronized Aether getAether() {
         if (instance == null) {
             Settings settings = MavenSettings.getSettings();
             instance = new Aether(settings.getLocalRepository());
