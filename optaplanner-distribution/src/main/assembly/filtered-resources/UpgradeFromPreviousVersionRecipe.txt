@@ -3720,4 +3720,18 @@ The impact of this change is negligible.
 [MINOR] On AbstractScore, the methods parseLevelStrings(...) and buildScorePattern(...) have been changed from public to protected.
 It's highly unlikely that this affects your code.
 
-
+[RECOMMENDED] If you have @ValueRangeProvider that returns a collection of numbers (for example List<Integer> or List<BigDecimal>),
+then you probably want to switch to a ValueRange, which uses less memory and offers additional opportunities.
+Before in *.java:
+    public List<Integer> getDelayRange() {
+        List<Integer> = new ArrayList<Integer>(DELAY_RANGE_LIMIT);
+        for (int i = 0; i < 500; i++) {
+            delayRange.add(i);
+        }
+        return delayRange;
+    }
+After in *.java:
+    @ValueRangeProvider(id = "delayRange")
+    public ValueRange getDelayRange() {
+        return new IntValueRange(0, 500);
+    }

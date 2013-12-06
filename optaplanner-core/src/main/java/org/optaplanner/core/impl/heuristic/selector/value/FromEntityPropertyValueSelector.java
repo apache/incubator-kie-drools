@@ -21,23 +21,27 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
+import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
+import org.optaplanner.core.impl.solution.Solution;
 
 /**
  * This is the common {@link ValueSelector} implementation.
  */
 public class FromEntityPropertyValueSelector extends AbstractValueSelector {
 
-    protected final PlanningVariableDescriptor variableDescriptor;
-    protected final FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor;
+    protected final PlanningValueRangeDescriptor valueRangeDescriptor;
     protected final boolean randomSelection;
 
-    public FromEntityPropertyValueSelector(FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor,
+    protected Solution workingSolution;
+
+    public FromEntityPropertyValueSelector(PlanningValueRangeDescriptor valueRangeDescriptor,
             SelectionCacheType cacheType, boolean randomSelection) {
-        this.variableDescriptor = valueRangeDescriptor.getVariableDescriptor();
         this.valueRangeDescriptor = valueRangeDescriptor;
         this.randomSelection = randomSelection;
         if (cacheType.compareTo(SelectionCacheType.STEP) > 0) {
@@ -47,7 +51,19 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
     }
 
     public PlanningVariableDescriptor getVariableDescriptor() {
-        return variableDescriptor;
+        return valueRangeDescriptor.getVariableDescriptor();
+    }
+
+    @Override
+    public void phaseStarted(AbstractSolverPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        workingSolution = phaseScope.getWorkingSolution();
+    }
+
+    @Override
+    public void phaseEnded(AbstractSolverPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        workingSolution = null;
     }
 
     // ************************************************************************
@@ -55,7 +71,7 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
     // ************************************************************************
 
     public boolean isContinuous() {
-        return variableDescriptor.isContinuous();
+        return false; // TODO extract CountableValueRange
     }
 
     public boolean isNeverEnding() {
@@ -63,31 +79,23 @@ public class FromEntityPropertyValueSelector extends AbstractValueSelector {
     }
 
     public long getSize(Object entity) {
-        Collection<?> values = valueRangeDescriptor.extractValuesFromEntity(entity);
-        long size = (long) values.size();
-        if (variableDescriptor.isNullable()) {
-            size++;
-        }
-        return size;
+        ValueRange<?> valueRange = valueRangeDescriptor.extractValueRange(workingSolution, entity);
+        return valueRange.getSize();
     }
 
     public Iterator<Object> iterator(Object entity) {
-        Collection<?> values = valueRangeDescriptor.extractValuesFromEntity(entity);
-        List<Object> valueList = new ArrayList<Object>(values.size() + 1);
-        valueList.addAll(values);
-        if (variableDescriptor.isNullable()) {
-            valueList.add(null);
-        }
+        ValueRange<Object> valueRange = (ValueRange<Object>)
+                valueRangeDescriptor.extractValueRange(workingSolution, entity);
         if (!randomSelection) {
-            return valueList.iterator();
+            return valueRange.createOriginalIterator();
         } else {
-            return new CachedListRandomIterator<Object>(valueList, workingRandom);
+            return valueRange.createRandomIterator(workingRandom);
         }
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + variableDescriptor.getVariableName() + ")";
+        return getClass().getSimpleName() + "(" + getVariableDescriptor().getVariableName() + ")";
     }
 
 }

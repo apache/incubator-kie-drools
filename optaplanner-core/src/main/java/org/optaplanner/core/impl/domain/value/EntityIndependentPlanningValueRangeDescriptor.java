@@ -1,11 +1,11 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,20 +19,10 @@ package org.optaplanner.core.impl.domain.value;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
-public interface PlanningValueRangeDescriptor {
+public interface EntityIndependentPlanningValueRangeDescriptor extends PlanningValueRangeDescriptor {
 
-    /**
-     * @return never null
-     */
-    PlanningVariableDescriptor getVariableDescriptor();
-
-    boolean isEntityIndependent();
-
-    boolean isValuesCacheable();
-
-    ValueRange<?> extractValueRange(Solution solution, Object entity);
+    ValueRange<?> extractValueRange(Solution solution);
 
 }

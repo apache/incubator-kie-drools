@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.commons.lang.ArrayUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.PropertyAccessor;
@@ -145,24 +146,25 @@ public class PlanningVariableDescriptor {
         }
         List<PlanningValueRangeDescriptor> valueRangeDescriptorList
                 = new ArrayList<PlanningValueRangeDescriptor>(valueRangeProviderRefs.length);
+        boolean addNullInValueRange = nullable && valueRangeProviderRefs.length == 1;
         for (String valueRangeProviderRef : valueRangeProviderRefs) {
-            valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef));
+            valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
         }
         if (valueRangeDescriptorList.size() == 1) {
             valueRangeDescriptor = valueRangeDescriptorList.get(0);
         } else {
-            valueRangeDescriptor = new CompositePlanningValueRangeDescriptor(this, valueRangeDescriptorList);
+            valueRangeDescriptor = new CompositePlanningValueRangeDescriptor(this, nullable, valueRangeDescriptorList);
         }
     }
 
     private PlanningValueRangeDescriptor buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
-            String valueRangeProviderRef) {
+            String valueRangeProviderRef, boolean addNullInValueRange) {
         if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
             Method readMethod = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
-            return new FromSolutionPropertyPlanningValueRangeDescriptor(this, readMethod);
+            return new FromSolutionPropertyPlanningValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
             Method readMethod = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
-            return new FromEntityPropertyPlanningValueRangeDescriptor(this, readMethod);
+            return new FromEntityPropertyPlanningValueRangeDescriptor(this, addNullInValueRange, readMethod);
         } else {
             throw new IllegalArgumentException("The planningEntityClass ("
                     + entityDescriptor.getPlanningEntityClass()
@@ -311,18 +313,6 @@ public class PlanningVariableDescriptor {
         variablePropertyAccessor.executeSetter(entity, value);
     }
 
-    public Collection<?> extractAllPlanningValues(Solution solution) {
-        // TODO this does not include null if nullable
-        // currently FromSolutionPropertyValueSelector and FromEntityPropertyValueSelector do that
-        return valueRangeDescriptor.extractAllValues(solution);
-    }
-
-    public Collection<?> extractPlanningValues(Solution solution, Object entity) {
-        // TODO this does not include null if nullable
-        // currently FromSolutionPropertyValueSelector and FromEntityPropertyValueSelector do that
-        return valueRangeDescriptor.extractValues(solution, entity);
-    }
-
     @Deprecated
     public boolean isPlanningValuesCacheable() {
         return valueRangeDescriptor.isValuesCacheable();
@@ -333,7 +323,7 @@ public class PlanningVariableDescriptor {
     }
 
     public long getValueCount(Solution solution, Object entity) {
-        return valueRangeDescriptor.getValueCount(solution, entity);
+        return valueRangeDescriptor.extractValueRange(solution, entity).getSize();
     }
 
     @Override

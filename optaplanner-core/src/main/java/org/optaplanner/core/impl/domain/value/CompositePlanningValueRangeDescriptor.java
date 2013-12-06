@@ -20,53 +20,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.composite.CompositeValueRange;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
-public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor {
+public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValueRangeDescriptor
+        implements EntityIndependentPlanningValueRangeDescriptor {
 
     protected final List<PlanningValueRangeDescriptor> valueRangeDescriptorList;
-    protected boolean entityDependent;
+    protected boolean entityIndependent;
 
-    public CompositePlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
+    public CompositePlanningValueRangeDescriptor(
+            PlanningVariableDescriptor variableDescriptor, boolean addNullInValueRange,
             List<PlanningValueRangeDescriptor> valueRangeDescriptorList) {
-        super(variableDescriptor);
+        super(variableDescriptor, addNullInValueRange);
         this.valueRangeDescriptorList = valueRangeDescriptorList;
-        entityDependent = false;
+        entityIndependent = true;
         for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            if (valueRangeDescriptor.isEntityDependent()) {
-                entityDependent = true;
+            if (!valueRangeDescriptor.isEntityIndependent()) {
+                entityIndependent = false;
                 break;
             }
         }
     }
 
-    public boolean isEntityDependent() {
-        return entityDependent;
-    }
-
-    public Collection<?> extractAllValues(Solution solution) {
-        Collection<Object> values = new ArrayList<Object>(0);
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            values.addAll(valueRangeDescriptor.extractAllValues(solution));
-        }
-        return values;
-    }
-
-    public Collection<?> extractValues(Solution solution, Object entity) {
-        Collection<Object> values = new ArrayList<Object>(0);
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            values.addAll(valueRangeDescriptor.extractValues(solution, entity));
-        }
-        return values;
-    }
-
-    public long getValueCount(Solution solution, Object entity) {
-        long problemScale = 0L;
-        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
-            problemScale += valueRangeDescriptor.getValueCount(solution, entity);
-        }
-        return problemScale;
+    @Override
+    public boolean isEntityIndependent() {
+        return entityIndependent;
     }
 
     @Override
@@ -77,6 +58,25 @@ public class CompositePlanningValueRangeDescriptor extends AbstractPlanningValue
             }
         }
         return true;
+    }
+
+    public ValueRange<?> extractValueRange(Solution solution, Object entity) {
+        List<ValueRange<?>> childValueRangeList = new ArrayList<ValueRange<?>>(valueRangeDescriptorList.size());
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+            childValueRangeList.add(valueRangeDescriptor.extractValueRange(solution, entity));
+        }
+        return doNullInValueRangeWrapping(new CompositeValueRange(childValueRangeList));
+    }
+
+    @Override
+    public ValueRange<?> extractValueRange(Solution solution) {
+        List<ValueRange<?>> childValueRangeList = new ArrayList<ValueRange<?>>(valueRangeDescriptorList.size());
+        for (PlanningValueRangeDescriptor valueRangeDescriptor : valueRangeDescriptorList) {
+            EntityIndependentPlanningValueRangeDescriptor entityIndependentValueRangeDescriptor
+                    = (EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor;
+            childValueRangeList.add(entityIndependentValueRangeDescriptor.extractValueRange(solution));
+        }
+        return doNullInValueRangeWrapping(new CompositeValueRange(childValueRangeList));
     }
 
 }

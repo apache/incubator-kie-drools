@@ -16,22 +16,31 @@
 
 package org.optaplanner.core.impl.domain.value;
 
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.composite.NullableValueRange;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 
 public abstract class AbstractPlanningValueRangeDescriptor implements PlanningValueRangeDescriptor {
 
     protected final PlanningVariableDescriptor variableDescriptor;
+    protected final boolean addNullInValueRange;
 
-    public AbstractPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor) {
+    public AbstractPlanningValueRangeDescriptor(PlanningVariableDescriptor variableDescriptor,
+            boolean addNullInValueRange) {
         this.variableDescriptor = variableDescriptor;
+        this.addNullInValueRange = addNullInValueRange;
     }
 
+    @Override
     public PlanningVariableDescriptor getVariableDescriptor() {
         return variableDescriptor;
     }
 
-    public boolean isValuesCacheable() {
-        return false;
+    protected <T> ValueRange<T> doNullInValueRangeWrapping(ValueRange<T> valueRange) {
+        if (addNullInValueRange) {
+            valueRange = new NullableValueRange<T>(valueRange);
+        }
+        return valueRange;
     }
 
     @Override

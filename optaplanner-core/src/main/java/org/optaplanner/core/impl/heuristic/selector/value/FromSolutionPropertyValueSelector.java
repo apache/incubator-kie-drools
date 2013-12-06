@@ -17,10 +17,10 @@
 package org.optaplanner.core.impl.heuristic.selector.value;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.impl.domain.value.EntityIndependentPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
@@ -34,15 +34,15 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         implements EntityIndependentValueSelector, SelectionCacheLifecycleListener {
 
-    protected final PlanningVariableDescriptor variableDescriptor;
+    protected final EntityIndependentPlanningValueRangeDescriptor valueRangeDescriptor;
     protected final SelectionCacheType cacheType;
     protected final boolean randomSelection;
 
-    protected List<Object> cachedValueList = null;
+    protected ValueRange<Object> cachedValueRange = null;
 
-    public FromSolutionPropertyValueSelector(PlanningVariableDescriptor variableDescriptor,
+    public FromSolutionPropertyValueSelector(EntityIndependentPlanningValueRangeDescriptor valueRangeDescriptor,
             SelectionCacheType cacheType, boolean randomSelection) {
-        this.variableDescriptor = variableDescriptor;
+        this.valueRangeDescriptor = valueRangeDescriptor;
         this.cacheType = cacheType;
         this.randomSelection = randomSelection;
         if (cacheType.isNotCached()) {
@@ -53,7 +53,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     }
 
     public PlanningVariableDescriptor getVariableDescriptor() {
-        return variableDescriptor;
+        return valueRangeDescriptor.getVariableDescriptor();
     }
 
     @Override
@@ -66,17 +66,12 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
-        // TODO FIXME extractAllPlanningValues filters out uninitialized entities of another variable
-        Collection<?> planningValues = variableDescriptor.extractAllPlanningValues(solverScope.getWorkingSolution());
-        cachedValueList = new ArrayList<Object>(planningValues.size() + 1);
-        cachedValueList.addAll(planningValues);
-        if (variableDescriptor.isNullable()) {
-            cachedValueList.add(null);
-        }
+        cachedValueRange = (ValueRange<Object>)
+                valueRangeDescriptor.extractValueRange(solverScope.getWorkingSolution());
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {
-        cachedValueList = null;
+        cachedValueRange = null;
     }
 
     // ************************************************************************
@@ -84,7 +79,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     public boolean isContinuous() {
-        return variableDescriptor.isContinuous();
+        return false; // TODO extract CountableValueRange
     }
 
     public boolean isNeverEnding() {
@@ -96,7 +91,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     }
 
     public long getSize() {
-        return (long) cachedValueList.size();
+        return cachedValueRange.getSize();
     }
 
     public Iterator<Object> iterator(Object entity) {
@@ -105,15 +100,15 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
 
     public Iterator<Object> iterator() {
         if (!randomSelection) {
-            return cachedValueList.iterator();
+            return cachedValueRange.createOriginalIterator();
         } else {
-            return new CachedListRandomIterator<Object>(cachedValueList, workingRandom);
+            return cachedValueRange.createRandomIterator(workingRandom);
         }
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + variableDescriptor.getVariableName() + ")";
+        return getClass().getSimpleName() + "(" + getVariableDescriptor().getVariableName() + ")";
     }
 
 }

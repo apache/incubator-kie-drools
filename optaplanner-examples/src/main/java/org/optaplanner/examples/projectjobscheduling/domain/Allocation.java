@@ -16,12 +16,13 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.value.ValueRange;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
+import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
@@ -153,18 +154,9 @@ public class Allocation extends AbstractPersistable {
         return job.getExecutionModeList();
     }
 
-    private List<Integer> delayRange; // TODO remove this HACK
     @ValueRangeProvider(id = "delayRange")
-    public List<Integer> getDelayRange() {
-        // TODO IMPROVE ME
-        if (delayRange == null) {
-            final int DELAY_RANGE_LIMIT = 500;
-            delayRange = new ArrayList<Integer>(DELAY_RANGE_LIMIT);
-            for (int i = 0; i < DELAY_RANGE_LIMIT; i++) {
-                delayRange.add(i);
-            }
-        }
-        return delayRange;
+    public ValueRange getDelayRange() {
+        return new IntValueRange(0, 500);
     }
 
 }

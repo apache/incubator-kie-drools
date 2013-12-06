@@ -18,8 +18,13 @@ package org.optaplanner.core.impl.heuristic.selector.variable;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.collections.IteratorUtils;
+import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.impl.domain.value.EntityIndependentPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
@@ -31,7 +36,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 @Deprecated
 public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
 
-    private PlanningVariableDescriptor variableDescriptor;
+    private PlanningValueRangeDescriptor valueRangeDescriptor;
 
     private PlanningValueSelectionOrder selectionOrder = PlanningValueSelectionOrder.ORIGINAL;
     private PlanningValueSelectionPromotion selectionPromotion = PlanningValueSelectionPromotion.NONE; // TODO
@@ -42,7 +47,7 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     private Collection<?> cachedPlanningValues = null;
 
     public PlanningValueSelector(PlanningVariableDescriptor variableDescriptor) {
-        this.variableDescriptor = variableDescriptor;
+        this.valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
     }
 
     public void setSelectionOrder(PlanningValueSelectionOrder selectionOrder) {
@@ -69,10 +74,11 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
     }
 
     private void initSelectedPlanningValueList(AbstractSolverPhaseScope phaseScope) {
-        if (variableDescriptor.isPlanningValuesCacheable()) {
-            Collection<?> planningValues = variableDescriptor.extractPlanningValues(
-                    phaseScope.getWorkingSolution(), null);
-            cachedPlanningValues = applySelectionOrder(planningValues);
+        if (valueRangeDescriptor.isEntityIndependent()) {
+            ValueRange<?> valueRange = ((EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor)
+                    .extractValueRange(phaseScope.getWorkingSolution());
+            cachedPlanningValues = IteratorUtils.toList(
+                    valueRange.createOriginalIterator(), (int) valueRange.getSize());
         } else {
             cachedPlanningValues = null;
         }
@@ -87,19 +93,10 @@ public class PlanningValueSelector extends SolverPhaseLifecycleListenerAdapter {
         if (cachedPlanningValues != null) {
             return cachedPlanningValues.iterator();
         } else {
-            Collection<?> planningValues = variableDescriptor.extractPlanningValues(
+            ValueRange<?> valueRange = valueRangeDescriptor.extractValueRange(
                     scoreDirector.getWorkingSolution(), planningEntity);
-            planningValues = applySelectionOrder(planningValues);
-            return planningValues.iterator();
-        }
-    }
-
-    private Collection<?> applySelectionOrder(Collection<?> workingPlanningValues) {
-        switch (selectionOrder) {
-            case ORIGINAL:
-                return workingPlanningValues;
-            default:
-                throw new IllegalStateException("The selectionOrder (" + selectionOrder + ") is not implemented.");
+            List<?> values = IteratorUtils.toList(valueRange.createOriginalIterator(), (int) valueRange.getSize());
+            return values.iterator();
         }
     }
 

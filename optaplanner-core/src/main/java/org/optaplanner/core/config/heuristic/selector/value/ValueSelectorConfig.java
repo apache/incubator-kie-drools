@@ -26,7 +26,9 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.value.EntityIndependentPlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.value.FromEntityPropertyPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
@@ -199,18 +201,14 @@ public class ValueSelectorConfig extends SelectorConfig {
     }
 
     protected boolean isBaseInherentlyCached(PlanningVariableDescriptor variableDescriptor) {
-        return !variableDescriptor.getValueRangeDescriptor().isEntityDependent();
+        return variableDescriptor.getValueRangeDescriptor().isEntityIndependent();
     }
 
     private ValueSelector buildBaseValueSelector(
             HeuristicConfigPolicy configPolicy, PlanningVariableDescriptor variableDescriptor,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (variableDescriptor.getValueRangeDescriptor().isEntityDependent()) {
-            FromEntityPropertyPlanningValueRangeDescriptor valueRangeDescriptor
-                    = (FromEntityPropertyPlanningValueRangeDescriptor) variableDescriptor.getValueRangeDescriptor();
-            // TODO should we ignore the minimumCacheType so it can be cached on changeMoves too?
-            return new FromEntityPropertyValueSelector(valueRangeDescriptor, minimumCacheType, randomSelection);
-        } else {
+        PlanningValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+        if (valueRangeDescriptor.isEntityIndependent()) {
             // FromSolutionPropertyValueSelector caches by design, so it uses the minimumCacheType
             if (variableDescriptor.isPlanningValuesCacheable()) {
                 if (minimumCacheType.compareTo(SelectionCacheType.PHASE) < 0) {
@@ -223,7 +221,12 @@ public class ValueSelectorConfig extends SelectorConfig {
                     minimumCacheType = SelectionCacheType.STEP;
                 }
             }
-            return new FromSolutionPropertyValueSelector(variableDescriptor, minimumCacheType, randomSelection);
+            return new FromSolutionPropertyValueSelector(
+                    (EntityIndependentPlanningValueRangeDescriptor) valueRangeDescriptor,
+                    minimumCacheType, randomSelection);
+        } else {
+            // TODO should we ignore the minimumCacheType so it can be cached on changeMoves too?
+            return new FromEntityPropertyValueSelector(valueRangeDescriptor, minimumCacheType, randomSelection);
         }
     }
 
@@ -323,7 +326,7 @@ public class ValueSelectorConfig extends SelectorConfig {
                         + ") or a sorterWeightFactoryClass (" + sorterWeightFactoryClass
                         + ") or a sorterClass (" + sorterClass + ").");
             }
-            if (valueSelector.getVariableDescriptor().getValueRangeDescriptor().isEntityDependent()
+            if (!valueSelector.getVariableDescriptor().getValueRangeDescriptor().isEntityIndependent()
                     && resolvedCacheType == SelectionCacheType.STEP) {
                 valueSelector = new EntityDependentSortingValueSelector(valueSelector,
                         resolvedCacheType, sorter);
