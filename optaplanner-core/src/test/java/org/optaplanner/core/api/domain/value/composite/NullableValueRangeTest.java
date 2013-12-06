@@ -30,7 +30,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class NullableValueRangeTest {
 
-
     @Test
     public void getSize() {
         assertEquals(5L, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).getSize());
@@ -43,7 +42,7 @@ public class NullableValueRangeTest {
     @Test
     public void get() {
         assertEquals(5, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).get(2L).intValue());
-        assertEquals(null, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).get(4L).intValue());
+        assertEquals(null, new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10))).get(4L));
         assertEquals("c", new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(3L));
         assertEquals(null, new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a", "c", "g", "d"))).get(6L));
     }
@@ -54,19 +53,19 @@ public class NullableValueRangeTest {
         assertAllElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8))).createOriginalIterator(), 100, 120, 5, 7, 8, null);
         assertAllElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0))).createOriginalIterator(), -15, 25, 0, null);
         assertAllElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a"))).createOriginalIterator(), "b", "z", "a", null);
-        assertAllElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Collections.<String>emptyList())).createOriginalIterator(), null);
+        assertAllElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Collections.<String>emptyList())).createOriginalIterator(), new String[]{null});
     }
 
     @Test
     public void createRandomIterator() {
         Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(anyInt())).thenReturn(4, 0, 4, 0, 4, 0, 0);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0, 3, 0, 3, 0, 3, 0, 0);
 
         assertElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5))).createRandomIterator(workingRandom), null, 0);
         assertElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(100, 120, 5))).createRandomIterator(workingRandom), null, 100);
         assertElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0))).createRandomIterator(workingRandom), null, -15);
         assertElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a"))).createRandomIterator(workingRandom), null, "b");
-        assertElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Collections.<String>emptyList())).createRandomIterator(workingRandom), null);
+        assertElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Collections.<String>emptyList())).createRandomIterator(workingRandom), new String[]{null});
     }
 
 }
