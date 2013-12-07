@@ -215,11 +215,20 @@ public class RuleBuilder {
         }
 
         ann = ruleDescr.getAnnotation( "Eager" );
-        if ( enforceEager || ( ann != null && !StringUtils.isEmpty( ann.getSingleValue() ) ) ) {
+        if ( enforceEager || ( ann != null && trueOrDefault( ann.getSingleValue() ) ) ) {
             rule.setEager( true );
         }
 
+        ann = ruleDescr.getAnnotation( "Direct" );
+        if ( ann != null && trueOrDefault( ann.getSingleValue() ) ) {
+            rule.setActivationListener( "direct" );
+        }
+
         //        buildDuration( context );
+    }
+
+    private boolean trueOrDefault( String singleValue ) {
+        return StringUtils.isEmpty( singleValue ) || "true".equals( singleValue );
     }
 
     private boolean getBooleanValue(final AttributeDescr attributeDescr,

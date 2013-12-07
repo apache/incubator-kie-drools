@@ -16,12 +16,18 @@ public class ActivationPropertyHandler implements PropertyHandler {
         AgendaItem item = ( AgendaItem ) obj;
         if ( "rule".equals( name ) ) {
             return item.getRule();
-        }
-        
-        if ( "active".equals( name ) ) {
+        } else if ( "active".equals( name ) ) {
             return item.isQueued();
+        } else if ( "objects".equals( name ) ) {
+            return item.getObjects();
+        } else if ( "factHandles".equals( name ) ) {
+            return item.getFactHandles();
+        } else if ( "declarationIds".equals( name ) ) {
+            return item.getDeclarationIds();
+        } else if ( "this".equals( name ) ) {
+            return item;
         }
-        
+
         // FIXME hack as MVEL seems to be ignoring indexed variables
         VariableResolver vr = variableFactory.getNextFactory().getVariableResolver( name );
         if ( vr != null ) {
