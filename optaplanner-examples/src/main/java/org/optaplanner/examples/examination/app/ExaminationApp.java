@@ -52,8 +52,7 @@ public class ExaminationApp extends CommonApp {
 
     @Override
     protected Solver createSolver() {
-        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure(SOLVER_CONFIG);
+        XmlSolverFactory solverFactory = new XmlSolverFactory(SOLVER_CONFIG);
         return solverFactory.buildSolver();
     }
 

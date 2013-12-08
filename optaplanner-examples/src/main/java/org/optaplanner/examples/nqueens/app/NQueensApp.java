@@ -68,8 +68,7 @@ public class NQueensApp extends CommonApp {
      * @return never null
      */
     protected Solver createSolverByXml() {
-        XmlSolverFactory solverFactory = new XmlSolverFactory();
-        solverFactory.configure(SOLVER_CONFIG);
+        XmlSolverFactory solverFactory = new XmlSolverFactory(SOLVER_CONFIG);
         return solverFactory.buildSolver();
     }
 
