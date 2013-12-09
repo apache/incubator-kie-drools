@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.ProblemBenchmark;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
  * 1 statistic of {@link ProblemBenchmark}
@@ -48,10 +48,10 @@ public interface ProblemStatistic {
      * Reads single statistic file with respect to given ScoreDirectorFactoryConfig
      * 
      * @param file representing SingleStatistic
-     * @param scoreConfig specifies score configuration
+     * @param scoreDefinition specifies score definition
      * @return corresponding SingleStatistic instance
      */
-    SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig);
+    SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition);
 
     void writeStatistic();
 

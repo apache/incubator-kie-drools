@@ -45,7 +45,7 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
 
@@ -67,7 +67,7 @@ public class MoveCountPerStepProblemStatistic extends AbstractProblemStatistic {
         return toFilePath(graphStatisticFile);
     }
 
-    public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
+    public SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition) {
         List<MoveCountPerStepSingleStatisticPoint> pointList = new ArrayList<MoveCountPerStepSingleStatisticPoint>();
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));

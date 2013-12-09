@@ -188,7 +188,7 @@ public class ProblemBenchmarksConfig {
                                     + "(" + singleBenchmark.getName() + ") has not been found in resume directory.");
                         }
                         SingleStatistic singleStatistic = problemStatistic.readSingleStatistic(
-                                statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig());
+                                statisticFile, singleBenchmark.getSolverBenchmark().getSolverConfig().getScoreDirectorFactoryConfig().buildScoreDefinition());
                         singleBenchmark.getSingleStatisticMap().put(problemStatistic.getProblemStatisticType(), singleStatistic);
                     }
                 }

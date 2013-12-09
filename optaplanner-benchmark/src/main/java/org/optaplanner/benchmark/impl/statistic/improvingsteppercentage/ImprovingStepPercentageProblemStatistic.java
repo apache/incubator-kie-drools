@@ -41,8 +41,8 @@ import org.optaplanner.benchmark.impl.statistic.AbstractProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.MillisecondsSpendNumberFormat;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
-import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.move.Move;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStatistic {
 
@@ -69,7 +69,7 @@ public class ImprovingStepPercentageProblemStatistic extends AbstractProblemStat
         return toFilePath(graphStatisticFileMap.get(moveClass));
     }
 
-    public SingleStatistic readSingleStatistic(File file, ScoreDirectorFactoryConfig scoreConfig) {
+    public SingleStatistic readSingleStatistic(File file, ScoreDefinition scoreDefinition) {
         throw new UnsupportedOperationException("Planner doesn't support multiple CSV statistics per benchmark.");
     }
 
