@@ -42,6 +42,7 @@ public interface ValueRange<T> {
      * Used by uniform random selection in a composite or nullable ValueRange.
      * @param index always < {@link #getSize()}
      * @return sometimes null (if {@link PlanningVariable#nullable()} is true)
+     * @throws IllegalStateException if {@link #isCountable} returns false
      */
     T get(long index);
 

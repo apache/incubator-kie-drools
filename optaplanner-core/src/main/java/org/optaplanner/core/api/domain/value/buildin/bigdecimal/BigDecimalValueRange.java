@@ -18,16 +18,19 @@ public class BigDecimalValueRange extends AbstractValueRange<BigDecimal> {
     private final int scale;
 
     /**
+     * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
-     * @param to exclusive maximum
+     * @param to exclusive maximum, >= {@code from}
      */
     public BigDecimalValueRange(BigDecimal from, BigDecimal to) {
         this(from, to, BigDecimal.valueOf(1L, from.scale()));
     }
 
     /**
+     * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
-     * @param to exclusive maximum
+     * @param to exclusive maximum, >= {@code from}
+     * @param incrementUnit > 0
      */
     public BigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         this.from = from;
@@ -122,7 +125,7 @@ public class BigDecimalValueRange extends AbstractValueRange<BigDecimal> {
 
         @Override
         public boolean hasNext() {
-            return true;
+            return size > 0L;
         }
 
         @Override

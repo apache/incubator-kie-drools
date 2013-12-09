@@ -70,7 +70,7 @@ public class IntValueRangeTest {
         assertElementsOfIterator(new IntValueRange(0, 7).createRandomIterator(workingRandom), 3, 0);
         assertElementsOfIterator(new IntValueRange(100, 104).createRandomIterator(workingRandom), 103, 100);
         assertElementsOfIterator(new IntValueRange(-4, 3).createRandomIterator(workingRandom), -1, -4);
-        assertElementsOfIterator(new IntValueRange(7, 7).createRandomIterator(workingRandom));
+        assertAllElementsOfIterator(new IntValueRange(7, 7).createRandomIterator(workingRandom));
         // IncrementUnit
         assertElementsOfIterator(new IntValueRange(0, 10, 2).createRandomIterator(workingRandom), 6, 0);
         assertElementsOfIterator(new IntValueRange(100, 120, 5).createRandomIterator(workingRandom), 115, 100);

@@ -64,7 +64,7 @@ public class BigDecimalValueRangeTest {
                 .createRandomIterator(workingRandom), new BigDecimal("100.3"), new BigDecimal("100.0"));
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("-4.00"), new BigDecimal("3.00"))
                 .createRandomIterator(workingRandom), new BigDecimal("-3.97"), new BigDecimal("-4.00"));
-        assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("7"), new BigDecimal("7"))
+        assertAllElementsOfIterator(new BigDecimalValueRange(new BigDecimal("7"), new BigDecimal("7"))
                 .createRandomIterator(workingRandom));
         // IncrementUnit
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))

@@ -63,7 +63,7 @@ public class ListValueRangeTest {
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createRandomIterator(workingRandom), 5, 100);
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).createRandomIterator(workingRandom), 0, -15);
         assertElementsOfIterator(new ListValueRange<String>(Arrays.asList("b", "z", "a")).createRandomIterator(workingRandom), "a", "b");
-        assertElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createRandomIterator(workingRandom));
+        assertAllElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createRandomIterator(workingRandom));
     }
 
 }
