@@ -26,6 +26,7 @@ import java.util.List;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalRuleBase;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.ReteooRuleBase;
 import org.drools.core.runtime.rule.impl.RuleFlowGroupImpl;
@@ -46,7 +47,6 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.CompositeClassLoader;
 
 import static java.util.Arrays.*;
 import static org.junit.Assert.*;
@@ -74,14 +74,12 @@ public class ScenarioRunnerTest extends RuleUnit {
                 internalRuleBase
         );
 
-        CompositeClassLoader compositeClassLoader = new CompositeClassLoader();
-
-        compositeClassLoader.addClassLoader(Thread.currentThread().getContextClassLoader());
+        ProjectClassLoader classLoader = ProjectClassLoader.createProjectClassLoader();
 
         when(
                 internalRuleBase.getRootClassLoader()
         ).thenReturn(
-                compositeClassLoader
+                classLoader
         );
     }
 

@@ -102,7 +102,6 @@ import org.junit.Test;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 
 public class PackageBuilderTest extends DroolsTestCase {
     

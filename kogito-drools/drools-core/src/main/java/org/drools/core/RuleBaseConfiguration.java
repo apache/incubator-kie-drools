@@ -65,7 +65,6 @@ import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.utils.ChainedProperties;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -403,15 +402,11 @@ public class RuleBaseConfiguration
               classLoaders );
     }
     
-    public RuleBaseConfiguration(Properties properties,
-                                 CompositeClassLoader classLoader) {
-        this.classLoader = classLoader; 
-        init( properties);
-    }    
-
-    private void init(Properties properties,
-                      ClassLoader... classLoaders) {
-        setClassLoader( classLoaders );
+    private void init(Properties properties, ClassLoader... classLoaders) {
+        if (classLoaders != null && classLoaders.length > 1) {
+            throw new RuntimeException("Multiple classloaders are no longer supported");
+        }
+        setClassLoader( classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0] );
         init(properties);
     }
     
@@ -891,8 +886,8 @@ public class RuleBaseConfiguration
         return this.classLoader;
     }
 
-    public void setClassLoader(ClassLoader... classLoaders) {
-        this.classLoader = ProjectClassLoader.getClassLoader( classLoaders,
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
                                                               null,
                                                               isClassLoaderCacheEnabled());
     }

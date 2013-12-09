@@ -21,6 +21,7 @@ import java.util.Date;
 
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 
@@ -50,7 +51,7 @@ public class InstancesHashcodedTest {
         byte[] d = builder.buildClass( classDef);
         JavaDialectRuntimeData data = new JavaDialectRuntimeData();
         data.write( convertClassToResourcePath(classDef.getClassName()), d );
-        ClassLoader classLoader = new PackageClassLoader(data, ClassLoaderUtil.getClassLoader( null, getClass(), false ));
+        ClassLoader classLoader = new PackageClassLoader(data, ProjectClassLoader.createProjectClassLoader());
         
         ClassFieldAccessorStore store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );

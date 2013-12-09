@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.StringUtils;
 import org.drools.core.io.internal.InternalResource;
-import org.kie.internal.utils.ClassLoaderUtil;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 
@@ -118,9 +118,9 @@ public class ClassPathResource extends BaseResource
         this.path = path;
         this.encoding = encoding;
         this.clazz = clazz;
-        this.classLoader = ClassLoaderUtil.getClassLoader( classLoader == null ? null : new ClassLoader[] { classLoader },
-                                                           clazz,
-                                                           false );
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoader == null ? null : classLoader,
+                                                             clazz,
+                                                             false);
         setSourcePath( path );
         setResourceType( ResourceType.determineResourceType( path ) );
     }

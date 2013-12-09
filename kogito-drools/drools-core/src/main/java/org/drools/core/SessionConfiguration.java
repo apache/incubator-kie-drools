@@ -147,9 +147,11 @@ public class SessionConfiguration
         init(null, classLoader);
     }
 
-    private void init(Properties properties,
-                      ClassLoader... classLoaders) {
-        this.classLoader = ProjectClassLoader.getClassLoader(classLoaders, getClass(), false);
+    private void init(Properties properties, ClassLoader... classLoaders) {
+        if (classLoaders != null && classLoaders.length > 1) {
+            throw new RuntimeException("Multiple classloaders are no longer supported");
+        }
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0], getClass(), false);
 
         this.immutable = false;
         this.chainedProperties = new ChainedProperties( "session.conf",

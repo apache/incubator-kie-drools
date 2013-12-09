@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import org.drools.core.common.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.utils.ClassLoaderUtil;
@@ -53,7 +54,7 @@ public class ClassBuilderTest {
         byte[] d = builder.buildClass( classDef);
                      
         data.write( convertClassToResourcePath(classDef.getClassName()), d );
-        classLoader = new PackageClassLoader(data, ClassLoaderUtil.getClassLoader( null, getClass(), false ));
+        classLoader = new PackageClassLoader(data, ProjectClassLoader.createProjectClassLoader());
         
         this.store = new ClassFieldAccessorStore();
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( classLoader ) );
