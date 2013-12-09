@@ -160,8 +160,8 @@
     <section>
       <title>Is this class a problem fact or planning entity?</title>
 
-      <para>Look at a dataset of your planning problem. You 'll recognize domain classes in there, each of which is one
-      of these:</para>
+      <para>Look at a dataset of your planning problem. You 'll recognize domain classes in there, each of which can be
+      categorized as one of these:</para>
 
       <itemizedlist>
         <listitem>
@@ -488,32 +488,61 @@ public class Queen {
         <title>Planning value</title>
 
         <para>A planning value is a possible value for a planning variable. Usually, a planning value is a problem fact,
-        but it can also be any object, for example a double. It can even be another planning entity or even a interface
-        implemented by a planning entity and a problem fact.</para>
+        but it can also be any object, for example a <literal>double</literal>. It can even be another planning entity
+        or even a interface implemented by both a planning entity and a problem fact.</para>
 
         <para>A planning value range is the set of possible planning values for a planning variable. This set can be a
-        discrete (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
-        <literal>4</literal>) or continuous (for example any <literal>double</literal> between <literal>0.0</literal>
+        countable (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
+        <literal>4</literal>) or uncountable (for example any <literal>double</literal> between <literal>0.0</literal>
         and <literal>1.0</literal>).</para>
-
-        <para>There are several ways to define the value range of a planning variable with the
-        <literal>@ValueRangeProvider</literal> annotation. A <literal>@ValueRangeProvider</literal> annotation always
-        has a property <literal>id</literal>, which is referenced by the <literal>@PlanningVariable</literal>'s
-        property <literal>valueRangeProviderRefs</literal>.</para>
       </section>
 
       <section>
         <title>Planning value range provider</title>
 
+        <section>
+          <title>Introduction</title>
+
+          <para>The value range of a planning variable is defined with the <literal>@ValueRangeProvider</literal>
+          annotation. A <literal>@ValueRangeProvider</literal> annotation always has a property <literal>id</literal>,
+          which is referenced by the <literal>@PlanningVariable</literal>'s property
+          <literal>valueRangeProviderRefs</literal>.</para>
+
+          <para>This annotation can be located on 2 types of methods:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>On the Solution: All planning entities share the same value range.</para>
+            </listitem>
+
+            <listitem>
+              <para>On the planning entity: The value range differs per planning entity. This is less common.</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>The return type of that method can be 2 types:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><literal>Collection</literal>: The value range is defined by a <literal>Collection</literal>
+              (usually a <literal>List</literal>) of it's possible values.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>ValueRange</literal>: The value range is defined by its bounds. This is less common.</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
         <section xml:id="valueRangeProviderOnSolution">
-          <title><literal>ValueRangeProvider</literal> on a <literal>Solution</literal></title>
+          <title><literal>ValueRangeProvider</literal> on the <literal>Solution</literal></title>
 
           <para>All instances of the same planning entity class share the same set of possible planning values for that
           planning variable. This is the most common way to configure a value range.</para>
 
-          <para>The <literal>Solution</literal> implementation has method which returns a
-          <literal>Collection</literal>. Any value from that <literal>Collection</literal> is a possible planning value
-          for this planning variable.</para>
+          <para>The <literal>Solution</literal> implementation has method which returns a <literal>Collection</literal>
+          (or a <literal>ValueRange</literal>). Any value from that <literal>Collection</literal> is a possible planning
+          value for this planning variable.</para>
 
           <programlisting language="java">    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
     public Row getRow() {
@@ -532,12 +561,15 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
 }</programlisting>
 
-          <para>That <literal>Collection</literal> must not contain the value <literal>null</literal>, even for a <link
-          linkend="nullablePlanningVariable">nullable planning variable</link>.</para>
+          <important>
+            <para>That <literal>Collection</literal> (or <literal>ValueRange</literal>) must not contain the value
+            <literal>null</literal>, not even for a <link linkend="nullablePlanningVariable">nullable planning
+            variable</link>.</para>
+          </important>
         </section>
 
         <section xml:id="valueRangeProviderOnPlanningEntity">
-          <title><literal>ValueRangeProvider</literal> on a planning entity</title>
+          <title><literal>ValueRangeProvider</literal> on the planning entity</title>
 
           <para>Each planning entity has its own set of possible planning values for a planning variable. For example,
           if a teacher can <emphasis role="bold">never</emphasis> teach in a room that does not belong to his
@@ -569,8 +601,53 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           range. That would only try to make it solve the planning problem itself and interfere with the optimization
           algorithms.</para>
 
-          <para>This value range is not (yet) compatible with a <link linkend="chainedPlanningVariable">chained</link>
-          variable.</para>
+          <warning>
+            <para>A value range on planning entity is not (yet) compatible with a <link
+            linkend="chainedPlanningVariable">chained</link> variable, nor with generic swap moves.</para>
+          </warning>
+        </section>
+
+        <section xml:id="valueRangeFactory">
+          <title><literal>ValueRangeFactory</literal></title>
+
+          <para>Instead of a <literal>Collection</literal>, you can also return a <literal>ValueRange</literal>, build
+          by the <literal>ValueRangeFactory</literal>:</para>
+
+          <programlisting language="java">    @ValueRangeProvider(id = "delayRange")
+    public ValueRange&lt;Integer&gt; getDelayRange() {
+        return ValueRangeFactory.createIntValueRange(0, 5000);
+    }</programlisting>
+
+          <para>A <literal>ValueRange</literal> uses far less memory, because it only holds the bounds. In the example
+          above, a <literal>Collection</literal> would need to hold all <literal>5000</literal> ints, instead of just
+          the 2 bounds.</para>
+
+          <para>Furthermore, an <literal>incrementUnit</literal> can be specified, for example if you have to buy stocks
+          in units of 200 pieces:</para>
+
+          <programlisting language="java">    @ValueRangeProvider(id = "stockAmountRange")
+    public ValueRange&lt;Integer&gt; getStockAmountRange() {
+         // Range: 0, 200, 400, 600, ..., 9999600, 9999800, 10000000
+        return ValueRangeFactory.createIntValueRange(0, 10000000, 200);
+    }</programlisting>
+
+          <para>The <literal>ValueRangeFactory</literal> supports several value class types:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><literal>int</literal>: An integer range.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>double</literal>: A floating point range which only supports random selection (because it
+              is uncountable).</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>BigDecimal</literal>: A decimal point range. By default, the increment unit is the lowest
+              non-zero value in the scale of the bounds.</para>
+            </listitem>
+          </itemizedlist>
         </section>
 
         <section>
