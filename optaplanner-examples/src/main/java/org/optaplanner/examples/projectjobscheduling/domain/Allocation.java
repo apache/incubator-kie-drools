@@ -21,6 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.value.ValueRange;
+import org.optaplanner.core.api.domain.value.ValueRangeFactory;
 import org.optaplanner.core.api.domain.value.ValueRangeProvider;
 import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -155,8 +156,8 @@ public class Allocation extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "delayRange")
-    public ValueRange getDelayRange() {
-        return new IntValueRange(0, 500);
+    public ValueRange<Integer> getDelayRange() {
+        return ValueRangeFactory.createIntValueRange(0, 500);
     }
 
 }

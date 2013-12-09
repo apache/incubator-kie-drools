@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
@@ -24,7 +22,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * <p/>
  * An implementation must extend {@link AbstractValueRange} to ensure backwards compatibility in future versions.
  * @see AbstractValueRange
- * @see IntValueRange
+ * @see ValueRangeFactory
  */
 public interface ValueRange<T> {
 
