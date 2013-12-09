@@ -21,7 +21,9 @@ public class DefaultUserInfo implements UserInfo {
     public DefaultUserInfo() {
         try {
         Properties registryProps = new Properties();
-        registryProps.load(this.getClass().getResourceAsStream("/userinfo.properties"));
+        // BZ-1037445: Obtain the properties file from the webapp classload (current thread classloader).
+        // If not, when deploying the app into EAP static modules will fail.
+        registryProps.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("/userinfo.properties"));
         buildRegistry(registryProps);
         } catch (Exception e) {
             throw new IllegalStateException("Problem loading userinfo properties", e);
