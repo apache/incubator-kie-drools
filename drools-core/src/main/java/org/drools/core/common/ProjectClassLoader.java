@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +23,8 @@ public class ProjectClassLoader extends ClassLoader {
                                                             null;
 
     private Map<String, byte[]> store;
+
+    private Map<String, ClassBytecode> definedTypes;
 
     private final Set<String> nonExistingClasses = new HashSet<String>();
 
@@ -123,10 +126,21 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
     private Class<?> defineType(String name, byte[] bytecode) {
+        if (definedTypes == null) {
+            definedTypes = new HashMap<String, ClassBytecode>();
+        } else {
+            ClassBytecode existingClass = definedTypes.get(name);
+            if (existingClass != null && Arrays.equals(bytecode, existingClass.bytes)) {
+                return existingClass.clazz;
+            }
+        }
+
         if (typesClassLoader == null) {
             typesClassLoader = new InternalTypesClassLoader(this);
         }
-        return typesClassLoader.defineClass(name, bytecode);
+        Class<?> clazz = typesClassLoader.defineClass(name, bytecode);
+        definedTypes.put(name, new ClassBytecode(clazz, bytecode));
+        return clazz;
     }
 
     public Class<?> defineClass(String name, byte[] bytecode) {
@@ -238,5 +252,15 @@ public class ProjectClassLoader extends ClassLoader {
     public synchronized void reinitTypes() {
         typesClassLoader = null;
         nonExistingClasses.clear();
+    }
+
+    private static class ClassBytecode {
+        private final Class<?> clazz;
+        private final byte[] bytes;
+
+        private ClassBytecode(Class<?> clazz, byte[] bytes) {
+            this.clazz = clazz;
+            this.bytes = bytes;
+        }
     }
 }
