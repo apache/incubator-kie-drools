@@ -59,12 +59,16 @@ public class NullableValueRangeTest {
     @Test
     public void createRandomIterator() {
         Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0, 3, 0, 3, 0, 3, 0, 0);
 
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(0, 2, 5))).createRandomIterator(workingRandom), null, 0);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(100, 120, 5))).createRandomIterator(workingRandom), null, 100);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new NullableValueRange<Integer>(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0))).createRandomIterator(workingRandom), null, -15);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Arrays.asList("b", "z", "a"))).createRandomIterator(workingRandom), null, "b");
+        when(workingRandom.nextInt(anyInt())).thenReturn(0);
         assertElementsOfIterator(new NullableValueRange<String>(new ListValueRange<String>(Collections.<String>emptyList())).createRandomIterator(workingRandom), new String[]{null});
     }
 
