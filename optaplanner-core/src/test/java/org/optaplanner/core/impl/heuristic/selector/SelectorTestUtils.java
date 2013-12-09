@@ -23,9 +23,9 @@ import java.util.ListIterator;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;

@@ -1,8 +1,8 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;

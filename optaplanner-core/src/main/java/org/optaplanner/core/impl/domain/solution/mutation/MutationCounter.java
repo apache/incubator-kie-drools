@@ -19,9 +19,9 @@ package org.optaplanner.core.impl.domain.solution.mutation;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.solution.Solution;
 
 public class MutationCounter {

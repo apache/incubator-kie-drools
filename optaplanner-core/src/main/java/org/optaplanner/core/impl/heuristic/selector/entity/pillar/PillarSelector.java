@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
 import java.util.List;
 
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 

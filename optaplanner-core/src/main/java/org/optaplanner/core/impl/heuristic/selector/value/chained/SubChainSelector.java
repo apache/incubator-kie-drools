@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 
 public interface SubChainSelector extends ListIterableSelector<SubChain> {

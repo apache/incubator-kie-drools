@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 

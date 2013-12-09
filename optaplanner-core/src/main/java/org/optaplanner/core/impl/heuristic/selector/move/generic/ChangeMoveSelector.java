@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 import java.util.Iterator;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;

@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 

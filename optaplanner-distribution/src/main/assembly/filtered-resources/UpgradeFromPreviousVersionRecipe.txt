@@ -3733,5 +3733,13 @@ Before in *.java:
 After in *.java:
     @ValueRangeProvider(id = "delayRange")
     public ValueRange getDelayRange() {
-        return new IntValueRange(0, 500);
+        return ValueRangeFactory.createIntValueRange(0, 500);
     }
+
+[MAJOR] The annotation @ValueRangeProvider has been moved into another package
+Before in *.java:
+    import org.optaplanner.core.api.domain.value.ValueRangeProvider;
+After in *.java:
+    import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+
+[IMPL_DETAIL] The *Descriptor classes have been moved into a descriptor package.

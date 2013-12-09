@@ -16,16 +16,14 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.impl.domain.value.EntityIndependentPlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**

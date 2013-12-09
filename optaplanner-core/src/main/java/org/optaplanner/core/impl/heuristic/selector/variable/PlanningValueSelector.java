@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.impl.domain.value.EntityIndependentPlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.value.PlanningValueRangeDescriptor;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentPlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.valuerange.descriptor.PlanningValueRangeDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.phase.AbstractSolverPhaseScope;
 import org.optaplanner.core.impl.phase.event.SolverPhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;

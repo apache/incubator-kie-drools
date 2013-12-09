@@ -17,29 +17,18 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
-import org.mockito.InOrder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.entity.PlanningEntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.entity.descriptor.PlanningEntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
-import org.optaplanner.core.impl.domain.variable.PlanningVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.listener.PlanningVariableListener;
-import org.optaplanner.core.impl.domain.variable.shadow.ChainedMappedByVariableListener;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreCalculator;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirector;
-import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDirectorFactory;
+import org.optaplanner.core.impl.domain.variable.descriptor.PlanningVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
-import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedAnchor;
-import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedObject;
-import org.optaplanner.core.impl.testdata.domain.chained.mappedby.TestdataMappedByChainedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

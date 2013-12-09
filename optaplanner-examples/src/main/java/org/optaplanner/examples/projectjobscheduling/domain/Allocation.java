@@ -20,10 +20,9 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.value.ValueRange;
-import org.optaplanner.core.api.domain.value.ValueRangeFactory;
-import org.optaplanner.core.api.domain.value.ValueRangeProvider;
-import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
