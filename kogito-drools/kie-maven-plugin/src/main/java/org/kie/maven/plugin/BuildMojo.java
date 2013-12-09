@@ -1,8 +1,10 @@
 package org.kie.maven.plugin;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -15,7 +17,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This goal builds the drools file belonging to the kproject.
@@ -41,16 +45,33 @@ public class BuildMojo extends AbstractMojo {
      */
     private File sourceFolder;
 
+    /**
+     * @parameter default-value="${project}"
+     * @required
+     */
+    private MavenProject project;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
-        URLClassLoader projectClassLoader = null;
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+
         try {
-            projectClassLoader = new URLClassLoader(new URL[]{outputDirectory.toURI().toURL()});
+            Set<URL> urls = new HashSet<URL>();
+            List<String> elements = project.getCompileClasspathElements();
+            for (String element : elements) {
+                urls.add(new File(element).toURI().toURL());
+            }
+            urls.add(outputDirectory.toURI().toURL());
+
+            ClassLoader projectClassLoader = URLClassLoader.newInstance(urls.toArray(new URL[0]),
+                                                                        Thread.currentThread().getContextClassLoader());
+
+            Thread.currentThread().setContextClassLoader(projectClassLoader);
+
+        } catch (DependencyResolutionRequiredException e) {
+            throw new RuntimeException(e);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
-
-        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(projectClassLoader);
 
         KieServices ks = KieServices.Factory.get();
 
