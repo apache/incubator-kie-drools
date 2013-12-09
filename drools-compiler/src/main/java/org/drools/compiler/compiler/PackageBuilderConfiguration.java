@@ -59,7 +59,6 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.builder.conf.SingleValueKnowledgeBuilderOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.kie.internal.utils.ClassLoaderUtil;
-import org.kie.internal.utils.CompositeClassLoader;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 
@@ -173,26 +172,17 @@ public class PackageBuilderConfiguration
               classLoaders );
     }
 
-    public PackageBuilderConfiguration(Properties properties,
-                                       CompositeClassLoader classLoader) {
-        init( properties,
-              classLoader );
-    }
-
     public PackageBuilderConfiguration() {
         init( null,
               (ClassLoader[]) null );
     }
 
     private void init(Properties properties,
-                      CompositeClassLoader classLoader) {
-        this.classLoader = classLoader;
-        init( properties );
-    }
-
-    private void init(Properties properties,
                       ClassLoader... classLoaders) {
-        setClassLoader( classLoaders );
+        if (classLoaders != null && classLoaders.length > 1) {
+            throw new RuntimeException("Multiple classloaders are no longer supported");
+        }
+        setClassLoader( classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0] );
         init( properties );
     }
 
@@ -402,8 +392,8 @@ public class PackageBuilderConfiguration
     }
 
     /** Use this to override the classLoader that will be used for the rules. */
-    private void setClassLoader(final ClassLoader... classLoaders) {
-        this.classLoader = ProjectClassLoader.getClassLoader( classLoaders,
+    private void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = ProjectClassLoader.getClassLoader( classLoader,
                                                               null,
                                                               isClassLoaderCacheEnabled() );
     }

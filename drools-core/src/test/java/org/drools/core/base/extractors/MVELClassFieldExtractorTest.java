@@ -18,6 +18,7 @@ package org.drools.core.base.extractors;
 
 import java.util.Vector;
 
+import org.drools.core.common.ProjectClassLoader;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.utils.ClassLoaderUtil;
@@ -50,7 +51,7 @@ public class MVELClassFieldExtractorTest {
                                                                          String.class );
         MVELDialectRuntimeData data = new MVELDialectRuntimeData();
         data.addImport( Person.class.getSimpleName(), Person.class );
-        data.onAdd( null, ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
+        data.onAdd( null, ProjectClassLoader.createProjectClassLoader() );
         
         extractor.compile( data );
         
@@ -197,7 +198,7 @@ public class MVELClassFieldExtractorTest {
                                                                                                              String.class );
             MVELDialectRuntimeData data = new MVELDialectRuntimeData();
             data.addImport( Person.class.getSimpleName(), Person.class );
-            data.onAdd( null, ClassLoaderUtil.getClassLoader( null, getClass(), false ) );
+            data.onAdd( null, ProjectClassLoader.createProjectClassLoader() );
             
             nullExtractor.compile( data );            
 //

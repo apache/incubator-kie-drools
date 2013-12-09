@@ -11,7 +11,6 @@ import org.drools.core.rule.*;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.Tuple;
-import org.kie.internal.utils.CompositeClassLoader;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 
@@ -21,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.*;
 import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 import static org.mvel2.asm.Opcodes.AALOAD;
 import static org.mvel2.asm.Opcodes.ACC_FINAL;

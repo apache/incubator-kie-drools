@@ -36,19 +36,17 @@ public class ProjectClassLoader extends ClassLoader {
         super(parent);
     }
 
-    public static ClassLoader getClassLoader(final ClassLoader[] classLoaders,
+    public static ClassLoader getClassLoader(final ClassLoader classLoader,
                                              final Class< ? > cls,
                                              final boolean enableCache) {
-        if (classLoaders == null || classLoaders.length == 0) {
+        if (classLoader == null) {
             return cls == null ? createProjectClassLoader() : createProjectClassLoader(cls.getClassLoader());
-        } else if (classLoaders.length == 1) {
-            ProjectClassLoader classLoader = createProjectClassLoader(classLoaders[0]);
-            if (cls != null) {
-                classLoader.setDroolsClassLoader(cls.getClassLoader());
-            }
-            return classLoader;
         } else {
-            return ClassLoaderUtil.getClassLoader(classLoaders, cls, enableCache);
+            ProjectClassLoader projectClassLoader = createProjectClassLoader(classLoader);
+            if (cls != null) {
+                projectClassLoader.setDroolsClassLoader(cls.getClassLoader());
+            }
+            return projectClassLoader;
         }
     }
 

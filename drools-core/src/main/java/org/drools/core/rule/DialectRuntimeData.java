@@ -16,9 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.kie.internal.utils.CompositeClassLoader;
-
-
 public interface DialectRuntimeData extends Cloneable {
     public void removeRule( Package pkg, Rule rule );
 
