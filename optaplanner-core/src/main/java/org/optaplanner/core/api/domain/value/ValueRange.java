@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.optaplanner.core.api.domain.value.buildin.primint.IntValueRange;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
@@ -17,7 +18,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * but if the values are numbers, they can also be stored in memory by their bounds
  * to use less memory and provide more opportunities.
  * <p/>
- * A ValueRange is stateful (unlike a {@link ValueSelector} which is stateless.
+ * A ValueRange is stateful (unlike a {@link ValueSelector} which is stateless
+ * <p/>
+ * Implementations must be immutable..
  * <p/>
  * An implementation must extend {@link AbstractValueRange} to ensure backwards compatibility in future versions.
  * @see AbstractValueRange
@@ -47,13 +50,16 @@ public interface ValueRange<T> {
     T get(long index);
 
     /**
-     *
+     * Select the elements in original (natural) order.
      * @return never null
+     * @throws IllegalStateException if {@link #isCountable} returns false
      */
     Iterator<T> createOriginalIterator();
 
     /**
-     *
+     * Select in random order, without shuffling the elements.
+     * Each element might be selected multiple times.
+     * Scales well because it does not require caching.
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,
      * so {@link EnvironmentMode#REPRODUCIBLE} works correctly
      * @return never null
