@@ -77,8 +77,8 @@ public class BigDecimalValueRange extends AbstractValueRange<BigDecimal> {
     @Override
     public BigDecimal get(long index) {
         if (index < 0L || index >= getSize()) {
-            throw new IndexOutOfBoundsException("The index (" + index + ") must < from (" + from
-                    + ") and >= to (" + to + ").");
+            throw new IndexOutOfBoundsException("The index (" + index + ") must be >= 0 and < size ("
+                    + getSize() + ").");
         }
         return incrementUnit.multiply(BigDecimal.valueOf(index)).add(from);
     }

@@ -59,8 +59,8 @@ public class IntValueRange extends AbstractValueRange<Integer> {
     @Override
     public Integer get(long index) {
         if (index < 0L || index >= getSize()) {
-            throw new IndexOutOfBoundsException("The index (" + index + ") must < from (" + from
-                    + ") and >= to (" + to + ").");
+            throw new IndexOutOfBoundsException("The index (" + index + ") must be >= 0 and < size ("
+                    + getSize() + ").");
         }
         return (int) (index * incrementUnit + from);
     }
