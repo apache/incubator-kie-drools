@@ -57,11 +57,13 @@ public class ListValueRangeTest {
     @Test
     public void createRandomIterator() {
         Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(anyInt())).thenReturn(2, 0, 2, 0, 2, 0, 2, 0);
-
+        when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).createRandomIterator(workingRandom), 5, 0);
+        when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createRandomIterator(workingRandom), 5, 100);
+        when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
         assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).createRandomIterator(workingRandom), 0, -15);
+        when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
         assertElementsOfIterator(new ListValueRange<String>(Arrays.asList("b", "z", "a")).createRandomIterator(workingRandom), "a", "b");
         assertAllElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createRandomIterator(workingRandom));
     }

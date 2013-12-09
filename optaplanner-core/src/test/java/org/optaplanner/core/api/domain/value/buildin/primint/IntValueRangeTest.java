@@ -65,14 +65,18 @@ public class IntValueRangeTest {
     @Test
     public void createRandomIterator() {
         Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0, 3, 0, 3, 0, 3, 0, 3, 0);
 
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new IntValueRange(0, 7).createRandomIterator(workingRandom), 3, 0);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new IntValueRange(100, 104).createRandomIterator(workingRandom), 103, 100);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new IntValueRange(-4, 3).createRandomIterator(workingRandom), -1, -4);
         assertAllElementsOfIterator(new IntValueRange(7, 7).createRandomIterator(workingRandom));
         // IncrementUnit
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new IntValueRange(0, 10, 2).createRandomIterator(workingRandom), 6, 0);
+        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new IntValueRange(100, 120, 5).createRandomIterator(workingRandom), 115, 100);
     }
 

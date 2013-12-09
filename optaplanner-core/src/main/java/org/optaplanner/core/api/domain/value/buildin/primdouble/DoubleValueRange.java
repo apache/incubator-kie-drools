@@ -70,7 +70,7 @@ public class DoubleValueRange extends AbstractValueRange<Double> {
             double diff = to - from;
             double next = from + diff * workingRandom.nextDouble();
             if (next >= to) {
-                // Rounding error happened
+                // Rounding error occurred
                 next = Math.nextAfter(next, Double.NEGATIVE_INFINITY);
             }
             return next;
