@@ -52,7 +52,7 @@ public class MavenRepository {
     private static void initSettings() {
         Settings settings = MavenSettings.getSettings();
         for (Profile profile : settings.getProfiles()) {
-            if (profile.getActivation().isActiveByDefault()) {
+            if (profile.getActivation() != null && profile.getActivation().isActiveByDefault()) {
                 for (Repository repository : profile.getRepositories()) {
                     addExtraRepository( new RemoteRepository( repository.getId(), "default", repository.getUrl() ) );
                 }
