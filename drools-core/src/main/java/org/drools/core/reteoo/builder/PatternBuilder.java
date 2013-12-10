@@ -226,7 +226,7 @@ public class PatternBuilder
             if ( target.isPatternDeclaration() && target.getPattern().getObjectType().isEvent() ) {
                 long uplimit = ((IntervalProviderConstraint) constraint).getInterval().getUpperBound();
                 // only makes sense to add the new timer if the uplimit is not infinity (Long.MAX_VALUE)
-                if( uplimit < Long.MAX_VALUE ) {
+                if( uplimit >= 0 && uplimit < Long.MAX_VALUE ) {
                     Timer timer = context.getRule().getTimer();
                     DurationTimer durationTimer = new DurationTimer( uplimit );
                     durationTimer.setEventFactHandle(target);
