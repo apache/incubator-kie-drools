@@ -186,7 +186,7 @@ public class ASMConditionEvaluatorJitter {
             Expression left = singleCondition.getLeft();
             Expression right = singleCondition.getRight();
             Class<?> commonType = singleCondition.getOperation().needsSameType() ?
-                    findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull()) :
+                    findCommonClass(left.getType(), !left.canBeNull(), right.getType(), !right.canBeNull(), singleCondition.getOperation().isEquality()) :
                     null;
 
             if (commonType == Object.class && singleCondition.getOperation().isComparison()) {
@@ -769,6 +769,9 @@ public class ASMConditionEvaluatorJitter {
                 if (!firstInvocation) {
                     mv.visitVarInsn(ALOAD, 1);
                 }
+                if (!invocation.getReturnType().isAssignableFrom(currentClass)) {
+                    cast(invocation.getReturnType());
+                }
                 return;
             }
 
@@ -900,7 +903,7 @@ public class ASMConditionEvaluatorJitter {
             throw new RuntimeException("Unknown operator: " + op);
         }
 
-        private Class<?> findCommonClass(Class<?> class1, boolean primitive1, Class<?> class2, boolean primitive2) {
+        private Class<?> findCommonClass(Class<?> class1, boolean primitive1, Class<?> class2, boolean primitive2, boolean forEquality) {
             Class<?> result = null;
             if (class1 == class2) {
                 result = class1;
@@ -931,9 +934,13 @@ public class ASMConditionEvaluatorJitter {
                 result = findCommonClass(class2, class1, primitive1);
             }
             if (result == null) {
-                throw new RuntimeException( "Cannot find a common class between " + class1.getName() + " and " + class2.getName() +
-                                             " ||  " + class1.hashCode() + " vs " + class2.hashCode()
-                );
+                if (forEquality) {
+                    return Object.class;
+                } else {
+                    throw new RuntimeException( "Cannot find a common class between " + class1.getName() + " and " + class2.getName() +
+                                                 " ||  " + class1.hashCode() + " vs " + class2.hashCode()
+                    );
+                }
             }
             return result == Number.class ? Double.class : result;
         }
