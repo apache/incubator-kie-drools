@@ -82,7 +82,6 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
         Map<String, String> formsData = new HashMap<String, String>();
         Collection<String> files = module.getFileNames();
-        String fileSeparator = ( File.separatorChar=='\\' ? "\\\\" : File.separator );
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
                 ProcessAssetDesc process;
@@ -123,7 +122,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                     logger.warn("Unable to load content for form '{}' : {}", fileName, e);
                 }
             } else if( fileName.matches(".+class$")) { 
-                String className = fileName.replaceAll(fileSeparator, ".");
+                String className = fileName.replaceAll("/", ".");
                 className = className.substring(0, fileName.length() - ".class".length());
                 deployedUnit.addClassName(className);
             }
