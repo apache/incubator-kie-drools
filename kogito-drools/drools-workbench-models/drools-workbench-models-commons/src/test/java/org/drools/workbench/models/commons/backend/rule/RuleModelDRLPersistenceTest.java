@@ -3957,4 +3957,108 @@ public class RuleModelDRLPersistenceTest {
                                  m );
     }
 
+    @Test
+    public void testRHSFactBindingZeroBound() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test";
+
+        ActionInsertFact ai0 = new ActionInsertFact( "Person" );
+        ai0.addFieldValue( new ActionFieldValue( "field1",
+                                                 "55",
+                                                 DataType.TYPE_NUMERIC_LONG ) );
+        ActionInsertFact ai1 = new ActionInsertFact( "Person" );
+        ai1.addFieldValue( new ActionFieldValue( "field1",
+                                                 "55",
+                                                 DataType.TYPE_NUMERIC_LONG ) );
+        m.addRhsItem( ai0 );
+        m.addRhsItem( ai1 );
+
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+
+        String expected = "rule \"test\" \n"
+                + "dialect \"mvel\"\n"
+                + "when"
+                + "then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( 55 ); \n"
+                + "insert( fact0 ); \n"
+                + "Person fact1 = new Person(); \n"
+                + "fact1.setField1( 55 ); \n"
+                + "insert( fact1 ); \n"
+                + "end";
+
+        checkMarshallUnmarshall( expected, m );
+    }
+
+    @Test
+    public void testRHSFactBindingFirstBound() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test";
+
+        ActionInsertFact ai0 = new ActionInsertFact( "Person" );
+        ai0.setBoundName( "fact0" );
+        ai0.addFieldValue( new ActionFieldValue( "field1",
+                                                "55",
+                                                DataType.TYPE_NUMERIC_LONG ) );
+        ActionInsertFact ai1 = new ActionInsertFact( "Person" );
+        ai1.addFieldValue( new ActionFieldValue( "field1",
+                                                 "55",
+                                                 DataType.TYPE_NUMERIC_LONG ) );
+        m.addRhsItem( ai0 );
+        m.addRhsItem( ai1 );
+
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+
+        String expected = "rule \"test\" \n"
+                + "dialect \"mvel\"\n"
+                + "when"
+                + "then \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( 55 ); \n"
+                + "insert( fact0 ); \n"
+                + "Person fact1 = new Person(); \n"
+                + "fact1.setField1( 55 ); \n"
+                + "insert( fact1 ); \n"
+                + "end";
+
+        checkMarshallUnmarshall( expected, m );
+    }
+
+    @Test
+    public void testRHSFactBindingLastBound() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test";
+
+        ActionInsertFact ai0 = new ActionInsertFact( "Person" );
+        ai0.addFieldValue( new ActionFieldValue( "field1",
+                                                 "55",
+                                                 DataType.TYPE_NUMERIC_LONG ) );
+        ActionInsertFact ai1 = new ActionInsertFact( "Person" );
+        ai1.setBoundName( "fact0" );
+        ai1.addFieldValue( new ActionFieldValue( "field1",
+                                                 "55",
+                                                 DataType.TYPE_NUMERIC_LONG ) );
+        m.addRhsItem( ai0 );
+        m.addRhsItem( ai1 );
+
+        String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+
+        String expected = "rule \"test\" \n"
+                + "dialect \"mvel\"\n"
+                + "when"
+                + "then \n"
+                + "Person fact1 = new Person(); \n"
+                + "fact1.setField1( 55 ); \n"
+                + "insert( fact1 ); \n"
+                + "Person fact0 = new Person(); \n"
+                + "fact0.setField1( 55 ); \n"
+                + "insert( fact0 ); \n"
+                + "end";
+
+        checkMarshallUnmarshall( expected, m );
+    }
+
 }

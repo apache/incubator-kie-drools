@@ -152,6 +152,8 @@ public class RuleModelDRLPersistenceImpl
         bindingsPatterns = new HashMap<String, IFactPattern>();
         bindingsFields = new HashMap<String, FieldConstraint>();
 
+        fixActionInsertFactBindings( model.rhs );
+
         StringBuilder buf = new StringBuilder();
 
         //Build rule
@@ -174,6 +176,38 @@ public class RuleModelDRLPersistenceImpl
                          isDSLEnhanced );
         this.marshalFooter( buf );
         return buf.toString();
+    }
+
+    private void fixActionInsertFactBindings( final IAction[] rhs ) {
+        final Set<String> existingBindings = extractExistingActionBindings( rhs );
+        for ( IAction action : rhs ) {
+            if ( action instanceof ActionInsertFact ) {
+                final ActionInsertFact aif = (ActionInsertFact) action;
+                if ( aif.getFieldValues().length > 0 && aif.getBoundName() == null ) {
+                    int idx = 0;
+                    String binding = "fact" + idx;
+                    while ( existingBindings.contains( binding ) ) {
+                        idx++;
+                        binding = "fact" + idx;
+                    }
+                    existingBindings.add( binding );
+                    aif.setBoundName( binding );
+                }
+            }
+        }
+    }
+
+    private Set<String> extractExistingActionBindings( final IAction[] rhs ) {
+        final Set<String> bindings = new HashSet<String>();
+        for ( IAction action : rhs ) {
+            if ( action instanceof ActionInsertFact ) {
+                final ActionInsertFact aif = (ActionInsertFact) action;
+                if ( aif.getBoundName() != null ) {
+                    bindings.add( aif.getBoundName() );
+                }
+            }
+        }
+        return bindings;
     }
 
     protected void marshalFooter( final StringBuilder buf ) {
@@ -1024,7 +1058,7 @@ public class RuleModelDRLPersistenceImpl
         private StringBuilder buf;
         private boolean isDSLEnhanced;
         private String indentation;
-        private int idx = 0;
+        //        private int idx = 0;
         private Map<String, IFactPattern> bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
         protected DRLConstraintValueBuilder constraintValueBuilder;
@@ -1074,29 +1108,20 @@ public class RuleModelDRLPersistenceImpl
             if ( isDSLEnhanced ) {
                 buf.append( ">" );
             }
-            if ( action.getFieldValues().length == 0 && action.getBoundName() == null ) {
+            final String binding = action.getBoundName();
+            if ( action.getFieldValues().length == 0 && binding == null ) {
                 buf.append( ( isLogic ) ? "insertLogical( new " : "insert( new " );
 
                 buf.append( action.getFactType() );
                 buf.append( "() );\n" );
             } else {
                 buf.append( action.getFactType() );
-                if ( action.getBoundName() == null ) {
-                    buf.append( " fact" );
-                    buf.append( idx );
-                } else {
-                    buf.append( " " + action.getBoundName() );
-                }
+                buf.append( " " + binding );
                 buf.append( " = new " );
                 buf.append( action.getFactType() );
                 buf.append( "();\n" );
-                if ( action.getBoundName() == null ) {
-                    generateSetMethodCalls( "fact" + idx,
-                                            action.getFieldValues() );
-                } else {
-                    generateSetMethodCalls( action.getBoundName(),
-                                            action.getFieldValues() );
-                }
+                generateSetMethodCalls( binding,
+                                        action.getFieldValues() );
 
                 buf.append( indentation );
                 if ( isDSLEnhanced ) {
@@ -1104,26 +1129,14 @@ public class RuleModelDRLPersistenceImpl
                 }
                 if ( isLogic ) {
                     buf.append( "insertLogical( " );
-                    if ( action.getBoundName() == null ) {
-                        buf.append( "fact" );
-                        buf.append( idx++ );
-                    } else {
-                        buf.append( action.getBoundName() );
-                    }
+                    buf.append( binding );
                     buf.append( " );\n" );
                 } else {
                     buf.append( "insert( " );
-                    if ( action.getBoundName() == null ) {
-                        buf.append( "fact" );
-                        buf.append( idx++ );
-                    } else {
-                        buf.append( action.getBoundName() );
-                    }
+                    buf.append( binding );
 
                     buf.append( " );\n" );
                 }
-                //                buf.append(idx++);
-                //                buf.append(" );\n");
             }
         }
 
@@ -2638,10 +2651,10 @@ public class RuleModelDRLPersistenceImpl
             return expression;
         }
 
-        private String normalizeExpressionPart(String expressionPart) {
-            int parenthesisPos = expressionPart.indexOf('(');
-            if (parenthesisPos > 0) {
-                expressionPart = expressionPart.substring(0, parenthesisPos);
+        private String normalizeExpressionPart( String expressionPart ) {
+            int parenthesisPos = expressionPart.indexOf( '(' );
+            if ( parenthesisPos > 0 ) {
+                expressionPart = expressionPart.substring( 0, parenthesisPos );
             }
             return expressionPart.trim();
         }
