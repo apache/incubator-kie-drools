@@ -92,6 +92,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -4730,7 +4731,7 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     }
 
-    @Test @Ignore("Fixed with mvel 2.1.8.Final")
+    @Test
     public void testTypeCheckInOr() {
         // BZ-1029911
         String str = "import org.drools.compiler.*;\n" +
@@ -4753,7 +4754,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
     }
 
-    @Test @Ignore("Fixed with mvel 2.1.8.Final")
+    @Test
     public void testDynamicNegativeSalienceWithSpace() {
         // DROOLS-302
         String str =
@@ -4798,6 +4799,36 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals(40, mario.getAge());
+    }
+
+    @Test
+    public void testConstraintOnSerializable() {
+        // DROOLS-372
+        String str =
+                "import org.drools.compiler.integrationtests.Misc2Test.SerializableValue\n" +
+                "rule R\n" +
+                "when\n" +
+                "  SerializableValue( value == \"1\" )\n" +
+                "then\n" +
+                "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ksession.insert(new SerializableValue("0"));
+        ksession.fireAllRules();
+    }
+
+    public static class SerializableValue {
+        private final Serializable value;
+
+        public SerializableValue(Serializable value) {
+            this.value = value;
+        }
+
+        public Serializable getValue() {
+            return value;
+        }
     }
 }
 

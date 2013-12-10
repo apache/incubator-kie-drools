@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.reflect.Modifier.isAbstract;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
@@ -603,6 +604,8 @@ public class ClassGenerator {
                 mv.visitLdcInsn(classGenerator.toType((Class<?>) obj));
             } else if (type == Character.class) {
                 invokeConstructor(Character.class, new Object[]{ obj.toString().charAt(0) }, char.class);
+            } else if (type.isInterface() || isAbstract(type.getModifiers())) {
+                push(obj, obj.getClass());
             } else {
                 invokeConstructor(type, new Object[]{ obj.toString() }, String.class);
             }
