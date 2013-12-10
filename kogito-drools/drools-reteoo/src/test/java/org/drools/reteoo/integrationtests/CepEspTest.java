@@ -284,6 +284,11 @@ public class CepEspTest {
             this.id = id;
         }
 
+        public SimpleFact(final String id, final String status) {
+            this.id = id;
+            this.status = status;
+        }
+
         public String getId() {
             return id;
         }
@@ -354,5 +359,41 @@ public class CepEspTest {
         ks.fireAllRules();
         assertEquals( Arrays.asList( 1 ), list );
 
+    }
+
+    @Test
+    public void testNotBefore() {
+        // BZ-1039579
+        String drl =
+                "import org.drools.reteoo.integrationtests.CepEspTest.SimpleFact;\n" +
+                "declare SimpleFact\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"TEST1\"\n" +
+                "when\n" +
+                "    sf1: SimpleFact(status==\"code0\")\n" +
+                "    not ( SimpleFact(status==\"code1\", this before[1ms, 10s] sf1 ) )\n" +
+                "    then\n" +
+                "        System.out.println(\"test OK\");\n" +
+                "        insert(new SimpleFact(\"OK\", \"OK\"));\n" +
+                "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        baseConfig.setOption( EventProcessingOption.STREAM );
+        baseConfig.setOption( RuleEngineOption.RETEOO );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+
+        kSession.insert(new SimpleFact("id0", "code0"));
+        kSession.fireAllRules();
+        assertEquals("2 facts in session", 2, kSession.getFactCount());
     }
 }
