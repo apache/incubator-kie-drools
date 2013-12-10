@@ -12,7 +12,7 @@ public interface DeployedUnit {
     
     Collection<DeployedAsset> getDeployedAssets(); 
     
-    Collection<String> getDeployedClassNames(); 
+    Collection<Class<?>> getDeployedClasses(); 
     
     RuntimeManager getRuntimeManager();
 }
