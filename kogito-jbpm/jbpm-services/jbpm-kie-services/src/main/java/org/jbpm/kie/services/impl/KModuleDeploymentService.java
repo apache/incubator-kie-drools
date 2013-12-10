@@ -124,7 +124,12 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             } else if( fileName.matches(".+class$")) { 
                 String className = fileName.replaceAll("/", ".");
                 className = className.substring(0, fileName.length() - ".class".length());
-                deployedUnit.addClassName(className);
+                try {
+                    deployedUnit.addClass(kieContainer.getClassLoader().loadClass(className));
+                    logger.debug( "Loaded {} into the classpath from deployment {}", className, releaseId.toExternalForm());
+                } catch (ClassNotFoundException cnfe) {
+                    logger.error("Unable to load {} when deploying {}", className, releaseId.toExternalForm(), cnfe);
+                }
             }
         }
 

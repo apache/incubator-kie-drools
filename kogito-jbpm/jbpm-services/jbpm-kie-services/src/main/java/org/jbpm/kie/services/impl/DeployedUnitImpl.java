@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -19,7 +20,7 @@ public class DeployedUnitImpl implements DeployedUnit {
     private RuntimeManager manager;
     
     private Map<String, DeployedAsset> assets = new HashMap<String, DeployedAsset>();
-    private Set<String> classes = new HashSet<String>();
+    private Set<Class<?>> classes = new CopyOnWriteArraySet<Class<?>>();
     
     public DeployedUnitImpl(DeploymentUnit unit) {
         this.unit = unit;
@@ -44,8 +45,8 @@ public class DeployedUnitImpl implements DeployedUnit {
         this.assets.put(assetId, processAsset);
     }
     
-    public void addClassName(String className) {
-        this.classes.add(className);
+    public void addClass(Class<?> kModuleClass) {
+        this.classes.add(kModuleClass);
     }
     
     public void setRuntimeManager(RuntimeManager manager) {
@@ -61,7 +62,8 @@ public class DeployedUnitImpl implements DeployedUnit {
     }
 
     @Override
-    public Collection<String> getDeployedClassNames() {
+    public Collection<Class<?>> getDeployedClasses() {
         return Collections.unmodifiableCollection(classes);
     }
+
 }
