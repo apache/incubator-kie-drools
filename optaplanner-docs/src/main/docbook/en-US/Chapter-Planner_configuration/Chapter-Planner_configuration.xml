@@ -375,7 +375,7 @@ public class Queen {
     // ...
 }</programlisting>
 
-        <para>See <link linkend="sortedSelection">Sorted Selection</link> for more information.</para>
+        <para>See <link linkend="sortedSelection">sorted selection</link> for more information.</para>
 
         <important>
           <para>Difficulty should be implemented ascending: easy entities are lower, difficult entities are higher. For
@@ -716,7 +716,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
         // ...
     }</programlisting>
 
-        <para>See <link linkend="sortedSelection">Sorted Selection</link> for more information.</para>
+        <para>See <link linkend="sortedSelection">sorted selection</link> for more information.</para>
 
         <important>
           <para>Strength should be implemented ascending: weaker values are lower, stronger values are higher. For
